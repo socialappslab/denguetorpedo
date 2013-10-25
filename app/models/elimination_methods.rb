@@ -7,7 +7,6 @@ class EliminationMethods
     "Pneu",
     "Lixo (recipientes inutilizados)",
     "Pequenos Recipientes utilizáveis",
-    "Caixa d'água aberta na residência",
     "Grandes Recipientes Utilizáveis",
     "Calha",
     "Registros abertos",

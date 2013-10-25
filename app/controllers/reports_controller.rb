@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
     @pneu = EliminationMethods.pneu
     @lixo = EliminationMethods.lixo
     @pequenos = EliminationMethods.pequenos
-    @caixa = EliminationMethods.caixa
+    # @caixa = EliminationMethods.caixa
     @grandes = EliminationMethods.grandes
     @calha = EliminationMethods.calha
     @registros = EliminationMethods.registros
