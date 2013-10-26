@@ -2,18 +2,7 @@ require 'spec_helper'
 
 describe "prize_codes/index" do
   before(:each) do
-    assign(:prize_codes, [
-      stub_model(PrizeCode,
-        :user_id => 1,
-        :prize_id => 2,
-        :code => "Code"
-      ),
-      stub_model(PrizeCode,
-        :user_id => 1,
-        :prize_id => 2,
-        :code => "Code"
-      )
-    ])
+    @prize_codes = PrizeCode.all
   end
 
   it "renders a list of prize_codes" do

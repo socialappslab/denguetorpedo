@@ -31,4 +31,12 @@ FactoryGirl.define do
 	factory :neighborhood do |n|
 		n.name "Mare"
 	end
+
+	factory :notice do |notice|
+		notice.title "Title"
+		notice.description "Description"
+		notice.summary "Summary"
+		notice.location "DT Headquarter"
+		notice.date Date.new
+	end
 end

@@ -2,11 +2,7 @@ require 'spec_helper'
 
 describe "notices/edit" do
   before(:each) do
-    @notice = assign(:notice, stub_model(Notice,
-      :title => "MyString",
-      :description => "MyText",
-      :location => "MyString"
-    ))
+    @notice = FactoryGirl.create(:notice)    
     @neighborhoods = Neighborhood.all
   end
 

@@ -3,25 +3,11 @@ require 'spec_helper'
 describe "prizes/index" do
   before(:each) do
     @user = FactoryGirl.create(:user)
-    assign(:prizes, [
-      stub_model(Prize,
-        :prize_name => "Prize Name",
-        :cost => 1,
-        :stock => 2,
-        :user_id => @user.id,
-        :description => "MyText",
-        :redemption_directions => "MyText"
-      ),
-      stub_model(Prize,
-        :prize_name => "Prize Name",
-        :cost => 1,
-        :stock => 2,
-        :user_id => @user.id,
-        :description => "MyText",
-        :redemption_directions => "MyText"
-      )
-    ])
+    @users = User.all
+    @prize = FactoryGirl.create(:prize)
     @available = Prize.all
+    @individual = Prize.where(community_prize: false)
+    @community = Prize.where(community_prize: true)
   end
 
   it "renders a list of prizes" do

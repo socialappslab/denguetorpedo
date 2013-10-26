@@ -29,7 +29,7 @@ describe PrizesController do
     @location = Location.create(latitude: 0, longitude: 0)
     @house = FactoryGirl.create(:house, location_id: @location.id)
     @user = FactoryGirl.create(:user, house_id: @house.id)
-    controller.stub!(:require_login).and_return(true)
+    controller.stub(:require_login).and_return(true)
   end
   def valid_attributes
     { :cost => 30, :description => "Description", :prize_name => "Prize", :stock => 5, :user_id => @user.id }
