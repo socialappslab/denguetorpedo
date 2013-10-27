@@ -204,7 +204,7 @@ ul#neighborhood_house_list {
   
 #neighborhood_resolved_report_button {
   @include neighborhood_status_button;
-  background-color: gray;
+  background-color: $blue;
 }
 
 #visit_neighborhood_button {

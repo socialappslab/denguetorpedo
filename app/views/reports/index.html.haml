@@ -192,17 +192,18 @@
 
                   var template = new InfoTemplate();
                   template.setTitle(markers[i].address);
-                  template.content = "<p>Em aberto: </p><br><p>Expirados: </p><br><p>Eliminados: </p>";
+                  template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
                   var graphic;
                   var textGraphic;
                   if (open_count && eliminated_count) {
                     graphic = new Graphic(new Point(markers[i].x, markers[i].y), mixed);
-                    template.content = "<p>Em aberto: " + open_count + "</p><br><p>Expirados: </p><br><p>Eliminados: " + eliminated_count + "</p>";
+                    template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
                   } else if (open_count > 0) {
                     graphic = new Graphic(new Point(markers[i].x, markers[i].y), orange);
-                    template.content = "<p>Em aberto: " + open_count + "</p><br><p>Expirados: </p>";
+                    template.content = "<p>Em aberto: " + open_count + "</p>";
                   } else if (eliminated_count > 0) {
                     graphic = new Graphic(new Point(markers[i].x, markers[i].y), grey);
+                    template.content = "<p>Eliminados: " + eliminated_count + "</p>"; 
                   }
                   textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
                   textGraphic = new Graphic(new Point(markers[i].x, markers[i].y), textSymbol);
