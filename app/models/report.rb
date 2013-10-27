@@ -124,7 +124,7 @@ class Report < ActiveRecord::Base
   end
 
   def expire_date
-    self.created_at + 3600 * 24 * 2
+    self.created_at + 3600 * 50
   end
 
   def not_sms?
