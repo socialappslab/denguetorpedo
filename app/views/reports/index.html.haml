@@ -55,8 +55,8 @@
               %form{id: "address_search_form", style: "margin-bottom:0px;"}
                 %input.span6{:type => 'text', id: "address_search", :placeholder => "Digite um endereço e pressione enter", :style => 'width: 280px;'}
                 %input{type: "button", value: "Va para Maré", style: "margin-left:325px;margin-bottom:10px;margin-top:-37px;", id: "go_to_mare"}
-      #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;"}
-      
+      #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;"}
+        = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:225px;left:195px;z-index:100"
 
       - if params[:view] == 'make_report'
         :javascript
@@ -77,7 +77,8 @@
             
             var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
             map.addLayer(tiled);
-
+            map.on("update-start", showLoading);
+            map.on("update-end", hideLoading);
             map.on("load", function() {
               
               tb = new Draw(map);
@@ -110,7 +111,9 @@
             $("#street_name").change(function() {
             });
 
+
             $("#street_number").change(function() {
+              showLoading();
               $.ajax({
                 url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
                 type: "GET",
@@ -131,12 +134,27 @@
                 },
                 error: function(m) {
                   console.log(JSON.stringify(m));
+                },
+                complete: function() {
+                  hideLoading();
                 }
               });
             });
             $("input#go_to_mare").click(function() {
               map.centerAndZoom(new Point(680291.2151545063, 7471401.29586681, new esri.SpatialReference({"wkid": 29193})), 5)
             });
+
+            function showLoading() {
+              $("#loading").show();
+              map.disableMapNavigation();
+              map.hideZoomSlider();
+            }
+
+            function hideLoading() {
+              $("#loading").hide();
+              map.enableMapNavigation();
+              map.showZoomSlider();
+            }
           });
       - else
         :javascript
@@ -156,8 +174,20 @@
               extent: customExtent,
               infoWindow:popup
             });
+            function showLoading() {
+              $("#loading").show();
+              map.disableMapNavigation();
+              map.hideZoomSlider();
+            }
 
-            
+            function hideLoading() {
+              $("#loading").hide();
+              map.enableMapNavigation();
+              map.showZoomSlider();
+            }
+            map.on("update-start", showLoading);
+            map.on("update-end", hideLoading);
+
             var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
             map.addLayer(tiled);
             var markers = #{@markers.to_json};

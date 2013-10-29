@@ -78,8 +78,8 @@
         %input{type: "button", value: "Va para Maré", style: "margin-left:296px;margin-bottom:10px;margin-top:-15px;", id: "go_to_mare"}
         = hidden_field_tag "x"
         = hidden_field_tag "y"
-        #map{style: "width:400px;height:400px;"}
-
+        #map{style: "width:400px;height:400px;position:relative;"}
+          = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:175px;left:175px;z-index:100"
         :javascript
           var map;
 
@@ -122,6 +122,20 @@
               map.centerAt(evt.mapPoint);
 
             }
+            function showLoading() {
+              $("#loading").show();
+              map.disableMapNavigation();
+              map.hideZoomSlider();
+            }
+
+            function hideLoading() {
+              $("#loading").hide();
+              map.enableMapNavigation();
+              map.showZoomSlider();
+            }
+
+            map.on("update-start", showLoading);
+            map.on("update-end", hideLoading);
 
             map.on("load", function() {
               tb = new Draw(map);
