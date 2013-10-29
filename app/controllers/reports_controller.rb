@@ -78,7 +78,7 @@ class ReportsController < ApplicationController
   def create    
 
     if request.post?
-      address = params[:street_type] + " " + params[:street_name] + " " + params[:street_number]
+      address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
       flash[:street_type] = params[:street_type]
       flash[:street_name] = params[:street_name]
       flash[:street_number] = params[:street_number]
@@ -94,12 +94,13 @@ class ReportsController < ApplicationController
       end
 
       if location.nil?
-        location = Location.new(:street_type => params[:street_type], :street_name => params[:street_name], :street_number => params[:street_number], latitude: params[:x], longitude: params[:y])
-        location.save
+        location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
       else
         location.latitude = params[:x]
-        location.latitude = params[:y]
+        location.longitude = params[:y]
       end
+
+      location.save
       
       if params[:report][:report] == ""
         flash[:alert] = "Você tem que descrever o local e/ou o foco."

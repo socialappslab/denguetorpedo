@@ -122,10 +122,6 @@
                   
 
                   if (candidates.length > 0) {
-                    var symbol = new SimpleMarkerSymbol();
-                    symbol.setStyle("STYLE_PATH");
-                    symbol.setPath("M 10 10 L30 10 L20 30z");
-                    symbol.setColor(new Color("red"));
                     map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
@@ -304,6 +300,8 @@
               
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
+              alert(evt.geometry.x + " " + evt.geometry.y);
+
               blueGraphic = new Graphic(evt.geometry, symbol);
               map.graphics.add(blueGraphic);
               map.centerAt(evt.mapPoint);

@@ -18,8 +18,8 @@
       %br
       = f.label :before_photo, "4. Carregue a imagem do foco encontrado:"
       = f.file_field :before_photo
-      = hidden_field_tag "x", value: flash[:x]
-      = hidden_field_tag "y", value: flash[:y]
+      = hidden_field_tag "x", value: flash[:x].to_i
+      = hidden_field_tag "y", value: flash[:y].to_i
       %br
       %br
       = f.submit "Enviar!"
