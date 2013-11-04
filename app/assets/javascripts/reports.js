@@ -54,7 +54,6 @@ $(document).ready(function() {
 		if ($(this).val() == "Outro método") {
 			window.location.href = "/feedbacks/new?title=other_method";
 		} else {
-			alert($(this).val());
 			$(this).parent().find("input#selected_elimination_method").val($(this).val());
 		}
 		

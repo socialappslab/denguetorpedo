@@ -5,6 +5,7 @@
   #reports_open
     = form_for(@report, :url => {:action => "create", :html => {:autocomplete => "off", :multipart => true}}) do |f|
       = f.error_messages
+      = hidden_field_tag 'report_id', @report.id
       / = f.label "Escolha o tipo e o método de eliminação do foco"
       = f.label :address, "1. Endereço do foco localizado:"
       / # = text_field_tag :location, nil, :placeholder => 'Localização', :id => 'report_address', :value => flash[:address]
@@ -18,8 +19,12 @@
       %br
       = f.label :before_photo, "4. Carregue a imagem do foco encontrado:"
       = f.file_field :before_photo
-      = hidden_field_tag "x", value: flash[:x].to_i
-      = hidden_field_tag "y", value: flash[:y].to_i
+      - if @report.location
+        = text_field_tag "x", "", value: @report.location.latitude
+        = hidden_field_tag "y", "", value: @report.location.longitude
+      - else
+        = hidden_field_tag "x"
+        = hidden_field_tag "y"
       %br
       %br
       = f.submit "Enviar!"

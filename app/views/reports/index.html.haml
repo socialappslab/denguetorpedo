@@ -56,7 +56,9 @@
                 %input.span6{:type => 'text', id: "address_search", :placeholder => "Digite um endereço e pressione enter", :style => 'width: 280px;'}
                 %input{type: "button", value: "Va para Maré", style: "margin-left:325px;margin-bottom:10px;margin-top:-37px;", id: "go_to_mare"}
       #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;"}
-        = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:225px;left:195px;z-index:100"
+        #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}     
+          = image_tag "loading.gif", style: "width:50px; height:50px;"
+          %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
 
       - if params[:view] == 'make_report'
         :javascript
@@ -242,8 +244,9 @@
                 for (var i = 0; i < open_markers.length; i++) {
                   var template = new InfoTemplate();
                   template.setTitle(open_markers[i].address);
-                  template.content = "<p>Open: </p><br><p>Expired: </p><br><p>Eliminated: </p>";
+                  
                   count = open_counts[open_markers[i].id];
+                  template.content = "<p>Em aberto: " + count + "</p>";
                   textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
 
                   var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orange);
@@ -257,8 +260,9 @@
                 for (var i = 0; i < eliminated_markers.length; i++) {
                   var template = new InfoTemplate();
                   template.setTitle(eliminated_markers[i].address);
-                  template.content = "<p>Open: </p><br><p>Expired: </p><br><p>Eliminated: </p>";
+                  
                   count = eliminated_counts[eliminated_markers[i].id];
+                  template.content = "<p>Eliminados: " + count + "</p>";
                   textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
 
                   var graphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), grey);
@@ -285,7 +289,7 @@
               if (markers.length > 0) {
                 for(var i = 0; i < markers.length; i++) {
 
-                  if (event.extent.contains(new Point(markers[i].x, markers[i].y))) {
+                  if (event.extent.contains(new Point(markers[i].x, markers[i].y)) || (markers[i].x == null && markers[i].y == null) || (markers[i].x == 0.0 && markers[i].y == 0.0)) {
                     $($(".rp_report")[i]).show();
                   } else {
                     $($(".rp_report")[i]).hide();

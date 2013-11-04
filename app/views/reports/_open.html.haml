@@ -15,22 +15,28 @@
             - if @current_user.role == "verificador" or @current_user.role == "admin"
               = link_to (image_tag 'icons/reports icon/x.png', :width => 25, :height => 25), problem_reports_path(:id => open.id), method: :post, :style => "float:right;"
               = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_reports_path(:id => open.id), method: :post, :style => "float:right;"
-        
-        - if open.created_at + 3600 * 24 * 2 > Time.new
-          - if open.elimination_type
-            .countdown.countdownHolder{:style => "width:150px;height: 20px;background-color:transparent; border: none;float:right;margin-top:1px;margin-right:0px;font-size:20px;"}
-            .span{style: "margin-top:3px; margin-right:10px;"}
-              Tempo restante
-              :javascript
-                var newYear = new Date(#{open.expire_date.strftime("%s").to_i * 1000});
-                $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
-        - else
+        - if open.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
-            Tempo expirado
+            SMS
+        - else
+          - if open.created_at + 3600 * 24 * 2 > Time.new
+            - if open.elimination_type
+              .countdown.countdownHolder{:style => "width:150px;height: 20px;background-color:transparent; border: none;float:right;margin-top:1px;margin-right:0px;font-size:20px;"}
+              .span{style: "margin-top:3px; margin-right:10px;"}
+                Tempo restante
+                :javascript
+                  var newYear = new Date(#{open.expire_date.strftime("%s").to_i * 1000});
+                  $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
+          - else
+            .span{style: "margin-top:3px; margin-right:10px;"}
+              Tempo expirado
         
   .row
-    .span7{:style => "margin-top:10px;"}
+    .span6{:style => "margin-top:10px;"}
       %h4= open.complete_address
+    .span2{:style => "margin-top:10px;margin-left:10px;"}
+      - if open.sms_incomplete?
+        = link_to "Completar o foco", edit_report_path(open)
   .row
     .span2.rp_before_photo 
       =image_tag open.before_photo(:medium)
@@ -38,7 +44,7 @@
       - if open.elimination_type
         %p{style: "margin-bottom:12px;"}= open.report
 
-      - else     
+      - else
         = text_area_tag("report_description", open.report, style: "width:430px;")
       / .row.rp_report_people
       /   Marcado por:
@@ -47,12 +53,12 @@
         .row
           .span7
             - if open.before_photo.url.include?("default_images/report_before_photo.png" )
-              %h3{:style => "font-size: 14px;"} Carregue uma foto do foco identificado
-              .eliminate_prompt
-                = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => true}}, :method=>:put) do |f|
-                  = hidden_field_tag 'report_id', open.id
-                  = f.file_field :before_photo
-                  = submit_tag "Carregue!", :disabled => open.created_at + 3600 * 24 * 2 < Time.new
+              / %h3{:style => "font-size: 14px;"} Carregue uma foto do foco identificado
+              / .eliminate_prompt
+              /   = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => true}}, :method=>:put) do |f|
+              /     = hidden_field_tag 'report_id', open.id
+              /     = f.file_field :before_photo
+              /     = submit_tag "Carregue!", :disabled => open.created_at + 3600 * 24 * 2 < Time.new
                   
             - else
 
@@ -60,19 +66,22 @@
                 = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
                   = hidden_field_tag 'report_id', open.id
                   
-                  = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante")
+                  - if open.elimination_type
+                    = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante"), data: { style: "btn-success", width: "430px"}
+                  - else
+                    = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", style: "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante"), data: { style: "btn-success", width: "430px"}
                   = select_tag "prantinho", options_for_select(@prantinho.collect{ |p| [p[1], p[0]]}), :class => "elimination_methods", :prompt => "Método de eliminação", :style => "width:430px;display:none;", disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante"), data: { style: "btn-success", width: "430px"}
-                  = select_tag "pneu", options_for_select(@pneu.collect{ |p| [p[1], p[0]]}), :style => "display:none;width:430px;", :class => "elimination_methods", :prompt => "Método de eliminação", disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante")
-                  = select_tag "lixo", options_for_select(@lixo.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "pequenos", options_for_select(@pequenos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "grandes", options_for_select(@grandes.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "calha", options_for_select(@calha.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "registros", options_for_select(@registros.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "laje", options_for_select(@laje.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação"
-                  = select_tag "piscinas", options_for_select(@piscinas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "pocas", options_for_select(@pocas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "ralos", options_for_select(@ralos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
-                  = select_tag "plantas", options_for_select(@plantas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => "Método de eliminação", :style => "display:none;width:430px;"
+                  = select_tag "pneu", options_for_select(@pneu.collect{ |p| [p[1], p[0]]}), :style => "display:none;width:430px;", :class => "elimination_methods", :prompt => open.method_prompt, disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante")
+                  = select_tag "lixo", options_for_select(@lixo.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "pequenos", options_for_select(@pequenos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "grandes", options_for_select(@grandes.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "calha", options_for_select(@calha.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "registros", options_for_select(@registros.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "laje", options_for_select(@laje.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt
+                  = select_tag "piscinas", options_for_select(@piscinas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "pocas", options_for_select(@pocas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "ralos", options_for_select(@ralos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  = select_tag "plantas", options_for_select(@plantas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
                   = hidden_field_tag "selected_elimination_method"
                   / # = select_tag "method_of_elimination", options_from_collection_for_select(@elimination_type), :style => "width: 355px;" 
                   :javascript

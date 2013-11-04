@@ -1,5 +1,6 @@
 #register
-  %h3.black Cadastre-se 
+  %h3.black{style: "margin-bottom:0px;"} Cadastre-se 
+  %p{title: "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco.", style: "color:white;margin-bottom:10px;"} Quem pode se cadastrar?
   %ul
     = form_for(@user) do |f|
       %li= f.error_messages
@@ -13,3 +14,4 @@
       %li= f.password_field :password_confirmation, :placeholder => "Confirmar senha", :class => "fields"
       <br>
       %li= f.submit "Cadastre-se!"
+      

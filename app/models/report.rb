@@ -1,3 +1,4 @@
+# encoding: utf-8
 # == Schema Information
 #
 # Table name: reports
@@ -37,7 +38,7 @@ class Report < ActiveRecord::Base
   belongs_to :resolved_verifier, :class_name => "User"
   validates :reporter_id, :presence => true
   validates :location_id, :presence => true
-  validates :status, :presence => true
+  validates :status, :presence => true, unless: :sms?
 
   # validates_attachment :before_photo, presence: true
 
@@ -139,6 +140,22 @@ class Report < ActiveRecord::Base
     if self.eliminator_id
       self.eliminator_name = self.eliminator.display_name
     end
+  end
+
+  def method_prompt
+    if self.elimination_type
+      "Selecione o método de eliminação"
+    else
+      "Método de eliminação"
+    end
+  end
+
+  def needs_location?
+    self.sms and self.location.needs_location?
+  end
+
+  def sms_incomplete?
+    self.sms and self.before_photo.size.nil?
   end
 
   def self.invalidateExpired

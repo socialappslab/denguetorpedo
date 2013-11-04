@@ -231,4 +231,11 @@ class User < ActiveRecord::Base
   def sponsor?
     self.role == "lojista"
   end
+
+  def report_by_phone(params)
+    @location = Location.find(:first, conditions: ["lower(address) = ?", params[:body].downcase]) || Location.new_with_address(params[:body])
+    @report = Report.new(reporter: self, location: @location, sms: true, status: :reported)
+    @report.status_cd = 0
+    @report
+  end
 end

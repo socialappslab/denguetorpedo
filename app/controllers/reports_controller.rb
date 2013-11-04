@@ -3,7 +3,7 @@
 
 class ReportsController < ApplicationController
 
-  before_filter :require_login, :except => [:sms, :verification]
+  before_filter :require_login, :except => [:sms, :verification, :gateway]
 
   def index 
     @current_report = params[:report]    
@@ -39,7 +39,7 @@ class ReportsController < ApplicationController
     @plantas = EliminationMethods.plantas
     @points = EliminationMethods.points
     Report.order("created_at DESC").each do |report|
-      if report.location.latitude and (report.reporter == @current_user or report.elimination_type)
+      if (report.reporter == @current_user or report.elimination_type)
         if params[:view] == 'recent' || params[:view] == 'make_report'
           reports_with_status_filtered << report
           if report.status_cd == 1
@@ -142,6 +142,11 @@ class ReportsController < ApplicationController
   
   def edit
     @report = @current_user.created_reports.find(params[:id])
+    flash[:street_type] = @report.location.street_type
+    flash[:street_name] = @report.location.street_name
+    flash[:street_number] = @report.location.street_number
+    flash[:x] = @report.location.latitude
+    flash[:y] = @report.location.longitude
   end
     
   def verification
@@ -203,6 +208,27 @@ class ReportsController < ApplicationController
 
   def update
     if request.put?
+      @report = Report.find_by_id(params[:report_id])
+
+      if @report.sms_incomplete?
+        location = @report.location
+        if params[:x] and params[:y]
+          location.update_attributes(latitude: params[:x], longitude: params[:y])
+        end
+        @report.report = params[:report][:report]
+        if params[:report][:before_photo]
+          @report.before_photo = params[:report][:before_photo]
+        end
+
+        if @report.save
+          flash[:notice] = "Succesfully completed a report!"
+          redirect_to reports_path
+        else
+          flash[:alert] = "There was an error completing your report!"
+          redirect_to :back
+        end
+        return
+      end
       @report = Report.find(params[:report_id])
 
       if params[:elimination_type] == ""
@@ -213,6 +239,7 @@ class ReportsController < ApplicationController
 
       if @report.elimination_type.nil? and params[:elimination_type]
         @report.elimination_type = params[:elimination_type]
+        # @report.report = params[:report_description][:gogo]
         @report.save
         flash[:notice] = "Tipo de foco atualizado com sucesso."
         @current_user.update_attribute(:points, @current_user.points + 50)
@@ -389,32 +416,16 @@ class ReportsController < ApplicationController
 
   def gateway
     @user = User.find_by_phone_number(params[:from])
-
     respond_to do |format|
       if @user
-        @location = Location.find_by_address(params[:body])
-
-        @location = Location.new(address: params[:body])
-
-        if params[:body]
-          streets = params[:body].split(' ') if params[:body]
-          if streets.size  >= 3
-            @location.street_type = streets[0]
-            @location.street_number = streets[streets.size - 1]
-            @location.street_name = streets[1..streets.size-2].join(' ')
-          end
-          
-        end
-        @location.save
-        @report = Report.new(reporter: @user, location: @location, sms: true)
-        @report.status_cd = 0
+        @report = @user.report_by_phone(params)
         if @report.save
-          format.json { render json: {message: "success"} }
+          format.json { render json: { message: "success", report: @report}}
         else
           format.json { render json: { message: @report.errors.full_messages}, status: 401}
         end
       else
-        format.json { render json: { message: "failure"}, status: 404}
+        format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
     end
   end
