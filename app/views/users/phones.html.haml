@@ -27,6 +27,8 @@
 					%td Pré
 				- elsif user.prepaid == false
 					%td Pós
+				- else
+					%td Pós
 				%td= user.reports.sms.type_selected.count
 				- if user.reports.sms.order(:created_at).first
 					%td= user.reports.sms.order(:created_at).first.created_at.strftime("%d/%m/%Y %H:%M")
