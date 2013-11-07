@@ -15,7 +15,7 @@
 			%th Celular
 			%th Operadora
 			%th Pré/Pós
-			%th Torpedos
+			%th DT Torpedos
 			%th Data de envio
 			%th Data do crédito
 		- @users.each do |user|
@@ -27,6 +27,9 @@
 					%td Pré
 				- elsif user.prepaid == false
 					%td Pós
-				%td= user.reports.count
-				%td= Time.new.strftime("%d/%m/%Y %H:%M:%S")
+				%td= user.reports.sms.type_selected.count
+				- if user.reports.sms.order(:created_at).first
+					%td= user.reports.sms.order(:created_at).first.created_at.strftime("%d/%m/%Y %H:%M")
+				- else
+					%td
 				%td= ""

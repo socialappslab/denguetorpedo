@@ -17,7 +17,7 @@
               = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_reports_path(:id => open.id), method: :post, :style => "float:right;"
         - if open.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
-            Torpedo SMS
+            Torpedo
         - else
           - if open.created_at + 3600 * 24 * 2 > Time.new
             - if open.elimination_type

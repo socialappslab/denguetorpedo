@@ -364,6 +364,6 @@ class UsersController < ApplicationController
   end
 
   def phones
-    @users = User.ordinary_users
+    @users = User.all
   end
 end

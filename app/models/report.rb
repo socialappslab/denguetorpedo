@@ -45,6 +45,7 @@ class Report < ActiveRecord::Base
   as_enum :status, [:reported, :eliminated]
 
   scope :sms, where(sms: true)
+  scope :type_selected, where("elimination_type IS NOT NULL")
 
   before_save :set_names
 
@@ -165,4 +166,5 @@ class Report < ActiveRecord::Base
       report.save!
     end
   end
+
 end
