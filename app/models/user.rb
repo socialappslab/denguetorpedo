@@ -1,3 +1,4 @@
+# encoding: utf-8
 # == Schema Information
 #
 # Table name: users
@@ -233,7 +234,7 @@ class User < ActiveRecord::Base
   end
 
   def report_by_phone(params)
-    @location = Location.find(:first, conditions: ["lower(address) = ?", params[:body].downcase]) || Location.new_with_address(params[:body])
+    @location = Location.find(:first, conditions: ["lower(address) = ?", params[:body]]) || Location.new_with_address(params[:body])
     @report = Report.new(reporter: self, location: @location, sms: true, status: :reported)
     @report.status_cd = 0
     @report
