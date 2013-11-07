@@ -7,7 +7,14 @@
       = f.error_messages
       = hidden_field_tag 'report_id', @report.id
       / = f.label "Escolha o tipo e o método de eliminação do foco"
-      = f.label :address, "1. Endereço do foco localizado:"
+      - if @report.sms_incomplete?
+        %label Localização enviada por torpedo:
+        %p #{@report.location.address}
+        %br
+      - if @report.sms_incomplete?
+        = f.label :address, "1. Escrever a localização no formato solicitado:"
+      - else
+        = f.label :address, "1. Endereço do foco localizado:"
       / # = text_field_tag :location, nil, :placeholder => 'Localização', :id => 'report_address', :value => flash[:address]
       = text_field_tag :street_type, "", placeholder: "Rua, Beco etc.", class: "short_field", value: flash[:street_type]
       = text_field_tag :street_name, "", placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.", style: "width:200px;", value: flash[:street_name]
@@ -20,7 +27,7 @@
       = f.label :before_photo, "4. Carregue a imagem do foco encontrado:"
       = f.file_field :before_photo
       - if @report.location
-        = text_field_tag "x", "", value: @report.location.latitude
+        = hidden_field_tag "x", "", value: @report.location.latitude
         = hidden_field_tag "y", "", value: @report.location.longitude
       - else
         = hidden_field_tag "x"

@@ -147,6 +147,8 @@ class ReportsController < ApplicationController
     flash[:street_number] = @report.location.street_number
     flash[:x] = @report.location.latitude
     flash[:y] = @report.location.longitude
+    @report.location.latitude ||= 0
+    @report.location.longitude ||= 0
   end
     
   def verification
@@ -213,7 +215,7 @@ class ReportsController < ApplicationController
       if @report.sms_incomplete?
         location = @report.location
         if params[:x] and params[:y]
-          location.update_attributes(latitude: params[:x], longitude: params[:y])
+          location.update_attributes(latitude: params[:x], longitude: params[:y], street_type: params[:street_type], street_name: params[:street_name], street_number: params[:street_number])
         end
         @report.report = params[:report][:report]
         if params[:report][:before_photo]
@@ -221,7 +223,7 @@ class ReportsController < ApplicationController
         end
 
         if @report.save
-          flash[:notice] = "Succesfully completed a report!"
+          flash[:notice] = "Foco completado com sucesso!"
           redirect_to reports_path
         else
           flash[:alert] = "There was an error completing your report!"

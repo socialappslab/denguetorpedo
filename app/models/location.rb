@@ -34,7 +34,9 @@ class Location < ActiveRecord::Base
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
 
   def save_address
-    self.address = self.street_type + " " + self.street_name + " " + self.street_number
+    if self.address.nil?
+      self.address = self.street_type + " " + self.street_name + " " + self.street_number
+    end
   end
   def geocode(address = "")
     self.address = self.street_type + " " + self.street_name + " " + self.street_number
@@ -100,7 +102,7 @@ class Location < ActiveRecord::Base
   end
 
   def info
-    {x: self.latitude, y: self.longitude, id: self.id, address: self.address}
+    {x: self.latitude, y: self.longitude, id: self.id, address: self.complete_address }
   end
 
   def needs_location?
@@ -109,12 +111,12 @@ class Location < ActiveRecord::Base
 
   def self.new_with_address(address)
     location = Location.new(address: address)
-    streets = location.address.split(' ') if location.address
-    if streets.size  >= 3
-      location.street_type = streets[0]
-      location.street_number = streets[streets.size - 1]
-      location.street_name = streets[1..streets.size-2].join(' ')
-    end
+    # streets = location.address.split(' ') if location.address
+    # if streets.size  >= 3
+    #   location.street_type = streets[0]
+    #   location.street_number = streets[streets.size - 1]
+    #   location.street_name = streets[1..streets.size-2].join(' ')
+    # end
     location.save
     return location
   end
