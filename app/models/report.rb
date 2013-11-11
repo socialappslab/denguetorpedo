@@ -48,6 +48,7 @@ class Report < ActiveRecord::Base
   scope :type_selected, where("elimination_type IS NOT NULL")
 
   before_save :set_names
+  # after_create :create_notifications, if: :sms?
 
   def self.create_from_user(report_content, params)
     create(:report => report_content) do |r|

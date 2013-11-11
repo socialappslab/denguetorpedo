@@ -422,11 +422,14 @@ class ReportsController < ApplicationController
       if @user
         @report = @user.report_by_phone(params)
         if @report.save
+          Notification.create(board: "15105998741", phone: params[:from], text: "Successfully created a report!")
           format.json { render json: { message: "success", report: @report}}
         else
+          Notification.create(board: "15105998741", phone: params[:from], text: @report.errors.full_messages.join(', '))
           format.json { render json: { message: @report.errors.full_messages}, status: 401}
         end
       else
+        Notification.create(board: "15105998741", phone: params[:from], text: "There is no registered user with the given phone number.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
     end
