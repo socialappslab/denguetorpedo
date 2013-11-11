@@ -413,7 +413,7 @@ class ReportsController < ApplicationController
 
   def torpedos
     @user = User.find(params[:id])
-    @reports = @user.reports
+    @reports = @user.reports.sms
   end
 
   def gateway

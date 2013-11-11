@@ -1,17 +1,24 @@
 .offset1
-	%h1 Adminstrar DT Torpedos #{@user.display_name} (#{@user.phone_number})
+	%h1 Adminstrar DT Torpedos #{@user.display_name} #{@user.phone_number} (#{@user.carrier})
 	%br
-	%table{cellpadding: 5, border: 1, style: "text-align:center;"}
+	%table{cellpadding: 10, border: 1, style: "text-align:center;"}
 		%colgroup
 			%col
 			%col
 			%col
+			%col
 		%tr
-			%th Torpedo Number
+			%th Nº
 			%th Data de envio
+			%th Créditos
 			%th Data do crédito
 			- @reports.each_with_index do |report, index|
 				%tr
 					%td= index + 1
 					%td= report.created_at.strftime("%d/%m/%Y %H:%M:%S")
+					%td
+						%select{prompt: "Select credit option"}
+							%option{value: "a_creditar"} A creditar
+							%option{value: "creditado"} Creditado
+							%option{value: "no_credit"}	Não creditável
 					%td Não creditado

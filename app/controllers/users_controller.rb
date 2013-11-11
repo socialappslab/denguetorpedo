@@ -364,6 +364,6 @@ class UsersController < ApplicationController
   end
 
   def phones
-    @users = User.all
+    @users = User.residents.order(:first_name)
   end
 end

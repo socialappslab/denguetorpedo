@@ -1,10 +1,10 @@
 .offset1
 	%h1 Adminstrar DT Torpedos
 	%br
-	%table{cellpadding: 5, border: 1, style: "text-align:center;"}
+	%table{cellpadding: 10, border: 1, style: "text-align:center;"}
 		%colgroup
 			%col
-			%col{style: "width:12%;"}
+			%col
 			%col
 			%col
 			%col
@@ -15,9 +15,10 @@
 			%th Celular
 			%th Operadora
 			%th Pré/Pós
-			%th DT Torpedos
-			%th Data de envio
-			%th Data do crédito
+			%th DT Torpedos total
+			%th DT Torpedos a creditar
+			%th 
+				%i SMS req.
 		- @users.each do |user|
 			%tr
 				%td{style: "text-align:left"}= link_to user.display_name, "torpedos/#{user.id}"
@@ -33,5 +34,6 @@
 				- if user.reports.sms.order(:created_at).first
 					%td= user.reports.sms.order(:created_at).first.created_at.strftime("%d/%m/%Y %H:%M")
 				- else
-					%td
-				%td= ""
+					%td 0
+				%td
+					%i 20

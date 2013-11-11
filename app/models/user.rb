@@ -76,6 +76,8 @@ class User < ActiveRecord::Base
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
   has_many :verified_reports, :class_name => "Report", :foreign_key => "verifier_id", :dependent => :nullify
   
+
+  scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
   # associations helpers
   def location
     house && house.location
@@ -209,9 +211,9 @@ class User < ActiveRecord::Base
     return User.where("role = 'morador' OR role = 'verificador' OR role = 'coordenador'")
   end
 
-  def self.residents
-    return User.where("role = 'morador' OR role = 'coordenador'")
-  end
+  # def self.residents
+  #   return User.where("role = 'morador' OR role = 'coordenador'")
+  # end
 
   def get_nickname
     if self.nickname
