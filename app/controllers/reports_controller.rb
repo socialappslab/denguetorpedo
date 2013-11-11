@@ -437,6 +437,7 @@ class ReportsController < ApplicationController
 
   def notifications
     @notifications = Notification.unread
+    @notifications.each { |notification| notification.read = true; notification.save }
     respond_to do |format|
       format.json { render json: @notifications }
     end
