@@ -3,7 +3,7 @@
 
 class ReportsController < ApplicationController
 
-  before_filter :require_login, :except => [:sms, :verification, :gateway]
+  before_filter :require_login, :except => [:sms, :verification, :gateway, :notifications]
 
   def index 
     @current_report = params[:report]    
@@ -432,6 +432,13 @@ class ReportsController < ApplicationController
         Notification.create(board: "15105998741", phone: params[:from], text: "There is no registered user with the given phone number.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
+    end
+  end
+
+  def notifications
+    @notifications = Notification.unread
+    respond_to do |format|
+      format.json { render json: @notifications }
     end
   end
 end
