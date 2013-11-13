@@ -422,14 +422,14 @@ class ReportsController < ApplicationController
       if @user
         @report = @user.report_by_phone(params)
         if @report.save
-          Notification.create(board: "15105998741", phone: params[:from], text: "Successfully created a report!")
+          Notification.create(board: "15105998741", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
           format.json { render json: { message: "success", report: @report}}
         else
-          Notification.create(board: "15105998741", phone: params[:from], text: @report.errors.full_messages.join(', '))
+          Notification.create(board: "15105998741", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema. Já estamos trabalhando numa solução.")
           format.json { render json: { message: @report.errors.full_messages}, status: 401}
         end
       else
-        Notification.create(board: "15105998741", phone: params[:from], text: "There is no registered user with the given phone number.")
+        Notification.create(board: "15105998741", phone: params[:from], text: "Nós não pudemos adicionar o seu relato ao Dengue Torpedo porque você ainda não tem uma conta. Registre-se no site www.denguetorpedo.com.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
     end
