@@ -24,7 +24,7 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms
+  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at
 
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
@@ -44,10 +44,11 @@ class Report < ActiveRecord::Base
 
   as_enum :status, [:reported, :eliminated]
 
-  scope :sms, where(sms: true)
+  scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
 
   before_save :set_names
+
   # after_create :create_notifications, if: :sms?
 
   def self.create_from_user(report_content, params)
@@ -67,6 +68,18 @@ class Report < ActiveRecord::Base
         r.after_photo = params[:after_photo]
       end
     end
+  end
+
+  def creditar
+    update_attributes(is_credited: nil, credited_at: nil)
+  end
+
+  def credit
+    update_attributes(is_credited: true, credited_at: Time.now)
+  end
+
+  def discredit
+    update_attributes(is_credited: false, credited_at: Time.now)
   end
 
   # callback to create the feeds

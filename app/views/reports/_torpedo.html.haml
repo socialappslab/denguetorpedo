@@ -1,0 +1,27 @@
+%tr
+	%td= torpedo_counter + 1
+	- if torpedo.completed_at
+		%td= torpedo.completed_at.strftime("%d/%m/%Y %H:%M:%S")
+	- else
+		%td Not yet completed
+	%td
+		%select{id: "credit_select_#{torpedo.id}"}
+			%option{value: "creditar", selected: torpedo.is_credited == nil} A creditar
+			%option{value: "credit", selected: torpedo.is_credited} Creditado
+			%option{value: "discredit", selected: torpedo.is_credited == false}	Não creditável
+	- if torpedo.is_credited
+		%td{id: "credited_at_#{torpedo.id}"}= torpedo.credited_at.strftime("%d/%m/%Y %H:%M:%S")
+	- else
+		%td{id: "credited_at_#{torpedo.id}"} Não creditado
+	:javascript
+		$("#credit_select_#{torpedo.id}").change(function() {
+			var url;
+			url = "/reports/#{torpedo.id}/" + $(this).val();
+			$.ajax({
+				url: url,
+				method: "POST",
+				dataType: "script"
+			});
+		});
+		
+

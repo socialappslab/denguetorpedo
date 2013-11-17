@@ -58,6 +58,11 @@ Dengue::Application.routes.draw do
       post 'gateway'
       get 'notifications'
     end
+    member do
+      post 'creditar'
+      post 'credit'
+      post 'discredit'
+    end
   #put 'reports' => 'reports#update'
   end
   

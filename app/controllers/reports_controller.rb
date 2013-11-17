@@ -3,7 +3,8 @@
 
 class ReportsController < ApplicationController
 
-  before_filter :require_login, :except => [:sms, :verification, :gateway, :notifications]
+  before_filter :require_login, :except => [:sms, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
+  before_filter :find_by_id, only: [:creditar, :credit, :discredit]
 
   def index 
     @current_report = params[:report]    
@@ -413,7 +414,7 @@ class ReportsController < ApplicationController
 
   def torpedos
     @user = User.find(params[:id])
-    @reports = @user.reports.sms
+    @reports = @user.created_reports.sms
   end
 
   def gateway
@@ -441,5 +442,40 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.json { render json: @notifications }
     end
+  end
+
+  def creditar
+    respond_to do |format|
+      if @report.creditar
+        format.js
+      else
+        format.json { render json: { message: "failure"}, status: 401 }
+      end
+    end
+  end
+
+  def credit
+    respond_to do |format|
+      if @report.credit
+        format.js
+      else
+        format.json { render json: {message: "failure"}, status: 401}
+      end
+    end
+  end
+
+  def discredit
+    respond_to do |format|
+      if @report.discredit
+        format.js
+      else
+        format.json { render json: {message: "failure"}, status: 401}
+      end
+    end
+  end
+
+  private
+  def find_by_id
+    @report = Report.find(params[:id])
   end
 end

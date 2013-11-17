@@ -200,6 +200,10 @@ class User < ActiveRecord::Base
       name = name + " " + self.middle_name
     end
     name = name + " " + self.last_name
+
+    if !(self.nickname.nil? or self.nickname.empty?)
+      name = name + " (" + self.nickname + ")"
+    end
     return name
   end
 
@@ -233,6 +237,23 @@ class User < ActiveRecord::Base
 
   def sponsor?
     self.role == "lojista"
+  end
+
+  def carrier_requirements
+    if self.carrier.downcase == "vivo"
+      req = 20
+    elsif self.carrier.downcase == "oi"
+      req = 20
+    elsif self.carrier.downcase == "claro"
+      req = 17
+    elsif self.carrier.downcase == "tim"
+      req = 17
+    elsif self.carrier.downcase == "nextel"
+      req = 27
+    else
+      req = 20
+    end
+    req
   end
 
   def report_by_phone(params)

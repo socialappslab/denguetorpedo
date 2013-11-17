@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   def index
 
     if params[:q].nil? or params[:q] == ""
-      @users = User.where(:role => "morador").order(:first_name)
+      @users = User.residents.order(:first_name)
       @sponsors = User.where(:role => "lojista").order(:first_name)
       @verifiers = User.where(:role => "verificador").order(:first_name)
       @visitors = User.where(:role => "visitante").order(:first_name)
