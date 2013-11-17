@@ -24,7 +24,7 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at
+  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at
 
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
