@@ -256,6 +256,10 @@ class User < ActiveRecord::Base
     req
   end
 
+  def residents?
+    return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
+  end
+
   def report_by_phone(params)
     @location = Location.find(:first, conditions: ["lower(address) = ?", params[:body]]) || Location.new_with_address(params[:body])
     @report = Report.new(reporter: self, location: @location, sms: true, status: :reported)
