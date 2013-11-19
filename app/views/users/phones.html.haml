@@ -31,9 +31,6 @@
 				- else
 					%td Pós
 				%td= user.reports.sms.type_selected.count
-				- if user.reports.sms.order(:created_at).first
-					%td= user.reports.sms.order(:created_at).first.created_at.strftime("%d/%m/%Y %H:%M")
-				- else
-					%td 0
+				%td= user.reports.sms.where(is_credited: true).count
 				%td
 					%i= user.carrier_requirements

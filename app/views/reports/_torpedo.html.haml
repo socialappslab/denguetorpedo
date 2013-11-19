@@ -3,7 +3,7 @@
 	- if torpedo.completed_at
 		%td= torpedo.completed_at.strftime("%d/%m/%Y %H:%M:%S")
 	- else
-		%td Not yet completed
+		%td Não completado
 	%td
 		%select{id: "credit_select_#{torpedo.id}"}
 			%option{value: "creditar", selected: torpedo.is_credited == nil} A creditar

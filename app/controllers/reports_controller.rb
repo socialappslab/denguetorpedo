@@ -29,7 +29,6 @@ class ReportsController < ApplicationController
     @pneu = EliminationMethods.pneu
     @lixo = EliminationMethods.lixo
     @pequenos = EliminationMethods.pequenos
-    # @caixa = EliminationMethods.caixa
     @grandes = EliminationMethods.grandes
     @calha = EliminationMethods.calha
     @registros = EliminationMethods.registros
@@ -39,7 +38,10 @@ class ReportsController < ApplicationController
     @ralos = EliminationMethods.ralos
     @plantas = EliminationMethods.plantas
     @points = EliminationMethods.points
-    Report.order("created_at DESC").each do |report|
+
+    # @reports = Report.sort_by(:)
+    @reports = Report.all.reject(&:completed_at) + Report.select(&:completed_at).sort_by(&:completed_at)
+    @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
         if params[:view] == 'recent' || params[:view] == 'make_report'
           reports_with_status_filtered << report
@@ -124,7 +126,7 @@ class ReportsController < ApplicationController
       @report = Report.create_from_user("", :status => :reported, :reporter => @current_user, :location => location)
       @report.report = params[:report][:report]
       
-
+      @report.completed_at = Time.now
       @report.before_photo = params[:report][:before_photo]
     
       if @report.save
@@ -214,16 +216,42 @@ class ReportsController < ApplicationController
       @report = Report.find_by_id(params[:report_id])
 
       if @report.sms_incomplete?
+
+
+        if !(params[:street_type] != "" && params[:street_name] != "" && params[:street_number] != "")
+          flash[:alert] = "Você precisa endereço válida para o seu foco."
+          redirect_to :back
+          return
+        end
+
+        if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
+          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
+          redirect_to :back
+          return
+        end
+
+        if !params[:report][:before_photo]
+          flash[:alert] = "Você tem que carregar uma foto do foco encontrado."  
+          redirect_to :back
+          return
+        end
+
         location = @report.location
         if params[:x] and params[:y]
           location.update_attributes(latitude: params[:x], longitude: params[:y], street_type: params[:street_type], street_name: params[:street_name], street_number: params[:street_number])
+        else
+          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
+          redierct_to :back
+          return
         end
+
         @report.report = params[:report][:report]
         if params[:report][:before_photo]
           @report.before_photo = params[:report][:before_photo]
         end
 
         if @report.save
+          @report.update_attributes(completed_at: Time.now)
           flash[:notice] = "Foco completado com sucesso!"
           redirect_to reports_path
         else
@@ -242,7 +270,7 @@ class ReportsController < ApplicationController
 
       if @report.elimination_type.nil? and params[:elimination_type]
         @report.elimination_type = params[:elimination_type]
-        # @report.report = params[:report_description][:gogo]
+        @report.completed_at = Time.now
         @report.save
         flash[:notice] = "Tipo de foco atualizado com sucesso."
         @current_user.update_attribute(:points, @current_user.points + 50)
@@ -263,8 +291,6 @@ class ReportsController < ApplicationController
       end
 
       if params[:selected_elimination_method] == ""
-        # @report.elimination_type = params[:elimination_type]
-        # @report.save
 
         if @report.after_photo_file_size.nil?
           if params[:eliminate] and params[:eliminate][:after_photo] != nil
@@ -421,16 +447,22 @@ class ReportsController < ApplicationController
     @user = User.find_by_phone_number(params[:from])
     respond_to do |format|
       if @user
-        @report = @user.report_by_phone(params)
-        if @report.save
-          Notification.create(board: "15105998741", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
-          format.json { render json: { message: "success", report: @report}}
+
+        if @user.residents?
+          @report = @user.report_by_phone(params)
+          if @report.save
+            Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
+            format.json { render json: { message: "success", report: @report}}
+          else
+            Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema. Já estamos trabalhando numa solução.")
+            format.json { render json: { message: @report.errors.full_messages}, status: 401}
+          end
         else
-          Notification.create(board: "15105998741", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema. Já estamos trabalhando numa solução.")
-          format.json { render json: { message: @report.errors.full_messages}, status: 401}
+          Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque o seu perfil não está habilitado para o envio do Dengue Torpedo.")
+          format.json { render json: { message: "Sponsors or verifiers"}, status: 401}
         end
       else
-        Notification.create(board: "15105998741", phone: params[:from], text: "Nós não pudemos adicionar o seu relato ao Dengue Torpedo porque você ainda não tem uma conta. Registre-se no site www.denguetorpedo.com.")
+        Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato ao Dengue Torpedo porque você ainda não tem uma conta. Registre-se no site www.denguetorpedo.com.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
     end
