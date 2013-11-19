@@ -135,7 +135,7 @@ class Report < ActiveRecord::Base
   end
 
   def expired?
-    self.created_at and self.created_at + 3600 * 24 * 2 < Time.new
+    self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
   end
 
   def expire_date

@@ -19,7 +19,7 @@
           .span{style: "margin-top:3px; margin-right:10px;"}
             Torpedo
         - else
-          - if open.created_at + 3600 * 24 * 2 > Time.new
+          - if not open.expired?
             - if open.elimination_type
               .countdown.countdownHolder{:style => "width:150px;height: 20px;background-color:transparent; border: none;float:right;margin-top:1px;margin-right:0px;font-size:20px;"}
               .span{style: "margin-top:3px; margin-right:10px;"}
