@@ -447,22 +447,21 @@ class ReportsController < ApplicationController
     @user = User.find_by_phone_number(params[:from])
     respond_to do |format|
       if @user
-
         if @user.residents?
           @report = @user.report_by_phone(params)
           if @report.save
             Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
             format.json { render json: { message: "success", report: @report}}
           else
-            Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema. Já estamos trabalhando numa solução.")
+            Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema.")
             format.json { render json: { message: @report.errors.full_messages}, status: 401}
           end
         else
-          Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque o seu perfil não está habilitado para o envio do Dengue Torpedo.")
+          Notification.create(board: "5521981865344", phone: params[:from], text: "Seu perfil não está habilitado para o envio do Dengue Torpedo.")
           format.json { render json: { message: "Sponsors or verifiers"}, status: 401}
         end
       else
-        Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato ao Dengue Torpedo porque você ainda não tem uma conta. Registre-se no site www.denguetorpedo.com.")
+        Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
     end

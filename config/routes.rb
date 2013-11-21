@@ -81,6 +81,7 @@ Dengue::Application.routes.draw do
   resources :group_buy_ins, :only => [:new, :create, :destroy]
   resources :prizes, :path => "premios"
   resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"
+  resources :notifications
 
 
   root :to => 'home#index'

@@ -248,6 +248,8 @@ GEM
     simple_enum (1.6.7)
       activesupport (>= 3.0.0)
     slop (3.4.6)
+    sms-spec (0.1.7)
+      rspec
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -331,6 +333,7 @@ DEPENDENCIES
   ruby-gmail
   sass-rails (~> 3.2.3)
   simple_enum
+  sms-spec
   sqlite3
   therubyracer
   thin
