@@ -40,7 +40,7 @@ class ReportsController < ApplicationController
     @points = EliminationMethods.points
 
     # @reports = Report.sort_by(:)
-    @reports = Report.all.reject(&:completed_at) + Report.select(&:completed_at).sort_by(&:completed_at)
+    @reports = Report.all.reject(&:completed_at) + Report.select(&:completed_at).sort_by(&:completed_at).reverse
     @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
         if params[:view] == 'recent' || params[:view] == 'make_report'
