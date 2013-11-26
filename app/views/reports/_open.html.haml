@@ -34,7 +34,7 @@
   .row
     .span6{:style => "margin-top:10px;"}
       - if open.sms_incomplete?
-        %h4= open.location.address
+        %h4= open.report
       - else
         %h4= open.complete_address
   .row

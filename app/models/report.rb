@@ -37,7 +37,7 @@ class Report < ActiveRecord::Base
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
   validates :reporter_id, :presence => true
-  validates :location_id, :presence => true
+  validates :location_id, :presence => { on: :update }
   validates :status, :presence => true, unless: :sms?
   # validates_attachment :before_photo, presence: true
 

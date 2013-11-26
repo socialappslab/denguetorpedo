@@ -244,9 +244,12 @@ class ReportsController < ApplicationController
 
           if location.nil?
             location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
+            location.save
           else
             location.update_attributes(latitude: params[:x], longitude: params[:y])
+
           end
+          @report.location = location
         else
           flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
           redierct_to :back

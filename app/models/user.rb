@@ -262,7 +262,7 @@ class User < ActiveRecord::Base
 
   def report_by_phone(params)
     @location = Location.new_with_address(params[:body])
-    @report = Report.new(reporter: self, location: @location, sms: true, status: :reported)
+    @report = Report.new(reporter: self, sms: true, status: :reported, report: params[:body], location: @location)
     @report.status_cd = 0
     @report
   end

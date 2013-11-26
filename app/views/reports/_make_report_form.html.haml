@@ -9,7 +9,7 @@
       / = f.label "Escolha o tipo e o método de eliminação do foco"
       - if @report.sms_incomplete?
         %label Localização enviada por torpedo:
-        %p #{@report.location.address}
+        %p #{@report.report}
         %br
       - if @report.sms_incomplete?
         = f.label :address, "1. Escrever a localização no formato solicitado:"
