@@ -169,7 +169,7 @@ class Report < ActiveRecord::Base
   end
 
   def sms_incomplete?
-    self.sms and self.before_photo.size.nil?
+    self.sms and self.completed_at == nil
   end
 
   def self.invalidateExpired

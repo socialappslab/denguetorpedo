@@ -236,9 +236,17 @@ class ReportsController < ApplicationController
           return
         end
 
-        location = @report.location
         if params[:x] and params[:y]
-          location.update_attributes(latitude: params[:x], longitude: params[:y], street_type: params[:street_type], street_name: params[:street_name], street_number: params[:street_number])
+
+          address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
+
+          location = Location.find_by_address(address)
+
+          if location.nil?
+            location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
+          else
+            location.update_attributes(latitude: params[:x], longitude: params[:y])
+          end
         else
           flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
           redierct_to :back
@@ -260,6 +268,9 @@ class ReportsController < ApplicationController
         end
         return
       end
+
+
+
       @report = Report.find(params[:report_id])
 
       if params[:elimination_type] == ""
@@ -457,11 +468,11 @@ class ReportsController < ApplicationController
             format.json { render json: { message: @report.errors.full_messages}, status: 401}
           end
         else
-          Notification.create(board: "5521981865344", phone: params[:from], text: "Seu perfil não está habilitado para o envio do Dengue Torpedo.")
+          Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
           format.json { render json: { message: "Sponsors or verifiers"}, status: 401}
         end
       else
-        Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site.")
+        Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
     end
