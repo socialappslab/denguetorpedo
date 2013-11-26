@@ -30,7 +30,7 @@
 					%td Pós
 				- else
 					%td Pós
-				%td= user.reports.sms.type_selected.count
-				%td= user.reports.sms.where(is_credited: true).count
+				%td= user.reports.sms.where('is_credited IS NULL OR is_credited = ?', true).count
+				%td= user.reports.sms.where(is_credited: nil).count
 				%td
 					%i= user.carrier_requirements
