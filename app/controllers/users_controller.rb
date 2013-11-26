@@ -214,8 +214,12 @@ class UsersController < ApplicationController
       if @user.role != "visitante"
         house_address = params[:user][:location][:street_type] + " " + params[:user][:location][:street_name] + " " + params[:user] [:location][:street_number]
 
-        @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
+        
         if @user.house
+          @user.house.name = house_name
+          if house_profile_photo
+            @user.house.profile_photo = house_profile_photo
+          end
           location = @user.house.location
           # location.address = house_address
           location.street_type = params[:user][:location][:street_type]
@@ -232,9 +236,13 @@ class UsersController < ApplicationController
             return
           end
         else
-          flash[:alert] = "Insira um nome da casa válido."
-          render "edit"
-          return
+          @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
+
+          if !@user.house.valid?
+            flash[:alert] = "Insira um nome da casa válido."
+            render "edit"
+            return
+          end
         end
       end
 
