@@ -1,4 +1,4 @@
-- if not @current_user.nil?
+- if @current_user
   #orange_border 
     %a{:href => 'javascript:$("#orange_toggle").collapse("show");', :data=>{ :toggle=>"collapse", :target=>"#orange_toggle"}, :id => 'orange_pull_down'}
       = image_tag("pulldown/splash_pulldown_inactive.png", :id => "orange_toggle_pic")
@@ -8,13 +8,8 @@
       .row
         #top.row
           #orange_bg_graphic
-            / .offset5
-            /   = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.riocontradengue.com.br/Site/Conteudo/Focos.aspx", :target => "_blank"
             .video.span11{:style => "margin-top:30px;margin-left:225px;"}
               %iframe{:allowscriptaccess => "always", :allowFullScreen => "true", :frameborder => "0", :height => "400", :width => "600", :src => "http://www.youtube.com/embed/o6IY0NjdmZc", :style => "text-align:center;"}
-          / .span4.offset8
-          /   %h2            
-          /     Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
           .span4            
             #news_pane
               
@@ -27,12 +22,20 @@
     .row
       #top.row
         #orange_bg_graphic
-          .offset5
-            = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.ioc.fiocruz.br/pages/informerede/corpo/hotsite/dengue/Aedes_video/Aedes_baixa.html", :target => "_blank"
-        -# #video.span11.offset1 %iframe{:allowscriptaccess => "always", :allowFullScreen => "true", :frameborder => "0", :height => "220", :width => "300", :src => "http://www.youtube.com/embed/VR3AM4BHSnw", :title => "Dengue Fever"}
-        .span4.offset8
+          .row
+            .offset5
+              = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.ioc.fiocruz.br/pages/informerede/corpo/hotsite/dengue/Aedes_video/Aedes_baixa.html", :target => "_blank"
+              #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
+                %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
+                  SMS Grátis!
+                :javascript
+                  $("#redetrel_button1").click(function() {
+                    location.href = "sponsors/2";
+                  });
+        .span4.offset8{style: "width:235px; margin-right:15px;"}
           %h2
             Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
+        }
                 
         .span5
           #register_pane
