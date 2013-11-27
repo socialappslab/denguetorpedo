@@ -1,4 +1,12 @@
-.span4{ :style => "margin-top:-42px;height:467px;"}
+.span4{ :style => "margin-top:-200px;height:467px;"}
+	%li.span3.prizes.possible{style: "margin-bottom:32px;"}
+		.status.possible
+			.name{style: "height:20px;width:140px;"}
+				= link_to "Rede Trel", sponsor_path(@redetrel)
+		.prize_content
+			= link_to image_tag(@redetrel.house.profile_photo.url(:small), :class => "prizes"), sponsor_path(@redetrel)
+			.description
+				= link_to truncate("SMS grátis para o Dengue Torpedo!", length: 40), sponsor_path(@redetrel)
 	%select{:id => "sponsors_select", :onchange => "location = this.options[this.selectedIndex].value;", :style => "width:263px;"}
 		%option Patrocinador (#{@sponsors.count})
 		- @sponsors.each do |sponsor|

@@ -12,7 +12,7 @@ class PrizesController < ApplicationController
     @available = Prize.where('stock > 0').where('expire_on >= ?', Time.new).where(:is_badge => false)
     @redeemed = Prize.where('stock = 0 OR expire_on < ?', Time.new).where(:is_badge => false)
 
-
+    @redetrel = User.find(2)
     @redeemed_counts = PrizeCode.count
     @medals = Prize.where(:is_badge => true).order(:cost)
     @filter = params[:filter]
