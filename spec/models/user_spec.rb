@@ -22,10 +22,8 @@ describe User do
 		it "should belong to the user" do
 			@report.reporter.should equal(@user)
 		end
-		it "reports should have right address fields" do
-			@report.location.street_type.should == "Rua"
-			@report.location.street_name.should == "Tatajuba"
-			@report.location.street_number.should == "50"
+		it "reports should have right description" do
+			@report.report.should == "Rua Tatajuba 50"
 		end
 
 	end

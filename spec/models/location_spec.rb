@@ -21,15 +21,10 @@ require 'spec_helper'
 describe Location do
 
   it 'creates location from a generic address string' do
-
-    l = Location.create(street_type: "Rua", street_name: "Tatajuba", street_number: "50")
-    # l.nation.should == "United States"
-    # l.state.should == "California"
-    # l.city.should == "Berkeley"
-    # l.address.should == "2521 Regent St"
-    # l.neighborhood.name.should == "Elmwood"
-    l.address = "Rua Tatajuba 50"
-    Location.count.should == 1
+    lambda {
+      l = Location.create(street_type: "Rua", street_name: "Tatajuba", street_number: "50")
+      l.address = "Rua Tatajuba 50"
+    }.should change(Location, :count).by(1)
   end
 
   it 'can fetch existing locations when one exists' do

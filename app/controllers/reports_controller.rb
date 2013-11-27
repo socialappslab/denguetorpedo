@@ -454,7 +454,7 @@ class ReportsController < ApplicationController
 
   def torpedos
     @user = User.find(params[:id])
-    @reports = @user.created_reports.sms
+    @reports = user.reports.sms.where('is_credited IS NULL OR is_credited = ?', true)
   end
 
   def gateway
