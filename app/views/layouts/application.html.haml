@@ -11,7 +11,7 @@
     
 
   %body{:class => [params[:controller].parameterize, params[:action].parameterize]}
-    #container{style: "overflow: auto;"}
+    #container{style: "overflow-y: auto;overflow-x:hidden;"}
       = render "layouts/home_nav"
       #white_spacer
       -if !@current_user.nil?
