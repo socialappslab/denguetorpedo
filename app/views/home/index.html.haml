@@ -3,15 +3,16 @@
 #neighborhood_search{style: "width:1000px;"}
   .row
     #neighborhood_search_background.offset2{style: "width:690px;float:left;"}
-      %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!"}
-      %button Busca
-    #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;"}
-      %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
-        SMS Grátis!
-      :javascript
-        $("#redetrel_button1").click(function() {
-          location.href = "sponsors/2";
-        });
+      %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!", style: "width:90%;"}
+      %button{style: "width:8%;"} Busca
+    - if @current_user
+      #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;"}
+        %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
+          SMS Grátis!
+        :javascript
+          $("#redetrel_button1").click(function() {
+            location.href = "sponsors/2";
+          });
 
 .row
   %h2.offset1 Comunidades em destaque no Dengue Torpedo
