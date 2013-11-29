@@ -19,7 +19,6 @@ class HomeController < ApplicationController
     else
       @selected_neighborhood = Neighborhood.find(params[:neighborhood])
     end
-    ##3hihi
     @participants = @selected_neighborhood.members.where('role != ?', "lojista")
 
     @houses = @participants.map { |participant| participant.house }.uniq
@@ -30,7 +29,6 @@ class HomeController < ApplicationController
     @opened_reports_in_neighborhood = @selected_neighborhood.open_reports.count
     @eliminated_reports_in_neighborhood = @selected_neighborhood.eliminated_reports.count
   end
-  @redetrel = House.where(name: "Rede Trel").first.user
   respond_to do |format|
     format.html
     format.json { render json: { user: @user }}

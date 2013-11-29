@@ -3,7 +3,7 @@
 
 class UsersController < ApplicationController
 
-  before_filter :require_login, :only => [:edit, :update]
+  before_filter :require_login, :only => [:edit, :update, :index, :show]
 
   def index
 
@@ -88,9 +88,15 @@ class UsersController < ApplicationController
   end
 
   def special_new
+    authorize! :edit, User.new
     @user ||= User.new
     @user.house ||= House.new
     @user.house.location ||= Location.new
+
+    if @user.house.location.latitude.nil?
+      @user.house.location.latitude = 0
+      @user.house.location.longitude = 0
+    end
   end
   
   def create
@@ -114,7 +120,7 @@ class UsersController < ApplicationController
     @verifiers = User.where(:role => "verificador").map { |verifier| {:value => verifier.id, :label => verifier.full_name}}.to_json
     @residents = User.residents.map { |resident| {:value => resident.id, :label => resident.full_name}}.to_json
     if @user != @current_user
-      authorize! :edit, User
+      authorize! :edit, @user
     end
     # @confirm = 0
     # flash[:notice] = nil
@@ -304,14 +310,9 @@ class UsersController < ApplicationController
   end
 
   def special_create
-    head :not_found and return if @current_user.role != "admin" and @current_user.role != "coordenador"
-    # if User.find_by_email(params[:user][:email])
-    #   redirect_to :back, :flash => { :notice => "Este e-mail já foi registrado por outro usuário."}
-    #   return
-    # end
     
     @user = User.new(params[:user])
-
+    authorize! :edit, @user
     if params[:user][:house_attributes]
       house_name = params[:user][:house_attributes][:name]
       street_type = params[:user][:location][:street_type]
@@ -325,9 +326,9 @@ class UsersController < ApplicationController
 
       if @user.house == nil
         if params[:user][:role] == "lojista"
-          flash[:alert] = "There was an error creating the store."      
+          flash[:alert] = "There was an error creating a sponsor."      
         else
-          flash[:alert] = "There was an error creating the house."
+          flash[:alert] = "There was an error creating a verifier."
         end
         render special_new_users_path(@user)
         return
@@ -351,7 +352,7 @@ class UsersController < ApplicationController
       redirect_to "/users/special_new", :flash => { :notice => "Novo usuário criado com sucesso!"}
     else
       @user.house.destroy if @user.house
-      # redirect_to special_new_users_path(@user), :flash => { :alert => @user.errors.full_messages.join(', ') }
+      # redirect_to "/users/special_new", :flash => { :notice => "Novo usuário criado com sucesso!"}
       render special_new_users_path(@user), flash: { alert: @user.errors.full_messages.join(', ')}
     end
   end
@@ -365,7 +366,6 @@ class UsersController < ApplicationController
       else
         redirect_to users_path, notice: "Usuário desbloqueado com sucesso."
       end
-      
     else
       redirect_to users_path, notice: "There was an error blocking the user"
     end

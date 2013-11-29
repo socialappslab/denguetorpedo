@@ -305,7 +305,7 @@
             = house_form.label "Foto da casa (opcional)"
           = house_form.file_field :profile_photo
       - if @user.is_fully_registered == false
-        %h1 Alguém o convidou a se inscrever no DT?
+        %h1 'Alguém o convidou a se cadastrar no DT?
         %select#recruitment{:name => "recruitment_type"}
           %option NINGUÉM
           %option AVS/ACS

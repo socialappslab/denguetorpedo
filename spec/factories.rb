@@ -6,18 +6,49 @@ FactoryGirl.define do
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
+		association :house
+		role "morador"
+		profile_photo_file_name "File name"
+		profile_photo_content_type "image/png"
+		profile_photo_file_size 1024
+		profile_photo_updated_at Time.new
+
+		factory :admin do
+			role "admin"
+		end
+
+		factory :coordinator do
+			role "coordenador"
+		end
+
+		factory :sponsor do
+			role "lojista"
+		end
+
+		factory :verifier do
+			role "verificador"
+		end
+
+		factory :visitor do
+			role "visitante"
+		end
 	end
 
-	factory :prize do |prize|
-		prize.prize_name "Prize"
-		prize.cost 100
-		prize.stock 100
-		prize.description "Description"
-		prize.user_id 1
+	factory :prize do
+		prize_name "Prize"
+		cost 100
+		stock 100
+		description "Description"
+		association :user
 	end
 
-	factory :house do |house|
-		house.name "Sample House"
+	factory :house do
+		name "Rede Trel"
+		association :location
+		profile_photo_file_name "File name"
+		profile_photo_content_type "image/png"
+		profile_photo_file_size 1024
+		profile_photo_updated_at Time.new
 	end
 
 	factory :location do |location|

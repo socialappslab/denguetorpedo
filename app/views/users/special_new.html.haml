@@ -1,10 +1,117 @@
 .user_form.offset1
   = render partial: "layouts/messages"
-  %h1 Registrar patrocinador, verificador e visitante
+  %h1 Registrar patrocinador, verificador e visitantesss
   %br
   = form_for(@user, :url => {:action => "special_create", :html => {:autocomplete => "off", :multipart => true}}) do |f|
     = f.error_messages
-    
+    #map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
+      %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
+        %b{style: "color:red;"}
+          ATENÇÃO:
+        O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador.
+      %input{type: "button", value: "Va para Maré", style: "margin-left:296px;margin-bottom:10px;margin-top:-15px;", id: "go_to_mare"}
+      - if @user.house
+        = hidden_field_tag "x", "", value: @user.house.location.latitude
+        = hidden_field_tag "y", "", value: @user.house.location.longitude
+      - else
+        = hidden_field_tag "x"
+        = hidden_field_tag "y"
+      #map{style: "width:400px;height:400px;position:relative;"}
+        = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:175px;left:175px;z-index:100"
+      :javascript
+        var map;
+
+        require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/PopupTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, PopupTemplate) {
+          var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
+
+          var point = new Point(680291.2151545063, 7471401.29586681, new esri.SpatialReference({wkid: 29193}));
+
+          var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
+          var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 48, 64).setOffset(0, 15);
+          var blue = new PictureMarkerSymbol(picBaseUrl + "BluePin1LargeB.png", 48, 64).setOffset(0, 15);
+          var orange = new PictureMarkerSymbol(picBaseUrl + "OrangePin1LargeB.png", 48, 64).setOffset(0, 15);
+          var red = new PictureMarkerSymbol(picBaseUrl + "RedPin1LargeB.png", 48, 64).setOffset(0, 15);
+
+          map = new Map("map", {
+            center: point,
+            zoom: 5,
+            extent: customExtent
+          });
+          
+          var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+          map.addLayer(tiled);
+
+          $("input#go_to_mare").click(function() {
+            map.centerAndZoom(new Point(680291.2151545063, 7471401.29586681, new esri.SpatialReference({"wkid": 29193})), 5);
+          });
+          function addGraphic(evt) {
+            map.graphics.clear();
+            map.enableMapNavigation();
+
+            // figure out which symbol to use
+            var symbol = new SimpleMarkerSymbol();
+            symbol.setStyle("STYLE_PATH");
+            symbol.setPath("M 10 10 L30 10 L20 30z");
+            symbol.setColor(new Color("red"));
+            
+            $("input#x").val(evt.geometry.x);
+            $("input#y").val(evt.geometry.y);
+            map.graphics.add(new Graphic(evt.geometry, red));
+            map.centerAt(evt.mapPoint);
+
+          }
+          function showLoading() {
+            $("#loading").show();
+            map.disableMapNavigation();
+            map.hideZoomSlider();
+            alert("loading");
+          }
+
+          function hideLoading() {
+            $("#loading").hide();
+            map.enableMapNavigation();
+            map.showZoomSlider();
+          }
+
+          map.on("update-start", showLoading);
+          map.on("update-end", hideLoading);
+
+          map.on("load", function() {
+            tb = new Draw(map);
+            tb.on("draw-end", addGraphic);
+            tb.activate("point");
+            map.graphics.add(new Graphic(new Point(#{@user.house.location.latitude}, #{@user.house.location.longitude}), red));
+            
+          });
+
+          $("#user_location_street_number").change(function() {
+            $.ajax({
+              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+              type: "GET",
+              dataType: "jsonp",
+              data: {"f": "pjson", "Street": $("#user_location_street_type").val() + " " + $("#user_location_street_name").val() + " " + $("#user_location_street_number").val()},
+              success: function(m) {
+                map.graphics.clear();
+                var candidates = m.candidates;
+                if (candidates.length > 0) {
+                  var symbol = new SimpleMarkerSymbol();
+                  symbol.setStyle("STYLE_PATH");
+                  symbol.setPath("M 10 10 L30 10 L20 30z");
+                  symbol.setColor(new Color("red"));
+                  map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), red));
+                  $("input#x").val(candidates[0].location.x);
+                  $("input#y").val(candidates[0].location.y);
+                  
+                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
+                }
+              },
+              error: function(m) {
+                console.log(JSON.stringify(m));
+              }
+            });
+          });
+
+        });
     %h1 Configurações de usuário    
     
     /= f.label "Nome de usuário"
@@ -66,8 +173,6 @@
 
     .indent#house_inputs
       = f.fields_for :location do |location_form|
-        /= location_form.label "* Endereço da casa"
-        / # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
         = location_form.text_field :street_type, placeholder: "Rua, Beco etc.", class: "short_field"
         = location_form.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
         = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"

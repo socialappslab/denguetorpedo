@@ -31,7 +31,7 @@ class House < ActiveRecord::Base
 
   ## validations
 
-  validates :name, presence: true, length: { maximum: 16 }
+  validates :name, presence: true, length: { minimum: 2 }
 
   # validates :location_id, presence: true #, uniqueness: true ## seed file wouldn't pass this constraint
 

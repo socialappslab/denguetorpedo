@@ -1,9 +1,29 @@
 require 'spec_helper'
+require "cancan/matchers"
 
 describe User do
 	before(:all) do
 		@user = FactoryGirl.create(:user)
 	end
+
+	describe "abilities" do
+		subject(:ability) { Ability.new(user)}
+		let (:user) { nil }
+
+		context "when user is an admin" do
+			let(:user) { FactoryGirl.create(:admin) }
+			it { should be_able_to(:assign_roles, @user)}
+			it { should be_able_to(:edit, @user)}
+		end
+
+		context "when user is a resident" do
+			let(:user) { FactoryGirl.create(:user)}
+			it { should_not be_able_to(:assing_roles, @user)}
+			it { should_not be_able_to(:edit, @user) }
+		end
+	end
+
+
 
 	context "when sends an sms by phone" do
 		before(:all) do
