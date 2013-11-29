@@ -3,10 +3,10 @@
 #neighborhood_search{style: "width:1000px;"}
   .row
     #neighborhood_search_background.offset2{style: "width:690px;float:left;"}
-      %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!", style: "width:90%;"}
-      %button{style: "width:8%;"} Busca
+      %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!", style: "width:88%;"}
+      %button Busca
     - if @current_user
-      #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;"}
+      #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;font-size:10px;"}
         %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
           SMS Grátis!
         :javascript
