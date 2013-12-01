@@ -8,15 +8,15 @@ describe UsersController do
 	end
 
 	def sponsor_attributes
-		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "lojista", phone_number: Faker::PhoneNumber.phone_number[0..19]}, house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}
+		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "lojista", phone_number: "15105421895", phone_number_confirmation: "15105421895", house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}}
 	end
 
 	def verifier_attributes
-		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "verificador", phone_number: Faker::PhoneNumber.phone_number[0..19]}, house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}
+		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "verificador", phone_number: "15105421895", phone_number_confirmation: "15105421895", house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}}
 	end
 
 	def visitor_attributes
-		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "visitor", phone_number: Faker::PhoneNumber.phone_number[0..19]}, house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}
+		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "visitor", phone_number: "15105421895", phone_number_confirmation: "15105421895", house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}}
 	end
 	before(:each) do
 		controller.stub(:require_login).and_return(true)
@@ -84,17 +84,17 @@ describe UsersController do
 			end
 			it "should create a sponsor successfully" do
 				post :special_create, sponsor_attributes
-				response.should be_success
+				response.should be_redirect
 			end
 
 			it "should create a verifier successfully" do
 				post :special_create, verifier_attributes
-				response.should be_success
+				response.should be_redirect
 			end
 
 			it "should create a visitor successfully" do
 				post :special_create, visitor_attributes
-				response.should be_success
+				response.should be_redirect
 			end
 		end
 

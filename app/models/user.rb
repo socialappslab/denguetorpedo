@@ -61,10 +61,7 @@ class User < ActiveRecord::Base
   has_many :posts, :dependent => :destroy
   has_many :prize_codes, :dependent => :destroy
   has_many :badges
-  has_many :prizes, :dependent => :destroy
-  # has_many :created_group_buy_ins, :class_name => "GroupBuyIn", :dependent => :destroy
-  # has_many :participated_group_buy_ins, :through => :buy_ins, :class_name => "GroupBuyIn", :dependent => :destroy
-  
+  has_many :prizes, :dependent => :destroy  
 
   has_one :recruiter_relationships, :class_name => "Recruitment", :foreign_key => "recruitee_id"
   has_one :recruiter, :through => :recruiter_relationships, :source => :recruiter
@@ -142,12 +139,12 @@ class User < ActiveRecord::Base
     end
   end
 
-  def join_group_buy_in(group_buy_in_id)
-    @group = GroupBuyIn.find(group_buy_in_id)
-    return false if self.points < @group.points_per_person
-    self.points -= @group.points_per_person
-    return true
-  end
+  # def join_group_buy_in(group_buy_in_id)
+  #   @group = GroupBuyIn.find(group_buy_in_id)
+  #   return false if self.points < @group.points_per_person
+  #   self.points -= @group.points_per_person
+  #   return true
+  # end
 
   def display_name
     if self.display == "firstmiddlelast"
