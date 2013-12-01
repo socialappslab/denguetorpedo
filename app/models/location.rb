@@ -15,6 +15,9 @@
 #  updated_at        :datetime         not null
 #  formatted_address :string(255)
 #  neighborhood_id   :integer
+#  street_type       :string(255)      default("")
+#  street_name       :string(255)      default("")
+#  street_number     :string(255)      default("")
 #
 
 require 'active_support/core_ext'

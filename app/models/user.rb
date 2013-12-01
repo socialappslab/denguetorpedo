@@ -22,6 +22,17 @@
 #  is_verifier                :boolean          default(FALSE)
 #  is_fully_registered        :boolean          default(FALSE)
 #  is_health_agent            :boolean          default(FALSE)
+#  first_name                 :string(255)
+#  middle_name                :string(255)
+#  last_name                  :string(255)
+#  nickname                   :string(255)
+#  display                    :string(255)      default("firstmiddlelast")
+#  role                       :string(255)      default("morador")
+#  total_points               :integer          default(0)
+#  gender                     :boolean          default(TRUE)
+#  is_blocked                 :boolean          default(FALSE)
+#  carrier                    :string(255)      default("")
+#  prepaid                    :boolean
 #
 
 class User < ActiveRecord::Base

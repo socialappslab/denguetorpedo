@@ -51,23 +51,71 @@ FactoryGirl.define do
 		profile_photo_updated_at Time.new
 	end
 
-	factory :location do |location|
-		location.street_type "Rua"
-		location.street_name "Tatajuba"
-		location.street_number "50"
-		location.latitude 0
-		location.longitude 0
+	factory :location do
+		street_type "Rua"
+		street_name "Tatajuba"
+		street_number "50"
+		latitude 0
+		longitude 0
 	end
 
 	factory :neighborhood do |n|
 		n.name "Mare"
 	end
 
-	factory :notice do |notice|
-		notice.title "Title"
-		notice.description "Description"
-		notice.summary "Summary"
-		notice.location "DT Headquarter"
-		notice.date Date.new
+	factory :notice do
+		title "Title"
+		description "Description"
+		summary "Summary"
+		location "DT Headquarter"
+		date Date.new
+	end
+
+	factory :report do
+		report "description"
+		created_at Time.now
+		status_cd 0
+		association :reporter, factory: :user
+		before_photo_file_name "File name"
+		before_photo_content_type "image/png"
+		before_photo_file_size 1024
+		before_photo_updated_at Time.now
+		sms false
+		completed_at Time.now
+		factory :sms do
+			sms true
+		end
+
+		factory :identified do
+			elimination_type "Type"
+			association :location
+
+			factory :verified_identified do
+				isVerified true
+			end
+
+			factory :problem_identified do
+				isVerified false
+			end
+		end
+
+		factory :eliminated do
+			elimination_method "Method"
+			assocation :location
+			after_photo_file_name "File name"
+			after_photo_content_type "image/png"
+			after_photo_file_size 1024
+			after_photo_updated_at Time.now
+			association :eliminator, factory: :user
+			factory :verified_eliminated do
+				is_resolved_verified true
+				resolved_verified_at Time.now
+				association :resolved_verifier, factory: :user
+			end
+
+			factory :problem_eliminated do
+				isVerified false
+			end
+		end
 	end
 end

@@ -12,6 +12,9 @@
 #  profile_photo_content_type :string(255)
 #  profile_photo_file_size    :integer
 #  profile_photo_updated_at   :datetime
+#  phone_number               :string(255)      default("")
+#  house_type                 :string(255)      default("morador")
+#  user_id                    :integer
 #
 
 class House < ActiveRecord::Base

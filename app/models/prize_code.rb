@@ -2,15 +2,16 @@
 #
 # Table name: prize_codes
 #
-#  id         :integer          not null, primary key
-#  user_id    :integer
-#  prize_id   :integer
-#  expire_by  :datetime
-#  code       :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  redeemed   :boolean          default(FALSE), not null
-#  expired    :boolean          default(FALSE), not null
+#  id          :integer          not null, primary key
+#  user_id     :integer
+#  prize_id    :integer
+#  expire_by   :datetime
+#  code        :string(255)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  redeemed    :boolean          default(FALSE), not null
+#  expired     :boolean          default(FALSE), not null
+#  obtained_on :datetime
 #
 
 # TODO: Portuguese, testing

@@ -19,8 +19,23 @@
 #  after_photo_content_type  :string(255)
 #  after_photo_file_size     :integer
 #  after_photo_updated_at    :datetime
-#  elimination_type          :string
-#  elimination_method        :string
+#  eliminated_at             :datetime
+#  elimination_type          :string(255)
+#  elimination_method        :string(255)
+#  isVerified                :string(255)
+#  verifier_id               :integer
+#  verified_at               :datetime
+#  resolved_verifier_id      :integer
+#  resolved_verified_at      :datetime
+#  is_resolved_verified      :string(255)
+#  sms                       :boolean          default(FALSE)
+#  reporter_name             :string(255)      default("")
+#  eliminator_name           :string(255)      default("")
+#  verifier_name             :string(255)      default("")
+#  completed_at              :datetime
+#  credited_at               :datetime
+#  is_credited               :boolean
+#
 
 
 class Report < ActiveRecord::Base
