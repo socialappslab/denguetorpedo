@@ -38,8 +38,6 @@ class ReportsController < ApplicationController
     @ralos = EliminationMethods.ralos
     @plantas = EliminationMethods.plantas
     @points = EliminationMethods.points
-
-    # @reports = Report.sort_by(:)
     @reports = Report.all.reject(&:completed_at) + Report.select(&:completed_at).sort_by(&:completed_at).reverse
     @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
@@ -61,8 +59,6 @@ class ReportsController < ApplicationController
       end
     end
     
-    # @map_json = locations.map { |location| {"lat" => location.latitude, "lng" => location.longitude} }.to_json
-
     @markers = locations.map { |location| location.info}
     @open_markers = open_locations.map { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
