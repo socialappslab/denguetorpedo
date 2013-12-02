@@ -46,10 +46,10 @@ class NoticesController < ApplicationController
     @notice = Notice.new(params[:notice])
     @notice.neighborhood_id = params[:notice][:neighborhood_id]
 
-    if params[:notice][:date]
-      date = Time.new(params[:notice]["date(1i)"], params[:notice]["date(2i)"], params[:notice]["date(3i)"], params[:notice]["hour(4i)"], params[:notice]["hour(5i)"], 0)
-      @notice.date = date
-    end
+    # if params[:notice][:date]
+    #   date = Time.new(params[:notice]["date(1i)"], params[:notice]["date(2i)"], params[:notice]["date(3i)"], params[:notice]["hour(4i)"], params[:notice]["hour(5i)"], 0)
+    #   @notice.date = date
+    # end
     
     respond_to do |format|
       if @notice.save

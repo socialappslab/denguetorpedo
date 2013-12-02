@@ -17,6 +17,7 @@
 #  photo_updated_at   :datetime
 #  summary            :text             default("")
 #  institution_name   :string(255)
+#  hour               :datetime
 #
 
 require 'spec_helper'

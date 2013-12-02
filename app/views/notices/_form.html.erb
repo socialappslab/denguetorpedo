@@ -40,12 +40,12 @@
   </div>
   <div class="field">
     <%= f.label :date, "Data da atividade" %>
-    <%= f.datetime_select :date, :discard_minute => true, :discard_hour => true, :ampm => true, :default => { :hour => 23, :minute => 59 }, :order => [:day, :month, :year], :use_month_names => ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"] %>
+    <%= f.date_select :date, :order => [:day, :month, :year], :use_month_names => ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"] %>
   </div>
 
   <div class="field">
-    <%= f.label :hour, "Hora da atividade" %>
-    <%= f.datetime_select :hour, :discard_month => true, :discard_day => true, :discard_year => true, :default => {:hour => @notice.date.hour, :min => @notice.date.min } %>
+    <%= f.label :date, "Hora da atividade" %>
+    <%= f.time_select :date, :ignore_date => true %>
   </div>
 
   <div class="field">

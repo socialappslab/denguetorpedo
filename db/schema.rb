@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131117204341) do
+ActiveRecord::Schema.define(:version => 20131202204752) do
 
   create_table "badges", :force => true do |t|
     t.integer  "user_id"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(:version => 20131117204341) do
     t.datetime "photo_updated_at"
     t.text     "summary",            :default => ""
     t.string   "institution_name"
+    t.datetime "hour"
   end
 
   create_table "notifications", :force => true do |t|
@@ -175,6 +176,7 @@ ActiveRecord::Schema.define(:version => 20131117204341) do
     t.boolean  "community_prize",          :default => false, :null => false
     t.boolean  "self_prize",               :default => false, :null => false
     t.boolean  "is_badge",                 :default => false, :null => false
+    t.boolean  "prazo",                    :default => true
   end
 
   create_table "recruitments", :force => true do |t|

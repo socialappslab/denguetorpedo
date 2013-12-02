@@ -40,10 +40,10 @@
     = f.label :redemption_directions, "Instruções para resgatar"
     = f.text_area :redemption_directions, :cols => 20, :rows => 10, :value => "Compareça ao estabelecimento de porte do cupom impresso e de um documento válido com foto (ex. RG)."
   .field
-    %input{:type => "checkbox", :class => "prazo", :checked => true}
+    = f.check_box :prazo
     Prazo
     %br
-    = f.datetime_select :expire_on, :ampm => true, :default => { :hour => 23, :minute => 59 }, :discard_minute => true, :discard_hour => true, :order => [:day, :month, :year], :use_month_names => ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
+    = f.datetime_select :expire_on, :ampm => true, :default => { :hour => 23, :minute => 59 }, :discard_minute => true, :discard_hour => true, :order => [:day, :month, :year], :use_month_names => ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"], disabled: @prize.prazo == false
   %br
   .actions
     = f.submit "Cadastrar prêmio"

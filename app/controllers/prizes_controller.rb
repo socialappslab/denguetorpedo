@@ -115,6 +115,10 @@ class PrizesController < ApplicationController
   def create
     @prize = Prize.new(params[:prize])
     @user = current_user
+
+    # if params[:prize][:prazo] == "0"
+    #   @prize.prazo = false
+    # end
     @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
     respond_to do |format|
       if @prize.save

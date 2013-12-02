@@ -24,7 +24,7 @@
 #
 
 class Prize < ActiveRecord::Base
-  attr_accessible :cost, :description, :expire_on, :prize_name, :redemption_directions, :stock, :user_id, :prize_photo, :community_prize, :self_prize, :is_badge, :user
+  attr_accessible :cost, :description, :expire_on, :prize_name, :redemption_directions, :stock, :user_id, :prize_photo, :community_prize, :self_prize, :is_badge, :user, :prazo
   belongs_to :user
   has_many :prize_codes, :dependent => :destroy
   has_attached_file :prize_photo, :default_url => 'home_images/logo.png', :styles => { :small => "60x60>", :large => "150x150>" }#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS

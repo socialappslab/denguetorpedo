@@ -1,5 +1,4 @@
 .row
   .span14.offset2
-    %h1 Edit #{@prize.prize_name}
+    %h1 Editar #{@prize.prize_name}
     = render :partial => 'form', :locals => {:user_id => @user.id}
-    = link_to 'Back', prizes_path

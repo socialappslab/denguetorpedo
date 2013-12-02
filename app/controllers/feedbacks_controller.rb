@@ -2,6 +2,8 @@
 class FeedbacksController < ApplicationController
   # GET /feedbacks
   # GET /feedbacks.json
+  skip_before_filter :require_login
+
   def index
     @feedbacks = Feedback.all
 
@@ -44,8 +46,8 @@ class FeedbacksController < ApplicationController
     @feedback = Feedback.new(params[:feedback])
     respond_to do |format|
       if @feedback.save
-        if @current_user
-          UserMailer.send_contact(params[:feedback][:title], params[:feedback][:email], params[:feedback][:name], params[:feedback][:message]).deliver
+        UserMailer.send_contact(params[:feedback][:title], params[:feedback][:email], params[:feedback][:name], params[:feedback][:message]).deliver
+        if @current_user 
           format.html { redirect_to :back, notice: 'Mensagem enviada com sucesso!' }
           format.json { render json: @feedback, status: :created, location: @feedback }
         else
