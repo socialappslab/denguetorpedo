@@ -49,7 +49,7 @@ end
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'aws-sdk'
-# gem 'leaflet-rails'
+gem 'leaflet-rails'
 
 # for geocoding transformation
 # gem 'proj4rb'

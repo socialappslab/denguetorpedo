@@ -132,6 +132,7 @@ GEM
     json (1.8.0)
     launchy (2.3.0)
       addressable (~> 2.3)
+    leaflet-rails (0.6.4)
     libv8 (3.16.14.3)
     listen (2.1.0)
       celluloid (>= 0.15.2)
@@ -302,6 +303,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   launchy
+  leaflet-rails
   magic_encoding
   mime
   mms2r
