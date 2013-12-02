@@ -159,7 +159,12 @@ class User < ActiveRecord::Base
 
   def display_name
     if self.display == "firstmiddlelast"
-      display_name = self.first_name + " " + self.middle_name + " " + self.last_name
+      if self.middle_name
+        display_name = self.first_name + " " + self.middle_name + " " + self.last_name
+      else
+        display_name = self.first_name + " " + self.last_name
+      end
+      
     elsif self.display == "firstlast"
       display_name = self.first_name + " " + self.last_name
     elsif self.display == "first"
@@ -167,7 +172,12 @@ class User < ActiveRecord::Base
     elsif self.display == "nicname"
       display_name = self.nickname
     else
-      display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
+      if self.nickname
+        display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
+      else
+        display_name = self.first_name + " " + self.last_name
+      end
+      
     end
 
     # if display_name.size > 33

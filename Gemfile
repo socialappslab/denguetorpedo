@@ -66,6 +66,8 @@ gem 'leaflet-rails'
 group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'capybara'         # lets Cucumber pretend to be a web browser
+  gem 'launchy'          # a useful debugging aid for user stories
   gem 'sqlite3'
 end
 group :test do
@@ -73,8 +75,7 @@ group :test do
   gem 'cucumber-rails', :require => false
   gem 'guard-rspec'
   gem 'database_cleaner' # to clear Cucumber's test database between runs
-  gem 'capybara'         # lets Cucumber pretend to be a web browser
-  gem 'launchy'          # a useful debugging aid for user stories
+  
   gem 'faker'
   gem 'sms-spec'
 end

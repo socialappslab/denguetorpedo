@@ -28,9 +28,9 @@ class Location < ActiveRecord::Base
   # validates :latitude, :uniqueness => { :scope => :longitude }
   # validates :neighborhood_id, :presence => true
 
-  has_one :house
+  has_one :house, dependent: :destroy
   belongs_to :neighborhood
-  has_many :reports
+  has_many :reports, dependent: :destroy
 
   before_save :save_address
 

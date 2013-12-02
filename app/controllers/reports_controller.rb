@@ -67,9 +67,9 @@ class ReportsController < ApplicationController
     @open_markers = open_locations.map { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
     @reports = reports_with_status_filtered
-    @counts = Report.group(:location_id).count
-    @open_counts = Report.where(status_cd: 0).group(:location_id).count
-    @eliminated_counts = Report.where(status_cd: 1).group(:location_id).count
+    @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
+    @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
+    @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
     @open_feed = @reports
     @eliminate_feed = @reports
   end
@@ -97,10 +97,11 @@ class ReportsController < ApplicationController
       end
 
       if location.nil?
-        location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
-      else
         location.latitude = params[:x]
         location.longitude = params[:y]
+      else
+        
+        location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
       end
 
       location.save
