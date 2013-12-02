@@ -218,7 +218,7 @@ class UsersController < ApplicationController
       @user.nickname = user_nickname
 
       if @user.role != "visitante"
-        house_address = params[:user][:location][:street_type] + " " + params[:user][:location][:street_name] + " " + params[:user] [:location][:street_number]
+        house_address = params[:user][:location][:street_type].titleize + " " + params[:user][:location][:street_name].titleize + " " + params[:user][:location][:street_number].titleize
 
         
         if @user.house
@@ -248,8 +248,14 @@ class UsersController < ApplicationController
             render "edit"
             return
           else
-            @user.house.location.latitude = params[:x]
-            @user.house.location.longitude = params[:y]
+            location = @user.house.location
+            location.street_type = params[:user][:location][:street_type]
+            location.street_name = params[:user][:location][:street_name]
+            location.street_number = params[:user] [:location][:street_number]
+            location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
+            location.latitude = params[:x]
+            location.longitude = params[:y]
+            location.save
           end
         end
       end
