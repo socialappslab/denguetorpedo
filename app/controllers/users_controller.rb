@@ -227,7 +227,6 @@ class UsersController < ApplicationController
             @user.house.profile_photo = house_profile_photo
           end
           location = @user.house.location
-          # location.address = house_address
           location.street_type = params[:user][:location][:street_type]
           location.street_name = params[:user][:location][:street_name]
           location.street_number = params[:user] [:location][:street_number]
@@ -248,6 +247,9 @@ class UsersController < ApplicationController
             flash[:alert] = "Insira um nome da casa válido."
             render "edit"
             return
+          else
+            @user.house.location.latitude = params[:x]
+            @user.house.location.longitude = params[:y]
           end
         end
       end

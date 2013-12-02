@@ -19,12 +19,12 @@
               #{@user.shorter_display_name} (patrocinador)
             - elsif @user.role == "verificador"
               - if @user.gender == true
-                #{@user.shorter_display_name} - verificador
+                #{@user.shorter_display_name} (verificador)
               - else
                 #{@user.shorter_display_name} (verificadora)
             -elsif @user.role == "coordenador"
               - if @user.gender == true
-                #{@user.shorter_display_name} - coordenador
+                #{@user.shorter_display_name} (coordenador)
               - else
                 #{@user.shorter_display_name} (coordenadora)
             - else
