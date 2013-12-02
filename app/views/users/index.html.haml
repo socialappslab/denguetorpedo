@@ -47,6 +47,7 @@
 						%td{:style => "margin-left:10px;"}= link_to 'Bloquear', block_users_path(:id => sponsor.id), method: :put, data: { confirm: "Você tem certeza?"}
 					- else
 						%td{:style => "color:red"}= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
+						%td Códigos
 						%td= link_to 'Desbloquear', block_users_path(:id => sponsor.id), method: :put, data: { confirm: "Você tem certeza?"}
 					%td= link_to 'Deletar', sponsor, method: :delete, data: { confirm: "Você tem certeza?"}
 

@@ -56,11 +56,14 @@ class Report < ActiveRecord::Base
   validates :status, :presence => true, unless: :sms?
   # validates_attachment :before_photo, presence: true
 
-  as_enum :status, [:reported, :eliminated]
+  as_enum :status, [:reported, :eliminated, :sms_reported]
 
   scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
 
+  # scope :sms_reported, where(status_cd: Report.sms_reported)
+  # scope :identified, where(status_cd: Report.identified)
+  # scope :eliminated, where(:status_cd => Report.eliminated)
   before_save :set_names
 
   # after_create :create_notifications, if: :sms?
@@ -118,9 +121,14 @@ class Report < ActiveRecord::Base
     end
   end  
     
-  def self.unverified_reports
-    Report.where(:status_cd => Report.reported)
+  def self.identified_reports
+    where(:status_cd => Report.reported)
   end
+
+  def self.eliminated_reports
+    where(:status_cd => Report.eliminated)
+  end
+
   
   def complete_address
     self.location.complete_address

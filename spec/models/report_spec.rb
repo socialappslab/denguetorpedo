@@ -40,14 +40,36 @@ require 'spec_helper'
 
 describe Report do
 
-	it "has a valid factory"
-  describe "when newly created" do
-  	let(:report) { FactoryGirl.build(:report)}
-  	it { should_not be_sms }
-  end
+	it "has a valid factory" do
+		FactoryGirl.build(:report).should be_valid
+	end
 
-  describe "when a report is sent by SMS" do
-  	let(:report) { FactoryGirl.build(:sms)}
-  	it { should be_sms }
+	describe "when a report is sent by SMS" do
+		it "should have SMS field to true" do
+			FactoryGirl.build(:sms).should be_sms
+		end
+	end
+
+  describe "fetching" do
+  	before(:each) do
+  		@identified1 = FactoryGirl.create(:identified)
+  		@identified2 = FactoryGirl.create(:identified)
+  		@identified3 = FactoryGirl.create(:identified)
+
+  		@eliminated1 = FactoryGirl.create(:eliminated)
+  		@eliminated2 = FactoryGirl.create(:eliminated)
+  		@eliminated3 = FactoryGirl.create(:eliminated)
+  	end
+  	context "identified reports" do
+			it "returns identified results" do
+				Report.identified_reports.should ==  [@identified1, @identified2, @identified3]
+			end
+		end
+
+		context "eliminated_reports" do
+			it "returns eliminated results" do
+				Report.eliminated_reports.should == [@eliminated1, @eliminated2, @eliminated3]
+			end
+		end
   end
 end

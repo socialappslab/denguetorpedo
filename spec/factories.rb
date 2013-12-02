@@ -3,6 +3,8 @@ FactoryGirl.define do
 		user.first_name { Faker::Name.first_name }
 		user.last_name { Faker::Name.last_name }
 		user.email { Faker::Internet.email }
+		user.nickname { Faker::Name.first_name }
+		user.middle_name { Faker::Name.first_name }
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
@@ -82,8 +84,10 @@ FactoryGirl.define do
 		before_photo_updated_at Time.now
 		sms false
 		completed_at Time.now
+
 		factory :sms do
 			sms true
+			status_cd 2
 		end
 
 		factory :identified do
@@ -101,7 +105,8 @@ FactoryGirl.define do
 
 		factory :eliminated do
 			elimination_method "Method"
-			assocation :location
+			status_cd 1
+			association :location
 			after_photo_file_name "File name"
 			after_photo_content_type "image/png"
 			after_photo_file_size 1024

@@ -64,11 +64,11 @@ gem 'leaflet-rails'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :test, :development do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
   gem 'sqlite3'
 end
 group :test do
-  gem 'rspec-rails'
-  gem 'factory_girl_rails'
   gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions  
   gem 'cucumber-rails', :require => false
   gem 'guard-rspec'

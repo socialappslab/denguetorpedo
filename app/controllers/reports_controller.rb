@@ -153,10 +153,6 @@ class ReportsController < ApplicationController
     @report.location.latitude ||= 0
     @report.location.longitude ||= 0
   end
-    
-  def verification
-    @unverified_reports = Report.unverified_reports
-  end
   
   def sms
     logger = Logger.new(STDOUT)  
