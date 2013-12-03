@@ -93,11 +93,10 @@ class ReportsController < ApplicationController
       end
 
       if location.nil?
-        location.latitude = params[:x]
-        location.longitude = params[:y]
+        location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])    
       else
-        
-        location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
+        location.latitude = params[:x]
+        location.longitude = params[:y]      
       end
 
       location.save
