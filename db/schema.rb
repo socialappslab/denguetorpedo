@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131202204752) do
+ActiveRecord::Schema.define(:version => 20131205064709) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -156,45 +156,8 @@ ActiveRecord::Schema.define(:version => 20131202204752) do
     t.integer  "recruitee_id"
   end
 
-  create_table "reports", :force => true do |t|
-    t.string   "nation"
-    t.string   "state"
-    t.string   "city"
-    t.string   "address"
-    t.string   "neighborhood"
-    t.text     "report"
-    t.integer  "reporter_id"
-    t.integer  "status_cd"
-    t.datetime "created_at",                                   :null => false
-    t.datetime "updated_at",                                   :null => false
-    t.integer  "status"
-    t.integer  "eliminator_id"
-    t.integer  "location_id"
-    t.string   "before_photo_file_name"
-    t.string   "before_photo_content_type"
-    t.integer  "before_photo_file_size"
-    t.datetime "before_photo_updated_at"
-    t.string   "after_photo_file_name"
-    t.string   "after_photo_content_type"
-    t.integer  "after_photo_file_size"
-    t.datetime "after_photo_updated_at"
-    t.datetime "eliminated_at"
-    t.string   "elimination_type"
-    t.string   "elimination_method"
-    t.string   "isVerified"
-    t.integer  "verifier_id"
-    t.datetime "verified_at"
-    t.integer  "resolved_verifier_id"
-    t.datetime "resolved_verified_at"
-    t.string   "is_resolved_verified"
-    t.boolean  "sms",                       :default => false
-    t.string   "reporter_name",             :default => ""
-    t.string   "eliminator_name",           :default => ""
-    t.string   "verifier_name",             :default => ""
-    t.datetime "completed_at"
-    t.datetime "credited_at"
-    t.boolean  "is_credited"
-  end
+# Could not dump table "reports" because of following StandardError
+#   Unknown type 'feed_type_cd' for column 'integer'
 
   create_table "users", :force => true do |t|
     t.string   "username"

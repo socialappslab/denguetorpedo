@@ -203,4 +203,14 @@ class Report < ActiveRecord::Base
     end
   end
 
+  def deduct_points
+    if self.eliminator
+      if self.is_resolved_verified == false
+        self.eliminator.update_attributes(points: self.eliminator.points - 400)
+      end
+    else
+      self.reporter.update_attributes(points: self.reporter.points - 100)
+    end
+  end
+
 end

@@ -12,7 +12,7 @@
 #
 
 class Feed < ActiveRecord::Base
-  attr_accessible :feed_type, :target_id, :target_type, :user_id
+  attr_accessible :feed_type, :target_id, :target_type, :user_id, :feed_type_cd
   belongs_to :target, :polymorphic => true
   belongs_to :user
 

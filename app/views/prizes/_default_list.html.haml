@@ -17,7 +17,80 @@
         = render :partial => "prizes/prize", :object => community
 %br
 #badges.prizes
-  %h2 Medalhas
+  %h2 Medalhas (premiadas automaticamente)
   %ul.prizes_list{:style => "max-height:300px;overflow:auto; "}
-    - @medals.each do |medal|
-      = render :partial => "prizes/medal", :object => medal
+    %li.span3.prizes.possible
+      .status.possible
+        .name
+          = link_to "Dengue Torpedo", about_path
+        .points
+          100 pontos
+      .prize_content
+        = link_to image_tag("badges/de_olho.png", :class => "prizes")
+        .description
+          = link_to "De olho no mosquito"
+        .stock
+          100 pontos
+    %li.span3.prizes.possible
+      .status.possible
+        .name
+          = link_to "Dengue Torpedo", about_path
+        .points
+          450 pontos
+      .prize_content
+        = link_to image_tag("badges/exterminador.png", :class => "prizes")
+        .description
+          = link_to "Exterminador de mosquitos"
+        .stock
+          450 pontos
+    %li.span3.prizes.possible
+      .status.possible
+        .name
+          = link_to "Dengue Torpedo", "/about"
+        .points
+          900 pontos
+      .prize_content
+        = link_to image_tag("badges/guerreiro.png", :class => "prizes")
+        .description
+          = link_to "Guerreiro DT"
+        .stock
+          900 pontos
+    %li.span3.prizes.possible
+      .status.possible
+        .name
+          = link_to "Dengue Torpedo", "/about"
+        .points
+          1350 pontos
+      .prize_content
+        = link_to image_tag("badges/saudavel.png", :class => "prizes")
+        .description
+          = link_to "Comunidade Saudável"
+        .stock
+          1350 pontos
+    %li.span3.prizes.possible
+      .status.possible
+        .name
+          = link_to "Dengue Torpedo", "/about"
+        .points
+          1800 pontos
+      .prize_content
+        = link_to image_tag("badges/cuido.png", :class => "prizes")
+        .description
+          = link_to "Eu cuido da comunidade"
+        .stock
+          1800 pontos
+
+
+
+
+
+
+
+
+
+
+/ #badges.prizes
+/   %h2 Medalhas
+/   %ul.prizes_list{:style => "max-height:300px;overflow:auto; "}
+/     - @medals.each do |medal|
+/       = render :partial => "prizes/medal", :object => medal

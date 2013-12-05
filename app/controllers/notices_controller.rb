@@ -69,12 +69,12 @@ class NoticesController < ApplicationController
     
     respond_to do |format|
       if @notice.update_attributes(params[:notice])
-        if params[:notice][:date]
-          date = Time.new(params[:notice]["date(1i)"], params[:notice]["date(2i)"], params[:notice]["date(3i)"], params[:notice]["hour(4i)"], params[:notice]["hour(5i)"], 0)
-          @notice.date = date
-        end
+        # if params[:notice][:date]
+        #   date = Time.new(params[:notice]["date(1i)"], params[:notice]["date(2i)"], params[:notice]["date(3i)"], params[:notice]["hour(4i)"], params[:notice]["hour(5i)"], 0)
+        #   @notice.date = date
+        # end
         @notice.save
-        format.html { redirect_to @notice, notice: 'Notice was successfully updated.' }
+        format.html { redirect_to @notice, notice: 'Notícia atualizado com sucesso.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

@@ -337,7 +337,7 @@ class ReportsController < ApplicationController
   def destroy
     if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
       @report = Report.find(params[:id])
-      @report.reporter.update_attributes(points: @reporter.points - 100)
+      @report.deduct_points      
       @report.destroy
       flash[:notice] = "Foco deletado com sucesso."
     end
