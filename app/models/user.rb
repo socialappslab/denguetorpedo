@@ -278,9 +278,9 @@ class User < ActiveRecord::Base
     return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
   end
 
-  def report_by_phone(params)
-    @location = Location.new_with_address(params[:body])
+  def report_by_phone(params) 
     body = params[:body].encode('UTF-8')
+    @location = Location.new_with_address(body)
     @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
     @report.status_cd = 0
     @report
