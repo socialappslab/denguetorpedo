@@ -13,9 +13,9 @@ module NavigationHelpers
   def path_to(page_name)
     case page_name
     when /^the root url$/
-      '/'
+      root_path
     when /^the home\s?page$/
-      '/'
+      root_path
     when /^(.*)'s user page$/i
       user_path(User.find_by_username($1))
     when /^(.*)'s edit user page$/i
@@ -28,6 +28,8 @@ module NavigationHelpers
       house_path(User.find_by_username($1).house.id)
     when /^the "(.*)" house page$/i
       house_path(House.find_by_name($1).id)
+    when /the list of reports/
+      reports_path
       
 
     # Add more mappings here.

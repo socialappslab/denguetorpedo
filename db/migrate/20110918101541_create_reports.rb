@@ -8,7 +8,7 @@ class CreateReports < ActiveRecord::Migration
       t.string :neighborhood
       t.text :report
       t.integer :user_id
-
+      t.integer :status_cd
       t.timestamps
     end
   end
