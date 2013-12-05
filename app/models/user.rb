@@ -284,4 +284,12 @@ class User < ActiveRecord::Base
     @report.status_cd = 0
     @report
   end
+
+  def total_torpedos
+    self.reports.sms.where('elimination_type IS NOT NULL')
+  end
+
+  def creditable_torpedos
+    self.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil)
+  end
 end
