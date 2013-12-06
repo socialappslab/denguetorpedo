@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class PrizeCodesController < ApplicationController
   # GET /user/:id/prize_codes
   def index
@@ -13,6 +15,7 @@ class PrizeCodesController < ApplicationController
     @prize_code = PrizeCode.find(params[:id])
     @prize = @prize_code.prize
     @deadline = @prize_code.created_at + 3600 * 24 * 7
+    @image = open(@prize.prize_photo.url(:large))
     respond_to do |format|
       format.html # show.html.erb
       format.pdf

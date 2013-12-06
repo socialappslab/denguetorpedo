@@ -3,7 +3,7 @@ pdf.text "CUPOM DE RESGATE DE PRÊMIO", :size => 30, :style => :bold
 pdf.text "Nome de prêmio: #{@prize_code.prize.prize_name}", :style => :bold
 pdf.move_down(10)
 
-pdf.image @prize_code.prize.prize_photo.url(:large).to_s.sub!(/\?.+\Z/, ''), width: 200, height: 200
+pdf.image @image, width: 200, height: 200
 
 pdf.move_down(20)
 
