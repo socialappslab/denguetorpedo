@@ -50,13 +50,13 @@ class UsersController < ApplicationController
     @coupons = @user.prize_codes
     if params[:filter] == 'reports'
       @feed_active_reports = 'active'
-      @combined_sorted = @user.reports
+      @combined_sorted = @user.reports.where('elimination_type IS NOT NULL')
     elsif params[:filter] == 'posts'
       @combined_sorted = @user.posts
       @feed_active_posts = 'active'
     else
       @feed_active_all = 'active'
-      @combined_sorted = (@user.reports + @user.posts).sort{|a,b| b.created_at <=> a.created_at }
+      @combined_sorted = (@user.reports.where('elimination_type IS NOT NULL') + @user.posts).sort{|a,b| b.created_at <=> a.created_at }
     end
 
     @stats_hash = {}

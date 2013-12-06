@@ -1,0 +1,28 @@
+.row
+  .span15.offset1
+    - if flash[:notice] 
+      .row#flash_dat_notice
+        #flashNotice 
+          %p
+            = flash[:notice]
+
+    - if flash[:alert] 
+      .row#flash_dat_alert
+        #flashAlert 
+          %p
+            = flash[:alert]
+    .row#prize_name_and_photo
+      .row#prize_info
+        .span9
+          #prize_cost
+            .row#prize_cost{:style => "padding:10px;"}
+              %h2 Medalhas
+              %p{ :style => "font-size:18px;margin-top:10px;"}
+                Medalha digital premiada automaticamente. 
+              %p{:style => "font-size:18px;"}
+                Você não precisa utilizar seus pontos!
+      .row
+        .span12{style: "padding-left:30px;"}
+          - @badges.each do |badge|
+            = image_tag("badges/#{badge}.png", width: 150, height: 150)
+

@@ -79,7 +79,11 @@ Dengue::Application.routes.draw do
   resources :neighborhoods, :only => [:show]
   resources :buy_ins, :only => [:new, :create, :destroy]
   resources :group_buy_ins, :only => [:new, :create, :destroy]
-  resources :prizes, :path => "premios"
+  resources :prizes, :path => "premios" do
+    collection do
+      get 'badges'
+    end
+  end
   resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"
   resources :notifications
 

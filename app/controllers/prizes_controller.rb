@@ -12,7 +12,12 @@ class PrizesController < ApplicationController
     @available = Prize.where('stock > 0').where('expire_on >= ?', Time.new).where(:is_badge => false)
     @redeemed = Prize.where('stock = 0 OR expire_on < ?', Time.new).where(:is_badge => false)
 
-    @redetrel = House.where(name: "Rede Trel").first.user
+    @redetrel = House.where(name: "Rede Trel").first
+
+    if @redetrel
+      @redetrel = @redetrel.user
+    end
+
     @redeemed_counts = PrizeCode.count
     @medals = Prize.where(:is_badge => true).order(:cost)
     @filter = params[:filter]
@@ -161,5 +166,9 @@ class PrizesController < ApplicationController
   def admin
     @prizes = Prize.where(:is_badge => false)
     @badges = Prize.where(:is_badge => true).order(:cost)
+  end
+
+  def badges
+    @badges = ["de_olho", "exterminador", "guerreiro", "saudavel", "cuido"]
   end
 end
