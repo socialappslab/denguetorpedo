@@ -15,7 +15,13 @@ class PrizeCodesController < ApplicationController
     @prize_code = PrizeCode.find(params[:id])
     @prize = @prize_code.prize
     @deadline = @prize_code.created_at + 3600 * 24 * 7
-    @image = open(@prize.prize_photo.url(:original))
+    @deadlines = (@prize_code.created_at + 3600 * 24 * 7).to_i
+    if ENV['RAILS_ENV'] == "development"
+      @image = open(@prize.prize_photo.path(:original))
+    else
+      @image = open(@prize.prize_photo.url(:original))
+    end
+    
     respond_to do |format|
       format.html # show.html.erb
       format.pdf

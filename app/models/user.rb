@@ -279,7 +279,7 @@ class User < ActiveRecord::Base
   end
 
   def report_by_phone(params) 
-    body = params[:body].encode('UTF-8')
+    body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
     @location = Location.new_with_address(body)
     @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
     @report.status_cd = 0
