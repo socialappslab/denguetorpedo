@@ -125,7 +125,7 @@
       = link_to "Prêmios", "/premios", :class => "header_link"
     .row
       .span3.offset1
-      %ul#badges_list{:style => "width:265px;"}
+      %ul#badges_list{:style => "width:265px;max-height:400px;"}
         - if @user.total_points >= 100
           %li
             .badge_box

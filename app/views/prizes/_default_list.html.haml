@@ -16,8 +16,8 @@
       - else
         = render :partial => "prizes/prize", :object => community
 %br
-#badges.prizes
-  %h2 Medalhas (premiadas automaticamente)
+#badges.prizes{style: "margin-top:20px;"}
+  %h2 Medalhas
   %ul.prizes_list{:style => "max-height:300px;overflow:auto; "}
     %li.span3.prizes.possible
       .status.possible
@@ -74,21 +74,11 @@
         .points
           1800 pontos
       .prize_content
-        = link_to image_tag("badges/badges_prizes_path.png", :class => "prizes")
+        = link_to image_tag("badges/cuido.png", :class => "prizes")
         .description
           = link_to "Eu cuido da comunidade", badges_prizes_path
         .stock
           1800 pontos
-
-
-
-
-
-
-
-
-
-
 / #badges.prizes
 /   %h2 Medalhas
 /   %ul.prizes_list{:style => "max-height:300px;overflow:auto; "}
