@@ -13,7 +13,7 @@
             = flash[:alert]
     .row#prize_name_and_photo
       .row#prize_info
-        .span9
+        .span15{style: "margin-left:40px;margin-top:10px;"}
           #prize_cost
             .row#prize_cost{:style => "padding:10px;"}
               %h2 Medalhas
@@ -22,7 +22,7 @@
               %p{:style => "font-size:18px;"}
                 Você não precisa utilizar seus pontos!
       .row
-        .span12{style: "padding-left:30px;"}
+        .span14{style: "padding-left:30px;text-align:center;"}
           - @badges.each do |badge|
             = image_tag("badges/#{badge}.png", width: 150, height: 150)
 
