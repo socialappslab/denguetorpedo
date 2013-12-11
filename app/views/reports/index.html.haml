@@ -223,7 +223,7 @@
             });
 
             map.on("load", function() {
-              map.infoWindow.resize(200, 200);
+              map.infoWindow.resize(300, 200);
               if ("#{params[:view]}" == 'recent') {
                 for (var i = 0; i < markers.length; i++) {
                   count = counts[markers[i].id];

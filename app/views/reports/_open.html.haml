@@ -32,7 +32,7 @@
               .span{style: "margin-top:3px; margin-right:10px;"}
                 Tempo expirado
           
-    .row
+    .row{style: "margin-top:5px;"}
       .span6{:style => "margin-top:10px;"}
         - if open.sms_incomplete?
           %h4= open.report
@@ -40,9 +40,9 @@
           %h4= open.complete_address
       .span2
         - if open.location.latitude and open.location.longitude
-          = link_to "Ache no mapa", "#", id: "mapa_#{open.id}", class: "mapa", data: { latitude: "#{open.location.latitude}", longitude: "#{open.location.longitude}"}, style: "margin-top:10px;float:right;" 
+          = link_to "Ache no mapa", "#", id: "mapa_#{open.id}", class: "mapa", data: { latitude: "#{open.location.latitude}", longitude: "#{open.location.longitude}"}, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;" 
 
-    .row
+    .row{style: "margin-top:7px;"}
       .span2.rp_before_photo 
         =image_tag open.before_photo(:medium)
       .span5{style: "margin-top:9px;"}
