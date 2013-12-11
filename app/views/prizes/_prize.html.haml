@@ -1,7 +1,7 @@
 %li.span3.prizes.possible
 	.status.possible
 		.name{style: "height:20px;width:140px;"}
-			= link_to prize.sponsor_name, "/sponsors/#{prize.user.id}"
+			= link_to truncate(prize.sponsor_name, length: 18), "/sponsors/#{prize.user.id}"
 		.points
 			#{prize.cost} pontos
 	.prize_content

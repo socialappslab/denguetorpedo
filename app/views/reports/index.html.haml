@@ -214,6 +214,13 @@
             var eliminated_counts = #{@eliminated_counts.to_json};
 
 
+            $(".mapa").click(function() {
+              var latitude = $(this).data("latitude");
+              var longitude = $(this).data("longitude");
+
+              map.centerAndZoom(new Point(latitude, longitude, new esri.SpatialReference({"wkid": 29193})), 8);
+              return false;
+            });
 
             map.on("load", function() {
               map.infoWindow.resize(200, 200);
@@ -315,7 +322,7 @@
             });
 
             $("input#go_to_mare").click(function() {
-              map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4)
+              map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
             });
 
             map.on("extent-change", function(event) {

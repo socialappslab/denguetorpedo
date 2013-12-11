@@ -276,8 +276,8 @@ class UsersController < ApplicationController
       recruiter = User.find_by_id(params[:recruitment_id])
       if recruiter
         @user.recruiter = recruiter
-        recruiter.points += 100
-        recruiter.total_points += 100
+        recruiter.points += 50
+        recruiter.total_points += 50
         recruiter.save
         @user.is_fully_registered = true
       end

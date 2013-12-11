@@ -5,6 +5,8 @@
       - if @sponsor.house.profile_photo.file?
         = image_tag(@sponsor.house.profile_photo.url(:large), :width => 150, :height => 150)
       - else
+        = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 150, :height => 150, style: "border:1px solid #cccccc;"), "sponsors/#{sponsor.id}"
+      - else
         .logo_box{style: "position: relative;"}
           = @sponsor.house.name
     %h1{:style => "margin-top:40px;"} #{@sponsor.house.name}
@@ -27,7 +29,6 @@
     %br
     %p Saiba mais acessando o "Jogue como" que explica as condições para a restituição de créditos.
     %br
-    / %p * As condições para a restituição de créditos devem ser observadas no "Jogue como" que explica as condições para a restituição de créditos
   - else  
     %h2 Endereço: #{@sponsor.house.location.complete_address}
     %h2 Telefone comercial: #{telephone_format(@sponsor.house.phone_number)}

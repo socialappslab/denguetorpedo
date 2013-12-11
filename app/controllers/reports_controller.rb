@@ -352,6 +352,8 @@ class ReportsController < ApplicationController
       @report.is_resolved_verified = true
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
+
+      @current_user.update_attributes(points: @current_user.points + 50, total_points: @current_user.total_points + 50)
     elsif @report.status_cd == 0
       @report.isVerified = true
       @report.verifier_id = @current_user.id
@@ -359,6 +361,7 @@ class ReportsController < ApplicationController
     end
     
     if @report.save
+      @current_user.update_attributes(points: @current_user.points + 50, total_points: @current_user.total_points + 50)
       flash[:notice] = "O foco foi verificado."
       redirect_to reports_path
     else

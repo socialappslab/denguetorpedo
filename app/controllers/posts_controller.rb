@@ -14,9 +14,6 @@ class PostsController < ApplicationController
   end
 
   def create
-
-    
-
     @wall.posts.create params[:post] do |post|
       post.user_id = @current_user.id
     end
