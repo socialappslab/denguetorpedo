@@ -100,12 +100,12 @@
                   .row.rp_report_people{style: "width:430px;"}
                     - if open.elimination_type and open.reporter_id
                       Marcado por:
-                      =link_to open.reporter.display_name + " " + open.strftime_with(:created_at), user_path(open.reporter), :class => "user"
+                      =link_to open.reporter_name + " " + open.strftime_with(:created_at), user_path(open.reporter), :class => "user"
                       %br
 
                     - if open.isVerified == "t" and open.verifier_id
                       Verificado por:
-                      = link_to open.verifier.display_name + " " + open.strftime_with(:created_at), user_path(open.verifier), :class => "user"
+                      = link_to open.verifier_name + " " + open.strftime_with(:created_at), user_path(open.verifier), :class => "user"
                       %br
                     - elsif open.isVerified == "f" and open.verifier_id
                       %p{:style => "color:red;font-weight:bold;margin-top:10px;"}

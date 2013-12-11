@@ -39,7 +39,7 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at
+  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
 
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
@@ -170,12 +170,20 @@ class Report < ActiveRecord::Base
   end
 
   def set_names
-    if self.reporter_id
+    if self.reporter
       self.reporter_name = self.reporter.display_name
     end
 
-    if self.eliminator_id
+    if self.eliminator
       self.eliminator_name = self.eliminator.display_name
+    end
+
+    if self.verifier
+      self.verifier_name = self.verifier.display_name
+    end
+
+    if self.resolved_verifier
+      self.verifier_name = self.resolved_verifier.display_name
     end
   end
 

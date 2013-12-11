@@ -359,6 +359,8 @@ class ReportsController < ApplicationController
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now
     end
+
+    @report.verifier_name = @current_user.display_name
     
     if @report.save
       @current_user.update_attributes(points: @current_user.points + 50, total_points: @current_user.total_points + 50)
