@@ -152,12 +152,30 @@
             Como participar
         #group.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
+            %h2 Moradores
+            %p Qualquer morador da Maré convidado pela equipe do Dengue Torpedo ou por outro jogador pode participar. Para isso, basta se inscrever na página inicial e começar a jogar. 
+            %br
+            %p Caso você tenha sido convidado por outro jogador, não se esqueça de marcá-lo completando as informações no campo  <i>Alguém o convidou a se inscrever no DT</i>?.
+            %br
+            %p <b>ATENÇÃO</b>: Na versão atual, apenas moradores convidados da Maré participarão do Dengue Torpedo.
+            %br
+            %h2 Patrocinadores
+            %p Qualquer comerciante e prestador de serviço pode participar do Dengue Torpedo fornecendo prêmios individuais ou para a comunidade. O seu comércio ou serviço terá uma página de patrocinador no site. Nessa página, os dados do seu negócio como logo, localização e telefone comercial irão aparecer. A página fica visível a qualquer visitante do site. 
+            %br
+            %h2 Verificadores
+            %p No Dengue Torpedo, alguns participantes têm um perfil especial de verificação da identificação e eliminação de focos pelos jogadores. Na fase atual, o papel de verificação dos focos marcados é dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Vigilância Sanitária (AVS). 
+            %br
+            %p Os verificadores também podem ser convocados para mediar conflitos, auxiliar com informações técnicas e promover oficinas de promoção de saúde e vigilância epidemiológica para a Dengue.
+            %br
+            %p Saiba mais sobre essas atividades dos verificadores acessando "Minha comunidade".
+
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#group").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+          %a{href: 'javascript:$("#comunidade").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Minha comunidade
-        #group.collapse.in.accordion-body
+        #comunidade.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
+            %p A página “Minha Comunidade” é onde você confere o perfil dos seus vizinhos e amigos. Nessa página você fica informado sobre as notícias da comunidade e dos blogs dos coordenadores comunitários e dos verificadores. É nessa página que você encontra as oficinas e outras atividades que agitam a comunidade.
 :javascript
   $(".collapse").collapse();
             

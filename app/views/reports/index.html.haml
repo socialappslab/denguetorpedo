@@ -38,7 +38,7 @@
       - else params[:view] == 'make_report'
         = render :partial => "reports/make_report_form"
     
-    .span7{style: "margin-top:-63px;"}
+    .span7#map_div{style: "margin-top:-63px;"}
       .row
         .span8
           .report_map_search{style: "overflow:auto;"}
@@ -59,7 +59,21 @@
         #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}     
           = image_tag "loading.gif", style: "width:50px; height:50px;"
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
+      :javascript
+        $(window).scroll(function() {
+          console.log($(window).scrollTop());
 
+          var scrollAmount = $(window).scrollTop();
+          if (scrollAmount > 200) {
+            $("#map_div").css("position", "fixed");
+            $("#map_div").css("top", "79px");
+            $("#map_div").css("right", "174px");
+          } else {
+            $("#map_div").css("position", "");
+            $("#map_div").css("margin-top", "-63px;");
+          }
+        });
+        
       - if params[:view] == 'make_report'
         :javascript
           var map, tb;
@@ -416,6 +430,7 @@
             });
 
           });
+  .row{style: "height:600px;"}
 
 
 
