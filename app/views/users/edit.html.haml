@@ -45,7 +45,7 @@
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
       #role_specific.offset9
-        %h2 Configurações de administrador
+        %h2 Configurações de coordenador
         %p.link
           = link_to "Registrar patrocinador, verificador e visitante", "/users/special_new"
         %p.link
