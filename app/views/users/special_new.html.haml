@@ -79,9 +79,9 @@
             tb = new Draw(map);
             tb.on("draw-end", addGraphic);
             tb.activate("point");
-            - if @user.house
+            if ("#{@user.house}" != "") {
               map.graphics.add(new Graphic(new Point(#{@user.house.location.latitude}, #{@user.house.location.longitude}), red));
-            
+            }
           });
 
           $("#user_location_street_number").change(function() {
