@@ -12,8 +12,11 @@
             = link_to (image_tag 'icons/reports icon/x.png', :width => 25, :height => 25), problem_reports_path(:id => resolved.id), method: :post, :style => "float:right;"
             = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_reports_path(:id => resolved.id), method: :post, :style => "float:right;"     
   .row
-    .span8{:style => "margin-top:10px;"}
-      %h4== #{resolved.complete_address}
+    .span6{:style => "margin-top:10px;"}
+      %h4= resolved.complete_address
+    .span2
+      - if resolved.location.latitude and resolved.location.longitude
+        = link_to "Ache no mapa", "#", id: "mapa_#{resolved.id}", class: "mapa", data: { latitude: "#{resolved.location.latitude}", longitude: "#{resolved.location.longitude}"}, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;" 
       
   .row
     .span2.rp_before_photo
