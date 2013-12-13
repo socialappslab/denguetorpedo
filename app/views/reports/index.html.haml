@@ -41,7 +41,7 @@
     .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
       .row
         .span8
-          .report_map_search{style: "overflow:auto;overflow-y:hidden;"}
+          .report_map_search{style: "overflow:auto;overflow-y:hidden;overflow-x:hidden;"}
             - if params[:view] == 'make_report'
               %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}2. Ajuste o marcador na localização correta clicando no mapa.
               %input{type: "button", value: "Vá para a Maré", style: "float:right;margin:-20px 5px 5px 0px;font-size:12px;", id: "go_to_mare"}
@@ -172,6 +172,7 @@
       - else
         :javascript
           var map;
+          var report_div;
 
           require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
             var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
@@ -231,9 +232,9 @@
 
               map.centerAndZoom(new Point(latitude, longitude, new esri.SpatialReference({"wkid": 29193})), 8);
 
-              $("body").animate({
-                scrollTop: $(this).parent().parent().parent().offset().top - 20
-              }, 300);
+              report_div = $(this).parent().parent().parent();
+
+              
               return false;
             });
 
@@ -369,7 +370,7 @@
                 }
               }
               
-
+              $("html, body").scrollTop($(report_div).offset().top - 20);
               
             });
 
