@@ -38,7 +38,7 @@
       - else params[:view] == 'make_report'
         = render :partial => "reports/make_report_form"
     
-    .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;"}
+    .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
       .row
         .span8
           .report_map_search{style: "overflow:auto;overflow-y:hidden;"}
@@ -230,6 +230,10 @@
               var longitude = $(this).data("longitude");
 
               map.centerAndZoom(new Point(latitude, longitude, new esri.SpatialReference({"wkid": 29193})), 8);
+
+              $("body").animate({
+                scrollTop: $(this).parent().parent().parent().offset().top - 20
+              }, 300);
               return false;
             });
 
