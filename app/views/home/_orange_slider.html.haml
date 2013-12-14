@@ -24,7 +24,7 @@
         #orange_bg_graphic
           .row
             .offset5
-              = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://youtu.be/o6IY0NjdmZc", :target => "_blank"
+              = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
               #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
                 %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
                   SMS Grátis!
@@ -32,6 +32,18 @@
                   $("#redetrel_button1").click(function() {
                     location.href = "sponsors/3";
                   });
+                  $(".fancybox-media").fancybox({
+                    maxWidth  : 800,
+                    maxHeight : 600,
+                    fitToView : false,
+                    width   : '70%',
+                    height    : '70%',
+                    autoSize  : false,
+                    closeClick  : false,
+                    openEffect  : 'none',
+                    closeEffect : 'none'
+                  });
+
         .span4.offset8{style: "width:235px; margin-right:15px;"}
           %h2
             Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
