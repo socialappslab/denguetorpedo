@@ -203,12 +203,11 @@ class UsersController < ApplicationController
     @user.gender = params[:user][:gender]
 
     # if a house exists with the same house name or house address, inform the user for confirmation
-    if params[:user][:confirm] == "0" && !house_name.blank? && House.find_by_name(house_name) && (house_name != @current_user.house.name)
-      # @user = @current_user
+    if !house_name.blank? && House.find_by_name(house_name) && (house_name != @current_user.house.name)
       @user.house.name = house_name
 
       @confirm = 1
-      flash[:notice] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+      flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
       render "edit"
     else
       @user.display = display
@@ -351,7 +350,7 @@ class UsersController < ApplicationController
 
       location.latitude = params[:x]
       location.longitude = params[:y]
-      
+
       location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
 
       if !location.save

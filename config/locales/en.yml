@@ -55,7 +55,7 @@ en:
     errors:
       template:
         header:
-          one: "1 erro impediu que o %{model.model_name.human} fosse salvo."
+          one: "1 erro impediu que o %{model} fosse salvo."
           other: "%{count} erros impediram que o %{model}  fosse salvo."
       messages:
         blank: "é obrigatório."
