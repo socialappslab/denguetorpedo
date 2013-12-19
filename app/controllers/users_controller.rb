@@ -348,6 +348,10 @@ class UsersController < ApplicationController
       location.street_type = params[:user][:location][:street_type]
       location.street_name = params[:user][:location][:street_name]
       location.street_number = params[:user] [:location][:street_number]
+
+      location.latitude = params[:x]
+      location.longitude = params[:y]
+      
       location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
 
       if !location.save
