@@ -6,6 +6,11 @@ class ReportsController < ApplicationController
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
 
+  def types
+    @types = EliminationType.all
+    @methods = EliminationMethod.all
+  end
+  
   def index 
     @current_report = params[:report]    
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""

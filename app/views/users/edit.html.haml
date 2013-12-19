@@ -60,6 +60,8 @@
           = link_to "Administrar DT Torpedos", "/phones"
         %p.link
           = link_to "Administrar contatos", feedbacks_path
+        %p.link
+          = link_to "Administrar Tipos e Métodos", "/reports/types" 
     - elsif @current_user.role == "lojista"
       #role_specific.offset9
         %h2 Configurações de patrocinador
@@ -187,7 +189,7 @@
       - if @user.gender == true
         %h1{id: "role_title"} Configurações de verificador
       - else
-        %h1{id: "role_title"} Configurações de coordenadora
+        %h1{id: "role_title"} Configurações de verificadora
     - elsif @user.role == "lojista"
       %h1{id: "role_title"} Configurações de patrocinador
     - elsif @user.role == "visitante"

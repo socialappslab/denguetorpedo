@@ -1,0 +1,19 @@
+Administrar tipos e métodos
+
+
+Elimination Type
+%table{border: 1, cellpadding: 5}
+	%tr
+		%th Name
+	- @types.each do |type|
+		%tr
+			%td= type.name
+
+	
+Elimination Methods
+%table{border: 1, cellpadding: 5}
+	%tr
+		%th Name
+	- @methods.each do |method|
+		%tr
+			%td= method.method

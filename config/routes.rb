@@ -57,6 +57,7 @@ Dengue::Application.routes.draw do
       post 'problem'
       post 'gateway'
       get 'notifications'
+      get 'types'
     end
     member do
       post 'creditar'
