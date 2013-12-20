@@ -387,6 +387,6 @@ m23 = EliminationMethod.create!(elimination_type: e11, method: "Jogue água sani
 m24 = EliminationMethod.create!(elimination_type: e11, method: "Elimine entupimento", points: 50)
 m25 = EliminationMethod.create!(elimination_type: e11, method: "Vede ralos não utilizados", points: 50)
 
-m26 = EliminationMethod.create!(elimination_type: e11, method: "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", points: 50)
-m27 = EliminationMethod.create!(elimination_type: e11, method: "Retire a água acumulada nas folhas", points: 50)
-m28 = EliminationMethod.create!(elimination_type: e11, method: "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", points: 50)
+m26 = EliminationMethod.create!(elimination_type: e12, method: "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", points: 50)
+m27 = EliminationMethod.create!(elimination_type: e12, method: "Retire a água acumulada nas folhas", points: 50)
+m28 = EliminationMethod.create!(elimination_type: e12, method: "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", points: 50)

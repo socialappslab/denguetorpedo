@@ -7,29 +7,36 @@
 			%col{width: "80%"}
 			%col{width: "10%"}
 			%col{width: "10%"}
-		%tr
-			%th Tipo de focos
-			%th
-			%th
 		- @types.each do |type|
 			%tr
 				%td= type.name
-				%td Editar
-				%td Deletar
+				%td 
+					= link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type"
+				%td
+					= link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type"
+			- type.elimination_methods.each do |method|
+				%tr
+					%td{style: "padding-left:40px;"}= method.method
+					%td
+						= link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}"
+					%td 
+						= link_to "Deletar", "", class: "delete_method", id: "delete_method_#{method.id}"
+	:javascript
+		$(".edit_type").click(function() {
+			if ($(this).html() == "Editar") {
+				$(this).html("Save");
+			} else {
+				$(this).html("Editar");
+			}
+			return false;
+		});
 
-
-	%table.span14{border: 1, cellpadding: 5, style: "margin-top: 50px;"}
-		%colgroup
-			%col{width: "80%"}
-			%col{width: "10%"}
-			%col{width: "10%"}
-		%tr
-			%th Método de eliminação
-			%th
-			%th
-		- @methods.each do |method|
-			%tr
-				%td= method.method
-				%td Editar
-				%td Deletar
+		$(".edit_method").click(function() {
+			if ($(this).html() == "Editar") {
+				$(this).html("Save");
+			} else {
+				$(this).html("Editar");
+			}
+			return false;
+		});
 
