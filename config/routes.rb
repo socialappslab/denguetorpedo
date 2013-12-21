@@ -2,7 +2,8 @@ Dengue::Application.routes.draw do
   
   resources :feedbacks
 
-  # resources :contacts
+ resources :elimination_methods
+ resources :elimination_types
 
   resources :notices
 

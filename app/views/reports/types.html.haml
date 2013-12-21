@@ -11,32 +11,70 @@
 			%tr
 				%td= type.name
 				%td 
-					= link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type"
+					= link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
 				%td
-					= link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type"
+					= link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
 			- type.elimination_methods.each do |method|
 				%tr
 					%td{style: "padding-left:40px;"}= method.method
 					%td
-						= link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}"
+						= link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
 					%td 
-						= link_to "Deletar", "", class: "delete_method", id: "delete_method_#{method.id}"
+						= link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
 	:javascript
 		$(".edit_type").click(function() {
+			var name = $($(this).parent().parent().children()[0]);
 			if ($(this).html() == "Editar") {
 				$(this).html("Save");
+				var name = $($(this).parent().parent().children()[0]);
+				$(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
 			} else {
-				$(this).html("Editar");
+				var url = "/elimination_types/" + $(this).data("id");
+				$.ajax({
+					url: url,
+					method: "PUT",
+					dataType: "script",
+					data: "name=" + $(name).val()
+				});
 			}
 			return false;
 		});
 
+		$(".delete_type").click(function() {
+			var url = "/elimination_types/" + $(this).data("id");
+			$.ajax({
+				url: url,
+				method: "DELETE",
+				dataType: "script"
+			});
+			return false;
+		});
+
 		$(".edit_method").click(function() {
+			var name = $($(this).parent().parent().children()[0]);
 			if ($(this).html() == "Editar") {
 				$(this).html("Save");
+				var name = $($(this).parent().parent().children()[0]);
+				$(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
 			} else {
-				$(this).html("Editar");
+				var url = "/elimination_methods/" + $(this).data("id");
+				$.ajax({
+					url: url,
+					method: "PUT",
+					dataType: "script",
+					data: "name=" + $(name).val()
+				});	
 			}
+			return false;
+		});
+
+		$(".delete_method").click(function() {
+			var url = "/elimination_methods/" + $(this).data("id");
+			$.ajax({
+				url: url,
+				method: "DELETE",
+				dataType: "script"
+			});
 			return false;
 		});
 
