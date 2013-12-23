@@ -2,11 +2,11 @@
 	%h1 Administrar tipos de focos e métodos de eliminação
 	%br
 
-	%input{type: "text", placeholder: "New type", id: "type_name"}
-	%button{type: "submit", id: "type_submit"} Submeta
+	%input{type: "text", placeholder: "Novo tipo", id: "type_name"}
+	%button{type: "submit", id: "type_submit"} Enviar
 	%br
-	%input{type: "text", placeholder: "New method"}
-	%button{type: "submit"}Submeta
+	%input{type: "text", placeholder: "Novo método"}
+	%button{type: "submit"} Enviar
 	%table.span14{border: 1, cellpadding: 5, id: "whole_table"}
 		%colgroup
 			%col{width: "80%"}
@@ -40,7 +40,7 @@
 		$(".edit_type").click(function() {
 			var name = $($(this).parent().parent().children()[0]);
 			if ($(this).html() == "Editar") {
-				$(this).html("Save");
+				$(this).html("Salvar");
 				var name = $($(this).parent().parent().children()[0]);
 				$(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
 			} else {
@@ -68,7 +68,7 @@
 		$(".edit_method").click(function() {
 			var name = $($(this).parent().parent().children()[0]);
 			if ($(this).html() == "Editar") {
-				$(this).html("Save");
+				$(this).html("Salvar");
 				var name = $($(this).parent().parent().children()[0]);
 				$(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
 			} else {
