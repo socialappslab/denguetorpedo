@@ -81,7 +81,7 @@
   - else 
     .span11.offset1
       %ul#neighborhood_house_list
-        - @houses.each do |house|
+        - @houses.shuffle.each do |house|
           %li.neighborhood_house_photo_thumb.span3
             - if house.profile_photo_file_name.nil?
               = link_to image_tag("default_images/house_default_image.png"), house_path(house)

@@ -48,9 +48,9 @@
 
 
     .row
-      .span10
+      .span9
         %h2 Moradores
-        - for member in @house.members.slice(0, 28)
+        - for member in @house.members.slice(0, 30)
           #house_members.span1
             .row
               - if (member.profile_photo_file_name.nil?)

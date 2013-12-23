@@ -2,7 +2,12 @@
 	%h1 Administrar tipos de focos e métodos de eliminação
 	%br
 
-	%table.span14{border: 1, cellpadding: 5}
+	%input{type: "text", placeholder: "New type", id: "type_name"}
+	%button{type: "submit", id: "type_submit"} Submeta
+	%br
+	%input{type: "text", placeholder: "New method"}
+	%button{type: "submit"}Submeta
+	%table.span14{border: 1, cellpadding: 5, id: "whole_table"}
 		%colgroup
 			%col{width: "80%"}
 			%col{width: "10%"}
@@ -22,6 +27,16 @@
 					%td 
 						= link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
 	:javascript
+		$("#type_submit").click(function() {
+			var name = $("#type_name").val();
+			var url = "/elimination_types";
+			$.ajax({
+				url: url,
+				method: "POST",
+				dataType: "script",
+				data: "name=" + name
+			});
+		});
 		$(".edit_type").click(function() {
 			var name = $($(this).parent().parent().children()[0]);
 			if ($(this).html() == "Editar") {

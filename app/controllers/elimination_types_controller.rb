@@ -1,5 +1,13 @@
 class EliminationTypesController < ApplicationController
 	def create
+		@type = EliminationType.new(name: 	params[:name])
+		respond_to do |format|
+			if @type.save
+				format.js
+			else
+
+			end
+		end
 	end
 
 	def update
