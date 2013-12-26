@@ -12,6 +12,12 @@ class EliminationMethodsController < ApplicationController
 		end
 	end
 
+	def show
+		@method = EliminationMethod.find(params[:id])
+		respond_to do |format|
+			format.js
+		end
+	end
 	def update
 		@method = EliminationMethod.find(params[:id])
 		@method.method = params[:name]

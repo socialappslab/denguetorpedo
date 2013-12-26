@@ -112,15 +112,13 @@
     });
 
     $(".cancel_method").click(function() {
-      $("#delete_method_" + $(this).data("id")).show();
-      $("#cancel_method_" + $(this).data("id")).hide();
 
-      var name = ($($(this).parent().parent().children()[0]));
-      var pontos = $($($(this).parent().parent().children()[1]).children()[0]);
-      $(name).replaceWith('<td style="padding-left:40px;">' + $(name).val() + '</td>');
-      $(pontos).replaceWith($(pontos).val());
-      $("#edit_method_" + $(this).data("id")).html("Editar");
-      return false;
+      $.ajax({
+        url: "/elimination_methods/" + $(this).data("id"),
+        method: "GET",
+        dataType: "script"        
+      });
+      return false;   
     });
 
     $(".delete_method").click(function() {
