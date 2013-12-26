@@ -21,6 +21,14 @@ class EliminationTypesController < ApplicationController
 			end
 		end
 	end
+
+	def show
+		@type = EliminationType.find(params[:id])
+		respond_to do |format|
+			format.js
+		end
+	end
+	
 	def destroy
 		@type = EliminationType.find(params[:id])
 		@methods = @type.elimination_methods

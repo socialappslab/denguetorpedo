@@ -1,0 +1,4 @@
+$("#delete_type_#{@type.id}").show();
+$("#cancel_type_#{@type.id}").hide();
+$("#edit_type_#{@type.id}").html("Editar");
+$($("#edit_type_#{@type.id}").parent().parent().children()[0]).replaceWith('<td>#{@type.name}</td>');

@@ -19,6 +19,7 @@
           = link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
         %td
           = link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
+          = link_to "Cancelar", "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
       - type.elimination_methods.each do |method|
         %tr
           %td{style: "padding-left:40px;"}= method.method
@@ -67,6 +68,8 @@
         $(this).html("Salvar");
         var name = $($(this).parent().parent().children()[0]);
         $(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
+        $("#delete_type_" + $(this).data("id")).hide();
+        $("#cancel_type_" + $(this).data("id")).show();
       } else {
         var url = "/elimination_types/" + $(this).data("id");
         $.ajax({
@@ -87,6 +90,15 @@
         dataType: "script"
       });
       return false;
+    });
+
+    $(".cancel_type").click(function() {
+      $.ajax({
+        url: "/elimination_types/" + $(this).data("id"),
+        method: "GET",
+        dataType: "script"        
+      });
+      return false;   
     });
 
     $(".edit_method").click(function() {
