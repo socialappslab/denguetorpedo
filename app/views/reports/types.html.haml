@@ -1,95 +1,119 @@
 .offset1
-	%h1 Administrar tipos de focos e métodos de eliminação
-	%br
+  %h1 Administrar tipos de focos e métodos de eliminação
+  %br
 
-	%input{type: "text", placeholder: "Novo tipo", id: "type_name"}
-	%button{type: "submit", id: "type_submit"} Enviar
-	%br
-	%input{type: "text", placeholder: "Novo método"}
-	%button{type: "submit"} Enviar
-	%table.span14{border: 1, cellpadding: 5, id: "whole_table"}
-		%colgroup
-			%col{width: "80%"}
-			%col{width: "10%"}
-			%col{width: "10%"}
-		- @types.each do |type|
-			%tr
-				%td= type.name
-				%td 
-					= link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
-				%td
-					= link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
-			- type.elimination_methods.each do |method|
-				%tr
-					%td{style: "padding-left:40px;"}= method.method
-					%td
-						= link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
-					%td 
-						= link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
-	:javascript
-		$("#type_submit").click(function() {
-			var name = $("#type_name").val();
-			var url = "/elimination_types";
-			$.ajax({
-				url: url,
-				method: "POST",
-				dataType: "script",
-				data: "name=" + name
-			});
-		});
-		$(".edit_type").click(function() {
-			var name = $($(this).parent().parent().children()[0]);
-			if ($(this).html() == "Editar") {
-				$(this).html("Salvar");
-				var name = $($(this).parent().parent().children()[0]);
-				$(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
-			} else {
-				var url = "/elimination_types/" + $(this).data("id");
-				$.ajax({
-					url: url,
-					method: "PUT",
-					dataType: "script",
-					data: "name=" + $(name).val()
-				});
-			}
-			return false;
-		});
+  %input{type: "text", placeholder: "Novo tipo", id: "type_name"}
+  %button{type: "submit", id: "type_submit"} Enviar
+  %br
+  %table.span14{border: 1, cellpadding: 5, id: "whole_table"}
+    %colgroup
+      %col{width: "70%"}
+      %col{width: "10%"}
+      %col{width: "10%"}
+      %col{width: "10%"}
+    - @types.each do |type|
+      %tr
+        %td= type.name
+        %td
+        %td 
+          = link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
+        %td
+          = link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
+      - type.elimination_methods.each do |method|
+        %tr
+          %td{style: "padding-left:40px;"}= method.method
+          %td= method.points
+          %td
+            = link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
+          %td 
+            = link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
+      %tr
+        %td{style: "padding-left:40px;"}
+          %input{type: "text", style: "width:500px;margin-bottom:0px;", placeholder: "Novo método", id: "new_method_name_#{type.id}"}
+        %td
+          %input{type: "text", style: "margin-bottom:0px;width:100px;", placeholder: "pontos", id: "new_method_points_#{type.id}"}
+        %td 
+          = link_to "Salvar", "", class: "new_method type_#{type.id}", id: "new_method_#{type.id}", data: { id: type.id }
+        %td
+  :javascript
+    $("#type_submit").click(function() {
+      var name = $("#type_name").val();
+      var url = "/elimination_types";
+      $.ajax({
+        url: url,
+        method: "POST",
+        dataType: "script",
+        data: "name=" + name
+      });
+    });
 
-		$(".delete_type").click(function() {
-			var url = "/elimination_types/" + $(this).data("id");
-			$.ajax({
-				url: url,
-				method: "DELETE",
-				dataType: "script"
-			});
-			return false;
-		});
+    $(".new_method").click(function() {
+      var name = $($($(this).parent().parent().children()[0]).children()[0]).val();
+      var points = $($($(this).parent().parent().children()[1]).children()[0]).val();
+      var current_id = "#" + $(this).attr("id");
+      $.ajax({
+        url: "/elimination_methods",
+        method: "POST",
+        dataType: "script",
+        data: "name=" + name + "&points=" + points + "&current_id=" + current_id + "&type_id=" + $(this).data("id")
+      });
 
-		$(".edit_method").click(function() {
-			var name = $($(this).parent().parent().children()[0]);
-			if ($(this).html() == "Editar") {
-				$(this).html("Salvar");
-				var name = $($(this).parent().parent().children()[0]);
-				$(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
-			} else {
-				var url = "/elimination_methods/" + $(this).data("id");
-				$.ajax({
-					url: url,
-					method: "PUT",
-					dataType: "script",
-					data: "name=" + $(name).val()
-				});	
-			}
-			return false;
-		});
+      return false;
+    });
+    $(".edit_type").click(function() {
+      var name = $($(this).parent().parent().children()[0]);
+      if ($(this).html() == "Editar") {
+        $(this).html("Salvar");
+        var name = $($(this).parent().parent().children()[0]);
+        $(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
+      } else {
+        var url = "/elimination_types/" + $(this).data("id");
+        $.ajax({
+          url: url,
+          method: "PUT",
+          dataType: "script",
+          data: "name=" + $(name).val()
+        });
+      }
+      return false;
+    });
 
-		$(".delete_method").click(function() {
-			var url = "/elimination_methods/" + $(this).data("id");
-			$.ajax({
-				url: url,
-				method: "DELETE",
-				dataType: "script"
-			});
-			return false;
-		});
+    $(".delete_type").click(function() {
+      var url = "/elimination_types/" + $(this).data("id");
+      $.ajax({
+        url: url,
+        method: "DELETE",
+        dataType: "script"
+      });
+      return false;
+    });
+
+    $(".edit_method").click(function() {
+      var name = $($(this).parent().parent().children()[0]);
+      if ($(this).html() == "Editar") {
+        $(this).html("Salvar");
+        $("#delete_method_" + $(this).data("id")).html("Cancelar");
+        var name = $($(this).parent().parent().children()[0]);
+        $(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
+      } else {
+        var url = "/elimination_methods/" + $(this).data("id");
+        $.ajax({
+          url: url,
+          method: "PUT",
+          dataType: "script",
+          data: "name=" + $(name).val()
+        }); 
+      }
+      return false;
+    });
+
+    $(".delete_method").click(function() {
+      var url = "/elimination_methods/" + $(this).data("id");
+      $.ajax({
+        url: url,
+        method: "DELETE",
+        dataType: "script"
+      });
+      return false;
+    });
 
