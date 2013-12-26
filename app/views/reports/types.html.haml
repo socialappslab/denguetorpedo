@@ -27,6 +27,7 @@
             = link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
           %td 
             = link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
+            = link_to "Cancelar", "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
       %tr
         %td{style: "padding-left:40px;"}
           %input{type: "text", style: "width:500px;margin-bottom:0px;", placeholder: "Novo método", id: "new_method_name_#{type.id}"}
@@ -90,20 +91,35 @@
 
     $(".edit_method").click(function() {
       var name = $($(this).parent().parent().children()[0]);
+      var points = $($($(this).parent().parent().children()[1]).children()[0]);
       if ($(this).html() == "Editar") {
         $(this).html("Salvar");
-        $("#delete_method_" + $(this).data("id")).html("Cancelar");
-        var name = $($(this).parent().parent().children()[0]);
+        $("#delete_method_" + $(this).data("id")).hide();
+        $("#cancel_method_" + $(this).data("id")).show();
         $(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
+        var pontos = $($(this).parent().parent().children()[1]);
+        $(pontos).replaceWith('<td><input style="width:100px; margin-bottom:0px;" type="text" value="' + $(pontos).html() + '"></td>');
       } else {
         var url = "/elimination_methods/" + $(this).data("id");
         $.ajax({
           url: url,
           method: "PUT",
           dataType: "script",
-          data: "name=" + $(name).val()
+          data: "name=" + $(name).val() + "&points=" + $(points).val()
         }); 
       }
+      return false;
+    });
+
+    $(".cancel_method").click(function() {
+      $("#delete_method_" + $(this).data("id")).show();
+      $("#cancel_method_" + $(this).data("id")).hide();
+
+      var name = ($($(this).parent().parent().children()[0]));
+      var pontos = $($($(this).parent().parent().children()[1]).children()[0]);
+      $(name).replaceWith('<td style="padding-left:40px;">' + $(name).val() + '</td>');
+      $(pontos).replaceWith($(pontos).val());
+      $("#edit_method_" + $(this).data("id")).html("Editar");
       return false;
     });
 

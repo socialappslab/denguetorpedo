@@ -1,3 +1,5 @@
 $($("#edit_method_#{@method.id}").parent().parent().children()[0]).replaceWith('<td style="padding-left:40px;">#{@method.method}</td>');
+$($("#edit_method_#{@method.id}").parent().parent().children()[1]).replaceWith('<td>#{@method.points}</td>');
 $("#edit_method_#{@method.id}").html("Editar");
-$("#delete_method_#{@method.id}").html("Deletar");
+$("#delete_method_#{@method.id}").show();
+$("#cancel_method_#{@method.id}").hide();

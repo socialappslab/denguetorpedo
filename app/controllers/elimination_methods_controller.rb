@@ -15,6 +15,7 @@ class EliminationMethodsController < ApplicationController
 	def update
 		@method = EliminationMethod.find(params[:id])
 		@method.method = params[:name]
+		@method.points = params[:points]
 		respond_to do |format|
 			if @method.save
 				format.js
