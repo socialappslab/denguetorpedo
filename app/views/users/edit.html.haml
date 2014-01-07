@@ -324,12 +324,15 @@
     
     %br
     = f.hidden_field :confirm, :value => @confirm
-    
-    - if @confirm == 0
-      %br
-      = f.submit "Atualizar"
-    - else
-      %br
+    %br
       = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
       %button{ :class => "cancel_button", :style => "height:26px;"}
         = link_to "Cancelar", edit_user_path(@user)
+    / - if @confirm == 0
+    /   %br
+    /   = f.submit "Atualizar",  {:style => "margin-bottom: 20px;"}
+    / - else
+    /   %br
+    /   = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
+    /   %button{ :class => "cancel_button", :style => "height:26px;"}
+    /     = link_to "Cancelar", edit_user_path(@user)

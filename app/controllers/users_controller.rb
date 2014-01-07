@@ -122,7 +122,7 @@ class UsersController < ApplicationController
     if @user != @current_user
       authorize! :edit, @user
     end
-    # @confirm = 0
+    @confirm = 0
     # flash[:notice] = nil
   end
   
@@ -203,11 +203,20 @@ class UsersController < ApplicationController
     @user.gender = params[:user][:gender]
 
     # if a house exists with the same house name or house address, inform the user for confirmation
-    if !house_name.blank? && House.find_by_name(house_name) && (house_name != @current_user.house.name)
-      @user.house.name = house_name
 
+    if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
+      @user.house ||= House.new
+      @user.house.location ||= Location.new
+      @user.house.location.street_type = params[:user][:location][:street_type]
+      @user.house.location.street_name = params[:user][:location][:street_name]
+      @user.house.location.street_number = params[:user] [:location][:street_number]
+      @user.house.location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
+      @user.house.location.latitude ||= 0
+      @user.house.location.longitude ||= 0
+      @user.house.name = house_name
       @confirm = 1
-      flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+      flash.now[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+
       render "edit"
     else
       @user.display = display
@@ -280,9 +289,6 @@ class UsersController < ApplicationController
         recruiter.save
         @user.is_fully_registered = true
       end
-
-      
-
 
       if @user.save
         redirect_to edit_user_path(@user), :flash => { :notice => 'Perfil atualizado com sucesso!' }
