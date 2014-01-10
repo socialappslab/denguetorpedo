@@ -25,7 +25,7 @@ class ReportsController < ApplicationController
     end
     
     @elimination_method_select = EliminationMethods.field_select
-    @elimination_types = EliminationMethods.types
+    @elimination_types = EliminationType.pluck(:name)
     reports_with_status_filtered = []
     locations = []
     open_locations = []
