@@ -46,6 +46,9 @@ en:
         last_name: "Sobrenome"
         password_digest: "Senha"
         password_confirmation: "Confirmação de senha"
+        carrier: "Operadora"
+        carrier_confirmation: "Confirmação de operadora"
+        prepaid: "Pré/Pós-pago"
       feedback:
         title: "Título"
         name: "Nome"

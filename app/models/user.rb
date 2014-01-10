@@ -51,7 +51,9 @@ class User < ActiveRecord::Base
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
   validates :points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :total_points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0}
-  validates :phone_number, :length => { :minimum => 10, :maximum => 20 }, :allow_nil => true, :uniqueness => true, :confirmation => true
+  validates :phone_number, :length => { :minimum => 10, :maximum => 20 }, :allow_nil => true, :uniqueness => true, :confirmation => true, :presence => { on: :update }
+  validates :carrier, :presence => { on: :update }, :confirmation => true
+  validates :prepaid, :presence => { on: :update}
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_nil => true
   validates :email, :uniqueness => true, :unless => "email.nil?"
   validates :house_id, presence: { on: :update, if: :not_visitor }

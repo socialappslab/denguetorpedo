@@ -10,9 +10,9 @@
         $("input#recruitment").autocomplete({
           source: verifiers,
           select: function(event, ui) {
+            event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
-            return false;
           }
         });
       } else if ($("#recruitment").val() == "MORADOR/VIZINHO") {
@@ -20,9 +20,10 @@
         $("input#recruitment").autocomplete({
           source: residents,
           select: function(event, ui) {
+            event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
-            return false;
+            
           }
         });
       } else {
