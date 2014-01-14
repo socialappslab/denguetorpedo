@@ -38,7 +38,7 @@
 class User < ActiveRecord::Base
 
   ROLES = ["morador", "logista", "visitante"]
-  attr_accessible :first_name, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id
+  attr_accessible :first_name, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
   
@@ -51,12 +51,12 @@ class User < ActiveRecord::Base
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
   validates :points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :total_points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0}
-  validates :phone_number, :length => { :minimum => 10, :maximum => 20 }, :allow_nil => true, :uniqueness => true, :confirmation => true, :presence => { on: :update }
-  validates :carrier, :presence => { on: :update }, :confirmation => true
-  validates :prepaid, :presence => { on: :update}
+  validates :phone_number, :length => { :minimum => 10, :maximum => 20 }, :uniqueness => true, :presence => { on: :update }, :confirmation => true
+  # validates :carrier, :presence => { on: :update }, :confirmation => true
+  # validates :prepaid, :presence => { on: :update }, :confirmation => true
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_nil => true
   validates :email, :uniqueness => true, :unless => "email.nil?"
-  validates :house_id, presence: { on: :update, if: :not_visitor }
+  # validates :house_id, presence: { on: :update, if: :not_visitor }
   validates :house_id, presence: { on: :special_create, if: :not_visitor }
   # validates :house_id, presence: true, on: :update
 #  validates :is_fully_registered, :presence => true
@@ -66,7 +66,6 @@ class User < ActiveRecord::Base
 
   # filters
   before_create { generate_token(:auth_token) }
-
   # associations
   has_many :created_reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
@@ -99,6 +98,13 @@ class User < ActiveRecord::Base
 
   accepts_nested_attributes_for :house, :allow_destroy => true
   attr_accessible :house_attributes
+
+  def check_house(house_attributes)
+    if house = House.find_by_name(house_attributes[:name])
+      return true
+    end
+    return false
+  end
 
   def generate_token(column)
     begin
@@ -295,4 +301,5 @@ class User < ActiveRecord::Base
   def creditable_torpedos
     self.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil)
   end
+
 end

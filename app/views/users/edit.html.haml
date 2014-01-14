@@ -71,7 +71,6 @@
 
         
   = form_for(@user, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
-    = f.error_messages
     - if @user.role != "visitante"
       #map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
@@ -79,7 +78,7 @@
             ATENÇÃO:
           O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador.
         %input{type: "button", value: "Va para Maré", style: "margin-left:296px;margin-bottom:10px;margin-top:-15px;", id: "go_to_mare"}
-        - if @user.house
+        - if @user.house and @user.house.location
           = hidden_field_tag "x", "", value: @user.house.location.latitude
           = hidden_field_tag "y", "", value: @user.house.location.longitude
         - else
@@ -258,6 +257,8 @@
       /= f.label :phone_number,  "* Confirmar celular"
       = text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
       = text_field_tag("carrier_confirmation", nil, :placeholder => "Confirmar operadora", :style => "width:150px;")
+      / # = f.text_field :phone_number_confirmation, :placeholder => "Confirmar celular"
+      / # = f.text_field :carrier_confirmation, :placeholder => "Confirmar operadora", :style => "width:150px;"
       %br
       /= f.label :email,  "* Email"
       
@@ -287,6 +288,12 @@
           = location_form.text_field :neighborhood, value: "Maré", readonly: true if @user.location
       
         = f.fields_for :house do |house_form|
+          / = house_form.fields_for :location do |location_form|
+          /   = location_form.text_field :street_type, value: @user.location.street_type, placeholder: "Rua, Beco etc.", class: "short_field"
+          /   = location_form.text_field :street_name, value: @user.location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
+          /   = location_form.text_field :street_number, value: @user.location.street_number, placeholder: "Número", class: "middle_field"
+          /   %h3#complete_name{:title => "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco."}Bairro <b style="color:blue;">?</b>
+          /   = location_form.text_field :neighborhood, value: "Maré", readonly: true if @user.location
           - if @user.role == "lojista"
             = house_form.label "Nome do estabelecimento"
             = house_form.text_field :name
