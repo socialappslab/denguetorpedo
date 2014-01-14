@@ -38,6 +38,7 @@ en:
     models:
       user: Usuário
       feedback: Mensagem
+      house: Casa info
     attributes:
       user:
         password: "Senha"
@@ -46,6 +47,10 @@ en:
         last_name: "Sobrenome"
         password_digest: "Senha"
         password_confirmation: "Confirmação de senha"
+        carrier: "Operadora"
+        carrier_confirmation: "Confirmação de operadora"
+        prepaid: "Pré/Pós-pago"
+        house_id: "Casa info"
       feedback:
         title: "Título"
         name: "Nome"

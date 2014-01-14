@@ -54,7 +54,7 @@
           #house_members.span1
             .row
               - if (member.profile_photo_file_name.nil?)
-                = link_to image_tag("default_images/profile_default_image.png"), user_path(member)
+                = link_to image_tag("default_images/profile_default_image.png", width: 70, height: 70), user_path(member)
               - else
                 = link_to image_tag(member.profile_photo.url(:small), :width => 70, :height => 70), user_path(member)
             .row

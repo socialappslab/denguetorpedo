@@ -125,6 +125,44 @@ class UsersController < ApplicationController
     @confirm = 0
     # flash[:notice] = nil
   end
+
+  # def update
+
+  #   @user = User.find(params[:id])
+  #   @user.update_attributes(params[:user])
+  #   if @user.house == nil
+  #     if house = House.find_by_name(params[:user][:house_attributes][:name])
+  #       if params[:confirm] == "1"
+  #         @user.house = house
+  #       else
+  #         flash[:notice] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+  #         @confirm = 1
+  #         render "edit"
+  #       end
+        
+        
+  #     else
+
+  #       @user.house = House.create!(params[:user][:house_attributes])
+  #     end
+  #   else
+  #     @user.house.update_attributes(params[:user][:house_attributes])
+  #     @user.house.save
+  #   end
+  #   if @user.save
+  #     flash[:notice] = 'Perfil atualizado com sucesso!'
+  #     redirect_to edit_user_path(@user)
+  #   else
+  #     flash[:alert] = @user.errors.full_messages.join(" ")
+  #     @user.house ||= House.new
+  #     @user.house.location ||= Location.new
+  #     @user.house.location.latitude ||= 0
+  #     @user.house.location.longitude ||= 0
+  #     render "edit"
+  #   end
+
+
+  # end
   
   def update
     puts params
@@ -205,11 +243,16 @@ class UsersController < ApplicationController
     # if a house exists with the same house name or house address, inform the user for confirmation
 
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
+      if user_profile_photo
+        @user.profile_photo = user_profile_photo
+        @user.save
+      end
+      
       @user.house ||= House.new
       @user.house.location ||= Location.new
       @user.house.location.street_type = params[:user][:location][:street_type]
       @user.house.location.street_name = params[:user][:location][:street_name]
-      @user.house.location.street_number = params[:user] [:location][:street_number]
+      @user.house.location.street_number = params[:user][:location][:street_number]
       @user.house.location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
       @user.house.location.latitude ||= 0
       @user.house.location.longitude ||= 0
@@ -308,7 +351,6 @@ class UsersController < ApplicationController
     if @user.house.members.count == 0
       @user.house.destroy
     end
-    
     respond_to do |format|
       format.html { redirect_to users_url, :notice => "Usuário deletado com sucesso." }
       format.json { head :no_content }
