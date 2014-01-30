@@ -3,14 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/users/edit.html.haml" afterPath="$PROJECT_DIR$/app/views/users/edit.html.haml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/user.rb" afterPath="$PROJECT_DIR$/app/models/user.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/users_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/users_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="denguetorpedo.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" time="1391117899316" ignored="false" />
-    <file path="/edit.html.haml" changelist="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" time="1391124419601" ignored="false" />
+    <file path="/edit.html.haml" changelist="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" time="1391124746056" ignored="false" />
     <file path="/users_controller.rb" changelist="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" time="1391121426434" ignored="false" />
     <file path="/user.rb" changelist="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" time="1391121897629" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -80,7 +77,7 @@
       <file leaf-file-name="edit.html.haml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/users/edit.html.haml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="7" selection-start="1140" selection-end="1140" vertical-scroll-proportion="0.56367433">
+            <state line="35" column="44" selection-start="1136" selection-end="1136" vertical-scroll-proportion="0.53235906">
               <folding>
                 <element signature="tag#div#3;tag#div#0;tag#div#1;tag#div#3;tag#div#1" expanded="false" />
               </folding>
@@ -832,7 +829,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/users/edit.html.haml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="7" selection-start="1140" selection-end="1140" vertical-scroll-proportion="0.56367433">
+        <state line="35" column="44" selection-start="1136" selection-end="1136" vertical-scroll-proportion="0.53235906">
           <folding>
             <element signature="tag#div#3;tag#div#0;tag#div#1;tag#div#3;tag#div#1" expanded="false" />
           </folding>
