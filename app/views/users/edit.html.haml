@@ -29,6 +29,12 @@
         $("input#recruitment").hide();
       }
     });
+
+
+    $(".collapse_name").click(function(event){
+      event.preventDefault();
+      $("#name_edit_box").slideToggle();
+    });
 .user_form.offset1
   /%h1 Configurações da conta
   - if flash[:notice] 
@@ -86,6 +92,7 @@
           = hidden_field_tag "y"
         #map{style: "width:400px;height:400px;position:relative;"}
           = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:175px;left:175px;z-index:100"
+        -# Google Maps Javascript
         :javascript
           var map;
 
@@ -208,38 +215,40 @@
   
 
     .indent
-      %h2#complete_name{:title => "O Nome Completo é utilizado para realizar o resgate do prêmio nos estabelecimentos patrocinadores. É importante informar o nome correto para evitar problemas no momento do resgate dos prêmios. Em caso de dúvida leia nossa Política de Privacidade e a página de Perguntas Frequentes. ", :style => "font-weight:bold;"} Nome completo (igual ao do RG ou CPF) <b style="color:blue;">?</b>    
+      %h2#complete_name{:title => "O Nome Completo é utilizado para realizar o resgate do prêmio nos estabelecimentos patrocinadores. É importante informar o nome correto para evitar problemas no momento do resgate dos prêmios. Em caso de dúvida leia nossa Política de Privacidade e a página de Perguntas Frequentes. ", :style => "font-weight:bold;"} Nome completo (igual ao do RG ou CPF) <b style="color:blue;">?</b>
+      = link_to "Edit","",class:"collapse_name"
       .indent
-        /= f.label :first_name, "* Nome"
-        = f.text_field :first_name, :placeholder => "* Nome"
-        %br
-        /= f.label :middle_name,  "* Nome do meio", 
-        = f.text_field :middle_name, :placeholder => "Nome do meio (opcional)"
-        %br
-        = f.text_field :last_name, :placeholder => "* Sobrenome"
-        %br
-        / = f.label :nickname, "Apelido"
-        = f.text_field :nickname, :placeholder => "Apelido (opcional)"
-        %br
+        #name_edit_box
+          /= f.label :first_name, "* Nome"
+          = f.text_field :first_name, :placeholder => "* Nome"
+          %br
+          /= f.label :middle_name,  "* Nome do meio",
+          -#= f.text_field :middle_name, :placeholder => "Nome do meio (opcional)"
+          -#%br
+          = f.text_field :last_name, :placeholder => "* Sobrenome"
+          %br
+          / = f.label :nickname, "Apelido"
+          = f.text_field :nickname, :placeholder => "Apelido (opcional)"
+          %br
 
-        / %input{:type => "radio", :value => 1, :name => 'user[gender]', :style => "font-size:14px;", :checked => @user.gender == true}
-        / masculino
-        / %input{:type => "radio", :value => 0, :name => "user[gender]", :style => "margin-left:20px;font-size:14px;", :checked => @user.gender == false}
-        / feminino
-        = f.radio_button :gender, "true"
-        masculino
-        = f.radio_button :gender, "false"
-        feminino
-        %br
-        %br
-        = f.label "Mostrar nome como"
-
-        %select{:name => "display", id: "display_select"}
-          %option{value: "firstmiddlelast", selected: @user.display == "firstmiddlelast", id: "firstmiddlelast" } #{@user.full_name}
-          %option{value: "firstlast", selected: @user.display == "firstlast", id: "firstlast"} #{@user.first_name + " " + @user.last_name}
-          %option{value: "first", selected: @user.display == "first", id: "first"} #{@user.first_name}
-          %option{value: "nickname", selected: @user.display == "nickname", id: "nickname"} #{@user.nickname}
-          %option{value: "firstlastnickname", selected: @user.display == "firstlastnickname", id: "firstlastnickname"} #{@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")"}
+          / %input{:type => "radio", :value => 1, :name => 'user[gender]', :style => "font-size:14px;", :checked => @user.gender == true}
+          / masculino
+          / %input{:type => "radio", :value => 0, :name => "user[gender]", :style => "margin-left:20px;font-size:14px;", :checked => @user.gender == false}
+          / feminino
+          = f.radio_button :gender, "true"
+          masculino
+          = f.radio_button :gender, "false"
+          feminino
+          %br
+          %br
+          -#= f.label "Mostrar nome como"
+          -#
+          -#%select{:name => "display", id: "display_select"}
+          -#  %option{value: "firstmiddlelast", selected: @user.display == "firstmiddlelast", id: "firstmiddlelast" } #{@user.full_name}
+          -#  %option{value: "firstlast", selected: @user.display == "firstlast", id: "firstlast"} #{@user.first_name + " " + @user.last_name}
+          -#  %option{value: "first", selected: @user.display == "first", id: "first"} #{@user.first_name}
+          -#  %option{value: "nickname", selected: @user.display == "nickname", id: "nickname"} #{@user.nickname}
+          -#  %option{value: "firstlastnickname", selected: @user.display == "firstlastnickname", id: "firstlastnickname"} #{@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")"}
 
       %br
       /= f.label :phone_number, "* Celular"
@@ -255,8 +264,8 @@
       Pós-pago
       %br
       /= f.label :phone_number,  "* Confirmar celular"
-      = text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
-      = text_field_tag("carrier_confirmation", nil, :placeholder => "Confirmar operadora", :style => "width:150px;")
+      -#= text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
+      -#= text_field_tag("carrier_confirmation", nil, :placeholder => "Confirmar operadora", :style => "width:150px;")
       %br
       /= f.label :email,  "* Email"
       
@@ -276,15 +285,8 @@
         %h1 Configurações da casa
 
       .indent
-        = f.fields_for :location do |location_form|
-          /= location_form.label "* Endereço da casa"
-          / # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
-          = location_form.text_field :street_type, value: @user.location.street_type, placeholder: "Rua, Beco etc.", class: "short_field"
-          = location_form.text_field :street_name, value: @user.location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
-          = location_form.text_field :street_number, value: @user.location.street_number, placeholder: "Número", class: "middle_field"
-          %h3#complete_name{:title => "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco."}Bairro <b style="color:blue;">?</b>
-          = location_form.text_field :neighborhood, value: "Maré", readonly: true if @user.location
-      
+
+
         = f.fields_for :house do |house_form|
           - if @user.role == "lojista"
             = house_form.label "Nome do estabelecimento"
@@ -296,7 +298,6 @@
             = house_form.label "Nome da casa (máximo 16 caracteres)"
             = house_form.text_field :name, :placeholder => "ex. Maria Santos ou Maria e Paulo", :maxlength => 16
 
-          
           - if @user.role == "lojista"
             = house_form.label "Telefone comercial"
             = house_form.text_field :phone_number
@@ -306,6 +307,17 @@
           - else
             = house_form.label "Foto da casa (opcional)"
           = house_form.file_field :profile_photo
+
+        = f.fields_for :location do |location_form|
+          %h3#complete_name{:title => "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco."}Bairro <b style="color:blue;">?</b>
+          = location_form.text_field :neighborhood, value: "Maré", readonly: true if @user.location
+          = location_form.label "Endereço (opcional)"
+          -#= location_form.label "* Endereço da casa"
+          =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
+          = location_form.text_field :street_type, value: @user.location.street_type, placeholder: "Rua, Beco etc.", class: "short_field"
+          = location_form.text_field :street_name, value: @user.location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
+          = location_form.text_field :street_number, value: @user.location.street_number, placeholder: "Número", class: "middle_field"
+
       - if @user.is_fully_registered == false
         %h1 Alguém o convidou a se cadastrar no DT?
         %select#recruitment{:name => "recruitment_type"}

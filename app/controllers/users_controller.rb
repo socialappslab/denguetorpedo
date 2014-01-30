@@ -137,31 +137,30 @@ class UsersController < ApplicationController
     end
 
     user_profile_phone_number = params[:user][:phone_number]
-    user_profile_phone_number_confirmation = params[:phone_number_confirmation]
+    #user_profile_phone_number_confirmation = params[:phone_number_confirmation]
     user_profile_photo = params[:user][:profile_photo]
     user_email = params[:user][:email]
     display = params[:display]
     user_first_name = params[:user][:first_name]
     user_last_name = params[:user][:last_name]
-    user_middle_name = params[:user][:middle_name]
+    #user_middle_name = params[:user][:middle_name]
     user_nickname = params[:user][:nickname]
 
 
-
     @user = User.find(params[:id])
-    if !user_profile_phone_number.empty? and !user_profile_phone_number_confirmation.empty?
-      if user_profile_phone_number == user_profile_phone_number_confirmation
-        if user_profile_phone_number != @user.phone_number
-          @user.phone_number = user_profile_phone_number
-          @user.is_fully_registered = true
-        end
-      else
-        @user = @current_user
-        @confirm = 0
-        flash[:alert] = "Números do celular não coincidem"
-        redirect_to :back
-        return
+    if !user_profile_phone_number.empty? #and !user_profile_phone_number_confirmation.empty?
+      #if user_profile_phone_number == user_profile_phone_number_confirmation
+      if user_profile_phone_number != @user.phone_number
+        @user.phone_number = user_profile_phone_number
+        @user.is_fully_registered = true
       end
+      #else
+      #  @user = @current_user
+      #  @confirm = 0
+      #  flash[:alert] = "Números do celular não coincidem"
+      #  redirect_to :back
+      #  return
+      #end
     end
 
     if params[:user][:carrier].empty?
@@ -176,16 +175,16 @@ class UsersController < ApplicationController
       return
     end
 
-    if !params[:user][:carrier].empty? and !params[:carrier_confirmation].empty?
-      if params[:user][:carrier] == params[:carrier_confirmation]
-        if @current_user.carrier != params[:user][:carrier] 
-          @user.carrier = params[:user][:carrier]
-        end
-      else
-        flash[:alert] = "Operadoras não coincidem."
-        render "edit"
-        return
+    if !params[:user][:carrier].empty?# and !params[:carrier_confirmation].empty?
+      #if params[:user][:carrier] == params[:carrier_confirmation]
+      if @current_user.carrier != params[:user][:carrier]
+        @user.carrier = params[:user][:carrier]
       end
+      #else
+      #  flash[:alert] = "Operadoras não coincidem."
+      #  render "edit"
+      #  return
+      #end
     end
 
 
@@ -221,7 +220,7 @@ class UsersController < ApplicationController
     else
       @user.display = display
       @user.first_name = user_first_name
-      @user.middle_name = user_middle_name
+      #@user.middle_name = user_middle_name
       @user.last_name = user_last_name
       @user.nickname = user_nickname
 
