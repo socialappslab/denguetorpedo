@@ -9,3 +9,4 @@ tmp/
 *.swo
 *.DS_Store
 public/system/
+.idea
