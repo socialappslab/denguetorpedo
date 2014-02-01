@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/users/edit.html.haml" afterPath="$PROJECT_DIR$/app/views/users/edit.html.haml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/user.rb" afterPath="$PROJECT_DIR$/app/models/user.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/assets/stylesheets/users.css.scss" afterPath="$PROJECT_DIR$/app/assets/stylesheets/users.css.scss" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" name="Default" comment="" />
     <ignored path="denguetorpedo.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="505b5f9f-1e2a-4e3a-ac56-41a334e670ae" time="1391190427832" ignored="false" />
@@ -36,7 +31,7 @@
       <file leaf-file-name="edit.html.haml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/views/users/edit.html.haml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="334" column="9" selection-start="15682" selection-end="15684" vertical-scroll-proportion="0.750996">
+            <state line="331" column="46" selection-start="15378" selection-end="15378" vertical-scroll-proportion="0.6613546">
               <folding />
             </state>
           </provider>
@@ -827,7 +822,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/users/edit.html.haml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="334" column="9" selection-start="15682" selection-end="15684" vertical-scroll-proportion="0.750996">
+        <state line="331" column="46" selection-start="15378" selection-end="15378" vertical-scroll-proportion="0.6613546">
           <folding />
         </state>
       </provider>
