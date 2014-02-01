@@ -562,3 +562,13 @@ ul#coupons_list {
 a.users {
   color: blue;
 }
+
+#name_display h2, #user_name{
+  display:inline;
+}
+
+#user_name{
+  font-weight: normal;
+  padding-left: 75px;
+  padding-right: 10px;
+}

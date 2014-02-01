@@ -169,10 +169,10 @@ class User < ActiveRecord::Base
       display_name = self.first_name + " " + self.last_name
     elsif self.display == "first"
       display_name = self.first_name
-    elsif self.display == "nicname"
+    elsif self.display == "nickname"
       display_name = self.nickname
     else
-      unless nickname
+      if nickname
         display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
       else
         display_name = self.first_name + " " + self.last_name
