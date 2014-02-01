@@ -100,7 +100,9 @@ class UsersController < ApplicationController
   end
   
   def create
+    #remove whitespace from user signup
     params[:user].each{|key,val| params[:user][key] = params[:user][key].strip}
+
     @user = User.new(params[:user])
     if @user.save
       cookies[:auth_token] = @user.auth_token
