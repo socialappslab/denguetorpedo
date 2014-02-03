@@ -2,13 +2,17 @@
   .row
     %ul
       = link_to image_tag("home_images/logo.png", :id => "logo"), root_path
-      %li.main_nav_button.span3.offset4{style: 'margin-left: 240px;'}
+      %li.main_nav_button.span3.offset4
+        -#{style: 'margin-left: 240px;'}
         %h1= link_to "SAIBA MAIS", education_path
         %h3 Sobre a dengue
-      %li.main_nav_button.span2.offset1{style: 'margin-left: -10px;'}
+      %li.main_nav_button.span2.offset1
+        -#{style: 'margin-left: -10px;'}
         %h1= link_to "JOGUE", howto_path
-        %h3{style: "margin-left:-5px;"} &nbsp;&nbsp;Como?
-      %li.main_nav_button.span2.offset1{style: 'margin-left: -10px;'}
+        %h3 &nbsp;&nbsp;Como?
+        -#{style: "margin-left:-5px;"}
+      %li.main_nav_button.span2.offset1
+        -#{style: 'margin-left: -10px;'}
         %h1= link_to "GANHE", prizes_path
         %h3 Prêmios
       %li.span3

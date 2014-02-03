@@ -1,8 +1,10 @@
 = render :partial => 'orange_slider'
 %br
-#neighborhood_search{style: "width:1000px;"}
+#neighborhood_search
+  -#{style: "width:1000px;"}
   .row
-    #neighborhood_search_background.offset2{style: "width:690px;float:left;"}
+    #neighborhood_search_background.offset2
+      -#{style: "width:690px;float:left;"}
       %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!", style: "width:88%;"}
       %button Busca
     - if @current_user

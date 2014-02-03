@@ -1,0 +1,182 @@
+@import "variables";
+
+/* screen size 768px or less */
+@media screen and (max-width:768px){
+  .home{
+    width:auto;
+  }
+  #container{
+    width:auto;
+    margin:auto;
+  }
+  #home_nav_bar{
+    width:auto;
+    height:45px;
+
+    #logo {
+      position: absolute;
+      left: 35px;
+      width: 75px;
+      z-index: 1;
+    }
+
+    .main_nav_button{
+      display:none;
+    }
+
+    .span3{
+      display:none;
+    }
+
+
+  }
+
+  #orange_slider {
+    width: auto;
+    height: auto;
+    margin-top: 0px;
+    padding-top: 0px;
+    /*background-image: url(translated/banner_awesome_mobile_768.png);  */
+    background-color:$background-orange;
+    background-position: top;
+    background-size: contain;
+    position: relative;
+    z-index: 0;
+
+    #orange_bg_graphic {
+      display:none;
+
+      z-index: 0;
+      width: auto;
+      height: 373px;
+     /* position: absolute;
+      margin-left: 40px;
+      margin-top: -20px;
+      */
+    }
+    #play_button {
+      display:none;
+
+      margin-top: 167px;
+      padding-left: 20px;
+      width: 100px;
+    }
+
+    #redetrel_button {
+      display:none;
+
+      width:100px;
+      height:60px;
+      background-color:green;
+      font-size:18px;
+      line-height:22px;
+      text-align: center;
+    }
+
+    #news_pane {
+      display:none;
+
+      margin-top: 30px;
+      margin-left: 20px;
+    }
+    #register_pane {
+      margin-top: 15px;
+      margin-left: 10px;
+
+      #register ul{
+        text-align: center;
+
+      }
+    }
+    #top {
+      margin-top: 10px;
+      color: #ffffff;
+      #top_right {
+        color: black;
+      }
+      h1 {
+
+      }
+      h2{
+        color: black;
+        line-height: 30px;
+        margin-left: 10px;
+        margin-top: 10px;
+        z-index: 1;
+        font-size: 15px;
+
+      }
+      h3 {
+        margin-top: -18px;
+        margin-left: 0px;
+      }
+    }
+
+    #section {
+      margin-top: 115px;
+    }
+
+    #video {
+      background: #F5D1BA;
+      height: 310px;
+    }
+
+    .slider {
+      width:  600px;
+      height: 220px;
+      margin-left: 400px;
+    }
+
+    #sms_button{
+      display:none;
+
+    }
+    .span4.offset8{
+      width:100%;
+      margin: 0 0 0 0;
+    }
+    .span5{
+      width:100%;
+      float:none;
+      margin: 0 auto 0 auto;
+    }
+    #orange_pull_up {
+      display:none;
+
+      color: $gray;
+      width: 70px;
+      float: right;
+      margin: 70px 20px 0px 0px;
+
+      line-height: 18px;
+      .extra_border {
+        border: 1px;
+
+        width: 50px;
+        height: 0px;
+        margin: 2px -2px;
+        border-style: solid;
+        border-color: $dark-gray;
+
+      }
+    }
+  }
+
+  #neighborhood_search{
+    width:100%;
+
+    .row{
+      width:100%;
+    }
+
+    .offset2{
+      margin-left:auto;
+      margin-right:auto;
+    }
+  }
+
+  .row{
+    margin: 0 0 0 0;
+  }
+}
+
