@@ -366,8 +366,10 @@
                   }
                 }
               }
+              if (report_div) {
+                $("html, body").scrollTop($(report_div).offset().top - 20);
+              }
               
-              $("html, body").scrollTop($(report_div).offset().top - 20);
               
             });
 
