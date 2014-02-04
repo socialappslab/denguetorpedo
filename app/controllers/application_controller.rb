@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
   protected
   
   def require_login
+    @current_user ||= User.find_by_auth_token(params[:auth_token])
     flash[:alert] = "Faça o seu login para visualizar essa página." if @current_user.nil?
     redirect_to root_url if @current_user.nil?
     # head :u and return if @current_user.nil?

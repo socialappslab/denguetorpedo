@@ -31,7 +31,7 @@ class UsersController < ApplicationController
   def show
     @post = Post.new
 
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_id(params[:id]) || User.find_by_auth_token(params[:auth_token])
 
     head :not_found and return if @user != @current_user and @user.role == "lojista"
     head :not_found and return if @user.nil?
@@ -81,6 +81,10 @@ class UsersController < ApplicationController
     @pocas = EliminationMethods.pocas
     @ralos = EliminationMethods.ralos
     @plantas = EliminationMethods.plantas
+    respond_to do |format|
+      format.html
+      format.json { render json: {user: @user, house: @house, prizes: @prizes, badges: @badges}}
+    end
   end
 
   def new

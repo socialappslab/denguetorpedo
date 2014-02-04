@@ -82,6 +82,7 @@ class ReportsController < ApplicationController
   def create    
 
     if request.post?
+      @current_user ||= User.find_by_auth_token(params[:auth_token])
       address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
       flash[:street_type] = params[:street_type]
       flash[:street_name] = params[:street_name]
@@ -135,10 +136,19 @@ class ReportsController < ApplicationController
         end
         
         flash[:notice] = 'Foco marcado com sucesso!'
-        redirect_to :action=>'index', view: 'recent'
+        respond_to do |format|
+          format.html{ redirect_to :action=>'index', view: 'recent' }
+          format.json { render json: { message: "success"}}
+        end
+
+        
       else
         flash[:alert] = "here"
-        redirect_to :back
+        respond_to do |format|
+          format.html { redirect_to :back }
+          format.json {render json: {message: "failure"}, status: 401 }
+        end
+        
       end
     end
   end
