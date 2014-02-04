@@ -220,7 +220,7 @@
       #name_display
         %h2#complete_name{:title => "O Nome Completo é utilizado para realizar o resgate do prêmio nos estabelecimentos patrocinadores. É importante informar o nome correto para evitar problemas no momento do resgate dos prêmios. Em caso de dúvida leia nossa Política de Privacidade e a página de Perguntas Frequentes. ", :style => "font-weight:bold;"} Nome<b style="color:blue;"> ?</b>
         %h2#user_name #{@user.display_name}
-        =link_to "Edit","",class:"collapse_name"
+        =link_to "Editar","",class:"collapse_name"
       .indent
         #name_edit_box
           /= f.label :first_name, "* Nome"

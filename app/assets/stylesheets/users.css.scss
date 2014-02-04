@@ -564,7 +564,10 @@ a.users {
 }
 
 #name_display h2, #user_name{
-  display:inline;
+  display:inline-block;
+}
+
+#name_display{
 }
 
 #user_name{
