@@ -59,8 +59,8 @@ $(document).ready(function() {
 		
 	});
 
-    //Prevent Enter from submitting form
-    $("form").on("keypress",function(e){
+    //Prevent Enter from submitting make report/Marcar um foco
+    $("#reports_open form").on("keypress",function(e){
         if (e.keyCode == 13) {
             e.preventDefault();
         }
