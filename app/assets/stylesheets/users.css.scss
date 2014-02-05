@@ -572,6 +572,23 @@ a.users {
 
 #user_name{
   font-weight: normal;
-  padding-left: 75px;
-  padding-right: 10px;
+  //padding-left: 75px;
+  //padding-right: 10px;
 }
+.config_form_title{
+  font-weight:bold;
+}
+
+.collapse_name{
+  padding-left:25px;
+}
+
+.question_mark_div label, .question_mark_div span{
+    display:inline;
+ }
+
+.question_mark{
+  color:blue;
+  font-size:16px;
+}
+
