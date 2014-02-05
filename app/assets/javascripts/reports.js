@@ -58,4 +58,17 @@ $(document).ready(function() {
 		}
 		
 	});
+
+    //Prevent Enter from submitting form
+    $("form").on("keypress",function(e){
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    });
+
+//      if (e.keyCode == 13){
+//          $(this).next("input").focus();
+//          return false;
+//      }
+
 });
