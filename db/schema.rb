@@ -11,23 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131219061554) do
-
-  create_table "badges", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "prize_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "buy_ins", :force => true do |t|
-    t.integer  "group_buy_in_id"
-    t.integer  "user_id"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
-    t.boolean  "accepted"
-    t.boolean  "expired",         :default => false, :null => false
-  end
+ActiveRecord::Schema.define(:version => 20140206044723) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -65,25 +49,18 @@ ActiveRecord::Schema.define(:version => 20131219061554) do
   create_table "feeds", :force => true do |t|
     t.string   "target_type"
     t.integer  "target_id"
+    t.string   "feed_type"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
     t.integer  "user_id"
     t.integer  "feed_type_cd"
   end
 
-  create_table "group_buy_ins", :force => true do |t|
-    t.integer  "prize_id"
-    t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.integer  "group_size"
-  end
-
   create_table "houses", :force => true do |t|
+    t.string   "address"
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
     t.string   "name"
-    t.integer  "featured_event_id"
     t.integer  "location_id"
     t.string   "profile_photo_file_name"
     t.string   "profile_photo_content_type"
@@ -91,13 +68,9 @@ ActiveRecord::Schema.define(:version => 20131219061554) do
     t.datetime "profile_photo_updated_at"
     t.string   "phone_number",               :default => ""
     t.string   "house_type",                 :default => "morador"
-    t.integer  "user_id"
   end
 
   create_table "locations", :force => true do |t|
-    t.string   "nation"
-    t.string   "state"
-    t.string   "city"
     t.string   "address"
     t.float    "latitude"
     t.float    "longitude"
@@ -133,7 +106,6 @@ ActiveRecord::Schema.define(:version => 20131219061554) do
     t.datetime "photo_updated_at"
     t.text     "summary",            :default => ""
     t.string   "institution_name"
-    t.datetime "hour"
   end
 
   create_table "notifications", :force => true do |t|
@@ -183,7 +155,6 @@ ActiveRecord::Schema.define(:version => 20131219061554) do
     t.datetime "expire_on"
     t.datetime "created_at",                                  :null => false
     t.datetime "updated_at",                                  :null => false
-    t.integer  "max_group_size"
     t.string   "prize_photo_file_name"
     t.string   "prize_photo_content_type"
     t.integer  "prize_photo_file_size"
@@ -201,8 +172,46 @@ ActiveRecord::Schema.define(:version => 20131219061554) do
     t.integer  "recruitee_id"
   end
 
-# Could not dump table "reports" because of following StandardError
-#   Unknown type 'feed_type_cd' for column 'integer'
+  create_table "reports", :force => true do |t|
+    t.string   "nation"
+    t.string   "state"
+    t.string   "city"
+    t.string   "address"
+    t.string   "neighborhood"
+    t.text     "report"
+    t.integer  "reporter_id"
+    t.integer  "status_cd"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
+    t.integer  "status"
+    t.integer  "eliminator_id"
+    t.integer  "location_id"
+    t.string   "before_photo_file_name"
+    t.string   "before_photo_content_type"
+    t.integer  "before_photo_file_size"
+    t.datetime "before_photo_updated_at"
+    t.string   "after_photo_file_name"
+    t.string   "after_photo_content_type"
+    t.integer  "after_photo_file_size"
+    t.datetime "after_photo_updated_at"
+    t.datetime "eliminated_at"
+    t.string   "elimination_type"
+    t.string   "elimination_method"
+    t.string   "isVerified"
+    t.integer  "verifier_id"
+    t.datetime "verified_at"
+    t.integer  "resolved_verifier_id"
+    t.datetime "resolved_verified_at"
+    t.string   "is_resolved_verified"
+    t.boolean  "sms",                       :default => false
+    t.string   "reporter_name",             :default => ""
+    t.string   "eliminator_name",           :default => ""
+    t.string   "verifier_name",             :default => ""
+    t.datetime "completed_at"
+    t.datetime "credited_at"
+    t.boolean  "is_credited"
+    t.integer  "feed_type_cd"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "username"
@@ -223,10 +232,10 @@ ActiveRecord::Schema.define(:version => 20131219061554) do
     t.boolean  "is_verifier",                :default => false
     t.boolean  "is_fully_registered",        :default => false
     t.boolean  "is_health_agent",            :default => false
-    t.string   "first_name"
-    t.string   "middle_name"
-    t.string   "last_name"
-    t.string   "nickname"
+    t.string   "first_name",                 :default => ""
+    t.string   "middle_name",                :default => ""
+    t.string   "last_name",                  :default => ""
+    t.string   "nickname",                   :default => ""
     t.string   "display",                    :default => "firstmiddlelast"
     t.string   "role",                       :default => "morador"
     t.integer  "total_points",               :default => 0

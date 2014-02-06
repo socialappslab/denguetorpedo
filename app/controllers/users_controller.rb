@@ -125,7 +125,8 @@ class UsersController < ApplicationController
     @confirm = 0
     # flash[:notice] = nil
   end
-  
+
+
   def update
     puts params
 
