@@ -132,9 +132,9 @@ class UsersController < ApplicationController
 
     if @current_user.role != "visitante"
       house_name = params[:user][:house_attributes][:name]
-      house_address = params[:user][:location][:address]
-      house_neighborhood = params[:user][:location][:neighborhood]
-      house_profile_photo = params[:user][:house_attributes][:profile_photo]
+      house_address = params[:user][:location][:address] || ''
+      house_neighborhood = params[:user][:location][:neighborhood] || ''
+      house_profile_photo = params[:user][:house_attributes][:profile_photo] || ''
     end
 
     user_profile_phone_number = params[:user][:phone_number]

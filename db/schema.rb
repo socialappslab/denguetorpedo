@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140206044723) do
+ActiveRecord::Schema.define(:version => 20140206171955) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(:version => 20140206044723) do
     t.string   "street_type",       :default => ""
     t.string   "street_name",       :default => ""
     t.string   "street_number",     :default => ""
+    t.string   "location"
   end
 
   create_table "neighborhoods", :force => true do |t|

@@ -80,7 +80,7 @@
   = form_for(@user, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
     = f.error_messages
     - if @user.role != "visitante"
-      #map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
+      -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
           %b{style: "color:red;"}
             ATENÇÃO:
@@ -114,7 +114,7 @@
               zoom: 5,
               extent: customExtent
             });
-            
+
             var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
             map.addLayer(tiled);
 
@@ -130,7 +130,7 @@
               symbol.setStyle("STYLE_PATH");
               symbol.setPath("M 10 10 L30 10 L20 30z");
               symbol.setColor(new Color("red"));
-              
+
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
               map.graphics.add(new Graphic(evt.geometry, red));
@@ -157,7 +157,7 @@
               tb.on("draw-end", addGraphic);
               tb.activate("point");
               map.graphics.add(new Graphic(new Point(#{@user.house.location.latitude}, #{@user.house.location.longitude}), red));
-              
+
             });
 
             $("#user_location_street_number").change(function() {
@@ -177,7 +177,7 @@
                     map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), red));
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
-                    
+
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                   }
                 },
@@ -188,6 +188,7 @@
             });
 
           });
+
 
     - if @user.role == "coordenador"
       - if @user.gender == true
@@ -211,14 +212,10 @@
       - else
         %h1{id: "role_title"} Configurações de moradora
 
-    
-    /= f.label "Nome de usuário"
-    / = f.label @current_user.username, {style: "font-weight: bold;"}
   
 
     .indent
       #name_display
-        -#%h2#complete_name{:title => "O Nome Completo é utilizado para realizar o resgate do prêmio nos estabelecimentos patrocinadores. É importante informar o nome correto para evitar problemas no momento do resgate dos prêmios. Em caso de dúvida leia nossa Política de Privacidade e a página de Perguntas Frequentes. ", :style => "font-weight:bold;"} Nome<b style="color:blue;"> ?</b>
         %br
         .question_mark_div
           = f.label "Nome", class:"config_form_title"
@@ -228,15 +225,18 @@
         =link_to "Editar","",class:"collapse_name"
       .indent
         #name_edit_box
-          /= f.label :first_name, "* Nome"
+
           = f.text_field :first_name, :placeholder => "* Nome"
           %br
-          /= f.label :middle_name,  "* Nome do meio",
+
+          -#Removed middle name criteria
+          -#= f.label :middle_name,  "* Nome do meio",
           -#= f.text_field :middle_name, :placeholder => "Nome do meio (opcional)"
           -#%br
+
           = f.text_field :last_name, :placeholder => "* Sobrenome"
           %br
-          / = f.label :nickname, "Apelido"
+
           = f.text_field :nickname, :placeholder => "Apelido (opcional)"
           %br
           = f.label "Mostrar nome como"
@@ -254,14 +254,11 @@
             = link_to "Cancelar", edit_user_path(@user)
 
 
-      / %input{:type => "radio", :value => 1, :name => 'user[gender]', :style => "font-size:14px;", :checked => @user.gender == true}
-      / masculino
-      / %input{:type => "radio", :value => 0, :name => "user[gender]", :style => "margin-left:20px;font-size:14px;", :checked => @user.gender == false}
-      / feminino
       = f.radio_button :gender, "true"
       masculino
-      = f.radio_button :gender, "false"
+      = f.radio_button :gender, "false", id:"gender_female_radio"
       feminino
+      %br
       %br
       %br
       /= f.label :phone_number, "* Celular"
@@ -271,10 +268,10 @@
       %br
       = f.label "Celular", class:"config_form_title"
       = f.text_field :phone_number, :placeholder => "* Celular"
-      = f.text_field :carrier, :placeholder => "Operadora", :style => "width:150px;"
-      = f.radio_button :prepaid, true, style: "margin-left: 10px;"
+      = f.text_field :carrier, :placeholder => "Operadora",id:"carrier"
+      = f.radio_button :prepaid, true, id:"pre_paid_radio"
       Pré-pago
-      = f.radio_button :prepaid, false
+      = f.radio_button :prepaid, false, id:"post_paid_radio"
       Pós-pago
       %br
       /= f.label :phone_number,  "* Confirmar celular"
@@ -288,7 +285,7 @@
     
       %br
       %br
-      = link_to "Alterar minha senha", edit_password_reset_path(@user), :id => "reset_password_link", :style => "font-weight:bold;margin-left:0px;"
+      = link_to "Alterar minha senha", edit_password_reset_path(@user), :id => "reset_password_link",id:'password_reset'
       %br
       %br
 
