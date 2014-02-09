@@ -1,5 +1,7 @@
 class AddFeedTypeCdToFeeds < ActiveRecord::Migration
   def change
-    add_column :feeds, :feed_type_cd, :integer
+    unless column_exists? :feeds, :feed_type_cd
+      add_column :feeds, :feed_type_cd, :integer
+    end
   end
 end
