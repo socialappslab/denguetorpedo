@@ -9,7 +9,7 @@
         - @prize.errors.full_messages.each do |msg|
           %li= msg
   .field
-    = f.label :user_id, "Patrocinador"
+    = f.label :user_id, "Patrocinador / Apoio"
     = f.select(:user_id, @users)
   .field{ :style => "margin-bottom: 18px;"}
     = f.label :prize_name, "Nome do prêmio"

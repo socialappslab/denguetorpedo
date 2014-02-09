@@ -83,11 +83,12 @@ class House < ActiveRecord::Base
       return house
     end
 
-    return nil if address.nil? || address.blank?
+    # address is not required
+    #return nil if address.nil? || address.blank?
 
     # create the location
     location = Location.find_or_create(address, neighborhood)
-    
+
     if location.nil?
       return nil
     end
