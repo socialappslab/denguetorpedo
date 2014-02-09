@@ -15,7 +15,10 @@ class SessionsController < ApplicationController
         else
           cookies[:auth_token] = user.auth_token
         end
-        redirect_to root_url, :notice => "Signed in!"
+        respond_to do |format|
+          format.html { redirect_to root_url, :notice => "Signed in!"}
+          format.json { render json: {auth_token: user.auth_token}}
+        end
       else
         redirect_to root_url, :alert => "Sua conta está bloqueada temporariamente.  Por favor, entre em contato com o Dengue Torpedo."
       end

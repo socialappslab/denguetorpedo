@@ -19,7 +19,7 @@
               - if @prize.prize_photo_file_name.nil?
                 = image_tag("default_images/prize_default_image.jpg", :width => 300, :height => 300)
               - else
-                = image_tag(@prize.prize_photo.url(:large), width: 300, height: 300)
+                = image_tag(@prize.prize_photo.url(:original), width: 300, height: 300)
           .span9
             #prize_cost
               .row#prize_cost{:style => "padding:10px;"}
@@ -96,7 +96,7 @@
           .row#more_bootstrap_sucks
             .span3
               %div#sponsor_image 
-                = link_to image_tag(@prize.user.house.profile_photo.url(:small), :width => 100)
+                = link_to image_tag(@prize.user.house.profile_photo.url(:small), :width => 100), sponsor_path(@prize.user)
             .span7
               %div#sponsor_info
                 %h4

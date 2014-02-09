@@ -3,7 +3,7 @@
   .span12.offset1
     .image_and_name
       - if @sponsor.house.profile_photo.file?
-        = image_tag(@sponsor.house.profile_photo.url(:large), :width => 150, :height => 150)
+        = image_tag(@sponsor.house.profile_photo.url(:large), :width => 300, :height => 300)
       - else
         = image_tag("default_images/default_sponsor_image.jpg", :width => 150, :height => 150, style: "border:1px solid #cccccc;")
     %h1{:style => "margin-top:40px;"} #{@sponsor.house.name}
