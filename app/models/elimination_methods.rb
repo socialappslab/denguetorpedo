@@ -150,5 +150,10 @@ class EliminationMethods
     end
     return ""
   end
+
+
+  def self.getElimination
+    @elimination
+  end
   
 end

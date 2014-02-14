@@ -1,4 +1,5 @@
 - if open.reporter == @current_user or open.elimination_type
+  -#="Elim Type = #{@elimination_selection}"
   .rp_report.rp_open_report
     .row
       .rp_report_status.status
@@ -67,18 +68,22 @@
                     = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
                   - else
                     = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", style: "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?), data: { style: "btn-success", width: "430px"}
-                  = select_tag "prantinho", options_for_select(@prantinho.collect{ |p| [p[1], p[0]]}), :class => "elimination_methods", :prompt => "Método de eliminação", :style => "width:430px;display:none;", disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante"), data: { style: "btn-success", width: "430px"}
-                  = select_tag "pneu", options_for_select(@pneu.collect{ |p| [p[1], p[0]]}), :style => "display:none;width:430px;", :class => "elimination_methods", :prompt => open.method_prompt, disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante")
-                  = select_tag "lixo", options_for_select(@lixo.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "pequenos", options_for_select(@pequenos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "grandes", options_for_select(@grandes.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "calha", options_for_select(@calha.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "registros", options_for_select(@registros.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "laje", options_for_select(@laje.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt
-                  = select_tag "piscinas", options_for_select(@piscinas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "pocas", options_for_select(@pocas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "ralos", options_for_select(@ralos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
-                  = select_tag "plantas", options_for_select(@plantas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#="select #{@elimination_selection[open.elimination_type]}"
+                  -#="open #{open.elimination_type}"
+                  -unless @elimination_selection[open.elimination_type].blank?
+                    =select_tag "test", options_for_select(@elimination_selection[open.elimination_type].collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+                  -#= select_tag "prantinho", options_for_select(@prantinho.collect{ |p| [p[1], p[0]]}), :class => "elimination_methods", :prompt => "Método de eliminação", :style => "width:430px;display:none;", disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante"), data: { style: "btn-success", width: "430px"}
+                  -#= select_tag "pneu", options_for_select(@pneu.collect{ |p| [p[1], p[0]]}), :style => "display:none;width:430px;", :class => "elimination_methods", :prompt => open.method_prompt, disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante")
+                  -#= select_tag "lixo", options_for_select(@lixo.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "pequenos", options_for_select(@pequenos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "grandes", options_for_select(@grandes.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "calha", options_for_select(@calha.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "registros", options_for_select(@registros.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "laje", options_for_select(@laje.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt
+                  -#= select_tag "piscinas", options_for_select(@piscinas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "pocas", options_for_select(@pocas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "ralos", options_for_select(@ralos.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
+                  -#= select_tag "plantas", options_for_select(@plantas.collect{ |p| [p[1], p[0]]}), :style => "display:none;", :class => "elimination_methods", :prompt => open.method_prompt, :style => "display:none;width:430px;"
                   = hidden_field_tag "selected_elimination_method"
                   / # = select_tag "method_of_elimination", options_from_collection_for_select(@elimination_type), :style => "width: 355px;" 
                   :javascript
