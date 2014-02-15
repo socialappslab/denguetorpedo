@@ -64,7 +64,7 @@ class UsersController < ApplicationController
     @stats_hash['eliminated'] = @user.eliminated_reports.count
 
     @elimination_method_select = EliminationMethods.field_select
-    @elimination_types = EliminationMethods.types
+    @elimination_types = EliminationType.pluck(:name)
     reports_with_status_filtered = []
     locations = []
     

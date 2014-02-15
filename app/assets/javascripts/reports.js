@@ -56,6 +56,7 @@ $(document).ready(function() {
 		} else {
 			$(this).parent().find("input#selected_elimination_method").val($(this).val());
 		}
-		
 	});
+
+
 });

@@ -12,7 +12,7 @@ class ReportsController < ApplicationController
   end
   
   def index
-    @elimination_selection = create_elimination_selection
+    #@elimination_selection = create_elimination_selection
 
     @current_report = params[:report]    
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
@@ -486,17 +486,5 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
   end
 
-  def create_elimination_selection
-    selection_list = {}
 
-    EliminationType.all.each do |type|
-      selection_list[type.name] = []
-      type.elimination_methods.each do |method|
-        selection_list[type.name] << {:name=>method.method, :points=>method.points,:id=>method.id,
-        :display=>method.method + " (" + method.points.to_s + " pontos)"}
-      end
-    end
-
-    return selection_list
-  end
 end
