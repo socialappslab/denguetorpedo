@@ -64,9 +64,9 @@
                   - if open.sms_incomplete?
                     = link_to "Completar o foco", edit_report_path(open), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
                   - if open.elimination_type
-                    = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco1", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
+                    = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
                   - else
-                    = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco2", style: "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?), data: { style: "btn-success", width: "430px"}
+                    = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", style: "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?), data: { style: "btn-success", width: "430px"}
                   -#="select #{@elimination_selection[open.elimination_type]}"
                   -#="open #{open.elimination_type}"
                   -unless open.elimination_type.blank?
