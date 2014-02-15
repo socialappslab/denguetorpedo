@@ -70,7 +70,7 @@
                     = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", style: "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?), data: { style: "btn-success", width: "430px"}
                   -#="select #{@elimination_selection[open.elimination_type]}"
                   -#="open #{open.elimination_type}"
-                  -unless @elimination_selection[open.elimination_type].blank?
+                  -#-unless @elimination_selection[open.elimination_type].blank?
                     =select_tag "test", options_for_select(@elimination_selection[open.elimination_type].collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
                   -#= select_tag "prantinho", options_for_select(@prantinho.collect{ |p| [p[1], p[0]]}), :class => "elimination_methods", :prompt => "Método de eliminação", :style => "width:430px;display:none;", disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante"), data: { style: "btn-success", width: "430px"}
                   -#= select_tag "pneu", options_for_select(@pneu.collect{ |p| [p[1], p[0]]}), :style => "display:none;width:430px;", :class => "elimination_methods", :prompt => open.method_prompt, disabled: (open.elimination_type.nil? or open.expired? or @current_user.role == "visitante")
