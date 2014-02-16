@@ -6,6 +6,8 @@ class ReportsController < ApplicationController
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
 
+  #points user receives for submitting a site
+
   def types
     @types = EliminationType.all
     @methods = EliminationMethod.all
@@ -167,6 +169,7 @@ class ReportsController < ApplicationController
   end
 
   def update
+    submission_points = 50
     if request.put?
       @report = Report.find_by_id(params[:report_id])
 
@@ -237,37 +240,42 @@ class ReportsController < ApplicationController
         return
       end
 
+      # ? When user submits a new site, before they've selected a elimination_type
       if @report.elimination_type.nil? and params[:elimination_type]
         @report.elimination_type = params[:elimination_type]
         @report.completed_at = Time.now
         @report.save
         flash[:notice] = "Tipo de foco atualizado com sucesso."
-        @current_user.update_attribute(:points, @current_user.points + 50)
-        @current_user.update_attribute(:total_points, @current_user.total_points + 50)
+        @current_user.update_attribute(:points, @current_user.points + submission_points)
+        @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
         redirect_to :back
         return
       end
- 
+
       if params[:report_description]
         @report.report = params[:report_description]
         @report.save
       end
-      
+
+
       if !params[:eliminate] and @report.after_photo_file_size.nil?
         flash[:error] = 'Você tem que carregar uma foto do foco eliminado.'
         redirect_to(:back)
         return
       end
 
+      # ? No elimination method was selected
+      # ? selected_elimination_method is hidden field, updated by JS in reports.js
       if params[:selected_elimination_method] == ""
 
         if @report.after_photo_file_size.nil?
           if params[:eliminate] and params[:eliminate][:after_photo] != nil
           # user uploaded an after photo
             @report.after_photo = params[:eliminate][:after_photo]
-            @current_user.points += 400
-            @current_user.total_points += 400
-            @current_user.save
+            award_points @report, @current_user, params
+            #@current_user.points += 400
+            #@current_user.total_points += 400
+            #@current_user.save
             @report.save
           end
         end
@@ -276,18 +284,23 @@ class ReportsController < ApplicationController
         redirect_to :back
         return
       end
-      
+
+      # No after photo already in the report, submitting after photo
       if @report.after_photo_file_size.nil?
         if params[:eliminate] and params[:eliminate][:after_photo] != nil 
           # user uploaded an after photo
           @report.after_photo = params[:eliminate][:after_photo]
-          @current_user.points += 400
-          @current_user.total_points += 400
-          @current_user.save
+          award_points @report, @current_user, params
+          #@current_user.points += 400
+          #@current_user.total_points += 400
+          #@current_user.save
           @report.save
         end
       end
 
+
+      # ? If the eliminate form isn't being submitted
+      # ? Not sure when this occurs
       if !params[:eliminate]
 
         @report.update_attribute(:status_cd, 1)
@@ -301,7 +314,7 @@ class ReportsController < ApplicationController
         return
       end
 
-                         
+      # Submitting an after photo
       if params[:eliminate][:after_photo] != nil
         # user uploaded an after photo
         begin
@@ -309,9 +322,10 @@ class ReportsController < ApplicationController
           @report.update_attribute(:status_cd, 1)
           @report.update_attribute(:eliminator_id, @current_user.id)
           @report.touch(:eliminated_at)
-          @current_user.points += 400
-          @current_user.total_points += 400
-          @current_user.save
+          award_points @report, @current_user, params
+          #@current_user.points += 400
+          #@current_user.total_points += 400
+          #@current_user.save
         rescue
           flash[:notice] = 'An error has occurred!'
           redirect_to(:back)
@@ -484,6 +498,20 @@ class ReportsController < ApplicationController
   private
   def find_by_id
     @report = Report.find(params[:id])
+  end
+
+  def award_points report, user, params
+    method = params[:eliminate].has_key?(:elimination_method) ?
+        params[:eliminate][:elimination_method] : report.elimination_method
+    unless method.blank?
+      puts method
+      puts params[:eliminate][:elimination_method]
+      puts report.elimination_method
+      points = EliminationMethod.find_by_method(method).points
+      puts points
+      user.update_attributes!(:points=>user.points + points, :total_points=>user.total_points + points)
+    end
+
   end
 
 
