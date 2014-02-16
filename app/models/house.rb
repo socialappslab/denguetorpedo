@@ -18,7 +18,7 @@
 #
 
 class House < ActiveRecord::Base
-  attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type
+  attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes
   
   has_attached_file :profile_photo, :styles => {:small => "60x60>", :medium => "150x150>" , :large => "225x225>"}, :default_url => 'default_images/house_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
@@ -30,7 +30,6 @@ class House < ActiveRecord::Base
   belongs_to :location
   has_one :user
   accepts_nested_attributes_for :location, :allow_destroy => true
-  attr_accessible :location_id, :location_attributes
 
   ## validations
 
@@ -83,11 +82,12 @@ class House < ActiveRecord::Base
       return house
     end
 
-    return nil if address.nil? || address.blank?
+    # address is not required
+    #return nil if address.nil? || address.blank?
 
     # create the location
     location = Location.find_or_create(address, neighborhood)
-    
+
     if location.nil?
       return nil
     end

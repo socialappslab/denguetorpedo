@@ -133,6 +133,9 @@ class UsersController < ApplicationController
     # flash[:notice] = nil
   end
 
+<<<<<<< HEAD
+
+=======
   # def update
 
   #   @user = User.find(params[:id])
@@ -171,6 +174,7 @@ class UsersController < ApplicationController
 
   # end
   
+>>>>>>> 36ece6b20fa5bcacc55b3543ed6966aad1c1bf37
   def update
     puts params
 
@@ -249,6 +253,11 @@ class UsersController < ApplicationController
     # if a house exists with the same house name or house address, inform the user for confirmation
 
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
+      if user_profile_photo
+        @user.profile_photo = user_profile_photo
+        @user.save
+      end
+      
       @user.house ||= House.new
       @user.house.location ||= Location.new
       @user.house.location.street_type = params[:user][:location][:street_type]

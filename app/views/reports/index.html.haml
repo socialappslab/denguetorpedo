@@ -37,7 +37,6 @@
         = render :partial => 'reports/eliminate_list'
       - else params[:view] == 'make_report'
         = render :partial => "reports/make_report_form"
-    
     .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
       .row
         .span8
@@ -61,8 +60,6 @@
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
       :javascript
         $(window).scroll(function() {
-          console.log($(window).scrollTop());
-          console.log($("body").height());
           var scrollAmount = $(window).scrollTop();
           if (scrollAmount > 200) {
             $("#map_div").css("margin-top", scrollAmount - 263);
@@ -369,8 +366,10 @@
                   }
                 }
               }
+              if (report_div) {
+                $("html, body").scrollTop($(report_div).offset().top - 20);
+              }
               
-              $("html, body").scrollTop($(report_div).offset().top - 20);
               
             });
 

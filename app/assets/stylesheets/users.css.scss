@@ -562,3 +562,65 @@ ul#coupons_list {
 a.users {
   color: blue;
 }
+
+#name_display h2, #user_name{
+  display:inline-block;
+}
+
+#name_display{
+}
+
+#user_name{
+  font-weight: normal;
+  //padding-left: 75px;
+  //padding-right: 10px;
+}
+.config_form_title{
+  font-weight:bold;
+}
+
+.collapse_name{
+  padding-left:25px;
+  color:darkblue;
+}
+
+/*Merge question_mark_div entries*/
+.question_mark_div label, .question_mark_div span{
+    display:inline;
+
+ }
+.question_mark_div span{
+  color:darkblue;
+}
+
+.question_mark{
+  color:blue;
+  font-size:16px;
+}
+
+form{
+  #carrier{
+    width:90px;
+    margin-left:10px;
+  }
+
+  #gender_female_radio{
+    margin-left:10px;
+  }
+  #password_reset{
+    font-weight:bold;
+    margin-left:0px;
+    color:darkblue;
+    font-size:16px;
+  }
+
+  #pre_paid_radio{
+    margin-left:10px;
+  }
+
+  #post_paid_radio{
+    margin-left:5px;
+  }
+
+}
+

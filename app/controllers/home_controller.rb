@@ -24,7 +24,7 @@ class HomeController < ApplicationController
     @houses = @participants.map { |participant| participant.house }.uniq.shuffle
     
     @prizes = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new)
-    @notices = @selected_neighborhood.notices[0..5]
+    @notices = @selected_neighborhood.notices.where('date > ?', Time.now).order(:date)[0..5]
     @total_reports_in_neighborhood = @selected_neighborhood.total_reports.count
     @opened_reports_in_neighborhood = @selected_neighborhood.open_reports.count
     @eliminated_reports_in_neighborhood = @selected_neighborhood.eliminated_reports.count
