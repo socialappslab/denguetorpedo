@@ -59,9 +59,13 @@ $(document).ready(function() {
 	});
 
 
+<<<<<<< HEAD
+});
+=======
 //      if (e.keyCode == 13){
 //          $(this).next("input").focus();
 //          return false;
 //      }
 
 });
+>>>>>>> fe16b27fca4fc41e87fcb45669316c55295dc942
