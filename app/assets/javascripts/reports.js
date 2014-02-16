@@ -59,12 +59,6 @@ $(document).ready(function() {
 		
 	});
 
-    //Prevent Enter from submitting make report/Marcar um foco
-    $("#reports_open form").on("keypress",function(e){
-        if (e.keyCode == 13) {
-            e.preventDefault();
-        }
-    });
 
 //      if (e.keyCode == 13){
 //          $(this).next("input").focus();
