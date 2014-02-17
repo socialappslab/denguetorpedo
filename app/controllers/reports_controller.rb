@@ -5,6 +5,7 @@ class ReportsController < ApplicationController
 
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
+  before_filter :require_admin, :only =>[:types]
 
   #points user receives for submitting a site
 
