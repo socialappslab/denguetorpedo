@@ -5,13 +5,16 @@ class ReportsController < ApplicationController
 
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
+  before_filter :require_admin, :only =>[:types]
 
   def types
     @types = EliminationType.all
     @methods = EliminationMethod.all
   end
   
-  def index 
+  def index
+    #@elimination_selection = create_elimination_selection
+
     @current_report = params[:report]    
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
     params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
@@ -483,4 +486,6 @@ class ReportsController < ApplicationController
   def find_by_id
     @report = Report.find(params[:id])
   end
+
+
 end
