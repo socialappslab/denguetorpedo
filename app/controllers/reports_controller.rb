@@ -502,18 +502,18 @@ class ReportsController < ApplicationController
   end
 
   def award_points report, user, params
-    method = params[:eliminate].has_key?(:elimination_method) ?
-        params[:eliminate][:elimination_method] : report.elimination_method
-    unless method.blank?
-      puts method
-      puts params[:eliminate][:elimination_method]
-      puts report.elimination_method
-      points = EliminationMethod.find_by_method(method).points
-      puts points
-      user.update_attributes!(:points=>user.points + points, :total_points=>user.total_points + points)
+    #method = params[:eliminate].has_key?(:elimination_method) ?
+    #    params[:eliminate][:elimination_method] : report.elimination_method
+    #unless method.blank?
+    #  puts method
+    #  puts params[:eliminate][:elimination_method]
+    #  puts report.elimination_method
+    #  points = EliminationMethod.find_by_method(method).points
+    #  puts points
+      user.update_attributes!(:points=>user.points + 11, :total_points=>user.total_points + 11)
     end
 
-  end
+  #end
 
 
 end
