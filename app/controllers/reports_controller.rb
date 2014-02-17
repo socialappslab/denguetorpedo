@@ -7,6 +7,8 @@ class ReportsController < ApplicationController
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
   before_filter :require_admin, :only =>[:types]
 
+  #points user receives for submitting a site
+
   def types
     @types = EliminationType.all
     @methods = EliminationMethod.all
@@ -29,22 +31,23 @@ class ReportsController < ApplicationController
     
     @elimination_method_select = EliminationMethods.field_select
     @elimination_types = EliminationType.pluck(:name)
+
     reports_with_status_filtered = []
     locations = []
     open_locations = []
     eliminated_locations = []
-    @prantinho = EliminationMethods.prantinho
-    @pneu = EliminationMethods.pneu
-    @lixo = EliminationMethods.lixo
-    @pequenos = EliminationMethods.pequenos
-    @grandes = EliminationMethods.grandes
-    @calha = EliminationMethods.calha
-    @registros = EliminationMethods.registros
-    @laje = EliminationMethods.laje
-    @piscinas = EliminationMethods.piscinas
-    @pocas = EliminationMethods.pocas
-    @ralos = EliminationMethods.ralos
-    @plantas = EliminationMethods.plantas
+    #@prantinho = EliminationMethods.prantinho
+    #@pneu = EliminationMethods.pneu
+    #@lixo = EliminationMethods.lixo
+    #@pequenos = EliminationMethods.pequenos
+    #@grandes = EliminationMethods.grandes
+    #@calha = EliminationMethods.calha
+    #@registros = EliminationMethods.registros
+    #@laje = EliminationMethods.laje
+    #@piscinas = EliminationMethods.piscinas
+    #@pocas = EliminationMethods.pocas
+    #@ralos = EliminationMethods.ralos
+    #@plantas = EliminationMethods.plantas
     @points = EliminationMethods.points
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
     @reports.each do |report|
@@ -168,7 +171,11 @@ class ReportsController < ApplicationController
   end
 
   def update
+    submission_points = 50
+    submit_complete = true
+
     if request.put?
+
       @report = Report.find_by_id(params[:report_id])
 
       if @report.sms_incomplete?
@@ -232,124 +239,144 @@ class ReportsController < ApplicationController
 
       @report = Report.find(params[:report_id])
 
-      if params[:elimination_type] == ""
-        flash[:error] = "Você tem que escolher um tipo de foco."
-        redirect_to :back
-        return
-      end
+      ## User pressed submit without selecting a elimination type
+      #if params[:elimination_type].blank? and @report.elimination_type.blank?
+      #  flash[:notice] = "Você tem que escolher um tipo de foco."
+      #  submit_complete = false
+      #  #redirect_to :back
+      #  #return
+      #end
 
+      # ? When user submits a new site, before they've selected a elimination_type
       if @report.elimination_type.nil? and params[:elimination_type]
         @report.elimination_type = params[:elimination_type]
         @report.completed_at = Time.now
         @report.save
         flash[:notice] = "Tipo de foco atualizado com sucesso."
-        @current_user.update_attribute(:points, @current_user.points + 50)
-        @current_user.update_attribute(:total_points, @current_user.total_points + 50)
+        @current_user.update_attribute(:points, @current_user.points + submission_points)
+        @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
         redirect_to :back
         return
+      else
+        flash[:notice] = "Você tem que escolher um tipo de foco."
       end
- 
+
+
       if params[:report_description]
         @report.report = params[:report_description]
         @report.save
       end
-      
-      if !params[:eliminate] and @report.after_photo_file_size.nil?
-        flash[:error] = 'Você tem que carregar uma foto do foco eliminado.'
-        redirect_to(:back)
-        return
-      end
 
-      if params[:selected_elimination_method] == ""
 
-        if @report.after_photo_file_size.nil?
-          if params[:eliminate] and params[:eliminate][:after_photo] != nil
-          # user uploaded an after photo
-            @report.after_photo = params[:eliminate][:after_photo]
-            @current_user.points += 400
-            @current_user.total_points += 400
-            @current_user.save
-            @report.save
-          end
+      #if !params[:eliminate] and @report.after_photo_file_size.nil?
+      #  flash[:error] = 'Você tem que carregar uma foto do foco eliminado.'
+      #  redirect_to(:back)
+      #  return
+      #end
+
+
+      # Check to see if user has selected a method of elimination
+      if params[:selected_elimination_method].blank? and @report.elimination_method.blank?
+        flash[:notice] = " Você tem que escolher um método de eliminação."
+        submit_complete = false
+      else
+        #if user has updated the method then replace it
+        unless params[:selected_elimination_method].blank?
+          @report.elimination_method = params[:selected_elimination_method]
         end
-
-        flash[:error] = "Você tem que escolher um método de eliminação."
-        redirect_to :back
-        return
       end
-      
+
+
+      # Check to see if user has uploaded "after" photo
       if @report.after_photo_file_size.nil?
-        if params[:eliminate] and params[:eliminate][:after_photo] != nil 
-          # user uploaded an after photo
+        if params[:eliminate] and params[:eliminate][:after_photo] != nil
           @report.after_photo = params[:eliminate][:after_photo]
-          @current_user.points += 400
-          @current_user.total_points += 400
-          @current_user.save
-          @report.save
+        else
+          #user did not upload a photo either
+          submit_complete = false
+          flash[:notice] += " Você tem que carregar uma foto do foco eliminado."
         end
       end
 
-      if !params[:eliminate]
 
+      # ? If the eliminate form isn't being submitted
+      # ? Not sure when this occurs
+      # ? Maybe when submitting a new site
+      #if !params[:eliminate]
+      #  @report.update_attribute(:status_cd, 1)
+      #  @report.update_attribute(:eliminator_id, @current_user.id)
+      #  # @report.elimination_type = params[:elimination_type]
+      #  @report.elimination_method = params[:selected_elimination_method]
+      #  @report.touch(:eliminated_at)
+      #  @report.save
+      #  flash[:notice] = "Você eliminou o foco!1"
+      #  redirect_to reports_path
+      #  return
+      #end
+
+      @report.save
+
+      if submit_complete
+        flash[:notice] = "Você eliminou o foco!"
+        @report.touch(:eliminated_at)
         @report.update_attribute(:status_cd, 1)
         @report.update_attribute(:eliminator_id, @current_user.id)
-        # @report.elimination_type = params[:elimination_type]
-        @report.elimination_method = params[:selected_elimination_method]
-        @report.touch(:eliminated_at)
-        @report.save
-        flash[:notice] = "Você eliminou o foco!"
-        redirect_to reports_path
-        return
+        award_points @report, @current_user
+        redirect_to :back
+      else
+        redirect_to :back
       end
 
-                         
-      if params[:eliminate][:after_photo] != nil
-        # user uploaded an after photo
-        begin
-          @report.after_photo = params[:eliminate][:after_photo]
-          @report.update_attribute(:status_cd, 1)
-          @report.update_attribute(:eliminator_id, @current_user.id)
-          @report.touch(:eliminated_at)
-          @current_user.points += 400
-          @current_user.total_points += 400
-          @current_user.save
-        rescue
-          flash[:notice] = 'An error has occurred!'
-          redirect_to(:back)
-          return
-        end
+      ## Submitting an after photo
+      #if params[:eliminate][:after_photo] != nil
+      #  # user uploaded an after photo
+      #  begin
+      #    @report.after_photo = params[:eliminate][:after_photo]
+      #    @report.update_attribute(:status_cd, 1)
+      #    @report.update_attribute(:eliminator_id, @current_user.id)
+      #    @report.touch(:eliminated_at)
+      #    @current_user.points += 3
+      #    @current_user.save
+      #
+      #  rescue
+      #    flash[:notice] = 'An error has occurred!'
+      #    redirect_to(:back)
+      #    return
+      #  end
         
         # @report.elimination_type = EliminationMethods.getEliminationTypeFromMethodSelect(params["method_of_elimination"])
         # @report.elimination_method = params["method_of_elimination"]
         # @report.elimination_type = params[:elimination_type]
-        @report.elimination_method = params[:selected_elimination_method]
+        #@report.elimination_method = params[:selected_elimination_method]
         
-        if @report.save
-          flash[:notice] = 'Você eliminou o foco!'
-          redirect_to(:back)
-        else
-          #for some reason save causes error here, but in view it looks OK
-          flash[:notice] = 'An error has occurred'
-          redirect_to(:back)
-        end
-      
-      elsif params[:eliminate][:before_photo] != nil
-        # user uploaded a before photo
-        @report.before_photo = params[:eliminate][:before_photo]
-        @current_user.points += 100
-        @current_user.total_points += 100
-        @current_user.save
-        if @report.save
-          flash[:notice] = "You updated before photo"
-          redirect_to(:back)
-        else
-          flash[:notice] = "An error has occured"
-          redirect_to(:back)
-        end
-      else
-        redirect_to(:back)
-      end 
-    end
+        #if @report.save
+        #  flash[:notice] = 'Você eliminou o foco!'
+        #  redirect_to(:back)
+        #else
+        #  #for some reason save causes error here, but in view it looks OK
+        #  flash[:notice] = 'An error has occurred'
+        #  redirect_to(:back)
+        #end
+      #
+      #elsif params[:eliminate][:before_photo] != nil
+      #  # user uploaded a before photo
+      #  @report.before_photo = params[:eliminate][:before_photo]
+      #  @current_user.points += 100
+      #  @current_user.total_points += 100
+      #  @current_user.save
+      #  if @report.save
+      #    flash[:notice] = "You updated before photo"
+      #    redirect_to(:back)
+      #  else
+      #    flash[:notice] = "An error has occured"
+      #    redirect_to(:back)
+      #  end
+      #else
+      #  redirect_to(:back)
+      #end
+
+    end #end of put statement
+
   end
   
   def destroy
@@ -486,6 +513,17 @@ class ReportsController < ApplicationController
   def find_by_id
     @report = Report.find(params[:id])
   end
+
+  def award_points report, user
+    unless report.elimination_method.blank?
+      points = EliminationMethod.find_by_method(report.elimination_method).points
+      user.points += points
+      user.total_points += points
+      user.save
+    end
+  end
+
+  #end
 
 
 end
