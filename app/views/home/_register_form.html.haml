@@ -1,15 +1,48 @@
+:javascript
+  function validate(){
+    var email = $("#user_email").val();
+    var first_name = $("#user_first_name").val();
+    var last_name = $("#user_last_name").val();
+    var password = $("#user_password").val();
+    var confirm_pass = $("#user_password_confirmation").val();
+    var message = "Erros impediram que o usuário fosse salvo:\n";
+    var alerting = false;
+    if (first_name <2 || firstname>16){
+      alerting = true;
+      message = message.concat("firstname \n");
+    }
+    if(last_name <2 || last_name >16){
+      alerting = true;
+      message = message.concat("lastname \n");
+    }
+    if(password <4){
+      alerting = true;
+      message = message.concat("password \n");
+    }
+    if (email ==""){
+      alerting = true;
+      message = message.concat("email empty\n");
+    }
+    if (alerting){
+      alert(message);
+      return false;
+    };
+    return true;
+  };
+
 #register
   %h3.black{style: "margin-bottom:0px;"} Cadastre-se 
   %p{title: "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco.", style: "color:white;margin-bottom:10px;"} Quem pode se cadastrar?
   %ul
-    = form_for(@user) do |f|
+    = form_for(@user, html: {name: "registration_form", onsubmit: "validate(); return false"}) do |f|
       %li= f.error_messages
      
       %li= f.text_field :email, :placeholder => "E-mail", :class => "fields"
       %li= f.text_field :first_name, :placeholder => "Nome", :class => "fields"
       -#%li= f.text_field :middle_name, :placeholder => "Nome do meio", :class => "fields"
       %li= f.text_field :last_name, :placeholder => "Sobrenome", :class => "fields"
-      %li= f.text_field :phone_number, :placeholder => "Celular: 0219xxxxxxxx", :class => "fields"
+      /Took out cell phone number
+      /%li= f.text_field :phone_number, :placeholder => "Celular: 0219xxxxxxxx", :class => "fields"
       %li= f.password_field :password, :placeholder => "Senha", :class => "fields"
       %li= f.password_field :password_confirmation, :placeholder => "Confirmar senha", :class => "fields"
       <br>

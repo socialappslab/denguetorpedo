@@ -8,6 +8,7 @@ group :staging, :production do
   gem 'pg'
 end
 
+gem 'dalli'
 gem 'magic_encoding'
 gem 'thin'
 gem 'haml'

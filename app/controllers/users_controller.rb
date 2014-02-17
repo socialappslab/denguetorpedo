@@ -180,8 +180,13 @@ class UsersController < ApplicationController
       house_neighborhood = params[:user][:location][:neighborhood] || ''
       house_profile_photo = params[:user][:house_attributes][:profile_photo] || ''
     end
-
-    user_profile_phone_number = params[:user][:phone_number]
+    input_phone = params[:user][:phone_number]
+    #Error message put
+    if input_phone.to_i <= 10
+      flash[:alert] = "Número de celular invalido.  O formato correto é 0219xxxxxxxx."
+      redirect_to :back and return
+    end
+    user_profile_phone_number = input_phone
     #user_profile_phone_number_confirmation = params[:phone_number_confirmation]
     user_profile_photo = params[:user][:profile_photo]
     user_email = params[:user][:email]
