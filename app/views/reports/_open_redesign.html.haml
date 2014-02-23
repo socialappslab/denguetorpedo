@@ -1,17 +1,20 @@
 #controller{'ng-controller'=>'ReportListController'}
-  #reports{'data-url'=>@report_json}
-  %br
 
   #reports
     #report_loop{'ng-repeat'=>'report in reports track by $index'}
       .rp_report.rp_open_report
         .row
           -#Header
-          .rp_report_status.status
+          .report_header
             -#elimination status
-            .rp_report_options{:style => "margin-top:-3px;"}
-              -#Time remaining and admin options
-              -#Options for SMS submission - check on this
+            %p{'ng-class'=>"{'status_expired':report_expired(report)}"}Em aberto
+            -# JQuery
+            .right_half
+              %timer.count_down{'end-time'=>"time_left(report)"}
+                {{days}} days, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds
+              .admin_options
+                -#Time remaining and admin options
+                -#Options for SMS submission - check on this
 
         -#body - top row
         .row{style: "margin-top:5px;"}

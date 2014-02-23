@@ -72,16 +72,7 @@
   font-weight:bold;
 }
 
-.rp_report_status {
-  margin-top: -10px;
-  margin-right: -5px;
-  padding-top: 2px;
-  padding-left: 5px;
-  height: 24px;
-  color: #FFFFFF;
-  text-align: left;
-  font-size: 14px;
-}
+
 
 .rp_report_people {
   margin-left: 0px;
@@ -100,9 +91,7 @@
   
 }
 
-.rp_report_options {
-  float: right;
-}
+
 
 .rp_claimed_report {
   border-color: $blue;
@@ -283,4 +272,46 @@
   height:auto;
 }
 
+/*REPORT FORM STYLING*/
 
+.report_header {
+  background:$orange;
+  margin-top: -10px;
+  margin-right: -5px;
+  padding-top: 2px;
+  padding-left: 5px;
+  height: 24px;
+  text-align: left;
+  font-size: 14px;
+
+  .right_half{
+      float:right;
+      margin-top: -3px;
+    .admin_options{
+
+    }
+
+    .count_down{
+      width:150px;
+      height: 20px;
+      background-color:transparent;
+      border: none;
+      float:right;
+      margin-top:1px;
+      margin-right:0px;
+      font-size:20px;
+    }
+  }
+
+  p{
+    color:white;
+  }
+
+
+
+}
+
+
+.status_expired{
+  text-decoration: line-through;
+}

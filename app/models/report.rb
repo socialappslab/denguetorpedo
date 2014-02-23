@@ -68,7 +68,7 @@ class Report < ActiveRecord::Base
 
   # after_create :create_notifications, if: :sms?
 
-  @@allowed_time = 3600 * 24 * 2
+  @@allowed_time = 3600 * 24 * 2 #seconds * hours * days
 
   def self.create_from_user(report_content, params)
     create(:report => report_content) do |r|
