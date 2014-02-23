@@ -13,6 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
+//= require angular
+//= require angular-animate
+//= require angular-resource
 //= require_tree .
 //= require leaflet
 
@@ -23,6 +26,9 @@
 // TopUp.players_path = "assets/players/";
 
 //Prevent Enter from submitting forms on site
+
+angular.module('dengue_torpedo',['dengue_torpedo.controllers']);
+
 $(window).on("keypress",function(e){
     if (e.keyCode == 13) {
         e.preventDefault();

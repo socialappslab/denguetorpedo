@@ -74,7 +74,7 @@
                   = hidden_field_tag "selected_elimination_method"
                   / # = select_tag "method_of_elimination", options_from_collection_for_select(@elimination_type), :style => "width: 355px;" 
                   :javascript
-                    $(".selectpicker").selectpicker();
+                    $(".selectpicker").selectpipcker();
 
                   - if open.after_photo_file_size
                     .rp_report_people

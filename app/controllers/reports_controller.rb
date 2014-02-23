@@ -482,9 +482,83 @@ class ReportsController < ApplicationController
     end
   end
 
+
+  def show_redesign
+    @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
+
+    respond_to do |format|
+      format.json {render :json=>@reports}
+
+      format.html{
+        #CARRY OVER FROM OLD INDEX
+        @current_report = params[:report]
+        @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
+        params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
+        params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
+        params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
+        params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
+        params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
+
+        if params[:view] == "make_report"
+          @report = Report.new
+        end
+
+        @elimination_method_select = EliminationMethods.field_select
+        @elimination_types = EliminationType.pluck(:name)
+        reports_with_status_filtered = []
+        locations = []
+        open_locations = []
+        eliminated_locations = []
+
+
+        @report_json = @reports.to_json
+
+        # ? taking out different location points: open, eliminitated
+        @reports.each do |report|
+          if (report.reporter == @current_user or report.elimination_type)
+            if params[:view] == 'recent' || params[:view] == 'make_report'
+              reports_with_status_filtered << report
+              if report.status_cd == 1
+                eliminated_locations << report.location
+              else
+                open_locations << report.location
+              end
+              locations << report.location
+            elsif params[:view] == 'open' && report.status == :reported
+              reports_with_status_filtered << report
+              open_locations << report.location
+            elsif params[:view] == 'eliminate' && report.status == :eliminated
+              reports_with_status_filtered << report
+              eliminated_locations << report.location
+            end
+          end
+      end
+
+      @markers = locations.map { |location| location.info}
+      @open_markers = open_locations.map { |location| location.info}
+      @eliminated_markers = eliminated_locations.map { |location| location.info}
+      @reports = reports_with_status_filtered
+      @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
+      @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
+      @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
+      @open_feed = @reports
+      @eliminate_feed = @reports
+
+      render "index_redesign"
+    }
+    end   #end of respond to
+
+  end
+
+
   private
   def find_by_id
     @report = Report.find(params[:id])
+  end
+
+  def create_reports
+
+
   end
 
 
