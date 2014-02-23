@@ -182,7 +182,7 @@ class UsersController < ApplicationController
     end
     input_phone = params[:user][:phone_number]
     #Error message put
-    if input_phone.to_i <= 10
+    if input_phone.length < 12
       flash[:alert] = "Número de celular invalido.  O formato correto é 0219xxxxxxxx."
       redirect_to :back and return
     end
@@ -320,7 +320,7 @@ class UsersController < ApplicationController
       
 
       if @user.house and !@user.house.save
-        flash[:notice] = "There was an error with your house info. Please enter casa information again."
+        flash[:notice] = "Preenche o nome da casa."
         render "edit"
         return
       end

@@ -1,13 +1,16 @@
 :javascript
   function validate(){
     var email = $("#user_email").val();
+    email = email.length
     var first_name = $("#user_first_name").val();
+    first_name = first_name.length;
     var last_name = $("#user_last_name").val();
+    last_name = last_name.length;
     var password = $("#user_password").val();
-    var confirm_pass = $("#user_password_confirmation").val();
+    password = password.length;
     var message = "Erros impediram que o usuário fosse salvo:\n";
     var alerting = false;
-    if (first_name <2 || firstname>16){
+    if (first_name <2 || first_name>16){
       alerting = true;
       message = message.concat("firstname \n");
     }
@@ -15,7 +18,7 @@
       alerting = true;
       message = message.concat("lastname \n");
     }
-    if(password <4){
+    if(password<4){
       alerting = true;
       message = message.concat("password \n");
     }

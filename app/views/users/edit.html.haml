@@ -279,8 +279,9 @@
       = f.radio_button :prepaid, "false", id:"post_paid_radio"
       Pós-pago
       %br
-      =check_box_tag :cellphone, false
+      
       Se você não tiver um celular, clique aqui.
+      =check_box_tag :cellphone, false
       %br
       /= f.label :phone_number,  "* Confirmar celular"
       -#= text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
