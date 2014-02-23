@@ -37,7 +37,7 @@
   %h3.black{style: "margin-bottom:0px;"} Cadastre-se 
   %p{title: "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco.", style: "color:white;margin-bottom:10px;"} Quem pode se cadastrar?
   %ul
-    = form_for(@user, html: {name: "registration_form", onsubmit: "validate(); return false"}) do |f|
+    = form_for(@user, html: {name: "registration_form", onsubmit: "return validate();"}) do |f|
       %li= f.error_messages
      
       %li= f.text_field :email, :placeholder => "E-mail", :class => "fields"
