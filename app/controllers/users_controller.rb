@@ -250,9 +250,13 @@ class UsersController < ApplicationController
     end
 
     @user.gender = params[:user][:gender]
+    if house_name.blank?
+      flash[:alert] = "Preenche o nome da casa."
+      redirect_to :back
+      return
+    end
 
     # if a house exists with the same house name or house address, inform the user for confirmation
-
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
       @user.house ||= House.new
       @user.house.location ||= Location.new
