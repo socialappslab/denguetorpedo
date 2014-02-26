@@ -8,7 +8,7 @@
     last_name = last_name.length;
     var password = $("#user_password").val();
     password = password.length;
-    var message = "Erros impediram que o usuário fosse salvo:\n";
+    var message = "Há um erro:\n"
     var alerting = false;
     var count = 0;
     if (first_name <2 || first_name>16){
@@ -35,7 +35,7 @@
       if (count <4){
         alert(message);
       }else{
-        alert("Há um erro: E-mail \n Nome \n Sobrenome \n Senha");
+        alert("Erros impediram que o usuário fosse salvo:\n E-mail \n Nome \n Sobrenome \n Senha");
       }
       return false;
     };
