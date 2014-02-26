@@ -10,24 +10,33 @@
     password = password.length;
     var message = "Erros impediram que o usuário fosse salvo:\n";
     var alerting = false;
+    var count = 0;
     if (first_name <2 || first_name>16){
       alerting = true;
-      message = message.concat("firstname \n");
+      count += 1;
+      message = message.concat("Nome tem que ter entre 2 e 16 caracteres \n");
     }
     if(last_name <2 || last_name >16){
       alerting = true;
-      message = message.concat("lastname \n");
+      count +=1;
+      message = message.concat("Sobrenome tem que ter entre 2 e 16 caracteres \n");
     }
     if(password<4){
       alerting = true;
-      message = message.concat("password \n");
+      count +=1;
+      message = message.concat("A sua senha tem que ter pelo menos 4 caracteres\n");
     }
     if (email ==""){
       alerting = true;
-      message = message.concat("email empty\n");
+      count +=1;
+      message = message.concat("Você esqueceu de preencher o seu e-mail\n");
     }
     if (alerting){
-      alert(message);
+      if (count <4){
+        alert(message);
+      }else{
+        alert("Há um erro: E-mail \n Nome \n Sobrenome \n Senha");
+      }
       return false;
     };
     return true;
