@@ -7,13 +7,19 @@
           -#Header
           .report_header
             -#elimination status
-            %p{'ng-class'=>"{'status_expired':report_expired(report),''}"}Em aberto
-            -# JQuery
+            %p{'ng-class'=>"{'status_expired':report_expired(report)}"}Em aberto
+
             .right_half
-              %timer.count_down{'end-time'=>"time_left(report)"}
-                {{hours}}:{{minutes}}:{{seconds}}
+              -#show timer if not expired, else show "Tempo expirado"
+              %timer{'end-time'=>"time_left(report)",'ng-hide'=>'report_expired(report)'}
+                %p Tempo restante
+                .count_down {{hours + (days * 24)}}:{{minutes}}:{{seconds}}
+              %p{'ng-show'=>'report_expired(report)'} Tempo expirado
+
               .admin_options
-                -#Time remaining and admin options
+                = link_to (image_tag 'icons/reports icon/check.png'), problem_reports_path(:id => "{{report.info.id}}"), method: :post
+                = link_to (image_tag 'icons/reports icon/x.png'), verify_reports_path(:id => "{{report.info.id}}"), method: :post
+
                 -#Options for SMS submission - check on this
 
         -#body - top row
@@ -45,11 +51,12 @@
                     ELIM CHECK
                     -#elimination_type
 
-                    = f.select :elimination_type,options_for_select(@elimination_types, "{{report.info.eliminiation_type}}"),{}, :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
+                    = f.select :elimination_type, options_for_select(@elimination_types, "{{report.info.eliminiation_type}}"),{}, :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
                     -#= f.select :phone_type, options_for_select([["Select One", ""], "Cell", "Work", "Office", "Home", "Other"]), :class => 'genForm_dropBox'
                       -#STYLING->= select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
                     -#elimination_method
-                      -STYLING->#=select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+                    = f.select :elimination_method, options_for_select(elimination_selection("{{report.info.elimination_type}}").collect{|p| [p[:display],p[:name]]}),{},{}
+                    -#-STYLING->#=select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
                     -#= hidden_field_tag "selected_elimination_method"
                     -# Do we need this? Bootstrap picker
                       :javascript

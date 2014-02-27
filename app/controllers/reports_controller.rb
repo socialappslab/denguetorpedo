@@ -589,7 +589,7 @@ class ReportsController < ApplicationController
       custom_reports << {"info"=>report,
                          "before_url"=>report.before_photo.url,
                          'after_url'=>report.after_photo.url,
-                        'location'=>report.location}
+                         'location'=>report.location}
     end
 
     return custom_reports

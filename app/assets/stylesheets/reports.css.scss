@@ -331,9 +331,22 @@
 
   .right_half{
       float:right;
-      width:50%;
+      width:70%;
       color:white;
+
+    p{
+      width:auto;
+      font-size:14px;
+      padding-left:50px;
+      margin-right:10px;
+    }
+
     .admin_options{
+      float:right;
+      img{
+        width:25px;
+        height:25px;
+      }
 
     }
 
@@ -342,7 +355,7 @@
       height: 20px;
       background-color:transparent;
       border: none;
-      float:right;
+      display:inline;
       margin-top:1px;
       margin-right:0px;
       font-size:20px;
@@ -351,7 +364,7 @@
 
   p{
     color:white;
-    width:50%;
+    width:20%;
     float:left;
     font-size: 14px;
   }
