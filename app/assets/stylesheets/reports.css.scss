@@ -289,6 +289,25 @@
 
 /*REPORT FORM STYLING*/
 
+.report_before_photo, .report_after_photo{
+  margin: 10px 0px 0px 10px;
+  width: 100px;
+  height: 100px;
+}
+
+.report_drop_down{
+  width:430px;
+}
+
+.report_body_top{
+  margin-top:5px;
+  background-color:blue;
+}
+
+.report_body_middle{
+  margin-top:7px;
+}
+
 .report_header {
   background:$orange;
   margin-top: -10px;
@@ -298,10 +317,13 @@
   height: 24px;
   text-align: left;
   font-size: 14px;
+  display:table;
+  width:100%;
 
   .right_half{
       float:right;
-      margin-top: -3px;
+      width:50%;
+      color:white;
     .admin_options{
 
     }
@@ -320,6 +342,8 @@
 
   p{
     color:white;
+    width:50%;
+    float:left;
   }
 
 
