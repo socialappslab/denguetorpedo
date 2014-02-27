@@ -251,7 +251,7 @@ class UsersController < ApplicationController
 
     @user.gender = params[:user][:gender]
     if house_name.blank?
-      flash[:alert] = "Preenche o nome da casa."
+      flash[:alert] = "Preencha o nome da casa."
       redirect_to :back
       return
     end
@@ -324,7 +324,7 @@ class UsersController < ApplicationController
       
 
       if @user.house and !@user.house.save
-        flash[:notice] = "Preenche o nome da casa."
+        flash[:notice] = "Preencha o nome da casa."
         render "edit"
         return
       end
