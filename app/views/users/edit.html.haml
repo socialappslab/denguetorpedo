@@ -32,16 +32,55 @@
     });
 
     window.onload = $("#name_edit_box").slideToggle("fast");
+    window.onload = checking;
+    function checking(){
+      if($("#user_phone_number").val() == "000000000000"){
+        $("#cellphone").prop('checked', true);
+      }
+    };
+    document.forms[0].cellphone.addEventListener("click",EnableDisableToolTip);
+    function EnableDisableToolTip() {
+      if (document.forms[0].cellphone.checked) {
+        $("#user_phone_number").val("000000000000");
+        $("#carrier").val("xxx");
+      }
+      else if (!document.forms[0].cellphone.checked) {
+        $("#user_phone_number").val("");
+        $("#carrier").val("");
+      }        
+    }
 
     $(".collapse_name").click(function(event){
       event.preventDefault();
       $("#name_edit_box").slideToggle("fast");
     });
 
-    $("#cellphone").click(function(){
-      $("#user_phone_number").val("000000000000");
-      $("#carrier").val("xxx");
-    });
+    function validation(){
+      var cellphone_number = $("#user_phone_number").val();
+      var carrier = $("#carrier").val();
+      var output = "";
+      var alerting = false;
+      var house_name = $("#user_house_attributes_name").val();
+      if (cellphone_number == "" || cellphone_number.length < 12){
+        alerting = true;
+        output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
+      }
+      if(carrier == ""){
+        alerting = true;
+        output = output.concat("Informe a sua operadora. \n");
+      }
+      if (house_name ==""){
+        alerting = true;
+        output = output.concat("Preenche o nome da casa.\n");
+      }
+      if (alerting){
+        alert(output);
+        return false
+      } 
+      return true;
+    }
+
+
 
 .user_form.offset1
   /%h1 Configurações da conta
@@ -83,7 +122,7 @@
           = link_to "Códigos de controle dos prêmios", "/coupons"
 
         
-  = form_for(@user, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
+  = form_for(@user, :html => {name: "configuration", onsubmit: "return validation()"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
     - if @user.role != "visitante"
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
@@ -280,7 +319,8 @@
       Pós-pago
       %br
       =check_box_tag :cellphone, false
-      Se você não tiver um celular, clique aqui.
+      Clique aqui se você não tiver um celular.
+      
       %br
       /= f.label :phone_number,  "* Confirmar celular"
       -#= text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")

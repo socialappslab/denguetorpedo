@@ -182,7 +182,7 @@ class UsersController < ApplicationController
     end
     input_phone = params[:user][:phone_number]
     #Error message put
-    if input_phone.to_i <= 10
+    if input_phone.length < 12
       flash[:alert] = "Número de celular invalido.  O formato correto é 0219xxxxxxxx."
       redirect_to :back and return
     end
@@ -250,9 +250,13 @@ class UsersController < ApplicationController
     end
 
     @user.gender = params[:user][:gender]
+    if house_name.blank?
+      flash[:alert] = "Preenche o nome da casa."
+      redirect_to :back
+      return
+    end
 
     # if a house exists with the same house name or house address, inform the user for confirmation
-
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
       @user.house ||= House.new
       @user.house.location ||= Location.new
@@ -320,7 +324,7 @@ class UsersController < ApplicationController
       
 
       if @user.house and !@user.house.save
-        flash[:notice] = "There was an error with your house info. Please enter casa information again."
+        flash[:notice] = "Preenche o nome da casa."
         render "edit"
         return
       end

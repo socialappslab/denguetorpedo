@@ -583,6 +583,13 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
   end
 
+<<<<<<< HEAD
+  def create_reports
+
+
+  end
+
+=======
   def award_points report, user
     unless report.elimination_method.blank?
       points = EliminationMethod.find_by_method(report.elimination_method).points
@@ -594,5 +601,6 @@ class ReportsController < ApplicationController
 
   #end
 
+>>>>>>> 0877786e8da6a7e323e20e8fd5036b9ca30ae407
 
 end
