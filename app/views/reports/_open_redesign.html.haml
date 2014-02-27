@@ -7,7 +7,7 @@
           -#Header
           .report_header
             -#elimination status
-            %p{'ng-class'=>"{'status_expired':report_expired(report)}"}Em aberto
+            %p{'ng-class'=>"{'status_expired':report_expired(report),''}"}Em aberto
             -# JQuery
             .right_half
               %timer.count_down{'end-time'=>"time_left(report)"}
@@ -18,7 +18,8 @@
 
         -#body - top row
         .row.report_body_top
-          .span6{:style => "margin-top:10px;"}
+          .span6.report_address
+            %h4 {{report.location.address}} Maré
             -#address or SMS info (? .report)
           .span2
             -#if .location.lat/long  place on map. See code below
@@ -26,8 +27,10 @@
 
         -#body - middle row
         .row.report_body_middle
-          .span2.report_before_photo
-            =image_tag "http://www.offair.org/testPattern.png", :size=>:medium
+          .span2.report_photos
+            %img.report_before_photo{"ng-src"=>"{{report.before_url}}"}
+            %img.report_after_photo{"ng-src"=>"{{report.before_url}}"}
+
           .span5{style: "margin-top:9px;"}
             -#elimination type
                 -#Do we need a check for nil user?
@@ -37,11 +40,12 @@
                 .eliminate_prompt{:style => "margin-top:5px;"}
                   = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
                     -#report_id
-                    = f.hidden_field :report_id, :value=>"{{report.id}}"
+                    = f.hidden_field :report_id, :value=>"{{report.info.id}}"
                     -#sms check
                     ELIM CHECK
                     -#elimination_type
-                    = f.select :elimination_type, ['1','2','3'], :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
+
+                    = f.select :elimination_type,options_for_select(@elimination_types, "{{report.info.eliminiation_type}}"),{}, :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
                     -#= f.select :phone_type, options_for_select([["Select One", ""], "Cell", "Work", "Office", "Home", "Other"]), :class => 'genForm_dropBox'
                       -#STYLING->= select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
                     -#elimination_method

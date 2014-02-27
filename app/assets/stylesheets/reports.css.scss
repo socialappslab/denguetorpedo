@@ -289,10 +289,15 @@
 
 /*REPORT FORM STYLING*/
 
-.report_before_photo, .report_after_photo{
-  margin: 10px 0px 0px 10px;
+.report_photos {
+
   width: 100px;
-  height: 100px;
+  .report_before_photo, .report_after_photo{
+    margin: 10px 0px 0px 10px;
+    max-width: 100%;
+    vertical-align: middle;
+
+  }
 }
 
 .report_drop_down{
@@ -301,7 +306,11 @@
 
 .report_body_top{
   margin-top:5px;
-  background-color:blue;
+
+  .report_address{
+    margin-top:10px;
+    font-size:14px;
+  }
 }
 
 .report_body_middle{
@@ -344,6 +353,7 @@
     color:white;
     width:50%;
     float:left;
+    font-size: 14px;
   }
 
 

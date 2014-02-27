@@ -514,7 +514,10 @@ class ReportsController < ApplicationController
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
 
     respond_to do |format|
-      format.json {render :json=>@reports}
+      format.json {
+        custom_reports = create_reports @reports
+        render :json=>custom_reports
+      }
 
       format.html{
         #CARRY OVER FROM OLD INDEX
@@ -579,6 +582,19 @@ class ReportsController < ApplicationController
 
 
   private
+
+  def create_reports reports
+    custom_reports = []
+    reports.each do |report|
+      custom_reports << {"info"=>report,
+                         "before_url"=>report.before_photo.url,
+                         'after_url'=>report.after_photo.url,
+                        'location'=>report.location}
+    end
+
+    return custom_reports
+  end
+
   def find_by_id
     @report = Report.find(params[:id])
   end

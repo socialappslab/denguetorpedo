@@ -31,17 +31,18 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
 
             $resource('/reports_redesign.json').query({},function(data){
                 $scope.reports = data;
+                console.log($scope.reports);
             });
 
         $scope.time_left =function(report){
-            var start_time = new Date(report['completed_at']);
+            var start_time = new Date(report.info.completed_at);
             return start_time.getTime() + allowed_time;
         }
 
         $scope.report_expired = function(report){
-            if(report['completed_at']){
+            if(report.info.completed_at){
                 //report is expired if start_time + allowed_time < current_time
-                var start_time = new Date(report['completed_at']);
+                var start_time = new Date(report.info.completed_at);
                 return new Date(start_time.getTime() + allowed_time) < new Date().getTime();
 
             }
