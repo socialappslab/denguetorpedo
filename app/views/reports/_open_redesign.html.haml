@@ -1,4 +1,53 @@
 #controller{'ng-controller'=>'ReportListController'}
+  #report_buttons.report_buttons_angular
+    = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
+    = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
+    = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
+  = link_to "Marcar um foco", "#", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
+  #new_report
+    .row
+      #new_report_header
+        %p Marcar
+    .row
+      .field_header
+        %h4 1. Endereço do foco localizado:
+    .row
+      #address_field
+        = text_field_tag "street_type",nil, :placeholder=>"Rua, Beco etc.", :id=>'street_type_field'
+        = text_field_tag "street_name",nil, :placeholder=>"Nome", :id=>'street_name_field'
+        = text_field_tag "street_number",nil, :placeholder=>"Número", :id =>'street_number_field'
+        = text_field_tag "neighborhood","Maré",:disabled=>'true', :id=>'neighborhood'
+
+    .row
+      .field_header
+        %h4 2. Descrição de localização:
+    .row
+      #description_field
+        = text_area_tag "location_description", nil, :columns=>40, :placeholder=>"Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; Foco na calçada em frente"
+
+    .row
+      .field_header
+        %h4 3. Carregue a imagem do foco encontrado:
+    .row
+      #photo_field
+        = file_field_tag 'before_photo'
+    .row
+      #elimination_type_field
+        %h4 4.
+        =select_tag :elimination_type, options_for_select(@elimination_types), :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
+
+    .row
+      #map_field
+        %h4 5.
+        #map_button
+          Marcar no mapa
+      = button_tag "Enviar!", :id=>'submit_button'
+    .row
+
+
+
+
+
 
   #reports
     #report_loop{'ng-repeat'=>'report in reports track by $index'}
