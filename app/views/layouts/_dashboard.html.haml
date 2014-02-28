@@ -1,4 +1,4 @@
-#dashboard_bar
+#dashboard_bar{:style => "z-index:2;position:relative;"}
   #menu_bar
     %ul
       %li{:style => "display:inline-block;"}
@@ -10,7 +10,7 @@
               Meu Perfil
             /= link_to 'Meu Perfil', sponsor_path(@current_user), :class => highlight_active_link(sponsor_path(@current_user))
           - else
-            =link_to user_path(@current_user) do
+            =link_to user_path(@current_user)do
               = image_tag("icons/profile_icon.png")
               Meu Perfil
             /= link_to 'Meu Perfil', user_path(@current_user), :class => highlight_active_link(user_path(@current_user))

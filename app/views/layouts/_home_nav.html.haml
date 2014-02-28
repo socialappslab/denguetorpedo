@@ -1,7 +1,7 @@
 #home_nav_bar
-  .row
+  .row{style: "height:inherit;"}
     %ul
-      = link_to image_tag("home_images/logo.png", :id => "logo"), root_path
+      = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
       %li.main_nav_button.span3.offset4{style: 'margin-left: 240px;'}
         =link_to education_path do
           %h1{style: 'color:black;'} SAIBA MAIS
