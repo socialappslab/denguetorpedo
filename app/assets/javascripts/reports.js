@@ -40,11 +40,11 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
             }
 
             $scope.submit_report= function(){
-                $scope.new_report.location.address = $scope.new_report.info.street_type +
-                                                     " " + $scope.new_report.info.street_name +
-                                                     " " + $scope.new_report.info.street_number +
-                                                     " " + $scope.new_report.info.neighborhood;
-
+//                $scope.new_report.location.address = $scope.new_report.info.street_type +
+//                                                     " " + $scope.new_report.info.street_name +
+//                                                     " " + $scope.new_report.info.street_number +
+//                                                     " " + $scope.new_report.info.neighborhood;
+//                $scope.new_reports.info.created_at = new Date();
 //                var data = new FormData($('#new_report_form')[0]);
 //
 //                $.ajax({
@@ -59,10 +59,10 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
 //
 //                });
 
-                $scope.reports.splice(0,0,$scope.new_report);
-                new_report_empty();
+                //$scope.reports.splice(0,0,$scope.new_report);
+                //new_report_empty();
 
-              $("#new_report").hide();
+//              $("#new_report").hide();
             }
 
 

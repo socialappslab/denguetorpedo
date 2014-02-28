@@ -3,7 +3,7 @@
     = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
     = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
     = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
-  = link_to "Marcar um foco", "#", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
+  = link_to "Marcar um foco", "", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
 
   -# New Report Form
   #new_report
@@ -13,7 +13,7 @@
     .row
       .field_header
         %h4 1. Endereço do foco localizado:
-    %form{:id=>'new_report_form'}
+    %form{:id=>'new_report_form', :name=>'new_report_form'}
       .row
         #address_field
           = text_field_tag "street_type",nil, :placeholder=>"Rua, Beco etc.", :id=>'street_type_field',
@@ -47,7 +47,7 @@
         #elimination_type_field
           %h4 4.
           =select_tag :elimination_type, options_for_select(@elimination_types), :prompt=>'Selecione o tipo de foco',
-           :class =>'report_drop_down', 'ng-model'=>'new_report.info.elimination_type'
+           :class =>'report_drop_down', 'ng-model'=>'new_report.info.elimination_type', 'ng-disabled'=>"new_form_form.street_type.$error.required"
 
       .row
         #map_field
