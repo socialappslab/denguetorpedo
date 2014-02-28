@@ -4,6 +4,8 @@
     = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
     = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
   = link_to "Marcar um foco", "#", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
+
+  -# New Report Form
   #new_report
     .row
       #new_report_header
@@ -11,44 +13,53 @@
     .row
       .field_header
         %h4 1. Endereço do foco localizado:
-    .row
-      #address_field
-        = text_field_tag "street_type",nil, :placeholder=>"Rua, Beco etc.", :id=>'street_type_field'
-        = text_field_tag "street_name",nil, :placeholder=>"Nome", :id=>'street_name_field'
-        = text_field_tag "street_number",nil, :placeholder=>"Número", :id =>'street_number_field'
-        = text_field_tag "neighborhood","Maré",:disabled=>'true', :id=>'neighborhood'
+    %form{:id=>'new_report_form'}
+      .row
+        #address_field
+          = text_field_tag "street_type",nil, :placeholder=>"Rua, Beco etc.", :id=>'street_type_field',
+            'ng-model'=>'new_report.info.street_type', :required =>true
 
-    .row
-      .field_header
-        %h4 2. Descrição de localização:
-    .row
-      #description_field
-        = text_area_tag "location_description", nil, :columns=>40, :placeholder=>"Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; Foco na calçada em frente"
+          = text_field_tag "street_name",nil, :placeholder=>"Nome", :id=>'street_name_field',
+            'ng-model'=>'new_report.info.street_name', :required =>true
 
-    .row
-      .field_header
-        %h4 3. Carregue a imagem do foco encontrado:
-    .row
-      #photo_field
-        = file_field_tag 'before_photo'
-    .row
-      #elimination_type_field
-        %h4 4.
-        =select_tag :elimination_type, options_for_select(@elimination_types), :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
+          = text_field_tag "street_number",nil, :placeholder=>"Número", :id =>'street_number_field',
+            'ng-model'=>'new_report.info.street_number', :required =>true
 
-    .row
-      #map_field
-        %h4 5.
-        #map_button
-          Marcar no mapa
-      = button_tag "Enviar!", :id=>'submit_button'
-    .row
+          = text_field_tag "neighborhood",nil,:disabled=>'true', :id=>'neighborhood', :placeholder=> "Maré",
+            'ng-model'=>'new_report.info.neighborhood', :required =>true
+
+      .row
+        .field_header
+          %h4 2. Descrição de localização:
+      .row
+        #description_field
+          = text_area_tag "report", nil, :columns=>40,
+           :placeholder=>"Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; Foco na calçada em frente",
+           'ng-model'=>'new_report.info.report'
+
+      .row
+        .field_header
+          %h4 3. Carregue a imagem do foco encontrado:
+      .row
+        #photo_field
+          = file_field_tag 'before_photo'
+      .row
+        #elimination_type_field
+          %h4 4.
+          =select_tag :elimination_type, options_for_select(@elimination_types), :prompt=>'Selecione o tipo de foco',
+           :class =>'report_drop_down', 'ng-model'=>'new_report.info.elimination_type'
+
+      .row
+        #map_field
+          %h4 5.
+          #map_button
+            Marcar no mapa
+
+        -#submit
+        = button_tag "Enviar!", :id=>'submit_button', 'ng-click'=>'submit_report()'
 
 
-
-
-
-
+  -# Report list - loop
   #reports
     #report_loop{'ng-repeat'=>'report in reports track by $index'}
       .rp_report.rp_open_report
@@ -96,13 +107,13 @@
                   = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
                     -#report_id
                     = f.hidden_field :report_id, :value=>"{{report.info.id}}"
+                    %p Report: {{report.info.report}}
                     -#sms check
-                    ELIM CHECK
+                    -#*SMS CHECK*
                     -#elimination_type
 
-                    = f.select :elimination_type, options_for_select(@elimination_types, "{{report.info.eliminiation_type}}"),{}, :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
-                    -#= f.select :phone_type, options_for_select([["Select One", ""], "Cell", "Work", "Office", "Home", "Other"]), :class => 'genForm_dropBox'
-                      -#STYLING->= select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
+                    %p Elimination: {{report.info.elimination_type}}
+                    -#= f.select :elimination_type, options_for_select(@elimination_types, "{{report.info.eliminiation_type}}"),{}, :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
                     -#elimination_method
                     = f.select :elimination_method, options_for_select(elimination_selection("{{report.info.elimination_type}}").collect{|p| [p[:display],p[:name]]}),{},{}
                     -#-STYLING->#=select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"

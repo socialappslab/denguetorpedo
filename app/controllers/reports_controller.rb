@@ -580,6 +580,25 @@ class ReportsController < ApplicationController
 
   end
 
+  def submit_report
+
+    if request.xhr?
+      puts params
+      new_report = Report.new
+      new_report.location = Location.new(params['location'])
+      new_report.reporter = @currenter_user
+      new_report.status = :reported
+      new_report.report = params['report']
+      #new_report.before_photo = params['before_photo']
+      if new_report.save
+        render :json=>{'stats'=>'success'}#,'before_photo'=>new_report.before_photo.url}
+      else
+        render :json=>{'status'=>'fail'}
+      end
+    end
+
+  end
+
 
   private
 

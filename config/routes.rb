@@ -37,6 +37,7 @@ Dengue::Application.routes.draw do
   get '/phones' => "users#phones"
 
   get '/reports_redesign' => 'reports#show_redesign'
+  match '/submit_report' => 'reports#submit_report'
 
   get '/premios/admin' => "prizes#admin"
   # Resources Routes
