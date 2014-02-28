@@ -1,7 +1,7 @@
 #dashboard_bar
   #menu_bar
     %ul
-      %li
+      %li{:style => "display:inline-block;"}
         /= image_tag("icons/profile_icon.png")
         - if @current_user.house && @current_user.house.id
           - if @current_user.role == "lojista"
