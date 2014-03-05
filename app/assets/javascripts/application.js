@@ -27,7 +27,7 @@
 
 //Prevent Enter from submitting forms on site
 
-angular.module('dengue_torpedo',['dengue_torpedo.controllers']);
+angular.module('dengue_torpedo',['dengue_torpedo.controllers','dengue_torpedo.factories']);
 
 $(window).on("keypress",function(e){
     if (e.keyCode == 13) {

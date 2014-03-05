@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 });
 
-angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
+angular.module('dengue_torpedo.controllers').
         //Controller for Report List
         controller('ReportListController',function($scope,$resource){
 
@@ -87,17 +87,10 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
               }
             }
 
-
-
-
-
             $scope.time_left =function(report){
                 var start_time = new Date(report.info.completed_at);
                 return start_time.getTime() + allowed_time;
             }
-
-
-
 
             function new_report_empty(){
 
