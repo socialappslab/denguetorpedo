@@ -8,7 +8,6 @@ class ReportsController < ApplicationController
   before_filter :require_admin, :only =>[:types]
 
   #points user receives for submitting a site
-
   def types
     @types = EliminationType.all
     @methods = EliminationMethod.all
@@ -512,6 +511,8 @@ class ReportsController < ApplicationController
 
   def show_redesign
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
+    @neighborhoods = Neighborhood.all.collect{|n| n.name}
+    @elimination_methods = EliminationMethod.create_selection
 
     respond_to do |format|
       format.json {
@@ -584,17 +585,18 @@ class ReportsController < ApplicationController
 
     if request.xhr?
       puts params
-      new_report = Report.new
+      new_report = Report.new(params['info'], :completed_at=>Time.now)
       new_report.location = Location.new(params['location'])
-      new_report.reporter = @currenter_user
+      new_report.reporter = @current_user
       new_report.status = :reported
-      new_report.report = params['report']
-      #new_report.before_photo = params['before_photo']
       if new_report.save
-        render :json=>{'stats'=>'success'}#,'before_photo'=>new_report.before_photo.url}
+        render :json=>{'completed_at'=>new_report.completed_at, 'reporter_name'=>new_report.reporter_name},
+               :status=>:ok#,'before_photo'=>new_report.before_photo.url}
       else
-        render :json=>{'status'=>'fail'}
+        render :json=>{'status'=>'fail'}, :status=>:conflict
       end
+    else
+      redirect_to :action=>"show_redesign"
     end
 
   end

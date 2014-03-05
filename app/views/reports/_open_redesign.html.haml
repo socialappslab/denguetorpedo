@@ -1,4 +1,5 @@
-#controller{'ng-controller'=>'ReportListController'}
+#controller{'ng-controller'=>'ReportListController', 'ng-init'=>"elimination_methods=#{@elimination_methods.to_json}"}
+
   #report_buttons.report_buttons_angular
     = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
     = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
@@ -6,27 +7,29 @@
   = link_to "Marcar um foco", "", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
 
   -# New Report Form
-  #new_report
+  #new_report_div
     .row
       #new_report_header
         %p Marcar
     .row
       .field_header
         %h4 1. Endereço do foco localizado:
-    %form{:id=>'new_report_form', :name=>'new_report_form'}
+
+    -# Start of form
+    %form{:id=>'new_report_form', :name=>'new_report_form', :multipart=>true}
       .row
         #address_field
           = text_field_tag "street_type",nil, :placeholder=>"Rua, Beco etc.", :id=>'street_type_field',
-            'ng-model'=>'new_report.info.street_type', :required =>true
+            'ng-model'=>'new_report.location.street_type', :required =>true
 
           = text_field_tag "street_name",nil, :placeholder=>"Nome", :id=>'street_name_field',
-            'ng-model'=>'new_report.info.street_name', :required =>true
+            'ng-model'=>'new_report.location.street_name', :required =>true
 
           = text_field_tag "street_number",nil, :placeholder=>"Número", :id =>'street_number_field',
-            'ng-model'=>'new_report.info.street_number', :required =>true
+            'ng-model'=>'new_report.location.street_number', :required =>true, 'data-errormessege'=>"TEST"
 
-          = text_field_tag "neighborhood",nil,:disabled=>'true', :id=>'neighborhood', :placeholder=> "Maré",
-            'ng-model'=>'new_report.info.neighborhood', :required =>true
+          = select_tag "neighborhood", options_for_select(@neighborhoods), :prompt =>prompt_helper("neighborhood"), :id=>'neighborhood',
+            'ng-model'=>'new_report.location.neighborhood', :required=>true
 
       .row
         .field_header
@@ -35,14 +38,14 @@
         #description_field
           = text_area_tag "report", nil, :columns=>40,
            :placeholder=>"Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; Foco na calçada em frente",
-           'ng-model'=>'new_report.info.report'
+           'ng-model'=>'new_report.info.report', :required=>true
 
       .row
         .field_header
           %h4 3. Carregue a imagem do foco encontrado:
       .row
         #photo_field
-          = file_field_tag 'before_photo'
+          = file_field_tag 'before_photo', 'ng-model'=>'new_report.img.before'
       .row
         #elimination_type_field
           %h4 4.
@@ -56,14 +59,14 @@
             Marcar no mapa
 
         -#submit
-        = button_tag "Enviar!", :id=>'submit_button', 'ng-click'=>'submit_report()'
-
+        = button_tag "Enviar!", :id=>'submit_button', 'ng-click'=>'submit_report(new_report_form)'
 
   -# Report list - loop
   #reports
     #report_loop{'ng-repeat'=>'report in reports track by $index'}
       .rp_report.rp_open_report
         .row
+
           -#Header
           .report_header
             -#elimination status
@@ -74,6 +77,7 @@
               %timer{'end-time'=>"time_left(report)",'ng-hide'=>'report_expired(report)'}
                 %p Tempo restante
                 .count_down {{hours + (days * 24)}}:{{minutes}}:{{seconds}}
+
               %p{'ng-show'=>'report_expired(report)'} Tempo expirado
 
               .admin_options
@@ -85,7 +89,7 @@
         -#body - top row
         .row.report_body_top
           .span6.report_address
-            %h4 {{report.location.address}} Maré
+            %h4 {{report.location.address}}
             -#address or SMS info (? .report)
           .span2
             -#if .location.lat/long  place on map. See code below
@@ -104,28 +108,25 @@
             .row
               .span7
                 .eliminate_prompt{:style => "margin-top:5px;"}
-                  = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
+                  %form
                     -#report_id
-                    = f.hidden_field :report_id, :value=>"{{report.info.id}}"
+                    = hidden_field_tag :report_id, :value=>"{{report.info.id}}"
                     %p Report: {{report.info.report}}
                     -#sms check
                     -#*SMS CHECK*
                     -#elimination_type
 
-                    %p Elimination: {{report.info.elimination_type}}
-                    -#= f.select :elimination_type, options_for_select(@elimination_types, "{{report.info.eliminiation_type}}"),{}, :prompt=>'Selecione o tipo de foco', :class =>'report_drop_down'
-                    -#elimination_method
-                    = f.select :elimination_method, options_for_select(elimination_selection("{{report.info.elimination_type}}").collect{|p| [p[:display],p[:name]]}),{},{}
-                    -#-STYLING->#=select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
-                    -#= hidden_field_tag "selected_elimination_method"
-                    -# Do we need this? Bootstrap picker
-                      :javascript
-                        $(".selectpicker").selectpicker();
+                    %p Elimination Type: {{report.info.elimination_type}}
+                    Elimination Method:
+                    = select_tag :elimination_method,nil,:prompt=>prompt_helper('elimination_method'),
+                      :id=>"method_selection", :class=>"elimination_methods",'ng-model'=>'report.info.elimination_method',
+                        'ng-options'=>"display_method(method.name,method.points) for method in elimination_methods[report.info.elimination_type]"
 
-                      -#After photo if one is available
-                        -#  .rp_report_people
-                            Foto carregada:
-                            = link_to "#{open.after_photo_file_name}", open.after_photo.url, :class => "user"
+
+                    -#After photo if one is available
+                      -#  .rp_report_people
+                          Foto carregada:
+                          = link_to "#{open.after_photo_file_name}", open.after_photo.url, :class => "user"
 
                     -#- if elimination type selected allow for photo upload
                         %h3{:style => "font-size: 14px;"} Carregue uma foto do foco eliminado
@@ -137,19 +138,23 @@
 
 
 
-                .row.rp_report_people{style: "width:430px;"}
-                  Marcado por:
-                  -#User and time
-                  -#  =link_to open.reporter_name + " " + open.strftime_with(:created_at), user_path(open.reporter), :class => "user"
-                  -#  %br
+                .row.report_people
+                  .completed_by
+                    Marcado por:
+                    %a{'ng-href'=>"/users/{{report.info.reporter_id}}"}{{report.info.reporter_name}} {{report.info.completed_at | date:'dd/MM/yyyy'}}
 
-                    -#if verifed
+                  .eliminated_by{'ng-show'=>"{{report.info.eliminator_id}}"}
+                    Eliminado por:
+                    %a{'ng-href'=>"/users/{{report.info.eliminator_id}}"}{{report.info.eliminator_name}} {{report.info.eliminated_at | date:'dd/MM/yyyy'}}
+
+                  .verified_by{'ng-show'=>"{{report.info.resolved_verifier_id}}"}
+                    .verification_denied{'ng-show'=>"{{report.info.is_resolved_verified == 'f'}}"}
+                      Problema no foco marcado. Entre em contato conosco.
+
+                    .verification_accepted{'ng-hide'=>"{{report.info.is_resolved_verified == 'f'}}"}
                       Verificado por:
-                      = link_to open.verifier_name + " " + open.strftime_with(:created_at), user_path(open.verifier), :class => "user"
-                      %br
-                    -#if denied verification
-                      %p{:style => "color:red;font-weight:bold;margin-top:10px;"}
-                        Problema no foco marcado. Entre em contato conosco.
+                      %a{'ng-href'=>"/users/{{report.info.resolved_verifier_id}}"}{{report.info.verifier_name}} {{report.info.resolved_verified_at | date:'dd/MM/yyyy'}}
+
 
           -#body - bottom row
           .row

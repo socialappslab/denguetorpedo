@@ -96,7 +96,7 @@
                       %br
 
                     - if open.isVerified == "t" and open.verifier_id
-                      Verificado por:
+                      Verificado por: open.isVerified
                       = link_to open.verifier_name + " " + open.strftime_with(:created_at), user_path(open.verifier), :class => "user"
                       %br
                     - elsif open.isVerified == "f" and open.verifier_id

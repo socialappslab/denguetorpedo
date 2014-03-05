@@ -292,7 +292,7 @@
 
 /*REPORT FORM STYLING*/
 
-#new_report{
+#new_report_div{
   width:541px;
   height:277px;
   border-color:#60BB50;
@@ -488,6 +488,10 @@
 
 }
 
+.report_people{
+  width:430px;
+}
+
 
 .status_expired{
   text-decoration: line-through;
@@ -496,4 +500,11 @@
 #submit_button{
   float:right;
   margin-right:8px;
+}
+
+.verification_denied{
+  color:red;
+  font-weight:bold;
+  margin-top:10px;
+  width:410px
 }
