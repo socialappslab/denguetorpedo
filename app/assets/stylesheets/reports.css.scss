@@ -7,6 +7,17 @@
 #report_status_bar {
   margin-top: 10px;
 }
+.rp_report_status{
+  margin-top: -10px;
+  margin-right: -5px;
+  padding-top: 2px;
+  padding-left: 5px;
+  height: 24px;
+  color: #FFFFFF;
+  text-align: left;
+  font-size: 14px;
+}
+
 
 // OPEN/RESOLVED/CLAIMED PARTIALS
 .rp_report_time {
@@ -72,16 +83,7 @@
   font-weight:bold;
 }
 
-.rp_report_status {
-  margin-top: -10px;
-  margin-right: -5px;
-  padding-top: 2px;
-  padding-left: 5px;
-  height: 24px;
-  color: #FFFFFF;
-  text-align: left;
-  font-size: 14px;
-}
+
 
 .rp_report_people {
   margin-left: 0px;
@@ -100,9 +102,11 @@
   
 }
 
+
 .rp_report_options {
   float: right;
 }
+
 
 .rp_claimed_report {
   border-color: $blue;
@@ -182,10 +186,13 @@
   margin-bottom: 10px;
   font-size: 12px;
 
+
   .reports_feed_button {
     color: $light-gray;
     background-color: #ffffff;
   }
+
+
 
   .bttn  {      
     color: #ffffff;
@@ -283,4 +290,221 @@
   height:auto;
 }
 
+/*REPORT FORM STYLING*/
 
+#new_report_div{
+  width:541px;
+  height:277px;
+  border-color:#60BB50;
+  border-style: solid;
+  margin:20px 10px 10px 0px;
+  display:none;
+  padding:10px;
+  border-radius: 3px;
+  background-color: white;
+
+
+  #new_report_header {
+    background:#60BB50 ;
+    margin-top: -10px;
+    margin-right: -5px;
+    padding-top: 2px;
+    padding-left: 5px;
+    height: 24px;
+    text-align: left;
+    font-size: 14px;
+    display:table;
+    width:100%;
+
+
+    p{
+      width:auto;
+      font-size:14px;
+      margin-right:10px;
+      color:white;
+      float:left;
+    }
+  }
+
+  #address_field{
+    #street_type_field{
+      margin-left: 8px;
+      width:20%;
+    }
+
+    #street_name_field{
+      width:35%;
+    }
+
+    #street_number_field{
+      width:20%;
+    }
+
+    #neighborhood{
+      width: 20%;
+    }
+  }
+}
+#description_field{
+  textarea{
+   width:98%;
+  }
+  margin-left:8px;
+}
+#elimination_type_field{
+  margin-left: 8px;
+  h4{
+    font-size:14px;
+    display:inline;
+  }
+}
+.field_header{
+  h4{
+    font-size:14px;
+    margin-left: 8px;
+    margin-top: 3px;
+  }
+}
+#map_field{
+  margin-left: 8px;
+  display:inline;
+  h4{
+    display:inline;
+    font-size:14px;
+  }
+}
+#map_button{
+  width:80px;
+  height:20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color:black;
+  border-radius:3px;
+  display:inline;
+  padding: 5 5 5 5;
+}
+#photo_field{
+  margin-left:8px;
+  margin-top:5px;
+}
+
+.report_buttons_angular{
+  display:inline;
+}
+
+.report_new_report_btn{
+    margin-left:90px;
+    padding-top:13px;
+    background-color:#60BB50;
+    color:white;
+    font-weight:bold;
+    height:21px;
+    font-size:25px;
+    padding-bottom: 5px;
+    border-radius: 2px;
+    margin-left: 60%;
+  }
+.report_photos {
+
+  width: 100px;
+  .report_before_photo, .report_after_photo{
+    margin: 10px 0px 0px 10px;
+    max-width: 100%;
+    vertical-align: middle;
+
+  }
+}
+
+.report_drop_down{
+  width:430px;
+}
+
+.report_body_top{
+  margin-top:5px;
+
+  .report_address{
+    margin-top:10px;
+    font-size:14px;
+  }
+}
+
+.report_body_middle{
+  margin-top:7px;
+}
+
+.report_header {
+  background:$orange;
+  margin-top: -10px;
+  margin-right: -5px;
+  padding-top: 2px;
+  padding-left: 5px;
+  height: 24px;
+  text-align: left;
+  font-size: 14px;
+  display:table;
+  width:100%;
+
+  .right_half{
+      float:right;
+      width:70%;
+      color:white;
+
+    p{
+      width:auto;
+      font-size:14px;
+      padding-left:50px;
+      margin-right:10px;
+    }
+
+    .admin_options{
+      float:right;
+      img{
+        width:25px;
+        height:25px;
+      }
+
+    }
+
+    .count_down{
+      width:150px;
+      height: 20px;
+      background-color:transparent;
+      border: none;
+      display:inline;
+      margin-top:1px;
+      margin-right:0px;
+      font-size:20px;
+    }
+  }
+
+  p{
+    color:white;
+    width:20%;
+    float:left;
+    font-size: 14px;
+  }
+
+
+
+}
+
+.report_people{
+  width:430px;
+}
+
+
+.status_expired{
+  text-decoration: line-through;
+}
+
+#submit_button{
+  float:right;
+  margin-right:8px;
+}
+
+.verification_denied{
+  color:red;
+  font-weight:bold;
+  margin-top:10px;
+  width:410px
+}

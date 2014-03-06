@@ -17,8 +17,7 @@
     
 .row          
   .row.span10.offset1
-    #report_buttons
-      
+    #report_button
       = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
       = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
       = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active

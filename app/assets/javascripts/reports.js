@@ -1,43 +1,4 @@
 $(document).ready(function() {
-//	$("select.elimination_type").each(function() {
-//		$(this).parent().find("select.elimination_methods").hide();
-//
-//		if($(this).val() == "Pratinho de planta") {
-//			$(this).parent().find("select#prantinho").show();
-//		} else if ($(this).val() == "Pneu") {
-//			$(this).parent().find("select#pneu").show();
-//		} else if ($(this).val() == "Lixo (recipientes inutilizados)") {
-//			$(this).parent().find("select#lixo").show();
-//		} else if ($(this).val() == "Pequenos Recipientes utilizáveis") {
-//			$(this).parent().find("select#pequenos").show();
-//		} else if ($(this).val() == "Grandes Recipientes Utilizáveis") {
-//			$(this).parent().find("select#grandes").show();
-//		} else if ($(this).val() == "Caixa d'água aberta na residência") {
-//			$(this).parent().find("select#caixa").show();
-//		} else if ($(this).val() == "Calha") {
-//			$(this).parent().find("select#calha").show();
-//		} else if ($(this).val() == "Registros abertos") {
-//			$(this).parent().find("select#registros").show();
-//		} else if ($(this).val() == "Laje e terraços com água") {
-//			$(this).parent().find("select#laje").show();
-//		} else if ($(this).val() == "Piscinas") {
-//			$(this).parent().find("select#piscinas").show();
-//		} else if ($(this).val() == "Poças d’água na rua") {
-//			$(this).parent().find("select#pocas").show();
-//		} else if ($(this).val() == "Ralos") {
-//			$(this).parent().find("select#ralos").show();
-//		} else if ($(this).val() == "Plantas ornamentais que acumulam água (ex: bromélias)") {
-//			$(this).parent().find("select#plantas").show();
-//		} else if ($(this).val() == "Outro tipo") {
-//			// window.location.href = "/feedbacks/new?title=other_type";
-//			$(this).find("option").filter(function() {
-//				return $(this).text() == "Tipo de foco";
-//			}).prop("selected", true);
-//			$(this).parent().find("select#prantinho").show();
-//		} else {
-//			$(this).parent().find("select#prantinho").show();
-//		}
-//	});
 
 	$("select.elimination_type").change(function() {
 		if ($(this).val() == "Outro tipo") {
@@ -58,10 +19,117 @@ $(document).ready(function() {
 		}
 	});
 
-
-//      if (e.keyCode == 13){
-//          $(this).next("input").focus();
-//          return false;
-//      }
-
 });
+
+
+angular.module('dengue_torpedo.controllers').
+        //Controller for Report List
+        controller('ReportListController',function($scope,$resource, Map){
+
+            var allowed_time = 1000 * 60 * 60 * 48;  // milliseconds * sec * min * hour;
+            var attempted_lookup = false;  //possibly used for eager lookup on location lon/lat
+
+            //creates empty new_report object
+            new_report_empty();
+
+
+            $scope.reports = {};
+            $scope.date = new Date();
+
+            $resource('/reports_redesign.json').query({},function(data){
+                $scope.reports = data;
+            });
+
+            $scope.create_new_report = function(){
+                //Toggle report and call Map factory
+                if($("#new_report_div").is(':hidden')){
+                    $("#new_report_div").slideDown();
+                    Map.start_new_report();
+                }
+                else {
+                    $("#new_report_div").slideUp();
+                    Map.stop_new_report();
+                }
+                new_report_empty();
+            }
+
+
+            $scope.display_method = function(name, points){
+                return name + " (" + points + " pontos)";
+            }
+
+
+            $scope.report_expired = function(report){
+                if(report.info.completed_at){
+                    //report is expired if start_time + allowed_time < current_time
+                    var start_time = new Date(report.info.completed_at);
+                    return new Date(start_time.getTime() + allowed_time) < new Date().getTime();
+
+                }
+
+            }
+
+            $scope.submit_report= function(form){
+                if(form.$valid){ //validate required fields in form
+
+                    create_address();
+                    $scope.new_report.info.completed_at = new Date();
+
+                    // ? move to angular $resource or $http
+                    $.ajax({
+                        url: '\submit_report',
+                        type: 'POST',
+                        data: $scope.new_report,
+                        success:function(data){
+                                $scope.new_report.info.completed_at = data.completed_at;
+                                $scope.new_report.info.reporter_name = data.reporter_name;
+                                $scope.reports.splice(0,0,$scope.new_report);
+                                new_report_empty();
+                                $("#new_report_div").hide();
+                                $scope.$apply(); //updates report list
+                        },
+                        error:function(data){
+                            // we need to figure out what to do in case of error
+                            console.log("There was an error :(");
+                        }
+
+                    });
+
+              }
+            }
+
+            $scope.time_left =function(report){
+                var start_time = new Date(report.info.completed_at);
+                return start_time.getTime() + allowed_time;
+            }
+
+            function create_address(){
+                $scope.new_report.location.address = $scope.new_report.location.street_type +
+                    " " + $scope.new_report.location.street_name +
+                    " " + $scope.new_report.location.street_number +
+                    " " + $scope.new_report.location.neighborhood;
+            }
+
+            //create blank new report
+            function new_report_empty(){
+
+                $scope.new_report = {
+                    'info':{
+                        'report_description':'',
+                        'elimination_type':'',
+                        'created_at':''},
+                    'location':{
+                        'address':'',
+                        'street_type':'',
+                        'street_name':'',
+                        'street_number':'',
+                        'neighborhood':''},
+                    'img':{
+                        'before':''}
+                };
+            }
+
+
+
+
+        });

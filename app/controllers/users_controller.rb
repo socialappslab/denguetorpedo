@@ -172,7 +172,6 @@ class UsersController < ApplicationController
   # end
   
   def update
-    puts params
 
     if @current_user.role != "visitante"
       house_name = params[:user][:house_attributes][:name]

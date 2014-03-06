@@ -74,7 +74,7 @@
                   = hidden_field_tag "selected_elimination_method"
                   / # = select_tag "method_of_elimination", options_from_collection_for_select(@elimination_type), :style => "width: 355px;" 
                   :javascript
-                    $(".selectpicker").selectpicker();
+                    $(".selectpicker").selectpipcker();
 
                   - if open.after_photo_file_size
                     .rp_report_people
@@ -96,7 +96,7 @@
                       %br
 
                     - if open.isVerified == "t" and open.verifier_id
-                      Verificado por:
+                      Verificado por: open.isVerified
                       = link_to open.verifier_name + " " + open.strftime_with(:created_at), user_path(open.verifier), :class => "user"
                       %br
                     - elsif open.isVerified == "f" and open.verifier_id

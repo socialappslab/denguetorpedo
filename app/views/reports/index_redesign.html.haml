@@ -1,0 +1,34 @@
+
+
+.row
+  .span4.offset1
+    - if flash[:notice] 
+      .row#flash_dat_notice
+        #flashNotice 
+          %p
+            = flash[:notice]
+    - if flash[:alert] 
+      .row#flash_dat_alert
+        #flashAlert 
+          %p
+            = flash[:alert]
+    %h1 Focos marcados
+  %br
+  .span#report_buttons{:style => "font-size:20px;"}
+    / %h1 Marcar um foco
+    
+.row          
+
+  .row
+
+    -#Report List
+    .span9.offset1
+      = render :partial => 'reports/open_redesign'
+
+
+    .span7#map_div{'ng-controller'=>'MapController'}
+      =button_to "Hide", "", 'ng-click'=>'hide()'
+      =button_to "Show",'','ng-click'=>'show()'
+
+      #OSMap
+

@@ -68,6 +68,8 @@ class Report < ActiveRecord::Base
 
   # after_create :create_notifications, if: :sms?
 
+  @@allowed_time = 3600 * 24 * 2 #seconds * hours * days
+
   def self.create_from_user(report_content, params)
     create(:report => report_content) do |r|
       r.reporter_id = params[:reporter] && params[:reporter].id
@@ -158,7 +160,7 @@ class Report < ActiveRecord::Base
   end
 
   def expired?
-    self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
+    self.completed_at and self.completed_at + @@allowed_time < Time.new
   end
 
   def expire_date

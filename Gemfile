@@ -36,6 +36,7 @@ gem 'prawn'
 gem 'prawn-layout'
 gem "prawnto_2", :require => "prawnto"
 gem 'rails_autolink'
+gem 'angularjs-rails'
 
 gem 'rails-i18n'
 # Gems used only for assets and not required

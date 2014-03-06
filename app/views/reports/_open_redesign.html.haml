@@ -1,0 +1,164 @@
+#controller{'ng-controller'=>'ReportListController', 'ng-init'=>"elimination_methods=#{@elimination_methods.to_json}"}
+
+  #report_buttons.report_buttons_angular
+    = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
+    = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
+    = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
+  = link_to "Marcar um foco", "", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
+
+  -# New Report Form
+  #new_report_div
+    .row
+      #new_report_header
+        %p Marcar
+    .row
+      .field_header
+        %h4 1. Endereço do foco localizado:
+
+    -# Start of form
+    %form{:id=>'new_report_form', :name=>'new_report_form', :multipart=>true}
+      .row
+        #address_field
+          = text_field_tag "street_type",nil, :placeholder=>"Rua, Beco etc.", :id=>'street_type_field',
+            'ng-model'=>'new_report.location.street_type', :required =>true
+
+          = text_field_tag "street_name",nil, :placeholder=>"Nome", :id=>'street_name_field',
+            'ng-model'=>'new_report.location.street_name', :required =>true
+
+          = text_field_tag "street_number",nil, :placeholder=>"Número", :id =>'street_number_field',
+            'ng-model'=>'new_report.location.street_number', :required =>true, 'data-errormessege'=>"TEST"
+
+          = select_tag "neighborhood", options_for_select(@neighborhoods), :prompt =>prompt_helper("neighborhood"), :id=>'neighborhood',
+            'ng-model'=>'new_report.location.neighborhood', :required=>true
+
+      .row
+        .field_header
+          %h4 2. Descrição de localização:
+      .row
+        #description_field
+          = text_area_tag "report", nil, :columns=>40,
+           :placeholder=>"Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; Foco na calçada em frente",
+           'ng-model'=>'new_report.info.report', :required=>true
+
+      .row
+        .field_header
+          %h4 3. Carregue a imagem do foco encontrado:
+      .row
+        #photo_field
+          = file_field_tag 'before_photo', 'ng-model'=>'new_report.img.before'
+      .row
+        #elimination_type_field
+          %h4 4.
+          =select_tag :elimination_type, options_for_select(@elimination_types), :prompt=>'Selecione o tipo de foco',
+           :class =>'report_drop_down', 'ng-model'=>'new_report.info.elimination_type', 'ng-disabled'=>"new_form_form.street_type.$error.required"
+
+      .row
+        #map_field
+          %h4 5.
+          #map_button
+            Marcar no mapa
+
+        -#submit
+        = button_tag "Enviar!", :id=>'submit_button', 'ng-click'=>'submit_report(new_report_form)'
+
+  -# Report list - loop
+  #reports
+    #report_loop{'ng-repeat'=>'report in reports track by $index'}
+      .rp_report.rp_open_report
+        .row
+
+          -#Header
+          .report_header
+            -#elimination status
+            %p{'ng-class'=>"{'status_expired':report_expired(report)}"}Em aberto
+
+            .right_half
+              -#show timer if not expired, else show "Tempo expirado"
+              %timer{'end-time'=>"time_left(report)",'ng-hide'=>'report_expired(report)'}
+                %p Tempo restante
+                .count_down {{hours + (days * 24)}}:{{minutes}}:{{seconds}}
+
+              %p{'ng-show'=>'report_expired(report)'} Tempo expirado
+
+              .admin_options
+                = link_to (image_tag 'icons/reports icon/check.png'), problem_reports_path(:id => "{{report.info.id}}"), method: :post
+                = link_to (image_tag 'icons/reports icon/x.png'), verify_reports_path(:id => "{{report.info.id}}"), method: :post
+
+                -#Options for SMS submission - check on this
+
+        -#body - top row
+        .row.report_body_top
+          .span6.report_address
+            %h4 {{report.location.address}}
+            -#address or SMS info (? .report)
+          .span2
+            -#if .location.lat/long  place on map. See code below
+            -#= link_to "Ache no mapa", "#", id: "mapa_#{open.id}", class: "mapa", data: { latitude: "#{open.location.latitude}", longitude: "#{open.location.longitude}"}, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;"
+
+        -#body - middle row
+        .row.report_body_middle
+          .span2.report_photos
+            %img.report_before_photo{"ng-src"=>"{{report.before_url}}"}
+            %img.report_after_photo{"ng-src"=>"{{report.before_url}}"}
+
+          .span5{style: "margin-top:9px;"}
+            -#elimination type
+                -#Do we need a check for nil user?
+                -#- if @current_user != nil
+            .row
+              .span7
+                .eliminate_prompt{:style => "margin-top:5px;"}
+                  %form
+                    -#report_id
+                    = hidden_field_tag :report_id, :value=>"{{report.info.id}}"
+                    %p Report: {{report.info.report}}
+                    -#sms check
+                    -#*SMS CHECK*
+                    -#elimination_type
+
+                    %p Elimination Type: {{report.info.elimination_type}}
+                    Elimination Method:
+                    = select_tag :elimination_method,nil,:prompt=>prompt_helper('elimination_method'),
+                      :id=>"method_selection", :class=>"elimination_methods",'ng-model'=>'report.info.elimination_method',
+                        'ng-options'=>"display_method(method.name,method.points) for method in elimination_methods[report.info.elimination_type]"
+
+
+                    -#After photo if one is available
+                      -#  .rp_report_people
+                          Foto carregada:
+                          = link_to "#{open.after_photo_file_name}", open.after_photo.url, :class => "user"
+
+                    -#- if elimination type selected allow for photo upload
+                        %h3{:style => "font-size: 14px;"} Carregue uma foto do foco eliminado
+                        = f.file_field :after_photo, :disabled => (open.after_photo_file_size or open.expired?)
+                        %br
+
+                    -#submit
+                      = submit_tag "Enviar!", :style => "margin-left:5px;margin-top:5px;", :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or open.expired? or open.isVerified == "f" or open.sms_incomplete?)
+
+
+
+                .row.report_people
+                  .completed_by
+                    Marcado por:
+                    %a{'ng-href'=>"/users/{{report.info.reporter_id}}"}{{report.info.reporter_name}} {{report.info.completed_at | date:'dd/MM/yyyy'}}
+
+                  .eliminated_by{'ng-show'=>"{{report.info.eliminator_id}}"}
+                    Eliminado por:
+                    %a{'ng-href'=>"/users/{{report.info.eliminator_id}}"}{{report.info.eliminator_name}} {{report.info.eliminated_at | date:'dd/MM/yyyy'}}
+
+                  .verified_by{'ng-show'=>"{{report.info.resolved_verifier_id}}"}
+                    .verification_denied{'ng-show'=>"{{report.info.is_resolved_verified == 'f'}}"}
+                      Problema no foco marcado. Entre em contato conosco.
+
+                    .verification_accepted{'ng-hide'=>"{{report.info.is_resolved_verified == 'f'}}"}
+                      Verificado por:
+                      %a{'ng-href'=>"/users/{{report.info.resolved_verifier_id}}"}{{report.info.verifier_name}} {{report.info.resolved_verified_at | date:'dd/MM/yyyy'}}
+
+
+          -#body - bottom row
+          .row
+            .rp_report_options
+            -#Options, admin => delete, user (hasn't completed) => delete
+              - if @current_user.admin? or (open.reporter == @current_user and open.elimination_type == nil)
+                =link_to (image_tag 'icons/reports icon/delete2.png', :id=>'user_report_delete'), open, :confirm => "Você tem certeza?", :method => :delete, :style => "margin-right:5px;"
