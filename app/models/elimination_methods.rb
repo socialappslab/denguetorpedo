@@ -48,7 +48,7 @@ class EliminationMethods
       ["Piscinas em uso: esfregue e limpe uma vez por semana",
         "Piscinas que não estão em uso: esfregue, seque e vire ao contrário"]],
     ["Poças d’água na rua", 
-      ["Seque e preenche com areia ou terra",
+      ["Seque e preencha com areia ou terra",
         "Comunique as poças grandes aos AVS para o tratamento com veneno"]],
     ["Ralos", 
       ["Jogue água sanitária ou desinfetante semanalmente",
