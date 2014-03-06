@@ -13,7 +13,15 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
     controller("MapController", function($scope, Map){
         Map.init();
         Map.scrollLock("map_div");
-        Map.loadMarkers([[7471677.057330554,680415.2862785133]]);
+        Map.loadMarkers([[-43.2425729,-22.8592368]]);
+
+        $scope.hide = function(){
+            Map.start_new_report();
+        }
+
+        $scope.show = function(){
+            Map.stop_new_report();
+        }
 
     })
 
@@ -26,15 +34,17 @@ angular.module('dengue_torpedo.factories',[]).
             var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
 
             mapFactory.map = new OpenLayers.Map("OSMap");
-            var mapnik         = new OpenLayers.Layer.OSM();
-            var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-            var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+            var mapnik = new OpenLayers.Layer.OSM();
+            mapFactory.fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+            mapFactory.toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 
             //Maré - Need to change to dynamic
             var lon			   = -43.2437142;
             var lat			   = -22.8574805;
 
-            var position       = new OpenLayers.LonLat(lon,lat).transform( fromProjection, toProjection);
+            var position       = new OpenLayers.LonLat(lon,lat).transform( mapFactory.fromProjection, mapFactory.toProjection);
+            //temp
+            mapFactory.start_position = position;
             var zoom           = 15;
 
             mapFactory.current_markers = new OpenLayers.Layer.Markers( "Markers" );
@@ -43,7 +53,7 @@ angular.module('dengue_torpedo.factories',[]).
 
             var lon2		   = -43.2427142;
             var lat2		   = -22.8584805;
-            var position2       = new OpenLayers.LonLat(lon2,lat2).transform(fromProjection, toProjection);
+            var position2       = new OpenLayers.LonLat(lon2,lat2).transform(mapFactory.fromProjection, mapFactory.toProjection);
             mapFactory.current_markers.addMarker(new OpenLayers.Marker(position2,icon.clone()));
 
             mapFactory.map.addLayer(mapnik);
@@ -63,30 +73,24 @@ angular.module('dengue_torpedo.factories',[]).
         mapFactory.loadMarkers = function(positions){
             angular.forEach(positions, function(position){
                 // {lon: val, lat: val} format?
-                mapFactory.current_markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(position)));
+                var pos = new OpenLayers.LonLat(position).transform(mapFactory.fromProjection, mapFactory.toProjection);
+                mapFactory.current_markers.addMarker(new OpenLayers.Marker(pos));
             });
 
         }
         mapFactory.start_new_report = function(){
-            mapFactory.saved_markers = mapFactory.current_markers;
-
-            //this needs to be changed to be dynamic
-            var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-            var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+            var position = new OpenLayers.LonLat(-43.2425729,-22.8592368).transform( mapFactory.fromProjection, mapFactory.toProjection);
+            mapFactory.map.setCenter(position,17);
+            mapFactory.current_markers.setVisibility(false);
 
 
 
-            var lon			   = -43.2437142;
-            var lat			   = -22.8574805;
+        }
 
-            var position       = new OpenLayers.LonLat(lon,lat).transform( fromProjection, toProjection);
-            var zoom           = 15;
+        mapFactory.stop_new_report = function(){
+            mapFactory.map.setCenter(mapFactory.start_position,15);
 
-            mapFactory.current_markers = new OpenLayers.Layer.Markers( "NewMarker" );
-            mapFactory.current_markers.addMarker(new OpenLayers.Marker(position));
-
-
-
+            mapFactory.current_markers.setVisibility(true);
         }
         return mapFactory;
     })

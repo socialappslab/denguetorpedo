@@ -21,12 +21,16 @@ $(document).ready(function() {
 
 });
 
+
 angular.module('dengue_torpedo.controllers').
         //Controller for Report List
-        controller('ReportListController',function($scope,$resource){
+        controller('ReportListController',function($scope,$resource, Map){
 
-            allowed_time = 1000 * 60 * 60 * 48;  // milliseconds * sec * min * hour;
+            var allowed_time = 1000 * 60 * 60 * 48;  // milliseconds * sec * min * hour;
+            var attempted_lookup = false;
+
             new_report_empty();
+
 
             $scope.reports = {};
             $scope.date = new Date();
@@ -36,17 +40,24 @@ angular.module('dengue_torpedo.controllers').
             });
 
             $scope.create_new_report = function(){
-                $("#new_report_div").slideToggle();
+                //Toggle report and call Map factory
+                if($("#new_report_div").is(':hidden')){
+                    $("#new_report_div").slideDown();
+                    Map.start_new_report();
+                }
+                else {
+                    $("#new_report_div").slideUp();
+                    Map.stop_new_report();
+                }
                 new_report_empty();
             }
+
 
             $scope.display_method = function(name, points){
                 return name + " (" + points + " pontos)";
             }
 
-            $scope.init = function(elim_methods){
-                $scope.elimination_methods = elim_methods;
-            }
+
             $scope.report_expired = function(report){
                 if(report.info.completed_at){
                     //report is expired if start_time + allowed_time < current_time
@@ -92,6 +103,7 @@ angular.module('dengue_torpedo.controllers').
                 return start_time.getTime() + allowed_time;
             }
 
+            //create blank new report
             function new_report_empty(){
 
                 $scope.new_report = {
@@ -109,6 +121,31 @@ angular.module('dengue_torpedo.controllers').
                         'before':''}
                 };
             }
+
+
+            //watch if address fields are all full
+//            $("#address_field :input").change(function(e){
+//                //look at all values, if none are blank, attempt lookup
+//                var count = 0;
+//                var query = "";
+//                angular.forEach($scope.new_report.location, function(k,v){
+//                    query += v + "+";
+//                    if(v == "")
+//                        count++;
+//                })
+//
+//                if(count == 0)
+//                {
+//                    query = query.slice(0,query.length - 1);
+//                    console.log("count called, val = " + count);
+//                    //check if attempt has been made (? might want to redo)
+//                    if(!attempted_lookup){
+//                        attempted_lookup = true;
+//                        $resource("http://nominatim.openstreetmap.org/search?q=mare+rio+de+janeiro&format=json&polygon=1"
+//                    }
+//
+//                }
+//            });
 
 
         });
