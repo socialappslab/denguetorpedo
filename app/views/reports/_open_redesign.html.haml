@@ -162,5 +162,3 @@
             -#Options, admin => delete, user (hasn't completed) => delete
               - if @current_user.admin? or (open.reporter == @current_user and open.elimination_type == nil)
                 =link_to (image_tag 'icons/reports icon/delete2.png', :id=>'user_report_delete'), open, :confirm => "Você tem certeza?", :method => :delete, :style => "margin-right:5px;"
-
-  #stuff

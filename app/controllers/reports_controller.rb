@@ -582,18 +582,21 @@ class ReportsController < ApplicationController
   end
 
   def submit_report
-
+    #needs cleanup
     if request.xhr?
-      puts params
+      #are params sanitized?
       new_report = Report.new(params['info'], :completed_at=>Time.now)
       new_report.location = Location.new(params['location'])
+
       new_report.reporter = @current_user
       new_report.status = :reported
       if new_report.save
-        render :json=>{'completed_at'=>new_report.completed_at, 'reporter_name'=>new_report.reporter_name},
-               :status=>:ok#,'before_photo'=>new_report.before_photo.url}
+        render :json=>{'completed_at'=>new_report.completed_at,
+                       'reporter_name'=>new_report.reporter_name},
+               :status=>:ok
       else
-        render :json=>{'status'=>'fail'}, :status=>:conflict
+        render :json=>{'status'=>'fail'},
+               :status=>:conflict
       end
     else
       redirect_to :action=>"show_redesign"

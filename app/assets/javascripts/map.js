@@ -5,14 +5,12 @@
  */
 
 
-function mapScroll(){
-
-}
-
 angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
     controller("MapController", function($scope, Map){
         Map.init();
         Map.scrollLock("map_div");
+
+        //start - for testing
         Map.loadMarkers([[-43.2425729,-22.8592368]]);
 
         $scope.hide = function(){
@@ -22,6 +20,7 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
         $scope.show = function(){
             Map.stop_new_report();
         }
+        //end - for testing
 
     })
 
@@ -43,8 +42,9 @@ angular.module('dengue_torpedo.factories',[]).
             var lat			   = -22.8574805;
 
             var position       = new OpenLayers.LonLat(lon,lat).transform( mapFactory.fromProjection, mapFactory.toProjection);
-            //temp
-            mapFactory.start_position = position;
+
+
+            mapFactory.start_position = position; //temp for testing
             var zoom           = 15;
 
             mapFactory.current_markers = new OpenLayers.Layer.Markers( "Markers" );

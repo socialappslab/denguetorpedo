@@ -27,8 +27,9 @@ angular.module('dengue_torpedo.controllers').
         controller('ReportListController',function($scope,$resource, Map){
 
             var allowed_time = 1000 * 60 * 60 * 48;  // milliseconds * sec * min * hour;
-            var attempted_lookup = false;
+            var attempted_lookup = false;  //possibly used for eager lookup on location lon/lat
 
+            //creates empty new_report object
             new_report_empty();
 
 
@@ -69,14 +70,12 @@ angular.module('dengue_torpedo.controllers').
             }
 
             $scope.submit_report= function(form){
-                if(form.$valid){
-                    $scope.new_report.location.address = $scope.new_report.location.street_type +
-                                                         " " + $scope.new_report.location.street_name +
-                                                         " " + $scope.new_report.location.street_number +
-                                                         " " + $scope.new_report.location.neighborhood;
+                if(form.$valid){ //validate required fields in form
 
+                    create_address();
                     $scope.new_report.info.completed_at = new Date();
 
+                    // ? move to angular $resource or $http
                     $.ajax({
                         url: '\submit_report',
                         type: 'POST',
@@ -87,9 +86,10 @@ angular.module('dengue_torpedo.controllers').
                                 $scope.reports.splice(0,0,$scope.new_report);
                                 new_report_empty();
                                 $("#new_report_div").hide();
-                                $scope.$apply();
+                                $scope.$apply(); //updates report list
                         },
                         error:function(data){
+                            // we need to figure out what to do in case of error
                             console.log("There was an error :(");
                         }
 
@@ -101,6 +101,13 @@ angular.module('dengue_torpedo.controllers').
             $scope.time_left =function(report){
                 var start_time = new Date(report.info.completed_at);
                 return start_time.getTime() + allowed_time;
+            }
+
+            function create_address(){
+                $scope.new_report.location.address = $scope.new_report.location.street_type +
+                    " " + $scope.new_report.location.street_name +
+                    " " + $scope.new_report.location.street_number +
+                    " " + $scope.new_report.location.neighborhood;
             }
 
             //create blank new report
@@ -123,29 +130,6 @@ angular.module('dengue_torpedo.controllers').
             }
 
 
-            //watch if address fields are all full
-//            $("#address_field :input").change(function(e){
-//                //look at all values, if none are blank, attempt lookup
-//                var count = 0;
-//                var query = "";
-//                angular.forEach($scope.new_report.location, function(k,v){
-//                    query += v + "+";
-//                    if(v == "")
-//                        count++;
-//                })
-//
-//                if(count == 0)
-//                {
-//                    query = query.slice(0,query.length - 1);
-//                    console.log("count called, val = " + count);
-//                    //check if attempt has been made (? might want to redo)
-//                    if(!attempted_lookup){
-//                        attempted_lookup = true;
-//                        $resource("http://nominatim.openstreetmap.org/search?q=mare+rio+de+janeiro&format=json&polygon=1"
-//                    }
-//
-//                }
-//            });
 
 
         });
