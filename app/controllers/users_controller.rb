@@ -108,22 +108,43 @@ class UsersController < ApplicationController
       @user.house.location.longitude = 0
     end
   end
-  
-  def create
-    #remove whitespace from user signup
-    params[:user].each{|key,val| params[:user][key] = params[:user][key].strip}
 
-    @user = User.new(params[:user])
+  #-----------------------------------------------------------------------------
+  # POST /users
+
+
+  # Parameters passed:
+  #   Parameters:
+  #   "user"=>{
+  #     "email"=>"12312", "first_name"=>"123423",
+  #     "last_name"=>"242334", "password"=>"[FILTERED]",
+  #     "password_confirmation"=>"[FILTERED]"
+  #   }
+  def create
+    user_params = params[:user]
+    if user_params.nil?
+      # TODO TODO @dman7: Need to internationalize the messages...
+      # SEE: https://github.com/socialappslab/denguetorpedo/issues/14
+      @user         = User.new
+      flash[:alert] = "Something went wrong. Please try again."
+      render "new" and return
+    end
+
+    # At this point, we know that the user submitted non-trivial
+    # params. Let's clean them up and try to save the user.
+    user_params.each{|key,val| user_params[key] = val.strip}
+    @user = User.new(user_params)
     if @user.save
-      cookies[:auth_token] = @user.auth_token
-      redirect_to edit_user_path(@user)
+      login_user(@user)
+      redirect_to edit_user_path(@user) and return
     else
-      render new_user_path(@user)
+      render "new" and return
     end
   end
 
-  def edit
+  #-----------------------------------------------------------------------------
 
+  def edit
     @user = User.find(params[:id])
     @user.house ||= House.new
     @user.house.location ||= Location.new
