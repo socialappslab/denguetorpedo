@@ -101,13 +101,16 @@ class ReportsController < ApplicationController
     # When the user inputs an address into the textfields, we trigger an ESRI
     # map search on the associated map that updates the x and y hidden fields
     # in the form.
-    if params[:x].empty? or params[:y].empty?
-      flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-      redirect_to :back and return
-    end
+    # NOTE: We're commenting this check for now in case the map doesn't
+    # respond.
+    # if params[:x].empty? or params[:y].empty?
+    #   flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
+    #   redirect_to :back and return
+    # end
 
 
-    # Update the user's location.
+    # Find the location based on user's input (street type, name, number) and
+    # ESRI's geolocation (latitude, longitude).
     location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
       params[:street_type].downcase.titleize,
       params[:street_name].downcase.titleize,
@@ -117,42 +120,37 @@ class ReportsController < ApplicationController
     location.longitude = params[:y] if params[:y].present?
     location.save
 
-
-    if params[:report][:report] == ""
-      flash[:alert] = "Você tem que descrever o local e/ou o foco."
-      flash[:address] = address
-      @report = Report.new(:location => location)
-      redirect_to :back and return
-    end
-
-    if !params[:report][:before_photo] and params[:report]
-      flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
-      @report = Report.new(:location => location)
-      @report.report = params[:report][:report]
-      redirect_to :back and return
-    end
-
-
-    @report = Report.create_from_user("",
-      :status => :reported,
-      :reporter => @current_user,
-      :location => location)
-    @report.report       = params[:report][:report]
+    @report              = Report.new(params[:report])
+    @report.reporter_id  = @current_user.id
+    @report.location_id  = location.id
+    @report.status       = :reported # TODO @dman7: why is status (type int) but is assigned a symbol?
+    @report.report       = params[:report][:report] # TODO: Not really needed. ensure that it's already there.
     @report.completed_at = Time.now
     @report.before_photo = params[:report][:before_photo]
 
+    # If no report was filled out, then ask them to fill it out.
+    if params[:report][:report] == ""
+      flash[:alert] = "Você tem que descrever o local e/ou o foco."
+      flash[:address] = location.address
+      redirect_to :back and return
+    end
+
+    # If there was no before photograph, then ask them to upload it.
+    if params[:report][:before_photo].blank?
+      flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
+      redirect_to :back and return
+    end
+
+    # Now let's save the report.
     if @report.save
       flash[:notice] = 'Foco marcado com sucesso!'
-      respond_to do |format|
-        format.html{ redirect_to :action=>'index', view: 'recent' }
-        format.json { render json: { message: "success"}}
-      end
+      redirect_to :action => 'index', :view => 'recent' and return
     else
-      flash[:alert] = "Something went wrong. Please try again."
-      respond_to do |format|
-        format.html { redirect_to :back }
-        format.json {render json: {message: "failure"}, status: 401 }
-      end
+      # TODO @dman7: This is a hack to get to display the report errors.
+      # Let's see if we can improve on this.
+      render_errors = @report.errors.full_messages.join("\n")
+      flash[:alert] = render_errors
+      redirect_to :back and return
     end
   end
 
