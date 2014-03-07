@@ -66,7 +66,7 @@
             $("#map_div").css("margin-top", -63);
           }
         });
-        
+
       - if params[:view] == 'make_report'
         :javascript
           var map, tb;
@@ -83,13 +83,12 @@
               zoom: 4,
               extent: customExtent
             });
-            
+
             var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
             map.addLayer(tiled);
             map.on("update-start", showLoading);
             map.on("update-end", hideLoading);
             map.on("load", function() {
-              
               tb = new Draw(map);
               tb.on("draw-end", addGraphic);
               tb.activate("point");
@@ -106,7 +105,7 @@
               symbol.setStyle("STYLE_PATH");
               symbol.setPath("M 10 10 L30 10 L20 30z");
               symbol.setColor(new Color("red"));
-              
+
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
               map.graphics.add(new Graphic(evt.geometry, orange));
@@ -123,6 +122,7 @@
 
             $("#street_number").change(function() {
               showLoading();
+              console.log('street_number change called');
               $.ajax({
                 url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
                 type: "GET",
@@ -131,13 +131,13 @@
                 success: function(m) {
                   map.graphics.clear();
                   var candidates = m.candidates;
-                  
+
 
                   if (candidates.length > 0) {
                     map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
-                    
+
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                   }
                 },
@@ -212,7 +212,7 @@
             var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 40, 40).setOffset(0, 15);
             var blue = new PictureMarkerSymbol(picBaseUrl + "BluePin1LargeB.png", 40, 40).setOffset(0, 15);
             var red = new PictureMarkerSymbol(picBaseUrl + "OrangePin1LargeB.png", 40, 40).setOffset(0, 15);
-            
+
 
             var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
             var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
@@ -230,7 +230,7 @@
 
               report_div = $(this).parent().parent().parent();
 
-              
+
               return false;
             });
 
@@ -250,13 +250,13 @@
 
                   if ($.inArray(markers[i].address, addresses) == -1) {
                     addresses.push(markers[i].address);
-                    
+
 
                     var x;
                     var y;
 
                     if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
-                      
+
                       coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
                       x = markers[i].x;
                       y = markers[i].y;
@@ -268,9 +268,9 @@
 
 
 
-                    
 
-                    
+
+
                     if (open_count && eliminated_count) {
                       graphic = new Graphic(new Point(x, y), mixed);
                       template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
@@ -279,9 +279,9 @@
                       template.content = "<p>Em aberto: " + open_count + "</p>";
                     } else if (eliminated_count > 0) {
                       graphic = new Graphic(new Point(x, y), grey);
-                      template.content = "<p>Eliminados: " + eliminated_count + "</p>"; 
+                      template.content = "<p>Eliminados: " + eliminated_count + "</p>";
                     }
-                    
+
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
                     textGraphic = new Graphic(new Point(x, y), textSymbol);
                     graphic.setInfoTemplate(template);
@@ -289,7 +289,7 @@
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
                   }
-                  
+
                 }
               } else if ("#{params[:view]}" == 'open') {
                 for (var i = 0; i < open_markers.length; i++) {
@@ -297,7 +297,7 @@
                     addresses.push(open_markers[i].address);
                     var template = new InfoTemplate();
                     template.setTitle(open_markers[i].address);
-                    
+
                     count = open_counts[open_markers[i].id];
                     template.content = "<p>Em aberto: " + count + "</p>";
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
@@ -309,14 +309,14 @@
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
                   }
-                  
+
                 }
               } else {
                 for (var i = 0; i < eliminated_markers.length; i++) {
                   if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
                     var template = new InfoTemplate();
                     template.setTitle(eliminated_markers[i].address);
-                    
+
                     count = eliminated_counts[eliminated_markers[i].id];
                     template.content = "<p>Eliminados: " + count + "</p>";
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
@@ -327,10 +327,10 @@
                     textGraphic.setInfoTemplate(template);
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
-                  }     
+                  }
                 }
               }
-                    
+
             });
 
             $("input#go_to_mare").click(function() {
@@ -368,8 +368,8 @@
               if (report_div) {
                 $("html, body").scrollTop($(report_div).offset().top - 20);
               }
-              
-              
+
+
             });
 
             var blueGraphic;
@@ -385,7 +385,7 @@
               symbol.setStyle("STYLE_PATH");
               symbol.setPath("M 10 10 L30 10 L20 30z");
               symbol.setColor(new Color("blue"));
-              
+
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
 
@@ -402,9 +402,9 @@
                 dataType: "jsonp",
                 data: {"f": "pjson", "Street": $("#address_search").val()},
                 success: function(m) {
-                  
+
                   var candidates = m.candidates;
-                  
+
 
                   if (candidates.length > 0) {
                     if (blueGraphic) {
@@ -418,7 +418,7 @@
                     map.graphics.add(blueGraphic);
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
-                    
+
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
                   }
                 },

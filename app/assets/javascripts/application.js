@@ -26,7 +26,7 @@
 // TopUp.players_path = "assets/players/";
 
 
-angular.module('dengue_torpedo',['dengue_torpedo.controllers','dengue_torpedo.factories']);
+angular.module('dengue_torpedo',['dengue_torpedo.controllers']);
 
 //Prevent Enter from submitting forms on site
 

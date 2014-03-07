@@ -22,9 +22,9 @@ $(document).ready(function() {
 });
 
 
-angular.module('dengue_torpedo.controllers').
+angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
         //Controller for Report List
-        controller('ReportListController',function($scope,$resource, Map){
+        controller('ReportListController',function($scope,$resource){
 
             var allowed_time = 1000 * 60 * 60 * 48;  // milliseconds * sec * min * hour;
             var attempted_lookup = false;  //possibly used for eager lookup on location lon/lat
@@ -41,14 +41,12 @@ angular.module('dengue_torpedo.controllers').
             });
 
             $scope.create_new_report = function(){
-                //Toggle report and call Map factory
                 if($("#new_report_div").is(':hidden')){
                     $("#new_report_div").slideDown();
-                    Map.start_new_report();
+                    $scope.$emit('start_new_report');
                 }
                 else {
                     $("#new_report_div").slideUp();
-                    Map.stop_new_report();
                 }
                 new_report_empty();
             }
@@ -77,7 +75,7 @@ angular.module('dengue_torpedo.controllers').
 
                     // ? move to angular $resource or $http
                     $.ajax({
-                        url: '\submit_report',
+                        url: '/submit_report',
                         type: 'POST',
                         data: $scope.new_report,
                         success:function(data){
@@ -86,6 +84,7 @@ angular.module('dengue_torpedo.controllers').
                                 $scope.reports.splice(0,0,$scope.new_report);
                                 new_report_empty();
                                 $("#new_report_div").hide();
+                                $scope.$emit('update_map',{})
                                 $scope.$apply(); //updates report list
                         },
                         error:function(data){

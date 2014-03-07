@@ -3,9 +3,11 @@
     %title Dengue Torpedo
     = stylesheet_link_tag "application"
     %link{rel: "stylesheet", href: "http://js.arcgis.com/3.6/js/esri/css/esri.css"}
+    %script{src: "http://js.arcgis.com/3.6/init.js"}
+
     = javascript_include_tag "application"
     = javascript_include_tag "esri-leaflet"
-    %script{src: "http://js.arcgis.com/3.6/init.js"}
+
     = csrf_meta_tags
     = yield :head
     

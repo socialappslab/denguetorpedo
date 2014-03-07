@@ -111,12 +111,12 @@
                   %form
                     -#report_id
                     = hidden_field_tag :report_id, :value=>"{{report.info.id}}"
-                    %p Report: {{report.info.report}}
+                    %p {{report.info.report}}
                     -#sms check
                     -#*SMS CHECK*
                     -#elimination_type
 
-                    %p Elimination Type: {{report.info.elimination_type}}
+                    %p {{report.info.elimination_type}}
                     Elimination Method:
                     = select_tag :elimination_method,nil,:prompt=>prompt_helper('elimination_method'),
                       :id=>"method_selection", :class=>"elimination_methods",'ng-model'=>'report.info.elimination_method',
