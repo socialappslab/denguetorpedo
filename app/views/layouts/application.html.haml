@@ -9,6 +9,18 @@
     = javascript_include_tag "esri-leaflet"
     %script{src: "http://js.arcgis.com/3.6/init.js"}
     = csrf_meta_tags
+
+    / Google Analytics tracking
+    - if Rails.env.production?
+      :javascript
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-48761911-1', 'denguetorpedo.com');
+        ga('send', 'pageview');
+
     = yield :head
 
   /-----------------------------------------------------------------------------
@@ -41,16 +53,3 @@
       |
       =link_to "Criado pelo Social Apps Lab, UC Berkeley", credit_path
   = yield :scripts
-
-  /-----------------------------------------------------------------------------
-  / Google Analytics tracking
-
-  - if Rails.env.production?
-    :javascript
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-48761911-1', 'denguetorpedo.com');
-      ga('send', 'pageview');
