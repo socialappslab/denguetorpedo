@@ -90,15 +90,13 @@ class ReportsController < ApplicationController
   # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
 
   def create
-
-    address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
+    # TODO @dman7: What is this???
     flash[:street_type] = params[:street_type]
     flash[:street_name] = params[:street_name]
     flash[:street_number] = params[:street_number]
     flash[:description] = params[:report][:report]
     flash[:x] = params[:x]
     flash[:y] = params[:y]
-    location = Location.find_by_address(address)
 
     # When the user inputs an address into the textfields, we trigger an ESRI
     # map search on the associated map that updates the x and y hidden fields
@@ -108,14 +106,17 @@ class ReportsController < ApplicationController
       redirect_to :back and return
     end
 
-    if location.nil?
-      location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
-    else
-      location.latitude = params[:x]
-      location.longitude = params[:y]
-    end
 
+    # Update the user's location.
+    location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+      params[:street_type].downcase.titleize,
+      params[:street_name].downcase.titleize,
+      params[:street_number].downcase.titleize
+    )
+    location.latitude  = params[:x] if params[:x].present?
+    location.longitude = params[:y] if params[:y].present?
     location.save
+
 
     if params[:report][:report] == ""
       flash[:alert] = "Você tem que descrever o local e/ou o foco."
@@ -132,34 +133,30 @@ class ReportsController < ApplicationController
     end
 
 
-
-    @report = Report.create_from_user("", :status => :reported, :reporter => @current_user, :location => location)
-    @report.report = params[:report][:report]
-
+    @report = Report.create_from_user("",
+      :status => :reported,
+      :reporter => @current_user,
+      :location => location)
+    @report.report       = params[:report][:report]
     @report.completed_at = Time.now
     @report.before_photo = params[:report][:before_photo]
 
     if @report.save
-      if @current_user != nil and params[:before_photo]
-      end
-
       flash[:notice] = 'Foco marcado com sucesso!'
       respond_to do |format|
         format.html{ redirect_to :action=>'index', view: 'recent' }
         format.json { render json: { message: "success"}}
       end
-
-
     else
-      flash[:alert] = "here"
+      flash[:alert] = "Something went wrong. Please try again."
       respond_to do |format|
         format.html { redirect_to :back }
         format.json {render json: {message: "failure"}, status: 401 }
       end
-
     end
-
   end
+
+  #-----------------------------------------------------------------------------
 
   def edit
     @report = @current_user.created_reports.find(params[:id])
