@@ -271,93 +271,75 @@ class UsersController < ApplicationController
         # By setting this to 1, we won't ask the user again to confirm.
         @confirm = 1
         flash.now[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
-        render "edit" and return
+        render edit_user_path(@user) and return
       end
     end
 
 
-
-
-    # TODO TODO: need to deprecate these variables...
-    house_address = user_params[:location][:address] || ''
-    house_neighborhood = user_params[:location][:neighborhood] || ''
-    house_profile_photo = user_params[:house_attributes][:profile_photo] || ''
-
-    @user.display = display
-    @user.first_name = user_first_name
-    #@user.middle_name = user_middle_name
-    @user.last_name = user_last_name
-    @user.nickname = user_nickname
-
-    user_profile_photo = params[:user][:profile_photo]
-    display = params[:display]
-    user_first_name = params[:user][:first_name]
-    user_last_name = params[:user][:last_name]
-    #user_middle_name = params[:user][:middle_name]
-    user_nickname = params[:user][:nickname]
-
-
-
+    # TODO TODO: Refactor the whole logic here to make it smoother.
     if @user.role != "visitante"
-      house_address = params[:user][:location][:street_type].titleize + " " + params[:user][:location][:street_name].titleize + " " + params[:user][:location][:street_number].titleize
+      user_location = user_params[:location]
+      house_address = user_location[:street_type].titleize + " " + user_location[:street_name].titleize + " " + user_location[:street_number].titleize
 
 
-      if @user.house
-        @user.house.name = house_name
-        if house_profile_photo
-          @user.house.profile_photo = house_profile_photo
-        end
-        location = @user.house.location
-        location.street_type = params[:user][:location][:street_type]
-        location.street_name = params[:user][:location][:street_name]
-        location.street_number = params[:user] [:location][:street_number]
-        location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-        if params[:x] and params[:y]
-          location.latitude = params[:x]
-          location.longitude = params[:y]
-        end
-        if !location.save
+      if @user.house.present?
+
+        @user.house.name = user_params[:house_attributes][:name]
+        @user.house.profile_photo = user_params[:house_attributes][:profile_photo]
+
+        location               = @user.house.location
+        location.street_type   = user_location[:street_type]
+        location.street_name   = user_location[:street_name]
+        location.street_number = user_location[:street_number]
+        location.neighborhood  = Neighborhood.find_or_create_by_name(user_location[:neighborhood])
+        location.latitude      = params[:x] if params[:x].present?
+        location.longitude     = params[:y] if params[:y].present?
+
+        unless location.save
           flash[:notice] = "Insira um endereço válido."
-          render "edit"
-          return
+          render edit_user_path(@user) and return
         end
-      else
-        @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
 
-        if !@user.house.valid?
-          flash[:alert] = "Insira um nome da casa válido."
-          render "edit"
-          return
-        else
-          location = @user.house.location
-          location.street_type = params[:user][:location][:street_type]
-          location.street_name = params[:user][:location][:street_name]
-          location.street_number = params[:user] [:location][:street_number]
-          location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-          location.latitude = params[:x]
-          location.longitude = params[:y]
+      else
+        house_address = user_params[:location][:address] || ''
+        house_neighborhood = user_params[:location][:neighborhood] || ''
+        house_profile_photo = user_params[:house_attributes][:profile_photo] || ''
+
+        @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
+        if @user.house
+          location               = @user.house.location
+          location.street_type   = user_location[:street_type]
+          location.street_name   = user_location[:street_name]
+          location.street_number = user_location[:street_number]
+          location.neighborhood  = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
+          location.latitude      = params[:x]
+          location.longitude     = params[:y]
           location.save
+        else
+          flash[:alert] = "Insira um nome da casa válido."
+          render edit_user_path(@user) and return
         end
+
+
       end
     end
-
 
 
     if @user.house and !@user.house.save
       flash[:notice] = "Preencha o nome da casa."
-      render "edit"
-      return
+      render edit_user_path(@user) and return
     end
+
     if params[:user][:house_attributes] and params[:user][:house_attributes][:phone_number]
       @user.house.phone_number = params[:user][:house_attributes][:phone_number]
       @current_user.house.save
     end
 
-
+    # Reward the person who recruited the new user.
     recruiter = User.find_by_id(params[:recruitment_id])
     if recruiter
-      @user.recruiter = recruiter
-      recruiter.points += 50
+      @user.recruiter         = recruiter
+      recruiter.points       += 50
       recruiter.total_points += 50
       recruiter.save
       @user.is_fully_registered = true
@@ -367,16 +349,30 @@ class UsersController < ApplicationController
       redirect_to edit_user_path(@user), :flash => { :notice => 'Perfil atualizado com sucesso!' }
       return
     else
-      @user.house = House.new(name: house_name)
+      @user.house          = House.new(name: house_name)
       @user.house.location = Location.new
-      render "edit"
-      return
+      render edit_user_path(@user) and return
     end
 
 
 
-
-
+    # TODO TODO: need to deprecate these variables...
+    # house_address = user_params[:location][:address] || ''
+    # house_neighborhood = user_params[:location][:neighborhood] || ''
+    # house_profile_photo = user_params[:house_attributes][:profile_photo] || ''
+    #
+    # @user.display = display
+    # @user.first_name = user_first_name
+    # #@user.middle_name = user_middle_name
+    # @user.last_name = user_last_name
+    # @user.nickname = user_nickname
+    #
+    # user_profile_photo = params[:user][:profile_photo]
+    # display = params[:display]
+    # user_first_name = params[:user][:first_name]
+    # user_last_name = params[:user][:last_name]
+    # #user_middle_name = params[:user][:middle_name]
+    # user_nickname = params[:user][:nickname]
 
 
     # TODO: Why do we care about visitante?
