@@ -3,20 +3,19 @@ require 'spec_helper'
 # require "cancan/matchers"
 
 describe UsersController do
+	let(:user_params) {
+		{ :email => "test@denguetorpedo.com",
+			:first_name => "Test",
+			:last_name => "Tester",
+			:password => "abcdefg",
+			:password_confirmation => "abcdefg"
+		}
+	}
 
 	#-----------------------------------------------------------------------------
 
 	context "Creating a new user" do
 		render_views
-
-		let(:user_params) {
-			{ :email => "test@denguetorpedo.com",
-				:first_name => "Test",
-				:last_name => "Tester",
-				:password => "abcdefg",
-				:password_confirmation => "abcdefg"
-			}
-		}
 
 		describe "with errors" do
 			it "returns an alert if no parameters are passed" do
@@ -89,6 +88,24 @@ describe UsersController do
 			end
 		end
 	end
+
+	#-----------------------------------------------------------------------------
+
+	context "Editing a new user" do
+		render_views
+		let(:user) { FactoryGirl.create(:user, user_params)}
+
+		describe "" do
+			it "" do
+				post :create
+				expect(response.body).to include("Something went wrong")
+			end
+
+		end
+
+
+	end
+
 
 	#-----------------------------------------------------------------------------
 
