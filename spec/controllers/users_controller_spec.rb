@@ -9,16 +9,16 @@ describe UsersController do
 	context "Creating a new user" do
 		render_views
 
-		describe "with errors" do
-			let(:user_params) {
-				{ :email => "test@denguetorpedo.com",
-					:first_name => "Test",
-					:last_name => "Tester",
-					:password => "abcdefg",
-					:password_confirmation => "abcdefg"
-				}
+		let(:user_params) {
+			{ :email => "test@denguetorpedo.com",
+				:first_name => "Test",
+				:last_name => "Tester",
+				:password => "abcdefg",
+				:password_confirmation => "abcdefg"
 			}
+		}
 
+		describe "with errors" do
 			it "returns an alert if no parameters are passed" do
 				post :create
 				expect(response.body).to include("Something went wrong")
@@ -69,12 +69,23 @@ describe UsersController do
 			render_views
 
 			it "creates a new user in the database" do
+				expect {
+					post :create, :user => user_params
+				}.to change(User, :count).by(1)
 			end
 
 			it "logs in the new user" do
+				post :create, :user => user_params
+
+				user = User.find_by_email(user_params[:email])
+				expect(cookies[:auth_token]).to eq(user.auth_token)
 			end
 
 			it "redirects to edit page" do
+				post :create, :user => user_params
+
+				user = User.find_by_email(user_params[:email])
+				response.should redirect_to edit_user_path(user)
 			end
 		end
 	end
