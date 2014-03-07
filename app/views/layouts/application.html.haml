@@ -35,6 +35,8 @@
       - if !current_page?(root_url)
         .push_down
 
+      = render :partial => "shared/flashes"
+
       = yield
 
   /-----------------------------------------------------------------------------
