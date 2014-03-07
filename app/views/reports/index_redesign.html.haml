@@ -26,9 +26,9 @@
       = render :partial => 'reports/open_redesign'
 
 
-    .span7#map_div{'ng-controller'=>'MapController'}
+    .span7#map_container{'ng-controller'=>'MapController'}
       =button_to "Hide", "", 'ng-click'=>'hide()'
       =button_to "Show",'','ng-click'=>'show()'
 
-      #OSMap
+      #map_instance
 

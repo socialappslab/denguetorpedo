@@ -25,9 +25,10 @@
 // TopUp.images_path = "assets/top_up/";
 // TopUp.players_path = "assets/players/";
 
-//Prevent Enter from submitting forms on site
 
 angular.module('dengue_torpedo',['dengue_torpedo.controllers','dengue_torpedo.factories']);
+
+//Prevent Enter from submitting forms on site
 
 $(window).on("keypress",function(e){
     if (e.keyCode == 13) {

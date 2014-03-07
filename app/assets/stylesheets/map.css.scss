@@ -9,10 +9,22 @@
   overflow-y:hidden;
 }
 
+/* Keeping for legacy code, redesigned map is in map_container */
 #map_div{
   margin-top:-63px;
   position:absolute;
   right:30px;
   overflow-y:hidden;
   overflow-x:hidden;
+}
+
+/* Holds map object and related items */
+#map_container{
+  margin-top:-63px;
+  position:absolute;
+  right:30px;
+  overflow-y:hidden;
+  overflow-x:hidden;
+
+  #map_instance{}
 }
