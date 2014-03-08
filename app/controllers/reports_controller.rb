@@ -582,6 +582,7 @@ class ReportsController < ApplicationController
   end
 
   def submit_report
+    puts params
     #needs cleanup
     if request.xhr?
       #are params sanitized?

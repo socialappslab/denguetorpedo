@@ -32,7 +32,6 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
             //creates empty new_report object
             new_report_empty();
 
-
             $scope.reports = {};
             $scope.date = new Date();
 
@@ -42,11 +41,10 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
 
             $scope.create_new_report = function(){
                 if($("#new_report_div").is(':hidden')){
-                    $("#new_report_div").slideDown();
-                    $scope.$emit('start_new_report');
+                    $("#new_report_div").slideDown().trigger('show');
                 }
                 else {
-                    $("#new_report_div").slideUp();
+                    $("#new_report_div").slideUp().trigger('hide');
                 }
                 new_report_empty();
             }
@@ -72,6 +70,9 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
 
                     create_address();
                     $scope.new_report.info.completed_at = new Date();
+                    $scope.new_report.location.latitude = $('input#latitude').val();
+                    $scope.new_report.location.longitude = $('input#longitude').val();
+
 
                     // ? move to angular $resource or $http
                     $.ajax({
@@ -83,8 +84,7 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
                                 $scope.new_report.info.reporter_name = data.reporter_name;
                                 $scope.reports.splice(0,0,$scope.new_report);
                                 new_report_empty();
-                                $("#new_report_div").hide();
-                                $scope.$emit('update_map',{})
+                                $("#new_report_div").hide().trigger('hide');
                                 $scope.$apply(); //updates report list
                         },
                         error:function(data){
@@ -122,7 +122,9 @@ angular.module('dengue_torpedo.controllers',['ngResource', 'timer']).
                         'street_type':'',
                         'street_name':'',
                         'street_number':'',
-                        'neighborhood':''},
+                        'neighborhood':'',
+                        'longitude':'',
+                        'latitude':''},
                     'img':{
                         'before':''}
                 };

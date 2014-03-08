@@ -4,7 +4,7 @@
     = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
     = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
     = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
-  = link_to "Marcar um foco", "", :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
+  = link_to "Marcar um foco", "",:id=>'new_report_button', :class => 'animated slideInDown bttn make_report_button report_new_report_btn ' + @make_report_button_active,'ng-click'=>'create_new_report()'
 
   -# New Report Form
   #new_report_div
@@ -57,6 +57,8 @@
           %h4 5.
           #map_button
             Marcar no mapa
+        =hidden_field_tag 'latitude', 'ng-model'=>'new_report.location.latitude';
+        =hidden_field_tag 'longitude', 'ng-model'=>'new_report.location.longitude'
 
         -#submit
         = button_tag "Enviar!", :id=>'submit_button', 'ng-click'=>'submit_report(new_report_form)'
