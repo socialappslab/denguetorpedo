@@ -185,7 +185,7 @@ class ReportsController < ApplicationController
         end
 
         if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
-          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
+          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco." #You need to score a valid location for your focus.
           redirect_to :back
           return
         end
@@ -244,24 +244,27 @@ class ReportsController < ApplicationController
       #  #return
       #end
 
-      # ? When user submits a new site, before they've selected a elimination_type
-      if @report.elimination_type.nil? and params[:elimination_type]
-        @report.elimination_type = params[:elimination_type]
-        @report.completed_at = Time.now
-        @report.save
-        flash[:notice] = "Tipo de foco atualizado com sucesso."
-        @current_user.update_attribute(:points, @current_user.points + submission_points)
-        @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
-        redirect_to :back
-        return
-      else
-        flash[:notice] = "Você tem que escolher um tipo de foco."
+      # User has created initial report but now needs to select an elimination type
+      if @report.elimination_type.nil?
+        unless params[:elimination_type].blank?
+          @report.elimination_type = params[:elimination_type]
+          @report.completed_at = Time.now
+          @report.save
+          flash[:notice] = "Tipo de foco atualizado com sucesso."  #Focus type updated successfully.
+          @current_user.update_attribute(:points, @current_user.points + submission_points)
+          @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
+          redirect_to :back
+          return
+        else
+          #user must select an elimination type before proceeding
+          flash[:notice] = "Você tem que escolher um tipo de foco." #You have to choose a type of focus.
+          redirect_to :back and return
+        end
       end
 
 
       if params[:report_description]
         @report.report = params[:report_description]
-        @report.save
       end
 
 
@@ -274,7 +277,7 @@ class ReportsController < ApplicationController
 
       # Check to see if user has selected a method of elimination
       if params[:selected_elimination_method].blank? and @report.elimination_method.blank?
-        flash[:notice] = " Você tem que escolher um método de eliminação."
+        flash[:notice] = "Você tem que escolher um método de eliminação."  # You have to choose a method of disposal.
         submit_complete = false
       else
         #if user has updated the method then replace it
@@ -283,17 +286,23 @@ class ReportsController < ApplicationController
         end
       end
 
-
       # Check to see if user has uploaded "after" photo
       if @report.after_photo_file_size.nil?
         if params[:eliminate] and params[:eliminate][:after_photo] != nil
           @report.after_photo = params[:eliminate][:after_photo]
         else
-          #user did not upload a photo either
+          #user did not upload a photo
+          flash[:notice] = flash[:notice].to_s + " Você tem que carregar uma foto do foco eliminado." #You have to upload a photo of focus eliminated
           submit_complete = false
-          flash[:notice] += " Você tem que carregar uma foto do foco eliminado."
         end
       end
+
+      # Check if a location lon/lat exists
+      # TODO @awdorsett check if error message is correct in portuguese
+        if @report.location.latitude.blank? or report.location.longitude.blank?
+          flash[:notice] = flash[:notice].to_s + ' Você tem que selecionar um local no mapa' #You have to select a location on the map
+          submit_complete = false
+        end
 
 
       # ? If the eliminate form isn't being submitted
@@ -313,6 +322,7 @@ class ReportsController < ApplicationController
 
       @report.save
 
+      # if every part of the report submission is complete, submit_complete = true
       if submit_complete
         flash[:notice] = "Você eliminou o foco!"
         @report.touch(:eliminated_at)
