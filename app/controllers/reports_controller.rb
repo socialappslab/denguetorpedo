@@ -302,7 +302,7 @@ class ReportsController < ApplicationController
       # Check if a location lon/lat exists
       # TODO @awdorsett check if error message is correct in portuguese
         if @report.location.latitude.blank? || @report.location.longitude.blank?
-          if params[:latitude].present? || params[:longitude].present
+          if params[:latitude].present? || params[:longitude].present?
             # TODO @awdorsett clean up
             # TODO @awdorsett find out why location doesn't save when report.save is called
             @report.location.latitude = params[:latitude]
