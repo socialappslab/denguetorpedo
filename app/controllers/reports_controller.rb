@@ -308,9 +308,9 @@ class ReportsController < ApplicationController
             @report.location.latitude = params[:latitude]
             @report.location.longitude = params[:longitude]
             @report.location.save
-          else
-            flash[:notice] = flash[:notice].to_s + ' Você tem que selecionar um local no mapa' #You have to select a location on the map
-            submit_complete = false
+          #else
+          #  flash[:notice] = flash[:notice].to_s + ' Você tem que selecionar um local no mapa' #You have to select a location on the map
+          #  submit_complete = false
           end
         end
 
