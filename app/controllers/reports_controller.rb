@@ -259,7 +259,7 @@ class ReportsController < ApplicationController
           redirect_to :back and return
         else
           # user must select an elimination type before proceeding
-          flash[:notice] = "Você tem que escolher um tipo de foco." #You have to choose a type of focus.
+          flash[:alert] = "Você tem que escolher um tipo de foco." #You have to choose a type of focus.
           redirect_to :back and return
         end
       end
@@ -279,7 +279,7 @@ class ReportsController < ApplicationController
 
       # Check to see if user has selected a method of elimination
       if params[:selected_elimination_method].blank? && @report.elimination_method.blank?
-        flash[:notice] = "Você tem que escolher um método de eliminação."  # You have to choose a method of disposal.
+        flash[:alert] = "Você tem que escolher um método de eliminação."  # You have to choose a method of disposal.
         submit_complete = false
       else
         #if user has updated the method then replace it
@@ -294,7 +294,7 @@ class ReportsController < ApplicationController
           @report.after_photo = params[:eliminate][:after_photo]
         else
           #user did not upload a photo
-          flash[:notice] = flash[:notice].to_s + " Você tem que carregar uma foto do foco eliminado." #You have to upload a photo of focus eliminated
+          flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado." #You have to upload a photo of focus eliminated
           submit_complete = false
         end
       end
