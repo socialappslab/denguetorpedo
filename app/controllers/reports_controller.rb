@@ -299,9 +299,17 @@ class ReportsController < ApplicationController
 
       # Check if a location lon/lat exists
       # TODO @awdorsett check if error message is correct in portuguese
-        if @report.location.latitude.blank? or report.location.longitude.blank?
-          flash[:notice] = flash[:notice].to_s + ' Você tem que selecionar um local no mapa' #You have to select a location on the map
-          submit_complete = false
+        if @report.location.latitude.blank? or @report.location.longitude.blank?
+          unless params[:latitude].blank? or params[:longitude].blank?
+            # TODO @awdorsett clean up
+            # TODO @awdorsett find out why location doesn't save when report.save is called
+            @report.location.latitude = params[:latitude]
+            @report.location.longitude = params[:longitude]
+            @report.location.save
+          else
+            flash[:notice] = flash[:notice].to_s + ' Você tem que selecionar um local no mapa' #You have to select a location on the map
+            submit_complete = false
+          end
         end
 
 
