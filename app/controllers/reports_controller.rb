@@ -246,7 +246,7 @@ class ReportsController < ApplicationController
 
       # User has created initial report but now needs to select an elimination type
       if @report.elimination_type.nil?
-        if not params[:elimination_type].blank?
+        if params[:elimination_type].present?
           @report.elimination_type = params[:elimination_type]
           @report.completed_at = Time.now
           @report.save
@@ -278,19 +278,19 @@ class ReportsController < ApplicationController
 
 
       # Check to see if user has selected a method of elimination
-      if params[:selected_elimination_method].blank? and @report.elimination_method.blank?
+      if params[:selected_elimination_method].blank? && @report.elimination_method.blank?
         flash[:notice] = "Você tem que escolher um método de eliminação."  # You have to choose a method of disposal.
         submit_complete = false
       else
         #if user has updated the method then replace it
-        unless params[:selected_elimination_method].blank?
+        if params[:selected_elimination_method].present?
           @report.elimination_method = params[:selected_elimination_method]
         end
       end
 
       # Check to see if user has uploaded "after" photo
       if @report.after_photo_file_size.nil?
-        if params[:eliminate] and params[:eliminate][:after_photo] != nil
+        if params[:eliminate] && params[:eliminate][:after_photo] != nil
           @report.after_photo = params[:eliminate][:after_photo]
         else
           #user did not upload a photo
@@ -301,8 +301,8 @@ class ReportsController < ApplicationController
 
       # Check if a location lon/lat exists
       # TODO @awdorsett check if error message is correct in portuguese
-        if @report.location.latitude.blank? or @report.location.longitude.blank?
-          if not params[:latitude].blank? or not params[:longitude].blank?
+        if @report.location.latitude.blank? || @report.location.longitude.blank?
+          if params[:latitude].present? || params[:longitude].present
             # TODO @awdorsett clean up
             # TODO @awdorsett find out why location doesn't save when report.save is called
             @report.location.latitude = params[:latitude]
@@ -532,7 +532,7 @@ class ReportsController < ApplicationController
   end
 
   def award_points report, user
-    unless report.elimination_method.blank?
+    if report.elimination_method.present?
       points = EliminationMethod.find_by_method(report.elimination_method).points
       user.points += points
       user.total_points += points
