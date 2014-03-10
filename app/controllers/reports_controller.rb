@@ -246,17 +246,19 @@ class ReportsController < ApplicationController
 
       # User has created initial report but now needs to select an elimination type
       if @report.elimination_type.nil?
-        unless params[:elimination_type].blank?
+        if not params[:elimination_type].blank?
           @report.elimination_type = params[:elimination_type]
           @report.completed_at = Time.now
           @report.save
+
           flash[:notice] = "Tipo de foco atualizado com sucesso."  #Focus type updated successfully.
+
           @current_user.update_attribute(:points, @current_user.points + submission_points)
           @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
-          redirect_to :back
-          return
+
+          redirect_to :back and return
         else
-          #user must select an elimination type before proceeding
+          # user must select an elimination type before proceeding
           flash[:notice] = "Você tem que escolher um tipo de foco." #You have to choose a type of focus.
           redirect_to :back and return
         end
@@ -300,7 +302,7 @@ class ReportsController < ApplicationController
       # Check if a location lon/lat exists
       # TODO @awdorsett check if error message is correct in portuguese
         if @report.location.latitude.blank? or @report.location.longitude.blank?
-          unless params[:latitude].blank? or params[:longitude].blank?
+          if not params[:latitude].blank? or not params[:longitude].blank?
             # TODO @awdorsett clean up
             # TODO @awdorsett find out why location doesn't save when report.save is called
             @report.location.latitude = params[:latitude]
