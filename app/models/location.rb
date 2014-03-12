@@ -36,11 +36,16 @@ class Location < ActiveRecord::Base
 
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
 
+  #----------------------------------------------------------------------------
+
   def save_address
     if self.address.nil?
       self.address = self.street_type + " " + self.street_name + " " + self.street_number
     end
   end
+
+  #----------------------------------------------------------------------------
+
   def geocode(address = "")
     self.address = self.street_type + " " + self.street_name + " " + self.street_number
     uri = URI.parse(URI.escape("#{BASE_URI}?f=pjson&outSR=29193&Street=#{self.address}"))
@@ -57,10 +62,14 @@ class Location < ActiveRecord::Base
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def neighborhood_name
     self.neighborhood && self.neighborhood.name
   end
 
+  #----------------------------------------------------------------------------
+  
   def geocode_results(data)
     # reset all these fields so we can extract it from the geocoding data
     self.nation = nil
@@ -147,4 +156,3 @@ class Location < ActiveRecord::Base
   end
 
 end
-
