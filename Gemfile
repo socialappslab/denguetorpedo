@@ -17,7 +17,6 @@ gem 'gmaps4rails'
 gem 'twilio-ruby'
 gem 'dynamic_form'
 gem 'ruby-gmail'
-gem 'foreman'
 gem 'daemons'
 gem 'mms2r'
 gem 'mime'
@@ -55,11 +54,13 @@ gem 'leaflet-rails'
 # for geocoding transformation
 # gem 'proj4rb'
 
-# Use unicorn as the web server
-# gem 'unicorn'
+#------------------------------------------------------------------------------
+# Server Management
 
-# Deploy with Capistrano
-# gem 'capistrano'
+gem "puma"
+gem "foreman"
+
+#------------------------------------------------------------------------------
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
@@ -72,11 +73,11 @@ group :test, :development do
   gem 'sqlite3'
 end
 group :test do
-  gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions  
+  gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions
   gem 'cucumber-rails', :require => false
   gem 'guard-rspec'
   gem 'database_cleaner' # to clear Cucumber's test database between runs
-  
+
   gem 'faker'
   gem 'sms-spec'
 end

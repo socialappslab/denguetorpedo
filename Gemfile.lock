@@ -185,6 +185,8 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
+    puma (2.7.1)
+      rack (>= 1.1, < 2.0)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -327,6 +329,7 @@ DEPENDENCIES
   prawn
   prawn-layout
   prawnto_2
+  puma
   rails (~> 3.2.1)
   rails-i18n
   rails_autolink
