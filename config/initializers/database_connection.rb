@@ -9,6 +9,7 @@ Rails.application.config.after_initialize do
     # As long as we run Puma and Sidekiq in 2 separate processes,
     # we should be fine setting thread-level concurrency to at
     # most 20.
+    puts "Rails.env: #{Rails.env}"
     config = ActiveRecord::Base.configurations[Rails.env]
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
     config['pool']              = 20
