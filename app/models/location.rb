@@ -69,7 +69,7 @@ class Location < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
-  
+
   def geocode_results(data)
     # reset all these fields so we can extract it from the geocoding data
     self.nation = nil
