@@ -72,11 +72,14 @@ group :test, :development do
   gem 'sqlite3'
 end
 group :test do
-  gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions  
+  gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions
   gem 'cucumber-rails', :require => false
   gem 'guard-rspec'
   gem 'database_cleaner' # to clear Cucumber's test database between runs
-  
+
   gem 'faker'
   gem 'sms-spec'
 end
+
+
+gem "sidekiq"
