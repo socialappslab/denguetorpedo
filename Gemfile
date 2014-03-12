@@ -8,16 +8,46 @@ group :staging, :production do
   gem 'pg'
 end
 
-gem 'dalli'
+# gem 'dalli'
 gem 'magic_encoding'
-gem 'thin'
-gem 'haml'
+# gem 'thin'
+
+#------------------------------------------------------------------------------
+# Maps
+
 gem 'geokit'
 gem 'gmaps4rails'
-gem 'twilio-ruby'
+gem 'leaflet-rails'
+
+#------------------------------------------------------------------------------
+# SMS communication
+
+gem 'nexmo'
+
+#------------------------------------------------------------------------------
+# PDF-related
+
+gem 'prawn'
+gem 'prawn-layout'
+gem "prawnto_2", :require => "prawnto"
+
+#------------------------------------------------------------------------------
+# Internationalization
+
+gem 'rails-i18n'
+
+#------------------------------------------------------------------------------
+# Front-end tools
+
+gem 'haml'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'dynamic_form'
+
+#------------------------------------------------------------------------------
+
+# gem 'twilio-ruby'
 gem 'ruby-gmail'
-gem 'foreman'
 gem 'daemons'
 gem 'mms2r'
 gem 'mime'
@@ -30,14 +60,12 @@ gem 'awesome_nested_set'
 gem 'uuid'
 gem 'whenever', :require => false
 gem 'eventmachine', '~> 1.0.0.beta.4.1'
-gem 'nexmo'
 gem 'cancan'
-gem 'prawn'
-gem 'prawn-layout'
-gem "prawnto_2", :require => "prawnto"
 gem 'rails_autolink'
 
-gem 'rails-i18n'
+
+#------------------------------------------------------------------------------
+# Assets
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -47,22 +75,33 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
+#------------------------------------------------------------------------------
+# File Management
+
 gem 'aws-sdk'
-gem 'leaflet-rails'
+
 
 # for geocoding transformation
 # gem 'proj4rb'
 
-# Use unicorn as the web server
-# gem 'unicorn'
+#------------------------------------------------------------------------------
+# Server Management
 
-# Deploy with Capistrano
-# gem 'capistrano'
+gem "puma"
+gem "foreman"
+
+#------------------------------------------------------------------------------
+# Workers
+
+gem "sidekiq"
+
+#------------------------------------------------------------------------------
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
+
+#------------------------------------------------------------------------------
+# Testing
 
 group :test, :development do
   gem 'rspec-rails'
@@ -71,6 +110,7 @@ group :test, :development do
   gem 'launchy'          # a useful debugging aid for user stories
   gem 'sqlite3'
 end
+
 group :test do
   gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions
   gem 'cucumber-rails', :require => false
@@ -78,8 +118,7 @@ group :test do
   gem 'database_cleaner' # to clear Cucumber's test database between runs
 
   gem 'faker'
-  gem 'sms-spec'
+  # gem 'sms-spec'
 end
 
-
-gem "sidekiq"
+#------------------------------------------------------------------------------
