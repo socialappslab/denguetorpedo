@@ -34,6 +34,10 @@ class Location < ActiveRecord::Base
 
   before_save :save_address
 
+  # This will trigger a background job if map coordinates
+  # haven't been set yet.
+  after_commit :update_map_coordinates, :on => :create
+
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
 
   #----------------------------------------------------------------------------
@@ -154,5 +158,18 @@ class Location < ActiveRecord::Base
     location.save!
     return location
   end
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  def update_map_coordinates
+    return if self.latitude.present? && self.longitude.present?
+    MapCoordinatesWorker.perform_async(location.report.id)
+  end
+
+  #----------------------------------------------------------------------------
 
 end

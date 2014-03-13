@@ -98,19 +98,13 @@ class ReportsController < ApplicationController
     flash[:x] = params[:x]
     flash[:y] = params[:y]
 
-    # When the user inputs an address into the textfields, we trigger an ESRI
-    # map search on the associated map that updates the x and y hidden fields
-    # in the form.
-    # NOTE: We're commenting this check for now in case the map doesn't
-    # respond.
-    # if params[:x].empty? or params[:y].empty?
-    #   flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-    #   redirect_to :back and return
-    # end
-
-
     # Find the location based on user's input (street type, name, number) and
     # ESRI's geolocation (latitude, longitude).
+    # When the user inputs an address into the textfields, we trigger an ESRI
+    # map search on the associated map that updates the x and y hidden fields
+    # in the form. In the case that the map is unavailable (or JS is disabled),
+    # an after_commit hook into the Location model will trigger a background
+    # worker to fetch the map coordinates.
     location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
       params[:street_type].downcase.titleize,
       params[:street_name].downcase.titleize,
