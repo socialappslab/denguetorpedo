@@ -167,7 +167,7 @@ class Location < ActiveRecord::Base
 
   def update_map_coordinates
     return if self.latitude.present? && self.longitude.present?
-    MapCoordinatesWorker.perform_async(location.report.id)
+    MapCoordinatesWorker.perform_async(self.id)
   end
 
   #----------------------------------------------------------------------------
