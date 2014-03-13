@@ -1,5 +1,8 @@
 Dengue::Application.routes.draw do
   
+  resources :descriptions
+
+
   resources :feedbacks
 
  resources :elimination_methods
@@ -16,7 +19,9 @@ Dengue::Application.routes.draw do
   match 'about' => 'home#about'
   match '/education' => 'home#education'
   match '/credit' => 'home#credit'
-
+  
+  #match '/manual/edit/:text_id' => 'descriptions#index'
+  
   match "/user/:id/prize_codes" => 'prize_codes#index'
   match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'

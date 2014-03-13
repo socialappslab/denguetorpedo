@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Time:</b>
+  <%= @description.time %>
+</p>
+
+<p>
+  <b>Text:</b>
+  <%= @description.text %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= raw @description.description %>
+</p>
+
+<p>
+  <b>Updated by:</b>
+  <%= @description.updated_by %>
+</p>
+
+
+<%= link_to 'Edit', edit_description_path(@description) %> |
+<%= link_to 'Back', descriptions_path %>

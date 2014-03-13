@@ -34,5 +34,12 @@ class HomeController < ApplicationController
     format.json { render json: { user: @user }}
   end
 
+
+  def howto
+
+    flash[:alert] = @user
+    
+
+  end
 end
 

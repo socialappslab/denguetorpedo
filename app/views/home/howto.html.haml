@@ -1,5 +1,6 @@
 .row
   .span15.offset1
+    =flash[:alert]
     %h1{style: "margin-left:10px;"}
       MANUAL DENGUE TORPEDO
     %br
@@ -9,6 +10,9 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como se cadastrar
+          -if @current_user.role == "admin"
+            =link_to "Edit", edit_description_path(1)
+
         #cadastrar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Fazer o seu cadastro no Dengue Torpedo (DT) é fácil!
@@ -39,7 +43,10 @@
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Como completar sua conta
+            /Como completar sua conta
+            =Description.find_by_id(2).text
+            -if @current_user.role == "admin"
+              =link_to "Edit", edit_description_path(Description.find_by_text("Como completar sua conta"))
         #completar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Para completar a sua conta você precisa fornecer mais alguns dados pessoais.
