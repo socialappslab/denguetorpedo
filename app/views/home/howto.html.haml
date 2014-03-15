@@ -11,7 +11,7 @@
           %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como se cadastrar
           -if @current_user.role == "admin"
-            =link_to "Edit", edit_description_path(1)
+            =link_to "Edit",edit_manual_instruction_path(Manual_instructions.find_by_id(1))
 
         #cadastrar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
@@ -43,10 +43,7 @@
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            /Como completar sua conta
-            =Description.find_by_id(2).text
-            -if @current_user.role == "admin"
-              =link_to "Edit", edit_description_path(Description.find_by_text("Como completar sua conta"))
+            Como completar sua conta
         #completar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Para completar a sua conta você precisa fornecer mais alguns dados pessoais.

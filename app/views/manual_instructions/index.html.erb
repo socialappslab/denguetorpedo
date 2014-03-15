@@ -1,0 +1,31 @@
+<h1>Listing manual_instructions</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>User</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @manual_instructions.each do |manual_instruction| %>
+  <tr>
+    <td><%= manual_instruction.title %></td>
+    <td><%= manual_instruction.description %></td>
+    <td><%= manual_instruction.user_id %></td>
+    <td><%= manual_instruction.created_at %></td>
+    <td><%= manual_instruction.updated_at %></td>
+    <td><%= link_to 'Show', manual_instruction %></td>
+    <td><%= link_to 'Edit', edit_manual_instruction_path(manual_instruction) %></td>
+    <td><%= link_to 'Destroy', manual_instruction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Manual instruction', new_manual_instruction_path %>

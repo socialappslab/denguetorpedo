@@ -1,7 +1,6 @@
 Dengue::Application.routes.draw do
   
-  resources :descriptions
-
+  resources :manual_instructions
 
   resources :feedbacks
 
@@ -10,7 +9,7 @@ Dengue::Application.routes.draw do
 
   resources :notices
 
-
+  match "howto/:id/edit" => "manual_instructions#edit"
   match "/home/:id" => "home#index", :as => "Home"
   match "/faq" => 'home#faq'
   match "/manual" => "home#manual"
@@ -19,9 +18,7 @@ Dengue::Application.routes.draw do
   match 'about' => 'home#about'
   match '/education' => 'home#education'
   match '/credit' => 'home#credit'
-  
-  #match '/manual/edit/:text_id' => 'descriptions#index'
-  
+    
   match "/user/:id/prize_codes" => 'prize_codes#index'
   match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'

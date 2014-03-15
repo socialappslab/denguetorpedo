@@ -1,0 +1,2 @@
+module ManualInstructionsHelper
+end
