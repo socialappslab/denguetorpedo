@@ -3,13 +3,32 @@
     %h1{style: "margin-left:10px;"}
       MANUAL DENGUE TORPEDO
     %br
+    %h2 Table of contents
+    %ul{style: "list-style-type:circle; margin-left:30px;"}
+      %li 
+        =link_to 'Como se cadastrar', '#cadastrar'
+      %li 
+        =link_to 'Como completar sua conta', '#completar'
+      %li 
+        =link_to 'Barra de navegação', '#barra'
+      %li 
+        =link_to 'O que é um foco?', '#foco'
+      %li 
+        =link_to 'Como jogar', '#jogar'
+      %li
+        =link_to 'Como ganhar', '#ganhar'
+      %li 
+        =link_to 'Como participar', '#participar'
+      %li 
+        =link_to 'Minha comunidade', '#comunidade'
 
+    %br
     .accordion#accordion1
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #cadastrar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como se cadastrar
-        #cadastrar.collapse.in.accordion-body
+        #cadastrar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Fazer o seu cadastro no Dengue Torpedo (DT) é fácil!
             %p Na página inicial insira todas as informações nos campos solicitados.
@@ -37,10 +56,10 @@
             %p Apenas moradores da Maré convidados por um usuário ou membro da equipe Dengue Torpedo podem participar! Atualmente estamos na fase inicial aperfeiçoando o aplicativo com os moradores da Maré. Em nossa próxima fase, o Dengue Torpedo será aberto a moradores de outros bairros da cidade. 
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #completar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como completar sua conta
-        #completar.collapse.in.accordion-body
+        #completar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Para completar a sua conta você precisa fornecer mais alguns dados pessoais.
             %p Assim que você apertar o botão <i>Cadastre-se</i> na página principal, você será direcionado para a página de Configurações.
@@ -78,10 +97,10 @@
 
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#barra").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #barra.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Barra de navegação
-        #barra.collapse.in.accordion-body
+        #barra.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Na barra de navegação você encontra os links para acessar cada página do site:
             %br
@@ -104,10 +123,10 @@
             %p Acesse essa página quando quiser inserir ou alterar seus dados pessoais, imagens de perfil e da casa. 
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#foco").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #foco.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             O que é um foco?
-        #foco.collapse.in.accordion-body
+        #foco.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Um foco é um lugar com água parada, geralmente limpo, onde os mosquitos põem seus ovos. 
             %br
@@ -118,10 +137,10 @@
             %p Dengue Torpedo não distingue entre ativos e potenciais. Quando encontrado, os dois tipos são chamados <i>focos marcados</i> e ganham a mesma pontuação.
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#jogar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #jogar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como jogar
-        #jogar.collapse.in.accordion-body
+        #jogar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p Há várias formas de jogar. Você pode:
             %br
@@ -309,10 +328,10 @@
 
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#ganhar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #ganhar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como ganhar
-        #ganhar.collapse.in.accordion-body
+        #ganhar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
             %h2 Ganhando pontos
@@ -555,10 +574,10 @@
             %p Mais detalhes do sistema de troca de pontos por prêmios podem ser esclarecidos na seção “Perguntas frequentes”. 
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#participar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #participar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Como participar
-        #participar.collapse.in.accordion-body
+        #participar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p O Dengue Torpedo está sendo lançado no bairro da Maré. Essa é uma iniciativa pioneira que se der certo será expandida para outros bairros da cidade. Dessa forma, apenas moradores da Maré podem participar dessa fase pioneira.
             %br
@@ -580,10 +599,10 @@
             %p Saiba mais sobre essas atividades dos verificadores acessando "Minha comunidade".
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#comunidade").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #comunidade.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             Minha comunidade
-        #comunidade.collapse.in.accordion-body
+        #comunidade.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             %p A página “Minha Comunidade” é onde você encontra as casas participantes e outros destaques da sua comunidade. É nessa página que você encontra notícias, oficinas e outras atividades.
 :javascript
