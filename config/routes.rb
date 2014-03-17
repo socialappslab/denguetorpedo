@@ -8,21 +8,6 @@ Dengue::Application.routes.draw do
   resources :elimination_types
 
   #----------------------------------------------------------------------------
-
-  match "/home/:id" => "home#index", :as => "Home"
-  match "/faq" => 'home#faq'
-  match "/manual" => "home#manual"
-  match "/howto" => "home#howto"
-  match '/contact' => 'home#contact'
-  match 'about' => 'home#about'
-  match '/education' => 'home#education'
-  match '/credit' => 'home#credit'
-  match "/user/:id/prize_codes" => 'prize_codes#index'
-  match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
-  match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
-  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
-
-  #----------------------------------------------------------------------------
   # TODO: What are the torpedos and why are they public???
   # TODO: Why are the phones listed publicly?
 
@@ -40,11 +25,16 @@ Dengue::Application.routes.draw do
   # Coupons
 
   # TODO: Make this into an actual route.
+  # TODO: Are we actually using these routes?
   get '/cupons/sponsor/:id' => "prize_codes#sponsor"
 
   #----------------------------------------------------------------------------
   # Users routes.
 
+  match "/user/:id/prize_codes" => 'prize_codes#index'
+  match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
+  match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
+  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
   resources :users do
     resources :reports, :except => [:show]
     resources :posts
@@ -125,12 +115,18 @@ Dengue::Application.routes.draw do
   resources :buy_ins, :only => [:new, :create, :destroy]
   resources :group_buy_ins, :only => [:new, :create, :destroy]
 
-
-
   #----------------------------------------------------------------------------
   # Landing Pages routes.
 
-  root :to => 'home#index'
+  match "home/:id" => "home#index", :as => "Home"
+  root :to        => 'home#index'
+  get "faq"       => 'home#faq'
+  get "manual"    => "home#manual"
+  get "howto"     => "home#howto"
+  get "contact"   => 'home#contact'
+  get "about"     => 'home#about'
+  get "education" => 'home#education'
+  get "credit"    => 'home#credit'
 
   #----------------------------------------------------------------------------
 
