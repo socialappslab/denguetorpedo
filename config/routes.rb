@@ -7,12 +7,15 @@ Dengue::Application.routes.draw do
   resources :elimination_methods
   resources :elimination_types
 
-  #----------------------------------------------------------------------------
   # TODO: What are the torpedos and why are they public???
   # TODO: Why are the phones listed publicly?
 
   get "torpedos/:id" => "reports#torpedos"
   get '/phones' => "users#phones"
+
+  # TODO: Make this into an actual route.
+  # TODO: Are we actually using these routes?
+  get '/cupons/sponsor/:id' => "prize_codes#sponsor"
 
   #----------------------------------------------------------------------------
   # SMS Gateway routes.
@@ -22,15 +25,10 @@ Dengue::Application.routes.draw do
   get "/sb/rest/sms/remove" => "sms_gateway#remove"
 
   #----------------------------------------------------------------------------
-  # Coupons
-
-  # TODO: Make this into an actual route.
-  # TODO: Are we actually using these routes?
-  get '/cupons/sponsor/:id' => "prize_codes#sponsor"
-
-  #----------------------------------------------------------------------------
   # Users routes.
 
+  # TODO: Are these matches even necessary? Can we remove them or fold them
+  # under the :users resource?
   match "/user/:id/prize_codes" => 'prize_codes#index'
   match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
@@ -74,11 +72,9 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # User Session
+
   resource :session, :only => [:new, :create, :destroy]
   match 'exit' => 'sessions#destroy', :as => :logout
-
-  #----------------------------------------------------------------------------
-  # Password resets
 
   get "password_resets/new"
   resources :password_resets, :only => [:new, :create, :edit, :update]
