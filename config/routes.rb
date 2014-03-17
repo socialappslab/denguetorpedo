@@ -1,12 +1,13 @@
 Dengue::Application.routes.draw do
-  
-  resources :feedbacks
 
- resources :elimination_methods
- resources :elimination_types
+  #----------------------------------------------------------------------------
 
-  resources :notices
+  # TODO: Do we really need these routes? They are used in reports/types.html
+  # but their implementation is not intuitive.
+  resources :elimination_methods
+  resources :elimination_types
 
+  #----------------------------------------------------------------------------
 
   match "/home/:id" => "home#index", :as => "Home"
   match "/faq" => 'home#faq'
@@ -16,28 +17,34 @@ Dengue::Application.routes.draw do
   match 'about' => 'home#about'
   match '/education' => 'home#education'
   match '/credit' => 'home#credit'
-
   match "/user/:id/prize_codes" => 'prize_codes#index'
   match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
-  post 'premios/:id' => "prizes#new_prize_code"
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
-  get "dashboard/index"
-  get "password_resets/new"
-  post "reports/sms"
-  
+
+  #----------------------------------------------------------------------------
+  # TODO: What are the torpedos and why are they public???
+  # TODO: Why are the phones listed publicly?
+
   get "torpedos/:id" => "reports#torpedos"
-  # SMS Gateway Routes
+  get '/phones' => "users#phones"
+
+  #----------------------------------------------------------------------------
+  # SMS Gateway routes.
+
   get "/sb/rest/sms/inject" => "sms_gateway#inject"
   get "/sb/rest/sms/notifications" => "sms_gateway#notifications"
   get "/sb/rest/sms/remove" => "sms_gateway#remove"
-  
+
+  #----------------------------------------------------------------------------
+  # Coupons
+
+  # TODO: Make this into an actual route.
   get '/cupons/sponsor/:id' => "prize_codes#sponsor"
 
-  get '/phones' => "users#phones"
+  #----------------------------------------------------------------------------
+  # Users routes.
 
-  get '/premios/admin' => "prizes#admin"
-  # Resources Routes
   resources :users do
     resources :reports, :except => [:show]
     resources :posts
@@ -47,10 +54,11 @@ Dengue::Application.routes.draw do
       put 'block'
     end
   end
-  
-  resources :sponsors
-  
-  resources :dashboard
+
+  #----------------------------------------------------------------------------
+  # Reports routes.
+
+  post "reports/sms"
   resources :reports do
     collection do
       put 'update'
@@ -65,87 +73,65 @@ Dengue::Application.routes.draw do
       post 'credit'
       post 'discredit'
     end
-  #put 'reports' => 'reports#update'
   end
-  
+
+  #----------------------------------------------------------------------------
+  # Houses
+
   resources :houses do
     resources :posts
   end
-  
-  resources :badges
+
+  #----------------------------------------------------------------------------
+  # User Session
   resource :session, :only => [:new, :create, :destroy]
   match 'exit' => 'sessions#destroy', :as => :logout
+
+  #----------------------------------------------------------------------------
+  # Password resets
+
+  get "password_resets/new"
   resources :password_resets, :only => [:new, :create, :edit, :update]
-  resources :verifications
-  resources :forums, :only => [:index]
-  resources :neighborhoods, :only => [:show]
-  resources :buy_ins, :only => [:new, :create, :destroy]
-  resources :group_buy_ins, :only => [:new, :create, :destroy]
+
+  #----------------------------------------------------------------------------
+  # Prizes
+
+  post 'premios/:id' => "prizes#new_prize_code"
+  get '/premios/admin' => "prizes#admin"
   resources :prizes, :path => "premios" do
     collection do
       get 'badges'
     end
   end
-  resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"
-  resources :notifications
 
+  #----------------------------------------------------------------------------
+  # Prize Codes
+
+  resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"
+
+  #----------------------------------------------------------------------------
+  # Miscellaneous routes.
+
+  resources :feedbacks
+  resources :notices
+  resources :sponsors
+  get "dashboard/index"
+  resources :dashboard
+  resources :notifications
+  resources :badges
+  resources :verifications
+  resources :forums, :only => [:index]
+  resources :neighborhoods, :only => [:show]
+  resources :buy_ins, :only => [:new, :create, :destroy]
+  resources :group_buy_ins, :only => [:new, :create, :destroy]
+
+
+
+  #----------------------------------------------------------------------------
+  # Landing Pages routes.
 
   root :to => 'home#index'
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
+  #----------------------------------------------------------------------------
 
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Sample resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Sample resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Sample resource route with more complex sub-resources
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', :on => :collection
-  #     end
-  #   end
-
-  # Sample resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
-
-  # See how all your routes lay out with "rake routes"
-
-  # This is a legacy wild controller route that's not recommended for RESTful applications.
-  # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id(.:format)))'
 end
