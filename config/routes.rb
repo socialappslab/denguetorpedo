@@ -44,8 +44,41 @@ Dengue::Application.routes.draw do
   end
 
   #----------------------------------------------------------------------------
-  # Reports routes.
+  # Neighborhoods
 
+  resources :neighborhoods, :only => [:show] do
+    post "reports/sms"
+    resources :reports do
+      collection do
+        put 'update'
+        post 'verify'
+        post 'problem'
+        post 'gateway'
+        get 'notifications'
+        get 'types'
+      end
+      member do
+        post 'creditar'
+        post 'credit'
+        post 'discredit'
+      end
+    end
+
+    post 'premios/:id' => "prizes#new_prize_code"
+    get 'premios/admin' => "prizes#admin"
+    resources :prizes, :path => "premios" do
+      collection do
+        get 'badges'
+      end
+    end
+
+    resources :houses do
+      resources :posts
+    end
+  end
+
+  # TODO: Deprecate these 3 resources with
+  # redirects to Mare.
   post "reports/sms"
   resources :reports do
     collection do
@@ -63,11 +96,16 @@ Dengue::Application.routes.draw do
     end
   end
 
-  #----------------------------------------------------------------------------
-  # Houses
-
   resources :houses do
     resources :posts
+  end
+
+  post 'premios/:id' => "prizes#new_prize_code"
+  get '/premios/admin' => "prizes#admin"
+  resources :prizes, :path => "premios" do
+    collection do
+      get 'badges'
+    end
   end
 
   #----------------------------------------------------------------------------
@@ -78,17 +116,6 @@ Dengue::Application.routes.draw do
 
   get "password_resets/new"
   resources :password_resets, :only => [:new, :create, :edit, :update]
-
-  #----------------------------------------------------------------------------
-  # Prizes
-
-  post 'premios/:id' => "prizes#new_prize_code"
-  get '/premios/admin' => "prizes#admin"
-  resources :prizes, :path => "premios" do
-    collection do
-      get 'badges'
-    end
-  end
 
   #----------------------------------------------------------------------------
   # Prize Codes
@@ -107,7 +134,6 @@ Dengue::Application.routes.draw do
   resources :badges
   resources :verifications
   resources :forums, :only => [:index]
-  resources :neighborhoods, :only => [:show]
   resources :buy_ins, :only => [:new, :create, :destroy]
   resources :group_buy_ins, :only => [:new, :create, :destroy]
 
