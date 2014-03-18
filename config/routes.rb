@@ -47,7 +47,6 @@ Dengue::Application.routes.draw do
   # Neighborhoods
 
   resources :neighborhoods, :only => [:show] do
-    post "reports/sms"
     resources :reports do
       collection do
         put 'update'
@@ -79,7 +78,6 @@ Dengue::Application.routes.draw do
 
   # TODO: Deprecate these 3 resources with
   # redirects to Mare.
-  post "reports/sms"
   resources :reports do
     collection do
       put 'update'
