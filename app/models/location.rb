@@ -34,13 +34,22 @@ class Location < ActiveRecord::Base
 
   before_save :save_address
 
+  # This will trigger a background job if map coordinates
+  # haven't been set yet.
+  after_commit :update_map_coordinates, :on => :create
+
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
+
+  #----------------------------------------------------------------------------
 
   def save_address
     if self.address.nil?
       self.address = self.street_type + " " + self.street_name + " " + self.street_number
     end
   end
+
+  #----------------------------------------------------------------------------
+
   def geocode(address = "")
     self.address = self.street_type + " " + self.street_name + " " + self.street_number
     uri = URI.parse(URI.escape("#{BASE_URI}?f=pjson&outSR=29193&Street=#{self.address}"))
@@ -57,9 +66,13 @@ class Location < ActiveRecord::Base
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def neighborhood_name
     self.neighborhood && self.neighborhood.name
   end
+
+  #----------------------------------------------------------------------------
 
   def geocode_results(data)
     # reset all these fields so we can extract it from the geocoding data
@@ -146,5 +159,17 @@ class Location < ActiveRecord::Base
     return location
   end
 
-end
+  #----------------------------------------------------------------------------
 
+  private
+
+  #----------------------------------------------------------------------------
+
+  def update_map_coordinates
+    return if self.latitude.present? && self.longitude.present?
+    MapCoordinatesWorker.perform_async(self.id)
+  end
+
+  #----------------------------------------------------------------------------
+
+end
