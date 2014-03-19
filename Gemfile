@@ -91,6 +91,12 @@ gem "puma"
 gem "foreman"
 
 #------------------------------------------------------------------------------
+# Workers
+
+gem "sidekiq"
+gem 'sinatra', '>= 1.3.0', :require => nil
+
+#------------------------------------------------------------------------------
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
