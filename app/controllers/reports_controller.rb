@@ -1,7 +1,7 @@
 #!/bin/env ruby
 # encoding: utf-8
 
-class ReportsController < ApplicationController
+class ReportsController < NeighborhoodsBaseController
 
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
@@ -13,22 +13,22 @@ class ReportsController < ApplicationController
     @types = EliminationType.all
     @methods = EliminationMethod.all
   end
-  
+
   def index
     #@elimination_selection = create_elimination_selection
 
-    @current_report = params[:report]    
+    @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
     params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
     params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
     params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
     params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
     params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
-    
+
     if params[:view] == "make_report"
       @report = Report.new
     end
-    
+
     @elimination_method_select = EliminationMethods.field_select
     @elimination_types = EliminationType.pluck(:name)
 
@@ -69,7 +69,7 @@ class ReportsController < ApplicationController
         end
       end
     end
-    
+
     @markers = locations.map { |location| location.info}
     @open_markers = open_locations.map { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
@@ -80,85 +80,76 @@ class ReportsController < ApplicationController
     @open_feed = @reports
     @eliminate_feed = @reports
   end
-  
+
   def new
     @report = Report.new
   end
 
-  def create    
 
-    if request.post?
-      @current_user ||= User.find_by_auth_token(params[:auth_token])
-      address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
-      flash[:street_type] = params[:street_type]
-      flash[:street_name] = params[:street_name]
-      flash[:street_number] = params[:street_number]
-      flash[:description] = params[:report][:report]
-      flash[:x] = params[:x]
-      flash[:y] = params[:y]
-      location = Location.find_by_address(address)
-      
-      if params[:x].empty? or params[:y].empty?
-        flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-        redirect_to :back
-        return
-      end
+  #-----------------------------------------------------------------------------
+  # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
 
-      if location.nil?
-        location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])    
-      else
-        location.latitude = params[:x]
-        location.longitude = params[:y]      
-      end
+  def create
+    # TODO @dman7: What is this???
+    flash[:street_type] = params[:street_type]
+    flash[:street_name] = params[:street_name]
+    flash[:street_number] = params[:street_number]
+    flash[:description] = params[:report][:report]
+    flash[:x] = params[:x]
+    flash[:y] = params[:y]
 
-      location.save
-      
-      if params[:report][:report] == ""
-        flash[:alert] = "Você tem que descrever o local e/ou o foco."
-        flash[:address] = address
-        @report = Report.new(:location => location)
-        redirect_to :back
-        return
-      end
+    # Find the location based on user's input (street type, name, number) and
+    # ESRI's geolocation (latitude, longitude).
+    # When the user inputs an address into the textfields, we trigger an ESRI
+    # map search on the associated map that updates the x and y hidden fields
+    # in the form. In the case that the map is unavailable (or JS is disabled),
+    # an after_commit hook into the Location model will trigger a background
+    # worker to fetch the map coordinates.
+    location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+      params[:street_type].downcase.titleize,
+      params[:street_name].downcase.titleize,
+      params[:street_number].downcase.titleize
+    )
+    location.latitude  = params[:x] if params[:x].present?
+    location.longitude = params[:y] if params[:y].present?
+    location.save
 
-      if !params[:report][:before_photo] and params[:report]
-        flash[:alert] = "Você tem que carregar uma foto do foco encontrado."  
-        @report = Report.new(:location => location)
-        @report.report = params[:report][:report]
-        redirect_to :back
-        return
-      end
+    @report              = Report.new(params[:report])
+    @report.reporter_id  = @current_user.id
+    @report.location_id  = location.id
+    @report.status       = :reported # TODO @dman7: why is status (type int) but is assigned a symbol?
+    @report.report       = params[:report][:report] # TODO: Not really needed. ensure that it's already there.
+    @report.completed_at = Time.now
+    @report.before_photo = params[:report][:before_photo]
 
+    # If no report was filled out, then ask them to fill it out.
+    if params[:report][:report] == ""
+      flash[:alert] = "Você tem que descrever o local e/ou o foco."
+      flash[:address] = location.address
+      redirect_to :back and return
+    end
 
+    # If there was no before photograph, then ask them to upload it.
+    if params[:report][:before_photo].blank?
+      flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
+      redirect_to :back and return
+    end
 
-      @report = Report.create_from_user("", :status => :reported, :reporter => @current_user, :location => location)
-      @report.report = params[:report][:report]
-      
-      @report.completed_at = Time.now
-      @report.before_photo = params[:report][:before_photo]
-    
-      if @report.save
-        if @current_user != nil and params[:before_photo]
-        end
-        
-        flash[:notice] = 'Foco marcado com sucesso!'
-        respond_to do |format|
-          format.html{ redirect_to :action=>'index', view: 'recent' }
-          format.json { render json: { message: "success"}}
-        end
-
-        
-      else
-        flash[:alert] = "here"
-        respond_to do |format|
-          format.html { redirect_to :back }
-          format.json {render json: {message: "failure"}, status: 401 }
-        end
-        
-      end
+    # Now let's save the report.
+    if @report.save
+      flash[:notice] = 'Foco marcado com sucesso!'
+      redirect_to :action => 'index', :view => 'recent' and return
+    else
+      # TODO @dman7: This is a hack to get to display the report errors.
+      # Let's see if we can improve on this.
+      render_errors = @report.errors.full_messages.join("\n")
+      flash[:alert] = render_errors
+      redirect_to :back and return
     end
   end
-  
+
+  #-----------------------------------------------------------------------------
+
   def edit
     @report = @current_user.created_reports.find(params[:id])
     flash[:street_type] = @report.location.street_type
@@ -188,13 +179,13 @@ class ReportsController < ApplicationController
         end
 
         if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
-          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
+          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco." #You need to score a valid location for your focus.
           redirect_to :back
           return
         end
 
         if !params[:report][:before_photo]
-          flash[:alert] = "Você tem que carregar uma foto do foco encontrado."  
+          flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
           redirect_to :back
           return
         end
@@ -247,24 +238,29 @@ class ReportsController < ApplicationController
       #  #return
       #end
 
-      # ? When user submits a new site, before they've selected a elimination_type
-      if @report.elimination_type.nil? and params[:elimination_type]
-        @report.elimination_type = params[:elimination_type]
-        @report.completed_at = Time.now
-        @report.save
-        flash[:notice] = "Tipo de foco atualizado com sucesso."
-        @current_user.update_attribute(:points, @current_user.points + submission_points)
-        @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
-        redirect_to :back
-        return
-      else
-        flash[:notice] = "Você tem que escolher um tipo de foco."
+      # User has created initial report but now needs to select an elimination type
+      if @report.elimination_type.nil?
+        if params[:elimination_type].present?
+          @report.elimination_type = params[:elimination_type]
+          @report.completed_at = Time.now
+          @report.save
+
+          flash[:notice] = "Tipo de foco atualizado com sucesso."  #Focus type updated successfully.
+
+          @current_user.update_attribute(:points, @current_user.points + submission_points)
+          @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
+
+          redirect_to :back and return
+        else
+          # user must select an elimination type before proceeding
+          flash[:alert] = "Você tem que escolher um tipo de foco." #You have to choose a type of focus.
+          redirect_to :back and return
+        end
       end
 
 
       if params[:report_description]
         @report.report = params[:report_description]
-        @report.save
       end
 
 
@@ -276,27 +272,41 @@ class ReportsController < ApplicationController
 
 
       # Check to see if user has selected a method of elimination
-      if params[:selected_elimination_method].blank? and @report.elimination_method.blank?
-        flash[:notice] = " Você tem que escolher um método de eliminação."
+      if params[:selected_elimination_method].blank? && @report.elimination_method.blank?
+        flash[:alert] = "Você tem que escolher um método de eliminação."  # You have to choose a method of disposal.
         submit_complete = false
       else
         #if user has updated the method then replace it
-        unless params[:selected_elimination_method].blank?
+        if params[:selected_elimination_method].present?
           @report.elimination_method = params[:selected_elimination_method]
         end
       end
 
-
       # Check to see if user has uploaded "after" photo
       if @report.after_photo_file_size.nil?
-        if params[:eliminate] and params[:eliminate][:after_photo] != nil
+        if params[:eliminate] && params[:eliminate][:after_photo] != nil
           @report.after_photo = params[:eliminate][:after_photo]
         else
-          #user did not upload a photo either
+          #user did not upload a photo
+          flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado." #You have to upload a photo of focus eliminated
           submit_complete = false
-          flash[:notice] += " Você tem que carregar uma foto do foco eliminado."
         end
       end
+
+      # Check if a location lon/lat exists
+      # TODO @awdorsett check if error message is correct in portuguese
+        if @report.location.latitude.blank? || @report.location.longitude.blank?
+          if params[:latitude].present? || params[:longitude].present?
+            # TODO @awdorsett clean up
+            # TODO @awdorsett find out why location doesn't save when report.save is called
+            @report.location.latitude = params[:latitude]
+            @report.location.longitude = params[:longitude]
+            @report.location.save
+          #else
+          #  flash[:notice] = flash[:notice].to_s + ' Você tem que selecionar um local no mapa' #You have to select a location on the map
+          #  submit_complete = false
+          end
+        end
 
 
       # ? If the eliminate form isn't being submitted
@@ -316,6 +326,7 @@ class ReportsController < ApplicationController
 
       @report.save
 
+      # if every part of the report submission is complete, submit_complete = true
       if submit_complete
         flash[:notice] = "Você eliminou o foco!"
         @report.touch(:eliminated_at)
@@ -343,12 +354,12 @@ class ReportsController < ApplicationController
       #    redirect_to(:back)
       #    return
       #  end
-        
+
         # @report.elimination_type = EliminationMethods.getEliminationTypeFromMethodSelect(params["method_of_elimination"])
         # @report.elimination_method = params["method_of_elimination"]
         # @report.elimination_type = params[:elimination_type]
         #@report.elimination_method = params[:selected_elimination_method]
-        
+
         #if @report.save
         #  flash[:notice] = 'Você eliminou o foco!'
         #  redirect_to(:back)
@@ -378,11 +389,11 @@ class ReportsController < ApplicationController
     end #end of put statement
 
   end
-  
+
   def destroy
     if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
       @report = Report.find(params[:id])
-      @report.deduct_points      
+      @report.deduct_points
       @report.destroy
       flash[:notice] = "Foco deletado com sucesso."
     end
@@ -405,7 +416,7 @@ class ReportsController < ApplicationController
     end
 
     @report.verifier_name = @current_user.display_name
-    
+
     if @report.save
 
       @current_user.points += 50
@@ -509,13 +520,20 @@ class ReportsController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   private
+
+  #----------------------------------------------------------------------------
+
   def find_by_id
     @report = Report.find(params[:id])
   end
 
+  #----------------------------------------------------------------------------
+
   def award_points report, user
-    unless report.elimination_method.blank?
+    if report.elimination_method.present?
       points = EliminationMethod.find_by_method(report.elimination_method).points
       user.points += points
       user.total_points += points
@@ -523,7 +541,6 @@ class ReportsController < ApplicationController
     end
   end
 
-  #end
-
+  #----------------------------------------------------------------------------
 
 end

@@ -57,8 +57,6 @@ FactoryGirl.define do
 		street_type "Rua"
 		street_name "Tatajuba"
 		street_number "50"
-		latitude 0
-		longitude 0
 	end
 
 	factory :neighborhood do |n|

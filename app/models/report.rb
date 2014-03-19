@@ -43,12 +43,12 @@ class Report < ActiveRecord::Base
 
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
-    
+
   belongs_to :reporter, :class_name => "User"
   belongs_to :eliminator, :class_name => "User"
   belongs_to :location
   has_many :feeds, :as => :target
-  
+
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
   validates :reporter_id, :presence => true
@@ -76,11 +76,11 @@ class Report < ActiveRecord::Base
 
       # optional parameters
       r.eliminator_id = params[:eliminator] && params[:eliminator].id
-      
+
       if params[:before_photo]
         r.before_photo = params[:before_photo]
       end
-      
+
       if params[:after_photo]
         r.after_photo = params[:after_photo]
       end
@@ -104,11 +104,11 @@ class Report < ActiveRecord::Base
     Feed.create_from_object(report, report.reporter_id, :reported) if report.reporter_id_changed?
     Feed.create_from_object(report, report.eliminator_id, :eliminated) if report.eliminator_id_changed?
   end
-  
+
   def neighborhood
     location.neighborhood
   end
-  
+
   def strftime_with(type)
     if type == :created_at
       self.created_at.strftime("%d/%m/%Y")
@@ -116,11 +116,11 @@ class Report < ActiveRecord::Base
       self.updated_at.strftime("%d/%m/%Y")
     elsif type == :eliminated_at
       self.eliminated_at != nil ? self.eliminated_at.strftime("%d/%m/%Y") : ""
-    else 
+    else
       ""
     end
-  end  
-    
+  end
+
   def self.identified_reports
     where(:status_cd => Report.reported)
   end
@@ -129,22 +129,22 @@ class Report < ActiveRecord::Base
     where(:status_cd => Report.eliminated)
   end
 
-  
+
   def complete_address
     self.location.complete_address
   end
-  
+
   def self.within_bounds(bounds)
     reports_in_bounds = []
     for report in Report.all(:order => "created_at desc")
       if self.inBounds(report.location, bounds)
         reports_in_bounds.append(report)
         puts report.inspect + ' added'
-      end 
+      end
     end
     return reports_in_bounds
   end
-  
+
   def self.inBounds(location, bounds)
     swlng = bounds[1]
     swlat = bounds[0]

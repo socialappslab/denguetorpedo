@@ -70,8 +70,11 @@
                   -#="select #{@elimination_selection[open.elimination_type]}"
                   -#="open #{open.elimination_type}"
                   -unless open.elimination_type.blank?
-                    =select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]}), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+                    =select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]},open.elimination_method), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
                   = hidden_field_tag "selected_elimination_method"
+                  = hidden_field_tag "latitude"
+                  = hidden_field_tag "longitude"
+
                   / # = select_tag "method_of_elimination", options_from_collection_for_select(@elimination_type), :style => "width: 355px;" 
                   :javascript
                     $(".selectpicker").selectpicker();
@@ -85,7 +88,7 @@
                     %h3{:style => "font-size: 14px;"} Carregue uma foto do foco eliminado
                     = f.file_field :after_photo, :disabled => (open.after_photo_file_size or open.expired?)
                   %br
-                  = submit_tag "Enviar!", :style => "margin-left:5px;margin-top:5px;", :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or open.expired? or open.isVerified == "f" or open.sms_incomplete?)
+                  = submit_tag "Enviar!",:onclick=>"update_location_coordinates(#{open.location.to_json},event);",:class=>'report_submission',:style => "margin-left:5px;margin-top:5px;", :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or open.expired? or open.isVerified == "f" or open.sms_incomplete?)
 
 
 

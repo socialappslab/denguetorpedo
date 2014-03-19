@@ -57,6 +57,12 @@ $(document).ready(function() {
 			$(this).parent().find("input#selected_elimination_method").val($(this).val());
 		}
 	});
+//
+//    $('.report_submission').on('click',function(e){
+//        console.log("worked")   ;
+//        e.preventDefault();
+//    })
+
 
 
 //      if (e.keyCode == 13){
@@ -65,3 +71,49 @@ $(document).ready(function() {
 //      }
 
 });
+
+
+//@params location - json of location object for report
+//@params event - click event for form submission
+
+function update_location_coordinates(location,event){
+
+    //make sure the form being submitted has long/lat input fields
+    //i.e. don't run when selecting elimination type
+    if(event.target.form[7].id == 'latitude' && event.target.form[8].id == 'longitude'){
+
+        //if either value is null then try to get coords again
+        if (location.latitude == null || location.longitude == null){
+            event.preventDefault();
+
+            //disable submit button so user cant submit multiple times
+            $(".report_submission").attr("disabled",true);
+
+            $.ajax({
+                url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+                type: "GET",
+                timeout: 5000, // milliseconds
+                dataType: "jsonp",
+                data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
+                success: function(m) {
+                    var candidates = m.candidates;
+
+                    //possible location found, update form values
+                    if (candidates.length > 0) {
+                        event.target.form[7].value = candidates[0].location.x;
+                        event.target.form[8].value = candidates[0].location.y;
+                    }
+
+                   $(event.target.form).submit();
+
+                },
+                error: function(m) {
+                    //ajax call unsuccessful, server may be down
+                    // TODO @awdorsett how to handle second request for map failure
+                    $(".report_submission").attr("disabled",false);
+                }
+            });
+        }
+
+    }
+}
