@@ -86,8 +86,8 @@ Dengue::Application.routes.draw do
 
   # TODO: We're keeping the original routes around so we don't get
   # undefined '_path' errors. At some point, we should refacto these.
-  match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
-  match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
+  match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
+  match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
   resources :reports do
     collection do
       put 'update'
@@ -104,15 +104,15 @@ Dengue::Application.routes.draw do
     end
   end
 
-  match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
-  match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
+  match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
+  match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
   resources :houses do
     resources :posts
   end
 
 
-  match '/premios'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
-  match '/premios/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
+  match '/premios'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
+  match '/premios/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
   post 'premios/:id' => "prizes#new_prize_code"
   get '/premios/admin' => "prizes#admin"
   resources :prizes, :path => "premios" do
