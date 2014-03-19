@@ -1,9 +1,12 @@
 # encoding: UTF-8
 
-class PrizesController < ApplicationController
-  # GET /prizes
-  # GET /prizes.json
+class PrizesController < NeighborhoodsBaseController
+  #-----------------------------------------------------------------------------
+
   before_filter :require_login, :except => :index
+
+  #-----------------------------------------------------------------------------
+
   def index
 
     @user = current_user
@@ -59,7 +62,7 @@ class PrizesController < ApplicationController
     @longitude = @prize.user.house.location.longitude || 0
     if @current_user.nil?
       enoughPoints = false
-    else 
+    else
       @enoughPoints = @current_user.points >= @prize.cost ? true : false
     end
 

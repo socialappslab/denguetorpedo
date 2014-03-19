@@ -1,7 +1,7 @@
 #!/bin/env ruby
 # encoding: utf-8
 
-class ReportsController < ApplicationController
+class ReportsController < NeighborhoodsBaseController
 
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
@@ -520,10 +520,17 @@ class ReportsController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   private
+
+  #----------------------------------------------------------------------------
+
   def find_by_id
     @report = Report.find(params[:id])
   end
+
+  #----------------------------------------------------------------------------
 
   def award_points report, user
     if report.elimination_method.present?
@@ -534,7 +541,6 @@ class ReportsController < ApplicationController
     end
   end
 
-  #end
-
+  #----------------------------------------------------------------------------
 
 end
