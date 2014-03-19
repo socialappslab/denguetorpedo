@@ -4,12 +4,25 @@ require 'spec_helper'
 describe ReportsController do
 	#-----------------------------------------------------------------------------
 
-	context "Creating a new report" do
-		render_views
+	describe "Getting a list of reports" do
+		it "return a list of reports" do
+			get :index
+		end
+	end
 
-		describe "with errors" do
-			it "alerts user if description is not present" do
-			end
+	#-----------------------------------------------------------------------------
+
+	describe "Creating a new report" do
+		let!(:user) { FactoryGirl.create(:user) }
+
+		before(:each) do
+			cookies[:auth_token] = user.auth_token
+		end
+
+		it "is only allowed for logged in users" do
+			cookies[:auth_token] = nil
+			post :create
+			expect(flash[:alert]).to eq("Faça o seu login para visualizar essa página.")
 		end
 
 		describe "successfully" do
@@ -36,8 +49,19 @@ describe ReportsController do
 				expect(location.longitude).to eq(7471957.144050697)
 			end
 		end
+
 	end
 
 	#-----------------------------------------------------------------------------
 
+	describe "Deleting reports" do
+		let(:report) { FactoryGirl.create(:report) }
+
+		it "should deduct points" do
+			delete :destroy, id: report.id
+			response.should be_redirect
+		end
+	end
+
+	#-----------------------------------------------------------------------------
 end
