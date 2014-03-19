@@ -84,7 +84,9 @@ Dengue::Application.routes.draw do
   # to the *first* neighborhood as that was the intended behavior before
   # multiple neighborhoods
 
-  match '/reports'           => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
+  # TODO: We're keeping the original routes around so we don't get
+  # undefined '_path' errors. At some point, we should refacto these.
+  match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
   match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
   resources :reports do
     collection do
