@@ -76,8 +76,16 @@ Dengue::Application.routes.draw do
     end
   end
 
-  # TODO: Deprecate these 3 resources with
-  # redirects to Mare.
+  #----------------------------------------------------------------------------
+  # Deprecated Routes with Neighborhood Redirect Directive
+  # The following (3) resources are now nested under the neighborhood resource.
+  # We're keeping them around in case users have gotten in the habit of using
+  # these routes. Eventually, they should be removed completely. We redirect
+  # to the *first* neighborhood as that was the intended behavior before
+  # multiple neighborhoods
+
+  match '/reports'           => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
+  match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
   resources :reports do
     collection do
       put 'update'
@@ -94,10 +102,15 @@ Dengue::Application.routes.draw do
     end
   end
 
+  match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
+  match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
   resources :houses do
     resources :posts
   end
 
+
+  match '/premios'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }
+  match '/premios/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path }, :constraints => { :path => ".*" }
   post 'premios/:id' => "prizes#new_prize_code"
   get '/premios/admin' => "prizes#admin"
   resources :prizes, :path => "premios" do
