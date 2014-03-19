@@ -87,7 +87,7 @@ class ReportsController < NeighborhoodsBaseController
 
 
   #-----------------------------------------------------------------------------
-  # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
+  # POST /neighborhoods/1/reports
 
   def create
     # TODO @dman7: What is this???
@@ -116,8 +116,9 @@ class ReportsController < NeighborhoodsBaseController
       params[:street_name].downcase.titleize,
       params[:street_number].downcase.titleize
     )
-    location.latitude  = params[:x] if params[:x].present?
-    location.longitude = params[:y] if params[:y].present?
+    location.neighborhood = @neighborhood
+    location.latitude     = params[:x] if params[:x].present?
+    location.longitude    = params[:y] if params[:y].present?
     location.save
 
     @report              = Report.new(params[:report])
