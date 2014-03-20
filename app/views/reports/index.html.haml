@@ -339,38 +339,9 @@
             });
 
             map.on("extent-change", function(event) {
-              if (markers.length > 0) {
-                for(var i = 0; i < markers.length; i++) {
-
-                  if (event.extent.contains(new Point(markers[i].x, markers[i].y)) || (markers[i].x == null && markers[i].y == null) || (markers[i].x == 0.0 && markers[i].y == 0.0)) {
-                    $($(".rp_report")[i]).show();
-                  } else {
-                    $($(".rp_report")[i]).hide();
-                  }
-                }
-              } else {
-                for (var i = 0; i < open_markers.length; i++) {
-                  if (event.extent.contains(new Point(open_markers[i].x, open_markers[i].y))) {
-                    $($(".rp_report")[i]).show();
-                  } else {
-                    $($(".rp_report")[i]).hide();
-                  }
-
-                }
-
-                for (var i = 0;i < eliminated_markers.length; i++) {
-                  if (event.extent.contains(new Point(eliminated_markers[i].x, eliminated_markers[i].y))) {
-                    $($(".rp_report")[i]).show();
-                  } else {
-                    $($(".rp_report")[i]).hide();
-                  }
-                }
-              }
               if (report_div) {
                 $("html, body").scrollTop($(report_div).offset().top - 20);
               }
-
-
             });
 
             var blueGraphic;
