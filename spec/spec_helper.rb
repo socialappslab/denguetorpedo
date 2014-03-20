@@ -31,7 +31,8 @@ RSpec.configure do |config|
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
   config.before(:suite) do
-    DatabaseCleaner.strategy = :truncation
+    load Rails.root.join("db", "seeds.rb")
+    DatabaseCleaner.strategy = :transaction
   end
   config.before(:each) do
     DatabaseCleaner.start
