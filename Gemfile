@@ -46,7 +46,6 @@ gem 'dynamic_form'
 
 #------------------------------------------------------------------------------
 
-# gem 'twilio-ruby'
 gem 'ruby-gmail'
 gem 'daemons'
 gem 'mms2r'
@@ -74,6 +73,8 @@ group :assets do
   gem 'coffee-rails', "~> 3.2.1"
   gem 'uglifier', '>= 1.0.3'
 end
+
+gem 'yui-compressor'
 
 #------------------------------------------------------------------------------
 # File Management
