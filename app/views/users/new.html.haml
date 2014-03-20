@@ -1,8 +1,10 @@
 #register.offset1
+  = render :partial => "shared/flashes"
+
   %h1 Inscreva-se
   = form_for(@user) do |f|
     %ul
-      %li= f.error_messages      
+      %li= f.error_messages
       %li= f.text_field :email, :placeholder => "E-mail", :class => "fields"
       %li= f.text_field :first_name, :placeholder => "Nome", :class => "fields"
       -#%li= f.text_field :middle_name, :placeholder => "Nome do meio", :class => "fields"
