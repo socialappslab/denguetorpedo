@@ -363,12 +363,9 @@
         %br
 
         -# Neighborhood / Bairro
-        = f.fields_for :location do |location_form|
-          //%h3#complete_name{:title => "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco."}Bairro <b style="color:blue;">?</b>
-          .question_mark_div
-            = location_form.label "Bairro",class:"config_form_title"
-            %span.question_mark{class:"config_form_title question_mark", title:"Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco."} ?
-          = location_form.text_field :neighborhood, value: "Maré", readonly: true if @user.location
+        .question_mark_div
+          = f.label "Bairro",class:"config_form_title"
+        = f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
         %br
         %br
 
