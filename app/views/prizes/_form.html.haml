@@ -11,6 +11,8 @@
   .field
     = f.label :user_id, "Patrocinador / Apoio"
     = f.select(:user_id, @users)
+    = f.label :user_id, "Comunidade"
+    = f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]}, :include_blank => true )
   .field{ :style => "margin-bottom: 18px;"}
     = f.label :prize_name, "Nome do prêmio"
     = f.text_field :prize_name, :placeholder => "max 35 caracteres"
@@ -23,7 +25,7 @@
     = f.label :prize_photo, "Foto do prêmio"
     = f.file_field :prize_photo
 
-  
+
 
   .field
     = f.label :cost, "Pontos para resgatar"
