@@ -1,31 +1,31 @@
 .row
   .span4.offset1
-    - if flash[:notice] 
+    - if flash[:notice]
       .row#flash_dat_notice
-        #flashNotice 
+        #flashNotice
           %p
             = flash[:notice]
-    - if flash[:alert] 
+    - if flash[:alert]
       .row#flash_dat_alert
-        #flashAlert 
+        #flashAlert
           %p
             = flash[:alert]
     %h1 Focos marcados
   %br
   .span#report_buttons{:style => "font-size:20px;"}
     / %h1 Marcar um foco
-    
-.row          
+
+.row
   .row.span10.offset1
     #report_buttons
-      
-      = link_to 'Todos', reports_path(:view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
-      = link_to 'Em aberto', reports_path(:view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
-      = link_to 'Eliminados', reports_path(:view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
+
+      = link_to 'Todos',      neighborhood_reports_path(@neighborhood, :view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
+      = link_to 'Em aberto',  neighborhood_reports_path(@neighborhood, :view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
+      = link_to 'Eliminados', neighborhood_reports_path(@neighborhood, :view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
       - if @current_user.role == "verificador" or @current_user.role == "visitante"
         = link_to "Marcar um foco", "#", :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#aaaaaa;color:white;font-weight:bold;height:21px;font-size:25px;pointer-events: none;"
       - else
-        = link_to "Marcar um foco", reports_path(:view => 'make_report'), :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#60BB50;color:white;font-weight:bold;height:21px;font-size:25px;"
+        = link_to "Marcar um foco", neighborhood_reports_path(@neighborhood, :view => 'make_report'), :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#60BB50;color:white;font-weight:bold;height:21px;font-size:25px;"
 
   .row
     .span9.offset1
@@ -46,7 +46,7 @@
               %input{type: "button", value: "Vá para a Maré", style: "float:right;margin:-20px 5px 5px 0px;font-size:12px;", id: "go_to_mare"}
             - else
               %h2{style: 'margin-left: 10px;', title: "Para ajustar, dê um zoom ou arraste o mapa."} Ajuste para filtar os focos.
-              
+
 
               %h2{style: 'margin-left: 10px;'} Ou procure perto do endereço:
               %svg{display:"inline", style: "width:30px;height:30px;float:left;margin-left:8px;margin-top:2px; "}
@@ -55,7 +55,7 @@
                 %input.span6{:type => 'text', id: "address_search", :placeholder => 'Digite "Rua nº" e pressione enter.', :style => 'width: 280px;'}
                 %input{type: "button", value: "Vá para a Maré", style: "margin-left:325px;margin-bottom:10px;margin-top:-37px;font-size:12px;", id: "go_to_mare"}
       #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;overflow-y:hidden;"}
-        #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}     
+        #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}
           = image_tag "loading.gif", style: "width:50px; height:50px;"
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
       :javascript
@@ -67,7 +67,7 @@
             $("#map_div").css("margin-top", -63);
           }
         });
-        
+
       - if params[:view] == 'make_report'
         :javascript
           var map, tb;
@@ -84,13 +84,13 @@
               zoom: 4,
               extent: customExtent
             });
-            
+
             var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
             map.addLayer(tiled);
             map.on("update-start", showLoading);
             map.on("update-end", hideLoading);
             map.on("load", function() {
-              
+
               tb = new Draw(map);
               tb.on("draw-end", addGraphic);
               tb.activate("point");
@@ -107,7 +107,7 @@
               symbol.setStyle("STYLE_PATH");
               symbol.setPath("M 10 10 L30 10 L20 30z");
               symbol.setColor(new Color("red"));
-              
+
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
               map.graphics.add(new Graphic(evt.geometry, orange));
@@ -132,13 +132,13 @@
                 success: function(m) {
                   map.graphics.clear();
                   var candidates = m.candidates;
-                  
+
 
                   if (candidates.length > 0) {
                     map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
-                    
+
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                   }
                 },
@@ -213,7 +213,7 @@
             var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 40, 40).setOffset(0, 15);
             var blue = new PictureMarkerSymbol(picBaseUrl + "BluePin1LargeB.png", 40, 40).setOffset(0, 15);
             var red = new PictureMarkerSymbol(picBaseUrl + "OrangePin1LargeB.png", 40, 40).setOffset(0, 15);
-            
+
 
             var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
             var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
@@ -231,7 +231,7 @@
 
               report_div = $(this).parent().parent().parent();
 
-              
+
               return false;
             });
 
@@ -251,13 +251,13 @@
 
                   if ($.inArray(markers[i].address, addresses) == -1) {
                     addresses.push(markers[i].address);
-                    
+
 
                     var x;
                     var y;
 
                     if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
-                      
+
                       coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
                       x = markers[i].x;
                       y = markers[i].y;
@@ -269,9 +269,9 @@
 
 
 
-                    
 
-                    
+
+
                     if (open_count && eliminated_count) {
                       graphic = new Graphic(new Point(x, y), mixed);
                       template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
@@ -280,9 +280,9 @@
                       template.content = "<p>Em aberto: " + open_count + "</p>";
                     } else if (eliminated_count > 0) {
                       graphic = new Graphic(new Point(x, y), grey);
-                      template.content = "<p>Eliminados: " + eliminated_count + "</p>"; 
+                      template.content = "<p>Eliminados: " + eliminated_count + "</p>";
                     }
-                    
+
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
                     textGraphic = new Graphic(new Point(x, y), textSymbol);
                     graphic.setInfoTemplate(template);
@@ -290,7 +290,7 @@
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
                   }
-                  
+
                 }
               } else if ("#{params[:view]}" == 'open') {
                 for (var i = 0; i < open_markers.length; i++) {
@@ -298,7 +298,7 @@
                     addresses.push(open_markers[i].address);
                     var template = new InfoTemplate();
                     template.setTitle(open_markers[i].address);
-                    
+
                     count = open_counts[open_markers[i].id];
                     template.content = "<p>Em aberto: " + count + "</p>";
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
@@ -310,14 +310,14 @@
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
                   }
-                  
+
                 }
               } else {
                 for (var i = 0; i < eliminated_markers.length; i++) {
                   if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
                     var template = new InfoTemplate();
                     template.setTitle(eliminated_markers[i].address);
-                    
+
                     count = eliminated_counts[eliminated_markers[i].id];
                     template.content = "<p>Eliminados: " + count + "</p>";
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
@@ -328,10 +328,10 @@
                     textGraphic.setInfoTemplate(template);
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
-                  }     
+                  }
                 }
               }
-                    
+
             });
 
             $("input#go_to_mare").click(function() {
@@ -369,8 +369,8 @@
               if (report_div) {
                 $("html, body").scrollTop($(report_div).offset().top - 20);
               }
-              
-              
+
+
             });
 
             var blueGraphic;
@@ -386,7 +386,7 @@
               symbol.setStyle("STYLE_PATH");
               symbol.setPath("M 10 10 L30 10 L20 30z");
               symbol.setColor(new Color("blue"));
-              
+
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
 
@@ -403,9 +403,9 @@
                 dataType: "jsonp",
                 data: {"f": "pjson", "Street": $("#address_search").val()},
                 success: function(m) {
-                  
+
                   var candidates = m.candidates;
-                  
+
 
                   if (candidates.length > 0) {
                     if (blueGraphic) {
@@ -419,7 +419,7 @@
                     map.graphics.add(blueGraphic);
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
-                    
+
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
                   }
                 },
@@ -432,7 +432,3 @@
 
           });
   .row{style: "height:600px;"}
-
-
-
-

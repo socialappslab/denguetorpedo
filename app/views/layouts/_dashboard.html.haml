@@ -60,25 +60,21 @@
               Minha Comunidade
             /= link_to 'Minha Comunidade', neighborhood_path(Neighborhood.first), :class => highlight_active_link(neighborhood_path(Neighborhood.first))
       %li
-        /= image_tag("icons/make_report_icon.png")
         - if @current_user.house && @current_user.house.id
-          =link_to reports_path() do
+          =link_to neighborhood_reports_path(@neighborhood) do
             =image_tag("icons/make_report_icon.png")
             Focos Marcados
-          /= link_to 'Focos Marcados', reports_path(), :class => highlight_active_link(reports_path)
         - else
           - if @current_user.role != "visitante"
-            /= link_to 'Focos Marcados', edit_user_path(@current_user), :class => highlight_active_link(edit_user_path(@current_user))
             =link_to edit_user_path(@current_user) do
               = image_tag("icons/make_report_icon.png")
               Focos Marcados
           - else
-            /= link_to 'Focos Marcados', reports_path(), :class => highlight_active_link(reports_path)
-            =link_to reports_path() do 
+            =link_to neighborhood_reports_path(@neighborhood) do
               = image_tag("icons/make_report_icon.png")
               Focos Marcados
       %li
-        =link_to edit_user_path(@current_user) do 
+        =link_to edit_user_path(@current_user) do
           = image_tag("icons/account_setting_icon.png")
           Configurações
       /  = image_tag("icons/account_setting_icon.png")

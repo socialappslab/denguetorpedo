@@ -218,7 +218,7 @@ class ReportsController < NeighborhoodsBaseController
         if @report.save
           @report.update_attributes(completed_at: Time.now)
           flash[:notice] = "Foco completado com sucesso!"
-          redirect_to reports_path
+          redirect_to neighborhood_reports_path(@neighborhood)
         else
           flash[:alert] = "There was an error completing your report!"
           redirect_to :back
@@ -320,7 +320,7 @@ class ReportsController < NeighborhoodsBaseController
       #  @report.touch(:eliminated_at)
       #  @report.save
       #  flash[:notice] = "Você eliminou o foco!1"
-      #  redirect_to reports_path
+      #  redirect_to neighborhood_reports_path(@neighborhood)
       #  return
       #end
 
@@ -398,7 +398,7 @@ class ReportsController < NeighborhoodsBaseController
       flash[:notice] = "Foco deletado com sucesso."
     end
 
-    redirect_to(:back)
+    redirect_to neighborhood_reports_path(@neighborhood) and return
   end
 
   def verify
@@ -423,7 +423,7 @@ class ReportsController < NeighborhoodsBaseController
       @current_user.total_points += 50
       @current_user.save
       flash[:notice] = "O foco foi verificado."
-      redirect_to reports_path
+      redirect_to neighborhood_reports_path(@neighborhood)
     else
       redirect_to :back
     end
@@ -447,7 +447,7 @@ class ReportsController < NeighborhoodsBaseController
     end
     if @report.save
       flash[:notice] = "O foco foi verificado."
-      redirect_to reports_path
+      redirect_to neighborhood_reports_path(@neighborhood)
     else
       redirect_to :back
     end
