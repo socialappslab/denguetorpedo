@@ -8,13 +8,13 @@
       %br Total de focos marcados
     .span3
       .row
-        #neighborhood_open_report_button.span1 
+        #neighborhood_open_report_button.span1
         .span2
           %b= @opened_reports_in_neighborhood
           %br em aberto
     .span3{:style => "margin-left:-35px;"}
       .row
-        #neighborhood_resolved_report_button.span1 
+        #neighborhood_resolved_report_button.span1
         .span2
           %b= @eliminated_reports_in_neighborhood
           %br eliminados
@@ -39,16 +39,16 @@
               = link_to image_tag("default_images/profile_default_image.png"), user_path(participant)
             - else
               = link_to image_tag(participant.profile_photo.url(:large)), user_path(participant)
-            
+
             = link_to participant.display_name, user_path(participant)
         - if @participants.count < 9
-          - (12 - @participants.count).times do          
+          - (12 - @participants.count).times do
             %li.neighborhood_participant_photo_thumb.span3
               = image_tag("default_images/profile_default_image.png")
               Futuro participante
       .row{style: "margin-top:50px;"}
         %h2 Notícias da comunidade
-      #neighborhood_news{style: "height:310px;overflow-x:scroll;width:690px;"}  
+      #neighborhood_news{style: "height:310px;overflow-x:scroll;width:690px;"}
         %ul
           - @notices.each do |notice|
             %a{:href => notice_path(notice)}
@@ -77,25 +77,25 @@
                     Hora
                     = notice.date.strftime("%H:%M")
 
-      
-  - else 
+
+  - else
     .span11.offset1
       %ul#neighborhood_house_list
         - @houses.shuffle.each do |house|
           %li.neighborhood_house_photo_thumb.span3
             - if house.profile_photo_file_name.nil?
-              = link_to image_tag("default_images/house_default_image.png"), house_path(house)
-            - else 
-              = link_to image_tag(house.profile_photo.url(:large)), house_path(house)
-            = link_to house.name, house_path(house)
+              = link_to image_tag("default_images/house_default_image.png"), neighborhood_house_path(@neighborhood, house)
+            - else
+              = link_to image_tag(house.profile_photo.url(:large)), neighborhood_house_path(@neighborhood, house)
+            = link_to house.name, neighborhood_house_path(@neighborhood, house)
         - if @houses.count < 7
-          - (9 - @houses.count).times do          
+          - (9 - @houses.count).times do
             %li.neighborhood_house_photo_thumb.span3
               = image_tag("default_images/house_default_image.png")
-              Futura casa           
+              Futura casa
       .row{style: "margin-top:50px;"}
         %h2 Notícias da comunidade
-      #neighborhood_news{style: "height:310px;overflow-x:scroll;width:690px;"}  
+      #neighborhood_news{style: "height:310px;overflow-x:scroll;width:690px;"}
         %ul
           - @notices.each do |notice|
             %a{:href => notice_path(notice)}
@@ -132,13 +132,13 @@
           - if blog
             .neighborhood_profile_box{style: "margin-bottom:10px;"}
               .span1.neighborhood_pf_picture
-                = image_tag(blog.user.profile_photo.url(:small))                     
+                = image_tag(blog.user.profile_photo.url(:small))
               .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
                 .neighborhood_person_name
                   = link_to blog.user.display_name, user_path(blog.user)
                 .neighborhood_post
-                  = auto_link(blog.content)            
-              
+                  = auto_link(blog.content)
+
     .row
       %h3{:style => "margin-left:10px;"} Verificadores
       #neighborhood_health_agent.span5
@@ -149,7 +149,7 @@
                 = image_tag(blog.user.profile_photo.url(:small))
               .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
                 .neighborhood_person_name
-                  = link_to blog.user.display_name, user_path(blog.user)    
+                  = link_to blog.user.display_name, user_path(blog.user)
                 .neighboorhood_past
                   = auto_link(blog.content)
   .row

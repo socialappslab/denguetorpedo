@@ -61,7 +61,7 @@
             /= link_to 'Minha Comunidade', neighborhood_path(Neighborhood.first), :class => highlight_active_link(neighborhood_path(Neighborhood.first))
       %li
         - if @current_user.house && @current_user.house.id
-          =link_to reports_path(@neighborhood) do
+          =link_to neighborhood_reports_path(@neighborhood) do
             =image_tag("icons/make_report_icon.png")
             Focos Marcados
         - else

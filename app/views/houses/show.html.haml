@@ -32,7 +32,7 @@
                 Comunidade
               .row
                 #house_neighborhood_bg
-                  = link_to @house.neighborhood.name, neighborhood_path(@house.neighborhood)             
+                  = link_to @house.neighborhood.name, neighborhood_path(@house.neighborhood)
           .span2.offset1
             .house_gray
               .row{style: "margin-left:-40px;"}
@@ -69,9 +69,9 @@
             - for neighbor in @neighbors
               %li
                 - if neighbor.profile_photo_file_name.nil?
-                  = link_to image_tag("default_images/house_small_default_image.png"), house_path(neighbor), title: "#{neighbor.name}"
+                  = link_to image_tag("default_images/house_small_default_image.png"), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
                 - else
-                  = link_to image_tag(neighbor.profile_photo.url(:small), :width => 70, :height => 70), house_path(neighbor), title: "#{neighbor.name}"
+                  = link_to image_tag(neighbor.profile_photo.url(:small), :width => 70, :height => 70), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
 
     /.row
     /  .span8
@@ -80,13 +80,6 @@
     .row{:style => "margin-top:13px;"}
       %h2.span15
         Blogs e focos marcados
-    /.row
-    /  .span12
-    /    = link_to 'Todos', house_path(@user, :filter => 'all'), :class => @feed_active_all
-    /    |
-    /    = link_to 'Focos', house_path(@user, :filter => 'reports'), :class => @feed_active_reports
-    /    |
-    /    = link_to 'Blog', user_path(@user, :filter => 'posts'), :class => @feed_active_posts
     .row
       .span9
         - for post in @house.posts.sort{|a, b| b.created_at <=> a.created_at}

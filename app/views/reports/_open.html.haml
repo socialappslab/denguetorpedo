@@ -59,7 +59,7 @@
         .row
           .span7
             .eliminate_prompt{:style => "margin-top:5px;"}
-              = form_for(:eliminate, :url => {:controller => "reports", :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
+              = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
                 = hidden_field_tag 'report_id', open.id
                 - if open.sms_incomplete?
                   = link_to "Completar o foco", neighborhood_edit_report_path(@neighborhood, open), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
