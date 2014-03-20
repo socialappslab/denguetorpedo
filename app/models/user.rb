@@ -38,10 +38,10 @@
 class User < ActiveRecord::Base
 
   ROLES = ["morador", "logista", "visitante"]
-  attr_accessible :first_name, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+  attr_accessible :first_name, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
-  
+
   # validates
   # validates :username, :format => { :with => USERNAME_REGEX, :message => "should only contain letters, numbers, or .-+_@, and have between 5-15 characters" }
 
@@ -80,6 +80,7 @@ class User < ActiveRecord::Base
   has_many :recruitee_relationships, :class_name => "Recruitment", :foreign_key => "recruiter_id"
   has_many :recruitees, :through => :recruitee_relationships, :source => :recruitee
   belongs_to :house
+  belongs_to :neighborhood
 
   has_many :reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
@@ -90,10 +91,6 @@ class User < ActiveRecord::Base
   # associations helpers
   def location
     house && house.location
-  end
-
-  def neighborhood
-    location && location.neighborhood
   end
 
   accepts_nested_attributes_for :house, :allow_destroy => true
