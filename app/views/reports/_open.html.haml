@@ -62,7 +62,7 @@
               = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
                 = hidden_field_tag 'report_id', open.id
                 - if open.sms_incomplete?
-                  = link_to "Completar o foco", neighborhood_edit_report_path(@neighborhood, open), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
+                  = link_to "Completar o foco", edit_neighborhood_report(@neighborhood, open), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
                 - if open.elimination_type
                   = select_tag "elimination_type", options_for_select(@elimination_types, open.elimination_type), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type", :disabled => (open.elimination_type != nil or @current_user.role == "visitante" or open.sms_incomplete?)
                 - else
