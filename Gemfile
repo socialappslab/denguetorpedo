@@ -1,8 +1,7 @@
 source 'http://rubygems.org'
-gem 'rails', '~> 3.2.1'
 
-# Bundle edge Rails instead:
-# gem 'rails',     :git => 'git://github.com/rails/rails.git'
+ruby "1.9.3"
+gem 'rails', '~> 3.2.1'
 
 group :staging, :production do
   gem 'pg'
