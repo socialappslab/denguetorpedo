@@ -33,6 +33,7 @@ class Prize < ActiveRecord::Base
   validates :prize_name, :presence => true
   validates :stock, :presence => true
   validates :user, :presence => true
+  belongs_to :neighborhood
 
   def give_badge(user_id)
     @user = User.find(user_id)
