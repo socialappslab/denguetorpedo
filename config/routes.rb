@@ -89,6 +89,8 @@ Dengue::Application.routes.draw do
   # these routes. Eventually, they should be removed completely. We redirect
   # to the *first* neighborhood as that was the intended behavior before
   # multiple neighborhoods
+  # NOTE: Unfortunately, these rules do not account for HTTP verbs besides GET
+  # so we won't rely on this being a complete redirect solution.
 
   # TODO: We're keeping the original routes around so we don't get
   # undefined '_path' errors. At some point, we should refacto these.
