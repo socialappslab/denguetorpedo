@@ -1,38 +1,37 @@
 class HomeController < ApplicationController
+  #----------------------------------------------------------------------------
+  # GET /
+
   def index
-    @collapse = 'collapse'
+    @user = @current_user || User.new
 
-    if (flash[:user].nil?)
-      @user = User.new
+    # NOTE: This is a hack that allows us to reuse this action with both
+    # logged-in and visitors. Basically, a logged-in user cares only about
+    # his/her own neighborhood.
+    if @current_user.present?
+      @all_neighborhoods = [ @current_user.neighborhood ]
     else
-      @user = flash[:user]
+      @all_neighborhoods     = Neighborhood.order(:id).limit(3)
     end
 
-    @all_neighborhoods = Neighborhood.order(:id).limit(3)
+    @selected_neighborhood = @all_neighborhoods.first
+    @participants          = @selected_neighborhood.members.where('role != ?', "lojista")
 
-    if params[:neighborhood].nil?
-      if @all_neighborhoods.first.nil?
-        @selected_neighborhood = Neighborhood.new
-      else
-        @selected_neighborhood = @all_neighborhoods.first
-      end
-    else
-      @selected_neighborhood = Neighborhood.find(params[:neighborhood])
-    end
-    @participants = @selected_neighborhood.members.where('role != ?', "lojista")
-
-    @houses = @participants.map { |participant| participant.house }.uniq.shuffle
-
-
-    @prizes = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new)
-    @notices = @selected_neighborhood.notices.where('date > ?', Time.now).order(:date)[0..5]
-    @total_reports_in_neighborhood = @selected_neighborhood.total_reports.count
-    @opened_reports_in_neighborhood = @selected_neighborhood.open_reports.count
-    @eliminated_reports_in_neighborhood = @selected_neighborhood.eliminated_reports.count
-  end
-  respond_to do |format|
-    format.html
-    format.json { render json: { user: @user }}
+    @notices      = @selected_neighborhood.notices.limit(5).order(:date)
+    @houses       = @participants.map { |participant| participant.house }.uniq.shuffle
+    @prizes       = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new)
   end
 
+  #----------------------------------------------------------------------------
+  # POST /neighborhood-search
+  #
+  # Parameters:
+  # { "neighborhood"=>{"name"=>"Vila Autódromo"} }
+
+  def neighborhood_search
+    neighborhood = Neighborhood.find_by_name(params[:neighborhood][:name])
+    redirect_to neighborhood_path(neighborhood)
+  end
+
+  #----------------------------------------------------------------------------
 end

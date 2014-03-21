@@ -162,6 +162,7 @@ Dengue::Application.routes.draw do
   get "about"     => 'home#about'
   get "education" => 'home#education'
   get "credit"    => 'home#credit'
+  post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
 
   #----------------------------------------------------------------------------
 
