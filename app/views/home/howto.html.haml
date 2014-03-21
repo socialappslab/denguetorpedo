@@ -9,9 +9,10 @@
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Como se cadastrar
+            /Como se cadastrar
+            =ManualInstruction.find_by_id(1).title
           -if @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(Manual_instructions.find_by_id(1))
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
 
         #cadastrar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
@@ -39,6 +40,8 @@
             %p <b style: "color:red;">ATENÇÃO</b>: Você deve escrever o seu nome como consta em um documento válido, como RG, esse dado será utilizado na troca dos seus pontos por prêmios!
             %br
             %p Apenas moradores da Maré convidados por um usuário ou membro da equipe Dengue Torpedo podem participar! Atualmente estamos na fase inicial aperfeiçoando o aplicativo com os moradores da Maré. Em nossa próxima fase, o Dengue Torpedo será aberto a moradores de outros bairros da cidade. 
+
+            =ManualInstruction.find_by_id(1).description
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
