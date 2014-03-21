@@ -141,46 +141,35 @@ class UsersController < ApplicationController
     # flash[:notice] = nil
   end
 
-  # def update
 
-  #   @user = User.find(params[:id])
-  #   @user.update_attributes(params[:user])
-  #   if @user.house == nil
-  #     if house = House.find_by_name(params[:user][:house_attributes][:name])
-  #       if params[:confirm] == "1"
-  #         @user.house = house
-  #       else
-  #         flash[:notice] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
-  #         @confirm = 1
-  #         render "edit"
-  #       end
-
-
-  #     else
-
-  #       @user.house = House.create!(params[:user][:house_attributes])
-  #     end
-  #   else
-  #     @user.house.update_attributes(params[:user][:house_attributes])
-  #     @user.house.save
-  #   end
-  #   if @user.save
-  #     flash[:notice] = 'Perfil atualizado com sucesso!'
-  #     redirect_to edit_user_path(@user)
-  #   else
-  #     flash[:alert] = @user.errors.full_messages.join(" ")
-  #     @user.house ||= House.new
-  #     @user.house.location ||= Location.new
-  #     @user.house.location.latitude ||= 0
-  #     @user.house.location.longitude ||= 0
-  #     render "edit"
-  #   end
-
-
-  # end
+  #----------------------------------------------------------------------------
+  # PUT /users
+  #
+  # Parameters:
+  # {"user"=>{
+  #   "first_name"=>"Admin", "last_name"=>"Admin", "nickname"=>"", "gender"=>"true",
+  #   "email"=>"admin@denguetorpedo.com", "phone_number"=>"000000000000",
+  #   "carrier"=>"xxx", "prepaid"=>"true",
+  #   "house_attributes"=>{
+  #      "name"=>"Bariio",
+  #     "id"=>"5"
+  #   },
+  #   "location"=>{
+  #     "neighborhood_id"=>"1", "street_type"=>"", "street_name"=>"",
+  #     "street_number"=>""
+  #   },
+  #   "display"=>"firstmiddlelast", "cellphone"=>"false"
 
   def update
-    puts params
+    @user = User.find(params[:id])
+
+    neighborhood = Neighborhood.find_by_id(params[:user][:neighborhood_id])
+    if neighborhood.nil?
+      flash[:alert] = "Neighborhood not recognized."
+      redirect_to :back and return
+    end
+
+    @user.neighborhood = neighborhood
 
     if @current_user.role != "visitante"
       house_name = params[:user][:house_attributes][:name]
@@ -205,7 +194,7 @@ class UsersController < ApplicationController
     user_nickname = params[:user][:nickname]
 
 
-    @user = User.find(params[:id])
+
     if !user_profile_phone_number.empty? #and !user_profile_phone_number_confirmation.empty?
       #if user_profile_phone_number == user_profile_phone_number_confirmation
       if user_profile_phone_number != @user.phone_number
@@ -263,6 +252,8 @@ class UsersController < ApplicationController
       redirect_to :back
       return
     end
+
+
 
     # if a house exists with the same house name or house address, inform the user for confirmation
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
@@ -362,6 +353,9 @@ class UsersController < ApplicationController
       end
     end
   end
+
+
+  #----------------------------------------------------------------------------
 
   def destroy
     @user = User.find(params[:id])

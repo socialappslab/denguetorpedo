@@ -13,7 +13,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @number_of_houses = @houses.count
     @number_of_participants = @participants.count
 
-    @notices = @neighborhood.notices.where('date > ?', Time.now).order(:date)
+    @notices = @neighborhood.notices.order(:date)
     @highlightNeighborhoodItem = ""
 
     if (@current_user != nil && (@neighborhood.members.member? @current_user))

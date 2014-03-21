@@ -38,10 +38,10 @@
 class User < ActiveRecord::Base
 
   ROLES = ["morador", "logista", "visitante"]
-  attr_accessible :first_name, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+  attr_accessible :first_name, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
-  
+
   # validates
   # validates :username, :format => { :with => USERNAME_REGEX, :message => "should only contain letters, numbers, or .-+_@, and have between 5-15 characters" }
 
@@ -73,27 +73,24 @@ class User < ActiveRecord::Base
   has_many :posts, :dependent => :destroy
   has_many :prize_codes, :dependent => :destroy
   has_many :badges
-  has_many :prizes, :dependent => :destroy  
+  has_many :prizes, :dependent => :destroy
 
   has_one :recruiter_relationships, :class_name => "Recruitment", :foreign_key => "recruitee_id"
   has_one :recruiter, :through => :recruiter_relationships, :source => :recruiter
   has_many :recruitee_relationships, :class_name => "Recruitment", :foreign_key => "recruiter_id"
   has_many :recruitees, :through => :recruitee_relationships, :source => :recruitee
   belongs_to :house
+  belongs_to :neighborhood
 
   has_many :reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
   has_many :verified_reports, :class_name => "Report", :foreign_key => "verifier_id", :dependent => :nullify
-  
+
 
   scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
   # associations helpers
   def location
     house && house.location
-  end
-
-  def neighborhood
-    location && location.neighborhood
   end
 
   accepts_nested_attributes_for :house, :allow_destroy => true
@@ -140,7 +137,7 @@ class User < ActiveRecord::Base
       User.joins(:house => :location).where("houses.id != ?", house.id).order(dist_str).limit(n)
     end
   end
-  
+
   def reports
     Report.includes(:reporter, :eliminator, :location).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
   end
@@ -172,7 +169,7 @@ class User < ActiveRecord::Base
       else
         display_name = self.first_name + " " + self.last_name
       end
-      
+
     elsif self.display == "firstlast"
       display_name = self.first_name + " " + self.last_name
     elsif self.display == "first"
@@ -185,7 +182,7 @@ class User < ActiveRecord::Base
       else
         display_name = self.first_name + " " + self.last_name
       end
-      
+
     end
 
     # if display_name.size > 33
@@ -286,7 +283,7 @@ class User < ActiveRecord::Base
     return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
   end
 
-  def report_by_phone(params) 
+  def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
     @location = Location.new_with_address(body)
     @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)

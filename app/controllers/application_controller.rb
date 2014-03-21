@@ -7,11 +7,11 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     render :file => "public/401.html", :status => :unauthorized
   end
-  
+
   private
-  
+
   def current_user
-    @current_user ||= User.find_by_auth_token(cookies[:auth_token]) if cookies[:auth_token]  
+    @current_user ||= User.find_by_auth_token(cookies[:auth_token]) if cookies[:auth_token]
   end
 
 
@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   def is_admin?
     ["coordenador", "admin"].include? @current_user.role
   end
-  
+
   def require_login
     @current_user ||= User.find_by_auth_token(params[:auth_token])
     flash[:alert] = "Faça o seu login para visualizar essa página." if @current_user.nil?

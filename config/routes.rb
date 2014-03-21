@@ -69,14 +69,6 @@ Dengue::Application.routes.draw do
       end
     end
 
-    post 'premios/:id' => "prizes#new_prize_code"
-    get 'premios/admin' => "prizes#admin"
-    resources :prizes, :path => "premios" do
-      collection do
-        get 'badges'
-      end
-    end
-
     resources :houses do
       resources :posts
     end
@@ -84,7 +76,7 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive
-  # The following (3) resources are now nested under the neighborhood resource.
+  # The following (2) resources are now nested under the neighborhood resource.
   # We're keeping them around in case users have gotten in the habit of using
   # these routes. Eventually, they should be removed completely. We redirect
   # to the *first* neighborhood as that was the intended behavior before
@@ -96,31 +88,31 @@ Dengue::Application.routes.draw do
   # undefined '_path' errors. At some point, we should refacto these.
   match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
-  resources :reports do
-    collection do
-      put 'update'
-      post 'verify'
-      post 'problem'
-      post 'gateway'
-      get 'notifications'
-      get 'types'
-    end
-    member do
-      post 'creditar'
-      post 'credit'
-      post 'discredit'
-    end
-  end
+  # resources :reports do
+  #   collection do
+  #     put 'update'
+  #     post 'verify'
+  #     post 'problem'
+  #     post 'gateway'
+  #     get 'notifications'
+  #     get 'types'
+  #   end
+  #   member do
+  #     post 'creditar'
+  #     post 'credit'
+  #     post 'discredit'
+  #   end
+  # end
 
   match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
-  resources :houses do
-    resources :posts
-  end
+  # resources :houses do
+  #   resources :posts
+  # end
 
+  #----------------------------------------------------------------------------
+  # Prizes
 
-  match '/premios'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
-  match '/premios/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
   post 'premios/:id' => "prizes#new_prize_code"
   get '/premios/admin' => "prizes#admin"
   resources :prizes, :path => "premios" do

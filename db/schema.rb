@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140206171955) do
+ActiveRecord::Schema.define(:version => 20140320230651) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -164,6 +164,7 @@ ActiveRecord::Schema.define(:version => 20140206171955) do
     t.boolean  "self_prize",               :default => false, :null => false
     t.boolean  "is_badge",                 :default => false, :null => false
     t.boolean  "prazo",                    :default => true
+    t.integer  "neighborhood_id"
   end
 
   create_table "recruitments", :force => true do |t|
@@ -244,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20140206171955) do
     t.boolean  "is_blocked",                 :default => false
     t.string   "carrier",                    :default => ""
     t.boolean  "prepaid"
+    t.integer  "neighborhood_id"
   end
 
 end

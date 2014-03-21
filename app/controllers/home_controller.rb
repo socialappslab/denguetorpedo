@@ -7,13 +7,13 @@ class HomeController < ApplicationController
     else
       @user = flash[:user]
     end
-    
+
     @all_neighborhoods = Neighborhood.order(:id).limit(3)
-    
+
     if params[:neighborhood].nil?
       if @all_neighborhoods.first.nil?
         @selected_neighborhood = Neighborhood.new
-      else 
+      else
         @selected_neighborhood = @all_neighborhoods.first
       end
     else
@@ -22,7 +22,8 @@ class HomeController < ApplicationController
     @participants = @selected_neighborhood.members.where('role != ?', "lojista")
 
     @houses = @participants.map { |participant| participant.house }.uniq.shuffle
-    
+
+
     @prizes = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new)
     @notices = @selected_neighborhood.notices.where('date > ?', Time.now).order(:date)[0..5]
     @total_reports_in_neighborhood = @selected_neighborhood.total_reports.count
@@ -35,4 +36,3 @@ class HomeController < ApplicationController
   end
 
 end
-

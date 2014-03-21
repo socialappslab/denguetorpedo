@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-class PrizesController < NeighborhoodsBaseController
+class PrizesController < ApplicationController
   #-----------------------------------------------------------------------------
 
   before_filter :require_login, :except => :index
@@ -118,26 +118,22 @@ class PrizesController < NeighborhoodsBaseController
     @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
   end
 
+  #----------------------------------------------------------------------------
   # POST /prizes
-  # POST /prizes.json
+
   def create
     @prize = Prize.new(params[:prize])
-    @user = current_user
 
-    # if params[:prize][:prazo] == "0"
-    #   @prize.prazo = false
-    # end
-    @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
-    respond_to do |format|
-      if @prize.save
-        format.html { redirect_to @prize, notice: 'Prêmio criado com sucesso!' }
-        format.json { render json: @prize, status: :created, location: @prize }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @prize.errors, status: :unprocessable_entity }
-      end
+
+    if @prize.save
+      redirect_to @prize, notice: 'Prêmio criado com sucesso!'
+    else
+      @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
+      render "new" and return
     end
   end
+
+  #----------------------------------------------------------------------------
 
   # PUT /prizes/1
   # PUT /prizes/1.json
