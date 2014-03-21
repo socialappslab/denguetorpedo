@@ -3,17 +3,14 @@
     %li
       #house_photo_thumb
         - if house.profile_photo_file_name.nil?
-          = link_to image_tag("default_images/house_default_image.png"), house_path(house)
-        - else 
-          = link_to image_tag(house.profile_photo.url(:medium)), house_path(house)
-      = link_to house.name, house_path(house)
-  
+          = link_to image_tag("default_images/house_default_image.png"), neighborhood_house_path(house.neighborhood, house)
+        - else
+          = link_to image_tag(house.profile_photo.url(:medium)), neighborhood_house_path(house.neighborhood, house)
+      = link_to house.name, neighborhood_house_path(house.neighborhood, house)
+
   - if @houses.count < 10
     - (10 - @houses.count).times do
       %li
         #house_photo_thumb
           = image_tag("default_images/house_default_image.png")
         Futura Casa
-      
-    
-      
