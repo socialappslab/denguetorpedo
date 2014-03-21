@@ -14,65 +14,50 @@
             location.href = "sponsors/3";
           });
 
+/------------------------------------------------------------------------------
+
 .row
   %h2.offset1 Comunidades em destaque no Dengue Torpedo
-    
+
 .row
   .span15.offset1
     = render "home/neighborhood_list"
 
+/------------------------------------------------------------------------------
+
+- @all_neighborhoods.each do |neighborhood|
+  .row
+    #neighborhood_stats.offset1
+      #home_visit_neighborhood_button.span5
+        = link_to "Vá para a #{neighborhood.name}", neighborhood_path(neighborhood)
+      .span3{style: "margin-left: 35px;"}
+        %b= neighborhood.total_reports.count
+        %br Total de focos marcados
+      .span3{style: "margin-left: 45px;"}
+        .row
+          #neighborhood_open_report_button.span1
+          .span2
+            %b= neighborhood.open_reports.count
+            %br em aberto
+      .span3
+        .row
+          #neighborhood_resolved_report_button.span1
+          .span2
+            %b= neighborhood.eliminated_reports.count
+            %br eliminados
+
+/------------------------------------------------------------------------------
+
+%br
 .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
-  
-.row
-  #neighborhood_stats.offset1
-    #home_visit_neighborhood_button.span5
-      = render "home/visit_neighborhood_button"
-    .span3{style: "margin-left: 35px;"}
-      %b= @total_reports_in_neighborhood
-      %br Total de focos marcados
-    .span3{style: "margin-left: 45px;"}
-      .row
-        #neighborhood_open_report_button.span1 
-        .span2
-          %b= @opened_reports_in_neighborhood
-          %br em aberto
-    .span3
-      .row
-        #neighborhood_resolved_report_button.span1 
-        .span2
-          %b= @eliminated_reports_in_neighborhood
-          %br eliminados
-        
-.row
-  #houses.span15.offset1
-    = render "home/house_list"          
-    
-%br    
-.row
-  %h2.offset1{style: 'font-size: 18px;'} 
+  %h2.offset1{style: 'font-size: 18px;'}
     = link_to "Prêmios", prizes_path
-  #sponsors.offset1{style: "margin-left:61px;"}    
-    
+  #sponsors.offset1{style: "margin-left:61px;"}
+
     %ul
       - @prizes.shuffle.each do |prize|
         = render :partial => "prizes/prize", :object => prize
-
-.row
-  .offset1
-    #neighborhood_news
-      %h2 Notícias da comunidade
-      %ul
-        - @notices.each do |notice|
-          %a{:href => notice_path(notice)}
-            %li.span4.neighborhood_news_title
-              .row
-                .span5
-                  - if notice.title.size > 30
-                    = notice.title[0..30] + "..."
-                  - else
-                    = notice.title
-%br          
+%br
 .row
   %h2.offset1{style: 'font-size: 18px;'} Parceiros
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
@@ -81,7 +66,3 @@
 - if flash[:alert]
   %script
     alert("#{flash[:alert]}");
-  
-
-    
-
