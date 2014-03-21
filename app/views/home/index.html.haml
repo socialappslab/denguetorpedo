@@ -1,10 +1,17 @@
+/------------------------------------------------------------------------------
+
 = render :partial => 'orange_slider'
+
+/------------------------------------------------------------------------------
+
 %br
 #neighborhood_search{style: "width:1000px;"}
   .row
-    #neighborhood_search_background.offset2{style: "width:690px;float:left;"}
-      %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!", style: "width:88%;"}
-      %button Busca
+    #neighborhood_search_background.offset2{style: "width:690px;text-align: center;"}
+      Aguarde os futuros participantes!
+      = form_tag neighborhood_search_path do
+        = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :style => "width: 50%;")
+        = submit_tag "Busca", :class => "button"
     - if @current_user
       #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;font-size:10px;"}
         %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
@@ -19,11 +26,11 @@
 .row
   %h2.offset1 Comunidades em destaque no Dengue Torpedo
 
+
 .row
   .span15.offset1
     = render "home/neighborhood_list"
 
-/------------------------------------------------------------------------------
 
 - @all_neighborhoods.each do |neighborhood|
   .row
@@ -62,6 +69,8 @@
   %h2.offset1{style: 'font-size: 18px;'} Parceiros
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
     <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
+
+/------------------------------------------------------------------------------
 
 - if flash[:alert]
   %script
