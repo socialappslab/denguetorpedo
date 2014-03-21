@@ -23,13 +23,14 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  %h2.offset1 Comunidades em destaque no Dengue Torpedo
-
-
-.row
-  .span15.offset1
-    = render "home/neighborhood_list"
+/ We only want to display all neighborhood pictures to visitors. If a user
+/ is logged in, they care only about their neighborhood.
+- if @current_user.nil?
+  .row
+    %h2.offset1 Comunidades em destaque no Dengue Torpedo
+  .row
+    .span15.offset1
+      = render "home/neighborhood_list"
 
 
 - @all_neighborhoods.each do |neighborhood|
@@ -53,6 +54,21 @@
             %b= neighborhood.eliminated_reports.count
             %br eliminados
 
+%hr
+/------------------------------------------------------------------------------
+
+/ Display the neighborhood houses only if the logged-in user is viewing it.
+
+- if @current_user.present?
+  .row
+  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
+
+  .row
+    #houses.span15.offset1
+      = render "home/house_list"
+
+  %hr
+
 /------------------------------------------------------------------------------
 
 %br
@@ -64,6 +80,32 @@
     %ul
       - @prizes.shuffle.each do |prize|
         = render :partial => "prizes/prize", :object => prize
+
+
+%hr
+
+/------------------------------------------------------------------------------
+
+/ Display neighborhood news only if a logged-in user is viewing it.
+- if @current_user.present?
+  .row
+    .offset1
+      #neighborhood_news
+        %h2 NotÃ­cias da comunidade
+        %ul
+          - @notices.each do |notice|
+            %a{:href => notice_path(notice)}
+              %li.span4.neighborhood_news_title
+                .row
+                  .span5
+                    - if notice.title.size > 30
+                      = notice.title[0..30] + "..."
+                    - else
+                      = notice.title
+
+  %hr
+
+/------------------------------------------------------------------------------
 
 %br
 .row
