@@ -9,11 +9,15 @@ class HomeController < ApplicationController
     # logged-in and visitors. Basically, a logged-in user cares only about
     # his/her own neighborhood.
     if @current_user.present?
-      @all_neighborhoods = [ @current_user.neighborhood ]
+      if @current_user.neighborhood.present?
+        @all_neighborhoods = [ @current_user.neighborhood ]
+      else
+        @all_neighborhoods = [ Neighborhood.first ]
+      end
     else
       @all_neighborhoods     = Neighborhood.order(:id).limit(3)
     end
-
+    
     @selected_neighborhood = @all_neighborhoods.first
     @participants          = @selected_neighborhood.members.where('role != ?', "lojista")
 
