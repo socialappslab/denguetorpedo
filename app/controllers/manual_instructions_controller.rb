@@ -19,6 +19,7 @@ class ManualInstructionsController < ApplicationController
       format.html # show.html.erb
       format.json { render json: @manual_instruction }
     end
+    
   end
 
   # GET /manual_instructions/new

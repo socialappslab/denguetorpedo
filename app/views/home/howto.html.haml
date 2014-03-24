@@ -11,332 +11,121 @@
           %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como se cadastrar
             =ManualInstruction.find_by_id(1).title
-          -if @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
 
         #cadastrar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p Fazer o seu cadastro no Dengue Torpedo (DT) é fácil!
-            %p Na página inicial insira todas as informações nos campos solicitados.
-            %br
 
-            <i>Email;</i>
-            %br
-            <i>Nome;</i>
-            %br
-            <i>Nome do meio</i> (quando houver):
-            %br
-            <i>Sobrenome;</i>
-            %br
-            <i>Número de celular</i>, no formato 021XXXXXXXXX (Atenção: insira o 9° dígito);
-            %br
-            <i>Senha para acessar sua conta</i>, mínimo 4 caracteres;
-            %br
-            <i>E Confirmação da senha</i>.
-            %br
-            %p Para prosseguir clique no botão Cadastre-se, você será direcionado para a página de <i>Configurações</i>, nela você completa o seu cadastro incluindo mais informações pessoais.
-
-            %br
-            %p <b style: "color:red;">ATENÇÃO</b>: Você deve escrever o seu nome como consta em um documento válido, como RG, esse dado será utilizado na troca dos seus pontos por prêmios!
-            %br
-            %p Apenas moradores da Maré convidados por um usuário ou membro da equipe Dengue Torpedo podem participar! Atualmente estamos na fase inicial aperfeiçoando o aplicativo com os moradores da Maré. Em nossa próxima fase, o Dengue Torpedo será aberto a moradores de outros bairros da cidade. 
-
-            =ManualInstruction.find_by_id(1).description
+            =simple_format(ManualInstruction.find_by_id(1).description)
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Como completar sua conta
+            /Como completar sua conta
+            =ManualInstruction.find_by_id(2).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(2))
         #completar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p Para completar a sua conta você precisa fornecer mais alguns dados pessoais.
-            %p Assim que você apertar o botão <i>Cadastre-se</i> na página principal, você será direcionado para a página de Configurações.
-            %p Nela os dados que você inseriu na página principal já estarão preenchidos. Você só precisa inserir os outros dados que ajudarão a personalizar a sua conta, deixando ela com a sua cara!  Os campos estão divididos em dois grupos: <i>Configurações de morador</i> e <i>Configurações da casa</i>. 
-
+            - str = ManualInstruction.find_by_id(2).description
+            - str1 = str.slice(0..(str.index('**Configurações de morador**')-2))
+            =simple_format(str1)
             %br
             %h2 Configurações de morador
-            %p Para completar as configurações de morador, basta preencher os campos em branco.
-            %br
-            %p • Inclua o seu Apelido se tiver;
-            %p • Clique no botão do gênero masculino ou feminino;
-            %p • Digite a sua <i>Operadora de celular</i> e <i>Confirme no campo abaixo</i>;
-            %p • Selecione o tipo de conta de celular <i>pré-pago</i> ou <i>pós-pago</i>;
-            %p • Insira uma imagem pessoal para o seu perfil, se quiser.
-
+            - ind = str.index('**Configurações de morador**') + '**Configurações de morador**'.length
+            - str2 = str.slice(ind..(str.index('**Configurações da casa**')-1))
+            =simple_format(str2)
             %br
             %h2 Configurações da casa
             %br
-            %p Você deve completar os dados da <i>Configuração da Casa</i> também no primeiro acesso. Para configurar a sua casa, basta preencher os campos de: 
-            %br
-            %p • <i>Rua, beco, viela, etc</i>;
-            %p • Nome;
-            %p • Número;
-            %p • Imagem da residência. 
-
-            %br
-            %p Após preencher os campos do endereço, um marcador irá aparecer no mapa ao lado. Você deve verificar se o marcador está na localização correta da sua casa. Caso ele não esteja, basta você ir até onde sua casa fica e clicar sobre a localização correta. O marcador irá aparecer.
-
-            %br
-            %p <b>ATENÇÃO</b>: Caso algum morador da sua casa já tenha se cadastrado no DT é necessário que você se cadastre como morador dessa casa inserindo o mesmo endereço e nome da casa. Ex: Se o seu irmão cadastrou a casa da sua família como <i>Souza</i>, você também deverá se cadastrar nela inserindo o mesmo endereço e <i>Nome da casa</i> como <i>Souza</i>.
-
-            %br
-            %p Se você se cadastrou no site porque um amigo ou vizinho convidou você, não se esqueça de indicar o nome dele no campo <i>Alguém o convidou a se cadastrar no DT</i>?. Nesse campo selecione se a pessoa que o convidou é um morador/vizinho ou um ACS/AVS e digite o nome dele no campo abaixo. 
-
-
+            -ind = str.index('**Configurações da casa**') + '**Configurações da casa**'.length
+            -str3 = str.slice(ind..str.length)
+            =simple_format(str3)
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#barra").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Barra de navegação
+            /Barra de navegação
+            =ManualInstruction.find_by_id(3).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(3))
         #barra.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p Na barra de navegação você encontra os links para acessar cada página do site:
-            %br
-            %p • Meu Perfil;
-            %p • Minha Casa;
-            %p • Minha Comunidade;
-            %p • Focos Marcados;
-            %p • Configurações.
-
-            %br
-
-            %p A barra de navegação pode ser acessada a qualquer momento, ela aparece em todas as páginas enquanto você estiver logado.
-
-            %br
-            %br
-            %p Após realizar o seu cadastro, entre na sua conta na página inicial inserindo o seu e-mail e senha no canto superior direito. Você estará logado no site Dengue Torpedo e poderá visualizar a sua conta. Clique em Configurações. Nessa página você poderá atualizar sua conta, e verificar as Configurações de usuário e Configurações de Casa. 
-
-            %br
-
-            %p Acesse essa página quando quiser inserir ou alterar seus dados pessoais, imagens de perfil e da casa. 
+            =simple_format(ManualInstruction.find_by_id(3).description) 
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#foco").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            O que é um foco?
+            /O que é um foco?
+            =ManualInstruction.find_by_id(4).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
         #foco.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p Um foco é um lugar com água parada, geralmente limpo, onde os mosquitos põem seus ovos. 
-            %br
-            %p Dengue Torpedo reconhece que há dois tipos de focos: 
-            %p • Focos ativos -- com pupas ou larvas de mosquito;
-            %p • Focos potenciais -- possíveis criadouros de mosquito.
-            %br
-            %p Dengue Torpedo não distingue entre ativos e potenciais. Quando encontrado, os dois tipos são chamados <i>focos marcados</i> e ganham a mesma pontuação.
+            =simple_format(ManualInstruction.find_by_id(4).description)
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#jogar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Como jogar
+            /Como jogar
+            =ManualInstruction.find_by_id(5).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(5))
         #jogar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p Há várias formas de jogar. Você pode:
-            %br
-            %p • Marcar focos;
-            %p • Eliminar focos;
-            %p • Postar no blog;
-            %p • Convocar amigos e vizinhos para jogar;
-            %p • Ganhar pontos;
-            %p • Trocar pontos por prêmios;
-            %p • Participar das atividades promovidas pelo Dengue Torpedo.
-
-            %br
-            %p Toda vez que você acessar o site do Dengue Torpedo poderá visualizar os focos marcados. Há dois tipos de focos marcados, os focos em aberto e os focos já eliminados. Os focos em aberto você deve eliminar para ganhar pontos.
-
+            - str = ManualInstruction.find_by_id(5).description
+            - str1 = str.slice(0..(str.index('**Visualizando focos**')-1))
+            =simple_format(str1)
             %h2 Visualizando focos
-            %p Ao acessar a página "Focos Marcados”, você será apresentado aos relatos dos focos em aberto e eliminados e um mapa com os focos marcados na região da Maré. Cada relato tem endereço, fotos, descrição e tipo de foco com método de eliminação, além de outras informações. Os focos em aberto possuem um contador que mostra o tempo restante para eliminá-los.
-
-            %br
-
-            %p Você pode utilizar a ferramenta de zoom do mapa para visualizar melhor os focos de uma área. A lista de focos é dinâmica com o ajuste do mapa. Para aumentar ou diminuir a escala do mapa clique no símbolo de + para aumentar o zoom e o símbolo de - para diminuir o zoom. A lista de focos muda com a sua ação, aumentando ou diminuindo o número de focos. Você também pode ajustar a lista de focos arrastando o mapa. Para arrastar o mapa, coloque o cursor do mouse sobre o mapa, mantenha o botão direito pressionado e arraste-o. 
-
-            %br
-
-            %p A página "Focos Marcados" tem 3 filtros para visualizar os focos: Todos, Em aberto e Eliminados. Clique neles para escolher os focos marcados a serem visualizados.
-
-            %br
-
+            - ind = str.index('**Visualizando focos**') + '**Visualizando focos**'.length
+            - str2 = str.slice(ind..(str.index('**Marcando focos**')-1))
+            =simple_format(str2)
             %h2 Marcando focos
-            %p Você pode marcar focos através do site <a href="http://www.denguetorpedo.com">www.denguetorpedo.com</a> ou enviando um torpedo (SMS) do seu celular.
-
-            %br
-            %h3{style: "font-weight:bold;"} Pelo site do Dengue Torpedo
-
-            %p Para marcar um foco, você precisa acessar a sua conta e clicar na página “Focos Marcados” na barra de navegação.Você irá visualizar uma lista dos focos marcados em sua região.
-            %br
-            %p Para marcar um foco clique no botão <i>Marcar um foco</i>. Você será direcionado a uma nova página. Nela você deverá preencher os campos com os dados solicitados na ordem seguinte:
-
-            %br
-
-            %p 1. Endereço do foco localizado;
-            %p O endereço deve ser preenchido no formato solicitado para ser identificado pelo mapa.
-            %p 2. Ajuste o marcador no mapa;
-            %p O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta.
-            %p 3. Descrição da localização.
-            %p Descreva onde o foco está localizado, se na laje, no quintal, na calçada do endereço, entre outras possíveis localizações.
-            %p 4. Carregue a imagem do foco encontrado.
-            %p Clique no botão <i>Escolher arquivo</i> e selecione a imagem do foco encontrado.
-
-            %br
-
-            %p Após finalizar essas etapas, clique em <i>Enviar!</i>. Você será direcionado para a página "Focos Marcados" onde você vai ver o seu relato com todas as informações preenchidas. 
-
-            %br
-
-            %p Para concluir a marcação do foco, clique em <i>Selecione o tipo de foco</i> em verde e selecione o tipo de foco que você encontrou. Em seguida, clique no botão <i>Enviar!</i>. Após submeter o seu foco, o contador aparece com 48 horas e inicia a contagem do tempo restante para que o foco seja eliminado. Também nesse momento, você recebe 50 pontos.
-
-            %br
-
-            %p <b>ATENÇÃO</b>: Caso você tenha uma proposta para outro tipo de foco que não está na lista <i>Tipo de foco</i>, selecione <i>Outro tipo de foco</i>. Você será direcionado para a página “Contato DT”. Nela, descreva o <i>tipo de foco</i> que você encontrou. A sua proposta será discutida com a equipe técnica do projeto. Se aprovada, ela vai ser incorporada na lista Tipo de foco. Você não receberá no momento da proposta os 50 pontos pelo foco marcado. Mas, caso o novo tipo de foco for aprovado, você receberá 100 pontos pela inovação e mais 50 pela identificação. 
-
-            %br
-            %p Outras questões relativas a marcar e eliminar focos podem ser esclarecidas lendo o <i>Manual de Conduta do Dengue Torpedo</i>.
-
-            %br
-
+            -ind = str.index('**Marcando focos**') + '**Marcando focos**'.length
+            -str3 = str.slice(ind..(str.index('**Pelo site do Dengue Torpedo**')-1))
+            =simple_format(str3)
+            %h3{style: "font-weight:bold;"} Pelo site do Dengue Torpedo   
+            - ind = str.index('**Pelo site do Dengue Torpedo**') + '**Pelo site do Dengue Torpedo**'.length
+            - str4 = str.slice(ind..(str.index('**Por Torpedo**')-1))
+            =simple_format(str4)         
             %h3{style: "font-weight:bold;"} Por Torpedo
-
-            %p Para marcar um foco por Torpedo, você deve tirar a foto do foco que você encontrou. Em seguida, você deve enviar a localização e descrição do foco encontrado por mensagem de texto (SMS) para o número do Dengue Torpedo 021981865344. Salve a foto da foco em seu celular para depois carregá-la no site do Dengue Torpedo.
-
-            %br
-
-            %p Ex: Caixa d’água destampada na rua Portinari, 45
-            %p Ex: Foco no pratinho de vaso em frente da casa na rua Roberto da Silveira, 150
-
-            %br
-
-            %p Após o envio do SMS, você vai receber uma das seguintes notificações no seu celular:
-
-            %p • Se você já possui uma conta no Dengue Torpedo: Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.
-            %p • Se você ainda não possui uma conta no Dengue Torpedo: Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.
-            %p • Se você for um patrocinador ou verificador registrado no Dengue Torpedo: O seu perfil não está habilitado para o envio do Dengue Torpedo.
-
-            %br
-
-            %p Após receber a mensagem de sucesso em seu celular, você deve acessar sua conta do Dengue Torpedo de um computador e completar a marcação do foco na página "Focos Marcados".
-
-            %br
-
-            %p A mensagem que você enviou por SMS irá aparecer no topo da lista na página de "Focos Marcados". Para completar, pressione o botão verde <i>Completar o foco</i>. Você será direcionado para a página "Completar o foco". 
-
-            %br
-
-            %p Nessa página, você deve preencher os campos com os dados solicitados na ordem seguinte:
-
-            %br
-
-            %p 1. Escrever a localização no formato solicitado;
-            %p A localização enviada por SMS deve ser preenchida no formato solicitado para ser identificado pelo mapa.
-
-            %br
-
-            %p 2. Ajuste o marcador no mapa;
-            %p O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta.
-
-            %br
-            %p 3. Descrição da localização.
-            %p Descreva onde o foco está localizado, se na laje, no quintal, na calçada do endereço, entre outras possíveis localizações.
-
-            %br
-
-            %p 4. Carregue a imagem do foco encontrado.
-            %p Clique no botão <i>Escolher arquivo</i> e selecione a imagem do foco encontrado.
-
-            %br
-
-            %p Após finalizar essas etapas, clique em <i>Enviar!</i>. Você será direcionado para a página "Focos Marcados" onde você vai ver o seu relato com todas as informações preenchidas. 
-
-            %br
-            %p Para concluir a marcação do foco, clique em <i>Selecione o tipo de foco</i> em verde e selecione o tipo de foco que você encontrou. Em seguida, clique no botão <i>Enviar!</i>. Após submeter o seu foco, o contador aparece com 48 horas e inicia a contagem do tempo restante para que o foco seja eliminado. Também nesse momento, você recebe 50 pontos e completa um DT Torpedo.
-
-            %br
+            - ind = str.index('**Por Torpedo**') + '**Por Torpedo**'.length
+            - str5 = str.slice(ind..(str.index('**Eliminando focos**')-1))
+            =simple_format(str5)
             %h2 Eliminando focos
-
-            %p Para eliminar um foco, você precisa
-            %br
-            %p 1. Acessar a página “Focos Marcados”
-            %p 2. Encontrar o foco que você eliminou na lista de focos <i>Em aberto</i>
-            %p 3. Carregar a foto do foco.
-            %p Clique no botão <i>Escolher arquivo</i> e selecione a imagem do foco eliminado.
-            %p 4. Selecionar o método de eliminação. 
-
-            %br
-            %p Após finalizar essas etapas, clique em <i>Carregue!</i>. A foto do foco eliminado será postada e o foco irá aparecer nos <i>Focos eliminados</i>. 
-
-            %br
-            %p Com a ação finalizada os seus pontos serão automaticamente somados e você poderá verificar sua pontuação acessando a página “Meu Perfil”
-
-            %br
-
-            %p <b>ATENÇÃO</b>: Caso você tenha uma proposta para outro método de eliminação que não está na lista <i>Método de eliminação</i>, selecione <i>Outro método</i>. Você será direcionado para a página “Contato DT”. Nela, descreva o método que você propõe para eliminar o foco. A sua proposta será discutida com a equipe técnica do projeto. Se aprovada, ela vai ser incorporada na lista <i>Método de eliminação</i> com pontuação. Você não receberá no momento da proposta os pontos da eliminação do foco. Mas, caso o seu método for aprovado, você receberá 100 pontos pela inovação. Caso você consiga utilizar esse método para eliminar esse foco, você receberá a pontuação definida pela equipe técnica do projeto. 
-
-            %br
-
-            %p Outras questões relativas a marcar e eliminar focos podem ser esclarecidas lendo o <i>Manual de Conduta do Dengue Torpedo</i>.
-
-            %br
+            - ind = str.index('**Eliminando focos**') + '**Eliminando focos**'.length
+            - str6 = str.slice(ind..(str.index('**Regras do jogo e verificação**')-1))
+            =simple_format(str6)
             %h2 Regras do jogo e verificação
-
-            %p Como todo jogo, o Dengue Torpedo também tem suas regras. Algumas regras importantes são:
-
-            %br
-
-            %p 1. O jogador deve selecionar na lista <i>Tipo de foco</i> o tipo que corresponde ao foco que ele encontrou. Caso não corresponda, o jogador não receberá os 50 pontos por marcar um foco.
-
-            %p 2. O jogador deve selecionar na lista <i>Método de eliminação</i> o método que corresponde ao tipo de foco já selecionado. Caso não corresponda, o jogador não receberá os pontos da eliminação.
-
-            %p 3. Após marcado, o foco deve ser eliminado em até 48 horas, conforme o contador em cada relato em aberto. Após esse tempo ele aparece como <i>Tempo expirado</i>.
-
-            %p 4. Para ganhar 1 DT Torpedo, o jogador deve ser enviar o SMS com a localização e completar o foco no site DT. Para mais informações, consulte <i>Marcando um foco por torpedo</i>.
-
-            %br
-
-            %p Os focos marcados e eliminados no Dengue Torpedo são constantemente verificados pela equipe do jogo e também pelos verificadores, que são os Agentes Comunitários de Saúde e os Agentes de Vigilância em Saúde. 
-
-            %br
-
-            %p Se o seu relato de foco tiver o símbolo verde <b>√</b>, ele foi verificado e confirmado. Caso o seu relato de foco tiver o símbolo vermelho <b>X</b>, foi constatado um problema no seu relato. Nesse caso, você deve contatar a equipe do Dengue Torpedo no contato DT (<a href="http://www.denguetorpedo.com/feedbacks/new">http://www.denguetorpedo.com/feedbacks/new</a>).
-
-            %br
+            - ind = str.index('**Regras do jogo e verificação**') + '**Regras do jogo e verificação**'.length
+            - str7 = str.slice(ind..(str.index('**Microblog**')-1))
+            =simple_format(str7)
             %h2 Microblog
-
-            %p Uma das ferramentas do Dengue Torpedo é o microblog associado ao perfil de cada participante. Esses microblogs criam a rede social do Dengue Torpedo.
-
-            %br
-
-            %p Para publicar no microblog, basta ir ao seu perfil, digitar um título e descrever a sua ideia.
-
-            %br
-
-            %p Com o microblog você pode convidar os seus vizinhos para realizar ações coletivas em sua vizinhança, como mutirões de limpeza e de eliminação dos focos da dengue. Você também pode contar a sua experiência de combate dos focos de dengue.
-
-            %br
-
-            %p O microblog é o seu espaço de comunicação dentro do Dengue Torpedo.
-
+            -ind = str.index('**Microblog**') + '**Microblog**'.length
+            =simple_format(str.slice(ind..(str.length)))
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#ganhar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Como ganhar
+            /Como ganhar
+            =ManualInstruction.find_by_id(6).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(6))
         #ganhar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
+            - str = ManualInstruction.find_by_id(6).description
             %h2 Ganhando pontos
-            %p No Dengue Torpedo cada jogador ganha pontos de acordo com as suas ações no combate da dengue. Por exemplo:
-
-            %br
-
-            %p Marcar um foco: 50 pontos. 
-            %p Eliminar um foco: 50 a 450 pontos de acordo com o método de eliminação do foco. 
-            %p Postar no mini blog: 5 pontos com máximo de 100 pontos por mês ou 20 postagens.
-            %p Recrutar jogador: 50 pontos.
-
-            %br
-
-            %p Para saber quantos pontos você ganha eliminando diferentes tipos de foco, consulte a lista abaixo:
-
-            %br
+            - ind = str.index('**Ganhando pontos**') + '**Ganhando pontos**'.length
+            - str2 = str.slice(ind..(str.index('**table**')-1))
+            =simple_format(str2)
             %table{border: 1, width: "100%", cellpadding: "5px"}
               %tbody
                 %tr
@@ -449,56 +238,17 @@
                   %td{width: "14%"} 50
             %h2 Trocando pontos
             %h3{style: "font-weight:bold;"} Por prêmios
-            %p No Dengue Torpedo, você joga, marcando e eliminando focos, e troca os seus pontos por prêmios. 
-
-            %br
-
-            %p Os prêmios disponíveis aparecem na seção <i>Prêmios</i> da página principal. Você também pode visualizar os prêmios disponíveis na página "Ganhe prêmios”.
-
-            %br
-
-            %p Trocar os seus pontos por prêmios é fácil. Você só precisa:
-            %br
-
-            %p 1. Acessar a página "Ganhe prêmios".
-            %p 2. Encontrar o cupom do prêmio que você quer trocar pelos seus pontos.
-            %p 3. Clicar sobre a imagem ou título do cupom. Você será direcionado para a página dele. 
-            %p 4. Ler a descrição e condições para retirar o prêmio.
-            %p 5. Clicar no botão verde <i>Usar os meus pontos agora!</i>. 
-            %p Esse botão só aparece nos prêmios que você tem pontos suficientes para resgatar.
-            %p 6. Confirmar o resgate dos pontos.
-            %p 7. Imprimir o cupom do prêmio.
-            %p Nesse cupom estão suas informações pessoais, o código do prêmio, informações do patrocinador e data limite do resgate.
-            %p 8. Comparecer ao estabelecimento de porte do cupom impresso e de um documento válido com foto (ex: RG) para resgate do prêmio.
-
-            %br
-
-            %p <b>ATENÇÃO</b>: Você não pode desfazer a ação de utilizar os pontos. Uma vez resgatado, o seu prêmio deve ser retirado em até 7 dias no estabelecimento patrocinador ou conforme as instruções de resgate do cupom do prêmio.
-
-            %br
-
-            %h3{style: "font-weight:bold;"} Por medalhas
-            %p Você ganha as medalhas automaticamente, assim que alcançar a pontuação necessária para cada uma. As medalhas aparecem na página "Meu Perfil" e não é necessário resgatar ou utilizar pontos. 
-
-            %br
-
-            %p Há cinco tipo de medalhas:
-
-            %br
-            %p De olho no mosquito - 100 pontos
-            %p Exterminador de mosquitos - 450 pontos
-            %p Guerreiro DT - 900 pontos
-            %p Comunidade saudável - 1350 pontos
-            %p Eu cuido da comunidade - 1800 pontos
-
-            %br
-
-            %h3{style: "font-weight:bold;"} Restituindo créditos de celular pré-pago.
-
-            %p O valor utilizado para o envio do SMS será restituído, ou seja, devolvido para você em forma de recarga. Essa recarga acontece quando você atinge a quantidade de DT Torpedos requisitados por cada operadora, conforme tabela abaixo. 
-
-            %br
-
+            -ind = str.index('**Por prêmios**') + '**Por prêmios**'.length
+            -str3 = str.slice(ind..(str.index('**Por medalhas**')-1))
+            =simple_format(str3)
+            %h3{style: "font-weight:bold;"} Por medalhas   
+            - ind = str.index('**Por medalhas**') + '**Por medalhas**'.length
+            - str4 = str.slice(ind..(str.index('**Restituindo créditos de celular pré-pago.**')-1))
+            =simple_format(str4)
+            %h3{style: "font-weight:bold;"} Restituindo créditos de celular pré-pago.         
+            - ind = str.index('**Restituindo créditos de celular pré-pago.**') + '**Restituindo créditos de celular pré-pago.**'.length
+            - str5 = str.slice(ind..(str.index('**table2**')-1))
+            =simple_format(str5)
             %table{border: 1, width: "100%", cellpadding: "5px"}
               %tbody
                 %tr
@@ -527,72 +277,51 @@
                   %td{width: "20%"} Vivo
                   %td{width: "40%"} R$ 15
                   %td{ width: "40%"} 20
-
-            %br
-            %p <b>ATENÇÃO: </b>
-            %p • Lembre-se que você ganha um DT Torpedo a cada foco completo enviado por SMS.
-            %p • Cada usuário terá direito a 1 (uma) restituição dos valores por mês. 
-            %p • A restituição é realizada automaticamente em forma de recarga de crédito para celulares pré-pagos. 
-            %p • A restituição é intransferível, ou seja, é válida somente para os números de celulares pré-pagos cadastrados no Dengue Torpedo. 
-            %p • O crédito ocorrerá em até 7 dias úteis (período sujeito à disponibilidade do sistema) assim que o usuário atingir a quantidade de DT Torpedos requisitados.
-
-            %br
-
+            - ind = str.index('**table2**') + '**table2**'.length
+            - str5 = str.slice(ind..(str.index('**Tipos de prêmios**')-1))
+            =simple_format(str5)
             %h2 Tipos de prêmios
-
-            %p Você pode usar os seus pontos acumulados no Dengue Torpedo para ganhar prêmios individuais ou para a comunidade.
-
-            %br
-
-            %p • Individuais
-            %p Cada prêmio requer uma quantidade de pontos. Confira a lista completa de prêmios   individuais na página "Ganhe Prêmios". 
-
-            %br
-
-            %p • Comunidade
-            %p Você pode usar os seus pontos para melhorar a sua vizinhança e ajudar a sua  comunidade. Confira a lista completa de prêmios para a  comunidade e as regras  específicas na página "Ganhe Prêmios". 
-
-            %br
-
-            %p • Medalhas
-            %p Você ganha as medalhas automaticamente. Confira os detalhes no tópico Trocando   pontos desse manual. 
-
-            %br
-
-            %p Mais detalhes do sistema de troca de pontos por prêmios podem ser esclarecidos na seção “Perguntas frequentes”. 
+            - ind = str.index('**Tipos de prêmios**') + '**Tipos de prêmios**'.length
+            =simple_format(str.slice(ind..(str.length)))
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#participar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Como participar
+            /Como participar
+            =ManualInstruction.find_by_id(7).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(7))
         #participar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p O Dengue Torpedo está sendo lançado no bairro da Maré. Essa é uma iniciativa pioneira que se der certo será expandida para outros bairros da cidade. Dessa forma, apenas moradores da Maré podem participar dessa fase pioneira.
-            %br
-
+            - str = ManualInstruction.find_by_id(7).description
+            - str1 = str.slice(0..(str.index('**Moradores**')-1))
+            =simple_format(str1)
             %h2 Moradores
-            %p Qualquer morador da Maré convidado pela equipe do Dengue Torpedo ou por outro jogador pode participar. Para isso, basta se inscrever na página inicial e começar a jogar. 
-            %br
-            %p Caso você tenha sido convidado por outro jogador, não se esqueça de marcá-lo completando as informações no campo  <i>Alguém o convidou a se inscrever no DT</i>?.
-            %br
+            - ind = str.index('**Moradores**') + '**Moradores**'.length
+            - str2 = str.slice(ind..(str.index('**Patrocinadores**')-1))
+            =simple_format(str2)
             %h2 Patrocinadores
-            %p Qualquer comerciante ou prestador de serviço pode participar do Dengue Torpedo fornecendo prêmios individuais ou para a comunidade. O seu comércio ou serviço terá uma página própria de patrocinador no site. Nessa página, os dados do seu negócio como logo, localização e telefone comercial irão aparecer. A página do patrocinador é um anúncio do seu negócio e fica visível a qualquer visitante do site. Caso você não tenha um logo digital, nossa equipe pode criá-lo de acordo com suas especificações. Esse logo digital é seu. Você pode usá-lo para outros fins.
-
-            %br
-            %h2 Verificadores
-            %p No Dengue Torpedo, alguns participantes têm um perfil especial de verificar identificação e eliminação de focos pelos jogadores. Na fase atual, o papel de verificação dos focos marcados é dos Agentes Comunitários de Saúde (ACS) e dos Agentes de Vigilância Sanitária (AVS). 
-            %br
-            %p Os verificadores também podem ser convocados para mediar conflitos, auxiliar com informações técnicas e promover oficinas de promoção de saúde e vigilância epidemiológica para a Dengue.
-            %br
-            %p Saiba mais sobre essas atividades dos verificadores acessando "Minha comunidade".
+            -ind = str.index('**Patrocinadores**') + '**Patrocinadores**'.length
+            -str3 = str.slice(ind..(str.index('**Verificadores**')-1))
+            =simple_format(str3)
+            %h2 Verificadores  
+            - ind = str.index('**Verificadores**') + '**Verificadores**'.length
+            =simple_format(str.slice(ind..(str.length)))
+            
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#comunidade").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-            Minha comunidade
+            /Minha comunidade
+            =ManualInstruction.find_by_id(8).title
+          -if @current_user != nil
+            -if @current_user.role == "admin"
+              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(8))
         #comunidade.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            %p A página “Minha Comunidade” é onde você encontra as casas participantes e outros destaques da sua comunidade. É nessa página que você encontra notícias, oficinas e outras atividades.
+            =simple_format(ManualInstruction.find_by_id(8).description)
+
 :javascript
   $(".collapse").collapse();
             

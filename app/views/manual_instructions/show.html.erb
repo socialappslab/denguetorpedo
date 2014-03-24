@@ -7,12 +7,7 @@
 
 <p>
   <b>Description:</b>
-  <%= @manual_instruction.description %>
-</p>
-
-<p>
-  <b>User:</b>
-  <%= @manual_instruction.user_id %>
+  <%= simple_format(@manual_instruction.description) %>
 </p>
 
 <p>
@@ -27,4 +22,4 @@
 
 
 <%= link_to 'Edit', edit_manual_instruction_path(@manual_instruction) %> |
-<%= link_to 'Back', manual_instructions_path %>
+<%= link_to 'Back', howto_path %>
