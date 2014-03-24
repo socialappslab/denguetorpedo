@@ -3,20 +3,12 @@
 
 .row
   .span4.offset1
-    - if flash[:notice]
-      .row#flash_dat_notice
-        #flashNotice
-          %p
-            = flash[:notice]
-    - if flash[:alert]
-      .row#flash_dat_alert
-        #flashAlert
-          %p
-            = flash[:alert]
+    = render :partial => "shared/flashes"
     %h1 Focos marcados
   %br
   .span#report_buttons{:style => "font-size:20px;"}
     / %h1 Marcar um foco
+
 
 .row
   .row.span10.offset1
