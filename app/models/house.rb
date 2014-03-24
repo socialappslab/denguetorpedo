@@ -41,7 +41,6 @@ class House < ActiveRecord::Base
   validates_presence_of :name, :message => "Preencha o nome da casa"
   validates_length_of   :name, :minimum => 2, :message => "Insira um nome da casa válido"
 
-
   validates :neighborhood_id, :presence => true
 
   #----------------------------------------------------------------------------
@@ -55,8 +54,6 @@ class House < ActiveRecord::Base
   def complete_address
     self.location.complete_address
   end
-
-  #----------------------------------------------------------------------------
 
   def reports
     _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status != "sms") ORDER BY "reports".updated_at DESC))
