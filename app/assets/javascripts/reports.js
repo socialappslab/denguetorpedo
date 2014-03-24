@@ -1,44 +1,13 @@
-$(document).ready(function() {
-//	$("select.elimination_type").each(function() {
-//		$(this).parent().find("select.elimination_methods").hide();
-//
-//		if($(this).val() == "Pratinho de planta") {
-//			$(this).parent().find("select#prantinho").show();
-//		} else if ($(this).val() == "Pneu") {
-//			$(this).parent().find("select#pneu").show();
-//		} else if ($(this).val() == "Lixo (recipientes inutilizados)") {
-//			$(this).parent().find("select#lixo").show();
-//		} else if ($(this).val() == "Pequenos Recipientes utilizáveis") {
-//			$(this).parent().find("select#pequenos").show();
-//		} else if ($(this).val() == "Grandes Recipientes Utilizáveis") {
-//			$(this).parent().find("select#grandes").show();
-//		} else if ($(this).val() == "Caixa d'água aberta na residência") {
-//			$(this).parent().find("select#caixa").show();
-//		} else if ($(this).val() == "Calha") {
-//			$(this).parent().find("select#calha").show();
-//		} else if ($(this).val() == "Registros abertos") {
-//			$(this).parent().find("select#registros").show();
-//		} else if ($(this).val() == "Laje e terraços com água") {
-//			$(this).parent().find("select#laje").show();
-//		} else if ($(this).val() == "Piscinas") {
-//			$(this).parent().find("select#piscinas").show();
-//		} else if ($(this).val() == "Poças d’água na rua") {
-//			$(this).parent().find("select#pocas").show();
-//		} else if ($(this).val() == "Ralos") {
-//			$(this).parent().find("select#ralos").show();
-//		} else if ($(this).val() == "Plantas ornamentais que acumulam água (ex: bromélias)") {
-//			$(this).parent().find("select#plantas").show();
-//		} else if ($(this).val() == "Outro tipo") {
-//			// window.location.href = "/feedbacks/new?title=other_type";
-//			$(this).find("option").filter(function() {
-//				return $(this).text() == "Tipo de foco";
-//			}).prop("selected", true);
-//			$(this).parent().find("select#prantinho").show();
-//		} else {
-//			$(this).parent().find("select#prantinho").show();
-//		}
-//	});
 
+// strings correspond to ids of report div
+// used with function display_report_div
+var report_divs = ['all_reports', 'open_reports', 'eliminated_reports', 'new_report'];
+
+$(document).ready(function() {
+
+
+    // TODO @awdorsett - Are these methods still used? If so refactor
+    // start of methods
 	$("select.elimination_type").change(function() {
 		if ($(this).val() == "Outro tipo") {
 			window.location = "/feedbacks/new?title=other_type";
@@ -57,11 +26,8 @@ $(document).ready(function() {
 			$(this).parent().find("input#selected_elimination_method").val($(this).val());
 		}
 	});
-//
-//    $('.report_submission').on('click',function(e){
-//        console.log("worked")   ;
-//        e.preventDefault();
-//    })
+    // end of methods
+
 
 
 
@@ -72,6 +38,18 @@ $(document).ready(function() {
 
 });
 
+
+function display_report_div(e, id){
+    e.preventDefault();
+
+    // loop through all report div ids, hide ones not matching var id
+    //   display div matching var id
+    for(var i = 0; i < report_divs.length; i++){
+        var val = (report_divs[i] === id) ? 'block' : 'none';
+        $('#' + report_divs[i]).css('display',val);
+    }
+
+}
 
 //@params location - json of location object for report
 //@params event - click event for form submission

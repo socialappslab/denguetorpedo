@@ -209,9 +209,16 @@
     background-color: #ffffff;
   }
   
-  .make_report_button {
+  #make_report_button {
     color: $dark-gray;
-    background-color: #ffffff;
+    background-color: #60BB50;
+    color:white;
+
+    .active {
+      background-color: $light-gray;
+      font-weight:bold
+    }
+
   }
   
   .reports_resolved_button {
@@ -248,9 +255,8 @@
     background-color: $orange;
   }
   
-  .make_report_button.active {
-    background-color: $light-gray;
-  }
+  //.make_report_button.active {
+  //}
   
   .reports_resolved_button.active {
     background-color: gray;
@@ -281,6 +287,29 @@
 
 .elimination_type{
   height:auto;
+}
+
+#report_display{
+
+  /*
+  Except for "all_reports" report divs hidden by default
+  */
+
+  #all_reports{
+    display: block;
+  }
+
+  #open_reports{
+    display: none;
+  }
+
+  #eliminated_reports{
+    display: none;
+  }
+
+  #new_report{
+    display: none;
+  }
 }
 
 

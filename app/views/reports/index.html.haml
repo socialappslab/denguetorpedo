@@ -18,25 +18,57 @@
 .row
   .row.span10.offset1
     #report_buttons
+      -# all reports
+      = link_to 'Todos', nil, :class=>'bttn reports_feed_button ' + @reports_feed_button_active,
+        :onclick => 'display_report_div(event,"all_reports")'
 
-      = link_to 'Todos',      neighborhood_reports_path(@neighborhood, :view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
-      = link_to 'Em aberto',  neighborhood_reports_path(@neighborhood, :view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
-      = link_to 'Eliminados', neighborhood_reports_path(@neighborhood, :view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
-      - if @current_user.role == "verificador" or @current_user.role == "visitante"
-        = link_to "Marcar um foco", "#", :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#aaaaaa;color:white;font-weight:bold;height:21px;font-size:25px;pointer-events: none;"
-      - else
-        = link_to "Marcar um foco", neighborhood_reports_path(@neighborhood, :view => 'make_report'), :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#60BB50;color:white;font-weight:bold;height:21px;font-size:25px;"
+      -# open reports
+      = link_to 'Em aberto', nil, :class=>'bttn reports_open_button ' + @reports_open_button_active,
+        :onclick => 'display_report_div(event,"open_reports")'
+
+      -# eliminated reports
+      = link_to 'Eliminados', nil, :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active,
+        :onclick => 'display_report_div(event,"eliminated_reports")'
+
+      -# new report
+      = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn ' + @make_report_button_active,
+        :onclick => 'display_report_div(event,"new_report")'
+
+      -# TODO @awdorsett - is a seperate button needed for verficador/visitante
+        - if @current_user.role == "verificador" or @current_user.role == "visitante"                                     z
+          = link_to "Marcar um foco", "#", :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#aaaaaa;color:white;font-weight:bold;height:21px;font-size:25px;pointer-events: none;"
+        - else
+          = link_to "Marcar um foco", neighborhood_reports_path(@neighborhood, :view => 'make_report'), :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#60BB50;color:white;font-weight:bold;height:21px;font-size:25px;"
 
   .row
-    .span9.offset1
-      - if params[:view] == 'recent'
-        = render :partial => 'reports/recent', :action=>'index'
-      - elsif params[:view] == 'open'
-        = render :partial => 'reports/open_list'
-      - elsif params[:view] == 'eliminate'
-        = render :partial => 'reports/eliminate_list'
-      - else params[:view] == 'make_report'
-        = render :partial => "reports/make_report_form"
+    #report_display.span9.offset1
+      -# TODO @awdorsett - remove report place holders and implement code
+      -# all reports
+      #all_reports
+        %p 'ALL REPORTS'
+
+      -# open reports
+      #open_reports
+        %p 'OPEN REPORTS'
+
+
+      -# eliminated reports
+      #eliminated_reports
+        %p 'ElIMINATED REPORTS'
+
+      -# new report
+      #new_report
+        %p 'NEW REPORT'
+
+
+      -#- if params[:view] == 'recent'
+      -#  = render :partial => 'reports/recent', :action=>'index'
+      -#- elsif params[:view] == 'open'
+      -#  = render :partial => 'reports/open_list'
+      -#- elsif params[:view] == 'eliminate'
+      -#  = render :partial => 'reports/eliminate_list'
+      -#- else params[:view] == 'make_report'
+      -#  = render :partial => "reports/make_report_form"
     .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
       .row
         .span8
