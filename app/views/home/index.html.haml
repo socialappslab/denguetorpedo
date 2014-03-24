@@ -1,6 +1,8 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
 
+/------------------------------------------------------------------------------
+
 = render :partial => 'orange_slider'
 %br
 
@@ -15,6 +17,7 @@
     .span15.offset1
       = render "home/neighborhood_list"
 
+%br
 
 - @all_neighborhoods.each do |neighborhood|
   .row
