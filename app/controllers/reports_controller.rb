@@ -15,8 +15,6 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   def index
-    #@elimination_selection = create_elimination_selection
-
     @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
     params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
@@ -24,32 +22,23 @@ class ReportsController < NeighborhoodsBaseController
     params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
     params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
     params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
-
     if params[:view] == "make_report"
       @report = Report.new
     end
 
     @elimination_method_select = EliminationMethods.field_select
-    @elimination_types = EliminationType.pluck(:name)
+    @elimination_types         = EliminationType.pluck(:name)
+
+    # Set up a base SQL query that limits reports by neighborhood.
+    neighborhood_reports_sql_query = Report.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
 
     reports_with_status_filtered = []
-    locations = []
-    open_locations = []
-    eliminated_locations = []
-    #@prantinho = EliminationMethods.prantinho
-    #@pneu = EliminationMethods.pneu
-    #@lixo = EliminationMethods.lixo
-    #@pequenos = EliminationMethods.pequenos
-    #@grandes = EliminationMethods.grandes
-    #@calha = EliminationMethods.calha
-    #@registros = EliminationMethods.registros
-    #@laje = EliminationMethods.laje
-    #@piscinas = EliminationMethods.piscinas
-    #@pocas = EliminationMethods.pocas
-    #@ralos = EliminationMethods.ralos
-    #@plantas = EliminationMethods.plantas
+    locations                    = []
+    open_locations               = []
+    eliminated_locations         = []
     @points = EliminationMethods.points
-    @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
+    @reports = neighborhood_reports_sql_query.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
+
     @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
         if params[:view] == 'recent' || params[:view] == 'make_report'
@@ -70,15 +59,18 @@ class ReportsController < NeighborhoodsBaseController
       end
     end
 
-    @markers = locations.map { |location| location.info}
-    @open_markers = open_locations.map { |location| location.info}
+    @markers            = locations.map { |location| location.info}
+    @open_markers       = open_locations.map { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
-    @reports = reports_with_status_filtered
-    @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
-    @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
-    @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
-    @open_feed = @reports
-    @eliminate_feed = @reports
+    @reports            = reports_with_status_filtered
+
+    base_counts_sql_query = neighborhood_reports_sql_query.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id)
+    @counts            = base_counts_sql_query.group(:location_id).count
+    @open_counts       = base_counts_sql_query.where(status_cd: 0).group(:location_id).count
+    @eliminated_counts = base_counts_sql_query.where(status_cd: 1).group(:location_id).count
+
+    @open_feed         = @reports
+    @eliminate_feed    = @reports
   end
 
   def new
