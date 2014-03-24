@@ -1,25 +1,7 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
 = render :partial => 'orange_slider'
-
-/------------------------------------------------------------------------------
-
 %br
-#neighborhood_search{style: "width:1000px;"}
-  .row
-    #neighborhood_search_background.offset2{style: "width:690px;text-align: center;"}
-      Aguarde os futuros participantes!
-      = form_tag neighborhood_search_path do
-        = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :style => "width: 50%;")
-        = submit_tag "Busca", :class => "button"
-    - if @current_user
-      #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;font-size:10px;"}
-        %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
-          SMS Grátis!
-        :javascript
-          $("#redetrel_button1").click(function() {
-            location.href = "sponsors/3";
-          });
 
 /------------------------------------------------------------------------------
 
@@ -53,6 +35,22 @@
           .span2
             %b= neighborhood.eliminated_reports.count
             %br eliminados
+
+#neighborhood_search{style: "width:1000px;"}
+  .row
+    #neighborhood_search_background.offset2{style: "width:690px;text-align: center;"}
+      Ache as comunidades participantes!
+      = form_tag neighborhood_search_path do
+        = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :style => "width: 50%;")
+        = submit_tag "Busca", :class => "button"
+    - if @current_user
+      #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;font-size:10px;"}
+        %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
+          SMS Grátis!
+        :javascript
+          $("#redetrel_button1").click(function() {
+            location.href = "sponsors/3";
+          });
 
 %hr
 /------------------------------------------------------------------------------
