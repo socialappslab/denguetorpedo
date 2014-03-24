@@ -32,7 +32,7 @@
                 Comunidade
               .row
                 #house_neighborhood_bg
-                  = link_to @house.neighborhood.name, neighborhood_path(@house.neighborhood)
+                  = link_to @neighborhood.name, neighborhood_path(@neighborhood)
           .span2.offset1
             .house_gray
               .row{style: "margin-left:-40px;"}
@@ -60,7 +60,7 @@
 
     .row
       .span10
-        %h2 Vizinhos na #{@house.neighborhood.name}
+        %h2 Vizinhos na #{@neighborhood.name}
         #houses_in_neighborhood
           - if @neighbors.count == 1
             %p Não tem nenhum vizinho usando Dengue Torpedo. Recrute alguem!
