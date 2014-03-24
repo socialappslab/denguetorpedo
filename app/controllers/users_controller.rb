@@ -339,12 +339,14 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     authorize! :edit, @user
     if params[:user][:house_attributes]
+      @neighborhood = Neighborhood.find(params[:user][:location][:neighborhood_id])
+
       house_name = params[:user][:house_attributes][:name]
       street_type = params[:user][:location][:street_type]
       street_name = params[:user][:location][:street_name]
       street_number = params[:user] [:location][:street_number]
       house_address = street_type + " " + street_name + " " + street_number
-      house_neighborhood = params[:user][:location][:neighborhood]
+      house_neighborhood = @neighborhood.name
       house_profile_photo = params[:user][:house_attributes][:profile_photo]
       house_phone_number = params[:user][:house_attributes][:phone_number]
       @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
@@ -366,12 +368,11 @@ class UsersController < ApplicationController
       location.street_name = params[:user][:location][:street_name]
       location.street_number = params[:user] [:location][:street_number]
 
-      location.latitude = params[:x]
-      location.longitude = params[:y]
+      location.latitude     = params[:x]
+      location.longitude    = params[:y]
+      location.neighborhood = @neighborhood
 
-      location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-
-      if !location.save
+      unless location.save
         redirect_to :back, :flash => { :notice => "There was an error with your address."}
         return
       end
