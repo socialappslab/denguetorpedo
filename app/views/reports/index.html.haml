@@ -1,10 +1,13 @@
 .row
   .span4.offset1
     = render :partial => "shared/flashes"
-    %h1 Focos marcados
-  %br
-  .span#report_buttons{:style => "font-size:20px;"}
-    / %h1 Marcar um foco
+.row
+  .span12.offset1
+    %h1
+      = "Focos marcados de #{@neighborhood.name}"
+%br
+%br
+
 
 
 .row
