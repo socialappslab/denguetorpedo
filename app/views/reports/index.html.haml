@@ -57,6 +57,8 @@
         %p 'ElIMINATED REPORTS'
 
       -# new report
+      -# TODO @awdorsett - make placeholders dynamic for multiple languages
+      -# TODO @awdorsett - use f.label or headers?
       #new_report
         .row
           -# TODO @awdorsett - refactor CSS for reports_open
@@ -65,33 +67,58 @@
               -#= f.error_messages
               = hidden_field_tag 'report_id', @new_report.id
               / = f.label "Escolha o tipo e o método de eliminação do foco"
-              - if @new_report.sms_incomplete?
-                %label Localização enviada por torpedo:
-                %p #{@new_report.report}
-                %br
-              - if @new_report.sms_incomplete?
-                = f.label :address, "1. Escrever a localização no formato solicitado:"
-              - else
+
+              -# TODO @awdorsett - do we need this, if so is this the best way to do it?
+              -#- if @new_report.sms_incomplete?
+              -#  %label Localização enviada por torpedo:
+              -#  %p #{@new_report.report}
+              -#  %br
+              -#- if @new_report.sms_incomplete?
+              -#  = f.label :address, "1. Escrever a localização no formato solicitado:"
+              -#- else
                 = f.label :address, "1. Endereço do foco localizado:"
               / # = text_field_tag :location, nil, :placeholder => 'Localização', :id => 'report_address', :value => flash[:address]
-              = text_field_tag :street_type, "", placeholder: "Rua, Beco etc.", class: "short_field", value: flash[:street_type]
-              = text_field_tag :street_name, "", placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.", style: "width:200px;", value: flash[:street_name]
-              = text_field_tag :street_number, "", placeholder: "Número", class: "middle_field", value: flash[:street_number]
-              = text_field_tag :neighborhood, "Maré", placeholder: "Maré", class: "short_field", disabled:true
+
+              #address
+                %h3.new_report_label 1. Endereço do foco localizado
+                -# TODO @awdorsett - placeholder is cut off, fix styling
+                = text_field_tag :street_type, "", placeholder: "Rua, Beco etc.", class: "middle_field"
+                -# TODO @awdorsett - fix inline style
+                = text_field_tag :street_name, "", placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.",
+                  style: "width:200px;"
+                = text_field_tag :street_number, "", placeholder: "Número", class: "middle_field"
+                -# TODO @awdorsett - is neighborhood needed?
+                = text_field_tag :neighborhood, @neighborhood.name, class: "short_field", disabled:true
+
+              #description
+                %h3.new_report_label 2. Descrição da localização
+                = f.text_area :report, :placeholder => 'Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente',
+                  :id => 'report_content', :maxlength => 100, :rows => 3
+
+              #photo
+                %h3.new_report_label 3. Carregue a imagem do foco encontrado:
+                = f.file_field :before_photo
               %br
-              = f.label :report, "3. Descrição da localização:"
-              = f.text_area :report, :placeholder => 'Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente', :id => 'report_content', :maxlength => 100, :rows => 3, value: flash[:description]
-              %br
-              = f.label :before_photo, "4. Carregue a imagem do foco encontrado:"
-              = f.file_field :before_photo
-              - if @new_report.location
-                = hidden_field_tag "x", "", value: @new_report.location.latitude
-                = hidden_field_tag "y", "", value: @new_report.location.longitude
-              - else
+
+              #elimination_type
+                %h3.new_report_label.inline_display 4.
+                = f.select :elimination_type, options_for_select(@elimination_types)
+
+              #location
+                %h3.new_report_label.inline_display 5.
+                -# TODO @awdorsett - fix style for button, overlapping with submit
+                = link_to "Marcar no mapa", nil, id:'mark_map_bttn', class: 'bttn'
                 = hidden_field_tag "x"
                 = hidden_field_tag "y"
-              %br
-              %br
+                %br
+
+
+              -# TODO @awdorsett - needed? Maybe used for sms
+              -#- if @new_report.location
+              -#  = hidden_field_tag "x", "", value: @new_report.location.latitude
+              -#  = hidden_field_tag "y", "", value: @new_report.location.longitude
+              -#- else
+
               = f.submit "Enviar!"
             %p{style: "font-weight:bold;font-size:13px;margin-top:10px;"}
               %b{style: "color:red;"}

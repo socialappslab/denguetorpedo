@@ -181,13 +181,16 @@
   margin-top: 20px;
   margin-bottom: 10px;
   font-size: 12px;
+}
 
   .reports_feed_button {
     color: $light-gray;
     background-color: #ffffff;
   }
 
-  .bttn  {      
+
+  /*
+  .bttn  {
     color: #ffffff;
     border-radius: 2px;
     text-align: center;
@@ -202,7 +205,8 @@
     &:mousedown {
       border-bottom: thick dotted #ff0000;
     }
-  }
+  } */
+
   
   .reports_open_button {
     color: $dark-gray;
@@ -261,6 +265,24 @@
   .reports_resolved_button.active {
     background-color: gray;
   }
+
+
+
+.bttn  {
+  border-radius: 2px;
+  text-align: center;
+
+  padding: 8px 5px;
+
+  &:hover {
+    cursor: pointer;
+    color: darkblue;
+  }
+
+  &:mousedown {
+    border-bottom: thick dotted #ff0000;
+  }
+
 }
 
 #report_stats {
@@ -303,8 +325,29 @@
   #eliminated_reports{
     display: block;
   }
+
   #new_report{
     display: block;
+
+    .new_report_label{
+      font-weight: bold;
+    }
+
+    .inline_display{
+      display:inline;
+    }
+
+    #mark_map_bttn{
+      border:1px;
+      border-style:solid;
+      border-color: black;
+      color:black;
+
+      &:hover{
+        color:blue;
+      }
+    }
+
   }
 }
 

@@ -19,38 +19,29 @@ class ReportsController < NeighborhoodsBaseController
 
     @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
+
+    # TODO @awdorsett - refactor to make sure views aren't dependent on view param, remove this section
     params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
     params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
     params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
     params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
     params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
 
-
-    #if params[:view] == "make_report"
-    #  @report = Report.new
-    #end
-
+    # New report form attributes
     @new_report = Report.new
+    @elimination_types = EliminationType.pluck(:name)
+    # TODO @awdorsett - is neighborhood needed?
+    @neighborhood = Neighborhood.find(params[:neighborhood_id])
+    # end
 
     @elimination_method_select = EliminationMethods.field_select
-    @elimination_types = EliminationType.pluck(:name)
+
 
     reports_with_status_filtered = []
     locations = []
     open_locations = []
     eliminated_locations = []
-    #@prantinho = EliminationMethods.prantinho
-    #@pneu = EliminationMethods.pneu
-    #@lixo = EliminationMethods.lixo
-    #@pequenos = EliminationMethods.pequenos
-    #@grandes = EliminationMethods.grandes
-    #@calha = EliminationMethods.calha
-    #@registros = EliminationMethods.registros
-    #@laje = EliminationMethods.laje
-    #@piscinas = EliminationMethods.piscinas
-    #@pocas = EliminationMethods.pocas
-    #@ralos = EliminationMethods.ralos
-    #@plantas = EliminationMethods.plantas
+
     @points = EliminationMethods.points
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
     @reports.each do |report|
