@@ -44,8 +44,10 @@
 
   .row
     #report_display.span9.offset1
-      -# TODO @awdorsett - remove report place holders and implement code
-      -# TODO @awdorsett - all reports sorted by recent?
+      -# TODO @awdorsett - all reports sorted by most recent?
+      -# TODO @awdorsett - DRY code
+
+      -# TODO @awdorsett - refactor both open and resolved partials
       -# all reports
       #all_reports
         - @reports.each do |report|
@@ -56,14 +58,20 @@
             = render :partial => "reports/resolved.html.haml", :object => report
 
 
+
       -# open reports
       #open_reports
-        %p 'OPEN REPORTS'
+        - @reports.each do |report|
+          - if report.status == :reported
+            - if report.reporter == @current_user or report.elimination_type
+              = render :partial => "reports/open.html.haml", :object => report
 
 
       -# eliminated reports
       #eliminated_reports
-        %p 'ElIMINATED REPORTS'
+        - @reports.each do |report|
+          - if report.status == :eliminated
+            = render :partial => "reports/resolved.html.haml", :object => report
 
       -# new report
       -# TODO @awdorsett - make placeholders dynamic for multiple languages
