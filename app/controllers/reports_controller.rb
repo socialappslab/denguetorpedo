@@ -44,6 +44,8 @@ class ReportsController < NeighborhoodsBaseController
 
     @points = EliminationMethods.points
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
+
+    # This should be what populates the markers for map
     @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
         if params[:view] == 'recent' || params[:view] == 'make_report'

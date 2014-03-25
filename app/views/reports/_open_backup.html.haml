@@ -2,12 +2,10 @@
 .rp_report.rp_open_report
   .row
     .rp_report_status.status
-      -# TODO @awdorsett - better way to do expired
       - if open.expired?
         %del Em aberto
       - else
         Em aberto
-
       .rp_report_options{:style => "margin-top:-3px;"}
         - if open.isVerified == "t"
           = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
@@ -72,7 +70,7 @@
                 -#="select #{@elimination_selection[open.elimination_type]}"
                 -#="open #{open.elimination_type}"
                 -unless open.elimination_type.blank?
-                  =select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]}, open.elimination_method), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+                  =select_tag "elimination_method", options_for_select(elimination_selection(open.elimination_type).collect{|p| [p[:display],p[:name]]},open.elimination_method), :prompt=>open.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
                 = hidden_field_tag "selected_elimination_method"
                 = hidden_field_tag "latitude"
                 = hidden_field_tag "longitude"

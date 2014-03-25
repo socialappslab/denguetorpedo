@@ -45,9 +45,15 @@
   .row
     #report_display.span9.offset1
       -# TODO @awdorsett - remove report place holders and implement code
+      -# TODO @awdorsett - all reports sorted by recent?
       -# all reports
       #all_reports
-        = @reports.each do |report|
+        - @reports.each do |report|
+          - if report.status == :reported
+            - if report.reporter == @current_user or report.elimination_type
+              = render :partial => "reports/open.html.haml", :object => report
+          - if report.status == :eliminated
+            = render :partial => "reports/resolved.html.haml", :object => report
 
 
       -# open reports

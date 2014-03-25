@@ -85,30 +85,31 @@ function update_location_coordinates(location,event){
             //disable submit button so user cant submit multiple times
             $(".report_submission").attr("disabled",true);
 
-            $.ajax({
-                url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-                type: "GET",
-                timeout: 5000, // milliseconds
-                dataType: "jsonp",
-                data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
-                success: function(m) {
-                    var candidates = m.candidates;
+                $.ajax({
+                    url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+                    type: "GET",
+                    timeout: 5000, // milliseconds
+                    dataType: "jsonp",
+                    data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
+                    success: function(m) {
+                        var candidates = m.candidates;
 
-                    //possible location found, update form values
-                    if (candidates.length > 0) {
-                        event.target.form[7].value = candidates[0].location.x;
-                        event.target.form[8].value = candidates[0].location.y;
+                        //possible location found, update form values
+                        if (candidates.length > 0) {
+                            event.target.form[7].value = candidates[0].location.x;
+                            event.target.form[8].value = candidates[0].location.y;
+                        }
+
+                       $(event.target.form).submit();
+
+                    },
+                    error: function(m) {
+                        //ajax call unsuccessful, server may be down
+                        // TODO @awdorsett how to handle second request for map failure
+                        $(".report_submission").attr("disabled",false);
+                        $(event.target.form).submit();
                     }
-
-                   $(event.target.form).submit();
-
-                },
-                error: function(m) {
-                    //ajax call unsuccessful, server may be down
-                    // TODO @awdorsett how to handle second request for map failure
-                    $(".report_submission").attr("disabled",false);
-                }
-            });
+                });
         }
 
     }
