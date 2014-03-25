@@ -19,6 +19,7 @@
 .row
   .row.span10.offset1
     #report_buttons
+      -# TODO @awdorsett - fix CSS of buttons to show which tab you're on
       -# all reports
       = link_to 'Todos', nil, :class=>'bttn reports_feed_button ' + @reports_feed_button_active,
         :onclick => 'display_report_div(event,"all_reports")'
@@ -45,9 +46,9 @@
   .row
     #report_display.span9.offset1
       -# TODO @awdorsett - all reports sorted by most recent?
-      -# TODO @awdorsett - DRY code
-
+      -# TODO @awdorsett - DRY code (use CSS to hide?)
       -# TODO @awdorsett - refactor both open and resolved partials
+
       -# all reports
       #all_reports
         - @reports.each do |report|
