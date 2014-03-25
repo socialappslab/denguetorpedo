@@ -183,10 +183,16 @@
 
 
       -# Javascript for map
+      -# TODO @awdorsett - location click is off, might be because of CSS
 
       :javascript
+        // TODO @awdorsett - make initial points dynamic based on neighborhood
         var map;
         var report_div;
+
+        // used for click event to check if in new report tab
+        var new_report_tab = false;
+
 
         require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
 
@@ -248,8 +254,22 @@
 
             report_div = $(this).parent().parent().parent();
 
-
             return false;
+          });
+
+
+          // if on new report tab add a marker when clicked and update values
+          map.on('click', function(e){
+            if(new_report_tab){
+              map.graphics.clear();
+
+              $("input#x").val(e.mapPoint.x);
+              $("input#y").val(e.mapPoint.y);
+
+              var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orange);
+
+              map.graphics.add(graphic);
+            }
           });
 
           map.on("load", function() {
@@ -293,6 +313,7 @@
 
           $("#address_search_form").submit(function(e) {
             e.preventDefault();
+
             $.ajax({
               url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
               type: "GET",
@@ -331,18 +352,23 @@
             // clear map when new report tab button is clicked
             $('#make_report_button').on('click', function(){
               map.graphics.clear();
-            })
+              new_report_tab = true;
+            });
 
             $('#all_reports_button').on('click', function(){
               load_markers(null);
+              new_report_tab = false;
             })
 
             $('#open_reports_button').on('click', function(){
               load_markers('open');
+              new_report_tab = false;
+
             })
 
             $('#eliminated_reports_button').on('click', function(){
               load_markers('eliminated');
+              new_report_tab = false;
             })
 
           //TODO @awdorsett - Change the listener to view all fields filled in
@@ -354,10 +380,11 @@
               dataType: "jsonp",
               data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
               success: function(m) {
-                map.graphics.clear();
                 var candidates = m.candidates;
 
                 if (candidates.length > 0) {
+                  map.graphics.clear();
+
                   map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
                   $("input#x").val(candidates[0].location.x);
                   $("input#y").val(candidates[0].location.y);
@@ -365,6 +392,7 @@
                   map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                 }
               },
+              // TODO @awdorsett - is this an appropriate repsonse to error?
               error: function(m) {
                 console.log(JSON.stringify(m));
               },
@@ -375,6 +403,8 @@
           });
 
 
+
+
           // TODO @awdorsett - fix filter selection,
           //   bad to have to pass something if it's not going to be used
           function load_markers(filter){
@@ -383,7 +413,6 @@
             var addresses = [];
 
             if (filter === 'eliminated'){
-            console.log('eliminated called');
               for (var i = 0; i < eliminated_markers.length; i++) {
                 if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
 
@@ -398,6 +427,7 @@
                   var textGraphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), textSymbol);
                   graphic.setInfoTemplate(template);
                   textGraphic.setInfoTemplate(template);
+
                   map.graphics.add(graphic);
                   map.graphics.add(textGraphic);
                 }
@@ -405,12 +435,12 @@
             }
 
             else if (filter === 'open') {
-              console.log('open markers called');
-              console.log(open_markers);
               for (var i = 0; i < open_markers.length; i++) {
+
                 if ($.inArray(open_markers[i].address, addresses) == -1) {
-                  console.log('not in addresses array');
+
                   addresses.push(open_markers[i].address);
+
                   var template = new InfoTemplate();
                   template.setTitle(open_markers[i].address);
 
@@ -422,6 +452,7 @@
                   var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
                   graphic.setInfoTemplate(template);
                   textGraphic.setInfoTemplate(template);
+
                   map.graphics.add(graphic);
                   map.graphics.add(textGraphic);
                 }
@@ -431,17 +462,20 @@
             // show all by default
             else{
               for (var i = 0; i < markers.length; i++){
+
                 count = counts[markers[i].id];
                 open_count = open_counts[markers[i].id];
                 eliminated_count = eliminated_counts[markers[i].id];
 
+                var graphic;
+                var textGraphic;
                 var template = new InfoTemplate();
                 template.setTitle(markers[i].address);
                 template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
-                var graphic;
-                var textGraphic;
+
 
                 if ($.inArray(markers[i].address, addresses) == -1) {
+
                   addresses.push(markers[i].address);
 
                   var x;
@@ -471,10 +505,12 @@
                     template.content = "<p>Eliminados: " + eliminated_count + "</p>";
                   }
 
+                  graphic.setInfoTemplate(template);
+
                   textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
                   textGraphic = new Graphic(new Point(x, y), textSymbol);
-                  graphic.setInfoTemplate(template);
                   textGraphic.setInfoTemplate(template);
+
                   map.graphics.add(graphic);
                   map.graphics.add(textGraphic);
                 }
