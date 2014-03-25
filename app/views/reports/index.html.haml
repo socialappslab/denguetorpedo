@@ -22,21 +22,21 @@
     #report_buttons
       -# TODO @awdorsett - fix CSS of buttons to show which tab you're on
       -# all reports
-      = link_to 'Todos', nil, :class=>'bttn reports_feed_button ' + @reports_feed_button_active,
+      = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button ' + @reports_feed_button_active,
         :onclick => 'display_report_div(event,"all_reports")'
 
       -# open reports
-      = link_to 'Em aberto', nil, :class=>'bttn reports_open_button ' + @reports_open_button_active,
+      = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button ' + @reports_open_button_active,
         :onclick => 'display_report_div(event,"open_reports")'
 
       -# eliminated reports
-      = link_to 'Eliminados', nil, :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active,
+      = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active,
         :onclick => 'display_report_div(event,"eliminated_reports")'
 
       -# TODO @awdorsett - clear form on click?
       -# new report
       = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn ' + @make_report_button_active,
-        :onclick => 'display_report_div(event,"new_report")'
+        :onclick => 'display_report_div(event,"new_report");'
 
       -# TODO @awdorsett - is a seperate button needed for verficador/visitante
         - if @current_user.role == "verificador" or @current_user.role == "visitante"                                     z
@@ -182,112 +182,7 @@
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
 
 
-
-      -# Javascript for new map
-
-      :javascript
-        /*
-        var map, tb;
-        require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer) {
-          var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
-
-          var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
-          var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-          var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
-          var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
-          var point = new Point(680291.2151545063, 7470751.29586681, new esri.SpatialReference({wkid: 29193}));
-          map = new Map("map", {
-            center: point,
-            zoom: 4,
-            extent: customExtent
-          });
-
-          var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
-          map.addLayer(tiled);
-          map.on("update-start", showLoading);
-          map.on("update-end", hideLoading);
-          map.on("load", function() {
-
-            tb = new Draw(map);
-            tb.on("draw-end", addGraphic);
-            tb.activate("point");
-          });
-
-
-
-          function addGraphic(evt) {
-            map.graphics.clear();
-            map.enableMapNavigation();
-
-            // figure out which symbol to use
-            var symbol = new SimpleMarkerSymbol();
-            symbol.setStyle("STYLE_PATH");
-            symbol.setPath("M 10 10 L30 10 L20 30z");
-            symbol.setColor(new Color("red"));
-
-            $("input#x").val(evt.geometry.x);
-            $("input#y").val(evt.geometry.y);
-            map.graphics.add(new Graphic(evt.geometry, orange));
-            map.centerAt(evt.mapPoint);
-
-          }
-
-          $("#street_type").change(function() {
-
-          });
-          $("#street_name").change(function() {
-          });
-
-          $("#street_number").change(function() {
-            showLoading();
-            $.ajax({
-              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-              type: "GET",
-              dataType: "jsonp",
-              data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
-              success: function(m) {
-                map.graphics.clear();
-                var candidates = m.candidates;
-
-
-                if (candidates.length > 0) {
-                  map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
-                  $("input#x").val(candidates[0].location.x);
-                  $("input#y").val(candidates[0].location.y);
-
-                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
-                }
-              },
-              error: function(m) {
-                console.log(JSON.stringify(m));
-              },
-              complete: function() {
-                hideLoading();
-              }
-            });
-          });
-          $("input#go_to_mare").click(function() {
-            map.centerAndZoom(new Point(680291.2151545063, 7471401.29586681, new esri.SpatialReference({"wkid": 29193})), 5)
-          });
-
-          function showLoading() {
-            $("#loading").show();
-            map.disableMapNavigation();
-            map.hideZoomSlider();
-          }
-
-          function hideLoading() {
-            $("#loading").hide();
-            map.enableMapNavigation();
-            map.showZoomSlider();
-          }
-        });
-        */
-
-
-
-
-      -# Javascript for reports
+      -# Javascript for map
 
       :javascript
         var map;
@@ -328,7 +223,6 @@
           var open_markers = #{@open_markers.to_json};
           var eliminated_markers = #{@eliminated_markers.to_json};
 
-          var addresses = [];
           var coordinates = [];
           var counts = #{@counts.to_json};
 
@@ -363,15 +257,136 @@
             load_markers(null);
           })
 
+          $("input#go_to_mare").click(function() {
+            map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
+          });
+
+          map.on("extent-change", function(event) {
+            if (report_div) {
+              $("html, body").scrollTop($(report_div).offset().top - 20);
+            }
+          });
+
+          var blueGraphic;
+
+          // TODO @awdorsett - is this function used? Can it be removed?
+          function addGraphic(evt) {
+            if (blueGraphic) {
+              map.graphics.remove(blueGraphic);
+            }
+            map.enableMapNavigation();
+
+            // figure out which symbol to use
+            var symbol = new SimpleMarkerSymbol();
+            symbol.setStyle("STYLE_PATH");
+            symbol.setPath("M 10 10 L30 10 L20 30z");
+            symbol.setColor(new Color("blue"));
+
+            $("input#x").val(evt.geometry.x);
+            $("input#y").val(evt.geometry.y);
+
+            blueGraphic = new Graphic(evt.geometry, symbol);
+            map.graphics.add(blueGraphic);
+            map.centerAt(evt.mapPoint);
+
+          }
+
+          $("#address_search_form").submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+              type: "GET",
+              dataType: "jsonp",
+              data: {"f": "pjson", "Street": $("#address_search").val()},
+              success: function(m) {
+
+                var candidates = m.candidates;
+
+
+                if (candidates.length > 0) {
+                  if (blueGraphic) {
+                    map.graphics.remove(blueGraphic);
+                  }
+                  var symbol = new SimpleMarkerSymbol();
+                  symbol.setStyle("STYLE_PATH");
+                  symbol.setPath("M 10 10 L30 10 L20 30z");
+                  symbol.setColor(new Color("blue"));
+                  blueGraphic = new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), symbol);
+                  map.graphics.add(blueGraphic);
+                  $("input#x").val(candidates[0].location.x);
+                  $("input#y").val(candidates[0].location.y);
+
+                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
+                }
+              },
+              error: function(m) {
+                console.log(JSON.stringify(m));
+              }
+            });
+
+          });
+
+          // Report tab listeners
+
+            // clear map when new report tab button is clicked
+            $('#make_report_button').on('click', function(){
+              map.graphics.clear();
+            })
+
+            $('#all_reports_button').on('click', function(){
+              load_markers(null);
+            })
+
+            $('#open_reports_button').on('click', function(){
+              load_markers('open');
+            })
+
+            $('#eliminated_reports_button').on('click', function(){
+              load_markers('eliminated');
+            })
+
+          //TODO @awdorsett - Change the listener to view all fields filled in
+          $("#street_number").change(function() {
+            showLoading();
+            $.ajax({
+              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+              type: "GET",
+              dataType: "jsonp",
+              data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
+              success: function(m) {
+                map.graphics.clear();
+                var candidates = m.candidates;
+
+                if (candidates.length > 0) {
+                  map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
+                  $("input#x").val(candidates[0].location.x);
+                  $("input#y").val(candidates[0].location.y);
+
+                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
+                }
+              },
+              error: function(m) {
+                console.log(JSON.stringify(m));
+              },
+              complete: function() {
+                hideLoading();
+              }
+            });
+          });
+
+
           // TODO @awdorsett - fix filter selection,
           //   bad to have to pass something if it's not going to be used
           function load_markers(filter){
             // clear any existing markers
             map.graphics.clear();
+            var addresses = [];
 
             if (filter === 'eliminated'){
+            console.log('eliminated called');
               for (var i = 0; i < eliminated_markers.length; i++) {
                 if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
+
                   var template = new InfoTemplate();
                   template.setTitle(eliminated_markers[i].address);
 
@@ -390,8 +405,11 @@
             }
 
             else if (filter === 'open') {
+              console.log('open markers called');
+              console.log(open_markers);
               for (var i = 0; i < open_markers.length; i++) {
                 if ($.inArray(open_markers[i].address, addresses) == -1) {
+                  console.log('not in addresses array');
                   addresses.push(open_markers[i].address);
                   var template = new InfoTemplate();
                   template.setTitle(open_markers[i].address);
@@ -468,108 +486,7 @@
 
           }// end of function load_markers
 
-          // }); // end of map.on('load')
-
-          $("input#go_to_mare").click(function() {
-            map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
-          });
-
-          map.on("extent-change", function(event) {
-            if (report_div) {
-              $("html, body").scrollTop($(report_div).offset().top - 20);
-            }
-          });
-
-          var blueGraphic;
-
-          function addGraphic(evt) {
-            if (blueGraphic) {
-              map.graphics.remove(blueGraphic);
-            }
-            map.enableMapNavigation();
-
-            // figure out which symbol to use
-            var symbol = new SimpleMarkerSymbol();
-            symbol.setStyle("STYLE_PATH");
-            symbol.setPath("M 10 10 L30 10 L20 30z");
-            symbol.setColor(new Color("blue"));
-
-            $("input#x").val(evt.geometry.x);
-            $("input#y").val(evt.geometry.y);
-
-            blueGraphic = new Graphic(evt.geometry, symbol);
-            map.graphics.add(blueGraphic);
-            map.centerAt(evt.mapPoint);
-
-          }
-
-          $("#address_search_form").submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-              type: "GET",
-              dataType: "jsonp",
-              data: {"f": "pjson", "Street": $("#address_search").val()},
-              success: function(m) {
-
-                var candidates = m.candidates;
-
-
-                if (candidates.length > 0) {
-                  if (blueGraphic) {
-                    map.graphics.remove(blueGraphic);
-                  }
-                  var symbol = new SimpleMarkerSymbol();
-                  symbol.setStyle("STYLE_PATH");
-                  symbol.setPath("M 10 10 L30 10 L20 30z");
-                  symbol.setColor(new Color("blue"));
-                  blueGraphic = new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), symbol);
-                  map.graphics.add(blueGraphic);
-                  $("input#x").val(candidates[0].location.x);
-                  $("input#y").val(candidates[0].location.y);
-
-                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
-                }
-              },
-              error: function(m) {
-                console.log(JSON.stringify(m));
-              }
-            });
-
-          });
-
-          // New report
-          function new_report_map(){
-          }
-
-          //TODO @awdorsett - Change the listener to view all fields filled in
-          $("#street_number").change(function() {
-            showLoading();
-            $.ajax({
-              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-              type: "GET",
-              dataType: "jsonp",
-              data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
-              success: function(m) {
-                map.graphics.clear();
-                var candidates = m.candidates;
-
-                if (candidates.length > 0) {
-                  map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
-                  $("input#x").val(candidates[0].location.x);
-                  $("input#y").val(candidates[0].location.y);
-
-                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
-                }
-              },
-              error: function(m) {
-                console.log(JSON.stringify(m));
-              },
-              complete: function() {
-                hideLoading();
-              }
-            });
-          });
 
         });
+
   .row{style: "height:600px;"}
