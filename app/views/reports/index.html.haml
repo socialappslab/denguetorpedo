@@ -1,5 +1,7 @@
 -# TODO @awdorsett - put reports into their own partials to clean up code
 -# TODO @awdorsett - on error return to appropriate tab
+-# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
+
 .row
   .span4.offset1
     - if flash[:notice]
@@ -78,6 +80,8 @@
       -# new report
       -# TODO @awdorsett - make placeholders dynamic for multiple languages
       -# TODO @awdorsett - use f.label or headers?
+      -# TODO @awdorsett - update "Marcar no mapa" button if location is found
+
       #new_report
         .row
           -# TODO @awdorsett - refactor CSS for reports_open
@@ -132,8 +136,6 @@
                 = hidden_field_tag "y"
                 %br
 
-
-              -# TODO @awdorsett - needed? Maybe used for sms
               -#- if @new_report.location
               -#  = hidden_field_tag "x", "", value: @new_report.location.latitude
               -#  = hidden_field_tag "y", "", value: @new_report.location.longitude
@@ -183,7 +185,7 @@
 
 
       -# Javascript for map
-      -# TODO @awdorsett - location click is off, might be because of CSS
+      -# TODO @awdorsett - markers don't place correctly on click and move when zooming in
 
       :javascript
         // TODO @awdorsett - make initial points dynamic based on neighborhood
@@ -257,6 +259,7 @@
             return false;
           });
 
+          //-# TODO @awdorsett - location click is off, might be because of CSS
 
           // if on new report tab add a marker when clicked and update values
           map.on('click', function(e){
@@ -289,7 +292,7 @@
 
           var blueGraphic;
 
-          // TODO @awdorsett - is this function used? Can it be removed?
+          //-# TODO @awdorsett - is this function used? Can it be removed?
           function addGraphic(evt) {
             if (blueGraphic) {
               map.graphics.remove(blueGraphic);
@@ -349,8 +352,10 @@
 
           // Report tab listeners
 
-            // clear map when new report tab button is clicked
+            //#- TODO @awdorsett - better way to handle new_report_tab?
+
             $('#make_report_button').on('click', function(){
+              // clear map and enable adding a marker to map by clicking
               map.graphics.clear();
               new_report_tab = true;
             });
@@ -371,7 +376,8 @@
               new_report_tab = false;
             })
 
-          //TODO @awdorsett - Change the listener to view all fields filled in
+          //-# TODO @awdorsett - Change the listener to view all fields filled in
+
           $("#street_number").change(function() {
             showLoading();
             $.ajax({
@@ -382,17 +388,20 @@
               success: function(m) {
                 var candidates = m.candidates;
 
+                //#- TODO @awdorsett - in the future should we handle multiple results from api call? Currently considering first only
+                // if candidates found, update map location
                 if (candidates.length > 0) {
                   map.graphics.clear();
 
                   map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
+
                   $("input#x").val(candidates[0].location.x);
                   $("input#y").val(candidates[0].location.y);
 
                   map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                 }
               },
-              // TODO @awdorsett - is this an appropriate repsonse to error?
+              //#- TODO @awdorsett - is this an appropriate repsonse to error?
               error: function(m) {
                 console.log(JSON.stringify(m));
               },
@@ -405,8 +414,9 @@
 
 
 
-          // TODO @awdorsett - fix filter selection,
-          //   bad to have to pass something if it's not going to be used
+          //#- TODO @awdorsett - fix filter selection, bad to have to pass something if it's not going to be used
+
+          // load markers based on passed filters (e.g. 'eliminated', 'open', etc), loads all markers by default
           function load_markers(filter){
             // clear any existing markers
             map.graphics.clear();
@@ -517,8 +527,6 @@
 
               }
             }
-
-
 
           }// end of function load_markers
 
