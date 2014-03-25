@@ -2,8 +2,16 @@
 // strings correspond to ids of report div
 // used with function display_report_div
 var report_divs = ['all_reports', 'open_reports', 'eliminated_reports', 'new_report'];
+var default_report_div = 'all_reports';
 
 $(document).ready(function() {
+
+    // hide all divs but default report div
+    // used to prevent children from inheriting display attribute
+    for(var i = 0; i < report_divs.length; i++){
+        var val = (report_divs[i] === default_report_div) ? 'block' : 'none';
+        $('#' + report_divs[i]).css('display',val);
+    }
 
 
     // TODO @awdorsett - Are these methods still used? If so refactor
@@ -48,7 +56,6 @@ function display_report_div(e, id){
         var val = (report_divs[i] === id) ? 'block' : 'none';
         $('#' + report_divs[i]).css('display',val);
     }
-
 }
 
 //@params location - json of location object for report

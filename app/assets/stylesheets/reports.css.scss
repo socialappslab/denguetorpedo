@@ -291,24 +291,20 @@
 
 #report_display{
 
-  /*
-  Except for "all_reports" report divs hidden by default
-  */
 
   #all_reports{
     display: block;
   }
 
   #open_reports{
-    display: none;
+    display: block;
   }
 
   #eliminated_reports{
-    display: none;
+    display: block;
   }
-
   #new_report{
-    display: none;
+    display: block;
   }
 }
 

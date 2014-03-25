@@ -25,9 +25,12 @@ class ReportsController < NeighborhoodsBaseController
     params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
     params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
 
-    if params[:view] == "make_report"
-      @report = Report.new
-    end
+
+    #if params[:view] == "make_report"
+    #  @report = Report.new
+    #end
+
+    @new_report = Report.new
 
     @elimination_method_select = EliminationMethods.field_select
     @elimination_types = EliminationType.pluck(:name)
