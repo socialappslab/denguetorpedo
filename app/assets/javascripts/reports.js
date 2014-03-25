@@ -13,6 +13,17 @@ $(document).ready(function() {
         $('#' + report_divs[i]).css('display',val);
     }
 
+    // keep the map on the page when scrolling
+    $(window).scroll(function() {
+        var scrollAmount = $(window).scrollTop();
+        if (scrollAmount > 200) {
+            $("#map_div").css("margin-top", scrollAmount - 263);
+        } else {
+            $("#map_div").css("margin-top", -63);
+        }
+    });
+
+
 
     // TODO @awdorsett - Are these methods still used? If so refactor
     // start of methods
