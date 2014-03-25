@@ -1,4 +1,5 @@
 -# TODO @awdorsett - put reports into their own partials to clean up code
+-# TODO @awdorsett - on error return to appropriate tab
 .row
   .span4.offset1
     - if flash[:notice]
@@ -185,6 +186,7 @@
       -# Javascript for new map
 
       :javascript
+        /*
         var map, tb;
         require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer) {
           var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
@@ -280,14 +282,19 @@
             map.showZoomSlider();
           }
         });
+        */
+
+
 
 
       -# Javascript for reports
+
       :javascript
         var map;
         var report_div;
 
         require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
+
           var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
 
           var popup = new Popup({
@@ -353,82 +360,16 @@
 
           map.on("load", function() {
             map.infoWindow.resize(300, 200);
-            if ("#{params[:view]}" == 'recent') {
-              for (var i = 0; i < markers.length; i++) {
-                count = counts[markers[i].id];
-                open_count = open_counts[markers[i].id];
-                eliminated_count = eliminated_counts[markers[i].id];
+            load_markers(null);
+          })
 
-                var template = new InfoTemplate();
-                template.setTitle(markers[i].address);
-                template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
-                var graphic;
-                var textGraphic;
+          // TODO @awdorsett - fix filter selection,
+          //   bad to have to pass something if it's not going to be used
+          function load_markers(filter){
+            // clear any existing markers
+            map.graphics.clear();
 
-                if ($.inArray(markers[i].address, addresses) == -1) {
-                  addresses.push(markers[i].address);
-
-
-                  var x;
-                  var y;
-
-                  if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
-
-                    coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
-                    x = markers[i].x;
-                    y = markers[i].y;
-
-                  } else {
-                    x = markers[i].x + Math.cos(Math.random()) * 20;
-                    y = markers[i].y + Math.sin(Math.random()) * 20;
-                  }
-
-
-
-
-
-
-                  if (open_count && eliminated_count) {
-                    graphic = new Graphic(new Point(x, y), mixed);
-                    template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
-                  } else if (open_count > 0) {
-                    graphic = new Graphic(new Point(x, y), orange);
-                    template.content = "<p>Em aberto: " + open_count + "</p>";
-                  } else if (eliminated_count > 0) {
-                    graphic = new Graphic(new Point(x, y), grey);
-                    template.content = "<p>Eliminados: " + eliminated_count + "</p>";
-                  }
-
-                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-                  textGraphic = new Graphic(new Point(x, y), textSymbol);
-                  graphic.setInfoTemplate(template);
-                  textGraphic.setInfoTemplate(template);
-                  map.graphics.add(graphic);
-                  map.graphics.add(textGraphic);
-                }
-
-              }
-            } else if ("#{params[:view]}" == 'open') {
-              for (var i = 0; i < open_markers.length; i++) {
-                if ($.inArray(open_markers[i].address, addresses) == -1) {
-                  addresses.push(open_markers[i].address);
-                  var template = new InfoTemplate();
-                  template.setTitle(open_markers[i].address);
-
-                  count = open_counts[open_markers[i].id];
-                  template.content = "<p>Em aberto: " + count + "</p>";
-                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-
-                  var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orange);
-                  var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
-                  graphic.setInfoTemplate(template);
-                  textGraphic.setInfoTemplate(template);
-                  map.graphics.add(graphic);
-                  map.graphics.add(textGraphic);
-                }
-
-              }
-            } else {
+            if (filter === 'eliminated'){
               for (var i = 0; i < eliminated_markers.length; i++) {
                 if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
                   var template = new InfoTemplate();
@@ -448,7 +389,86 @@
               }
             }
 
-          });
+            else if (filter === 'open') {
+              for (var i = 0; i < open_markers.length; i++) {
+                if ($.inArray(open_markers[i].address, addresses) == -1) {
+                  addresses.push(open_markers[i].address);
+                  var template = new InfoTemplate();
+                  template.setTitle(open_markers[i].address);
+
+                  count = open_counts[open_markers[i].id];
+                  template.content = "<p>Em aberto: " + count + "</p>";
+                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
+
+                  var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orange);
+                  var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
+                  graphic.setInfoTemplate(template);
+                  textGraphic.setInfoTemplate(template);
+                  map.graphics.add(graphic);
+                  map.graphics.add(textGraphic);
+                }
+
+              }
+            }
+            // show all by default
+            else{
+              for (var i = 0; i < markers.length; i++){
+                count = counts[markers[i].id];
+                open_count = open_counts[markers[i].id];
+                eliminated_count = eliminated_counts[markers[i].id];
+
+                var template = new InfoTemplate();
+                template.setTitle(markers[i].address);
+                template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
+                var graphic;
+                var textGraphic;
+
+                if ($.inArray(markers[i].address, addresses) == -1) {
+                  addresses.push(markers[i].address);
+
+                  var x;
+                  var y;
+
+                  if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
+
+                    coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
+                    x = markers[i].x;
+                    y = markers[i].y;
+                  }
+                  else {
+                    x = markers[i].x + Math.cos(Math.random()) * 20;
+                    y = markers[i].y + Math.sin(Math.random()) * 20;
+                  }
+
+                  if (open_count && eliminated_count) {
+                    graphic = new Graphic(new Point(x, y), mixed);
+                    template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
+                  }
+                  else if (open_count > 0) {
+                    graphic = new Graphic(new Point(x, y), orange);
+                    template.content = "<p>Em aberto: " + open_count + "</p>";
+                  }
+                  else if (eliminated_count > 0) {
+                    graphic = new Graphic(new Point(x, y), grey);
+                    template.content = "<p>Eliminados: " + eliminated_count + "</p>";
+                  }
+
+                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
+                  textGraphic = new Graphic(new Point(x, y), textSymbol);
+                  graphic.setInfoTemplate(template);
+                  textGraphic.setInfoTemplate(template);
+                  map.graphics.add(graphic);
+                  map.graphics.add(textGraphic);
+                }
+
+              }
+            }
+
+
+
+          }// end of function load_markers
+
+          // }); // end of map.on('load')
 
           $("input#go_to_mare").click(function() {
             map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
@@ -482,6 +502,7 @@
             map.centerAt(evt.mapPoint);
 
           }
+
           $("#address_search_form").submit(function(e) {
             e.preventDefault();
             $.ajax({
@@ -515,6 +536,39 @@
               }
             });
 
+          });
+
+          // New report
+          function new_report_map(){
+          }
+
+          //TODO @awdorsett - Change the listener to view all fields filled in
+          $("#street_number").change(function() {
+            showLoading();
+            $.ajax({
+              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+              type: "GET",
+              dataType: "jsonp",
+              data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
+              success: function(m) {
+                map.graphics.clear();
+                var candidates = m.candidates;
+
+                if (candidates.length > 0) {
+                  map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
+                  $("input#x").val(candidates[0].location.x);
+                  $("input#y").val(candidates[0].location.y);
+
+                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
+                }
+              },
+              error: function(m) {
+                console.log(JSON.stringify(m));
+              },
+              complete: function() {
+                hideLoading();
+              }
+            });
           });
 
         });
