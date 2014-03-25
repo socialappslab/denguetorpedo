@@ -59,9 +59,7 @@
       -# new report
       #new_report
         .row
-          - if flash[:notice]
-            %h2.notice{style: "margin: 10px; width: 700px;"}
-            = flash[:notice]
+          -# TODO @awdorsett - refactor CSS for reports_open
           #reports_open
             = form_for(@new_report, :url => {:action => "create", :html => {:autocomplete => "off", :multipart => true}}) do |f|
               -#= f.error_messages
