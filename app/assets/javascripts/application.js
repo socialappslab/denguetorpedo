@@ -88,7 +88,9 @@
         , actives
         , hasData
 
-      if (this.transitioning) return
+      // TODO: Commenting this out since activating show/hide will
+      // keep this.transitioning set to 1.
+      // if (this.transitioning) return
 
       dimension = this.dimension()
       scroll = $.camelCase(['scroll', dimension].join('-'))
@@ -108,7 +110,9 @@
 
   , hide: function () {
       var dimension
-      if (this.transitioning) return
+      // TODO: Commenting this out since activating show/hide will
+      // keep this.transitioning set to 1.
+      // if (this.transitioning) return
       dimension = this.dimension()
       this.reset(this.$element[dimension]())
       this.transition('removeClass', $.Event('hide'), 'hidden')
