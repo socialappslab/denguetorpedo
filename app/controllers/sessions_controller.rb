@@ -1,6 +1,6 @@
 # encoding: utf-8
 class SessionsController < ApplicationController
-  
+
   def new
   end
 
@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
           cookies[:auth_token] = user.auth_token
         end
         respond_to do |format|
-          format.html { redirect_to root_url, :notice => "Signed in!"}
+          format.html { redirect_to root_url, :notice => "Você está logado!"}
           format.json { render json: {auth_token: user.auth_token}}
         end
       else
@@ -29,7 +29,7 @@ class SessionsController < ApplicationController
 
   def destroy
     cookies.delete(:auth_token)
-    redirect_to root_url, :notice => "Signed out!"
+    redirect_to root_url, :notice => "Você saiu da sua conta!"
   end
 
 end
