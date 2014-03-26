@@ -195,7 +195,15 @@
         // used for click event to check if in new report tab
         var new_report_tab = false;
 
+        // Declare different reports and their counts.
+        var markers            = #{@markers.to_json};
+        var open_markers       = #{@open_markers.to_json};
+        var eliminated_markers = #{@eliminated_markers.to_json};
+        var counts             = #{@counts.to_json};
+        var open_counts        = #{@open_counts.to_json};
+        var eliminated_counts  = #{@eliminated_counts.to_json};
 
+        // Load the map.
         require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
 
           var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
@@ -227,12 +235,9 @@
 
           var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
           map.addLayer(tiled);
-          var markers = #{@markers.to_json};
-          var open_markers = #{@open_markers.to_json};
-          var eliminated_markers = #{@eliminated_markers.to_json};
 
           var coordinates = [];
-          var counts = #{@counts.to_json};
+
 
           var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
           var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 40, 40).setOffset(0, 15);
@@ -243,9 +248,7 @@
           var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
           var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
           var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
-          var counts = #{@counts.to_json};
-          var open_counts = #{@open_counts.to_json};
-          var eliminated_counts = #{@eliminated_counts.to_json};
+
 
 
           $(".mapa").click(function() {
