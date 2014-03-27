@@ -63,7 +63,7 @@
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction4)
         #foco.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            =simple_format(ManualInstruction.find_by_id(4).description)
+            =simple_format(@manualInstruction4.description)
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
