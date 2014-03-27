@@ -4,16 +4,15 @@
     %h1{style: "margin-left:10px;"}
       MANUAL DENGUE TORPEDO
     %br
-
+    
     .accordion#accordion1
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como se cadastrar
             =ManualInstruction.find_by_id(1).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
 
         #cadastrar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
@@ -25,9 +24,8 @@
           %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como completar sua conta
             =ManualInstruction.find_by_id(2).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(2))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(2))
         #completar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             - str = ManualInstruction.find_by_id(2).description
@@ -50,9 +48,8 @@
           %a{href: 'javascript:$("#barra").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Barra de navegação
             =ManualInstruction.find_by_id(3).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(3))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(3))
         #barra.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             =simple_format(ManualInstruction.find_by_id(3).description) 
@@ -62,9 +59,8 @@
           %a{href: 'javascript:$("#foco").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /O que é um foco?
             =ManualInstruction.find_by_id(4).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
         #foco.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             =simple_format(ManualInstruction.find_by_id(4).description)
@@ -74,9 +70,8 @@
           %a{href: 'javascript:$("#jogar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como jogar
             =ManualInstruction.find_by_id(5).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(5))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(5))
         #jogar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             - str = ManualInstruction.find_by_id(5).description
@@ -115,9 +110,8 @@
           %a{href: 'javascript:$("#ganhar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como ganhar
             =ManualInstruction.find_by_id(6).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(6))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(6))
         #ganhar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
@@ -289,9 +283,8 @@
           %a{href: 'javascript:$("#participar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como participar
             =ManualInstruction.find_by_id(7).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(7))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(7))
         #participar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             - str = ManualInstruction.find_by_id(7).description
@@ -315,9 +308,8 @@
           %a{href: 'javascript:$("#comunidade").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Minha comunidade
             =ManualInstruction.find_by_id(8).title
-          -if @current_user != nil
-            -if @current_user.role == "admin"
-              =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(8))
+          -if @current_user != nil && @current_user.role == "admin"
+            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(8))
         #comunidade.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             =simple_format(ManualInstruction.find_by_id(8).description)
