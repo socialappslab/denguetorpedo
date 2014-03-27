@@ -12,6 +12,6 @@
         %li
           .neighborhood_selection
             .neighborhood_selection_header
-              %h3 Futuro Participante
+              %h3= link_to "Futura comunidade", neighborhood_invitation_path
             .neighborhood_selection_photo
-              = link_to image_tag("neighborhood_default.png"), neighborhood_invitation_path
+              = link_to image_tag("neighborhood_default.png", :style => "width: 300px; height: 300px;"), neighborhood_invitation_path
