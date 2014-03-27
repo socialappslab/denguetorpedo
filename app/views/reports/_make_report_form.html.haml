@@ -43,8 +43,9 @@
 
       -# TODO @awdorsett - styling needed
       #elimination_type
-        %h3.new_report_label.inline_display 4.
-        = f.select :elimination_type, options_for_select(@elimination_types)
+        %h3.new_report_label.inline_display 4. Tipo de eliminação
+        = f.select :elimination_type, options_for_select(@elimination_types), prompt:"Selecione o tipo de eliminação do foco"
+      %br
 
       #location
         %h3.new_report_label.inline_display 5.
@@ -52,6 +53,8 @@
         = link_to "Marcar no mapa", nil, id:'mark_map_bttn', class: 'bttn', onclick:'update_location_coordinates_new_report(event)'
         = hidden_field_tag "x"
         = hidden_field_tag "y"
+        %br
+        %br
         %br
 
       -#- if @new_report.location

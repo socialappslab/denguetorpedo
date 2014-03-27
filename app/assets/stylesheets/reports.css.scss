@@ -358,6 +358,16 @@
 
 .elimination_type{
   height:auto;
+  width: 100%;
+}
+
+#report_elimination_type{
+  height:auto;
+  width: 100%;
+}
+
+#address .street_type{
+  width:200px;
 }
 
 #report_display{
@@ -395,6 +405,7 @@
       &:hover{
         color:blue;
       }
+
     }
 
   }

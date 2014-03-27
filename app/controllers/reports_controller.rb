@@ -106,6 +106,7 @@ class ReportsController < NeighborhoodsBaseController
       params[:street_name].downcase.titleize,
       params[:street_number].downcase.titleize
     )
+
     location.latitude  = params[:x] if params[:x].present?
     location.longitude = params[:y] if params[:y].present?
     location.save

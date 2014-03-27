@@ -33,14 +33,10 @@
               .span.countdown_label
                 Tempo restante
                 -# TODO @awdorsett - move JS out of view
+                -# TODO @awdorsett - time zone is messed up
                 :javascript
                   var newYear = new Date(#{open.expire_date.strftime("%s").to_i * 1000});
-
-                  if("#{open.id}" == 9){
-                    console.log(newYear);
-                    console.log("#{open.completed_at.to_s}");
-                    }
-                  $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true',timezone:-3});
+                  $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
 
           - else
             .span.time_expired
