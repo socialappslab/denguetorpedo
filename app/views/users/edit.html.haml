@@ -365,7 +365,11 @@
         -# Neighborhood / Bairro
         .question_mark_div
           = f.label "Bairro",class:"config_form_title"
-        = f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
+        / TODO: We're disabling choosing other neighborhoods until we introduce
+        / another neighborhood
+        /= f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
+        - mare = Neighborhood.find_by_name("Maré")
+        = f.select(:neighborhood_id, [ [mare.name, mare.id] ])
         %br
         %br
 

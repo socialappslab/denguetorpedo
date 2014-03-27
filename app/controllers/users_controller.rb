@@ -5,6 +5,8 @@ class UsersController < ApplicationController
 
   before_filter :require_login, :only => [:edit, :update, :index, :show]
 
+  before_filter :ensure_mare_neighborhood, :only => [:create, :update]
+
   def index
 
     if params[:q].nil? or params[:q] == ""
@@ -449,4 +451,20 @@ class UsersController < ApplicationController
   def phones
     @users = User.residents.order(:first_name)
   end
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  # TODO: We're disabling choosing other neighborhoods until we introduce
+  # another neighborhood. See seeds.rb for more. 
+  def ensure_mare_neighborhood
+    neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
+    raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"
+  end
+
+  #----------------------------------------------------------------------------
+
 end
