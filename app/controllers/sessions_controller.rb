@@ -15,8 +15,16 @@ class SessionsController < ApplicationController
         else
           cookies[:auth_token] = user.auth_token
         end
+
         respond_to do |format|
-          format.html { redirect_to root_url, :notice => "Você está logado!"}
+          # NOTE: We're disabling showing a notice per conversation between
+          # @dman7 and @jamesholston
+          # "The folks in Brazil did not like the green banners saying logged in and logged out.
+          # It's not a question of Portuguese.  This is what banking and other commercial
+          # sites do and they did not want that association.
+          # So let's remove it for now until we have more time to look into the question.
+          # Can you just bracket it rather than delete it?"
+          format.html { redirect_to root_url } #, :notice => "Você está logado!" }
           format.json { render json: {auth_token: user.auth_token}}
         end
       else
@@ -29,7 +37,7 @@ class SessionsController < ApplicationController
 
   def destroy
     cookies.delete(:auth_token)
-    redirect_to root_url, :notice => "Você saiu da sua conta!"
+    redirect_to root_url #, :notice => "Você saiu da sua conta!"
   end
 
 end
