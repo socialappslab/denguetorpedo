@@ -1,4 +1,4 @@
-<%= form_for(@feedback) do |f| %> 
+<%= form_for(@feedback) do |f| %>
   <% if @feedback.errors.any? %>
     <div id="error_explanation">
       <% if @feedback.errors.count == 1 %>
@@ -21,7 +21,7 @@
     <% elsif @title == "other_method" %>
       <%= f.text_field :title, value: "Outro método" %>
     <% else %>
-      <%= f.text_field :title %>
+      <%= f.text_field :title, :value => @title %>
     <% end %>
   </div>
   <div class="field">
@@ -49,7 +49,7 @@
     <% else %>
       <%= f.text_area :message, placeholder: "Max 3500 caracteres", maxlength: 3500 %>
     <% end %>
-    
+
   </div>
   <div class="actions">
     <%= f.submit "Enviar mensagem" %>
