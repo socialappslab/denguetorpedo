@@ -21,7 +21,6 @@
 .row
   .row.span10.offset1
     #report_buttons
-      -# TODO @awdorsett - fix CSS of buttons to show which tab you're on
       -# all reports
       = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
         :onclick => 'filter_reports(event,"all")'
@@ -34,7 +33,6 @@
       = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
         :onclick => 'filter_reports(event,"eliminated")'
 
-      -# TODO @awdorsett - clear form on click?
       -# new report
       = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn',
         :onclick => 'display_new_report(event);'
@@ -48,14 +46,12 @@
   .row
     #report_display.span9.offset1
       -# TODO @awdorsett - all reports sorted by most recent?
-      -# TODO @awdorsett - refactor both open and resolved partials
+      -# TODO @awdorsett - refactor resolved partials
 
       -# all reports
       #reports
         - @reports.each do |report|
           - if report.status == :reported
-            -# TODO @awdorsett - this shouldn't be needed now that elim type is done during creation
-            -#- if report.reporter == @current_user or report.elimination_type
             = render :partial => "reports/open.html.haml", :object => report
           - if report.status == :eliminated
             = render :partial => "reports/resolved.html.haml", :object => report
@@ -177,8 +173,6 @@
             return false;
           });
 
-          //-# TODO @awdorsett - location click is off, might be because of CSS
-
           // if on new report tab add a marker when clicked and update values
           map.on('click', function(e){
             if(new_report_tab){
@@ -294,40 +288,55 @@
               new_report_tab = false;
             })
 
-          //-# TODO @awdorsett - Change the listener to view all fields filled in
+          // if any address field is changed and all address fields have a value
+          // try to update location value
+          $(".address_field").change(function() {
 
-          $("#street_number").change(function() {
-            showLoading();
-            $.ajax({
-              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-              type: "GET",
-              dataType: "jsonp",
-              data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
-              success: function(m) {
-                var candidates = m.candidates;
+            var all_fields_filled = true;
 
-                //#- TODO @awdorsett - in the future should we handle multiple results from api call? Currently considering first only
-                // if candidates found, update map location
-                if (candidates.length > 0) {
-                  map.graphics.clear();
+            // loop through address fields and look check if unfilled
+            $('.address_field').each(function(){
+              if ( $(this).val() == "")
+                all_fields_filled = false;
+            })
 
-                  map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
+            // if all fields filled, make ajax call
+            if(all_fields_filled){
 
-                  $("input#x").val(candidates[0].location.x);
-                  $("input#y").val(candidates[0].location.y);
+              showLoading();
+              $.ajax({
+                url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+                type: "GET",
+                dataType: "jsonp",
+                data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
+                success: function(m) {
+                  var candidates = m.candidates;
 
-                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
+                  //#- TODO @awdorsett - in the future should we handle multiple results from api call? Currently considering first only
+                  // if candidates found, update map location
+                  if (candidates.length > 0) {
+                    map.graphics.clear();
+
+                    map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
+
+                    $("input#x").val(candidates[0].location.x);
+                    $("input#y").val(candidates[0].location.y);
+
+                    map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
+                  }
+                },
+                //#- TODO @awdorsett - is this an appropriate repsonse to error?
+                error: function(m) {
+                  console.log(JSON.stringify(m));
+                },
+                complete: function() {
+                  hideLoading();
                 }
-              },
-              //#- TODO @awdorsett - is this an appropriate repsonse to error?
-              error: function(m) {
-                console.log(JSON.stringify(m));
-              },
-              complete: function() {
-                hideLoading();
-              }
-            });
-          });
+
+              });  // end of ajax call
+            }; // end of if statement
+
+          }); // end of function
 
 
 

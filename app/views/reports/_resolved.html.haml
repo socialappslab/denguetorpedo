@@ -3,6 +3,7 @@
     .rp_report_status.status
       Eliminado
       .rp_report_options{:style => "margin-top:-3px;"}
+
         - if resolved.is_resolved_verified == "t"
           = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
         - elsif resolved.is_resolved_verified == "f"
@@ -26,20 +27,25 @@
 
     .span6
       .row.rp_report_people.span6
+
         %h3{style: "font-weight:bold;"}Descrição da localização:
         = resolved.report
+
         %h3{:style => "font-weight:bold;"} Tipo de foco:
         = resolved.elimination_type
+
         %h3{:style => "font-weight:bold;"} Método de eliminação:
         = resolved.elimination_method
         %br
         %br
+
         - if resolved.reporter
           Marcado por:
           =link_to resolved.reporter_name + " " + resolved.strftime_with(:created_at), user_path(resolved.reporter), :class => "user", :style => "width:100%;"
         - else
           Marcado por: #{resolved.reporter_name + " " + resolved.strftime_with(:created_at)}
         %br
+
         - if resolved.eliminator_id
           Eliminado por:
           =link_to resolved.eliminator_name + " " + resolved.strftime_with(:eliminated_at), user_path(resolved.eliminator), :class => "user", :style => "width:100%;"
@@ -47,6 +53,7 @@
           -if resolved.eliminated_at
             Eliminador por: #{resolved.eliminator_name + " " + resolved.strftime_with(:eliminated_at)}
         %br
+
         - if resolved.is_resolved_verified == "t" and resolved.resolved_verifier_id
           Verificado por:
           = link_to resolved.verifier_name + " " + resolved.strftime_with(:resolved_verified_at), user_path(resolved.resolved_verifier), :class => "user"
