@@ -143,10 +143,24 @@
 
 .open{
   border-color: $orange;
-  
+
+  .description{
+  margin-bottom:12px;
+  }
+
+  .report_label{
+    font-weight:bold;
+  }
+
+  .report_submission{
+    margin-left:5px;
+    margin-top:5px;
+  }
   .status {
     background: $orange;
   }
+
+
 }
 
 .eliminated{
