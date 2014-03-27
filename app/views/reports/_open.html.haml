@@ -8,7 +8,8 @@
       - else
         Em aberto
 
-      .rp_report_options{:style => "margin-top:-3px;"}
+      .rp_report_options
+        -# TODO @awdorsett - are reports verified before they're eliminated?
         - if open.isVerified == "t"
           = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
         - elsif open.isVerified == "f"
@@ -18,31 +19,37 @@
             - if @current_user.role == "verificador" or @current_user.role == "admin" or @current_user.role == "coordenador"
               = link_to (image_tag 'icons/reports icon/x.png', :width => 25, :height => 25), problem_neighborhood_reports_path(@neighborhood, :id => open.id), method: :post, :style => "float:right;"
               = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_neighborhood_reports_path(@neighborhood, :id => open.id), method: :post, :style => "float:right;"
+
         - if open.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
             Torpedo
+
         - else
+
           - if not open.expired?
             - if open.elimination_type
-              .countdown.countdownHolder{:style => "width:150px;height: 20px;background-color:transparent; border: none;float:right;margin-top:1px;margin-right:0px;font-size:20px;"}
-              .span{style: "margin-top:3px; margin-right:10px;"}
+              .countdown.countdownHolder.timer
+              .span.countdown_label
                 Tempo restante
+                -# TODO @awdorsett - move out of view
                 :javascript
                   var newYear = new Date(#{open.expire_date.strftime("%s").to_i * 1000});
                   $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
+
           - else
-            .span{style: "margin-top:3px; margin-right:10px;"}
+            .span.time_expired
               Tempo expirado
 
-  .row{style: "margin-top:5px;"}
-    .span6{:style => "margin-top:10px;"}
+  .row.address_row
+    .span6.address
       - if open.sms_incomplete?
         %h4= open.report
       - else
         %h4= open.complete_address
+
     .span2
       - if open.location.latitude and open.location.longitude
-        = link_to "Ache no mapa", "#", id: "mapa_#{open.id}", class: "mapa", data: { latitude: "#{open.location.latitude}", longitude: "#{open.location.longitude}"}, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;"
+        = link_to "Ache no mapa", "#", id: "mapa_#{open.id}", class: "mapa", data: { latitude: "#{open.location.latitude}", longitude: "#{open.location.longitude}"}
 
   .row{style: "margin-top:7px;"}
     .span2.rp_before_photo
@@ -54,9 +61,7 @@
       - else
         - if !open.sms_incomplete?
           = text_area_tag("report_description", open.report, style: "width:430px;")
-      / .row.rp_report_people
-      /   Marcado por:
-      /   =link_to open.reporter.display_name + " - " + open.strftime_with(:created_at), user_path(open.reporter), :class => "user"
+
       - if @current_user != nil
         .row
           .span7
@@ -89,6 +94,7 @@
                 - if open.elimination_type
                   %h3{:style => "font-size: 14px;"} Carregue uma foto do foco eliminado
                   = f.file_field :after_photo, :disabled => (open.after_photo_file_size or open.expired?)
+
                 %br
                 = submit_tag "Enviar!",:onclick=>"update_location_coordinates(#{open.location.to_json},event);",:class=>'report_submission',:style => "margin-left:5px;margin-top:5px;", :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or open.expired? or open.isVerified == "f" or open.sms_incomplete?)
 
@@ -104,6 +110,7 @@
                     Verificado por:
                     = link_to open.verifier_name + " " + open.strftime_with(:created_at), user_path(open.verifier), :class => "user"
                     %br
+
                   - elsif open.isVerified == "f" and open.verifier_id
                     %p{:style => "color:red;font-weight:bold;margin-top:10px;"}
                       Problema no foco marcado. Entre em contato conosco.

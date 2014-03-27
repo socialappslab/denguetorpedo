@@ -102,6 +102,35 @@
 
 .rp_report_options {
   float: right;
+  margin-top:-3px;
+
+  .time_expired{
+    margin-top:3px;
+    margin-right:10px;
+  }
+
+  .countdown_label{
+    margin-top:3px;
+    margin-right:10px;
+  }
+
+}
+
+
+.address_row{
+  margin-top:5px;
+
+  .address{
+    margin-top:10px;
+  }
+
+  a.mapa{
+    margin-top:5px;
+    float:right;
+    border:1px solid gray;
+    margin-right:-6px;
+    padding:2px;
+  }
 }
 
 .rp_claimed_report {
