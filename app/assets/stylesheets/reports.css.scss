@@ -264,6 +264,9 @@
     .active {
       background-color: $light-gray;
       font-weight:bold
+      &:h{
+        color: white;
+      }
     }
 
   }
@@ -289,25 +292,33 @@
     
   
   
+  //.active {
+  //  color: #FFFFFF;
+  //  font-weight: bold;
+  //  font-size: 20px;
+  //}
+  //.reports_feed_button.active {
+  //  background-color: $light-gray;
+  //}
+
+  // tab button is active
   .active {
-    color: #FFFFFF;
+    background-color: $orange;
+    color: white;
     font-weight: bold;
     font-size: 20px;
-  }
-  .reports_feed_button.active {
-    background-color: $light-gray;
-  }
-  
-  .reports_open_button.active {
-    background-color: $orange;
+
+    &:hover{
+      color: white;
+    }
   }
   
   //.make_report_button.active {
   //}
   
-  .reports_resolved_button.active {
-    background-color: gray;
-  }
+  //.reports_resolved_button.active {
+  //  background-color: gray;
+  //}
 
 
 
@@ -316,11 +327,6 @@
   text-align: center;
 
   padding: 8px 5px;
-
-  &:hover {
-    cursor: pointer;
-    color: darkblue;
-  }
 
   &:mousedown {
     border-bottom: thick dotted #ff0000;

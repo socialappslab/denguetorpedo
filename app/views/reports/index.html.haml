@@ -1,4 +1,3 @@
--# TODO @awdorsett - put reports into their own partials to clean up code
 -# TODO @awdorsett - on error return to appropriate tab
 -# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
 
@@ -24,20 +23,20 @@
     #report_buttons
       -# TODO @awdorsett - fix CSS of buttons to show which tab you're on
       -# all reports
-      = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button ' + @reports_feed_button_active,
+      = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
         :onclick => 'filter_reports(event,"all")'
 
       -# open reports
-      = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button ' + @reports_open_button_active,
+      = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
         :onclick => 'filter_reports(event,"open")'
 
       -# eliminated reports
-      = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active,
+      = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
         :onclick => 'filter_reports(event,"eliminated")'
 
       -# TODO @awdorsett - clear form on click?
       -# new report
-      = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn ' + @make_report_button_active,
+      = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn',
         :onclick => 'display_new_report(event);'
 
       -# TODO @awdorsett - is a seperate button needed for verficador/visitante

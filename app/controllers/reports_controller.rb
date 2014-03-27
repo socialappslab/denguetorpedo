@@ -21,17 +21,15 @@ class ReportsController < NeighborhoodsBaseController
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
 
     # TODO @awdorsett - refactor to make sure views aren't dependent on view param, remove this section
-    params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
-    params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
-    params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
-    params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
-    params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
+    #params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
+    #params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
+    #params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
+    #params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
+    #params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
 
     # New report form attributes
     @new_report = Report.new
     @elimination_types = EliminationType.pluck(:name)
-    # TODO @awdorsett - is neighborhood needed?
-    @neighborhood = Neighborhood.find(params[:neighborhood_id])
     # end
 
     @elimination_method_select = EliminationMethods.field_select
@@ -46,6 +44,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
 
     # This should be what populates the markers for map
+
     @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
         if params[:view] == 'recent' || params[:view] == 'make_report'
@@ -69,7 +68,8 @@ class ReportsController < NeighborhoodsBaseController
     @markers = locations.map { |location| location.info}
     @open_markers = open_locations.map { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
-    @reports = reports_with_status_filtered
+    # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
+    #@reports = reports_with_status_filtered
     @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
     @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count

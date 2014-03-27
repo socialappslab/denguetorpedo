@@ -1,17 +1,15 @@
 
 // strings correspond to ids of report div
 // used with function display_report_div
-var report_divs = ['all_reports', 'open_reports', 'eliminated_reports', 'new_report'];
-var default_report_div = 'all_reports';
+var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_reports_button', 'make_report_button'];
 
 $(document).ready(function() {
 
-    // hide all divs but default report div
-    // used to prevent children from inheriting display attribute
-//    for(var i = 0; i < report_divs.length; i++){
-//        var val = (report_divs[i] === default_report_div) ? 'block' : 'none';
-//        $('#' + report_divs[i]).css('display',val);
-//    }
+    // style all reports as selected
+    selected_tab_css_update('all_reports_button');
+
+    //show all reports on start
+    $('#new_report').css('display','none');
 
     // keep the map on the page when scrolling
     $(window).scroll(function() {
@@ -56,6 +54,9 @@ function filter_reports(e, filter_class){
     // hide new report div
     $('#new_report').css('display','none');
 
+    // style tab as selected
+    selected_tab_css_update(e.target.id);
+
     // loop through reports looking for appropriate class based on passed class (@param filter_class)
     if (filter_class === 'all'){
         $('.report').each(function(){
@@ -69,18 +70,39 @@ function filter_reports(e, filter_class){
         })
     }
 }
-
+// displays new report div
 function display_new_report(e){
     e.preventDefault();
+    // style tab as selected
+    selected_tab_css_update(e.target.id);
 
-    // hide all reports
-    $('.report').each(function(){
-        $(this).css('display','none');
-    });
+    if($('#new_report').css('display') == 'none'){
 
-    // display new report div
-    $('#new_report').css('display','block');
+        // clear existing form
+        $('#new_report_form form').trigger('reset');
 
+        // hide all reports
+        $('.report').each(function(){
+            $(this).css('display','none');
+        });
+
+        // display new report div
+        $('#new_report').css('display','block');
+    }
+
+}
+
+// pass the id of tab to change the css so that it appears as selected
+// e.g. larger size, different color, etc
+function selected_tab_css_update(id){
+
+    // loop through report tabs and add active the the one that whose id is passed
+    $.each(report_tabs, function(i, tab_id){
+        if (tab_id == id)
+            $("#" + tab_id).addClass('active');
+        else
+            $("#" + tab_id).removeClass('active');
+    })
 }
 
 
