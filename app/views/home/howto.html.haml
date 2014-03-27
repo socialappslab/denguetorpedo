@@ -10,25 +10,25 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como se cadastrar
-            =ManualInstruction.find_by_id(1).title
+            =@manualInstruction1.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction1)
 
         #cadastrar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
-            =simple_format(ManualInstruction.find_by_id(1).description)
+            =simple_format(@manualInstruction1.description)
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como completar sua conta
-            =ManualInstruction.find_by_id(2).title
+            =@manualInstruction2.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(2))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction2)
         #completar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            - str = ManualInstruction.find_by_id(2).description
+            - str = @manualInstruction2.description
             - str1 = str.slice(0..(str.index('**Configurações de morador**')-2))
             =simple_format(str1)
             %br
@@ -47,20 +47,20 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#barra").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Barra de navegação
-            =ManualInstruction.find_by_id(3).title
+            =@manualInstruction3.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(3))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction3)
         #barra.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            =simple_format(ManualInstruction.find_by_id(3).description) 
+            =simple_format(@manualInstruction3.description) 
 
       .accordion-group
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#foco").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /O que é um foco?
-            =ManualInstruction.find_by_id(4).title
+            =@manualInstruction4.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(1))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction4)
         #foco.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             =simple_format(ManualInstruction.find_by_id(4).description)
@@ -69,12 +69,12 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#jogar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como jogar
-            =ManualInstruction.find_by_id(5).title
+            =@manualInstruction5.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(5))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction5)
         #jogar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            - str = ManualInstruction.find_by_id(5).description
+            - str = @manualInstruction5.description
             - str1 = str.slice(0..(str.index('**Visualizando focos**')-1))
             =simple_format(str1)
             %h2 Visualizando focos
@@ -109,13 +109,13 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#ganhar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como ganhar
-            =ManualInstruction.find_by_id(6).title
+            =@manualInstruction6.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(6))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction6)
         #ganhar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
-            - str = ManualInstruction.find_by_id(6).description
+            - str = @manualInstruction6.description
             %h2 Ganhando pontos
             - ind = str.index('**Ganhando pontos**') + '**Ganhando pontos**'.length
             - str2 = str.slice(ind..(str.index('**table**')-1))
@@ -282,12 +282,12 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#participar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como participar
-            =ManualInstruction.find_by_id(7).title
+            =@manualInstruction7.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(7))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction7)
         #participar.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            - str = ManualInstruction.find_by_id(7).description
+            - str = @manualInstruction7.description
             - str1 = str.slice(0..(str.index('**Moradores**')-1))
             =simple_format(str1)
             %h2 Moradores
@@ -307,12 +307,12 @@
         .accordion-heading{style: "padding:10px;"}
           %a{href: 'javascript:$("#comunidade").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Minha comunidade
-            =ManualInstruction.find_by_id(8).title
+            =@manualInstruction8.title
           -if @current_user != nil && @current_user.role == "admin"
-            =link_to "Edit",edit_manual_instruction_path(ManualInstruction.find_by_id(8))
+            =link_to "Edit",edit_manual_instruction_path(@manualInstruction8)
         #comunidade.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            =simple_format(ManualInstruction.find_by_id(8).description)
+            =simple_format(@manualInstruction8.description)
 
 :javascript
   $(".collapse").collapse();

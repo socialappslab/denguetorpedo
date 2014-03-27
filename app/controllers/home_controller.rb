@@ -38,8 +38,10 @@ class HomeController < ApplicationController
   def howto
 
     flash[:alert] = @user
-    
-
+    (1..8).each do |num|
+      str = "manualInstruction" + "#{num}"
+      instance_variable_set("@#{str}", ManualInstruction.find_by_id(num))
+    end
   end
 end
 
