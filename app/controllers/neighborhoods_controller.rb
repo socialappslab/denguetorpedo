@@ -51,6 +51,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
   #------------------------------
 
   def invitation
+    @title = "Participar da Dengue Torpedo"
     @feedback = Feedback.new
   end
 
