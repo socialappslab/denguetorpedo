@@ -40,6 +40,15 @@
             %b= neighborhood.eliminated_reports.count
             %br eliminados
 
+/ Futura comunidade is meant to be a way for people to reach out to DT
+/ and become the next neighborhood.
+- unless @current_user
+  .row
+    #neighborhood_stats.offset1
+      #home_visit_neighborhood_button.span5
+        = link_to "Futura comunidade", neighborhood_invitation_path
+
+
 %br
 
 .row{style: "text-align: center;"}

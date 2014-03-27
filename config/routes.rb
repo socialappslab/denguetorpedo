@@ -52,6 +52,7 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Neighborhoods
 
+  get "neighborhoods/invitation" => "neighborhoods#invitation", :as => :neighborhood_invitation
   resources :neighborhoods, :only => [:show] do
     resources :reports do
       collection do
