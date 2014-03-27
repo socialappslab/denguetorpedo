@@ -51,6 +51,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
   #------------------------------
 
   def invitation
+    @feedback = Feedback.new
   end
 
   #----------------------------------------------------------------------------
