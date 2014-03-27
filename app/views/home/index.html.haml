@@ -52,9 +52,9 @@
   #neighborhood_search
     #neighborhood_search_background{style: "width:600px; margin: auto; text-align: center; display: inline-block; padding-top: 0px; padding-bottom: 0px;"}
       %p{style: "margin-bottom: 10px; font-weight: bold;"}
-        Ache as comunidades participantes!
+        Ache outras comunidades participantes!
       = form_tag neighborhood_search_path, :style => "margin: 0px;" do
-        = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :style => "width: 50%;")
+        = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :include_blank => true, :style => "width: 50%;")
         = submit_tag "Busca", :class => "button"
     - if @current_user
       #sms_button{style: "margin-left: 20px; font-size:10px; display: inline-block;"}
