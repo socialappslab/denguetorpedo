@@ -46,7 +46,7 @@
   font-size: 12px;
 }
   
-.rp_report {
+.report {
   background-color: white;
   border-style: solid;
   border-width: 2px;
@@ -141,7 +141,7 @@
   }
 }
 
-.rp_open_report {
+.open{
   border-color: $orange;
   
   .status {
@@ -149,7 +149,7 @@
   }
 }
 
-.rp_resolved_report {
+.eliminated{
   border-color: $dark-gray;
   min-height: 265px;
   
@@ -190,7 +190,7 @@
   
 }
 
-#reports_open {
+#new_report_form {
   margin-top: 10px;
   background: white;
   border: 1px solid $light-gray; 
@@ -343,17 +343,17 @@
 #report_display{
 
 
-  #all_reports{
+  #reports{
     display: block;
   }
 
-  #open_reports{
-    display: block;
-  }
-
-  #eliminated_reports{
-    display: block;
-  }
+  //#open_reports{
+  //  display: block;
+  //}
+  //
+  //#eliminated_reports{
+  //  display: block;
+  //}
 
   #new_report{
     display: block;

@@ -8,10 +8,10 @@ $(document).ready(function() {
 
     // hide all divs but default report div
     // used to prevent children from inheriting display attribute
-    for(var i = 0; i < report_divs.length; i++){
-        var val = (report_divs[i] === default_report_div) ? 'block' : 'none';
-        $('#' + report_divs[i]).css('display',val);
-    }
+//    for(var i = 0; i < report_divs.length; i++){
+//        var val = (report_divs[i] === default_report_div) ? 'block' : 'none';
+//        $('#' + report_divs[i]).css('display',val);
+//    }
 
     // keep the map on the page when scrolling
     $(window).scroll(function() {
@@ -50,16 +50,40 @@ $(document).ready(function() {
 });
 
 
-function display_report_div(e, id){
+function filter_reports(e, filter_class){
     e.preventDefault();
 
-    // loop through all report div ids, hide ones not matching var id
-    //   display div matching var id
-    for(var i = 0; i < report_divs.length; i++){
-        var val = (report_divs[i] === id) ? 'block' : 'none';
-        $('#' + report_divs[i]).css('display',val);
+    // hide new report div
+    $('#new_report').css('display','none');
+
+    // loop through reports looking for appropriate class based on passed class (@param filter_class)
+    if (filter_class === 'all'){
+        $('.report').each(function(){
+            $(this).css('display','block');
+        });
+    }
+    else{
+        $('.report').each(function(){
+            var value = $(this).hasClass(filter_class) ? 'block' : 'none';
+            $(this).css('display',value);
+        })
     }
 }
+
+function display_new_report(e){
+    e.preventDefault();
+
+    // hide all reports
+    $('.report').each(function(){
+        $(this).css('display','none');
+    });
+
+    // display new report div
+    $('#new_report').css('display','block');
+
+}
+
+
 // TODO @awdorsett - refactor to reuse update location
 // TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
 // temporary to be used with "Marcar no mapa" button on new report form

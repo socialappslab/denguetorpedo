@@ -25,20 +25,20 @@
       -# TODO @awdorsett - fix CSS of buttons to show which tab you're on
       -# all reports
       = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button ' + @reports_feed_button_active,
-        :onclick => 'display_report_div(event,"all_reports")'
+        :onclick => 'filter_reports(event,"all")'
 
       -# open reports
       = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button ' + @reports_open_button_active,
-        :onclick => 'display_report_div(event,"open_reports")'
+        :onclick => 'filter_reports(event,"open")'
 
       -# eliminated reports
       = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active,
-        :onclick => 'display_report_div(event,"eliminated_reports")'
+        :onclick => 'filter_reports(event,"eliminated")'
 
       -# TODO @awdorsett - clear form on click?
       -# new report
       = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn ' + @make_report_button_active,
-        :onclick => 'display_report_div(event,"new_report");'
+        :onclick => 'display_new_report(event);'
 
       -# TODO @awdorsett - is a seperate button needed for verficador/visitante
         - if @current_user.role == "verificador" or @current_user.role == "visitante"                                     z
@@ -53,27 +53,11 @@
       -# TODO @awdorsett - refactor both open and resolved partials
 
       -# all reports
-      #all_reports
+      #reports
         - @reports.each do |report|
           - if report.status == :reported
             - if report.reporter == @current_user or report.elimination_type
               = render :partial => "reports/open.html.haml", :object => report
-          - if report.status == :eliminated
-            = render :partial => "reports/resolved.html.haml", :object => report
-
-
-
-      -# open reports
-      #open_reports
-        - @reports.each do |report|
-          - if report.status == :reported
-            - if report.reporter == @current_user or report.elimination_type
-              = render :partial => "reports/open.html.haml", :object => report
-
-
-      -# eliminated reports
-      #eliminated_reports
-        - @reports.each do |report|
           - if report.status == :eliminated
             = render :partial => "reports/resolved.html.haml", :object => report
 
@@ -85,7 +69,7 @@
       #new_report
         .row
           -# TODO @awdorsett - refactor CSS for reports_open
-          #reports_open
+          #new_report_form
             = form_for(@new_report, :url => {:action => "create", :html => {:autocomplete => "off", :multipart => true}}) do |f|
               -#= f.error_messages
               = hidden_field_tag 'report_id', @new_report.id
