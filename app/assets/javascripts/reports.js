@@ -47,14 +47,6 @@ $(document).ready(function() {
 	});
     // end of methods
 
-
-
-
-//      if (e.keyCode == 13){
-//          $(this).next("input").focus();
-//          return false;
-//      }
-
 });
 
 
@@ -68,10 +60,50 @@ function display_report_div(e, id){
         $('#' + report_divs[i]).css('display',val);
     }
 }
+// TODO @awdorsett - refactor to reuse update location
+// TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
+// temporary to be used with "Marcar no mapa" button on new report form
+function update_location_coordinates_new_report(e){
+    e.preventDefault();
+
+    if( $('#x').val() == '' || $('#y').val() == ''){
+        $('#new_report input[name=commit]').attr('disabled',true);
+        var data = {"f": "pjson",
+                    "Street": $('#street_type').val() +
+                        " " + $('#street_name').val() +
+                        " " + $('#street_number').val()
+                    }
+        $.ajax({
+            url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+            type: "GET",
+            timeout: 5000, // milliseconds
+            dataType: "jsonp",
+            data: data,
+            success: function(m) {
+                var candidates = m.candidates;
+
+                //possible location found, update form values
+                if (candidates.length > 0) {
+                    $('#x').val(candidates[0].location.x);
+                    $('#y').val(candidates[0].location.y);
+                }
+
+
+            },
+            error: function(m) {
+                //ajax call unsuccessful, server may be down
+                // TODO @awdorsett how to handle map failure for macar no mapa
+            }
+        });
+        $('#new_report input[name=commit]').attr('disabled',false);
+
+    }
+
+}
 
 //@params location - json of location object for report
 //@params event - click event for form submission
-
+// -# TODO @awdorsett - fix magic numbers
 function update_location_coordinates(location,event){
 
     //make sure the form being submitted has long/lat input fields

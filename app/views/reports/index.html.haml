@@ -111,7 +111,7 @@
                   style: "width:200px;"
                 = text_field_tag :street_number, "", placeholder: "Número", class: "middle_field"
                 -# TODO @awdorsett - is neighborhood needed?
-                = text_field_tag :neighborhood, @neighborhood.name, class: "short_field", disabled:true
+                -#= text_field_tag :neighborhood, @neighborhood.name, class: "short_field", disabled:true
 
               #description
                 %h3.new_report_label 2. Descrição da localização
@@ -131,7 +131,7 @@
               #location
                 %h3.new_report_label.inline_display 5.
                 -# TODO @awdorsett - fix style for button, overlapping with submit
-                = link_to "Marcar no mapa", nil, id:'mark_map_bttn', class: 'bttn', onclick:''
+                = link_to "Marcar no mapa", nil, id:'mark_map_bttn', class: 'bttn', onclick:'update_location_coordinates_new_report(event)'
                 = hidden_field_tag "x"
                 = hidden_field_tag "y"
                 %br
