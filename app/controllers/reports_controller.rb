@@ -19,61 +19,76 @@ class ReportsController < NeighborhoodsBaseController
 
     @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
-    params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
-    params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
-    params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
-    params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
-    params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
 
-    if params[:view] == "make_report"
-      @report = Report.new
-    end
+
+    # new report form attributes
+    # use existing params if error occured during create
+    report_params = session[:params][:report] if session[:params]
+
+    # if report_params is present an error occurred during create, triggers showing new report tab in view
+    @create_error = report_params.present?
+
+    @new_report = Report.new(report_params)
+    @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
+
+    @elimination_types = EliminationType.pluck(:name)
+
+    session[:params] = nil
+    session[:location_id] = nil
+
+
+
 
     @elimination_method_select = EliminationMethods.field_select
-    @elimination_types = EliminationType.pluck(:name)
+
 
     reports_with_status_filtered = []
     locations = []
     open_locations = []
     eliminated_locations = []
-    #@prantinho = EliminationMethods.prantinho
-    #@pneu = EliminationMethods.pneu
-    #@lixo = EliminationMethods.lixo
-    #@pequenos = EliminationMethods.pequenos
-    #@grandes = EliminationMethods.grandes
-    #@calha = EliminationMethods.calha
-    #@registros = EliminationMethods.registros
-    #@laje = EliminationMethods.laje
-    #@piscinas = EliminationMethods.piscinas
-    #@pocas = EliminationMethods.pocas
-    #@ralos = EliminationMethods.ralos
-    #@plantas = EliminationMethods.plantas
+
     @points = EliminationMethods.points
-    @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
-    @reports.each do |report|
-      if (report.reporter == @current_user or report.elimination_type)
-        if params[:view] == 'recent' || params[:view] == 'make_report'
-          reports_with_status_filtered << report
-          if report.status_cd == 1
-            eliminated_locations << report.location
-          else
-            open_locations << report.location
-          end
-          locations << report.location
-        elsif params[:view] == 'open' && report.status == :reported
-          reports_with_status_filtered << report
-          open_locations << report.location
-        elsif params[:view] == 'eliminate' && report.status == :eliminated
-          reports_with_status_filtered << report
-          eliminated_locations << report.location
-        end
-      end
+    # TODO @awdorsett - the first Report all may not be needed, is it for SMS or elim type selection?
+    @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse
+    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+
+    # if report has been completed or has an error during update
+    # TODO @awdorsett - more effecient way?
+    if session[:saved_report]
+      @reports = [Report.find_by_id(session[:saved_report])] + @reports
+      session[:saved_report] = nil
     end
 
-    @markers = locations.map { |location| location.info}
-    @open_markers = open_locations.map { |location| location.info}
-    @eliminated_markers = eliminated_locations.map { |location| location.info}
-    @reports = reports_with_status_filtered
+    # This should be what populates the markers for map
+    # TODO @awdorsett - refactor this
+    @reports.each do |report|
+      if (report.reporter == @current_user or report.elimination_type)
+        if report.status == :reported
+          reports_with_status_filtered << report
+          open_locations << report.location
+        elsif report.status == :eliminated
+          reports_with_status_filtered << report
+          eliminated_locations << report.location
+        else
+            reports_with_status_filtered << report
+            if report.status_cd == 1
+              eliminated_locations << report.location
+            else
+              open_locations << report.location
+            end
+        end
+
+        locations << report.location
+      end
+
+    end
+
+    @markers = locations.compact.map { |location| location.info}
+    @open_markers = open_locations.compact.map { |location| location.info}
+    @eliminated_markers = eliminated_locations.compact.map { |location| location.info}
+
+    # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
+    #@reports = reports_with_status_filtered
     @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
     @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
@@ -90,6 +105,9 @@ class ReportsController < NeighborhoodsBaseController
   # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
 
   def create
+    # used to handle errors, if error occurs then set to false
+    create_complete = true
+
     # TODO @dman7: What is this???
     flash[:street_type] = params[:street_type]
     flash[:street_name] = params[:street_name]
@@ -98,21 +116,30 @@ class ReportsController < NeighborhoodsBaseController
     flash[:x] = params[:x]
     flash[:y] = params[:y]
 
-    # Find the location based on user's input (street type, name, number) and
-    # ESRI's geolocation (latitude, longitude).
-    # When the user inputs an address into the textfields, we trigger an ESRI
-    # map search on the associated map that updates the x and y hidden fields
-    # in the form. In the case that the map is unavailable (or JS is disabled),
-    # an after_commit hook into the Location model will trigger a background
-    # worker to fetch the map coordinates.
-    location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-      params[:street_type].downcase.titleize,
-      params[:street_name].downcase.titleize,
-      params[:street_number].downcase.titleize
-    )
-    location.latitude  = params[:x] if params[:x].present?
-    location.longitude = params[:y] if params[:y].present?
-    location.save
+    # If location was previously created, use that
+    saved_location = Location.find_by_id(session[:location_id])
+
+    if saved_location
+      location = saved_location
+    else
+      # Find the location based on user's input (street type, name, number) and
+      # ESRI's geolocation (latitude, longitude).
+      # When the user inputs an address into the textfields, we trigger an ESRI
+      # map search on the associated map that updates the x and y hidden fields
+      # in the form. In the case that the map is unavailable (or JS is disabled),
+      # an after_commit hook into the Location model will trigger a background
+      # worker to fetch the map coordinates.
+
+      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+        params[:street_type].downcase.titleize,
+        params[:street_name].downcase.titleize,
+        params[:street_number].downcase.titleize
+      )
+
+      location.latitude  = params[:x] if params[:x].present?
+      location.longitude = params[:y] if params[:y].present?
+      location.save
+    end
 
     @report              = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
@@ -124,41 +151,53 @@ class ReportsController < NeighborhoodsBaseController
 
     # If no report was filled out, then ask them to fill it out.
     if params[:report][:report] == ""
-      flash[:alert] = "Você tem que descrever o local e/ou o foco."
-      flash[:address] = location.address
-      redirect_to :back and return
+      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
+      create_complete = false
     end
 
     # If there was no before photograph, then ask them to upload it.
     if params[:report][:before_photo].blank?
-      flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
-      redirect_to :back and return
+      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
+      create_complete = false
     end
 
     # Now let's save the report.
-    if @report.save
+    if create_complete && @report.save
       flash[:notice] = 'Foco marcado com sucesso!'
-      redirect_to :action => 'index', :view => 'recent' and return
-    else
-      # TODO @dman7: This is a hack to get to display the report errors.
-      # Let's see if we can improve on this.
-      render_errors = @report.errors.full_messages.join("\n")
-      flash[:alert] = render_errors
-      redirect_to :back and return
+      redirect_to :action => 'index' and return
     end
+
+    # TODO @dman7: This is a hack to get to display the report errors.
+
+    # Let's see if we can improve on this.
+    #render_errors = @report.errors.full_messages.join("\n")
+    #flash[:alert] = render_errors
+    # used to return to create tab on error
+    #puts "SESSION3"
+    #puts params[:report]
+
+    session[:params] = params
+    session[:location_id] = location.id
+
+    redirect_to :back and return
+
   end
 
   #-----------------------------------------------------------------------------
 
   def edit
-    @report = @current_user.created_reports.find(params[:id])
-    flash[:street_type] = @report.location.street_type
-    flash[:street_name] = @report.location.street_name
-    flash[:street_number] = @report.location.street_number
-    flash[:x] = @report.location.latitude
-    flash[:y] = @report.location.longitude
-    @report.location.latitude ||= 0
-    @report.location.longitude ||= 0
+    @new_report = @current_user.created_reports.find(params[:id])
+
+    #flash[:street_type] = @report.location.street_type
+    #flash[:street_name] = @report.location.street_name
+    #flash[:street_number] = @report.location.street_number
+    #flash[:x] = @report.location.latitude
+    #flash[:y] = @report.location.longitude
+    @new_report_location = Location.find_by_id(@new_report.location.id)
+    @new_report.location.latitude ||= 0
+    @new_report.location.longitude ||= 0
+    @elimination_types = EliminationType.pluck(:name)
+
   end
 
   def update
@@ -228,7 +267,7 @@ class ReportsController < NeighborhoodsBaseController
 
 
 
-      @report = Report.find(params[:report_id])
+      #@report = Report.find(params[:report_id])
 
       ## User pressed submit without selecting a elimination type
       #if params[:elimination_type].blank? and @report.elimination_type.blank?
@@ -297,7 +336,6 @@ class ReportsController < NeighborhoodsBaseController
       # TODO @awdorsett check if error message is correct in portuguese
         if @report.location.latitude.blank? || @report.location.longitude.blank?
           if params[:latitude].present? || params[:longitude].present?
-            # TODO @awdorsett clean up
             # TODO @awdorsett find out why location doesn't save when report.save is called
             @report.location.latitude = params[:latitude]
             @report.location.longitude = params[:longitude]
@@ -333,10 +371,12 @@ class ReportsController < NeighborhoodsBaseController
         @report.update_attribute(:status_cd, 1)
         @report.update_attribute(:eliminator_id, @current_user.id)
         award_points @report, @current_user
-        redirect_to :back
-      else
-        redirect_to :back
       end
+
+      # save the report so you can access it in index for errors and completions
+      session[:saved_report]= @report.id
+      redirect_to :back
+
 
       ## Submitting an after photo
       #if params[:eliminate][:after_photo] != nil
@@ -458,6 +498,12 @@ class ReportsController < NeighborhoodsBaseController
     @reports = @user.reports.sms.where('elimination_type IS NOT NULL')
   end
 
+  #----------------------------------------------------------------------------
+  # POST /gateway
+  #
+  # NOTE: This is where the SMS come in
+  #------------------------------------
+
   def gateway
     @user = User.find_by_phone_number(params[:from])
     respond_to do |format|
@@ -481,6 +527,8 @@ class ReportsController < NeighborhoodsBaseController
       end
     end
   end
+
+  #----------------------------------------------------------------------------
 
   def notifications
     @notifications = Notification.unread

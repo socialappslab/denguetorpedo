@@ -1,3 +1,6 @@
+-# TODO @awdorsett - on error return to appropriate tab
+-# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
+
 .row
   .span4.offset1
     - if flash[:notice]
@@ -18,25 +21,58 @@
 .row
   .row.span10.offset1
     #report_buttons
+      -# all reports
+      = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
+        :onclick => 'filter_reports(event,"all")'
 
-      = link_to 'Todos',      neighborhood_reports_path(@neighborhood, :view => 'recent'), :class=>'bttn reports_feed_button ' + @reports_feed_button_active
-      = link_to 'Em aberto',  neighborhood_reports_path(@neighborhood, :view => 'open'), :class=>'bttn reports_open_button ' + @reports_open_button_active
-      = link_to 'Eliminados', neighborhood_reports_path(@neighborhood, :view => 'eliminate'), :class=>'bttn reports_resolved_button ' + @reports_resolved_button_active
-      - if @current_user.role == "verificador" or @current_user.role == "visitante"
-        = link_to "Marcar um foco", "#", :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#aaaaaa;color:white;font-weight:bold;height:21px;font-size:25px;pointer-events: none;"
-      - else
-        = link_to "Marcar um foco", neighborhood_reports_path(@neighborhood, :view => 'make_report'), :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#60BB50;color:white;font-weight:bold;height:21px;font-size:25px;"
+      -# open reports
+      = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
+        :onclick => 'filter_reports(event,"open")'
+
+      -# eliminated reports
+      = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
+        :onclick => 'filter_reports(event,"eliminated")'
+
+      -# new report
+      = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn',
+        :onclick => 'display_new_report(event);'
+
+      -# TODO @awdorsett - is a seperate button needed for verficador/visitante
+        - if @current_user.role == "verificador" or @current_user.role == "visitante"                                     z
+          = link_to "Marcar um foco", "#", :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#aaaaaa;color:white;font-weight:bold;height:21px;font-size:25px;pointer-events: none;"
+        - else
+          = link_to "Marcar um foco", neighborhood_reports_path(@neighborhood, :view => 'make_report'), :class => 'bttn make_report_button ' + @make_report_button_active, :style => "margin-left:90px;padding-top:13px;background-color:#60BB50;color:white;font-weight:bold;height:21px;font-size:25px;"
 
   .row
-    .span9.offset1
-      - if params[:view] == 'recent'
-        = render :partial => 'reports/recent', :action=>'index'
-      - elsif params[:view] == 'open'
-        = render :partial => 'reports/open_list'
-      - elsif params[:view] == 'eliminate'
-        = render :partial => 'reports/eliminate_list'
-      - else params[:view] == 'make_report'
-        = render :partial => "reports/make_report_form"
+    #report_display.span9.offset1
+      -# TODO @awdorsett - all reports sorted by most recent?
+      -# TODO @awdorsett - refactor resolved partials
+
+      -# all reports
+      #reports
+        - @reports.each do |report|
+          - if report.sms_incomplete?
+            = render :partial => "reports/sms.html.haml", :object => report, as: 'report'
+          - elsif report.status == :reported
+            = render :partial => "reports/open.html.haml", :object => report, as: 'report'
+          - elsif report.status == :eliminated
+            = render :partial => "reports/resolved.html.haml", :object => report, as: 'report'
+
+      #new_report
+        = render :partial => 'make_report_form'
+
+
+      -# TODO @awdorsett - refactor to make sure views aren't dependent on view param, remove this section
+      -#- if params[:view] == 'recent'
+      -#  = render :partial => 'reports/recent', :action=>'index'
+      -#- elsif params[:view] == 'open'
+      -#  = render :partial => 'reports/open_list'
+      -#- elsif params[:view] == 'eliminate'
+      -#  = render :partial => 'reports/eliminate_list'
+      -#- else params[:view] == 'make_report'
+      -#  = render :partial => "reports/make_report_form"
+
+
     .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
       .row
         .span8
@@ -54,75 +90,221 @@
               %form{id: "address_search_form", style: "margin-bottom:0px;"}
                 %input.span6{:type => 'text', id: "address_search", :placeholder => 'Digite "Rua nº" e pressione enter.', :style => 'width: 280px;'}
                 %input{type: "button", value: "Vá para a Maré", style: "margin-left:325px;margin-bottom:10px;margin-top:-37px;font-size:12px;", id: "go_to_mare"}
+
       #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;overflow-y:hidden;"}
         #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}
           = image_tag "loading.gif", style: "width:50px; height:50px;"
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
+
+
+      -# Javascript for map
+      -# TODO @awdorsett - markers don't place correctly on click and move when zooming in
+
       :javascript
-        $(window).scroll(function() {
-          var scrollAmount = $(window).scrollTop();
-          if (scrollAmount > 200) {
-            $("#map_div").css("margin-top", scrollAmount - 263);
-          } else {
-            $("#map_div").css("margin-top", -63);
+        // TODO @awdorsett - make initial points dynamic based on neighborhood
+        var map;
+        var report_div;
+
+        // used for click event to check if in new report tab
+        var new_report_tab = false;
+
+        // Declare different reports and their counts.
+        var markers            = #{@markers.to_json};
+        var open_markers       = #{@open_markers.to_json};
+        var eliminated_markers = #{@eliminated_markers.to_json};
+        var counts             = #{@counts.to_json};
+        var open_counts        = #{@open_counts.to_json};
+        var eliminated_counts  = #{@eliminated_counts.to_json};
+
+        // Load the map.
+        require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
+
+          var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
+
+          var popup = new Popup({
+            highlight: false
+          }, domConstruct.create("div"));
+
+          var point = new Point(680291.2151545063, 7470751.29586681, new esri.SpatialReference({wkid: 29193}));
+          map = new Map("map", {
+            center: point,
+            zoom: 4,
+            extent: customExtent,
+            infoWindow:popup
+          });
+          function showLoading() {
+            $("#loading").show();
+            map.disableMapNavigation();
+            map.hideZoomSlider();
           }
-        });
 
-      - if params[:view] == 'make_report'
-        :javascript
-          var map, tb;
-          require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer) {
-            var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
+          function hideLoading() {
+            $("#loading").hide();
+            map.enableMapNavigation();
+            map.showZoomSlider();
+          }
+          map.on("update-start", showLoading);
+          map.on("update-end", hideLoading);
 
-            var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
-            var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-            var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
-            var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
-            var point = new Point(680291.2151545063, 7470751.29586681, new esri.SpatialReference({wkid: 29193}));
-            map = new Map("map", {
-              center: point,
-              zoom: 4,
-              extent: customExtent
-            });
+          var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+          map.addLayer(tiled);
 
-            var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
-            map.addLayer(tiled);
-            map.on("update-start", showLoading);
-            map.on("update-end", hideLoading);
-            map.on("load", function() {
+          var coordinates = [];
 
-              tb = new Draw(map);
-              tb.on("draw-end", addGraphic);
-              tb.activate("point");
-            });
+
+          var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
+          var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 40, 40).setOffset(0, 15);
+          var blue = new PictureMarkerSymbol(picBaseUrl + "BluePin1LargeB.png", 40, 40).setOffset(0, 15);
+          var red = new PictureMarkerSymbol(picBaseUrl + "OrangePin1LargeB.png", 40, 40).setOffset(0, 15);
+
+
+          var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
+          var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
+          var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
 
 
 
-            function addGraphic(evt) {
+          $(".mapa").click(function() {
+            var latitude = $(this).data("latitude");
+            var longitude = $(this).data("longitude");
+
+            map.centerAndZoom(new Point(latitude, longitude, new esri.SpatialReference({"wkid": 29193})), 8);
+
+            report_div = $(this).parent().parent().parent();
+
+            return false;
+          });
+
+          // if on new report tab add a marker when clicked and update values
+          map.on('click', function(e){
+            if(new_report_tab){
               map.graphics.clear();
-              map.enableMapNavigation();
 
-              // figure out which symbol to use
-              var symbol = new SimpleMarkerSymbol();
-              symbol.setStyle("STYLE_PATH");
-              symbol.setPath("M 10 10 L30 10 L20 30z");
-              symbol.setColor(new Color("red"));
+              $("input#x").val(e.mapPoint.x);
+              $("input#y").val(e.mapPoint.y);
 
-              $("input#x").val(evt.geometry.x);
-              $("input#y").val(evt.geometry.y);
-              map.graphics.add(new Graphic(evt.geometry, orange));
-              map.centerAt(evt.mapPoint);
+              var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orange);
 
+              map.graphics.add(graphic);
             }
+          });
 
-            $("#street_type").change(function() {
+          map.on("load", function() {
+            map.infoWindow.resize(300, 200);
+            load_markers(null);
+          })
 
+          $("input#go_to_mare").click(function() {
+            map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
+          });
+
+          map.on("extent-change", function(event) {
+            if (report_div) {
+              $("html, body").scrollTop($(report_div).offset().top - 20);
+            }
+          });
+
+          var blueGraphic;
+
+          //-# TODO @awdorsett - is this function used? Can it be removed?
+          function addGraphic(evt) {
+            if (blueGraphic) {
+              map.graphics.remove(blueGraphic);
+            }
+            map.enableMapNavigation();
+
+            // figure out which symbol to use
+            var symbol = new SimpleMarkerSymbol();
+            symbol.setStyle("STYLE_PATH");
+            symbol.setPath("M 10 10 L30 10 L20 30z");
+            symbol.setColor(new Color("blue"));
+
+            $("input#x").val(evt.geometry.x);
+            $("input#y").val(evt.geometry.y);
+
+            blueGraphic = new Graphic(evt.geometry, symbol);
+            map.graphics.add(blueGraphic);
+            map.centerAt(evt.mapPoint);
+
+          }
+
+          $("#address_search_form").submit(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+              url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+              type: "GET",
+              dataType: "jsonp",
+              data: {"f": "pjson", "Street": $("#address_search").val()},
+              success: function(m) {
+
+                var candidates = m.candidates;
+
+
+                if (candidates.length > 0) {
+                  if (blueGraphic) {
+                    map.graphics.remove(blueGraphic);
+                  }
+                  var symbol = new SimpleMarkerSymbol();
+                  symbol.setStyle("STYLE_PATH");
+                  symbol.setPath("M 10 10 L30 10 L20 30z");
+                  symbol.setColor(new Color("blue"));
+                  blueGraphic = new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), symbol);
+                  map.graphics.add(blueGraphic);
+                  $("input#x").val(candidates[0].location.x);
+                  $("input#y").val(candidates[0].location.y);
+
+                  map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
+                }
+              },
+              error: function(m) {
+                console.log(JSON.stringify(m));
+              }
             });
-            $("#street_name").change(function() {
+
+          });
+
+          // Report tab listeners
+
+            //#- TODO @awdorsett - better way to handle new_report_tab?
+
+            $('#make_report_button').on('click', function(){
+              // clear map and enable adding a marker to map by clicking
+              map.graphics.clear();
+              new_report_tab = true;
             });
 
+            $('#all_reports_button').on('click', function(){
+              load_markers(null);
+              new_report_tab = false;
+            })
 
-            $("#street_number").change(function() {
+            $('#open_reports_button').on('click', function(){
+              load_markers('open');
+              new_report_tab = false;
+
+            })
+
+            $('#eliminated_reports_button').on('click', function(){
+              load_markers('eliminated');
+              new_report_tab = false;
+            })
+
+          // if any address field is changed and all address fields have a value
+          // try to update location value
+          $(".address_field").change(function() {
+
+            var all_fields_filled = true;
+
+            // loop through address fields and look check if unfilled
+            $('.address_field').each(function(){
+              if ( $(this).val() == "")
+                all_fields_filled = false;
+            })
+
+            // if all fields filled, make ajax call
+            if(all_fields_filled){
+
               showLoading();
               $.ajax({
                 url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
@@ -130,276 +312,161 @@
                 dataType: "jsonp",
                 data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
                 success: function(m) {
-                  map.graphics.clear();
                   var candidates = m.candidates;
 
-
+                  //#- TODO @awdorsett - in the future should we handle multiple results from api call? Currently considering first only
+                  // if candidates found, update map location
                   if (candidates.length > 0) {
+                    map.graphics.clear();
+
                     map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
+
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
 
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                   }
                 },
+                //#- TODO @awdorsett - is this an appropriate repsonse to error?
                 error: function(m) {
                   console.log(JSON.stringify(m));
                 },
                 complete: function() {
                   hideLoading();
                 }
-              });
-            });
-            $("input#go_to_mare").click(function() {
-              map.centerAndZoom(new Point(680291.2151545063, 7471401.29586681, new esri.SpatialReference({"wkid": 29193})), 5)
-            });
 
-            function showLoading() {
-              $("#loading").show();
-              map.disableMapNavigation();
-              map.hideZoomSlider();
-            }
+              });  // end of ajax call
+            }; // end of if statement
 
-            function hideLoading() {
-              $("#loading").hide();
-              map.enableMapNavigation();
-              map.showZoomSlider();
-            }
-          });
-      - else
-        :javascript
-          var map;
-          var report_div;
+          }); // end of function
 
-          require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
-            var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
 
-            var popup = new Popup({
-              highlight: false
-            }, domConstruct.create("div"));
+          $('.location_field').on('change', function(){
+            map.graphics.clear();
 
-            var point = new Point(680291.2151545063, 7470751.29586681, new esri.SpatialReference({wkid: 29193}));
-            map = new Map("map", {
-              center: point,
-              zoom: 4,
-              extent: customExtent,
-              infoWindow:popup
-            });
-            function showLoading() {
-              $("#loading").show();
-              map.disableMapNavigation();
-              map.hideZoomSlider();
-            }
+            var graphic = new Graphic(new Point($("input#x").val(), $("input#y").val()), orange);
 
-            function hideLoading() {
-              $("#loading").hide();
-              map.enableMapNavigation();
-              map.showZoomSlider();
-            }
-            map.on("update-start", showLoading);
-            map.on("update-end", hideLoading);
+            map.graphics.add(graphic);
+          })
 
-            var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
-            map.addLayer(tiled);
-            var markers = #{@markers.to_json};
-            var open_markers = #{@open_markers.to_json};
-            var eliminated_markers = #{@eliminated_markers.to_json};
 
+          //#- TODO @awdorsett - fix filter selection, bad to have to pass something if it's not going to be used
+
+          // load markers based on passed filters (e.g. 'eliminated', 'open', etc), loads all markers by default
+          function load_markers(filter){
+            // clear any existing markers
+            map.graphics.clear();
             var addresses = [];
-            var coordinates = [];
-            var counts = #{@counts.to_json};
 
-            var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
-            var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 40, 40).setOffset(0, 15);
-            var blue = new PictureMarkerSymbol(picBaseUrl + "BluePin1LargeB.png", 40, 40).setOffset(0, 15);
-            var red = new PictureMarkerSymbol(picBaseUrl + "OrangePin1LargeB.png", 40, 40).setOffset(0, 15);
-
-
-            var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-            var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
-            var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
-            var counts = #{@counts.to_json};
-            var open_counts = #{@open_counts.to_json};
-            var eliminated_counts = #{@eliminated_counts.to_json};
-
-
-            $(".mapa").click(function() {
-              var latitude = $(this).data("latitude");
-              var longitude = $(this).data("longitude");
-
-              map.centerAndZoom(new Point(latitude, longitude, new esri.SpatialReference({"wkid": 29193})), 8);
-
-              report_div = $(this).parent().parent().parent();
-
-
-              return false;
-            });
-
-            map.on("load", function() {
-              map.infoWindow.resize(300, 200);
-              if ("#{params[:view]}" == 'recent') {
-                for (var i = 0; i < markers.length; i++) {
-                  count = counts[markers[i].id];
-                  open_count = open_counts[markers[i].id];
-                  eliminated_count = eliminated_counts[markers[i].id];
+            if (filter === 'eliminated'){
+              for (var i = 0; i < eliminated_markers.length; i++) {
+                if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
 
                   var template = new InfoTemplate();
-                  template.setTitle(markers[i].address);
-                  template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
-                  var graphic;
-                  var textGraphic;
+                  template.setTitle(eliminated_markers[i].address);
 
-                  if ($.inArray(markers[i].address, addresses) == -1) {
-                    addresses.push(markers[i].address);
+                  count = eliminated_counts[eliminated_markers[i].id];
+                  template.content = "<p>Eliminados: " + count + "</p>";
+                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
 
+                  var graphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), grey);
+                  var textGraphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), textSymbol);
+                  graphic.setInfoTemplate(template);
+                  textGraphic.setInfoTemplate(template);
 
-                    var x;
-                    var y;
-
-                    if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
-
-                      coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
-                      x = markers[i].x;
-                      y = markers[i].y;
-
-                    } else {
-                      x = markers[i].x + Math.cos(Math.random()) * 20;
-                      y = markers[i].y + Math.sin(Math.random()) * 20;
-                    }
-
-
-
-
-
-
-                    if (open_count && eliminated_count) {
-                      graphic = new Graphic(new Point(x, y), mixed);
-                      template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
-                    } else if (open_count > 0) {
-                      graphic = new Graphic(new Point(x, y), orange);
-                      template.content = "<p>Em aberto: " + open_count + "</p>";
-                    } else if (eliminated_count > 0) {
-                      graphic = new Graphic(new Point(x, y), grey);
-                      template.content = "<p>Eliminados: " + eliminated_count + "</p>";
-                    }
-
-                    textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-                    textGraphic = new Graphic(new Point(x, y), textSymbol);
-                    graphic.setInfoTemplate(template);
-                    textGraphic.setInfoTemplate(template);
-                    map.graphics.add(graphic);
-                    map.graphics.add(textGraphic);
-                  }
-
-                }
-              } else if ("#{params[:view]}" == 'open') {
-                for (var i = 0; i < open_markers.length; i++) {
-                  if ($.inArray(open_markers[i].address, addresses) == -1) {
-                    addresses.push(open_markers[i].address);
-                    var template = new InfoTemplate();
-                    template.setTitle(open_markers[i].address);
-
-                    count = open_counts[open_markers[i].id];
-                    template.content = "<p>Em aberto: " + count + "</p>";
-                    textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-
-                    var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orange);
-                    var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
-                    graphic.setInfoTemplate(template);
-                    textGraphic.setInfoTemplate(template);
-                    map.graphics.add(graphic);
-                    map.graphics.add(textGraphic);
-                  }
-
-                }
-              } else {
-                for (var i = 0; i < eliminated_markers.length; i++) {
-                  if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
-                    var template = new InfoTemplate();
-                    template.setTitle(eliminated_markers[i].address);
-
-                    count = eliminated_counts[eliminated_markers[i].id];
-                    template.content = "<p>Eliminados: " + count + "</p>";
-                    textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-
-                    var graphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), grey);
-                    var textGraphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), textSymbol);
-                    graphic.setInfoTemplate(template);
-                    textGraphic.setInfoTemplate(template);
-                    map.graphics.add(graphic);
-                    map.graphics.add(textGraphic);
-                  }
+                  map.graphics.add(graphic);
+                  map.graphics.add(textGraphic);
                 }
               }
-
-            });
-
-            $("input#go_to_mare").click(function() {
-              map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
-            });
-
-            map.on("extent-change", function(event) {
-              if (report_div) {
-                $("html, body").scrollTop($(report_div).offset().top - 20);
-              }
-            });
-
-            var blueGraphic;
-
-            function addGraphic(evt) {
-              if (blueGraphic) {
-                map.graphics.remove(blueGraphic);
-              }
-              map.enableMapNavigation();
-
-              // figure out which symbol to use
-              var symbol = new SimpleMarkerSymbol();
-              symbol.setStyle("STYLE_PATH");
-              symbol.setPath("M 10 10 L30 10 L20 30z");
-              symbol.setColor(new Color("blue"));
-
-              $("input#x").val(evt.geometry.x);
-              $("input#y").val(evt.geometry.y);
-
-              blueGraphic = new Graphic(evt.geometry, symbol);
-              map.graphics.add(blueGraphic);
-              map.centerAt(evt.mapPoint);
-
             }
-            $("#address_search_form").submit(function(e) {
-              e.preventDefault();
-              $.ajax({
-                url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-                type: "GET",
-                dataType: "jsonp",
-                data: {"f": "pjson", "Street": $("#address_search").val()},
-                success: function(m) {
 
-                  var candidates = m.candidates;
+            else if (filter === 'open') {
+              for (var i = 0; i < open_markers.length; i++) {
 
+                if ($.inArray(open_markers[i].address, addresses) == -1) {
 
-                  if (candidates.length > 0) {
-                    if (blueGraphic) {
-                      map.graphics.remove(blueGraphic);
-                    }
-                    var symbol = new SimpleMarkerSymbol();
-                    symbol.setStyle("STYLE_PATH");
-                    symbol.setPath("M 10 10 L30 10 L20 30z");
-                    symbol.setColor(new Color("blue"));
-                    blueGraphic = new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), symbol);
-                    map.graphics.add(blueGraphic);
-                    $("input#x").val(candidates[0].location.x);
-                    $("input#y").val(candidates[0].location.y);
+                  addresses.push(open_markers[i].address);
 
-                    map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
-                  }
-                },
-                error: function(m) {
-                  console.log(JSON.stringify(m));
+                  var template = new InfoTemplate();
+                  template.setTitle(open_markers[i].address);
+
+                  count = open_counts[open_markers[i].id];
+                  template.content = "<p>Em aberto: " + count + "</p>";
+                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
+
+                  var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orange);
+                  var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
+                  graphic.setInfoTemplate(template);
+                  textGraphic.setInfoTemplate(template);
+
+                  map.graphics.add(graphic);
+                  map.graphics.add(textGraphic);
                 }
-              });
 
-            });
+              }
+            }
+            // show all by default
+            else{
+              for (var i = 0; i < markers.length; i++){
 
-          });
+                count = counts[markers[i].id];
+                open_count = open_counts[markers[i].id];
+                eliminated_count = eliminated_counts[markers[i].id];
+
+                var graphic;
+                var textGraphic;
+                var template = new InfoTemplate();
+                template.setTitle(markers[i].address);
+                template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
+
+
+                if ($.inArray(markers[i].address, addresses) == -1) {
+
+                  addresses.push(markers[i].address);
+
+                  var x;
+                  var y;
+
+                  if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
+
+                    coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
+                    x = markers[i].x;
+                    y = markers[i].y;
+                  }
+                  else {
+                    x = markers[i].x + Math.cos(Math.random()) * 20;
+                    y = markers[i].y + Math.sin(Math.random()) * 20;
+                  }
+
+                  if (open_count && eliminated_count) {
+                    graphic = new Graphic(new Point(x, y), mixed);
+                    template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
+                  }
+                  else if (open_count > 0) {
+                    graphic = new Graphic(new Point(x, y), orange);
+                    template.content = "<p>Em aberto: " + open_count + "</p>";
+                  }
+                  else if (eliminated_count > 0) {
+                    graphic = new Graphic(new Point(x, y), grey);
+                    template.content = "<p>Eliminados: " + eliminated_count + "</p>";
+                  }
+
+                  graphic.setInfoTemplate(template);
+
+                  textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
+                  textGraphic = new Graphic(new Point(x, y), textSymbol);
+                  textGraphic.setInfoTemplate(template);
+
+                  map.graphics.add(graphic);
+                  map.graphics.add(textGraphic);
+                }
+
+              }
+            }
+
+          }// end of function load_markers
+
+
+        });
+
   .row{style: "height:600px;"}

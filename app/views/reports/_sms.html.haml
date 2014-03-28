@@ -23,33 +23,10 @@
           .span{style: "margin-top:3px; margin-right:10px;"}
             Torpedo
 
-        - else
-
-          - if not report.expired?
-            - if report.elimination_type
-              .countdown.countdownHolder.timer
-              .span.countdown_label
-                Tempo restante
-                -# TODO @awdorsett - move JS out of view
-                -# TODO @awdorsett - time zone is messed up
-                :javascript
-                  var newYear = new Date(#{report.expire_date.strftime("%s").to_i * 1000});
-                  $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
-
-          - else
-            .span.time_expired
-              Tempo expirado
-
   .row.address_row
     .span6.address
-      - if report.sms_incomplete?
-        %h4= report.report
-      - else
-        %h4= report.complete_address
+      %h4= report.report
 
-    .span2
-      - if report.location.latitude and report.location.longitude
-        = link_to "Ache no mapa", "#", id: "mapa_#{report.id}", class: "mapa", data: { latitude: "#{report.location.latitude}", longitude: "#{report.location.longitude}"}
 
   .row{style: "margin-top:7px;"}
 
@@ -82,42 +59,15 @@
                 - if report.sms_incomplete?
                   = link_to "Completar o foco", edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
 
-                -# TODO @awdorsett - elimination type is not required, something with SMS?
-                -# elimination type
-                %h3.report_label Tipo de foco:
-                -#- if report.elimination_type.present?
-                = report.elimination_type
-                -#- else
-                  = select_tag "elimination_type", options_for_select(@elimination_types), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type"
-
-
-                -# TODO @awdorsett - need to consider sms no being complete?
-                %h3.report_label Método de eliminação:
-                =select_tag "elimination_method", options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
-
-                -# TODO @awdorsett - why are we using selected_elimination_method instead of select tag? related to JS code?
-                = hidden_field_tag "selected_elimination_method"
-
-                -#stores location, used if location was not obtainable when creating report
-                = hidden_field_tag "latitude"
-                = hidden_field_tag "longitude"
 
                 -# TODO @awdorsett - what is this used for? Possibly countdown
                 :javascript
                   $(".selectpicker").selectpicker();
 
-                -#after photo
-                - if report.after_photo_file_size
-                  .rp_report_people
-                    Foto carregada:
-                    = link_to "#{report.after_photo_file_name}", report.after_photo.url, :class => "user"
+
 
                 -# TODO @awdorsett - give user the option to upload a replacement image?
-                %h3.report_label Carregue uma foto do foco eliminado:
-                = f.file_field :after_photo, :disabled => (report.after_photo_file_size or report.expired?)
-
                 %br
-                = submit_tag "Enviar!",:onclick=>"update_location_coordinates(#{report.location.to_json},event);",:class=>'report_submission', :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or report.expired? or report.isVerified == "f" or report.sms_incomplete?)
 
 
                 -# Submission status, show name and date of person who submitted, eliminated, and verified
