@@ -38,7 +38,8 @@ class House < ActiveRecord::Base
 
   ## validations
 
-  validates :name, presence: { :message => "Preencha o nome da casa." }, length: { minimum: 2, :message => "Insira um nome da casa válido." }
+  validates_presence_of :name, :message => "Preencha o nome da casa"
+  validates_length_of   :name, :minimum => 2, :message => "Insira um nome da casa válido"
 
   validates :neighborhood_id, :presence => true
 
