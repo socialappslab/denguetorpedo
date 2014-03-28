@@ -15,7 +15,7 @@
 .row          
   .row
     .span9.offset1
-      = render :partial => "reports/make_report_form"
+      = render :partial => "reports/make_report_form", :object=>@new_report, :as=>'report'
     .span7
       .row
         .span8
@@ -52,7 +52,7 @@
               tb = new Draw(map);
               tb.on("draw-end", addGraphic);
               tb.activate("point");
-              var graphic = new Graphic(new Point(#{@report.location.latitude}, #{@report.location.longitude}), orange);
+              var graphic = new Graphic(new Point(#{@new_report.location.latitude}, #{@new_report.location.longitude}), orange);
               
               map.graphics.add(graphic);
 

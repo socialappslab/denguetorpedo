@@ -83,9 +83,10 @@ class ReportsController < NeighborhoodsBaseController
 
     end
 
-    @markers = locations.map { |location| location.info}
-    @open_markers = open_locations.map { |location| location.info}
-    @eliminated_markers = eliminated_locations.map { |location| location.info}
+    @markers = locations.compact.map { |location| location.info}
+    @open_markers = open_locations.compact.map { |location| location.info}
+    @eliminated_markers = eliminated_locations.compact.map { |location| location.info}
+
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
     #@reports = reports_with_status_filtered
     @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
@@ -185,14 +186,18 @@ class ReportsController < NeighborhoodsBaseController
   #-----------------------------------------------------------------------------
 
   def edit
-    @report = @current_user.created_reports.find(params[:id])
-    flash[:street_type] = @report.location.street_type
-    flash[:street_name] = @report.location.street_name
-    flash[:street_number] = @report.location.street_number
-    flash[:x] = @report.location.latitude
-    flash[:y] = @report.location.longitude
-    @report.location.latitude ||= 0
-    @report.location.longitude ||= 0
+    @new_report = @current_user.created_reports.find(params[:id])
+
+    #flash[:street_type] = @report.location.street_type
+    #flash[:street_name] = @report.location.street_name
+    #flash[:street_number] = @report.location.street_number
+    #flash[:x] = @report.location.latitude
+    #flash[:y] = @report.location.longitude
+    @new_report_location = Location.find_by_id(@new_report.location.id)
+    @new_report.location.latitude ||= 0
+    @new_report.location.longitude ||= 0
+    @elimination_types = EliminationType.pluck(:name)
+
   end
 
   def update
