@@ -1,0 +1,29 @@
+<h1>Listing descriptions</h1>
+
+<table>
+  <tr>
+    <th>Time</th>
+    <th>Text</th>
+    <th>Description</th>
+    <th>Updated by</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @descriptions.each do |description| %>
+  <tr>
+    <td><%= description.time %></td>
+    <td><%= description.text %></td>
+    <td><%= description.description %></td>
+    <td><%= description.updated_by %></td>
+    <td><%= link_to 'Show', description %></td>
+    <td><%= link_to 'Edit', edit_description_path(description) %></td>
+    <td><%= link_to 'Destroy', description, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Description', new_description_path %>

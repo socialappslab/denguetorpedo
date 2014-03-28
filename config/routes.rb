@@ -1,4 +1,7 @@
 Dengue::Application.routes.draw do
+  resources :manual_instructions, :only => [:new, :create, :edit, :update, :destroy, :index]
+  resources :feedbacks
+
 
   #----------------------------------------------------------------------------
   # Sidekiq monitoring
@@ -15,7 +18,6 @@ Dengue::Application.routes.draw do
 
   # TODO: What are the torpedos and why are they public???
   # TODO: Why are the phones listed publicly?
-
   get "torpedos/:id" => "reports#torpedos"
   get '/phones' => "users#phones"
 

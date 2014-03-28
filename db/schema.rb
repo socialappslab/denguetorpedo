@@ -22,6 +22,15 @@ ActiveRecord::Schema.define(:version => 20140320230651) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "descriptions", :force => true do |t|
+    t.datetime "time"
+    t.string   "text"
+    t.string   "description"
+    t.string   "updated_by"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
   create_table "elimination_methods", :force => true do |t|
     t.string   "method"
     t.integer  "points"
@@ -70,6 +79,14 @@ ActiveRecord::Schema.define(:version => 20140320230651) do
     t.string   "house_type",                 :default => "morador"
   end
 
+  create_table "instructions", :force => true do |t|
+    t.string  "title"
+    t.text    "description"
+    t.integer "user_id"
+    t.time    "created_at",  :null => false
+    t.time    "updated_at",  :null => false
+  end
+
   create_table "locations", :force => true do |t|
     t.string   "address"
     t.float    "latitude"
@@ -82,7 +99,23 @@ ActiveRecord::Schema.define(:version => 20140320230651) do
     t.string   "street_type",       :default => ""
     t.string   "street_name",       :default => ""
     t.string   "street_number",     :default => ""
-    t.string   "location"
+  end
+
+  create_table "manual_editors", :force => true do |t|
+    t.datetime "updated_date"
+    t.string   "field"
+    t.string   "text"
+    t.string   "last_edited_by"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "manual_instructions", :force => true do |t|
+    t.string  "title"
+    t.text    "description"
+    t.integer "user_id"
+    t.time    "created_at",  :null => false
+    t.time    "updated_at",  :null => false
   end
 
   create_table "neighborhoods", :force => true do |t|

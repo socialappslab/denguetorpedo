@@ -1,0 +1,36 @@
+<%= form_for(@description) do |f| %>
+  <% if @description.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@description.errors.count, "error") %> prohibited this description from being saved:</h2>
+
+      <ul>
+      <% @description.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <!--
+  <div class="field">
+    <%= f.label :time %><br />
+    <%= f.datetime_select :time %>
+  </div>
+  -->
+  <div class="field">
+    <%= f.label :text %><br />
+    <%= f.text_field :text %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </div>
+  <!--
+  <div class="field">
+    <%= f.label :updated_by %><br />
+    <%= f.text_field :updated_by %>
+  </div>
+  -->
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
