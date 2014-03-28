@@ -498,6 +498,12 @@ class ReportsController < NeighborhoodsBaseController
     @reports = @user.reports.sms.where('elimination_type IS NOT NULL')
   end
 
+  #----------------------------------------------------------------------------
+  # POST /gateway
+  #
+  # NOTE: This is where the SMS come in
+  #------------------------------------
+
   def gateway
     @user = User.find_by_phone_number(params[:from])
     respond_to do |format|
@@ -521,6 +527,8 @@ class ReportsController < NeighborhoodsBaseController
       end
     end
   end
+
+  #----------------------------------------------------------------------------
 
   def notifications
     @notifications = Notification.unread
