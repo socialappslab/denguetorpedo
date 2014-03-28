@@ -23,7 +23,7 @@
             event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
-            
+
           }
         });
       } else {
@@ -40,15 +40,15 @@
 
 .user_form.offset1
   /%h1 Configurações da conta
-  - if flash[:notice] 
+  - if flash[:notice]
     .row#flash_dat_notice
-      #flashNotice 
+      #flashNotice
         %p
           = flash[:notice]
 
-  - if flash[:alert] 
+  - if flash[:alert]
     .row#flash_dat_alert
-      #flashAlert 
+      #flashAlert
         %p
           = flash[:alert]
   - if @user == @current_user
@@ -70,14 +70,14 @@
         %p.link
           = link_to "Administrar contatos", feedbacks_path
         %p.link
-          = link_to "Administrar tipos e métodos", "/reports/types" 
+          = link_to "Administrar tipos e métodos", "/reports/types"
     - elsif @current_user.role == "lojista"
       #role_specific.offset9
         %h2 Configurações de patrocinador
         %p.link
           = link_to "Códigos de controle dos prêmios", "/coupons"
 
-        
+
   = form_for(@user, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
     - if @user.role != "visitante"
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
@@ -192,7 +192,7 @@
 
     - if @user.role == "coordenador"
       - if @user.gender == true
-        %h1{id: "role_title"} Configurações de coordenador   
+        %h1{id: "role_title"} Configurações de coordenador
       - else
         %h1{id: "role_title"} Configurações de coordenadora
     - elsif @user.role == "verificador"
@@ -212,7 +212,7 @@
       - else
         %h1{id: "role_title"} Configurações de moradora
 
-  
+
 
     .indent
       #name_display
@@ -275,21 +275,16 @@
       Pós-pago
       %br
       /= f.label :phone_number,  "* Confirmar celular"
-<<<<<<< HEAD
-      -#= text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
-      -#= text_field_tag("carrier_confirmation", nil, :placeholder => "Confirmar operadora", :style => "width:150px;")
-=======
       = text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
       = text_field_tag("carrier_confirmation", nil, :placeholder => "Confirmar operadora", :style => "width:150px;")
       / # = f.text_field :phone_number_confirmation, :placeholder => "Confirmar celular"
       / # = f.text_field :carrier_confirmation, :placeholder => "Confirmar operadora", :style => "width:150px;"
->>>>>>> 36ece6b20fa5bcacc55b3543ed6966aad1c1bf37
       %br
       /= f.label :email,  "* Email"
-      
+
       = f.label :profile_photo,  "Foto do perfil (opcional)", class:"config_form_title"
       = f.file_field :profile_photo
-    
+
       %br
       %br
       = link_to "Alterar minha senha", edit_password_reset_path(@user), :id => "reset_password_link",id:'password_reset'
@@ -375,7 +370,7 @@
         = text_area_tag "bio", nil, rows: 10, placeholder: "Descreva suas informações pessoais e profissionais."
 
     %br
-    
+
     %br
     = f.hidden_field :confirm, :value => @confirm
     %br
