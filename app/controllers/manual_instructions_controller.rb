@@ -46,10 +46,10 @@ class ManualInstructionsController < ApplicationController
   # PUT /manual_instructions/1.json
   def update
     @manual_instruction = ManualInstruction.find(params[:id])
-    redirect_to '/howto' and return
+    #redirect_to '/howto' and return
     respond_to do |format|
       if @manual_instruction.update_attributes(params[:manual_instruction])
-        format.html { redirect_to @manual_instruction, notice: 'Manual instruction was successfully updated.' }
+        format.html { redirect_to '/howto'}
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
