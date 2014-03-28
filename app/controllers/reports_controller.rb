@@ -15,7 +15,6 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   def index
-
     #@elimination_selection = create_elimination_selection
 
     @current_report = params[:report]
@@ -44,13 +43,12 @@ class ReportsController < NeighborhoodsBaseController
     @points = EliminationMethods.points
     # TODO @awdorsett - the first Report all may not be needed, is it for SMS or elim type selection?
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse
-    @reports += Report.select(&:completed_at).sort_by(&:completed_at).reverse
+    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
 
     # if report has been completed or has an error, move it to front
-    # TODO @awdorsett - there must be a better way to do this during first select/reject above
-
+    # TODO @awdorsett - more effecient way?
     if session[:saved_report]
-      @reports = [Report.find(session[:saved_report])] + @reports.delete_if{|r| r.id == session[:saved_report]}
+      @reports = [Report.find_by_id(session[:saved_report])] + @reports
       session[:saved_report] = nil
     end
 
