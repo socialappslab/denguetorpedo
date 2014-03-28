@@ -41,28 +41,38 @@ class ReportsController < NeighborhoodsBaseController
     eliminated_locations = []
 
     @points = EliminationMethods.points
-    @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse + Report.select(&:completed_at).sort_by(&:completed_at).reverse
+    # TODO @awdorsett - the first Report all may not be needed, is it for SMS or elim type selection?
+    @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse
+    @reports += Report.select(&:completed_at).sort_by(&:completed_at).reverse
+
+    # if report has been completed or has an error, move it to front
+    # TODO @awdorsett - there must be a better way to do this during first select/reject above
+    if params[:saved_report]
+      @reports = params[:saved_report] + @reports.deleted_if{|r| r.id == params[:saved_report]}
+    end
 
     # This should be what populates the markers for map
-
+    # TODO @awdorsett - refactor this
     @reports.each do |report|
       if (report.reporter == @current_user or report.elimination_type)
-        if params[:view] == 'recent' || params[:view] == 'make_report'
-          reports_with_status_filtered << report
-          if report.status_cd == 1
-            eliminated_locations << report.location
-          else
-            open_locations << report.location
-          end
-          locations << report.location
-        elsif params[:view] == 'open' && report.status == :reported
+        if report.status == :reported
           reports_with_status_filtered << report
           open_locations << report.location
-        elsif params[:view] == 'eliminate' && report.status == :eliminated
+        elsif report.status == :eliminated
           reports_with_status_filtered << report
           eliminated_locations << report.location
+        else
+            reports_with_status_filtered << report
+            if report.status_cd == 1
+              eliminated_locations << report.location
+            else
+              open_locations << report.location
+            end
         end
+
+        locations << report.location
       end
+
     end
 
     @markers = locations.map { |location| location.info}
@@ -135,7 +145,7 @@ class ReportsController < NeighborhoodsBaseController
     # Now let's save the report.
     if @report.save
       flash[:notice] = 'Foco marcado com sucesso!'
-      redirect_to :action => 'index', :view => 'recent' and return
+      redirect_to :action => 'index' and return
     else
       # TODO @dman7: This is a hack to get to display the report errors.
       # Let's see if we can improve on this.
@@ -225,7 +235,7 @@ class ReportsController < NeighborhoodsBaseController
 
 
 
-      @report = Report.find(params[:report_id])
+      #@report = Report.find(params[:report_id])
 
       ## User pressed submit without selecting a elimination type
       #if params[:elimination_type].blank? and @report.elimination_type.blank?
@@ -294,7 +304,6 @@ class ReportsController < NeighborhoodsBaseController
       # TODO @awdorsett check if error message is correct in portuguese
         if @report.location.latitude.blank? || @report.location.longitude.blank?
           if params[:latitude].present? || params[:longitude].present?
-            # TODO @awdorsett clean up
             # TODO @awdorsett find out why location doesn't save when report.save is called
             @report.location.latitude = params[:latitude]
             @report.location.longitude = params[:longitude]
@@ -330,10 +339,11 @@ class ReportsController < NeighborhoodsBaseController
         @report.update_attribute(:status_cd, 1)
         @report.update_attribute(:eliminator_id, @current_user.id)
         award_points @report, @current_user
-        redirect_to :back
-      else
-        redirect_to :back
       end
+
+      # save the report so you can access it in index for errors and completions
+      redirect_to :back, :saved_report => @report
+
 
       ## Submitting an after photo
       #if params[:eliminate][:after_photo] != nil

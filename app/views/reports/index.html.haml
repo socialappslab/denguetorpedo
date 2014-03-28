@@ -52,9 +52,9 @@
       #reports
         - @reports.each do |report|
           - if report.status == :reported
-            = render :partial => "reports/open.html.haml", :object => report
+            = render :partial => "reports/open.html.haml", :object => report, as: 'report'
           - if report.status == :eliminated
-            = render :partial => "reports/resolved.html.haml", :object => report
+            = render :partial => "reports/resolved.html.haml", :object => report, as: 'report'
 
       #new_report
         = render :partial => 'make_report_form'
@@ -113,6 +113,8 @@
         var counts             = #{@counts.to_json};
         var open_counts        = #{@open_counts.to_json};
         var eliminated_counts  = #{@eliminated_counts.to_json};
+
+        console.log(markers);
 
         // Load the map.
         require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
