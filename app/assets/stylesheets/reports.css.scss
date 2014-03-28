@@ -46,7 +46,7 @@
   font-size: 12px;
 }
   
-.rp_report {
+.report {
   background-color: white;
   border-style: solid;
   border-width: 2px;
@@ -102,6 +102,35 @@
 
 .rp_report_options {
   float: right;
+  margin-top:-3px;
+
+  .time_expired{
+    margin-top:3px;
+    margin-right:10px;
+  }
+
+  .countdown_label{
+    margin-top:3px;
+    margin-right:10px;
+  }
+
+}
+
+
+.address_row{
+  margin-top:5px;
+
+  .address{
+    margin-top:10px;
+  }
+
+  a.mapa{
+    margin-top:5px;
+    float:right;
+    border:1px solid gray;
+    margin-right:-6px;
+    padding:2px;
+  }
 }
 
 .rp_claimed_report {
@@ -112,15 +141,29 @@
   }
 }
 
-.rp_open_report {
+.open{
   border-color: $orange;
-  
+
+  .description{
+  margin-bottom:12px;
+  }
+
+  .report_label{
+    font-weight:bold;
+  }
+
+  .report_submission{
+    margin-left:5px;
+    margin-top:5px;
+  }
   .status {
     background: $orange;
   }
+
+
 }
 
-.rp_resolved_report {
+.eliminated{
   border-color: $dark-gray;
   min-height: 265px;
   
@@ -161,7 +204,7 @@
   
 }
 
-#reports_open {
+#new_report_form {
   margin-top: 10px;
   background: white;
   border: 1px solid $light-gray; 
@@ -181,13 +224,16 @@
   margin-top: 20px;
   margin-bottom: 10px;
   font-size: 12px;
+}
 
   .reports_feed_button {
     color: $light-gray;
     background-color: #ffffff;
   }
 
-  .bttn  {      
+
+  /*
+  .bttn  {
     color: #ffffff;
     border-radius: 2px;
     text-align: center;
@@ -202,16 +248,27 @@
     &:mousedown {
       border-bottom: thick dotted #ff0000;
     }
-  }
+  } */
+
   
   .reports_open_button {
     color: $dark-gray;
     background-color: #ffffff;
   }
   
-  .make_report_button {
+  #make_report_button {
     color: $dark-gray;
-    background-color: #ffffff;
+    background-color: #60BB50;
+    color:white;
+
+    .active {
+      background-color: $light-gray;
+      font-weight:bold
+      &:h{
+        color: white;
+      }
+    }
+
   }
   
   .reports_resolved_button {
@@ -235,26 +292,46 @@
     
   
   
+  //.active {
+  //  color: #FFFFFF;
+  //  font-weight: bold;
+  //  font-size: 20px;
+  //}
+  //.reports_feed_button.active {
+  //  background-color: $light-gray;
+  //}
+
+  // tab button is active
   .active {
-    color: #FFFFFF;
+    background-color: $orange;
+    color: white;
     font-weight: bold;
     font-size: 20px;
-  }
-  .reports_feed_button.active {
-    background-color: $light-gray;
-  }
-  
-  .reports_open_button.active {
-    background-color: $orange;
+
+    &:hover{
+      color: white;
+    }
   }
   
-  .make_report_button.active {
-    background-color: $light-gray;
-  }
+  //.make_report_button.active {
+  //}
   
-  .reports_resolved_button.active {
-    background-color: gray;
+  //.reports_resolved_button.active {
+  //  background-color: gray;
+  //}
+
+
+
+.bttn  {
+  border-radius: 2px;
+  text-align: center;
+
+  padding: 8px 5px;
+
+  &:mousedown {
+    border-bottom: thick dotted #ff0000;
   }
+
 }
 
 #report_stats {
@@ -281,6 +358,57 @@
 
 .elimination_type{
   height:auto;
+  width: 100%;
+}
+
+#report_elimination_type{
+  height:auto;
+  width: 100%;
+}
+
+#address .street_type{
+  width:200px;
+}
+
+#report_display{
+
+
+  #reports{
+    display: block;
+  }
+
+  //#open_reports{
+  //  display: block;
+  //}
+  //
+  //#eliminated_reports{
+  //  display: block;
+  //}
+
+  #new_report{
+    display: block;
+
+    .new_report_label{
+      font-weight: bold;
+    }
+
+    .inline_display{
+      display:inline;
+    }
+
+    #mark_map_bttn{
+      border:1px;
+      border-style:solid;
+      border-color: black;
+      color:black;
+
+      &:hover{
+        color:blue;
+      }
+
+    }
+
+  }
 }
 
 

@@ -283,7 +283,11 @@ class User < ActiveRecord::Base
 
   def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
-    @location = Location.new_with_address(body)
+
+    # TODO @dman7: Refactor the neighborhood.
+    neighborhood = self.neighborhood
+    @location    = Location.create(:address => body, :neighborhood => neighborhood)
+
     @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
     @report.status_cd = 0
     @report

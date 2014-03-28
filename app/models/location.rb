@@ -125,18 +125,6 @@ class Location < ActiveRecord::Base
     !(self.latitude && self.longitude)
   end
 
-  def self.new_with_address(address)
-    location = Location.new(address: address)
-    # streets = location.address.split(' ') if location.address
-    # if streets.size  >= 3
-    #   location.street_type = streets[0]
-    #   location.street_number = streets[streets.size - 1]
-    #   location.street_name = streets[1..streets.size-2].join(' ')
-    # end
-    location.save
-    return location
-  end
-
   def self.find_or_create(address, neighborhood=nil)
     # construct the Location object using the argument
     if address.class == String
