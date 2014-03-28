@@ -2,5 +2,5 @@
   #errorExplanation.errorExplanation
     %h2= "#{item.errors.full_messages.uniq.count} erros impediram que o usuário fosse salvo."
     %ul
-      - item.errors.messages.each do |attribute, error|
-        %li=error.first
+      - item.errors.full_messages.each do |msg|
+        %li=msg
