@@ -1,0 +1,6 @@
+- if item && item.errors.any?
+  #errorExplanation.errorExplanation
+    %h2= "#{item.errors.full_messages.uniq.count} erros impediram que o usuário fosse salvo."
+    %ul
+      - item.errors.messages.each do |attribute, error|
+        %li=error.first
