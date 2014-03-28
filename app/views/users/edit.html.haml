@@ -1,32 +1,41 @@
 - content_for :scripts do
   :javascript
     $("#complete_name").tooltip();
-    var verifiers = #{@verifiers};
-    var residents = #{@residents};
+    var verifiers = #{@verifiers.to_json.html_safe};
+    var residents = #{@residents.to_json.html_safe};
 
-    $("select#recruitment").change(function() {
-      if ($("#recruitment").val() == "AVS/ACS") {
+    $("select#recruitment").change(function()
+    {
+      if ($("#recruitment").val() == "AVS/ACS")
+      {
         $("input#recruitment").show();
-        $("input#recruitment").autocomplete({
+        $("input#recruitment").autocomplete(
+        {
           source: verifiers,
-          select: function(event, ui) {
+          select: function(event, ui)
+          {
             event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
           }
         });
-      } else if ($("#recruitment").val() == "MORADOR/VIZINHO") {
+      }
+      else if ($("#recruitment").val() == "MORADOR/VIZINHO")
+      {
         $("input#recruitment").show();
-        $("input#recruitment").autocomplete({
+        $("input#recruitment").autocomplete(
+        {
           source: residents,
-          select: function(event, ui) {
+          select: function(event, ui)
+          {
             event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
-
           }
         });
-      } else {
+      }
+      else
+      {
         $("input#recruitment").hide();
       }
     });
@@ -122,7 +131,7 @@
           = link_to "Códigos de controle dos prêmios", "/coupons"
 
 
-  = form_for(@user, :html => {name: "configuration", onsubmit: "return validation()"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
+  = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
     - if @user.role != "visitante"
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
