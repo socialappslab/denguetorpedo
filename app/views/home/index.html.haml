@@ -72,12 +72,11 @@
 
 / Display the neighborhood houses only if the logged-in user is viewing it.
 
-- if @current_user.present?
-  .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
-- else
-  .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas
+- home_headline = @current_user.present? ? "Casas #{@selected_neighborhood.name}" : "Casas"
+.row
+%h2.offset1#home_houses{style: 'font-size: 18px;'}
+  = home_headline
+
 
 .row
   #houses.span15.offset1
