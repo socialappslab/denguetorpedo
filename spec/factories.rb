@@ -9,7 +9,7 @@ FactoryGirl.define do
 		user.neighborhood { Neighborhood.first }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
-		user.neighborhood_id { Neighborhood.first.id }
+		user.neighborhood { Neighborhood.first }
 		user.carrier "XXX"
 		user.prepaid true
 		association :house
@@ -50,6 +50,7 @@ FactoryGirl.define do
 
 	factory :house do
 		name "Rede Trel"
+		neighborhood { Neighborhood.first }
 		association :location
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
