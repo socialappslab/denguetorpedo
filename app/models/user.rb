@@ -283,6 +283,7 @@ class User < ActiveRecord::Base
     return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
   end
 
+  # TODO @dman7  - set the neighborhood_id by the neighborhood associated with user
   def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
     @location = Location.new_with_address(body)

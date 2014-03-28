@@ -1,44 +1,45 @@
-$(document).ready(function() {
-//	$("select.elimination_type").each(function() {
-//		$(this).parent().find("select.elimination_methods").hide();
-//
-//		if($(this).val() == "Pratinho de planta") {
-//			$(this).parent().find("select#prantinho").show();
-//		} else if ($(this).val() == "Pneu") {
-//			$(this).parent().find("select#pneu").show();
-//		} else if ($(this).val() == "Lixo (recipientes inutilizados)") {
-//			$(this).parent().find("select#lixo").show();
-//		} else if ($(this).val() == "Pequenos Recipientes utilizáveis") {
-//			$(this).parent().find("select#pequenos").show();
-//		} else if ($(this).val() == "Grandes Recipientes Utilizáveis") {
-//			$(this).parent().find("select#grandes").show();
-//		} else if ($(this).val() == "Caixa d'água aberta na residência") {
-//			$(this).parent().find("select#caixa").show();
-//		} else if ($(this).val() == "Calha") {
-//			$(this).parent().find("select#calha").show();
-//		} else if ($(this).val() == "Registros abertos") {
-//			$(this).parent().find("select#registros").show();
-//		} else if ($(this).val() == "Laje e terraços com água") {
-//			$(this).parent().find("select#laje").show();
-//		} else if ($(this).val() == "Piscinas") {
-//			$(this).parent().find("select#piscinas").show();
-//		} else if ($(this).val() == "Poças d’água na rua") {
-//			$(this).parent().find("select#pocas").show();
-//		} else if ($(this).val() == "Ralos") {
-//			$(this).parent().find("select#ralos").show();
-//		} else if ($(this).val() == "Plantas ornamentais que acumulam água (ex: bromélias)") {
-//			$(this).parent().find("select#plantas").show();
-//		} else if ($(this).val() == "Outro tipo") {
-//			// window.location.href = "/feedbacks/new?title=other_type";
-//			$(this).find("option").filter(function() {
-//				return $(this).text() == "Tipo de foco";
-//			}).prop("selected", true);
-//			$(this).parent().find("select#prantinho").show();
-//		} else {
-//			$(this).parent().find("select#prantinho").show();
-//		}
-//	});
 
+// strings correspond to ids of report div
+// used with function display_report_div
+var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_reports_button', 'make_report_button'];
+
+$(document).ready(function() {
+
+    // if error happened on create, display create tab
+
+    if($('#error').val() == "true"){
+        // update CSS to show it being selected
+        selected_tab_css_update('new_report_button');
+
+        // hide open/elimanted reports
+        $('.report').each(function(){
+            $(this).css('display','none');
+        });
+        // display new report content
+        $('#new_report').css('display','block');
+    }
+    else{
+        // style all reports as selected
+        selected_tab_css_update('all_reports_button');
+
+        //show all reports on start
+        $('#new_report').css('display','none');
+    }
+
+    // keep the map on the page when scrolling
+    $(window).scroll(function() {
+        var scrollAmount = $(window).scrollTop();
+        if (scrollAmount > 200) {
+            $("#map_div").css("margin-top", scrollAmount - 263);
+        } else {
+            $("#map_div").css("margin-top", -63);
+        }
+    });
+
+
+
+    // TODO @awdorsett - Are these methods still used? If so refactor
+    // start of methods
 	$("select.elimination_type").change(function() {
 		if ($(this).val() == "Outro tipo") {
 			window.location = "/feedbacks/new?title=other_type";
@@ -57,25 +58,117 @@ $(document).ready(function() {
 			$(this).parent().find("input#selected_elimination_method").val($(this).val());
 		}
 	});
-//
-//    $('.report_submission').on('click',function(e){
-//        console.log("worked")   ;
-//        e.preventDefault();
-//    })
-
-
-
-//      if (e.keyCode == 13){
-//          $(this).next("input").focus();
-//          return false;
-//      }
+    // end of methods
 
 });
 
 
+function filter_reports(e, filter_class){
+    e.preventDefault();
+
+    // hide new report div
+    $('#new_report').css('display','none');
+
+    // style tab as selected
+    selected_tab_css_update(e.target.id);
+
+    // loop through reports looking for appropriate class based on passed class (@param filter_class)
+    if (filter_class === 'all'){
+        $('.report').each(function(){
+            $(this).css('display','block');
+        });
+    }
+    else{
+        $('.report').each(function(){
+            var value = $(this).hasClass(filter_class) ? 'block' : 'none';
+            $(this).css('display',value);
+        })
+    }
+}
+
+// displays new report div
+function display_new_report(e){
+    e.preventDefault();
+    // style tab as selected
+    selected_tab_css_update(e.target.id);
+
+    if($('#new_report').css('display') == 'none'){
+
+        // clear existing form
+        $('#new_report_form form').trigger('reset');
+
+        // hide all reports
+        $('.report').each(function(){
+            $(this).css('display','none');
+        });
+
+        // display new report div
+        $('#new_report').css('display','block');
+    }
+
+}
+
+// pass the id of tab to change the css so that it appears as selected
+// e.g. larger size, different color, etc
+function selected_tab_css_update(id){
+
+    // loop through report tabs and add active the the one that whose id is passed
+    $.each(report_tabs, function(i, tab_id){
+        if (tab_id == id)
+            $("#" + tab_id).addClass('active');
+        else
+            $("#" + tab_id).removeClass('active');
+    })
+}
+
+
+// TODO @awdorsett - refactor to reuse update location
+// TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
+// temporary to be used with "Marcar no mapa" button on new report form
+function update_location_coordinates_new_report(e){
+    e.preventDefault();
+
+    if( $('#x').val() == '' || $('#y').val() == ''){
+        $('#new_report input[name=commit]').attr('disabled',true);
+        var data = {"f": "pjson",
+                    "Street": $('#street_type').val() +
+                        " " + $('#street_name').val() +
+                        " " + $('#street_number').val()
+                    }
+        $.ajax({
+            url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+            type: "GET",
+            timeout: 5000, // milliseconds
+            dataType: "jsonp",
+            data: data,
+            success: function(m) {
+                var candidates = m.candidates;
+
+                //possible location found, update form values
+                if (candidates.length > 0) {
+                    $('#x').val(candidates[0].location.x);
+                    $('#y').val(candidates[0].location.y);
+                }
+
+            },
+            error: function(m) {
+                //ajax call unsuccessful, server may be down
+                // TODO @awdorsett how to handle map failure for macar no mapa
+            }
+        });
+        $('#new_report input[name=commit]').attr('disabled',false);
+
+    }
+    else{
+        // x and y have values, trigger dropping the marker
+        $('.location_field').trigger('change');
+    }
+
+}
+
 //@params location - json of location object for report
 //@params event - click event for form submission
-
+// -# TODO @awdorsett - fix magic numbers
 function update_location_coordinates(location,event){
 
     //make sure the form being submitted has long/lat input fields
@@ -89,30 +182,31 @@ function update_location_coordinates(location,event){
             //disable submit button so user cant submit multiple times
             $(".report_submission").attr("disabled",true);
 
-            $.ajax({
-                url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-                type: "GET",
-                timeout: 5000, // milliseconds
-                dataType: "jsonp",
-                data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
-                success: function(m) {
-                    var candidates = m.candidates;
+                $.ajax({
+                    url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+                    type: "GET",
+                    timeout: 5000, // milliseconds
+                    dataType: "jsonp",
+                    data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
+                    success: function(m) {
+                        var candidates = m.candidates;
 
-                    //possible location found, update form values
-                    if (candidates.length > 0) {
-                        event.target.form[7].value = candidates[0].location.x;
-                        event.target.form[8].value = candidates[0].location.y;
+                        //possible location found, update form values
+                        if (candidates.length > 0) {
+                            event.target.form[7].value = candidates[0].location.x;
+                            event.target.form[8].value = candidates[0].location.y;
+                        }
+
+                       $(event.target.form).submit();
+
+                    },
+                    error: function(m) {
+                        //ajax call unsuccessful, server may be down
+                        // TODO @awdorsett how to handle second request for map failure
+                        $(".report_submission").attr("disabled",false);
+                        $(event.target.form).submit();
                     }
-
-                   $(event.target.form).submit();
-
-                },
-                error: function(m) {
-                    //ajax call unsuccessful, server may be down
-                    // TODO @awdorsett how to handle second request for map failure
-                    $(".report_submission").attr("disabled",false);
-                }
-            });
+                });
         }
 
     }
