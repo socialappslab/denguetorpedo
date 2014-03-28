@@ -46,6 +46,25 @@ describe UsersController do
 				end
 				expect(page).to have_content("Informe a sua operadora.")
 			end
+
+			it "notifies the user of missing house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => ""
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				save_and_open_page
+				expect(page).to have_content("Preencha o nome da casa.")
+			end
+
+			it "notifies the user of a short house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => "A"
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(page).to have_content("Insira um nome da casa válido.")
+			end
 		end
 
 		#----------------------------------------------------------------------------
