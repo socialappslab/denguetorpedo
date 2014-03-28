@@ -15,6 +15,7 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   def index
+
     #@elimination_selection = create_elimination_selection
 
     @current_report = params[:report]
@@ -47,8 +48,10 @@ class ReportsController < NeighborhoodsBaseController
 
     # if report has been completed or has an error, move it to front
     # TODO @awdorsett - there must be a better way to do this during first select/reject above
-    if params[:saved_report]
-      @reports = params[:saved_report] + @reports.deleted_if{|r| r.id == params[:saved_report]}
+
+    if session[:saved_report]
+      @reports = [Report.find(session[:saved_report])] + @reports.delete_if{|r| r.id == session[:saved_report]}
+      session[:saved_report] = nil
     end
 
     # This should be what populates the markers for map
@@ -342,7 +345,8 @@ class ReportsController < NeighborhoodsBaseController
       end
 
       # save the report so you can access it in index for errors and completions
-      redirect_to :back, :saved_report => @report
+      session[:saved_report]= @report.id
+      redirect_to :back
 
 
       ## Submitting an after photo
