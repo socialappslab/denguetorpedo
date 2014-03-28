@@ -1,16 +1,16 @@
-- if flash[:notice] 
+- if flash[:notice]
   .row.offset1#flash_dat_notice{style: "width: 724px;"}
-    #flashNotice 
+    #flashNotice
       %p
         = flash[:notice]
 
-- if flash[:alert] 
+- if flash[:alert]
   .row#flash_dat_alert{style: "width: 724px; margin-left:65px;"}
-    #flashAlert 
+    #flashAlert
       %p
         = flash[:alert]
 #content{style: "min-height:700px;"}
-  #user_top_bar 
+  #user_top_bar
     #user_top_text
       .row
         .span9.offset4{ :style => "margin-top: -10px;"}
@@ -31,9 +31,9 @@
               = @user.shorter_display_name
         .span7.offset7{:style => "margin-top:-40px;"}
           .span2.user_points
-            %h2 pontos         
+            %h2 pontos
           .span2.user_points{:style => "margin-top:22px;margin-left:-15px;"}
-            .row 
+            .row
               %h2 disponível
             .user_points_bg
               = @user.points
@@ -45,53 +45,53 @@
           .row{style: "margin-top:126px;position:absolute;"}
             .span4{style: "margin-left:36px;"}
               - if @user.recruiter
-                Recrutado por 
+                Recrutado por
                 = link_to @user.recruiter.first_name, user_path(@user.recruiter), class: "users"
                 %br
               - if @user.recruitees.count > 0
-                Recrutei 
+                Recrutei
                 = link_to @user.recruitees.last.first_name, user_path(@user.recruitees.last), class: "users"
       / .row{:style => "margin-top:15px;"}
       /   .span4.offset8{:style => "position:absolute;font-size:14px;"}
       /     - if @user.recruiter
-      /       Recrutado por 
+      /       Recrutado por
       /       = link_to @user.recruiter.first_name, user_path(@user.recruiter)
       /       %br
       /     - if @user.recruitees.count > 0
-      /       Recrutei 
+      /       Recrutei
       /       = link_to @user.recruitees.last.first_name, user_path(@user.recruitees.last)
       .row{:style => "margin-top:43px;"}
         .user_force_position.span2.offset4{:style => "margin-left:244px;"}
           %h3.user_house
             - if @house
               - if @user.role == "lojista" or @user.role == "verificador"
-                = link_to @house.name, house_path(@house)
+                = link_to @house.name, neighborhood_house_path(@neighborhood, @house)
               - else
-                = link_to "Casa " + @house.name, house_path(@house)
-            - else 
+                = link_to "Casa " + @house.name, neighborhood_house_path(@neighborhood, @house)
+            - else
               = link_to "Create My House", edit_user_path(@user)
         .span2{:style => "margin-left:25px;"}
-          %h3.user_neighborhood 
+          %h3.user_neighborhood
             =link_to @neighborhood.name, neighborhood_path(@neighborhood)
-    
+
     .row
       #user_top_pictures
-        .span10.offset1    
+        .span10.offset1
           .user_profile_picture{:style => "float:left;margin-top:0px;"}
             - if @user.profile_photo_file_name.nil?
               = image_tag("default_images/profile_default_image.png")
-            - else 
+            - else
               = image_tag(@user.profile_photo.url(:large))
           .user_house_picture{:style => "float:left;margin-top:47px;margin-left:5px;"}
             - if @house.profile_photo_file_name.nil?
-              = link_to image_tag("default_images/house_default_image.png"), house_path(@house)
-            - else 
-              = link_to image_tag(@user.house.profile_photo.url(:medium)), house_path(@house)
+              = link_to image_tag("default_images/house_default_image.png"), neighborhood_house_path(@neighborhood, @house)
+            - else
+              = link_to image_tag(@user.house.profile_photo.url(:medium)), neighborhood_house_path(@neighborhood, @house)
 
           .user_neighborhood_picture{:style => "float:left;margin-top:47px;margin-left:5px;"}
             =link_to image_tag("default_images/neighborhood_default_image.png"), neighborhood_path(@neighborhood)
-            
-        
+
+
     .row
       #user_recent_activity.span15.offset1
         .row{:style => "margin-top:10px;"}
@@ -102,7 +102,7 @@
           %h3.span15
             Atividade recente
         .row
-          .span12          
+          .span12
             = link_to 'Todos', user_path(@user, :filter => 'all'), :class => @feed_active_all
             |
             = link_to 'Focos', user_path(@user, :filter => 'reports'), :class => @feed_active_reports
@@ -133,7 +133,7 @@
                 = image_tag("badges/de_olho.png")
               .row.span4{:style => "font-size:14px;weight:bold;color:#4E6868;text-align:center;margin-top:8px;"}
                 100 pontos
-        
+
         - if @user.total_points >= 450
           %li
             .badge_box
@@ -161,10 +161,7 @@
               .span2{:style => "margin-top:20px;margin-left:75px;"}
                 = image_tag("badges/cuido.png")
               .row.span4{:style => "font-size:14px;weight:bold;color:#4E6868;text-align:center;margin-top:8px;"}
-                1800 pontos 
+                1800 pontos
       %ul#coupons_list{style: "margin-left:10px;"}
         - @coupons.reverse.each do |coupon|
           = render :partial => "prize_codes/coupon", :object => coupon
-
-
-

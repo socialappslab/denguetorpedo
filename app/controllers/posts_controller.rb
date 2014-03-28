@@ -53,7 +53,8 @@ class PostsController < ApplicationController
   private
 
   def load_wall
-    resource, id = request.path.split('/')[1,2]
-    @wall = resource.singularize.classify.constantize.find(id) 
+    # TODO @dman7: This is not the way of identifying resources...
+    resource, id = request.path.split('/')[3,4]
+    @wall = resource.singularize.classify.constantize.find(id)
   end
 end

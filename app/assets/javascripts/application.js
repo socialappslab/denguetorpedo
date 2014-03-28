@@ -37,8 +37,8 @@ function gmaps4rails_callback() {
    });
  }
 function drawItems(theBounds) {
-   var url = '/venues.json/?sw_y=' + theBounds.getSouthWest().lng() + 
-                          '&sw_x=' + theBounds.getSouthWest().lat() + 
+   var url = '/venues.json/?sw_y=' + theBounds.getSouthWest().lng() +
+                          '&sw_x=' + theBounds.getSouthWest().lat() +
                           '&ne_y=' + theBounds.getNorthEast().lng() +
                           '&ne_x=' + theBounds.getNorthEast().lat();
    $.get(url, function(newItemData) {
@@ -65,11 +65,11 @@ function drawItems(theBounds) {
       return support && {
         end: (function () {
           var transitionEnd = "TransitionEnd"
-          if ( $.browser.webkit ) {
+          if ( $.browser && $.browser.webkit ) {
                 transitionEnd = "webkitTransitionEnd"
-          } else if ( $.browser.mozilla ) {
+          } else if ( $.browser && $.browser.mozilla ) {
                 transitionEnd = "transitionend"
-          } else if ( $.browser.opera ) {
+          } else if ( $.browser && $.browser.opera ) {
                 transitionEnd = "oTransitionEnd"
           }
           return transitionEnd
@@ -78,7 +78,7 @@ function drawItems(theBounds) {
     })()
 
   })
-  
+
 }( window.jQuery )
 
 
@@ -203,7 +203,7 @@ function drawItems(theBounds) {
   }
 
   $.fn.collapse.Constructor = Collapse
-  
+
 
  /* COLLAPSIBLE DATA-API
   * ==================== */

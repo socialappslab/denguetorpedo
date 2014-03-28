@@ -1,45 +1,46 @@
 Dengue::Application.routes.draw do
-  
   resources :manual_instructions, :only => [:new, :create, :edit, :update, :destroy, :index]
-
   resources :feedbacks
 
- resources :elimination_methods
- resources :elimination_types
 
-  resources :notices
+  #----------------------------------------------------------------------------
+  # Sidekiq monitoring
 
-  match "howto/:id/edit" => "manual_instructions#edit"
-  match "/home/:id" => "home#index", :as => "Home"
-  match "/faq" => 'home#faq'
-  match "/manual" => "home#manual"
-  match "/howto" => "home#howto"
-  match '/contact' => 'home#contact'
-  match 'about' => 'home#about'
-  match '/education' => 'home#education'
-  match '/credit' => 'home#credit'
-    
-  match "/user/:id/prize_codes" => 'prize_codes#index'
-  match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
-  match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
-  post 'premios/:id' => "prizes#new_prize_code"
-  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
-  get "dashboard/index"
-  get "password_resets/new"
-  post "reports/sms"
-  
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
+  #----------------------------------------------------------------------------
+
+  # TODO: Do we really need these routes? They are used in reports/types.html
+  # but their implementation is not intuitive.
+  resources :elimination_methods
+  resources :elimination_types
+
+  # TODO: What are the torpedos and why are they public???
+  # TODO: Why are the phones listed publicly?
   get "torpedos/:id" => "reports#torpedos"
-  # SMS Gateway Routes
+  get '/phones' => "users#phones"
+
+  # TODO: Make this into an actual route.
+  # TODO: Are we actually using these routes?
+  get '/cupons/sponsor/:id' => "prize_codes#sponsor"
+
+  #----------------------------------------------------------------------------
+  # SMS Gateway routes.
+
   get "/sb/rest/sms/inject" => "sms_gateway#inject"
   get "/sb/rest/sms/notifications" => "sms_gateway#notifications"
   get "/sb/rest/sms/remove" => "sms_gateway#remove"
-  
-  get '/cupons/sponsor/:id' => "prize_codes#sponsor"
 
-  get '/phones' => "users#phones"
+  #----------------------------------------------------------------------------
+  # Users routes.
 
-  get '/premios/admin' => "prizes#admin"
-  # Resources Routes
+  # TODO: Are these matches even necessary? Can we remove them or fold them
+  # under the :users resource?
+  match "/user/:id/prize_codes" => 'prize_codes#index'
+  match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
+  match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
+  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
   resources :users do
     resources :reports, :except => [:show]
     resources :posts
@@ -49,105 +50,121 @@ Dengue::Application.routes.draw do
       put 'block'
     end
   end
-  
-  resources :sponsors
-  
-  resources :dashboard
-  resources :reports do
-    collection do
-      put 'update'
-      post 'verify'
-      post 'problem'
-      post 'gateway'
-      get 'notifications'
-      get 'types'
+
+  #----------------------------------------------------------------------------
+  # Neighborhoods
+
+  resources :neighborhoods, :only => [:show] do
+    resources :reports do
+      collection do
+        put 'update'
+        post 'verify'
+        post 'problem'
+        post 'gateway'
+        get 'notifications'
+        get 'types'
+      end
+      member do
+        post 'creditar'
+        post 'credit'
+        post 'discredit'
+      end
     end
-    member do
-      post 'creditar'
-      post 'credit'
-      post 'discredit'
+
+    resources :houses do
+      resources :posts
     end
-  #put 'reports' => 'reports#update'
   end
-  
-  resources :houses do
-    resources :posts
-  end
-  
-  resources :badges
-  resource :session, :only => [:new, :create, :destroy]
-  match 'exit' => 'sessions#destroy', :as => :logout
-  resources :password_resets, :only => [:new, :create, :edit, :update]
-  resources :verifications
-  resources :forums, :only => [:index]
-  resources :neighborhoods, :only => [:show]
-  resources :buy_ins, :only => [:new, :create, :destroy]
-  resources :group_buy_ins, :only => [:new, :create, :destroy]
+
+  #----------------------------------------------------------------------------
+  # Deprecated Routes with Neighborhood Redirect Directive
+  # The following (2) resources are now nested under the neighborhood resource.
+  # We're keeping them around in case users have gotten in the habit of using
+  # these routes. Eventually, they should be removed completely. We redirect
+  # to the *first* neighborhood as that was the intended behavior before
+  # multiple neighborhoods
+  # NOTE: Unfortunately, these rules do not account for HTTP verbs besides GET
+  # so we won't rely on this being a complete redirect solution.
+
+  # TODO: We're keeping the original routes around so we don't get
+  # undefined '_path' errors. At some point, we should refacto these.
+  match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
+  match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
+  # resources :reports do
+  #   collection do
+  #     put 'update'
+  #     post 'verify'
+  #     post 'problem'
+  #     post 'gateway'
+  #     get 'notifications'
+  #     get 'types'
+  #   end
+  #   member do
+  #     post 'creditar'
+  #     post 'credit'
+  #     post 'discredit'
+  #   end
+  # end
+
+  match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
+  match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
+  # resources :houses do
+  #   resources :posts
+  # end
+
+  #----------------------------------------------------------------------------
+  # Prizes
+
+  post 'premios/:id' => "prizes#new_prize_code"
+  get '/premios/admin' => "prizes#admin"
   resources :prizes, :path => "premios" do
     collection do
       get 'badges'
     end
   end
+
+  #----------------------------------------------------------------------------
+  # User Session
+
+  resource :session, :only => [:new, :create, :destroy]
+  match 'exit' => 'sessions#destroy', :as => :logout
+
+  get "password_resets/new"
+  resources :password_resets, :only => [:new, :create, :edit, :update]
+
+  #----------------------------------------------------------------------------
+  # Prize Codes
+
   resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"
+
+  #----------------------------------------------------------------------------
+  # Miscellaneous routes.
+
+  resources :feedbacks
+  resources :notices
+  resources :sponsors
+  get "dashboard/index"
+  resources :dashboard
   resources :notifications
+  resources :badges
+  resources :verifications
+  resources :forums, :only => [:index]
+  resources :buy_ins, :only => [:new, :create, :destroy]
+  resources :group_buy_ins, :only => [:new, :create, :destroy]
 
+  #----------------------------------------------------------------------------
+  # Landing Pages routes.
 
-  root :to => 'home#index'
+  match "home/:id" => "home#index", :as => "Home"
+  root :to        => 'home#index'
+  get "faq"       => 'home#faq'
+  get "manual"    => "home#manual"
+  get "howto"     => "home#howto"
+  get "contact"   => 'home#contact'
+  get "about"     => 'home#about'
+  get "education" => 'home#education'
+  get "credit"    => 'home#credit'
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
+  #----------------------------------------------------------------------------
 
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Sample resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Sample resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Sample resource route with more complex sub-resources
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', :on => :collection
-  #     end
-  #   end
-
-  # Sample resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
-
-  # See how all your routes lay out with "rake routes"
-
-  # This is a legacy wild controller route that's not recommended for RESTful applications.
-  # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id(.:format)))'
 end

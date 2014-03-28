@@ -27,11 +27,17 @@ class UsersController < ApplicationController
       format.json { render json: { users: @users}}
     end
   end
-  
+
+  #----------------------------------------------------------------------------
+
   def show
     @post = Post.new
 
-    @user = User.find_by_id(params[:id]) || User.find_by_auth_token(params[:auth_token])
+    @user         = User.find_by_id(params[:id])
+    @neighborhood = @user.neighborhood
+    @house        = @user.house
+    @prizes       = @user.prizes
+    @badges       = @user.badges
 
     head :not_found and return if @user != @current_user and @user.role == "lojista"
     head :not_found and return if @user.nil?
@@ -39,12 +45,12 @@ class UsersController < ApplicationController
     @user_posts = @user.posts
     @elimination_method_select = EliminationMethods.field_select
 
-    @house = @user.house
-    @neighborhood = @user.neighborhood
-    @prizes = @user.prizes
+
+
+
     @prize_ids = @prizes.collect{|prize| prize.id}
-    @badges = @user.badges
-    
+
+
     @isPrivatePage = (@user == @current_user)
     @highlightProfileItem = @isPrivatePage ? "nav_highlight" : ""
     @coupons = @user.prize_codes
@@ -67,7 +73,7 @@ class UsersController < ApplicationController
     @elimination_types = EliminationType.pluck(:name)
     reports_with_status_filtered = []
     locations = []
-    
+
     @prantinho = EliminationMethods.prantinho
     @pneu = EliminationMethods.pneu
     @lixo = EliminationMethods.lixo
@@ -87,6 +93,8 @@ class UsersController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def new
     @user = User.new
   end
@@ -102,7 +110,7 @@ class UsersController < ApplicationController
       @user.house.location.longitude = 0
     end
   end
-  
+
   def create
     #remove whitespace from user signup
     params[:user].each{|key,val| params[:user][key] = params[:user][key].strip}
@@ -133,46 +141,35 @@ class UsersController < ApplicationController
     # flash[:notice] = nil
   end
 
-  # def update
 
-  #   @user = User.find(params[:id])
-  #   @user.update_attributes(params[:user])
-  #   if @user.house == nil
-  #     if house = House.find_by_name(params[:user][:house_attributes][:name])
-  #       if params[:confirm] == "1"
-  #         @user.house = house
-  #       else
-  #         flash[:notice] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
-  #         @confirm = 1
-  #         render "edit"
-  #       end
-        
-        
-  #     else
+  #----------------------------------------------------------------------------
+  # PUT /users
+  #
+  # Parameters:
+  # {"user"=>{
+  #   "first_name"=>"Admin", "last_name"=>"Admin", "nickname"=>"", "gender"=>"true",
+  #   "email"=>"admin@denguetorpedo.com", "phone_number"=>"000000000000",
+  #   "carrier"=>"xxx", "prepaid"=>"true",
+  #   "house_attributes"=>{
+  #      "name"=>"Bariio",
+  #     "id"=>"5"
+  #   },
+  #   "location"=>{
+  #     "neighborhood_id"=>"1", "street_type"=>"", "street_name"=>"",
+  #     "street_number"=>""
+  #   },
+  #   "display"=>"firstmiddlelast", "cellphone"=>"false"
 
-  #       @user.house = House.create!(params[:user][:house_attributes])
-  #     end
-  #   else
-  #     @user.house.update_attributes(params[:user][:house_attributes])
-  #     @user.house.save
-  #   end
-  #   if @user.save
-  #     flash[:notice] = 'Perfil atualizado com sucesso!'
-  #     redirect_to edit_user_path(@user)
-  #   else
-  #     flash[:alert] = @user.errors.full_messages.join(" ")
-  #     @user.house ||= House.new
-  #     @user.house.location ||= Location.new
-  #     @user.house.location.latitude ||= 0
-  #     @user.house.location.longitude ||= 0
-  #     render "edit"
-  #   end
-
-
-  # end
-  
   def update
-    puts params
+    @user = User.find(params[:id])
+
+    neighborhood = Neighborhood.find_by_id(params[:user][:neighborhood_id])
+    if neighborhood.nil?
+      flash[:alert] = "Neighborhood not recognized."
+      redirect_to :back and return
+    end
+
+    @user.neighborhood = neighborhood
 
     if @current_user.role != "visitante"
       house_name = params[:user][:house_attributes][:name]
@@ -197,7 +194,7 @@ class UsersController < ApplicationController
     user_nickname = params[:user][:nickname]
 
 
-    @user = User.find(params[:id])
+
     if !user_profile_phone_number.empty? #and !user_profile_phone_number_confirmation.empty?
       #if user_profile_phone_number == user_profile_phone_number_confirmation
       if user_profile_phone_number != @user.phone_number
@@ -240,11 +237,11 @@ class UsersController < ApplicationController
 
 
     @user.prepaid = params[:user][:prepaid]
-    
+
     if user_profile_photo
       @user.profile_photo = user_profile_photo
     end
-    
+
     if not user_email.blank?
       @user.email = user_email
     end
@@ -255,6 +252,8 @@ class UsersController < ApplicationController
       redirect_to :back
       return
     end
+
+
 
     # if a house exists with the same house name or house address, inform the user for confirmation
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
@@ -281,7 +280,7 @@ class UsersController < ApplicationController
       if @user.role != "visitante"
         house_address = params[:user][:location][:street_type].titleize + " " + params[:user][:location][:street_name].titleize + " " + params[:user][:location][:street_number].titleize
 
-        
+
         if @user.house
           @user.house.name = house_name
           if house_profile_photo
@@ -321,7 +320,7 @@ class UsersController < ApplicationController
         end
       end
 
-      
+
 
       if @user.house and !@user.house.save
         flash[:notice] = "Preencha o nome da casa."
@@ -351,10 +350,13 @@ class UsersController < ApplicationController
         @user.house.location = Location.new
         render "edit"
         return
-      end 
-    end 
+      end
+    end
   end
-  
+
+
+  #----------------------------------------------------------------------------
+
   def destroy
     @user = User.find(params[:id])
     @user.destroy
@@ -378,7 +380,7 @@ class UsersController < ApplicationController
   end
 
   def special_create
-    
+
     @user = User.new(params[:user])
     authorize! :edit, @user
     if params[:user][:house_attributes]
@@ -394,7 +396,7 @@ class UsersController < ApplicationController
 
       if @user.house == nil
         if params[:user][:role] == "lojista"
-          flash[:alert] = "There was an error creating a sponsor."      
+          flash[:alert] = "There was an error creating a sponsor."
         else
           flash[:alert] = "There was an error creating a verifier."
         end

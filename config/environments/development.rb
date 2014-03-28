@@ -13,13 +13,20 @@ Dengue::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
-  
+
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
+
+  # http://stackoverflow.com/questions/8031007/how-to-increase-heroku-log-drain-verbosity-to-include-all-rails-app-details/8075630#8075630
+  STDOUT.sync = true
+  logger = Logger.new(STDOUT)
+  logger.level = 0
+  Rails.logger = Rails.application.config.logger = logger
+
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
@@ -31,11 +38,11 @@ Dengue::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { host: "127.0.0.1", port: "5000", protocol: "http"}
-  
+
   config.log_level = :debug
 
   # config.i18n.available_locales = :pt
-   
+
   # Gmail SMTP
   config.action_mailer.delivery_method = :smtp
    # Gmail SMTP server setup
@@ -51,7 +58,7 @@ Dengue::Application.configure do
 
   # Paperclip gem: ImageMagic path
   Paperclip.options[:command_path] = "/usr/local/bin/convert"
-  
+
   # S3 Credential
   config.paperclip_defaults = {
     :storage => :filesystem

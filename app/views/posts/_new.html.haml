@@ -1,7 +1,7 @@
 %h3 Compartilhe suas idéias com a turma do Dengue Torpedo!
 .row
   .span8
-    = form_for [wall, @post] do |f|
+    = form_for [@neighborhood, wall, @post] do |f|
       .row
         .span8
           = f.error_messages
@@ -15,4 +15,3 @@
         .row
           .span2.offset8{:style => "margin-left:539px;"}
             = f.submit "Publicar"
-

@@ -25,5 +25,12 @@ production:
   pool: 5
   timeout: 5000
 
+staging:
+  adapter: sqlite3
+  encoding: unicode
+  database: db/staging.sqlite3
+  pool: 5
+  timeout: 5000
+
 cucumber:
   <<: *test

@@ -1,7 +1,7 @@
 #!/bin/env ruby
 # encoding: utf-8
 
-class ReportsController < ApplicationController
+class ReportsController < NeighborhoodsBaseController
 
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id, only: [:creditar, :credit, :discredit]
@@ -98,19 +98,13 @@ class ReportsController < ApplicationController
     flash[:x] = params[:x]
     flash[:y] = params[:y]
 
-    # When the user inputs an address into the textfields, we trigger an ESRI
-    # map search on the associated map that updates the x and y hidden fields
-    # in the form.
-    # NOTE: We're commenting this check for now in case the map doesn't
-    # respond.
-    # if params[:x].empty? or params[:y].empty?
-    #   flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-    #   redirect_to :back and return
-    # end
-
-
     # Find the location based on user's input (street type, name, number) and
     # ESRI's geolocation (latitude, longitude).
+    # When the user inputs an address into the textfields, we trigger an ESRI
+    # map search on the associated map that updates the x and y hidden fields
+    # in the form. In the case that the map is unavailable (or JS is disabled),
+    # an after_commit hook into the Location model will trigger a background
+    # worker to fetch the map coordinates.
     location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
       params[:street_type].downcase.titleize,
       params[:street_name].downcase.titleize,
@@ -224,7 +218,7 @@ class ReportsController < ApplicationController
         if @report.save
           @report.update_attributes(completed_at: Time.now)
           flash[:notice] = "Foco completado com sucesso!"
-          redirect_to reports_path
+          redirect_to neighborhood_reports_path(@neighborhood)
         else
           flash[:alert] = "There was an error completing your report!"
           redirect_to :back
@@ -326,7 +320,7 @@ class ReportsController < ApplicationController
       #  @report.touch(:eliminated_at)
       #  @report.save
       #  flash[:notice] = "Você eliminou o foco!1"
-      #  redirect_to reports_path
+      #  redirect_to neighborhood_reports_path(@neighborhood)
       #  return
       #end
 
@@ -404,7 +398,7 @@ class ReportsController < ApplicationController
       flash[:notice] = "Foco deletado com sucesso."
     end
 
-    redirect_to(:back)
+    redirect_to neighborhood_reports_path(@neighborhood) and return
   end
 
   def verify
@@ -429,7 +423,7 @@ class ReportsController < ApplicationController
       @current_user.total_points += 50
       @current_user.save
       flash[:notice] = "O foco foi verificado."
-      redirect_to reports_path
+      redirect_to neighborhood_reports_path(@neighborhood)
     else
       redirect_to :back
     end
@@ -453,7 +447,7 @@ class ReportsController < ApplicationController
     end
     if @report.save
       flash[:notice] = "O foco foi verificado."
-      redirect_to reports_path
+      redirect_to neighborhood_reports_path(@neighborhood)
     else
       redirect_to :back
     end
@@ -526,10 +520,17 @@ class ReportsController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   private
+
+  #----------------------------------------------------------------------------
+
   def find_by_id
     @report = Report.find(params[:id])
   end
+
+  #----------------------------------------------------------------------------
 
   def award_points report, user
     if report.elimination_method.present?
@@ -540,7 +541,6 @@ class ReportsController < ApplicationController
     end
   end
 
-  #end
-
+  #----------------------------------------------------------------------------
 
 end

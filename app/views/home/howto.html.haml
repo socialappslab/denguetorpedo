@@ -6,26 +6,26 @@
     %br
     .accordion#accordion1
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#cadastrar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #cadastrar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como se cadastrar
             =@manualInstruction1.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction1)
 
-        #cadastrar.collapse.in.accordion-body
+        #cadastrar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
             =simple_format(@manualInstruction1.description)
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#completar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #completar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como completar sua conta
             =@manualInstruction2.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction2)
-        #completar.collapse.in.accordion-body
+        #completar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             - str = @manualInstruction2.description
             - str1 = str.slice(0..(str.index('**Configurações de morador**')-2))
@@ -43,35 +43,35 @@
             =simple_format(str3)
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#barra").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #barra.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Barra de navegação
             =@manualInstruction3.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction3)
-        #barra.collapse.in.accordion-body
+        #barra.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
-            =simple_format(@manualInstruction3.description) 
+            =simple_format(@manualInstruction3.description)
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#foco").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #foco.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /O que é um foco?
             =@manualInstruction4.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction4)
-        #foco.collapse.in.accordion-body
+        #foco.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             =simple_format(@manualInstruction4.description)
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#jogar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #jogar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como jogar
             =@manualInstruction5.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction5)
-        #jogar.collapse.in.accordion-body
+        #jogar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             - str = @manualInstruction5.description
             - str1 = str.slice(0..(str.index('**Visualizando focos**')-1))
@@ -84,10 +84,10 @@
             -ind = str.index('**Marcando focos**') + '**Marcando focos**'.length
             -str3 = str.slice(ind..(str.index('**Pelo site do Dengue Torpedo**')-1))
             =simple_format(str3)
-            %h3{style: "font-weight:bold;"} Pelo site do Dengue Torpedo   
+            %h3{style: "font-weight:bold;"} Pelo site do Dengue Torpedo
             - ind = str.index('**Pelo site do Dengue Torpedo**') + '**Pelo site do Dengue Torpedo**'.length
             - str4 = str.slice(ind..(str.index('**Por Torpedo**')-1))
-            =simple_format(str4)         
+            =simple_format(str4)
             %h3{style: "font-weight:bold;"} Por Torpedo
             - ind = str.index('**Por Torpedo**') + '**Por Torpedo**'.length
             - str5 = str.slice(ind..(str.index('**Eliminando focos**')-1))
@@ -105,13 +105,13 @@
             =simple_format(str.slice(ind..(str.length)))
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#ganhar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #ganhar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como ganhar
             =@manualInstruction6.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction6)
-        #ganhar.collapse.in.accordion-body
+        #ganhar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
 
             - str = @manualInstruction6.description
@@ -129,36 +129,36 @@
                   %td{rowspan: "4", width: "42%"} Pratinho de planta
                   %td{width: "42%"} Elimine fazendo furos no pratinho
                   %td{width: "14%"} 200
-                %tr 
+                %tr
                   %td{width: "42%"} Prato removido (ou seja, não mais utilizado)
                   %td{width: "14%"} 200
-                %tr 
+                %tr
                   %td{width: "42%"} Coloque areia
                   %td{width: "14%"} 100
-                %tr 
+                %tr
                   %td{width: "42%"} Retire a água e esfregue para remover possíveis ovos (uma vez por semana).
                   %td{width: "14%"} 50
                 %tr
                   %td{rowspan: "4", width: "42%"} Pneu
                   %td{width: "42%"} Desfaça-se do pneu (entregue ao serviço de limpeza)
                   %td{width: "14%"} 50
-                %tr 
+                %tr
                   %td{width: "42%"} Arranje um uso alternativo para o pneu: preencha com terra e faça uma horta; preencha com areia, terra e cimento e utilize como degrau.
                   %td{width: "14%"} 450
-                %tr 
+                %tr
                   %td{width: "42%"} Transferir o pneu sem água para um local coberto e seco.
                   %td{width: "14%"} 100
-                %tr 
+                %tr
                   %td{width: "42%"} Cubra o pneu com algo que não se transforme em um foco potencial do mosquito.
                   %td{width: "14%"} 100
                 %tr
                   %td{rowspan: "3", width: "42%"} Lixo (recipientes inutilizados)
                   %td{width: "42%"} Jogá-los em uma lixeira bem tampada.
                   %td{width: "14%"} 0
-                %tr 
+                %tr
                   %td{width: "42%"} Organize um mutirão de limpeza na vizinhança (coordenado pelos Agentes de Vigilância Sanitária) OBS: em locais onde não há atuação dos garis comunitários.
                   %td{width: "14%"} 450
-                %tr 
+                %tr
                   %td{width: "42%"} Participe de um mutirão de limpeza na vizinhança (coordenado pelos Agentes de Vigilância Sanitária) OBS: em locais onde não há atuação dos garis comunitários.
                   %td{width: "14%"} 350
                 %tr
@@ -166,17 +166,17 @@
 
                   %td{width: "42%"} Remova a água e esfregue uma vez por semana; ou, no caso de bebedouros de animais e aves, trocar a água e limpar diariamente.
                   %td{width: "14%"} 50
-                %tr 
+                %tr
                   %td{width: "42%"} Virar de cabeça para baixo, secar e armazenar.
                   %td{width: "14%"} 50
                 %tr
                   %td{rowspan: "3", width: "42%"} Grandes Recipientes Utilizáveis, Tonéis, outras depósitos de água, pias, galões d’água.
                   %td{width: "42%"} Cobrir a caixa d’água
                   %td{width: "14%"} 450
-                %tr 
+                %tr
                   %td{width: "42%"} Vedar adequadamente com tapa e ou capa apropriada
                   %td{width: "14%"} 200
-                %tr 
+                %tr
                   %td{width: "42%"} Outros recipientes: esfregue, seque, cubra ou sele.
                   %td{width: "14%"} 350
                 %tr
@@ -187,10 +187,10 @@
                   %td{rowspan: "3", width: "42%"} Registros abertos
                   %td{width: "42%"} Sele com cobertura impermeável para prevenir a penetração da água e ainda ter acesso ao registro.
                   %td{width: "14%"} 300
-                %tr 
+                %tr
                   %td{width: "42%"} Preencha com areia ou terra e mude o acesso à válvula.
                   %td{width: "14%"} 300
-                %tr 
+                %tr
                   %td{width: "42%"} Vedar.
                   %td{width: "14%"} 300
                 %tr
@@ -202,7 +202,7 @@
                   %td{rowspan: "2", width: "42%"} Piscinas
                   %td{width: "42%"} Piscinas em uso: esfregue e limpe uma vez por semana
                   %td{width: "14%"} 350
-                %tr 
+                %tr
                   %td{width: "42%"} Piscinas que não estão em uso: esfregue, seque e vire ao contrário. Em casos de piscina de plástico desmonte e guarde.
                   %td{width: "14%"} 350
                 %tr
@@ -213,20 +213,20 @@
                   %td{rowspan: "3", width: "42%"} Ralos
                   %td{width: "42%"} Jogue água sanitária ou desinfetante semanalmente.
                   %td{width: "14%"} 50
-                %tr 
+                %tr
                   %td{width: "42%"} Elimine entupimento
                   %td{width: "14%"} 50
-                %tr 
+                %tr
                   %td{width: "42%"} Vede ralos não utilizados
                   %td{width: "14%"} 50
                 %tr
                   %td{rowspan: "3", width: "42%"} Plantas ornamentais que acumulam água (ex: bromélias).
                   %td{width: "42%"} Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.
                   %td{width: "14%"} 50
-                %tr 
+                %tr
                   %td{width: "42%"} Retire a água acumulada nas folhas
                   %td{width: "14%"} 50
-                %tr 
+                %tr
                   %td{width: "42%"} Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.
                   %td{width: "14%"} 50
             %h2 Trocando pontos
@@ -234,11 +234,11 @@
             -ind = str.index('**Por prêmios**') + '**Por prêmios**'.length
             -str3 = str.slice(ind..(str.index('**Por medalhas**')-1))
             =simple_format(str3)
-            %h3{style: "font-weight:bold;"} Por medalhas   
+            %h3{style: "font-weight:bold;"} Por medalhas
             - ind = str.index('**Por medalhas**') + '**Por medalhas**'.length
             - str4 = str.slice(ind..(str.index('**Restituindo créditos de celular pré-pago.**')-1))
             =simple_format(str4)
-            %h3{style: "font-weight:bold;"} Restituindo créditos de celular pré-pago.         
+            %h3{style: "font-weight:bold;"} Restituindo créditos de celular pré-pago.
             - ind = str.index('**Restituindo créditos de celular pré-pago.**') + '**Restituindo créditos de celular pré-pago.**'.length
             - str5 = str.slice(ind..(str.index('**table2**')-1))
             =simple_format(str5)
@@ -278,13 +278,13 @@
             =simple_format(str.slice(ind..(str.length)))
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#participar").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #participar.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Como participar
             =@manualInstruction7.title
           -if @current_user != nil && @current_user.role == "admin"
             =link_to "Edit",edit_manual_instruction_path(@manualInstruction7)
-        #participar.collapse.in.accordion-body
+        #participar.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             - str = @manualInstruction7.description
             - str1 = str.slice(0..(str.index('**Moradores**')-1))
@@ -297,14 +297,14 @@
             -ind = str.index('**Patrocinadores**') + '**Patrocinadores**'.length
             -str3 = str.slice(ind..(str.index('**Verificadores**')-1))
             =simple_format(str3)
-            %h2 Verificadores  
+            %h2 Verificadores
             - ind = str.index('**Verificadores**') + '**Verificadores**'.length
             =simple_format(str.slice(ind..(str.length)))
-            
+
 
       .accordion-group
-        .accordion-heading{style: "padding:10px;"}
-          %a{href: 'javascript:$("#comunidade").collapse("toggle");', style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        #comunidade.accordion-heading{style: "padding:10px;"}
+          %a{style: "font-size:20px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
             /Minha comunidade
             =@manualInstruction8.title
           -if @current_user != nil && @current_user.role == "admin"
@@ -312,7 +312,3 @@
         #comunidade.collapse.in.accordion-body
           .accordion-inner{style: "padding: 9px 25px;"}
             =simple_format(@manualInstruction8.description)
-
-:javascript
-  $(".collapse").collapse();
-            

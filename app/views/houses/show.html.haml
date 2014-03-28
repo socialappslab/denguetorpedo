@@ -1,5 +1,5 @@
 .row
-  .span15.offset1    
+  .span15.offset1
     %h1
       - if @house.user.role == "verificador"
         - if @house.user.gender == true
@@ -17,8 +17,8 @@
   .span9.offset1
     %br
     .row
-    
-      .span4        
+
+      .span4
         - if @house.profile_photo.nil?
           = image_tag "default_images/house_default_image.png", :id => 'house_photo'
         - else
@@ -33,15 +33,13 @@
               .row
                 #house_neighborhood_bg
                   = link_to @house.neighborhood.name, neighborhood_path(@house.neighborhood)
-              .row
-                #{@house.location.nation}             
           .span2.offset1
-            .house_gray            
+            .house_gray
               .row{style: "margin-left:-40px;"}
                 Pontos da casa
               .row
                 #house_points_bg
-                  #{ @house.points.to_s}          
+                  #{ @house.points.to_s}
           .row
             #house_badges
             .span5
@@ -64,17 +62,17 @@
       .span10
         %h2 Vizinhos na #{@house.neighborhood.name}
         #houses_in_neighborhood
-          - if @neighbors.count == 1 
+          - if @neighbors.count == 1
             %p Não tem nenhum vizinho usando Dengue Torpedo. Recrute alguem!
           - else
             %ul
             - for neighbor in @neighbors
               %li
                 - if neighbor.profile_photo_file_name.nil?
-                  = link_to image_tag("default_images/house_small_default_image.png"), house_path(neighbor), title: "#{neighbor.name}"
-                - else 
-                  = link_to image_tag(neighbor.profile_photo.url(:small), :width => 70, :height => 70), house_path(neighbor), title: "#{neighbor.name}"
-                  
+                  = link_to image_tag("default_images/house_small_default_image.png"), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
+                - else
+                  = link_to image_tag(neighbor.profile_photo.url(:small), :width => 70, :height => 70), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
+
     /.row
     /  .span8
     /    = render :partial => "posts/new", locals: { wall: @house }
@@ -82,18 +80,11 @@
     .row{:style => "margin-top:13px;"}
       %h2.span15
         Blogs e focos marcados
-    /.row
-    /  .span12          
-    /    = link_to 'Todos', house_path(@user, :filter => 'all'), :class => @feed_active_all
-    /    |
-    /    = link_to 'Focos', house_path(@user, :filter => 'reports'), :class => @feed_active_reports
-    /    |
-    /    = link_to 'Blog', user_path(@user, :filter => 'posts'), :class => @feed_active_posts
     .row
       .span9
         - for post in @house.posts.sort{|a, b| b.created_at <=> a.created_at}
           = render :partial => "/posts/post", :locals => {:post => post}
-    
+
   .span6
     .row{:style => "margin-top:-37px;"}
       %h2.span6 Focos marcados pela casa:
@@ -119,7 +110,7 @@
                   extent: customExtent,
                   infoWindow:popup
                 });
-                
+
                 var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
                 map.addLayer(tiled);
 
@@ -160,11 +151,11 @@
                     count = counts[markers[i].id];
                     open_count = open_counts[markers[i].id];
                     eliminated_count = eliminated_counts[markers[i].id];
-                    
+
                     var template = new InfoTemplate();
                     template.setTitle(markers[i].address);
                     template.content = "<p>Em aberto: </p><br><p>Expirados: </p><br><p>Eliminados: </p>";
-                    
+
                     var graphic;
                     var textGraphic;
 
@@ -180,7 +171,7 @@
                     textSymbol = new TextSymbol(count).setColor("#000000").setOffset(0, 25);
                     textGraphic = new Graphic(new Point(markers[i].x, markers[i].y), textSymbol);
                     graphic.setInfoTemplate(template);
-                    textGraphic.setInfoTemplate(template); 
+                    textGraphic.setInfoTemplate(template);
                     map.graphics.add(graphic);
                     map.graphics.add(textGraphic);
                   }
@@ -249,7 +240,7 @@
                       .row
                         = @house.eliminated_reports.count
                       .row Eliminados
-              
+
         .row
           #list_of_house_reports
             - for report in @house.reports
@@ -258,7 +249,7 @@
                   = render :partial => "/houses/open_report", :object => report
                 - if report.status == :eliminated
                   = render :partial => "/houses/resolved_report", :object => report
-             
+
 
 :javascript
   $(document).ready( function() {
