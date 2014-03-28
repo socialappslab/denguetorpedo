@@ -1,6 +1,6 @@
 Dengue::Application.routes.draw do
   
-  resources :manual_instructions
+  resources :manual_instructions, :only => [:new, :create, :edit, :update, :destroy, :index]
 
   resources :feedbacks
 
