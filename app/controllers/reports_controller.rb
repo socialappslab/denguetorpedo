@@ -20,17 +20,24 @@ class ReportsController < NeighborhoodsBaseController
     @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
 
-    # TODO @awdorsett - refactor to make sure views aren't dependent on view param, remove this section
-    #params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
-    #params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
-    #params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
-    #params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
-    #params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
 
-    # New report form attributes
-    @new_report = Report.new
+    # new report form attributes
+    # use existing params if create incurred an error
+    report_params = session[:params][:report] if session[:params]
+
+    # if report_params is nil, error occured during create, use this to jump to create tab
+    @create_error = report_params.present?
+
+    @new_report = Report.new(report_params)
+    @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
+
     @elimination_types = EliminationType.pluck(:name)
-    # end
+
+    session[:params] = nil
+    session[:location_id] = nil
+
+
+
 
     @elimination_method_select = EliminationMethods.field_select
 
@@ -46,6 +53,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
 
     # if report has been completed or has an error, move it to front
+    # session[:saved_report] created in update controller
     # TODO @awdorsett - more effecient way?
     if session[:saved_report]
       @reports = [Report.find_by_id(session[:saved_report])] + @reports
@@ -97,6 +105,9 @@ class ReportsController < NeighborhoodsBaseController
   # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
 
   def create
+    # used to handle errors, if error occurs then set to false
+    create_complete = true
+
     # TODO @dman7: What is this???
     flash[:street_type] = params[:street_type]
     flash[:street_name] = params[:street_name]
@@ -105,22 +116,30 @@ class ReportsController < NeighborhoodsBaseController
     flash[:x] = params[:x]
     flash[:y] = params[:y]
 
-    # Find the location based on user's input (street type, name, number) and
-    # ESRI's geolocation (latitude, longitude).
-    # When the user inputs an address into the textfields, we trigger an ESRI
-    # map search on the associated map that updates the x and y hidden fields
-    # in the form. In the case that the map is unavailable (or JS is disabled),
-    # an after_commit hook into the Location model will trigger a background
-    # worker to fetch the map coordinates.
-    location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-      params[:street_type].downcase.titleize,
-      params[:street_name].downcase.titleize,
-      params[:street_number].downcase.titleize
-    )
+    # If location was previously created, use that
+    saved_location = Location.find_by_id(session[:location_id])
 
-    location.latitude  = params[:x] if params[:x].present?
-    location.longitude = params[:y] if params[:y].present?
-    location.save
+    if saved_location
+      location = saved_location
+    else
+      # Find the location based on user's input (street type, name, number) and
+      # ESRI's geolocation (latitude, longitude).
+      # When the user inputs an address into the textfields, we trigger an ESRI
+      # map search on the associated map that updates the x and y hidden fields
+      # in the form. In the case that the map is unavailable (or JS is disabled),
+      # an after_commit hook into the Location model will trigger a background
+      # worker to fetch the map coordinates.
+
+      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+        params[:street_type].downcase.titleize,
+        params[:street_name].downcase.titleize,
+        params[:street_number].downcase.titleize
+      )
+
+      location.latitude  = params[:x] if params[:x].present?
+      location.longitude = params[:y] if params[:y].present?
+      location.save
+    end
 
     @report              = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
@@ -132,28 +151,36 @@ class ReportsController < NeighborhoodsBaseController
 
     # If no report was filled out, then ask them to fill it out.
     if params[:report][:report] == ""
-      flash[:alert] = "Você tem que descrever o local e/ou o foco."
-      flash[:address] = location.address
-      redirect_to :back and return
+      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
+      create_complete = false
     end
 
     # If there was no before photograph, then ask them to upload it.
     if params[:report][:before_photo].blank?
-      flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
-      redirect_to :back and return
+      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
+      create_complete = false
     end
 
     # Now let's save the report.
-    if @report.save
+    if create_complete && @report.save
       flash[:notice] = 'Foco marcado com sucesso!'
       redirect_to :action => 'index' and return
-    else
-      # TODO @dman7: This is a hack to get to display the report errors.
-      # Let's see if we can improve on this.
-      render_errors = @report.errors.full_messages.join("\n")
-      flash[:alert] = render_errors
-      redirect_to :back and return
     end
+
+    # TODO @dman7: This is a hack to get to display the report errors.
+
+    # Let's see if we can improve on this.
+    #render_errors = @report.errors.full_messages.join("\n")
+    #flash[:alert] = render_errors
+    # used to return to create tab on error
+    #puts "SESSION3"
+    #puts params[:report]
+
+    session[:params] = params
+    session[:location_id] = location.id
+
+    redirect_to :back and return
+
   end
 
   #-----------------------------------------------------------------------------

@@ -5,11 +5,26 @@ var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_repo
 
 $(document).ready(function() {
 
-    // style all reports as selected
-    selected_tab_css_update('all_reports_button');
+    // if error happened on create, display create tab
 
-    //show all reports on start
-    $('#new_report').css('display','none');
+    if($('#error').val() == "true"){
+        // update CSS to show it being selected
+        selected_tab_css_update('new_report_button');
+
+        // hide open/elimanted reports
+        $('.report').each(function(){
+            $(this).css('display','none');
+        });
+        // display new report content
+        $('#new_report').css('display','block');
+    }
+    else{
+        // style all reports as selected
+        selected_tab_css_update('all_reports_button');
+
+        //show all reports on start
+        $('#new_report').css('display','none');
+    }
 
     // keep the map on the page when scrolling
     $(window).scroll(function() {
@@ -70,6 +85,7 @@ function filter_reports(e, filter_class){
         })
     }
 }
+
 // displays new report div
 function display_new_report(e){
     e.preventDefault();
@@ -134,7 +150,6 @@ function update_location_coordinates_new_report(e){
                     $('#y').val(candidates[0].location.y);
                 }
 
-
             },
             error: function(m) {
                 //ajax call unsuccessful, server may be down
@@ -143,6 +158,10 @@ function update_location_coordinates_new_report(e){
         });
         $('#new_report input[name=commit]').attr('disabled',false);
 
+    }
+    else{
+        // x and y have values, trigger dropping the marker
+        $('.location_field').trigger('change');
     }
 
 }
