@@ -46,7 +46,9 @@ class ManualInstructionsController < ApplicationController
   # PUT /manual_instructions/1.json
   def update
     @manual_instruction = ManualInstruction.find(params[:id])
+    @hello = @current_user.id
     respond_to do |format|
+      params[:manual_instruction][:user_id] = current_user.id
       if @manual_instruction.update_attributes(params[:manual_instruction])
         format.html { redirect_to howto_path}
         format.json { head :no_content }
