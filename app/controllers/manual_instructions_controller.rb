@@ -58,7 +58,7 @@ class ManualInstructionsController < ApplicationController
   # PUT /manual_instructions/1.json
   def update
     @manual_instruction = ManualInstruction.find(params[:id])
-
+    redirect_to '/howto' and return
     respond_to do |format|
       if @manual_instruction.update_attributes(params[:manual_instruction])
         format.html { redirect_to @manual_instruction, notice: 'Manual instruction was successfully updated.' }
@@ -68,6 +68,7 @@ class ManualInstructionsController < ApplicationController
         format.json { render json: @manual_instruction.errors, status: :unprocessable_entity }
       end
     end
+    
   end
 
   # DELETE /manual_instructions/1
