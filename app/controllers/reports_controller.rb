@@ -22,10 +22,10 @@ class ReportsController < NeighborhoodsBaseController
 
 
     # new report form attributes
-    # use existing params if create incurred an error
+    # use existing params if error occured during create
     report_params = session[:params][:report] if session[:params]
 
-    # if report_params is nil, error occured during create, use this to jump to create tab
+    # if report_params is present an error occurred during create, triggers showing new report tab in view
     @create_error = report_params.present?
 
     @new_report = Report.new(report_params)
@@ -52,8 +52,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
 
-    # if report has been completed or has an error, move it to front
-    # session[:saved_report] created in update controller
+    # if report has been completed or has an error during update
     # TODO @awdorsett - more effecient way?
     if session[:saved_report]
       @reports = [Report.find_by_id(session[:saved_report])] + @reports

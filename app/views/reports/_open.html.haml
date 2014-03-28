@@ -72,9 +72,7 @@
         .row
           .span7
 
-            -#elimination type
-            %h3.report_label Tipo de foco:
-            = report.elimination_type
+
 
             -#form to enter in elimination method and after photo
             .eliminate_prompt{:style => "margin-top:5px;"}
@@ -83,6 +81,15 @@
 
                 - if report.sms_incomplete?
                   = link_to "Completar o foco", edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
+
+                -# TODO @awdorsett - elimination type is not required, something with SMS?
+                -# elimination type
+                %h3.report_label Tipo de foco:
+                -#- if report.elimination_type.present?
+                = report.elimination_type
+                -#- else
+                  = select_tag "elimination_type", options_for_select(@elimination_types), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type"
+
 
                 -# TODO @awdorsett - need to consider sms no being complete?
                 %h3.report_label Método de eliminação:
