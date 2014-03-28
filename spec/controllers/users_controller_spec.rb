@@ -3,25 +3,27 @@ require 'spec_helper'
 # require "cancan/matchers"
 
 describe UsersController do
-	#
-	# def user_params
-	# 	{	:first_name => "Mister",
-	# 		:last_name => "Tester",
-	# 		:nickname => "mtester",
-	# 		:gender => "true",
-	# 		:email => "a@denguetorpedo.com",
-	# 		"phone_number"=>"000000000000",
-	#     "carrier"=>"xxx",
-	#     "prepaid"=>"true",
-	#     "house_attributes"=>{"name"=>"Test"},
-	#     "neighborhood_id"=>"3",
-	#     "location"=>{"street_type"=>"", "street_name"=>"", "street_number"=>""}
-	# 	}
-	# end
+	render_views
 
+	describe "Registering" do
+		context "when user inputs valid information" do
+			it "redirects them to their edit page" do
+				visit root_path
+
+				fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+				fill_in "user_first_name", 					 :with => "Test"
+				fill_in "user_last_name",  					 :with => "Tester"
+				fill_in "user_password", 						 :with => "abcdefg"
+				fill_in "user_password_confirmation", :with => "abcdefg"
+				click_button "Cadastre-se!"
+
+				user = User.find_by_email("test@denguetorpedo.com")
+				expect(current_path).to eq( edit_user_path(user) )
+			end
+		end
+	end
 
 	describe "Updating" do
-		render_views
 		let(:user) { FactoryGirl.create(:user) }
 
 		before(:each) do
@@ -35,7 +37,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
-				expect(page).to have_content("Número de celular invalido.  O formato correto é 0219xxxxxxxx.")
+				expect(page).to have_content("Número de celular invalido.  O formato correto é 0219xxxxxxxx")
 			end
 
 			it "notifies the user of missing carrier" do
@@ -44,7 +46,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
-				expect(page).to have_content("Informe a sua operadora.")
+				expect(page).to have_content("Informe a sua operadora")
 			end
 
 			it "notifies the user of missing house name" do
@@ -53,8 +55,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
-				save_and_open_page
-				expect(page).to have_content("Preencha o nome da casa.")
+				expect(page).to have_content("Preencha o nome da casa")
 			end
 
 			it "notifies the user of a short house name" do
@@ -63,7 +64,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
-				expect(page).to have_content("Insira um nome da casa válido.")
+				expect(page).to have_content("Insira um nome da casa válido")
 			end
 		end
 
@@ -83,6 +84,30 @@ describe UsersController do
 					click_button "Confirmar"
 				end
 				expect(user.reload.neighborhood_id).to eq(Neighborhood.all[1].id)
+			end
+
+			it "updates the user's house" do
+				visit edit_user_path(user)
+
+				fill_in "user_house_attributes_name", :with => "TEST"
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.name).to eq("TEST")
+			end
+
+			it "updates the user's house neighborhood" do
+				house = user.house
+				house.neighborhood_id = nil
+				house.save(:validate => false)
+
+				visit edit_user_path(user)
+				select Neighborhood.first.name, :from => "user_neighborhood_id"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.neighborhood.id).to eq(Neighborhood.first.id)
 			end
 		end
 
