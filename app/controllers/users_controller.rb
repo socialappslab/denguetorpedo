@@ -247,7 +247,9 @@ class UsersController < ApplicationController
     location.latitude         = params[:x]
     location.longitude        = params[:y]
 
-    unless location.save
+    if location.save
+      @user.house.update_attribute(:location_id, location.id)
+    else
       flash[:notice] = "Insira um endereço válido."
       render "edit" and return
     end

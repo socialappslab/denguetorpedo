@@ -114,10 +114,9 @@ describe UsersController do
 				expect(user.reload.house.name).to eq("TEST")
 			end
 
-			it "updates the user's house neighborhood" do
-				house = user.house
-				house.neighborhood_id = nil
-				house.save(:validate => false)
+			it "sets the user's house neighborhood" do
+				user.house.neighborhood_id = nil
+				user.house.save(:validate => false)
 
 				visit edit_user_path(user)
 				select Neighborhood.first.name, :from => "user_neighborhood_id"
@@ -126,6 +125,33 @@ describe UsersController do
 					click_button "Confirmar"
 				end
 				expect(user.reload.house.neighborhood.id).to eq(Neighborhood.first.id)
+			end
+
+			it "updates the user's house location" do
+				user.house.location_id = nil
+				user.house.save(:validate => false)
+
+				visit edit_user_path(user)
+				fill_in "user_location_street_type", 	:with => "Rua"
+				fill_in "user_location_street_name", 	:with => "Boca"
+				fill_in "user_location_street_number", :with => "50"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.location.street_type).to eq("Rua")
+			end
+
+			it "updates the user's house location" do
+				visit edit_user_path(user)
+				fill_in "user_location_street_type", 	:with => "Rua"
+				fill_in "user_location_street_name", 	:with => "Boca"
+				fill_in "user_location_street_number", :with => "50"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.location.street_type).to eq("Rua")
 			end
 		end
 
