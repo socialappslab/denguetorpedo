@@ -7,7 +7,7 @@ class UsersController < ApplicationController
 
   before_filter :require_login, :only => [:edit, :update, :index, :show]
 
-  #----------------------------------------------------------------------------
+  before_filter :ensure_mare_neighborhood, :only => [:update]
 
   def index
 
