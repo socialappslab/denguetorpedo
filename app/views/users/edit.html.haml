@@ -42,11 +42,11 @@
     function EnableDisableToolTip() {
       if (document.forms[0].cellphone.checked) {
         $("#user_phone_number").val("000000000000");
-        $("#carrier").val("xxx");
+        $("#user_carrier").val("xxx");
       }
       else if (!document.forms[0].cellphone.checked) {
         $("#user_phone_number").val("");
-        $("#carrier").val("");
+        $("#user_carrier").val("");
       }
     }
 
@@ -258,7 +258,7 @@
 
 
 
-    .indent
+    .indent#house_configuration
       #name_display
         %br
         .question_mark_div
@@ -312,7 +312,7 @@
       %br
       = f.label "Celular", class:"config_form_title"
       = f.text_field :phone_number, :placeholder => "0219xxxxxxxx"
-      = f.text_field :carrier, :placeholder => "Operadora",id:"carrier"
+      = f.text_field :carrier, :placeholder => "Operadora"
       = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
       Pré-pago
       = f.radio_button :prepaid, "false", id:"post_paid_radio"

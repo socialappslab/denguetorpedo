@@ -8,6 +8,9 @@ FactoryGirl.define do
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
+		user.neighborhood_id { Neighborhood.first.id }
+		user.carrier "XXX"
+		user.prepaid true
 		association :house
 		role "morador"
 		profile_photo_file_name "File name"

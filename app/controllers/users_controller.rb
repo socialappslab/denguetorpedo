@@ -145,117 +145,69 @@ class UsersController < ApplicationController
 
 
   #----------------------------------------------------------------------------
-  # PUT /users
-  #
-  # Parameters:
-  # {"user"=>{
-  #   "first_name"=>"Admin", "last_name"=>"Admin", "nickname"=>"", "gender"=>"true",
-  #   "email"=>"admin@denguetorpedo.com", "phone_number"=>"000000000000",
-  #   "carrier"=>"xxx", "prepaid"=>"true",
-  #   "house_attributes"=>{
-  #      "name"=>"Bariio",
-  #     "id"=>"5"
+  # Started PUT "/users/3?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true" for 127.0.0.1 at 2014-03-27 20:41:53 -0700
+  # Parameters: {
+  #   "user" => {
+  #     "first_name"=>"Mister",
+  #     "last_name"=>"Tester",
+  #     "nickname"=>"",
+  #     "gender"=>"true",
+  #     "email"=>"a@denguetorpedo.com",
+  #     "phone_number"=>"000000000000",
+  #     "carrier"=>"xxx",
+  #     "prepaid"=>"true",
+  #     "house_attributes"=>{"name"=>"Test"},
+  #     "neighborhood_id"=>"3",
+  #     "location"=>{"street_type"=>"", "street_name"=>"", "street_number"=>""}
   #   },
-  #   "location"=>{
-  #     "neighborhood_id"=>"1", "street_type"=>"", "street_name"=>"",
-  #     "street_number"=>""
-  #   },
-  #   "display"=>"firstmiddlelast", "cellphone"=>"false"
+  #   "display"=>"firstmiddlelast", "id"=>"3"
+  # }
+
 
   def update
-    @user = User.find(params[:id])
-
-    neighborhood = Neighborhood.find_by_id(params[:user][:neighborhood_id])
-    if neighborhood.nil?
-      flash[:alert] = "Neighborhood not recognized."
-      redirect_to :back and return
-    end
-
-    @user.neighborhood = neighborhood
-
-    if @current_user.role != "visitante"
-      house_name = params[:user][:house_attributes][:name]
-      house_address = params[:user][:location][:address] || ''
-      house_neighborhood = params[:user][:location][:neighborhood] || ''
-      house_profile_photo = params[:user][:house_attributes][:profile_photo] || ''
-    end
-    input_phone = params[:user][:phone_number]
-    #Error message put
-    if input_phone.length < 12
-      flash[:alert] = "Número de celular invalido.  O formato correto é 0219xxxxxxxx."
-      redirect_to :back and return
-    end
-    user_profile_phone_number = input_phone
-    #user_profile_phone_number_confirmation = params[:phone_number_confirmation]
-    user_profile_photo = params[:user][:profile_photo]
-    user_email = params[:user][:email]
-    display = params[:display]
-    user_first_name = params[:user][:first_name]
-    user_last_name = params[:user][:last_name]
-    #user_middle_name = params[:user][:middle_name]
-    user_nickname = params[:user][:nickname]
-
-
-
-    if !user_profile_phone_number.empty? #and !user_profile_phone_number_confirmation.empty?
-      #if user_profile_phone_number == user_profile_phone_number_confirmation
-      if user_profile_phone_number != @user.phone_number
-        @user.phone_number = user_profile_phone_number
-        @user.is_fully_registered = true
-      end
-      #else
-      #  @user = @current_user
-      #  @confirm = 0
-      #  flash[:alert] = "Números do celular não coincidem"
-      #  redirect_to :back
-      #  return
-      #end
-    end
-
-    if params[:user][:carrier].empty?
+    # Handle carrier and prepaid errors.
+    if params[:user][:carrier].blank?
       flash[:alert] = "Informe a sua operadora."
-      redirect_to :back
-      return
-    end
-
-    if !params[:user][:prepaid]
+      redirect_to :back and return
+    elsif params[:user][:prepaid].blank?
       flash[:alert] = "Marque pré ou pós-pago."
-      redirect_to :back
-      return
+      redirect_to :back and return
     end
 
-    if !params[:user][:carrier].empty?# and !params[:carrier_confirmation].empty?
-      #if params[:user][:carrier] == params[:carrier_confirmation]
-      if @current_user.carrier != params[:user][:carrier]
-        @user.carrier = params[:user][:carrier]
+    # Handle User specific errors.
+    @user = User.find(params[:id])
+    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
+    if @user.update_attributes(user_params)
+      @user.update_attribute(:is_fully_registered, true)
+
+      # Identify the recruiter for this user.
+      recruiter = User.find_by_id(params[:recruitment_id])
+      if recruiter
+        @user.recruiter = recruiter
+        recruiter.points       += 50
+        recruiter.total_points += 50
+        recruiter.save
       end
-      #else
-      #  flash[:alert] = "Operadoras não coincidem."
-      #  render "edit"
-      #  return
-      #end
+    else
+      render "edit" and return
     end
 
 
+    # neighborhood = Neighborhood.find_by_id(params[:user][:neighborhood_id])
+    # if neighborhood.nil?
+    #   flash[:alert] = "Neighborhood not recognized."
+    #   redirect_to :back and return
+    # end
+    house_name = params[:user][:house_attributes][:name]
+    house_address = params[:user][:location][:address] || ''
+    house_neighborhood = params[:user][:location][:neighborhood] || ''
+    house_profile_photo = params[:user][:house_attributes][:profile_photo] || ''
 
-    @user.prepaid = params[:user][:prepaid]
-
-    if user_profile_photo
-      @user.profile_photo = user_profile_photo
-    end
-
-    if not user_email.blank?
-      @user.email = user_email
-    end
-
-    @user.gender = params[:user][:gender]
     if house_name.blank?
       flash[:alert] = "Preencha o nome da casa."
       redirect_to :back
       return
     end
-
-
 
     # if a house exists with the same house name or house address, inform the user for confirmation
     if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
@@ -273,11 +225,6 @@ class UsersController < ApplicationController
 
       render "edit"
     else
-      @user.display = display
-      @user.first_name = user_first_name
-      #@user.middle_name = user_middle_name
-      @user.last_name = user_last_name
-      @user.nickname = user_nickname
 
       if @user.role != "visitante"
         house_address = params[:user][:location][:street_type].titleize + " " + params[:user][:location][:street_name].titleize + " " + params[:user][:location][:street_number].titleize
@@ -334,15 +281,6 @@ class UsersController < ApplicationController
         @current_user.house.save
       end
 
-
-      recruiter = User.find_by_id(params[:recruitment_id])
-      if recruiter
-        @user.recruiter = recruiter
-        recruiter.points += 50
-        recruiter.total_points += 50
-        recruiter.save
-        @user.is_fully_registered = true
-      end
 
       if @user.save
         redirect_to edit_user_path(@user), :flash => { :notice => 'Perfil atualizado com sucesso!' }
@@ -459,7 +397,7 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   # TODO: We're disabling choosing other neighborhoods until we introduce
-  # another neighborhood. See seeds.rb for more. 
+  # another neighborhood. See seeds.rb for more.
   def ensure_mare_neighborhood
     neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
     raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"

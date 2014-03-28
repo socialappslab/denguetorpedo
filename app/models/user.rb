@@ -42,29 +42,27 @@ class User < ActiveRecord::Base
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
-  # validates
-  # validates :username, :format => { :with => USERNAME_REGEX, :message => "should only contain letters, numbers, or .-+_@, and have between 5-15 characters" }
+  #----------------------------------------------------------------------------
+  # Validators
+  #-----------
 
-  # validation needs to be done.
   validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
   validates :points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :total_points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0}
-  #validates :phone_number, :length => { :minimum => 10, :maximum => 20 }, :uniqueness => true, :presence => { on: :update }, :confirmation => true
-  # validates :carrier, :presence => { on: :update }, :confirmation => true
-  # validates :prepaid, :presence => { on: :update }, :confirmation => true
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_nil => true
   validates :email, :uniqueness => true, :unless => "email.nil?"
-  # validates :house_id, presence: { on: :update, if: :not_visitor }
   validates :house_id, presence: { on: :special_create, if: :not_visitor }
-  # validates :house_id, presence: true, on: :update
-#  validates :is_fully_registered, :presence => true
-#  validates :is_community_coordinator, :presence => true
-#  validates :is_community_coordinator, :uniquness => { :scope => ??? } TODO: only want one coordinator per community
-#  validates :is_health_agent, :presence => true
 
-  # filters
+  validates :phone_number, :length => { :minimum => 12, :message => "Número de celular invalido.  O formato correto é 0219xxxxxxxx."}
+  validates :neighborhood_id, :presence => true
+  #----------------------------------------------------------------------------
+
+
+  #----------------------------------------------------------------------------
+  # Filters
+  #--------
   before_create { generate_token(:auth_token) }
   # associations
   has_many :created_reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
