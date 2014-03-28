@@ -10,18 +10,6 @@ class ManualInstructionsController < ApplicationController
     end
   end
 
-  # GET /manual_instructions/1
-  # GET /manual_instructions/1.json
-  def show
-    @manual_instruction = ManualInstruction.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @manual_instruction }
-    end
-    
-  end
-
   # GET /manual_instructions/new
   # GET /manual_instructions/new.json
   def new
@@ -68,7 +56,7 @@ class ManualInstructionsController < ApplicationController
         format.json { render json: @manual_instruction.errors, status: :unprocessable_entity }
       end
     end
-    
+
   end
 
   # DELETE /manual_instructions/1
