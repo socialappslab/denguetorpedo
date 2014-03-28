@@ -93,17 +93,10 @@
 
 .user_form.offset1
   /%h1 Configurações da conta
-  - if flash[:notice]
-    .row#flash_dat_notice
-      #flashNotice
-        %p
-          = flash[:notice]
+  = render :partial => "shared/flashes"
+  = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-  - if flash[:alert]
-    .row#flash_dat_alert
-      #flashAlert
-        %p
-          = flash[:alert]
+
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
       #role_specific.offset9
