@@ -168,6 +168,7 @@ class UsersController < ApplicationController
 
 
   def update
+    #--------------------------------------------------------------------------
     # Handle carrier and prepaid errors.
     if params[:user][:carrier].blank?
       flash[:alert] = "Informe a sua operadora."
@@ -177,9 +178,26 @@ class UsersController < ApplicationController
       redirect_to :back and return
     end
 
-    # Handle User specific errors.
+    # NOTE: This is essentially the old code boiled down. Before
+    # saving it along with the user attributes, we do a quick query
+    # to identify the house by its name. If it's present, we don't ask the user
+    # to confirm, but instead we update the ID and the name, and save.
+    house = House.find_by_name(params[:user][:house_attributes][:name])
+    if house.present?
+      params[:user][:house_attributes].merge!(:id => house.id, :name => house.name)
+    end
+
+    # Now, let's find the neighborhood that the user has specified. If it actually
+    # exists, then we'll update the house_attributes and pass it on to Rails's
+    # saver.
+    neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
+    params[:user][:house_attributes].merge!(:neighborhood_id => neighborhood.id)
+
+    #--------------------------------------------------------------------------
+    # Update the user and the house.
+
     @user = User.find(params[:id])
-    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
+    user_params = params[:user].slice(:house_attributes, :profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
     if @user.update_attributes(user_params)
       @user.update_attribute(:is_fully_registered, true)
 
@@ -195,106 +213,46 @@ class UsersController < ApplicationController
       render "edit" and return
     end
 
-
-    # neighborhood = Neighborhood.find_by_id(params[:user][:neighborhood_id])
-    # if neighborhood.nil?
-    #   flash[:alert] = "Neighborhood not recognized."
-    #   redirect_to :back and return
-    # end
-    house_name = params[:user][:house_attributes][:name]
-    house_address = params[:user][:location][:address] || ''
-    house_neighborhood = params[:user][:location][:neighborhood] || ''
-    house_profile_photo = params[:user][:house_attributes][:profile_photo] || ''
-
-    if house_name.blank?
-      flash[:alert] = "Preencha o nome da casa."
-      redirect_to :back
-      return
-    end
-
+    #--------------------------------------------------------------------------
+    # TODO: I'm going to deprecate this alert behavior where we ask the user to confirm
+    # their house. I'm doing this for simplicity of the codebase. When we're done
+    # cleaning the code, we can come back to it and make the functionality more
+    # fancy...
     # if a house exists with the same house name or house address, inform the user for confirmation
-    if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
-      @user.house ||= House.new
-      @user.house.location ||= Location.new
-      @user.house.location.street_type = params[:user][:location][:street_type]
-      @user.house.location.street_name = params[:user][:location][:street_name]
-      @user.house.location.street_number = params[:user][:location][:street_number]
-      @user.house.location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-      @user.house.location.latitude ||= 0
-      @user.house.location.longitude ||= 0
-      @user.house.name = house_name
-      @confirm = 1
-      flash.now[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+    # if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
+    #   @user.house ||= House.new
+    #   @user.house.location ||= Location.new
+    #   @user.house.location.street_type = params[:user][:location][:street_type]
+    #   @user.house.location.street_name = params[:user][:location][:street_name]
+    #   @user.house.location.street_number = params[:user][:location][:street_number]
+    #   @user.house.location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
+    #   @user.house.location.latitude ||= 0
+    #   @user.house.location.longitude ||= 0
+    #   @user.house.name = house_name
+    #   @confirm = 1
+    #   flash.now[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+    #
+    #   render "edit"
+    # else
 
-      render "edit"
-    else
+    #--------------------------------------------------------------------------
+    # Finally, let's update the location of the house, if specified.
+    location = @user.house.location
+    location = Location.new if location.nil?
 
-      if @user.role != "visitante"
-        house_address = params[:user][:location][:street_type].titleize + " " + params[:user][:location][:street_name].titleize + " " + params[:user][:location][:street_number].titleize
+    location.street_type      = params[:user][:location][:street_type]
+    location.street_name      = params[:user][:location][:street_name]
+    location.street_number    = params[:user] [:location][:street_number]
+    location.neighborhood_id  = @user.neighborhood.id
+    location.latitude         = params[:x]
+    location.longitude        = params[:y]
 
-
-        if @user.house
-          @user.house.name = house_name
-          if house_profile_photo
-            @user.house.profile_photo = house_profile_photo
-          end
-          location = @user.house.location
-          location.street_type = params[:user][:location][:street_type]
-          location.street_name = params[:user][:location][:street_name]
-          location.street_number = params[:user] [:location][:street_number]
-          location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-          if params[:x] and params[:y]
-            location.latitude = params[:x]
-            location.longitude = params[:y]
-          end
-          if !location.save
-            flash[:notice] = "Insira um endereço válido."
-            render "edit"
-            return
-          end
-        else
-          @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
-
-          if !@user.house.valid?
-            flash[:alert] = "Insira um nome da casa válido."
-            render "edit"
-            return
-          else
-            location = @user.house.location
-            location.street_type = params[:user][:location][:street_type]
-            location.street_name = params[:user][:location][:street_name]
-            location.street_number = params[:user] [:location][:street_number]
-            location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-            location.latitude = params[:x]
-            location.longitude = params[:y]
-            location.save
-          end
-        end
-      end
-
-
-
-      if @user.house and !@user.house.save
-        flash[:notice] = "Preencha o nome da casa."
-        render "edit"
-        return
-      end
-      if params[:user][:house_attributes] and params[:user][:house_attributes][:phone_number]
-        @user.house.phone_number = params[:user][:house_attributes][:phone_number]
-        @current_user.house.save
-      end
-
-
-      if @user.save
-        redirect_to edit_user_path(@user), :flash => { :notice => 'Perfil atualizado com sucesso!' }
-        return
-      else
-        @user.house = House.new(name: house_name)
-        @user.house.location = Location.new
-        render "edit"
-        return
-      end
+    unless location.save
+      flash[:notice] = "Insira um endereço válido."
+      render "edit" and return
     end
+
+    redirect_to edit_user_path(@user), :flash => { :notice => 'Perfil atualizado com sucesso!' }
   end
 
 
@@ -396,10 +354,6 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-<<<<<<< HEAD
-  def phones
-    @users = User.residents.order(:first_name)
-=======
   private
 
   #----------------------------------------------------------------------------
@@ -409,7 +363,6 @@ class UsersController < ApplicationController
   def ensure_mare_neighborhood
     neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
     raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"
->>>>>>> 87b844d... Add RSpec tests to users_controller.rb
   end
 
   #----------------------------------------------------------------------------
