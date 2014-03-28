@@ -41,7 +41,7 @@
       %br
 
       #elimination_type
-        %h3.new_report_label.inline_display 4. Tipo de eliminação
+        %h3.new_report_label.inline_display 4. Tipo de foco
         = f.select :elimination_type, options_for_select(@elimination_types, @new_report.elimination_type), prompt:"Selecione o tipo de eliminação do foco"
       %br
 
@@ -51,21 +51,21 @@
         = hidden_field_tag "x", @new_report_location.latitude, class:'location_field'
         = hidden_field_tag "y", @new_report_location.longitude, class: 'location_field'
         %br
-        %br
-        %br
-
       -#- if @new_report.location
       -#  = hidden_field_tag "x", "", value: @new_report.location.latitude
       -#  = hidden_field_tag "y", "", value: @new_report.location.longitude
       -#- else
 
+      -# TODO @awdorsett - move styling in css file
+      %p{style: "font-weight:bold;font-size:13px;margin-top:10px;"}
+        %b{style: "color:red;"}
+          ATENÇÃO:
+        O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador.
+      %br
+
       = f.submit "Enviar!"
 
-    -# TODO @awdorsett - move styling in css file
-    %p{style: "font-weight:bold;font-size:13px;margin-top:10px;"}
-      %b{style: "color:red;"}
-        ATENÇÃO:
-      O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador.
+
 
 -# TODO @awdorsett - old code, delete when new code properly tested
 -#.row
