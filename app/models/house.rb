@@ -43,20 +43,21 @@ class House < ActiveRecord::Base
 
 
   validates :neighborhood_id, :presence => true
-  # validates :location_id, presence: true #, uniqueness: true ## seed file wouldn't pass this constraint
 
-  def neighborhood
-    return self.location.neighborhood
-  end
+  #----------------------------------------------------------------------------
 
   def points
     members.sum(:total_points)
   end
 
+  #----------------------------------------------------------------------------
+
   def complete_address
     self.location.complete_address
   end
 
+  #----------------------------------------------------------------------------
+  
   def reports
     _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id}) ORDER BY "reports".updated_at DESC))
     ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
