@@ -29,14 +29,18 @@ class House < ActiveRecord::Base
   has_many :all_reports, :through => :members
   has_many :created_reports, :through => :members, :conditions => {:status_cd => 0}
   has_many :eliminated_reports, :through => :members, :conditions => {:status_cd => 1}
+
   belongs_to :location
+  belongs_to :neighborhood
+
   has_one :user
   accepts_nested_attributes_for :location, :allow_destroy => true
 
   ## validations
 
-  validates :name, presence: true, length: { minimum: 2, :message => "Insira um nome da casa válido." }
+  validates :name, presence: { :message => "Preencha o nome da casa." }, length: { minimum: 2, :message => "Insira um nome da casa válido." }
 
+  validates :neighborhood_id, :presence => true
   # validates :location_id, presence: true #, uniqueness: true ## seed file wouldn't pass this constraint
 
   def neighborhood
