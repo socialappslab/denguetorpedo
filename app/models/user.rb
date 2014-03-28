@@ -55,8 +55,8 @@ class User < ActiveRecord::Base
   validates :email, :uniqueness => true, :unless => "email.nil?"
   validates :house_id, presence: { on: :special_create, if: :not_visitor }
 
-  validates :phone_number, :length => { :minimum => 12, :message => "Número de celular invalido.  O formato correto é 0219xxxxxxxx."}
-  validates :neighborhood_id, :presence => true
+  validates_length_of :phone_number, :minimum => 12, :message => "Número de celular invalido.  O formato correto é 0219xxxxxxxx", :unless => Proc.new { |u| u.new_record? }
+  validates :neighborhood_id, :presence => true, :unless => Proc.new { |u| u.new_record? }
   #----------------------------------------------------------------------------
 
 
