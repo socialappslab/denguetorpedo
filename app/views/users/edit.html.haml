@@ -55,30 +55,6 @@
       $("#name_edit_box").slideToggle("fast");
     });
 
-    function validation(){
-      var cellphone_number = $("#user_phone_number").val();
-      var carrier = $("#carrier").val();
-      var output = "";
-      var alerting = false;
-      var house_name = $("#user_house_attributes_name").val();
-      if (cellphone_number == "" || cellphone_number.length < 12){
-        alerting = true;
-        output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
-      }
-      if(carrier == ""){
-        alerting = true;
-        output = output.concat("Informe a sua operadora. \n");
-      }
-      if (house_name ==""){
-        alerting = true;
-        output = output.concat("Preencha o nome da casa.\n");
-      }
-      if (alerting){
-        alert(output);
-        return false
-      }
-      return true;
-    }
 
 
 
