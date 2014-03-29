@@ -300,9 +300,10 @@ class User < ActiveRecord::Base
 
     @location = Location.new_with_address(body)
     @location.update_attribute(:neighborhood_id, self.neighborhood_id)
-    @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location, :neighborhood_id => self.neighborhood_id)
+
+    @report           = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
     @report.status_cd = 0
-    @report
+    return @report
   end
 
   def total_torpedos

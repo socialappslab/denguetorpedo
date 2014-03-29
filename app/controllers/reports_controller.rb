@@ -509,12 +509,13 @@ class ReportsController < NeighborhoodsBaseController
   #------------------------------------
 
   def gateway
-    @user = User.find_by_phone_number(params[:from])
+    @user = User.find_by_phone_number(params[:from]) if params[:from].present?
+
     respond_to do |format|
       if @user
         if @user.residents?
           @report = @user.report_by_phone(params)
-          if @report.save
+          if @report.save!
             Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
             format.json { render json: { message: "success", report: @report}}
           else
