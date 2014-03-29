@@ -15,24 +15,25 @@ describe ReportsController do
 
 		context "when a user texts in an SMS" do
 
-			it "creates a new report" do
+			it "creates a new report with proper attributes" do
 				expect {
-					post "gateway", :body => "Rua Tatajuba 50"
+					post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
 				}.to change(Report, :count).by(1)
 
-				report = Report.find_by_report("Rua Tatajuba 50")
+				report = Report.find_by_report("Rua Tatajuba 1")
 				expect(report.status_cd).to eq(0)
 				expect(report.sms).to eq(true)
 			end
 
-			it "creates a new location for the report" do
-				post "gateway", :body => "Rua Tatajuba 50"
-				report = Report.find_by_report("Rua Tatajuba 50")
+			it "creates a new location for the report with proper attributes" do
+				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+				report = Report.find_by_report("Rua Tatajuba 1")
 				expect(report.location).not_to eq(nil)
+				expect(report.location.neighborhood_id).to eq(user.neighborhood_id)
 			end
 
 			it "displays the report in the reports page" do
-				post "gateway", :body => "Rua Tatajuba 50", :from => user.phone_number
+				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
 
 				sign_in(user)
 
@@ -41,8 +42,8 @@ describe ReportsController do
 			end
 
 			it "does not display report for other users" do
-				post "gateway", :body => "Rua Tatajuba 50", :from => user.phone_number
-				
+				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+
 				other_user = FactoryGirl.create(:user)
 				sign_in(other_user)
 

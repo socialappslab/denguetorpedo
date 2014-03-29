@@ -83,7 +83,6 @@ ActiveRecord::Schema.define(:version => 20140327224315) do
     t.string   "street_type",       :default => ""
     t.string   "street_name",       :default => ""
     t.string   "street_number",     :default => ""
-    t.string   "location"
   end
 
   create_table "neighborhoods", :force => true do |t|

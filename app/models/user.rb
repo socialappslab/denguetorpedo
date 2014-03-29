@@ -291,9 +291,10 @@ class User < ActiveRecord::Base
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
     @location = Location.create(:address => body, :neighborhood_id => self.neighborhood_id)
+    
     @report   = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
-
-    @report.update_attribute(:status_cd, 0)
+    @report.status_cd = 0
+    return @report
   end
 
   def total_torpedos
