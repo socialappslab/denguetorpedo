@@ -6,7 +6,6 @@ FactoryGirl.define do
 		user.nickname { Faker::Name.first_name }
 		user.middle_name { Faker::Name.first_name }
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
-		user.neighborhood { Neighborhood.first }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
 		user.neighborhood { Neighborhood.first }
