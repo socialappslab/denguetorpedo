@@ -297,8 +297,10 @@ class User < ActiveRecord::Base
   # TODO @dman7  - set the neighborhood_id by the neighborhood associated with user
   def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
+
     @location = Location.new_with_address(body)
-    @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
+    @location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location, :neighborhood_id => self.neighborhood_id)
     @report.status_cd = 0
     @report
   end
