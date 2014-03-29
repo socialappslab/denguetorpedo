@@ -1,3 +1,4 @@
+
 def sign_in(user)
   visit root_path
   fill_in "email", :with => user.email

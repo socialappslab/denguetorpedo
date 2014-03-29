@@ -18,15 +18,6 @@ class ReportsController < NeighborhoodsBaseController
     @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
 
-    # params[:view] = 'recent' if params[:view].nil? || params[:view] == "undefined"
-    # params[:view] == 'recent' ? @reports_feed_button_active = "active" : @reports_feed_button_active = ""
-    # params[:view] == 'open' ? @reports_open_button_active = "active" : @reports_open_button_active = ""
-    # params[:view] == 'eliminate' ? @reports_resolved_button_active = "active" : @reports_resolved_button_active = ""
-    # params[:view] == 'make_report' ?  @make_report_button_active = "active" : @make_report_button_active = ""
-    # if params[:view] == "make_report"
-    #   @report = Report.new
-    # end
-
     # new report form attributes
     # use existing params if error occured during create
     report_params = session[:params][:report] if session[:params]
@@ -42,29 +33,28 @@ class ReportsController < NeighborhoodsBaseController
     @elimination_method_select = EliminationMethods.field_select
     @elimination_types         = EliminationType.pluck(:name)
 
-
-
-
-
-
-    session[:params] = nil
-    session[:location_id] = nil
-
-
     @elimination_method_select = EliminationMethods.field_select
-
 
     reports_with_status_filtered = []
     locations                    = []
     open_locations               = []
     eliminated_locations         = []
+
     @points = EliminationMethods.points
 
     # TODO @awdorsett - the first Report all may not be needed, is it for SMS or elim type selection?
     # Set up a base SQL query that limits reports by neighborhood.
-    neighborhood_reports_sql_query = Report.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
-    @reports  = neighborhood_reports_sql_query.reject(&:completed_at).sort_by(&:created_at).reverse
-    @reports += neighborhood_reports_sql_query.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+    # neighborhood_reports_sql_query = Report.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
+    # @reports  = neighborhood_reports_sql_query.reject(&:completed_at).sort_by(&:created_at).reverse
+    # @reports += neighborhood_reports_sql_query.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+
+
+    # We only want to display the following reports:
+    # 1. Logged-in user's reports, localized to the viewed neighborhood,
+    # 2. All created reports (the misleading column completed_at is not nil)
+    @reports = current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
+    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+    @reports = @reports.find_all {|r| r.location.neighborhood_id == @neighborhood.id }
 
     # if report has been completed or has an error during update
     # TODO @awdorsett - more effecient way?
@@ -104,6 +94,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
     #@reports = reports_with_status_filtered
+    # TODO: These counts should be tied to the SQL query we're running to fetch the reports (see above)
     @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
     @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
@@ -203,6 +194,7 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #-----------------------------------------------------------------------------
+  # GET /neighborhoods/1/edit
 
   def edit
     @new_report = @current_user.created_reports.find(params[:id])
@@ -218,6 +210,8 @@ class ReportsController < NeighborhoodsBaseController
     @elimination_types = EliminationType.pluck(:name)
 
   end
+
+  #-----------------------------------------------------------------------------
 
   def update
     submission_points = 50

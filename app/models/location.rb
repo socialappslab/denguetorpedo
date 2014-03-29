@@ -23,7 +23,7 @@
 require 'active_support/core_ext'
 
 class Location < ActiveRecord::Base
-  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude
+  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude, :neighborhood_id
   # acts_as_gmappable :callback => :geocode_results, :validation => true
   # validates :latitude, :uniqueness => { :scope => :longitude }
   # validates :neighborhood_id, :presence => true
