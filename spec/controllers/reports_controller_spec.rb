@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe ReportsController do
+	let(:user) { FactoryGirl.create(:user) }
 	#-----------------------------------------------------------------------------
 
 	context "Creating a new report" do
@@ -13,6 +14,7 @@ describe ReportsController do
 		end
 
 		context "when a user texts in an SMS" do
+
 			it "creates a new report" do
 				expect {
 					post "gateway", :body => "Rua Tatajuba 50"
@@ -29,7 +31,23 @@ describe ReportsController do
 				expect(report.location).not_to eq(nil)
 			end
 
-			it "" do
+			it "displays the report in the reports page" do
+				post "gateway", :body => "Rua Tatajuba 50", :from => user.phone_number
+
+				sign_in(user)
+
+				visit neighborhood_reports_path(user.neighborhood)
+				expect(page).to have_content("Completar o foco")
+			end
+
+			it "does not display report for other users" do
+				post "gateway", :body => "Rua Tatajuba 50", :from => user.phone_number
+				
+				other_user = FactoryGirl.create(:user)
+				sign_in(other_user)
+
+				visit neighborhood_reports_path(user.neighborhood)
+				expect(page).not_to have_content("Completar o foco")
 			end
 
 		end
