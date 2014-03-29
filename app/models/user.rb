@@ -36,16 +36,17 @@
 #
 
 class User < ActiveRecord::Base
+  #----------------------------------------------------------------------------
 
   ROLES = ["morador", "logista", "visitante"]
-  attr_accessible :first_name, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
-  # validates
-  # validates :username, :format => { :with => USERNAME_REGEX, :message => "should only contain letters, numbers, or .-+_@, and have between 5-15 characters" }
+  #----------------------------------------------------------------------------
+  # Validations
+  #------------
 
-  # validation needs to be done.
   validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
@@ -59,16 +60,26 @@ class User < ActiveRecord::Base
   # validates :house_id, presence: { on: :update, if: :not_visitor }
   validates :house_id, presence: { on: :special_create, if: :not_visitor }
   # validates :house_id, presence: true, on: :update
-#  validates :is_fully_registered, :presence => true
-#  validates :is_community_coordinator, :presence => true
-#  validates :is_community_coordinator, :uniquness => { :scope => ??? } TODO: only want one coordinator per community
-#  validates :is_health_agent, :presence => true
+  #  validates :is_fully_registered, :presence => true
+  #  validates :is_community_coordinator, :presence => true
+  #  validates :is_community_coordinator, :uniquness => { :scope => ??? } TODO: only want one coordinator per community
+  #  validates :is_health_agent, :presence => true
 
-  # filters
+  #----------------------------------------------------------------------------
+  # Callbacks
+  #----------
+
   before_create { generate_token(:auth_token) }
-  # associations
+
+  #----------------------------------------------------------------------------
+  # Associations
+  #-------------
+
+  has_many :reports, :foreign_key => "reporter_id", :dependent => :nullify
   has_many :created_reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
+  has_many :verified_reports, :class_name => "Report", :foreign_key => "verifier_id", :dependent => :nullify
+
   has_many :feeds, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :prize_codes, :dependent => :destroy
@@ -82,19 +93,19 @@ class User < ActiveRecord::Base
   belongs_to :house
   belongs_to :neighborhood
 
-  has_many :reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
-  has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
-  has_many :verified_reports, :class_name => "Report", :foreign_key => "verifier_id", :dependent => :nullify
-
-
   scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
-  # associations helpers
-  def location
-    house && house.location
-  end
+
+  #----------------------------------------------------------------------------
 
   accepts_nested_attributes_for :house, :allow_destroy => true
   attr_accessible :house_attributes
+  attr_accessible :first_name, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+
+  #----------------------------------------------------------------------------
+
+  def location
+    house && house.location
+  end
 
   def check_house(house_attributes)
     if house = House.find_by_name(house_attributes[:name])
@@ -286,8 +297,10 @@ class User < ActiveRecord::Base
   # TODO @dman7  - set the neighborhood_id by the neighborhood associated with user
   def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
+
     @location = Location.new_with_address(body)
-    @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
+    @location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    @report = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location, :neighborhood_id => self.neighborhood_id)
     @report.status_cd = 0
     @report
   end
