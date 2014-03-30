@@ -1,5 +1,8 @@
 .row
+
   .span4.offset1
+    = render :partial => "shared/form_errors", :locals => { :item => @report }
+
     - if flash[:notice]
       .row#flash_dat_notice
         #flashNotice
@@ -15,7 +18,7 @@
 .row
   .row
     .span9.offset1
-      = render :partial => "reports/make_report_form", :object=> @report, :as=>'report'
+      = render :partial => "reports/make_report_form", :locals => {:form_type => "update"}
     .span7
       .row
         .span8

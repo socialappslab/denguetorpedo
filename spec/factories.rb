@@ -78,6 +78,12 @@ FactoryGirl.define do
 
 	factory :report do
 		status_cd 0
+		report "This is a description"
+		before_photo_file_name "File name"
+		before_photo_content_type "image/png"
+		before_photo_file_size 1024
+		before_photo_updated_at Time.now
+		elimination_type { EliminationType.first.name }
 	end
 
 	# 	report "description"

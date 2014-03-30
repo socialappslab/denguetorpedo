@@ -65,7 +65,7 @@
             = render :partial => "reports/resolved.html.haml", :object => report, as: 'report'
 
       #new_report
-        = render :partial => 'make_report_form'
+        = render :partial => 'make_report_form', :locals => {:form_type => "create"}
 
 
       -# TODO @awdorsett - refactor to make sure views aren't dependent on view param, remove this section
