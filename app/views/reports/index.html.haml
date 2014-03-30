@@ -2,9 +2,12 @@
 -# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
 
 .row
-  .span4.offset1
-    = render :partial => "shared/flashes"
-    %h1 Focos marcados
+
+  .span8.offset1
+    = render :partial => "shared/form_errors", :locals => { :item => @report }
+
+
+    %h1= "Focos marcados de #{@neighborhood.name }"
   %br
   .span#report_buttons{:style => "font-size:20px;"}
     / %h1 Marcar um foco

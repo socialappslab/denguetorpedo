@@ -39,7 +39,7 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
+  attr_accessible :report, :before_photo, :reporter_id, :status, :location_attributes, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
@@ -62,8 +62,8 @@ class Report < ActiveRecord::Base
   validates :location_id, :presence => { on: :update }
   validates :status, :presence => true, unless: :sms?
 
-  validates_presence_of :report, :message => "Você tem que descrever o local e/ou o foco", :unless => Proc.new { |t| t.new_record? }
-  validates_presence_of :before_photo, :message => "Você tem que carregar uma foto do foco encontrado.", :unless => Proc.new { |t| t.new_record? }
+  validates_presence_of :report, :message => "Você tem que descrever o local e/ou o foco" #, :unless => Proc.new { |t| t.new_record? }
+  validates_presence_of :before_photo, :message => "Você tem que carregar uma foto do foco encontrado." #, :unless => Proc.new { |t| t.new_record? }
 
 
   # validates_attachment :before_photo, presence: true

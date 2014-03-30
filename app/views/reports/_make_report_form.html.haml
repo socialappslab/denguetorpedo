@@ -5,7 +5,6 @@
 
   #new_report_form
     = form_for(@report, :url => {:action => "create", :html => {:autocomplete => "off", :multipart => true}}) do |f|
-      = hidden_field_tag 'report_id', @report.id
       / = f.label "Escolha o tipo e o método de eliminação do foco"
 
       -# TODO @awdorsett - do we need this, if so is this the best way to do it?
@@ -22,11 +21,13 @@
       #address
         %h3.new_report_label 1. Endereço do foco localizado
         -# TODO @awdorsett - placeholder is cut off, fix styling
-        = text_field_tag :street_type, @report.location.street_type, placeholder: "Rua, Beco etc.", class: "middle_field address_field"
-        -# TODO @awdorsett - fix inline style
-        = text_field_tag :street_name, @report.location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.",
-          style: "width:200px;", class: 'address_field'
-        = text_field_tag :street_number, @report.location.street_number, placeholder: "Número", class: "middle_field address_field"
+        = f.fields_for :location, @report.location || Location.new do |location_fields|
+          = location_fields.text_field :street_type, placeholder: "Rua, Beco etc.", class: "middle_field address_field"
+          -# TODO @awdorsett - fix inline style
+          = location_fields.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.",
+            style: "width:200px;", class: 'address_field'
+          = location_fields.text_field :street_number, placeholder: "Número", class: "middle_field address_field"
+          = location_fields.hidden_field :neighborhood_id, :value => @neighborhood.id
 
 
       #description
@@ -47,8 +48,8 @@
       #location
         %h3.new_report_label.inline_display 5.
         = link_to "Marcar no mapa", nil, id:'mark_map_bttn', class: 'bttn', onclick:'update_location_coordinates_new_report(event)'
-        = hidden_field_tag "x", @report.location.latitude, class:'location_field'
-        = hidden_field_tag "y", @report.location.longitude, class: 'location_field'
+        = hidden_field_tag "x", (@report.location && @report.location.latitude) || 0, class:'location_field'
+        = hidden_field_tag "y", (@report.location && @report.location.longitude) || 0, class: 'location_field'
         %br
       -#- if @new_report.location
       -#  = hidden_field_tag "x", "", value: @new_report.location.latitude
