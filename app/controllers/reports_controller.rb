@@ -14,6 +14,9 @@ class ReportsController < NeighborhoodsBaseController
     @methods = EliminationMethod.all
   end
 
+  #-----------------------------------------------------------------------------
+  # GET /neighborhoods/1/reports
+
   def index
     @current_report = params[:report]
     @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
@@ -35,8 +38,13 @@ class ReportsController < NeighborhoodsBaseController
     # 2. All created reports (the misleading column completed_at is not nil)
     @reports = @current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
 
+
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+    puts "@reports: #{@reports.count}"
+
     @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
+
+    puts "@reports: #{@reports.count}"
 
     # if report has been completed or has an error during update
     # TODO @awdorsett - more effecient way?
@@ -73,15 +81,22 @@ class ReportsController < NeighborhoodsBaseController
     @open_markers = open_locations.compact.map { |location| location.info}
     @eliminated_markers = eliminated_locations.compact.map { |location| location.info}
 
+    puts "@markers: #{@markers} | @open_markers: #{@open_markers} | @eliminated_markers: #{@eliminated_markers}"
+
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
     #@reports = reports_with_status_filtered
     # TODO: These counts should be tied to the SQL query we're running to fetch the reports (see above)
-    @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
-    @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
+    @counts            = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
+    @open_counts       = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
-    @open_feed = @reports
+
+    @open_feed      = @reports
     @eliminate_feed = @reports
+
   end
+
+  #-----------------------------------------------------------------------------
+  # GET /neighborhoods/1/reports/1/new
 
   def new
     @report = Report.new
@@ -136,9 +151,10 @@ class ReportsController < NeighborhoodsBaseController
     # @report.before_photo = params[:report][:before_photo]
 
     # TODO: Fix this in the form instead
-    params[:report].merge!(:reporter_id => @current_user.id, :status => :reported, :completed_at => Time.now)
+    params[:report].merge!(:reporter_id => @current_user.id, :completed_at => Time.now)
     @report = Report.new( params[:report] )
     if @report.save
+      @report.update_attribute(:status, :reported)
       flash[:notice] = 'Foco marcado com sucesso!'
       redirect_to :action => 'index' and return
     else
@@ -160,7 +176,7 @@ class ReportsController < NeighborhoodsBaseController
 #       location.latitude  = params[:x] if params[:x].present?
 #       location.longitude = params[:y] if params[:y].present?
 #       location.neighborhood = Neighborhood.find(params[:neighborhood_id]) if location.neighborhood.blank?
-# 
+#
 #       location.save
 
       @reports = @current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
@@ -220,16 +236,19 @@ class ReportsController < NeighborhoodsBaseController
   #   2. User selecting an elimination method.
   #
   def update
-    @report = Report.find_by_id(params[:id])
+    @report = Report.find_by_id(params[:id]) || Report.find_by_id( params[:report][:id] )
 
     submission_points = 50
     submit_complete   = true
 
     # TODO @dman7: Rage face!!! This needs to be done in the F*$ing form.
-    if params[:elimination_type].present?
+    if params[:report][:elimination_type].present?
       # params[:report][:elimination_type] = params[:elimination_type]
       params[:report][:completed_at]     = Time.now
     end
+
+    params[:report].merge!(:status => :reported)
+
 
 
     if @report.sms_incomplete?
@@ -273,25 +292,19 @@ class ReportsController < NeighborhoodsBaseController
       end
     end
 
+
+
+
     # Check to see if user has selected a method of elimination
-    if params[:selected_elimination_method].blank? && @report.elimination_method.blank?
-      flash[:alert] = "Você tem que escolher um método de eliminação"  # You have to choose a method of disposal.
+    if params[:report][:elimination_method].blank?
+      flash[:alert] = "Você tem que escolher um método de eliminação"
       redirect_to :back and return
-    else
-      @report.elimination_method = params[:selected_elimination_method]
     end
 
-    # Check to see if user has uploaded "after" photo
-    if @report.after_photo_file_size.nil?
-      if params[:eliminate] && params[:eliminate][:after_photo] != nil
-        @report.after_photo = params[:eliminate][:after_photo]
-      else
-        #user did not upload a photo
-        flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado." #You have to upload a photo of focus eliminated
-        redirect_to :back and return
-      end
+    if params[:report][:after_photo].blank?
+      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado." #You have to upload a photo of focus eliminated
+      redirect_to :back and return
     end
-
 
 
     # Check if a location lon/lat exists
@@ -329,16 +342,31 @@ class ReportsController < NeighborhoodsBaseController
     # if every part of the report submission is complete, submit_complete = true
 
     # TODO: Theoretically, if we're at this point, we're safe.
-    flash[:notice] = "Você eliminou o foco!"
-    @report.touch(:eliminated_at)
-    @report.update_attribute(:status_cd, 1)
-    @report.update_attribute(:eliminator_id, @current_user.id)
-    award_points @report, @current_user
-
-
-    # save the report so you can access it in index for errors and completions
     session[:saved_report]= @report.id
-    redirect_to :back and return
+
+    if @report.update_attributes( params[:report] )
+      flash[:notice] = "Você eliminou o foco!"
+      @report.touch(:eliminated_at)
+      @report.update_attribute(:status_cd, 1)
+      @report.update_attribute(:eliminator_id, @current_user.id)
+      award_points @report, @current_user
+
+      redirect_to :back and return
+    else
+      @reports = @current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
+      @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+      @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
+
+      # if report has been completed or has an error during update
+      # TODO @awdorsett - more effecient way?
+      if session[:saved_report]
+        @reports = [Report.find_by_id(session[:saved_report])] + @reports
+        session[:saved_report] = nil
+      end
+
+
+      render "index" and return
+    end
 
 
 
