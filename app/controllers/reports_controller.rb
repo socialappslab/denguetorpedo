@@ -31,16 +31,12 @@ class ReportsController < NeighborhoodsBaseController
     # @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
 
     @report          = Report.new
-    @report.location = Location.find_by_id(session[:location_id]) || Location.new
-
-    @elimination_method_select = EliminationMethods.field_select
 
     reports_with_status_filtered = []
     locations                    = []
     open_locations               = []
     eliminated_locations         = []
 
-    @points = EliminationMethods.points
 
     # TODO @awdorsett - the first Report all may not be needed, is it for SMS or elim type selection?
     # Set up a base SQL query that limits reports by neighborhood.
@@ -52,7 +48,7 @@ class ReportsController < NeighborhoodsBaseController
     # We only want to display the following reports:
     # 1. Logged-in user's reports, localized to the viewed neighborhood,
     # 2. All created reports (the misleading column completed_at is not nil)
-    @reports = current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
+    @reports = @current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
     @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
 
@@ -116,55 +112,77 @@ class ReportsController < NeighborhoodsBaseController
 
   def create
     # used to handle errors, if error occurs then set to false
-    create_complete = true
+    # create_complete = true
 
     # TODO @dman7: What is this???
-    flash[:street_type] = params[:street_type]
-    flash[:street_name] = params[:street_name]
-    flash[:street_number] = params[:street_number]
-    flash[:description] = params[:report][:report]
-    flash[:x] = params[:x]
-    flash[:y] = params[:y]
+    # flash[:street_type] = params[:street_type]
+    # flash[:street_name] = params[:street_name]
+    # flash[:street_number] = params[:street_number]
+    # flash[:description] = params[:report][:report]
+    # flash[:x] = params[:x]
+    # flash[:y] = params[:y]
 
     # If location was previously created, use that
-    saved_location = Location.find_by_id(session[:location_id])
+    # saved_location = Location.find_by_id(session[:location_id])
+    # if saved_location
+    #   location = saved_location
+    # else
+    #   # Find the location based on user's input (street type, name, number) and
+    #   # ESRI's geolocation (latitude, longitude).
+    #   # When the user inputs an address into the textfields, we trigger an ESRI
+    #   # map search on the associated map that updates the x and y hidden fields
+    #   # in the form. In the case that the map is unavailable (or JS is disabled),
+    #   # an after_commit hook into the Location model will trigger a background
+    #   # worker to fetch the map coordinates.
+    #
+    #   location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+    #     params[:street_type].downcase.titleize,
+    #     params[:street_name].downcase.titleize,
+    #     params[:street_number].downcase.titleize
+    #   )
+    #
+    #   location.latitude  = params[:x] if params[:x].present?
+    #   location.longitude = params[:y] if params[:y].present?
+    #   location.save
+    # end
 
-    if saved_location
-      location = saved_location
+    # @report              = Report.new(params[:report])
+    # @report.reporter_id  = @current_user.id
+    # @report.location_id  = location.id
+    # @report.status       = :reported # TODO @dman7: why is status (type int) but is assigned a symbol?
+    # @report.report       = params[:report][:report] # TODO: Not really needed. ensure that it's already there.
+    # @report.completed_at = Time.now
+    # @report.before_photo = params[:report][:before_photo]
+
+    # TODO: Fix this in the form instead
+    params[:report].merge!(:reporter_id => @current_user.id, :status => :reported, :completed_at => Time.now)
+    puts "params[:report]: #{params[:report]}"
+    @report = Report.new( params[:report] )
+    if @report.save!
+      flash[:notice] = 'Foco marcado com sucesso!'
+      redirect_to :action => 'index' and return
     else
-      # Find the location based on user's input (street type, name, number) and
-      # ESRI's geolocation (latitude, longitude).
-      # When the user inputs an address into the textfields, we trigger an ESRI
-      # map search on the associated map that updates the x and y hidden fields
-      # in the form. In the case that the map is unavailable (or JS is disabled),
-      # an after_commit hook into the Location model will trigger a background
-      # worker to fetch the map coordinates.
+      @reports = @current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
+      @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
+      @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
 
-      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-        params[:street_type].downcase.titleize,
-        params[:street_name].downcase.titleize,
-        params[:street_number].downcase.titleize
-      )
+      # if report has been completed or has an error during update
+      # TODO @awdorsett - more effecient way?
+      if session[:saved_report]
+        @reports = [Report.find_by_id(session[:saved_report])] + @reports
+        session[:saved_report] = nil
+      end
 
-      location.latitude  = params[:x] if params[:x].present?
-      location.longitude = params[:y] if params[:y].present?
-      location.save
+
+      render "index" and return
     end
-
-    @report              = Report.new(params[:report])
-    @report.reporter_id  = @current_user.id
-    @report.location_id  = location.id
-    @report.status       = :reported # TODO @dman7: why is status (type int) but is assigned a symbol?
-    @report.report       = params[:report][:report] # TODO: Not really needed. ensure that it's already there.
-    @report.completed_at = Time.now
-    @report.before_photo = params[:report][:before_photo]
 
 
     # Now let's save the report.
-    if create_complete && @report.save
-      flash[:notice] = 'Foco marcado com sucesso!'
-      redirect_to :action => 'index' and return
-    end
+    # if create_complete && @report.save
+    #   flash[:notice] = 'Foco marcado com sucesso!'
+    #   redirect_to :action => 'index' and return
+    # end
 
     # TODO @dman7: This is a hack to get to display the report errors.
 
@@ -175,10 +193,6 @@ class ReportsController < NeighborhoodsBaseController
     #puts "SESSION3"
     #puts params[:report]
 
-    session[:params] = params
-    session[:location_id] = location.id
-
-    redirect_to :back and return
 
   end
 

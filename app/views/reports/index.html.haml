@@ -3,6 +3,9 @@
 
 .row
   .span8.offset1
+    = render :partial => "shared/form_errors", :locals => { :item => @report }
+
+  .span8.offset1
     - if flash[:notice]
       .row#flash_dat_notice
         #flashNotice
@@ -13,6 +16,9 @@
         #flashAlert
           %p
             = flash[:alert]
+
+
+
     %h1= "Focos marcados de #{@neighborhood.name }"
   %br
   .span#report_buttons{:style => "font-size:20px;"}
