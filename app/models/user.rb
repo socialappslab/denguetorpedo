@@ -292,10 +292,14 @@ class User < ActiveRecord::Base
   def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
-    @location = Location.new_with_address(body)
-    @location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    # NOTE: We're creating a location here without any street information
+    # just because the user is not expected to text it in. Later, when
+    # the report is being edited, we force the user to update location.
+    @location = Location.new(:neighborhood_id => self.neighborhood_id)
+    @location.save(:validate => false)
 
-    @report           = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
+    @report             = Report.new(reporter: self, sms: true, status: :reported, report: body)
+    @report.location_id = @location.id
     @report.status_cd = 0
     return @report
   end
