@@ -96,6 +96,15 @@ describe ReportsController do
 
 					expect(page).to have_content("Você tem que escolher um tipo de foco")
 				end
+
+				it "should appear in the reports list as completed" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					select EliminationType.first.name, :from => "report_elimination_type"
+					click_button "Enviar!"
+
+					expect(page).to have_content(" LLOOOOOL")
+				end
 			end
 
 			context "when report comes" do

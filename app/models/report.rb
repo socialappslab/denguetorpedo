@@ -59,6 +59,7 @@ class Report < ActiveRecord::Base
   validates_presence_of :before_photo, :message => "Você tem que carregar uma foto do foco encontrado" #, :unless => Proc.new { |t| t.new_record? }
   validates_presence_of :elimination_type, :message => "Você tem que escolher um tipo de foco"
 
+
   # validates_attachment :before_photo, presence: true
 
   as_enum :status, [:reported, :eliminated, :sms_reported]
