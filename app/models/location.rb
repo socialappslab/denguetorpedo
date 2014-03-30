@@ -40,6 +40,12 @@ class Location < ActiveRecord::Base
 
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
 
+
+  # TODO @dman7: DRY IT UP!
+  validates_presence_of :street_type, :message => "Você precisa endereço válida para o seu foco."
+  validates_presence_of :street_name, :message => "Você precisa endereço válida para o seu foco."
+  validates_presence_of :street_number, :message => "Você precisa endereço válida para o seu foco."
+
   #----------------------------------------------------------------------------
 
   def save_address

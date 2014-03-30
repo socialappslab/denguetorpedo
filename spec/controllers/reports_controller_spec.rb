@@ -53,6 +53,48 @@ describe ReportsController do
 
 		end
 
+		context "Updating a report" do
+			let(:location) { FactoryGirl.create(:location) }
+			let(:report) { FactoryGirl.create(:report, :location => location, :reporter => user) }
+
+			context "when report comes in through SMS" do
+				before(:each) do
+					report.update_attribute(:sms, true)
+					sign_in(user)
+				end
+
+				it "notifies the user if report description is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					fill_in "report_content", :with => ""
+					click_button "Enviar!"
+
+					expect(page).to have_content(" LOLLLL")
+				end
+
+				it "notifies the user if report before photo is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					fill_in "report_before_photo", :with => ""
+					click_button "Enviar!"
+
+					expect(page).to have_content(" LOLLLL")
+				end
+
+				it "notifies the user if report location is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					fill_in "street_type", :with => ""
+					click_button "Enviar!"
+
+					expect(page).to have_content(" LOLLLL")
+				end
+
+
+			end
+
+		end
+
 		describe "successfully" do
 			let(:user)         		 { FactoryGirl.create(:user) }
 			let(:street_hash)  		 { {:street_type => "Rua", :street_name => "Darci Vargas", :street_number => "45"} }

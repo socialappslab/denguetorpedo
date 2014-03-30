@@ -54,6 +54,11 @@ class Report < ActiveRecord::Base
   validates :reporter_id, :presence => true
   validates :location_id, :presence => { on: :update }
   validates :status, :presence => true, unless: :sms?
+
+  validates_presence_of :report, :message => "Você tem que descrever o local e/ou o foco", :unless => Proc.new { |t| t.new_record? }
+  validates_presence_of :before_photo, :message => "Você tem que carregar uma foto do foco encontrado.", :unless => Proc.new { |t| t.new_record? }
+
+
   # validates_attachment :before_photo, presence: true
 
   as_enum :status, [:reported, :eliminated, :sms_reported]
@@ -67,6 +72,9 @@ class Report < ActiveRecord::Base
   before_save :set_names
 
   # after_create :create_notifications, if: :sms?
+
+  accepts_nested_attributes_for :location, :allow_destroy => true
+
 
   def self.create_from_user(report_content, params)
     create(:report => report_content) do |r|

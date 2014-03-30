@@ -1,30 +1,30 @@
 .row
   .span4.offset1
-    - if flash[:notice] 
+    - if flash[:notice]
       .row#flash_dat_notice
-        #flashNotice 
+        #flashNotice
           %p
             = flash[:notice]
-    - if flash[:alert] 
+    - if flash[:alert]
       .row#flash_dat_alert
-        #flashAlert 
+        #flashAlert
           %p
             = flash[:alert]
     %h1 Completar o foco
-    
-.row          
+
+.row
   .row
     .span9.offset1
-      = render :partial => "reports/make_report_form", :object=>@new_report, :as=>'report'
+      = render :partial => "reports/make_report_form", :object=> @report, :as=>'report'
     .span7
       .row
         .span8
           .report_map_search{style: "overflow:auto;"}
             %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}2. Ajuste o marcador na localização correta clicando no mapa.
             %input{type: "button", value: "Va para Maré", style: "float:right;margin:-20px 5px 5px 0px;", id: "go_to_mare"}
-              
+
       #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;"}
-        #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}     
+        #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}
           = image_tag "loading.gif", style: "width:50px; height:50px;"
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
       :javascript
@@ -42,18 +42,18 @@
               zoom: 5,
               extent: customExtent
             });
-            
+
             var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
             map.addLayer(tiled);
             map.on("update-start", showLoading);
             map.on("update-end", hideLoading);
             map.on("load", function() {
-              
+
               tb = new Draw(map);
               tb.on("draw-end", addGraphic);
               tb.activate("point");
-              var graphic = new Graphic(new Point(#{@new_report.location.latitude}, #{@new_report.location.longitude}), orange);
-              
+              var graphic = new Graphic(new Point(#{@report.location.latitude || 0}, #{@report.location.longitude || 0}), orange);
+
               map.graphics.add(graphic);
 
             });
@@ -69,7 +69,7 @@
               symbol.setStyle("STYLE_PATH");
               symbol.setPath("M 10 10 L30 10 L20 30z");
               symbol.setColor(new Color("red"));
-              
+
               $("input#x").val(evt.geometry.x);
               $("input#y").val(evt.geometry.y);
               map.graphics.add(new Graphic(evt.geometry, orange));
@@ -94,13 +94,13 @@
                 success: function(m) {
                   map.graphics.clear();
                   var candidates = m.candidates;
-                  
+
 
                   if (candidates.length > 0) {
                     map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
                     $("input#x").val(candidates[0].location.x);
                     $("input#y").val(candidates[0].location.y);
-                    
+
                     map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
                   }
                 },
