@@ -1,10 +1,10 @@
 - if flash[:notice]
-  .row#flash_dat_notice{:style=>"width: 100%; margin-left:0px; z-index: 10;"}
+  .row#flash_dat_notice
     #flashNotice
       %p
         = flash[:notice]
 - if flash[:alert]
-  .row#flash_dat_alert{:style=>"width: 100%; margin-left:0px; z-index: 10;"}
+  .row#flash_dat_alert
     #flashAlert
       %p
         = flash[:alert]

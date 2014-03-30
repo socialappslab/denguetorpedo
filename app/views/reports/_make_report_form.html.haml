@@ -4,7 +4,7 @@
   -# TODO @awdorsett - refactor CSS for new_report_form
 
   #new_report_form
-    = form_for(@report, :url => {:action => "create", :html => {:autocomplete => "off", :multipart => true}}) do |f|
+    = form_for(@report, :url => {:action => form_type, :html => {:autocomplete => "off", :multipart => true}}) do |f|
       / = f.label "Escolha o tipo e o método de eliminação do foco"
 
       -# TODO @awdorsett - do we need this, if so is this the best way to do it?
@@ -42,7 +42,7 @@
 
       #elimination_type
         %h3.new_report_label.inline_display 4. Tipo de foco
-        = f.select :elimination_type, options_for_select(EliminationType.pluck(:name), @report.elimination_type), prompt:"Selecione o tipo de foco"
+        = f.select :elimination_type, options_for_select(EliminationType.pluck(:name), @report.elimination_type), prompt:"Selecione o tipo de foco", :include_blank => true
       %br
 
       #location
