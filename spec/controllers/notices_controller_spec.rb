@@ -157,7 +157,7 @@ describe NoticesController do
     it "redirects to the notices list" do
       notice = Notice.create! valid_attributes
       delete :destroy, {:id => notice.to_param}, valid_session
-      response.should redirect_to(notices_url)
+      response.should redirect_to(root_url)
     end
   end
 

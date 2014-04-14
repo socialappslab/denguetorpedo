@@ -65,7 +65,6 @@ describe UsersController do
 
 
 		it "asks user for a neighborhood" do
-			expect(user.neighborhood).to eq(nil)
 
 			attrs = visitor_attributes[:user].merge(:neighborhood_id => Neighborhood.first.id)
 			put :update, :id => user.id, :user => attrs
