@@ -1,3 +1,4 @@
+
 .report.open
   .row
     .rp_report_status.status
@@ -48,7 +49,7 @@
         %h4= report.complete_address
 
     .span2
-      - if report.location.latitude and report.location.longitude
+      - if report.location && report.location.latitude && report.location.longitude
         = link_to "Ache no mapa", "#", id: "mapa_#{report.id}", class: "mapa", data: { latitude: "#{report.location.latitude}", longitude: "#{report.location.longitude}"}
 
   .row{style: "margin-top:7px;"}

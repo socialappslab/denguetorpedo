@@ -41,32 +41,37 @@
 class Report < ActiveRecord::Base
   attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
 
+  #----------------------------------------------------------------------------
+  # PaperClip configurations
+  #-------------------------
+
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
 
+  #----------------------------------------------------------------------------
+  # Associations
+  #-------------
+
+  has_many :feeds, :as => :target
   belongs_to :reporter, :class_name => "User"
   belongs_to :eliminator, :class_name => "User"
   belongs_to :location
-  has_many :feeds, :as => :target
-
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
   validates :reporter_id, :presence => true
   validates :location_id, :presence => { on: :update }
   validates :status, :presence => true, unless: :sms?
-  # validates_attachment :before_photo, presence: true
+
+  #----------------------------------------------------------------------------
 
   as_enum :status, [:reported, :eliminated, :sms_reported]
 
   scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
 
-  # scope :sms_reported, where(status_cd: Report.sms_reported)
-  # scope :identified, where(status_cd: Report.identified)
-  # scope :eliminated, where(:status_cd => Report.eliminated)
   before_save :set_names
 
-  # after_create :create_notifications, if: :sms?
+  #----------------------------------------------------------------------------
 
   def self.create_from_user(report_content, params)
     create(:report => report_content) do |r|
@@ -87,17 +92,25 @@ class Report < ActiveRecord::Base
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def creditar
     update_attributes(is_credited: nil, credited_at: nil)
   end
+
+  #----------------------------------------------------------------------------
 
   def credit
     update_attributes(is_credited: true, credited_at: Time.now)
   end
 
+  #----------------------------------------------------------------------------
+
   def discredit
     update_attributes(is_credited: false, credited_at: Time.now)
   end
+
+  #----------------------------------------------------------------------------
 
   # callback to create the feeds
   after_save do |report|
@@ -105,9 +118,13 @@ class Report < ActiveRecord::Base
     Feed.create_from_object(report, report.eliminator_id, :eliminated) if report.eliminator_id_changed?
   end
 
+  #----------------------------------------------------------------------------
+
   def neighborhood
     location.neighborhood
   end
+
+  #----------------------------------------------------------------------------
 
   def strftime_with(type)
     if type == :created_at
@@ -129,10 +146,13 @@ class Report < ActiveRecord::Base
     where(:status_cd => Report.eliminated)
   end
 
+  #----------------------------------------------------------------------------
 
   def complete_address
-    self.location.complete_address
+    return self.location.complete_address if self.location.present?
   end
+
+  #----------------------------------------------------------------------------
 
   def self.within_bounds(bounds)
     reports_in_bounds = []
