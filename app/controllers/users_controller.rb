@@ -3,7 +3,11 @@
 
 class UsersController < ApplicationController
 
+  #----------------------------------------------------------------------------
+
   before_filter :require_login, :only => [:edit, :update, :index, :show]
+
+  #----------------------------------------------------------------------------
 
   def index
 
@@ -45,11 +49,7 @@ class UsersController < ApplicationController
     @user_posts = @user.posts
     @elimination_method_select = EliminationMethods.field_select
 
-
-
-
     @prize_ids = @prizes.collect{|prize| prize.id}
-
 
     @isPrivatePage = (@user == @current_user)
     @highlightProfileItem = @isPrivatePage ? "nav_highlight" : ""
@@ -99,6 +99,8 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  #----------------------------------------------------------------------------
+
   def special_new
     authorize! :edit, User.new
     @user ||= User.new
@@ -110,6 +112,8 @@ class UsersController < ApplicationController
       @user.house.location.longitude = 0
     end
   end
+
+  #----------------------------------------------------------------------------
 
   def create
     #remove whitespace from user signup
@@ -123,6 +127,8 @@ class UsersController < ApplicationController
       render new_user_path(@user)
     end
   end
+
+  #----------------------------------------------------------------------------
 
   def edit
 
@@ -140,7 +146,6 @@ class UsersController < ApplicationController
     @confirm = 0
     # flash[:notice] = nil
   end
-
 
   #----------------------------------------------------------------------------
   # PUT /users
@@ -369,6 +374,8 @@ class UsersController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   #Get /user/:id/buy_prize/prize_id
   def buy_prize
     @user = User.find(params[:id])
@@ -378,6 +385,8 @@ class UsersController < ApplicationController
     end
     render :partial => "prizes/prizeconfirmation", :locals => {:bought => bought}
   end
+
+  #----------------------------------------------------------------------------
 
   def special_create
 
@@ -431,6 +440,8 @@ class UsersController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def block
     @user = User.find(params[:id])
     @user.is_blocked = !@user.is_blocked
@@ -445,7 +456,12 @@ class UsersController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def phones
     @users = User.residents.order(:first_name)
   end
+
+  #----------------------------------------------------------------------------
+
 end
