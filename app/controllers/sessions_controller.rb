@@ -1,6 +1,6 @@
 # encoding: utf-8
 class SessionsController < ApplicationController
-  
+
   def new
   end
 
@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
         redirect_to root_url, :alert => "Sua conta está bloqueada temporariamente.  Por favor, entre em contato com o Dengue Torpedo."
       end
     else
-      redirect_to root_url, :alert => "Invalid email or password."
+      redirect_to root_url, :alert => "E-mail ou senha inválido."
     end
   end
 
