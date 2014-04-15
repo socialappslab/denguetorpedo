@@ -72,8 +72,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
-				save_and_open_page
-				expect(page).to have_content("Preencha o nome da casa.")
+				expect(page).to have_content("Preencha o nome da casa")
 			end
 
 			it "notifies the user of a short house name" do
@@ -82,7 +81,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
-				expect(page).to have_content("Insira um nome da casa válido.")
+				expect(page).to have_content("Insira um nome da casa válido")
 			end
 		end
 

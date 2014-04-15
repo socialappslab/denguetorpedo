@@ -182,10 +182,12 @@ class UsersController < ApplicationController
     # saving it along with the user attributes, we do a quick query
     # to identify the house by its name. If it's present, we don't ask the user
     # to confirm, but instead we update the ID and the name, and save.
-    house = House.find_by_name(params[:user][:house_attributes][:name])
-    if house.present?
-      params[:user][:house_attributes].merge!(:id => house.id, :name => house.name)
-    end
+    # TODO: This makes Rails search for the house id in the *association*. As a
+    # result, you get "Couldn't find House with ID = ..."
+    # house = House.find_by_name(params[:user][:house_attributes][:name])
+    # if house.present?
+    #   params[:user][:house_attributes].merge!(:id => house.id, :name => house.name)
+    # end
 
     # Now, let's find the neighborhood that the user has specified. If it actually
     # exists, then we'll update the house_attributes and pass it on to Rails's

@@ -87,8 +87,8 @@ describe Post do
     u2 = FactoryGirl.create(:user)
     l1 = FactoryGirl.create(:location)
     l2 = FactoryGirl.create(:location)
-    h1 = House.create!(:name => "Tatooine", :location_id => l1.id)
-    h2 = House.create!(:name => "Dagoba", :location_id => l2.id)
+    h1 = House.create!(:name => "Tatooine", :location_id => l1.id, :neighborhood_id => u1.neighborhood.id)
+    h2 = House.create!(:name => "Dagoba", :location_id => l2.id, :neighborhood_id => u2.neighborhood.id)
     h1.members << u1
     h2.members << u2
 
