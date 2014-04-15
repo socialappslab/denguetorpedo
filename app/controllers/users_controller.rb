@@ -192,8 +192,8 @@ class UsersController < ApplicationController
     # Now, let's find the neighborhood that the user has specified. If it actually
     # exists, then we'll update the house_attributes and pass it on to Rails's
     # saver.
-    neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
-    params[:user][:house_attributes].merge!(:neighborhood_id => neighborhood.id)
+    # NOTE: This is necessary in order for all validations to work.
+    params[:user][:house_attributes].merge!(:neighborhood_id => params[:user][:neighborhood_id])
 
     #--------------------------------------------------------------------------
     # Update the user and the house.
