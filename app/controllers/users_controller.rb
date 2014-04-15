@@ -199,7 +199,32 @@ class UsersController < ApplicationController
     # Update the user and the house.
 
     @user = User.find(params[:id])
-    user_params = params[:user].slice(:house_attributes, :profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
+    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
+
+
+    # TODO add in checks to rename or join existing house?
+    # TODO should we allow users from neighborhood A join houses in neighborhood B
+
+    house = House.find_by_name(params[:user][:house_attributes][:name])
+
+    # house already exists, join existing house
+    if house.present?
+      @user.house = house
+
+    # user already has a house, update its name
+    elsif @user.house.present?
+      @user.house.name = params[:user][:house_attributes][:name]
+
+    # else create a new house
+    else
+      @user.house = House.create(
+                  :name=>params[:user][:house_attributes][:name],
+                  :user=>@user,
+                  :neighborhood_id => user_params[:neighborhood_id])
+
+    end
+
+
     if @user.update_attributes(user_params)
       @user.update_attribute(:is_fully_registered, true)
 
