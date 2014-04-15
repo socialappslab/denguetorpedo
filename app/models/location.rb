@@ -23,7 +23,7 @@
 require 'active_support/core_ext'
 
 class Location < ActiveRecord::Base
-  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude
+  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude, :neighborhood_id
   # acts_as_gmappable :callback => :geocode_results, :validation => true
   # validates :latitude, :uniqueness => { :scope => :longitude }
   # validates :neighborhood_id, :presence => true
@@ -39,6 +39,12 @@ class Location < ActiveRecord::Base
   after_commit :update_map_coordinates, :on => :create
 
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
+
+
+  # TODO @dman7: DRY IT UP!
+  validates_presence_of :street_type, :message => "Você precisa endereço válida para o seu foco."
+  validates_presence_of :street_name, :message => "Você precisa endereço válida para o seu foco."
+  validates_presence_of :street_number, :message => "Você precisa endereço válida para o seu foco."
 
   #----------------------------------------------------------------------------
 
@@ -107,7 +113,7 @@ class Location < ActiveRecord::Base
     # self.gmaps4rails_address
     # currently hardcoded....
     if self.street_type
-      return self.street_type + " " + self.street_name + " " + self.street_number + " " + "Maré"
+      return self.street_type + " " + self.street_name + " " + self.street_number # + " " + "Maré"
     else
       return self.address
     end
@@ -123,18 +129,6 @@ class Location < ActiveRecord::Base
 
   def needs_location?
     !(self.latitude && self.longitude)
-  end
-
-  def self.new_with_address(address)
-    location = Location.new(address: address)
-    # streets = location.address.split(' ') if location.address
-    # if streets.size  >= 3
-    #   location.street_type = streets[0]
-    #   location.street_number = streets[streets.size - 1]
-    #   location.street_name = streets[1..streets.size-2].join(' ')
-    # end
-    location.save
-    return location
   end
 
   def self.find_or_create(address, neighborhood=nil)

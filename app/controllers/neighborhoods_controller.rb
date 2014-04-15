@@ -1,5 +1,8 @@
 class NeighborhoodsController < NeighborhoodsBaseController
 
+  #----------------------------------------------------------------------------
+  # GET /neighborhoods/1
+
   def show
     @neighborhood = Neighborhood.find(params[:id])
 
@@ -42,4 +45,15 @@ class NeighborhoodsController < NeighborhoodsBaseController
     end
 
   end
+
+  #----------------------------------------------------------------------------
+  # GET /neighborhoods/invitation
+  #------------------------------
+
+  def invitation
+    @title = "Participar da Dengue Torpedo"
+    @feedback = Feedback.new
+  end
+
+  #----------------------------------------------------------------------------
 end

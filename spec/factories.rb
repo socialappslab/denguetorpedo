@@ -6,9 +6,11 @@ FactoryGirl.define do
 		user.nickname { Faker::Name.first_name }
 		user.middle_name { Faker::Name.first_name }
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
-		user.neighborhood { Neighborhood.first }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
+		user.neighborhood { Neighborhood.first }
+		user.carrier "XXX"
+		user.prepaid true
 		association :house
 		role "morador"
 		profile_photo_file_name "File name"
@@ -47,6 +49,7 @@ FactoryGirl.define do
 
 	factory :house do
 		name "Rede Trel"
+		neighborhood { Neighborhood.first }
 		association :location
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
@@ -55,9 +58,10 @@ FactoryGirl.define do
 	end
 
 	factory :location do
-		street_type "Rua"
-		street_name "Tatajuba"
-		street_number "50"
+		street_type 		"Rua"
+		street_name 		"Tatajuba"
+		street_number 	"50"
+		neighborhood { Neighborhood.first }
 	end
 
 	factory :neighborhood do |n|
@@ -73,53 +77,65 @@ FactoryGirl.define do
 	end
 
 	factory :report do
-		report "description"
-		created_at Time.now
 		status_cd 0
-		association :reporter, factory: :user
+		report "This is a description"
 		before_photo_file_name "File name"
 		before_photo_content_type "image/png"
 		before_photo_file_size 1024
 		before_photo_updated_at Time.now
-		sms false
-		completed_at Time.now
-
-		factory :sms do
-			sms true
-			status_cd 2
-		end
-
-		factory :identified do
-			elimination_type "Type"
-			association :location
-
-			factory :verified_identified do
-				isVerified true
-			end
-
-			factory :problem_identified do
-				isVerified false
-			end
-		end
-
-		factory :eliminated do
-			elimination_method "Method"
-			status_cd 1
-			association :location
-			after_photo_file_name "File name"
-			after_photo_content_type "image/png"
-			after_photo_file_size 1024
-			after_photo_updated_at Time.now
-			association :eliminator, factory: :user
-			factory :verified_eliminated do
-				is_resolved_verified true
-				resolved_verified_at Time.now
-				association :resolved_verifier, factory: :user
-			end
-
-			factory :problem_eliminated do
-				isVerified false
-			end
-		end
+		elimination_type { EliminationType.first.name }
 	end
+
+	# 	report "description"
+	# 	created_at Time.now
+
+	# 	association :reporter, factory: :user
+	# 	before_photo_file_name "File name"
+	# 	before_photo_content_type "image/png"
+	# 	before_photo_file_size 1024
+	# 	before_photo_updated_at Time.now
+	# 	sms false
+	# 	completed_at Time.now
+	#
+	# 	factory :sms do
+	# 		sms true
+	# 		status_cd 2
+	# 	end
+	#
+	# 	factory :identified do
+	# 		elimination_type "Type"
+	# 		association :location
+	#
+	# 		factory :verified_identified do
+	# 			isVerified true
+	# 		end
+	#
+	# 		factory :problem_identified do
+	# 			isVerified false
+	# 		end
+	# 	end
+	#
+	# 	factory :eliminated do
+	# 		elimination_method "Method"
+	# 		status_cd 1
+	# 		association :location
+	# 		after_photo_file_name "File name"
+	# 		after_photo_content_type "image/png"
+	# 		after_photo_file_size 1024
+	# 		after_photo_updated_at Time.now
+	# 		association :eliminator, factory: :user
+	# 		factory :verified_eliminated do
+	# 			is_resolved_verified true
+	# 			resolved_verified_at Time.now
+	# 			association :resolved_verifier, factory: :user
+	# 		end
+	#
+	# 		factory :problem_eliminated do
+	# 			isVerified false
+	# 		end
+	# 	end
+	# end
+
+
+
 end

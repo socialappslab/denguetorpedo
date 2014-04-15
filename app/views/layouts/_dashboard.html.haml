@@ -24,7 +24,7 @@
             Meu Perfil
       %li
         /= image_tag("icons/house_icon.png")
-        - if @current_user.house && @current_user.house.id
+        - if @current_user.neighborhood && @current_user.house && @current_user.house.id
           - if @current_user.role != "lojista"
             = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house) do
               = image_tag("icons/house_icon.png")
@@ -42,7 +42,7 @@
             Minha Casa
       %li
         /= image_tag("icons/neighborhood_icon.png")
-        - if @current_user.neighborhood && @current_user.neighborhood.id
+        - if @current_user && @current_user.neighborhood
           =link_to neighborhood_path(@current_user.neighborhood) do
             = image_tag("icons/neighborhood_icon.png")
             Minha Comunidade
@@ -59,8 +59,8 @@
               Minha Comunidade
             /= link_to 'Minha Comunidade', neighborhood_path(Neighborhood.first), :class => highlight_active_link(neighborhood_path(Neighborhood.first))
       %li
-        - if @current_user.house && @current_user.house.id
-          =link_to reports_path do
+        - if @current_user && @current_user.neighborhood
+          = link_to neighborhood_reports_path(@current_user.neighborhood) do
             =image_tag("icons/make_report_icon.png")
             Focos Marcados
         - else

@@ -49,7 +49,25 @@ puts "\n" * 3
 
 
 Neighborhood.find_or_create_by_name("Maré")
-Neighborhood.find_or_create_by_name("Vila Autódromo")
+
+# NOTE: We will not be using Vila Autódromo because of political conflict.
+# @jamesholston comment:
+# "Right now, VA has a community page which shows future houses and the general set up.
+# It also appears in the dropdown menus.  These features are instructive.
+# Futura comunidade only goes to the DT invite page.  It doesn't have a community
+# page and it does not appear in the dropdown menus.  If we remove a second neighborhood
+# name (even if fictitious), the dropdowns will not make much sense.  Furthermore,
+# I don't think that anyone will be able to create reports for Vila DT because
+# no one will be registered in it.  At present, I think, only people registered
+# in a neighborhood have access to a focos marcados page for that neighborhood.
+# For example, when I log on and go to Focos Marcados, I only get Focos marcados
+# de Maré because I am registered in Maré.  If I make a report, it is only for Maré.
+# I can't make reports for focos in Vila Autodromo.  Right?  In the future,
+# we may want to change that (I can think of various reasons and ways to do it).
+# But for now, I don't think there is a problem with changing the name Vila Autodromo
+# on the site to Vila DT for purposes of illustrating the dropdown menus and allowing
+# the user to see what a second neighborhood would look like on the site."
+Neighborhood.find_or_create_by_name("Vila DT")
 
 puts "\n" * 3
 puts "[ok] Done seeding neighborhoods..."

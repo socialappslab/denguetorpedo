@@ -1,32 +1,41 @@
 - content_for :scripts do
   :javascript
     $("#complete_name").tooltip();
-    var verifiers = #{@verifiers};
-    var residents = #{@residents};
+    var verifiers = #{@verifiers.to_json.html_safe};
+    var residents = #{@residents.to_json.html_safe};
 
-    $("select#recruitment").change(function() {
-      if ($("#recruitment").val() == "AVS/ACS") {
+    $("select#recruitment").change(function()
+    {
+      if ($("#recruitment").val() == "AVS/ACS")
+      {
         $("input#recruitment").show();
-        $("input#recruitment").autocomplete({
+        $("input#recruitment").autocomplete(
+        {
           source: verifiers,
-          select: function(event, ui) {
+          select: function(event, ui)
+          {
             event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
           }
         });
-      } else if ($("#recruitment").val() == "MORADOR/VIZINHO") {
+      }
+      else if ($("#recruitment").val() == "MORADOR/VIZINHO")
+      {
         $("input#recruitment").show();
-        $("input#recruitment").autocomplete({
+        $("input#recruitment").autocomplete(
+        {
           source: residents,
-          select: function(event, ui) {
+          select: function(event, ui)
+          {
             event.preventDefault();
             $("input#recruitment").val(ui.item.label);
             $("input#recruitment_id").val(ui.item.value);
-
           }
         });
-      } else {
+      }
+      else
+      {
         $("input#recruitment").hide();
       }
     });
@@ -42,11 +51,11 @@
     function EnableDisableToolTip() {
       if (document.forms[0].cellphone.checked) {
         $("#user_phone_number").val("000000000000");
-        $("#carrier").val("xxx");
+        $("#user_carrier").val("xxx");
       }
       else if (!document.forms[0].cellphone.checked) {
         $("#user_phone_number").val("");
-        $("#carrier").val("");
+        $("#user_carrier").val("");
       }
     }
 
@@ -55,46 +64,15 @@
       $("#name_edit_box").slideToggle("fast");
     });
 
-    function validation(){
-      var cellphone_number = $("#user_phone_number").val();
-      var carrier = $("#carrier").val();
-      var output = "";
-      var alerting = false;
-      var house_name = $("#user_house_attributes_name").val();
-      if (cellphone_number == "" || cellphone_number.length < 12){
-        alerting = true;
-        output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
-      }
-      if(carrier == ""){
-        alerting = true;
-        output = output.concat("Informe a sua operadora. \n");
-      }
-      if (house_name ==""){
-        alerting = true;
-        output = output.concat("Preencha o nome da casa.\n");
-      }
-      if (alerting){
-        alert(output);
-        return false
-      }
-      return true;
-    }
 
 
 
 .user_form.offset1
   /%h1 Configurações da conta
-  - if flash[:notice]
-    .row#flash_dat_notice
-      #flashNotice
-        %p
-          = flash[:notice]
+  = render :partial => "shared/flashes"
+  = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-  - if flash[:alert]
-    .row#flash_dat_alert
-      #flashAlert
-        %p
-          = flash[:alert]
+
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
       #role_specific.offset9
@@ -122,7 +100,7 @@
           = link_to "Códigos de controle dos prêmios", "/coupons"
 
 
-  = form_for(@user, :html => {name: "configuration", onsubmit: "return validation()"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
+  = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
     - if @user.role != "visitante"
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
@@ -258,7 +236,7 @@
 
 
 
-    .indent
+    .indent#house_configuration
       #name_display
         %br
         .question_mark_div
@@ -312,7 +290,7 @@
       %br
       = f.label "Celular", class:"config_form_title"
       = f.text_field :phone_number, :placeholder => "0219xxxxxxxx"
-      = f.text_field :carrier, :placeholder => "Operadora",id:"carrier"
+      = f.text_field :carrier, :placeholder => "Operadora"
       = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
       Pré-pago
       = f.radio_button :prepaid, "false", id:"post_paid_radio"
@@ -365,7 +343,11 @@
         -# Neighborhood / Bairro
         .question_mark_div
           = f.label "Bairro",class:"config_form_title"
-        = f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
+        / TODO: We're disabling choosing other neighborhoods until we introduce
+        / another neighborhood
+        /= f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
+        - mare = Neighborhood.find_by_name("Maré")
+        = f.select(:neighborhood_id, [ [mare.name, mare.id] ])
         %br
         %br
 
@@ -386,9 +368,10 @@
           = location_form.label "Endereço (opcional)", class:"config_form_title"
           -#= location_form.label "* Endereço da casa"
           =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
-          = location_form.text_field :street_type, value: @user.location.street_type, placeholder: "Rua, Beco etc.", class: "short_field"
-          = location_form.text_field :street_name, value: @user.location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
-          = location_form.text_field :street_number, value: @user.location.street_number, placeholder: "Número", class: "middle_field"
+
+          = location_form.text_field :street_type,  placeholder: "Rua, Beco etc.", class: "short_field"
+          = location_form.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
+          = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
 
       %br
       %br

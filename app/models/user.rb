@@ -44,31 +44,24 @@ class User < ActiveRecord::Base
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
   #----------------------------------------------------------------------------
-  # Validations
-  #------------
+  # Validators
+  #-----------
 
   validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
   validates :points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :total_points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0}
-  #validates :phone_number, :length => { :minimum => 10, :maximum => 20 }, :uniqueness => true, :presence => { on: :update }, :confirmation => true
-  # validates :carrier, :presence => { on: :update }, :confirmation => true
-  # validates :prepaid, :presence => { on: :update }, :confirmation => true
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_nil => true
   validates :email, :uniqueness => true, :unless => "email.nil?"
-  # validates :house_id, presence: { on: :update, if: :not_visitor }
   validates :house_id, presence: { on: :special_create, if: :not_visitor }
-  # validates :house_id, presence: true, on: :update
-  #  validates :is_fully_registered, :presence => true
-  #  validates :is_community_coordinator, :presence => true
-  #  validates :is_community_coordinator, :uniquness => { :scope => ??? } TODO: only want one coordinator per community
-  #  validates :is_health_agent, :presence => true
+
+  validates_length_of :phone_number, :minimum => 12, :message => "Número de celular invalido.  O formato correto é 0219xxxxxxxx", :unless => Proc.new { |u| u.new_record? }
+  validates :neighborhood_id, :presence => true, :unless => Proc.new { |u| u.new_record? }
 
   #----------------------------------------------------------------------------
   # Callbacks
   #----------
-
   before_create { generate_token(:auth_token) }
 
   #----------------------------------------------------------------------------
@@ -294,15 +287,19 @@ class User < ActiveRecord::Base
     return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
   end
 
-  # TODO @dman7  - set the neighborhood_id by the neighborhood associated with user
   def report_by_phone(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
-    @location = Location.new_with_address(body)
-    @location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    # NOTE: We're creating a location here without any street information
+    # just because the user is not expected to text it in. Later, when
+    # the report is being edited, we force the user to update location.
+    @location = Location.new(:neighborhood_id => self.neighborhood_id)
+    @location.save(:validate => false)
 
-    @report           = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
-    @report.status_cd = 0
+    @report             = Report.new(reporter: self, sms: true, status: :reported, report: body)
+    @report.location_id = @location.id
+    @report.status_cd   = 0
+    
     return @report
   end
 
