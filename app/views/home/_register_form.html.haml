@@ -1,54 +1,54 @@
 :javascript
-  function validate(){
-    var email = $("#user_email").val();
-    email = email.length
-    var first_name = $("#user_first_name").val();
-    first_name = first_name.length;
-    var last_name = $("#user_last_name").val();
-    last_name = last_name.length;
-    var password = $("#user_password").val();
-    password = password.length;
-    var message = "Há um erro:\n"
-    var alerting = false;
-    var count = 0;
-    if (first_name <2 || first_name>16){
-      alerting = true;
-      count += 1;
-      message = message.concat("Nome tem que ter entre 2 e 16 caracteres \n");
-    }
-    if(last_name <2 || last_name >16){
-      alerting = true;
-      count +=1;
-      message = message.concat("Sobrenome tem que ter entre 2 e 16 caracteres \n");
-    }
-    if(password<4){
-      alerting = true;
-      count +=1;
-      message = message.concat("A sua senha tem que ter pelo menos 4 caracteres\n");
-    }
-    if (email ==""){
-      alerting = true;
-      count +=1;
-      message = message.concat("Você esqueceu de preencher o seu e-mail\n");
-    }
-    if (alerting){
-      if (count <4){
-        alert(message);
-      }else{
-        alert("Erros impediram que o usuário fosse salvo:\n E-mail \n Nome \n Sobrenome \n Senha");
-      }
-      return false;
-    };
-    return true;
-  };
+  // function validate(){
+  //   var email = $("#user_email").val();
+  //   email = email.length
+  //   var first_name = $("#user_first_name").val();
+  //   first_name = first_name.length;
+  //   var last_name = $("#user_last_name").val();
+  //   last_name = last_name.length;
+  //   var password = $("#user_password").val();
+  //   password = password.length;
+  //   var message = "Há um erro:\n"
+  //   var alerting = false;
+  //   var count = 0;
+  //   if (first_name <2 || first_name>16){
+  //     alerting = true;
+  //     count += 1;
+  //     message = message.concat("Nome tem que ter entre 2 e 16 caracteres \n");
+  //   }
+  //   if(last_name <2 || last_name >16){
+  //     alerting = true;
+  //     count +=1;
+  //     message = message.concat("Sobrenome tem que ter entre 2 e 16 caracteres \n");
+  //   }
+  //   if(password<4){
+  //     alerting = true;
+  //     count +=1;
+  //     message = message.concat("A sua senha tem que ter pelo menos 4 caracteres\n");
+  //   }
+  //   if (email ==""){
+  //     alerting = true;
+  //     count +=1;
+  //     message = message.concat("Você esqueceu de preencher o seu e-mail\n");
+  //   }
+  //   if (alerting){
+  //     if (count <4){
+  //       alert(message);
+  //     }else{
+  //       alert("Erros impediram que o usuário fosse salvo:\n E-mail \n Nome \n Sobrenome \n Senha");
+  //     }
+  //     return false;
+  //   };
+  //   return true;
+  // };
 
 #register
-  %h3.black{style: "margin-bottom:0px;"} Cadastre-se 
+  %h3.black{style: "margin-bottom:0px;"} Cadastre-se
   %p{title: "Na versão atual, poderão participar os moradores convidados da Maré. Se você é morador e quiser participar, entre em contato conosco.", style: "color:white;margin-bottom:10px;"} Quem pode se cadastrar?
   %ul
-    = form_for(@user, html: {name: "registration_form", onsubmit: "return validate();"}) do |f|
+    = form_for(@user, html: {name: "registration_form" }) do |f|
       %li= f.error_messages
-     
+
       %li= f.text_field :email, :placeholder => "E-mail", :class => "fields"
       %li= f.text_field :first_name, :placeholder => "Nome", :class => "fields"
       -#%li= f.text_field :middle_name, :placeholder => "Nome do meio", :class => "fields"
@@ -59,4 +59,3 @@
       %li= f.password_field :password_confirmation, :placeholder => "Confirmar senha", :class => "fields"
       <br>
       %li= f.submit "Cadastre-se!"
-      
