@@ -131,12 +131,21 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   def edit
-
     @user = User.find(params[:id])
     @user.house ||= House.new
     @user.house.location ||= Location.new
     @user.house.location.latitude ||= 0
     @user.house.location.longitude ||= 0
+
+    @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
+                        [@user.first_name,"first"]
+                       ]
+
+    # if nickname exists, allow display name as option
+    @display_options += [[@user.nickname,"nickname"],
+                         [@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")","firstlastnickname"]
+                        ] if @user.nickname.present?
+
     @highlightAccountItem = "nav_highlight"
     @verifiers = User.where(:role => "verificador").map { |verifier| {:value => verifier.id, :label => verifier.full_name}}.to_json
     @residents = User.residents.map { |resident| {:value => resident.id, :label => resident.full_name}}.to_json
@@ -222,6 +231,13 @@ class UsersController < ApplicationController
                   :user=>@user,
                   :neighborhood_id => user_params[:neighborhood_id])
 
+    end
+
+    # if nickname is blank and display name includes nickname, change to firstlast
+    if user_params[:nickname].blank?
+      if user_params[:display].include? "nickname"
+       user_params[:display] = "firstlast"
+      end
     end
 
 

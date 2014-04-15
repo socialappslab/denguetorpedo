@@ -287,12 +287,7 @@
           %br
           = f.label "Mostrar nome como"
 
-          %select{:name => "display", id: "display_select"}
-            %option{value: "firstmiddlelast", selected: @user.display == "firstmiddlelast", id: "firstmiddlelast" } #{@user.full_name}
-            %option{value: "firstlast", selected: @user.display == "firstlast", id: "firstlast"} #{@user.first_name + " " + @user.last_name}
-            %option{value: "first", selected: @user.display == "first", id: "first"} #{@user.first_name}
-            %option{value: "nickname", selected: @user.display == "nickname", id: "nickname"} #{@user.nickname}
-            %option{value: "firstlastnickname", selected: @user.display == "firstlastnickname", id: "firstlastnickname"} #{@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")"}
+          =f.select :display, options_for_select(@display_options, @user.display),{:name => "display", :id => "display_select"}
           %br
           %br
           = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
