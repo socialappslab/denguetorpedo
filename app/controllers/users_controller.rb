@@ -253,6 +253,16 @@ class UsersController < ApplicationController
         recruiter.save
       end
     else
+
+      @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
+                          [@user.first_name,"first"]
+                         ]
+
+      # if nickname exists, allow display name as option
+      @display_options += [[@user.nickname,"nickname"],
+                           [@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")","firstlastnickname"]
+                          ] if @user.nickname.present?
+
       render "edit" and return
     end
 
