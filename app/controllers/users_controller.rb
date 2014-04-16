@@ -175,6 +175,12 @@ class UsersController < ApplicationController
 
 
   def update
+    @user = User.find(params[:id])
+
+    if params[:cellphone] == "false"
+      params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
+    end
+
     #--------------------------------------------------------------------------
     # Handle carrier and prepaid errors.
     if params[:user][:carrier].blank?
@@ -185,15 +191,11 @@ class UsersController < ApplicationController
       redirect_to :back and return
     end
 
+
     #--------------------------------------------------------------------------
     # If the user has written down an existing house, then we need to confirm
     # with them that that is the house they want to join.
-    #
-    # TODO: This may lead to security vulnerability where other users are editing
-    # another user.
-    @user = User.find(params[:id])
     house = House.find_by_name(params[:user][:house_attributes][:name])
-
     if params[:house_name_confirmation].blank? && house.present? && @user.house_id != house.id
       @user.house = house
 
@@ -277,7 +279,6 @@ class UsersController < ApplicationController
         recruiter.save
       end
     else
-
       @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
                           [@user.first_name,"first"]
                          ]
@@ -289,28 +290,6 @@ class UsersController < ApplicationController
 
       render "edit" and return
     end
-
-    #--------------------------------------------------------------------------
-    # TODO: I'm going to deprecate this alert behavior where we ask the user to confirm
-    # their house. I'm doing this for simplicity of the codebase. When we're done
-    # cleaning the code, we can come back to it and make the functionality more
-    # fancy...
-    # if a house exists with the same house name or house address, inform the user for confirmation
-    # if !house_name.blank? && House.find_by_name(house_name) && params[:user][:confirm].to_i == 0 && (!@user.house || (house_name != @user.house.name))
-    #   @user.house ||= House.new
-    #   @user.house.location ||= Location.new
-    #   @user.house.location.street_type = params[:user][:location][:street_type]
-    #   @user.house.location.street_name = params[:user][:location][:street_name]
-    #   @user.house.location.street_number = params[:user][:location][:street_number]
-    #   @user.house.location.neighborhood = Neighborhood.find_or_create_by_name(params[:user][:location][:neighborhood])
-    #   @user.house.location.latitude ||= 0
-    #   @user.house.location.longitude ||= 0
-    #   @user.house.name = house_name
-    #   @confirm = 1
-    #   flash.now[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
-    #
-    #   render "edit"
-    # else
 
     #--------------------------------------------------------------------------
     # Finally, let's update the location of the house, if specified.

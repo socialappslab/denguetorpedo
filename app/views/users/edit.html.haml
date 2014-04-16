@@ -40,54 +40,51 @@
       }
     });
 
-    window.onload = $("#name_edit_box").slideToggle("fast");
-    window.onload = checking;
-    function checking(){
-      if($("#user_phone_number").val() == "000000000000"){
-        $("#cellphone").prop('checked', true);
-      }
-    };
-    document.forms[0].cellphone.addEventListener("click",EnableDisableToolTip);
-    function EnableDisableToolTip() {
-      if (document.forms[0].cellphone.checked) {
-        $("#user_phone_number").val("000000000000");
-        $("#user_carrier").val("xxx");
-      }
-      else if (!document.forms[0].cellphone.checked) {
-        $("#user_phone_number").val("");
-        $("#user_carrier").val("");
-      }
-    }
 
+
+
+    $(document).ready(function()
+    {
+      if($("#cellphone").prop("checked"))
+      {
+        $("#user_phone_number").prop("disabled", true)
+        $("#user_carrier").prop("disabled", true)
+        $("#pre_paid_radio").prop("disabled", true)
+        $("#post_paid_radio").prop("disabled", true)
+      }
+      else
+      {
+        $("#user_phone_number").prop("disabled", false)
+        $("#user_carrier").prop("disabled", false)
+        $("#pre_paid_radio").prop("disabled", false)
+        $("#post_paid_radio").prop("disabled", false)
+      }
+    });
+
+    $("#cellphone").on("change", function()
+    {
+      if(this.checked)
+      {
+        $("#user_phone_number").prop("disabled", true)
+        $("#user_carrier").prop("disabled", true)
+        $("#pre_paid_radio").prop("disabled", true)
+        $("#post_paid_radio").prop("disabled", true)
+      }
+      else
+      {
+        $("#user_phone_number").prop("disabled", false)
+        $("#user_carrier").prop("disabled", false)
+        $("#pre_paid_radio").prop("disabled", false)
+        $("#post_paid_radio").prop("disabled", false)
+      }
+    });
+
+
+    window.onload = $("#name_edit_box").slideToggle("fast");
     $(".collapse_name").click(function(event){
       event.preventDefault();
       $("#name_edit_box").slideToggle("fast");
     });
-
-    // function validation(){
-    //   var cellphone_number = $("#user_phone_number").val();
-    //   var carrier = $("#carrier").val();
-    //   var output = "";
-    //   var alerting = false;
-    //   var house_name = $("#user_house_attributes_name").val();
-    //   if (cellphone_number == "" || cellphone_number.length < 12){
-    //     alerting = true;
-    //     output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
-    //   }
-    //   if(carrier == ""){
-    //     alerting = true;
-    //     output = output.concat("Informe a sua operadora. \n");
-    //   }
-    //   if (house_name ==""){
-    //     alerting = true;
-    //     output = output.concat("Preencha o nome da casa.\n");
-    //   }
-    //   if (alerting){
-    //     alert(output);
-    //     return false
-    //   }
-    //   return true;
-    // }
 
 
 
@@ -308,13 +305,16 @@
       %br
       %br
       = f.label "Celular", class:"config_form_title"
-      = f.text_field :phone_number, :placeholder => "0219xxxxxxxx"
-      = f.text_field :carrier, :placeholder => "Operadora"
-      = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
-      Pré-pago
-      = f.radio_button :prepaid, "false", id:"post_paid_radio"
-      Pós-pago
-      %br
+
+      #cellphone-information
+        = f.text_field :phone_number, :placeholder => "0219xxxxxxxx"
+        = f.text_field :carrier, :placeholder => "Operadora"
+        = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
+        Pré-pago
+        = f.radio_button :prepaid, "false", id:"post_paid_radio"
+        Pós-pago
+
+
       =check_box_tag :cellphone, false
       Clique aqui se você não tiver um celular.
 
