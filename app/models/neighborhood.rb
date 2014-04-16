@@ -13,7 +13,7 @@ class Neighborhood < ActiveRecord::Base
   attr_accessible :name
 
   has_many :locations
-  has_many :houses, :through => :locations
+  has_many :houses
   has_many :members, :through => :houses
   has_many :reports, :through => :locations
 
@@ -26,7 +26,7 @@ class Neighborhood < ActiveRecord::Base
   def rank
     0
   end
-  
+
   def total_reports
     total_reports = []
     self.members.each do |member|
@@ -36,7 +36,7 @@ class Neighborhood < ActiveRecord::Base
     end
     total_reports
   end
-  
+
   def open_reports
     open_reports = []
     self.members.each do |member|
@@ -46,7 +46,7 @@ class Neighborhood < ActiveRecord::Base
     end
     open_reports
   end
-    
+
   def eliminated_reports
     eliminated_reports = []
     self.members.each do |member|
@@ -56,5 +56,5 @@ class Neighborhood < ActiveRecord::Base
     end
     eliminated_reports
   end
-  
+
 end
