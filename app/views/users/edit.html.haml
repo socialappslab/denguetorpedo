@@ -124,7 +124,7 @@
           = link_to "Códigos de controle dos prêmios", "/coupons"
 
 
-  = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
+  = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:autocomplete => "off", :multipart => true}}) do |f|
     - if @user.role != "visitante"
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
@@ -405,18 +405,7 @@
         = text_area_tag "bio", nil, rows: 10, placeholder: "Descreva suas informações pessoais e profissionais."
 
     %br
-
-    %br
-    = f.hidden_field :confirm, :value => @confirm
-    %br
       = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
       %button{ :class => "cancel_button", :style => "height:26px;"}
         = link_to "Cancelar", edit_user_path(@user)
-    / - if @confirm == 0
-    /   %br
-    /   = f.submit "Atualizar",  {:style => "margin-bottom: 20px;"}
-    / - else
-    /   %br
-    /   = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
-    /   %button{ :class => "cancel_button", :style => "height:26px;"}
-    /     = link_to "Cancelar", edit_user_path(@user)
+    

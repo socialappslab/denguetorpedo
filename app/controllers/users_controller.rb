@@ -152,8 +152,6 @@ class UsersController < ApplicationController
     if @user != @current_user
       authorize! :edit, @user
     end
-    @confirm = 0
-    # flash[:notice] = nil
   end
 
   #----------------------------------------------------------------------------
@@ -187,6 +185,34 @@ class UsersController < ApplicationController
       redirect_to :back and return
     end
 
+    #--------------------------------------------------------------------------
+    # If the user has written down an existing house, then we need to confirm
+    # with them that that is the house they want to join.
+    #
+    # TODO: This may lead to security vulnerability where other users are editing
+    # another user.
+    @user = User.find(params[:id])
+    house = House.find_by_name(params[:user][:house_attributes][:name])
+
+    if params[:house_name_confirmation].blank? && house.present? && @user.house_id != house.id
+      @user.house = house
+
+      @house_name_confirmation = true
+      flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+
+      @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
+                          [@user.first_name,"first"]
+                         ]
+
+      # if nickname exists, allow display name as option
+      @display_options += [[@user.nickname,"nickname"],
+                           [@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")","firstlastnickname"]
+                          ] if @user.nickname.present?
+
+      render "edit" and return
+    end
+
+
     # NOTE: This is essentially the old code boiled down. Before
     # saving it along with the user attributes, we do a quick query
     # to identify the house by its name. If it's present, we don't ask the user
@@ -205,16 +231,13 @@ class UsersController < ApplicationController
     params[:user][:house_attributes].merge!(:neighborhood_id => params[:user][:neighborhood_id])
 
     #--------------------------------------------------------------------------
-    # Update the user and the house.
-
-    @user = User.find(params[:id])
+    # Update the user and the house
     user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
 
 
     # TODO add in checks to rename or join existing house?
     # TODO should we allow users from neighborhood A join houses in neighborhood B
 
-    house = House.find_by_name(params[:user][:house_attributes][:name])
 
     # house already exists, join existing house
     if house.present?
@@ -239,6 +262,7 @@ class UsersController < ApplicationController
        user_params[:display] = "firstlast"
       end
     end
+
 
 
     if @user.update_attributes(user_params)
