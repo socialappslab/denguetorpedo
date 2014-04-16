@@ -28,16 +28,42 @@ describe UsersController do
 
 	describe "Logging in" do
 		let(:user) { FactoryGirl.create(:user) }
-		
-		it "displays appropriate error message for invalid input" do
-			visit root_path
 
+		before(:each) do
+			visit root_path
+		end
+
+		it "displays appropriate error message for invalid input" do
 			fill_in "email", :with => user.email
 			fill_in "password", :with => ""
 			click_button "Entrar"
 
 			expect(page).to have_content("E-mail ou senha inválido")
 			expect(page).not_to have_content("Invalid email")
+		end
+
+		it "doesn't display Signed in message" do
+			fill_in "email", :with => user.email
+			fill_in "password", :with => user.password
+			click_button "Entrar"
+
+			expect(page).not_to have_content("Signed in")
+		end
+	end
+
+	#-----------------------------------------------------------------------------
+
+	describe "Logging out" do
+		let(:user) { FactoryGirl.create(:user) }
+
+		before(:each) do
+			sign_in(user)
+		end
+
+		it "doesn't display Signed out message" do
+			visit logout_path
+
+			expect(page).not_to have_content("Signed out")
 		end
 	end
 
