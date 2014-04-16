@@ -1,36 +1,36 @@
 - content_for :scripts do
   :javascript
     $("#complete_name").tooltip();
-    var verifiers = #{@verifiers.to_json.html_safe};
-    var residents = #{@residents.to_json.html_safe};
+    var verifiers = #{@verifiers.as_json};
+    var residents = #{@residents.as_json};
 
     $("select#recruitment").change(function()
     {
       if ($("#recruitment").val() == "AVS/ACS")
       {
-        $("input#recruitment").show();
-        $("input#recruitment").autocomplete(
+        // $("input#recruitment").show();
+        $("input#recruiter_name").autocomplete(
         {
           source: verifiers,
           select: function(event, ui)
           {
             event.preventDefault();
-            $("input#recruitment").val(ui.item.label);
-            $("input#recruitment_id").val(ui.item.value);
+            $("input#recruiter_name").val(ui.item.label);
+            $("input#recruiter_id").val(ui.item.value);
           }
         });
       }
       else if ($("#recruitment").val() == "MORADOR/VIZINHO")
       {
-        $("input#recruitment").show();
-        $("input#recruitment").autocomplete(
+        // $("input#recruitment").show();
+        $("input#recruiter_name").autocomplete(
         {
           source: residents,
           select: function(event, ui)
           {
             event.preventDefault();
-            $("input#recruitment").val(ui.item.label);
-            $("input#recruitment_id").val(ui.item.value);
+            $("input#recruiter_name").val(ui.item.label);
+            $("input#recruiter_id").val(ui.item.value);
           }
         });
       }
@@ -64,30 +64,30 @@
       $("#name_edit_box").slideToggle("fast");
     });
 
-    function validation(){
-      var cellphone_number = $("#user_phone_number").val();
-      var carrier = $("#carrier").val();
-      var output = "";
-      var alerting = false;
-      var house_name = $("#user_house_attributes_name").val();
-      if (cellphone_number == "" || cellphone_number.length < 12){
-        alerting = true;
-        output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
-      }
-      if(carrier == ""){
-        alerting = true;
-        output = output.concat("Informe a sua operadora. \n");
-      }
-      if (house_name ==""){
-        alerting = true;
-        output = output.concat("Preencha o nome da casa.\n");
-      }
-      if (alerting){
-        alert(output);
-        return false
-      }
-      return true;
-    }
+    // function validation(){
+    //   var cellphone_number = $("#user_phone_number").val();
+    //   var carrier = $("#carrier").val();
+    //   var output = "";
+    //   var alerting = false;
+    //   var house_name = $("#user_house_attributes_name").val();
+    //   if (cellphone_number == "" || cellphone_number.length < 12){
+    //     alerting = true;
+    //     output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
+    //   }
+    //   if(carrier == ""){
+    //     alerting = true;
+    //     output = output.concat("Informe a sua operadora. \n");
+    //   }
+    //   if (house_name ==""){
+    //     alerting = true;
+    //     output = output.concat("Preencha o nome da casa.\n");
+    //   }
+    //   if (alerting){
+    //     alert(output);
+    //     return false
+    //   }
+    //   return true;
+    // }
 
 
 
@@ -390,15 +390,15 @@
 
       %br
       %br
-      - if @user.is_fully_registered == false
+      - unless @user.is_fully_registered
         %h1 Alguém o convidou a se cadastrar no DT?
         %select#recruitment{:name => "recruitment_type"}
           %option NINGUÉM
           %option AVS/ACS
           %option MORADOR/VIZINHO
         %br
-          %input{:id => "recruitment", :name => "recruitment", :style => "display:none;"}
-          %input{:type => "hidden", :name => "recruitment_id", :id => "recruitment_id"}
+          %input{:id => "recruiter_name", :name => "recruiter_name"}
+          %input{:type => "hidden", :name => "recruiter_id", :id => "recruiter_id"}
     - else
       %h2 Apresentação pessoal
       .indent#visitor_desc
@@ -408,4 +408,3 @@
       = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
       %button{ :class => "cancel_button", :style => "height:26px;"}
         = link_to "Cancelar", edit_user_path(@user)
-    

@@ -269,7 +269,7 @@ class UsersController < ApplicationController
       @user.update_attribute(:is_fully_registered, true)
 
       # Identify the recruiter for this user.
-      recruiter = User.find_by_id(params[:recruitment_id])
+      recruiter = User.find_by_id( params[:recruiter_id] )
       if recruiter
         @user.recruiter = recruiter
         recruiter.points       += 50

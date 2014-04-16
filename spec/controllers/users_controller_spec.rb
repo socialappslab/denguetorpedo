@@ -155,6 +155,43 @@ describe UsersController do
 			end
 		end
 
+		context "when editing recruiter information" do
+			it "displays on newly registered users" do
+				visit logout_path
+				visit root_path
+
+				fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+				fill_in "user_first_name", 					 :with => "Test"
+				fill_in "user_last_name",  					 :with => "Tester"
+				fill_in "user_password", 						 :with => "abcdefg"
+				fill_in "user_password_confirmation", :with => "abcdefg"
+				click_button "Cadastre-se!"
+
+				expect(page).to have_content("Alguém o convidou a se cadastrar no DT?")
+			end
+
+			it "doesn't display for fully registered users" do
+				user.update_attribute(:is_fully_registered, true)
+
+				visit edit_user_path(user)
+				expect(page).not_to have_content("Alguém o convidou a se cadastrar no DT?")
+			end
+
+			it "updates the recruiter id when user selects a recruiter" do
+				pending "Until we figure how to test jQuery Autocomplete"
+				recruiter = FactoryGirl.create(:user)
+
+				visit edit_user_path(user)
+				select "MORADOR/VIZINHO", :from => "recruitment"
+
+				fill_in "recruiter_name", with: recruiter.full_name
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+			end
+		end
+
 		context "when editing house information" do
 			it "notifies the user of missing house name" do
 				visit edit_user_path(user)
@@ -206,7 +243,7 @@ describe UsersController do
 
 				it "prevents user from setting a house's neighborhood" do
 					pending "Need to get a second neighborhood"
-					
+
 					house.neighborhood_id = Neighborhood.all[1].id
 					house.save(:validate => false)
 
@@ -271,9 +308,7 @@ describe UsersController do
 				end
 			end
 		end
-
 	end
-
 
 	#-----------------------------------------------------------------------------
 end
