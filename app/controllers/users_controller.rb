@@ -177,18 +177,28 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if params[:cellphone] == "false"
-      params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
-    end
-
     #--------------------------------------------------------------------------
     # Handle carrier and prepaid errors.
-    if params[:user][:carrier].blank?
-      flash[:alert] = "Informe a sua operadora."
-      redirect_to :back and return
-    elsif params[:user][:prepaid].blank?
-      flash[:alert] = "Marque pré ou pós-pago."
-      redirect_to :back and return
+    if params[:cellphone] == "false"
+      # TODO: This is a hack to save the phone information in the case that user
+      # registers with existing house name (the confirmation clears any temporary
+      # variable results of cellphone information).
+      @user.update_attribute(:phone_number, "000000000000")
+      @user.update_attribute(:carrier, "xxx")
+      @user.update_attribute(:prepaid, true)
+
+      # We still need this when the user object will be saved later in this method.
+      params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
+    else
+
+      if params[:user][:carrier].blank?
+        flash[:alert] = "Informe a sua operadora."
+        redirect_to edit_user_path(@user) and return
+      elsif params[:user][:prepaid].blank?
+        flash[:alert] = "Marque pré ou pós-pago."
+        redirect_to edit_user_path(@user) and return
+      end
+
     end
 
 
@@ -239,9 +249,7 @@ class UsersController < ApplicationController
 
     # TODO add in checks to rename or join existing house?
     # TODO should we allow users from neighborhood A join houses in neighborhood B
-
-
-    # house already exists, join existing house
+    # if house already exists, join existing house
     if house.present?
       @user.house = house
 
@@ -264,7 +272,6 @@ class UsersController < ApplicationController
        user_params[:display] = "firstlast"
       end
     end
-
 
 
     if @user.update_attributes(user_params)
