@@ -1,4 +1,7 @@
+/------------------------------------------------------------------------------
+= render :partial => "shared/flashes"
 = render :partial => 'orange_slider'
+  
 %br
 #neighborhood_search{style: "width:1000px;"}
   .row
@@ -16,14 +19,14 @@
 
 .row
   %h2.offset1 Comunidades em destaque no Dengue Torpedo
-    
+
 .row
   .span15.offset1
     = render "home/neighborhood_list"
 
 .row
   %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
-  
+
 .row
   #neighborhood_stats.offset1
     #home_visit_neighborhood_button.span5
@@ -33,27 +36,27 @@
       %br Total de focos marcados
     .span3{style: "margin-left: 45px;"}
       .row
-        #neighborhood_open_report_button.span1 
+        #neighborhood_open_report_button.span1
         .span2
           %b= @opened_reports_in_neighborhood
           %br em aberto
     .span3
       .row
-        #neighborhood_resolved_report_button.span1 
+        #neighborhood_resolved_report_button.span1
         .span2
           %b= @eliminated_reports_in_neighborhood
           %br eliminados
-        
+
 .row
   #houses.span15.offset1
-    = render "home/house_list"          
-    
-%br    
+    = render "home/house_list"
+
+%br
 .row
-  %h2.offset1{style: 'font-size: 18px;'} 
+  %h2.offset1{style: 'font-size: 18px;'}
     = link_to "Prêmios", prizes_path
-  #sponsors.offset1{style: "margin-left:61px;"}    
-    
+  #sponsors.offset1{style: "margin-left:61px;"}
+
     %ul
       - @prizes.shuffle.each do |prize|
         = render :partial => "prizes/prize", :object => prize
@@ -72,16 +75,10 @@
                     = notice.title[0..30] + "..."
                   - else
                     = notice.title
-%br          
+%br
 .row
   %h2.offset1{style: 'font-size: 18px;'} Parceiros
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
     <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
 
-- if flash[:alert]
-  %script
-    alert("#{flash[:alert]}");
-  
-
-    
-
+/------------------------------------------------------------------------------

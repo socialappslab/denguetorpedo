@@ -40,6 +40,14 @@ require 'spec_helper'
 
 describe Report do
 
+	it "does not require presence of location" do
+		r = FactoryGirl.build(:report)
+
+		expect {
+			r.save
+		}.to change(Report, :count).by(1)
+	end
+
 	it "has a valid factory" do
 		FactoryGirl.build(:report).should be_valid
 	end

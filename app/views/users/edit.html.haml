@@ -1,32 +1,41 @@
 - content_for :scripts do
   :javascript
     $("#complete_name").tooltip();
-    var verifiers = #{@verifiers};
-    var residents = #{@residents};
+    var verifiers = #{@verifiers.as_json};
+    var residents = #{@residents.as_json};
 
-    $("select#recruitment").change(function() {
-      if ($("#recruitment").val() == "AVS/ACS") {
-        $("input#recruitment").show();
-        $("input#recruitment").autocomplete({
+    $("select#recruitment").change(function()
+    {
+      if ($("#recruitment").val() == "AVS/ACS")
+      {
+        // $("input#recruitment").show();
+        $("input#recruiter_name").autocomplete(
+        {
           source: verifiers,
-          select: function(event, ui) {
+          select: function(event, ui)
+          {
             event.preventDefault();
-            $("input#recruitment").val(ui.item.label);
-            $("input#recruitment_id").val(ui.item.value);
+            $("input#recruiter_name").val(ui.item.label);
+            $("input#recruiter_id").val(ui.item.value);
           }
         });
-      } else if ($("#recruitment").val() == "MORADOR/VIZINHO") {
-        $("input#recruitment").show();
-        $("input#recruitment").autocomplete({
+      }
+      else if ($("#recruitment").val() == "MORADOR/VIZINHO")
+      {
+        // $("input#recruitment").show();
+        $("input#recruiter_name").autocomplete(
+        {
           source: residents,
-          select: function(event, ui) {
+          select: function(event, ui)
+          {
             event.preventDefault();
-            $("input#recruitment").val(ui.item.label);
-            $("input#recruitment_id").val(ui.item.value);
-
+            $("input#recruiter_name").val(ui.item.label);
+            $("input#recruiter_id").val(ui.item.value);
           }
         });
-      } else {
+      }
+      else
+      {
         $("input#recruitment").hide();
       }
     });
@@ -42,11 +51,11 @@
     function EnableDisableToolTip() {
       if (document.forms[0].cellphone.checked) {
         $("#user_phone_number").val("000000000000");
-        $("#carrier").val("xxx");
+        $("#user_carrier").val("xxx");
       }
       else if (!document.forms[0].cellphone.checked) {
         $("#user_phone_number").val("");
-        $("#carrier").val("");
+        $("#user_carrier").val("");
       }
     }
 
@@ -55,46 +64,39 @@
       $("#name_edit_box").slideToggle("fast");
     });
 
-    function validation(){
-      var cellphone_number = $("#user_phone_number").val();
-      var carrier = $("#carrier").val();
-      var output = "";
-      var alerting = false;
-      var house_name = $("#user_house_attributes_name").val();
-      if (cellphone_number == "" || cellphone_number.length < 12){
-        alerting = true;
-        output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
-      }
-      if(carrier == ""){
-        alerting = true;
-        output = output.concat("Informe a sua operadora. \n");
-      }
-      if (house_name ==""){
-        alerting = true;
-        output = output.concat("Preencha o nome da casa.\n");
-      }
-      if (alerting){
-        alert(output);
-        return false
-      }
-      return true;
-    }
+    // function validation(){
+    //   var cellphone_number = $("#user_phone_number").val();
+    //   var carrier = $("#carrier").val();
+    //   var output = "";
+    //   var alerting = false;
+    //   var house_name = $("#user_house_attributes_name").val();
+    //   if (cellphone_number == "" || cellphone_number.length < 12){
+    //     alerting = true;
+    //     output = output.concat("Número de celular invalido. O formato correto é 0219xxxxxxxx.\n");
+    //   }
+    //   if(carrier == ""){
+    //     alerting = true;
+    //     output = output.concat("Informe a sua operadora. \n");
+    //   }
+    //   if (house_name ==""){
+    //     alerting = true;
+    //     output = output.concat("Preencha o nome da casa.\n");
+    //   }
+    //   if (alerting){
+    //     alert(output);
+    //     return false
+    //   }
+    //   return true;
+    // }
 
 
 
 .user_form.offset1
   /%h1 Configurações da conta
-  - if flash[:notice]
-    .row#flash_dat_notice
-      #flashNotice
-        %p
-          = flash[:notice]
+  = render :partial => "shared/flashes"
+  = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-  - if flash[:alert]
-    .row#flash_dat_alert
-      #flashAlert
-        %p
-          = flash[:alert]
+
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
       #role_specific.offset9
@@ -122,7 +124,7 @@
           = link_to "Códigos de controle dos prêmios", "/coupons"
 
 
-  = form_for(@user, :html => {name: "configuration", onsubmit: "return validation()"}, :url => {:action => "update", :html => {:autocomplete => "off", :multipart => true}}) do |f|
+  = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:autocomplete => "off", :multipart => true}}) do |f|
     - if @user.role != "visitante"
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
@@ -258,7 +260,7 @@
 
 
 
-    .indent
+    .indent#house_configuration
       #name_display
         %br
         .question_mark_div
@@ -285,12 +287,7 @@
           %br
           = f.label "Mostrar nome como"
 
-          %select{:name => "display", id: "display_select"}
-            %option{value: "firstmiddlelast", selected: @user.display == "firstmiddlelast", id: "firstmiddlelast" } #{@user.full_name}
-            %option{value: "firstlast", selected: @user.display == "firstlast", id: "firstlast"} #{@user.first_name + " " + @user.last_name}
-            %option{value: "first", selected: @user.display == "first", id: "first"} #{@user.first_name}
-            %option{value: "nickname", selected: @user.display == "nickname", id: "nickname"} #{@user.nickname}
-            %option{value: "firstlastnickname", selected: @user.display == "firstlastnickname", id: "firstlastnickname"} #{@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")"}
+          =f.select :display, options_for_select(@display_options, @user.display),{:name => "display", :id => "display_select"}
           %br
           %br
           = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
@@ -312,7 +309,7 @@
       %br
       = f.label "Celular", class:"config_form_title"
       = f.text_field :phone_number, :placeholder => "0219xxxxxxxx"
-      = f.text_field :carrier, :placeholder => "Operadora",id:"carrier"
+      = f.text_field :carrier, :placeholder => "Operadora"
       = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
       Pré-pago
       = f.radio_button :prepaid, "false", id:"post_paid_radio"
@@ -386,39 +383,28 @@
           = location_form.label "Endereço (opcional)", class:"config_form_title"
           -#= location_form.label "* Endereço da casa"
           =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
-          = location_form.text_field :street_type, value: @user.location.street_type, placeholder: "Rua, Beco etc.", class: "short_field"
-          = location_form.text_field :street_name, value: @user.location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
-          = location_form.text_field :street_number, value: @user.location.street_number, placeholder: "Número", class: "middle_field"
+
+          = location_form.text_field :street_type,  placeholder: "Rua, Beco etc.", class: "short_field"
+          = location_form.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
+          = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
 
       %br
       %br
-      - if @user.is_fully_registered == false
+      - unless @user.is_fully_registered
         %h1 Alguém o convidou a se cadastrar no DT?
         %select#recruitment{:name => "recruitment_type"}
           %option NINGUÉM
           %option AVS/ACS
           %option MORADOR/VIZINHO
         %br
-          %input{:id => "recruitment", :name => "recruitment", :style => "display:none;"}
-          %input{:type => "hidden", :name => "recruitment_id", :id => "recruitment_id"}
+          %input{:id => "recruiter_name", :name => "recruiter_name"}
+          %input{:type => "hidden", :name => "recruiter_id", :id => "recruiter_id"}
     - else
       %h2 Apresentação pessoal
       .indent#visitor_desc
         = text_area_tag "bio", nil, rows: 10, placeholder: "Descreva suas informações pessoais e profissionais."
 
     %br
-
-    %br
-    = f.hidden_field :confirm, :value => @confirm
-    %br
       = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
       %button{ :class => "cancel_button", :style => "height:26px;"}
         = link_to "Cancelar", edit_user_path(@user)
-    / - if @confirm == 0
-    /   %br
-    /   = f.submit "Atualizar",  {:style => "margin-bottom: 20px;"}
-    / - else
-    /   %br
-    /   = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
-    /   %button{ :class => "cancel_button", :style => "height:26px;"}
-    /     = link_to "Cancelar", edit_user_path(@user)

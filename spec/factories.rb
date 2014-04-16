@@ -6,9 +6,11 @@ FactoryGirl.define do
 		user.nickname { Faker::Name.first_name }
 		user.middle_name { Faker::Name.first_name }
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
-		user.neighborhood { Neighborhood.first }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
+		user.neighborhood { Neighborhood.first }
+		user.carrier "XXX"
+		user.prepaid true
 		association :house
 		role "morador"
 		profile_photo_file_name "File name"
@@ -47,6 +49,7 @@ FactoryGirl.define do
 
 	factory :house do
 		name "Rede Trel"
+		neighborhood { Neighborhood.first }
 		association :location
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"

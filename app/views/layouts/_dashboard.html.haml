@@ -24,7 +24,7 @@
             Meu Perfil
       %li
         /= image_tag("icons/house_icon.png")
-        - if @current_user.house && @current_user.house.id
+        - if @current_user.neighborhood && @current_user.house && @current_user.house.id
           - if @current_user.role != "lojista"
             = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house) do
               = image_tag("icons/house_icon.png")

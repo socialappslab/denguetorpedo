@@ -139,6 +139,8 @@ class ReportsController < NeighborhoodsBaseController
 
       location.latitude  = params[:x] if params[:x].present?
       location.longitude = params[:y] if params[:y].present?
+      location.neighborhood = Neighborhood.find(params[:neighborhood_id]) if location.neighborhood.blank?
+
       location.save
     end
 

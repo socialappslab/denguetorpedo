@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # == Schema Information
 #
 # Table name: houses
@@ -18,8 +20,8 @@
 #
 
 class House < ActiveRecord::Base
-  attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes
-  
+  attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes, :neighborhood_id
+
   has_attached_file :profile_photo, :styles => {:small => "60x60>", :medium => "150x150>" , :large => "225x225>"}, :default_url => 'default_images/house_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
   has_many :members, :class_name => "User"
@@ -27,28 +29,35 @@ class House < ActiveRecord::Base
   has_many :all_reports, :through => :members
   has_many :created_reports, :through => :members, :conditions => {:status_cd => 0}
   has_many :eliminated_reports, :through => :members, :conditions => {:status_cd => 1}
+
   belongs_to :location
+  belongs_to :neighborhood
+
   has_one :user
   accepts_nested_attributes_for :location, :allow_destroy => true
 
   ## validations
 
-  validates :name, presence: true, length: { minimum: 2 }
+  validates_presence_of :name, :message => "Preencha o nome da casa"
+  validates_length_of   :name, :minimum => 2, :message => "Insira um nome da casa válido"
 
-  # validates :location_id, presence: true #, uniqueness: true ## seed file wouldn't pass this constraint
 
-  def neighborhood
-    location.neighborhood
-  end
-  
+  validates :neighborhood_id, :presence => true
+
+  #----------------------------------------------------------------------------
+
   def points
     members.sum(:total_points)
   end
 
+  #----------------------------------------------------------------------------
+
   def complete_address
     self.location.complete_address
   end
-  
+
+  #----------------------------------------------------------------------------
+
   def reports
     _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id}) ORDER BY "reports".updated_at DESC))
     ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
@@ -71,13 +80,13 @@ class House < ActiveRecord::Base
     if name.nil? || name.blank?
       return nil
     end
-    
+
     # try to find the house, and return if it exists
     house = House.find_by_name(name)
     if house
       if profile_photo
         house.profile_photo = profile_photo
-      end      
+      end
       house.save
       return house
     end
@@ -91,9 +100,9 @@ class House < ActiveRecord::Base
     if location.nil?
       return nil
     end
-    
+
     house = House.find_by_location_id(location.id)
-    
+
     if house
       if profile_photo
         house.profile_photo = profile_photo

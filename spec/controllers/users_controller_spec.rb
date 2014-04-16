@@ -1,144 +1,314 @@
 # encoding: utf-8
 require 'spec_helper'
-require "cancan/matchers"
 
 describe UsersController do
+	render_views
 
-	def valid_attributes
-	end
+	#-----------------------------------------------------------------------------
 
-	def sponsor_attributes
-		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "lojista", phone_number: "15105421895", house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}}
-	end
+	context "Registering a user" do
+		context "when user inputs valid information" do
+			it "redirects them to their edit page" do
+				visit root_path
 
-	def verifier_attributes
-		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "verificador", phone_number: "15105421895", house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}}
-	end
+				fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+				fill_in "user_first_name", 					 :with => "Test"
+				fill_in "user_last_name",  					 :with => "Tester"
+				fill_in "user_password", 						 :with => "abcdefg"
+				fill_in "user_password_confirmation", :with => "abcdefg"
+				click_button "Cadastre-se!"
 
-	def visitor_attributes
-		{ user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.email, password: "denguewarrior", password_confirmation: "denguewarrior", role: "verificador", phone_number: "0219xxxxxxxx", :carrier => "Test Carrier", :prepaid => true, house_attributes: { name: "Kang", phone_number: Faker::PhoneNumber.phone_number[0..19]}, location: { street_type: "Rua", street_name: "Tatajuba", street_number: "50", neighborhood: "Maré"}}}
-
-	end
-	before(:each) do
-		controller.stub(:require_login).and_return(true)
-		@admin = FactoryGirl.create(:admin)
-		@user = FactoryGirl.create(:user)
-	end
-
-	describe "Get INDEX" do
-		context "when logged in with admin account" do
-			it "response should be success" do
-				controller.stub(:current_user).and_return(@admin)
-				get :index
-				response.should be_success
-			end
-		end
-
-		context "when logged in with resident account" do
-			it "rseponse should not be success" do
-				controller.stub(:current_user).and_return(@user)
-				get :index
-				response.should_not be_success
+				user = User.find_by_email("test@denguetorpedo.com")
+				expect(current_path).to eq( edit_user_path(user) )
 			end
 		end
 	end
 
+	#-----------------------------------------------------------------------------
 
-	describe "Get EDIT" do
-		context "when logged in with admin account" do
-			it "renders successfully" do
-				controller.stub(:current_user).and_return(@admin)
-				get :edit, id: @user.id
-				response.should be_success
-			end
-		end
-	end
-
-	describe "Editing a user" do
-		render_views
-
+	context "Logging a user in" do
 		let(:user) { FactoryGirl.create(:user) }
 
 		before(:each) do
-			cookies[:auth_token] = user.auth_token
+			visit root_path
 		end
 
+		it "displays appropriate error message for invalid input" do
+			fill_in "email", :with => user.email
+			fill_in "password", :with => ""
+			click_button "Entrar"
 
-		it "asks user for a neighborhood" do
-			expect(user.neighborhood).to eq(nil)
-
-			attrs = visitor_attributes[:user].merge(:neighborhood_id => Neighborhood.first.id)
-			put :update, :id => user.id, :user => attrs
-			expect(user.reload.neighborhood.id).to eq(Neighborhood.first.id)
-		end
-	end
-
-	describe "Get Special_new" do
-		context "when logged in with admin account" do
-			before(:each) do
-				@admin = FactoryGirl.create(:admin)
-				controller.stub(:current_user).and_return(@admin)
-			end
-			it "should return success" do
-				get :special_new
-				response.should
-			end
+			expect(page).to have_content("E-mail ou senha inválido")
+			expect(page).not_to have_content("Invalid email")
 		end
 
-		context "when looged in with other accounts type" do
-			before(:each) do
-				@user = FactoryGirl.create(:user)
-				controller.stub(:current_user).and_return(@user)
-			end
+		it "doesn't display Signed in message" do
+			fill_in "email", :with => user.email
+			fill_in "password", :with => user.password
+			click_button "Entrar"
 
-			it "should return failure" do
-				get :special_new
-				response.should_not be_success
-			end
+			expect(page).not_to have_content("Signed in")
 		end
 	end
 
-	describe "Post Special_create" do
-		describe "when logged in with admin account" do
-			before(:each) do
-				@admin = FactoryGirl.create(:admin)
-				controller.stub(:current_user).and_return(@admin)
-			end
-			it "should create a sponsor successfully" do
-				post :special_create, sponsor_attributes
-				response.should be_redirect
+	#-----------------------------------------------------------------------------
+
+	context "Logging a user out" do
+		let(:user) { FactoryGirl.create(:user) }
+
+		before(:each) do
+			sign_in(user)
+		end
+
+		it "doesn't display Signed out message" do
+			visit logout_path
+
+			expect(page).not_to have_content("Signed out")
+		end
+	end
+
+	#-----------------------------------------------------------------------------
+
+	context "Editing a user" do
+		let(:user) { FactoryGirl.create(:user) }
+
+		before(:each) do
+			sign_in(user)
+		end
+
+		context "when user inputs invalid information" do
+			it "notifies the user of short phone number" do
+				visit edit_user_path(user)
+				fill_in "user_phone_number", :with => ""
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(page).to have_content("Número de celular invalido.  O formato correto é 0219xxxxxxxx")
 			end
 
-			it "should create a verifier successfully" do
-				post :special_create, verifier_attributes
-				response.should be_redirect
-			end
-
-			it "should create a visitor successfully" do
-				post :special_create, visitor_attributes
-				response.should be_redirect
+			it "notifies the user of missing carrier" do
+				visit edit_user_path(user)
+				fill_in "user_carrier", :with => ""
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(page).to have_content("Informe a sua operadora")
 			end
 		end
 
-		describe "when logged in with other accounts" do
-			before(:each) do
-				@user = FactoryGirl.create(:user)
-				controller.stub(:current_user).and_return(@user)
-			end
-			it "should not create a sponsor" do
-				post :special_create, FactoryGirl.attributes_for(:sponsor)
-				response.should_not be_success
+		context "when user inputs valid information" do
+			it "updates the user's neighborhood" do
+				# TODO: Pending until we introduce a second neighborhood
+				pending
+
+				expect(user.neighborhood_id).to eq(Neighborhood.first.id)
+
+				visit edit_user_path(user)
+
+				select Neighborhood.all[1].id, :from =>  "user_neighborhood_id"
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.neighborhood_id).to eq(Neighborhood.all[1].id)
+				expect(page).to have_content("Perfil atualizado com sucesso")
 			end
 
-			it "should not create a verifier" do
-				post :special_create, FactoryGirl.attributes_for(:verifier)
-				response.should_not be_success
+			it "updates the user's house" do
+				visit edit_user_path(user)
+
+				fill_in "user_house_attributes_name", :with => "TEST"
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.name).to eq("TEST")
+				expect(page).to have_content("Perfil atualizado com sucesso")
 			end
 
-			it "should not create a visitor" do
-				post :special_create, FactoryGirl.attributes_for(:visitor)
-				response.should_not be_success
+			it "updates the user's house location" do
+				user.house.location_id = nil
+				user.house.save(:validate => false)
+
+				visit edit_user_path(user)
+				fill_in "user_location_street_type", 	:with => "Rua"
+				fill_in "user_location_street_name", 	:with => "Boca"
+				fill_in "user_location_street_number", :with => "50"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(user.reload.house.location.street_type).to eq("Rua")
+				expect(page).to have_content("Perfil atualizado com sucesso")
+			end
+
+			it "updates the user's house location" do
+				visit edit_user_path(user)
+				fill_in "user_location_street_type", 	:with => "Rua"
+				fill_in "user_location_street_name", 	:with => "Boca"
+				fill_in "user_location_street_number", :with => "50"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.location.street_type).to eq("Rua")
+				expect(page).to have_content("Perfil atualizado com sucesso")
+			end
+		end
+
+		context "when editing recruiter information" do
+			it "displays on newly registered users" do
+				visit logout_path
+				visit root_path
+
+				fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+				fill_in "user_first_name", 					 :with => "Test"
+				fill_in "user_last_name",  					 :with => "Tester"
+				fill_in "user_password", 						 :with => "abcdefg"
+				fill_in "user_password_confirmation", :with => "abcdefg"
+				click_button "Cadastre-se!"
+
+				expect(page).to have_content("Alguém o convidou a se cadastrar no DT?")
+			end
+
+			it "doesn't display for fully registered users" do
+				user.update_attribute(:is_fully_registered, true)
+
+				visit edit_user_path(user)
+				expect(page).not_to have_content("Alguém o convidou a se cadastrar no DT?")
+			end
+
+			it "updates the recruiter id when user selects a recruiter" do
+				pending "Until we figure how to test jQuery Autocomplete"
+				recruiter = FactoryGirl.create(:user)
+
+				visit edit_user_path(user)
+				select "MORADOR/VIZINHO", :from => "recruitment"
+
+				fill_in "recruiter_name", with: recruiter.full_name
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+			end
+		end
+
+		context "when editing house information" do
+			it "notifies the user of missing house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => ""
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(page).to have_content("Preencha o nome da casa")
+			end
+
+			it "notifies the user of a short house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => "A"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(page).to have_content("Insira um nome da casa válido")
+			end
+
+			it "notifies the user of missing house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => ""
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(page).to have_content("Preencha o nome da casa")
+			end
+
+			it "creates a new instance if user chooses a new house" do
+				visit edit_user_path(user)
+
+				fill_in "user_house_attributes_name", :with => "TEST"
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.name).to eq("TEST")
+				expect(House.count).to eq(1)
+				expect(page).to have_content("Perfil atualizado com sucesso")
+			end
+
+			context "when choosing a pre-existing house name" do
+				let(:house) { FactoryGirl.create(:house, :name => "TEST HOUSE") }
+
+				it "prevents user from setting a house's neighborhood" do
+					pending "Need to get a second neighborhood"
+
+					house.neighborhood_id = Neighborhood.all[1].id
+					house.save(:validate => false)
+
+					visit edit_user_path(user)
+					select Neighborhood.first.name, :from => "user_neighborhood_id"
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					expect(house.reload.neighborhood_id).to eq(nil)
+					expect(page).to have_content("Perfil atualizado com sucesso")
+				end
+
+				it "does not create a new house" do
+					visit edit_user_path(user)
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					# We expect only the user's house and the one they chose to exist.
+					expect(House.count).to eq(2)
+				end
+
+				it "asks for confirmation" do
+					visit edit_user_path(user)
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+					expect(page).to have_content("Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar.")
+				end
+
+				it "saves the profile upon confirmation" do
+					visit edit_user_path(user)
+
+					# puts "House.all: #{House.all.map(&:name)}"
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					expect(user.reload.house.name).to eq(house.name)
+
+					# We expect only the user's house and the one they chose to exist.
+					expect(House.count).to eq(2)
+					expect(page).to have_content("Perfil atualizado com sucesso")
+				end
 			end
 		end
 	end
+
+	#-----------------------------------------------------------------------------
 end

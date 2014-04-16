@@ -3,7 +3,7 @@ class HousesController < NeighborhoodsBaseController
   before_filter :require_login
 
   def show
-    @house = House.includes(:members, :posts, :location => :neighborhood).find(params[:id])
+    @house = House.includes(:members, :posts, :location).find(params[:id])
     head :not_found and return if @house.nil?
     head :not_found and return if @house.user.role == "lojista"
 
@@ -16,9 +16,9 @@ class HousesController < NeighborhoodsBaseController
     @highlightHouseItem = ""
 
     @marker = [{"lat" => @house.location.latitude, "lng" => @house.location.longitude}].to_json
-    @markers = @house.reports.map { |report| report.location.info}
-    @open_markers = @house.created_reports.map { |report| report.location.info}
-    @eliminated_markers = @house.eliminated_reports.map { |report| report.location.info}
+    @markers = @house.reports.map { |report| report.location && report.location.info}
+    @open_markers = @house.created_reports.map { |report| report.location && report.location.info}
+    @eliminated_markers = @house.eliminated_reports.map { |report| report.location && report.location.info}
 
     # @counts = @house.reports.group(:location_id).count
     # @open_counts = @house.created_report.group(:location_id).count

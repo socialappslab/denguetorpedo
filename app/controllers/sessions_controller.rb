@@ -1,8 +1,12 @@
 # encoding: utf-8
 class SessionsController < ApplicationController
-  
+
+  #----------------------------------------------------------------------------
+
   def new
   end
+
+  #----------------------------------------------------------------------------
 
   def create
     user = User.find_by_email(params[:email])
@@ -16,20 +20,24 @@ class SessionsController < ApplicationController
           cookies[:auth_token] = user.auth_token
         end
         respond_to do |format|
-          format.html { redirect_to root_url, :notice => "Signed in!"}
+          format.html { redirect_to root_url } #, :notice => "Signed in!"}
           format.json { render json: {auth_token: user.auth_token}}
         end
       else
         redirect_to root_url, :alert => "Sua conta está bloqueada temporariamente.  Por favor, entre em contato com o Dengue Torpedo."
       end
     else
-      redirect_to root_url, :alert => "Invalid email or password."
+      redirect_to root_url, :alert => "E-mail ou senha inválido."
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def destroy
     cookies.delete(:auth_token)
-    redirect_to root_url, :notice => "Signed out!"
+    redirect_to root_url #, :notice => "Signed out!"
   end
+
+  #----------------------------------------------------------------------------
 
 end
