@@ -22,6 +22,54 @@ describe UsersController do
 				expect(current_path).to eq( edit_user_path(user) )
 			end
 		end
+
+		it "allows them to fully register seamlessly" do
+			visit root_path
+
+			fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+			fill_in "user_first_name", 					 :with => "Test"
+			fill_in "user_last_name",  					 :with => "Tester"
+			fill_in "user_password", 						 :with => "abcdefg"
+			fill_in "user_password_confirmation", :with => "abcdefg"
+			click_button "Cadastre-se!"
+
+			check("cellphone")
+			fill_in "user_house_attributes_name", :with => "MY NEW HOUSE"
+
+			within "#house_configuration" do
+				click_button "Confirmar"
+			end
+
+			expect(page).to have_content("Perfil atualizado com sucesso")
+		end
+
+		it "allows them to fully register seamlessly with a pre-existing house" do
+			house = FactoryGirl.create(:house)
+
+			visit root_path
+
+			fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+			fill_in "user_first_name", 					 :with => "Test"
+			fill_in "user_last_name",  					 :with => "Tester"
+			fill_in "user_password", 						 :with => "abcdefg"
+			fill_in "user_password_confirmation", :with => "abcdefg"
+			click_button "Cadastre-se!"
+
+			check("cellphone")
+			fill_in "user_house_attributes_name", :with => house.name
+
+			within "#house_configuration" do
+				click_button "Confirmar"
+			end
+
+			expect(page).to have_content("Uma casa com esse nome já existe")
+
+			within "#house_configuration" do
+				click_button "Confirmar"
+			end
+
+			expect(page).to have_content("Perfil atualizado com sucesso")
+		end
 	end
 
 	#-----------------------------------------------------------------------------
