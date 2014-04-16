@@ -6,7 +6,7 @@ describe UsersController do
 
 	#-----------------------------------------------------------------------------
 
-	describe "Registering" do
+	context "Registering a user" do
 		context "when user inputs valid information" do
 			it "redirects them to their edit page" do
 				visit root_path
@@ -26,7 +26,7 @@ describe UsersController do
 
 	#-----------------------------------------------------------------------------
 
-	describe "Logging in" do
+	context "Logging a user in" do
 		let(:user) { FactoryGirl.create(:user) }
 
 		before(:each) do
@@ -53,7 +53,7 @@ describe UsersController do
 
 	#-----------------------------------------------------------------------------
 
-	describe "Logging out" do
+	context "Logging a user out" do
 		let(:user) { FactoryGirl.create(:user) }
 
 		before(:each) do
@@ -69,7 +69,7 @@ describe UsersController do
 
 	#-----------------------------------------------------------------------------
 
-	describe "Editing" do
+	context "Editing a user" do
 		let(:user) { FactoryGirl.create(:user) }
 
 		before(:each) do
@@ -93,42 +93,6 @@ describe UsersController do
 					click_button "Confirmar"
 				end
 				expect(page).to have_content("Informe a sua operadora")
-			end
-
-			it "notifies the user of missing house name" do
-				visit edit_user_path(user)
-				fill_in "user_house_attributes_name", :with => ""
-				within "#house_configuration" do
-					click_button "Confirmar"
-				end
-				expect(page).to have_content("Preencha o nome da casa")
-			end
-
-			it "notifies the user of a short house name" do
-				visit edit_user_path(user)
-				fill_in "user_house_attributes_name", :with => "A"
-				within "#house_configuration" do
-					click_button "Confirmar"
-				end
-				expect(page).to have_content("Insira um nome da casa válido")
-			end
-
-			it "notifies the user of missing house name" do
-				visit edit_user_path(user)
-				fill_in "user_house_attributes_name", :with => ""
-				within "#house_configuration" do
-					click_button "Confirmar"
-				end
-				expect(page).to have_content("Preencha o nome da casa")
-			end
-
-			it "notifies the user of a short house name" do
-				visit edit_user_path(user)
-				fill_in "user_house_attributes_name", :with => "A"
-				within "#house_configuration" do
-					click_button "Confirmar"
-				end
-				expect(page).to have_content("Insira um nome da casa válido")
 			end
 		end
 
@@ -160,20 +124,6 @@ describe UsersController do
 				expect(page).to have_content("Perfil atualizado com sucesso")
 			end
 
-			it "sets the user's house neighborhood" do
-				user.house.neighborhood_id = nil
-				user.house.save(:validate => false)
-
-				visit edit_user_path(user)
-				select Neighborhood.first.name, :from => "user_neighborhood_id"
-
-				within "#house_configuration" do
-					click_button "Confirmar"
-				end
-				expect(user.reload.house.neighborhood.id).to eq(Neighborhood.first.id)
-				expect(page).to have_content("Perfil atualizado com sucesso")
-			end
-
 			it "updates the user's house location" do
 				user.house.location_id = nil
 				user.house.save(:validate => false)
@@ -186,6 +136,7 @@ describe UsersController do
 				within "#house_configuration" do
 					click_button "Confirmar"
 				end
+
 				expect(user.reload.house.location.street_type).to eq("Rua")
 				expect(page).to have_content("Perfil atualizado com sucesso")
 			end
@@ -204,8 +155,125 @@ describe UsersController do
 			end
 		end
 
+		context "when editing house information" do
+			it "notifies the user of missing house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => ""
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(page).to have_content("Preencha o nome da casa")
+			end
+
+			it "notifies the user of a short house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => "A"
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(page).to have_content("Insira um nome da casa válido")
+			end
+
+			it "notifies the user of missing house name" do
+				visit edit_user_path(user)
+				fill_in "user_house_attributes_name", :with => ""
+
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+
+				expect(page).to have_content("Preencha o nome da casa")
+			end
+
+			it "creates a new instance if user chooses a new house" do
+				visit edit_user_path(user)
+
+				fill_in "user_house_attributes_name", :with => "TEST"
+				within "#house_configuration" do
+					click_button "Confirmar"
+				end
+				expect(user.reload.house.name).to eq("TEST")
+				expect(House.count).to eq(1)
+				expect(page).to have_content("Perfil atualizado com sucesso")
+			end
+
+			context "when choosing a pre-existing house name" do
+				let(:house) { FactoryGirl.create(:house, :name => "TEST HOUSE") }
+
+				it "prevents user from setting a house's neighborhood" do
+					pending "Need to get a second neighborhood"
+					
+					house.neighborhood_id = Neighborhood.all[1].id
+					house.save(:validate => false)
+
+					visit edit_user_path(user)
+					select Neighborhood.first.name, :from => "user_neighborhood_id"
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					expect(house.reload.neighborhood_id).to eq(nil)
+					expect(page).to have_content("Perfil atualizado com sucesso")
+				end
+
+				it "does not create a new house" do
+					visit edit_user_path(user)
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					# We expect only the user's house and the one they chose to exist.
+					expect(House.count).to eq(2)
+				end
+
+				it "asks for confirmation" do
+					visit edit_user_path(user)
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+					expect(page).to have_content("Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar.")
+				end
+
+				it "saves the profile upon confirmation" do
+					visit edit_user_path(user)
+
+					# puts "House.all: #{House.all.map(&:name)}"
+
+					fill_in "user_house_attributes_name", :with => house.name
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+
+					within "#house_configuration" do
+						click_button "Confirmar"
+					end
+
+					expect(user.reload.house.name).to eq(house.name)
+
+					# We expect only the user's house and the one they chose to exist.
+					expect(House.count).to eq(2)
+					expect(page).to have_content("Perfil atualizado com sucesso")
+				end
+			end
+		end
 
 	end
+
 
 	#-----------------------------------------------------------------------------
 end
