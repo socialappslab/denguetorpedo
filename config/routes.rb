@@ -86,6 +86,11 @@ Dengue::Application.routes.draw do
 
   # TODO: We're keeping the original routes around so we don't get
   # undefined '_path' errors. At some point, we should refacto these.
+
+  # TODO: legacy SMS path. May need to find alternative solution
+  # Path that gateway (SMS) app reports to
+  post '/reports/gateway' => "reports#gateway"
+
   match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
   # resources :reports do

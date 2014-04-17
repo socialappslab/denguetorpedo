@@ -510,11 +510,25 @@ class ReportsController < NeighborhoodsBaseController
   # NOTE: This is where the SMS come in
   #------------------------------------
 
+  # TODO : refactor to allow multiple languages when implemented
   def gateway
-    @user = User.find_by_phone_number(params[:from]) if params[:from].present?
+    # minimum phone number length in order to get a response
+    min_length = 7
 
     respond_to do |format|
+
+      # verify phone number minimum length, otherwise ignore
+      # put in to handle spam advertisements
+      if params[:from].to_s.length < min_length
+        format.json{render json: {message: "Number is below minimum length"}, status: 400}
+        return
+      end
+
+      @user = User.find_by_phone_number(params[:from]) if params[:from].present?
+
       if @user
+
+        # check if user is morador, admin, or coordenador
         if @user.residents?
           @report = @user.report_by_phone(params)
           if @report.save!
@@ -524,15 +538,21 @@ class ReportsController < NeighborhoodsBaseController
             Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema.")
             format.json { render json: { message: @report.errors.full_messages}, status: 401}
           end
+
+        # user is not a morador, admin, or coordenador. Not setup for SMS
         else
           Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
           format.json { render json: { message: "Sponsors or verifiers"}, status: 401}
         end
+
+      # number is not mapped to a user
       else
         Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
-    end
+
+    end #end of respond_to
+
   end
 
   #----------------------------------------------------------------------------
