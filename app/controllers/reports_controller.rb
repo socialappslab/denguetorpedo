@@ -554,14 +554,22 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /reports/notifications
+  # This is used by SMSGateway to fetch the latest notifications created in
+  # the 'gateway' action that will be sent out as SMS.
 
   def notifications
-    @notifications = Notification.unread
-    @notifications.each { |notification| notification.read = true; notification.save }
-    respond_to do |format|
-      format.json { render json: @notifications }
+    @notifications = Notification.where(:read => false)
+    @notifications.each do |notification|
+      notification.read = true
+      notification.save
     end
+
+    render :json => @notifications and return
   end
+
+  #----------------------------------------------------------------------------
+
 
   def creditar
     respond_to do |format|

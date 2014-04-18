@@ -5,6 +5,12 @@ describe ReportsController do
 	let(:user) { FactoryGirl.create(:user) }
 	#-----------------------------------------------------------------------------
 
+	it "returns unread notifications when accessing /reports/notifications" do
+		notification = FactoryGirl.create(:notification, :read => false)
+		get "notifications"
+		expect(JSON.parse(response.body).length).to eq(1)
+	end
+
 	context "Creating a new report" do
 		render_views
 
