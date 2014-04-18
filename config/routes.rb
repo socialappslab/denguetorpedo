@@ -1,5 +1,4 @@
 Dengue::Application.routes.draw do
-
   #----------------------------------------------------------------------------
   # Sidekiq monitoring
 
@@ -85,7 +84,7 @@ Dengue::Application.routes.draw do
   # so we won't rely on this being a complete redirect solution.
 
   # TODO: We're keeping the original routes around so we don't get
-  # undefined '_path' errors. At some point, we should refacto these.
+  # undefined '_path' errors. At some point, we should refactor these.
 
   # TODO: legacy SMS path. May need to find alternative solution
   # Path that gateway (SMS) app reports to
@@ -111,9 +110,6 @@ Dengue::Application.routes.draw do
 
   match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
-  # resources :houses do
-  #   resources :posts
-  # end
 
   #----------------------------------------------------------------------------
   # Prizes
