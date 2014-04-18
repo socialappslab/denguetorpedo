@@ -50,10 +50,111 @@ describe ReportsController do
 				visit neighborhood_reports_path(user.neighborhood)
 				expect(page).not_to have_content("Completar o foco")
 			end
-
 		end
 
-		describe "via web application" do
+		#---------------------------------------------------------------------------
+
+		context "Updating a report" do
+			let(:location) { FactoryGirl.create(:location) }
+			let(:report) { FactoryGirl.create(:report, :location => location, :reporter => user) }
+
+			context "when report comes in through SMS" do
+				before(:each) do
+					report.update_attribute(:sms, true)
+					sign_in(user)
+				end
+
+				it "notifies the user if report description is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+					fill_in "report_content", :with => ""
+					click_button "Enviar!"
+					expect(page).to have_content("Você tem que descrever o local e/ou o foco")
+				end
+
+				it "notifies the user if report before photo is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+					attach_file "report_before_photo", "spec/support/foco_marcado.jpg"
+					click_button "Enviar!"
+					expect(page).to have_content("")
+				end
+
+				it "notifies the user if report location is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+
+					fill_in "report_location_attributes_street_type", :with => ""
+					click_button "Enviar!"
+
+					expect(page).to have_content("Você precisa endereço válida para o seu foco")
+				end
+
+				it "notifies the user if identification type is empty" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					select "", :from => "report_elimination_type"
+					click_button "Enviar!"
+
+					expect(page).to have_content("Você tem que escolher um tipo de foco")
+				end
+
+				it "should appear in the reports list as completed" do
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					select EliminationType.first.name, :from => "report_elimination_type"
+					click_button "Enviar!"
+
+					expect(page).to have_content(" LLOOOOOL")
+				end
+			end
+
+			context "when report comes" do
+				before(:each) do
+					sign_in(user)
+				end
+
+				it "notifies the user if report description is empty" do
+					visit neighborhood_reports_path(user.neighborhood)
+
+					fill_in "report_content", :with => ""
+					click_button "Enviar!"
+
+					expect(page).to have_content("Você tem que descrever o local e/ou o foco")
+				end
+
+				it "notifies the user if report before photo is empty" do
+					visit neighborhood_reports_path(user.neighborhood)
+
+					attach_file "report_before_photo", "spec/support/foco_marcado.jpg"
+					click_button "Enviar!"
+
+
+					expect(page).to have_content("")
+				end
+
+				it "notifies the user if report location is empty" do
+					visit neighborhood_reports_path(user.neighborhood)
+
+
+					fill_in "report_location_attributes_street_type", :with => ""
+					click_button "Enviar!"
+
+					expect(page).to have_content("Você precisa endereço válida para o seu foco")
+				end
+
+				it "notifies the user if identification type is empty" do
+					visit neighborhood_reports_path(user.neighborhood)
+
+					select "", :from => "report_elimination_type"
+					click_button "Enviar!"
+
+					expect(page).to have_content("Você tem que escolher um tipo de foco")
+				end
+			end
+		end
+
+		#---------------------------------------------------------------------------
+
+		describe "successfully" do
 			let(:user)         		 { FactoryGirl.create(:user) }
 			let(:street_hash)  		 { {:street_type => "Rua", :street_name => "Darci Vargas", :street_number => "45"} }
 			let(:before_photo_file) { File.open("spec/support/foco_marcado.jpg") }
