@@ -1,6 +1,11 @@
 Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
+  # Temporary to resolve issues with SMS redirect issues
+  # TODO @dman7 @awdorsett - Possibly change this to something cleaner
+  post '/reports/gateway' => 'reports#gateway'
+
+  #----------------------------------------------------------------------------
   # Sidekiq monitoring
 
   require 'sidekiq/web'
