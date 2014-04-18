@@ -76,6 +76,7 @@ class ReportsController < NeighborhoodsBaseController
             else
               open_locations << report.location
             end
+
         end
 
         locations << report.location
@@ -144,6 +145,7 @@ class ReportsController < NeighborhoodsBaseController
       location.save
     end
 
+
     @report              = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.location_id  = location.id
@@ -190,13 +192,9 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/edit
 
   def edit
+
     @new_report = @current_user.created_reports.find(params[:id])
 
-    #flash[:street_type] = @report.location.street_type
-    #flash[:street_name] = @report.location.street_name
-    #flash[:street_number] = @report.location.street_number
-    #flash[:x] = @report.location.latitude
-    #flash[:y] = @report.location.longitude
     @new_report_location = Location.find_by_id(@new_report.location.id)
     @new_report.location.latitude ||= 0
     @new_report.location.longitude ||= 0
@@ -269,7 +267,7 @@ class ReportsController < NeighborhoodsBaseController
           redirect_to :back
         end
         return
-      end
+      end  # End of SMS
 
 
 
@@ -514,6 +512,12 @@ class ReportsController < NeighborhoodsBaseController
   def gateway
     # minimum phone number length in order to get a response
     min_length = 7
+    no_number_placeholder = "000000000000"
+
+    # '000000000000' is placeholder for people without numbers. Should never occur
+    if params[:from] == no_number_placeholder
+      render :nothing => true, :status => 400 and return
+    end
 
     respond_to do |format|
 
