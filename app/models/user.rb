@@ -97,6 +97,10 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  MIN_PHONE_LENGTH = 7
+
+  #----------------------------------------------------------------------------
+
   def location
     house && house.location
   end
@@ -307,5 +311,6 @@ class User < ActiveRecord::Base
   def creditable_torpedos
     self.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil)
   end
+
 
 end

@@ -15,6 +15,47 @@ describe ReportsController do
 
 		context "via SMS" do
 
+      # TODO Change text to be dynamic when additional languages are added
+
+      context "when phone number is not registered" do
+        let(:unregistered) {"123456789012"}
+        it "should create notification" do
+          expect{
+            post "gateway", :body => "Rua Tatajuba 1", :from => :unregistered
+          }.to change(Notification, :count).by(1)
+        end
+
+        it "should respond with correct text" do
+          post "gateway", :body => "Rua Tatajuba 1", :from => :unregistered
+          expect(Notification.last.text).to eq("Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
+        end
+
+      end
+
+      context "when phone number is registered" do
+        it "should create a notification" do
+          expect{
+            post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+          }.to change(Notification, :count).by(1)
+        end
+
+        it "should respond with correct text" do
+          post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+          expect(Notification.last.text).to eq("Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
+        end
+
+      end
+
+      context "when the phone number is below minimum" do
+        let(:too_small) {"12345"}
+        it "should not create a notification" do
+          expect{
+            post "gateway", :body => "Rua Tatajuba 1", :from => :too_small
+          }.to change(Notification, :count).by(0)
+        end
+
+      end
+
 			it "creates a new report with proper attributes" do
 				expect {
 					post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number

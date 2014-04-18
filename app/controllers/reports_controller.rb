@@ -510,8 +510,6 @@ class ReportsController < NeighborhoodsBaseController
 
   # TODO : refactor to allow multiple languages when implemented
   def gateway
-    # minimum phone number length in order to get a response
-    min_length = 7
     no_number_placeholder = "000000000000"
 
     # '000000000000' is placeholder for people without numbers. Should never occur
@@ -523,7 +521,7 @@ class ReportsController < NeighborhoodsBaseController
 
       # verify phone number minimum length, otherwise ignore
       # put in to handle spam advertisements
-      if params[:from].to_s.length < min_length
+      if params[:from].to_s.length < User::MIN_PHONE_LENGTH
         format.json{render json: {message: "Number is below minimum length"}, status: 400}
         return
       end
