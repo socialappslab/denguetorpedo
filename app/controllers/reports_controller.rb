@@ -510,20 +510,16 @@ class ReportsController < NeighborhoodsBaseController
 
   # TODO : refactor to allow multiple languages when implemented
   def gateway
-    no_number_placeholder = "000000000000"
 
-    # '000000000000' is placeholder for people without numbers. Should never occur
-    if params[:from] == no_number_placeholder
+    if params[:from] == User::PHONE_NUMBER_PLACEHOLDER
       render :nothing => true, :status => 400 and return
     end
 
     respond_to do |format|
 
       # verify phone number minimum length, otherwise ignore
-      # put in to handle spam advertisements
       if params[:from].to_s.length < User::MIN_PHONE_LENGTH
-        format.json{render json: {message: "Number is below minimum length"}, status: 400}
-        return
+        render :nothing => true, :status => 400 and return
       end
 
       @user = User.find_by_phone_number(params[:from]) if params[:from].present?
@@ -553,7 +549,7 @@ class ReportsController < NeighborhoodsBaseController
         format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
       end
 
-    end #end of respond_to
+    end
 
   end
 

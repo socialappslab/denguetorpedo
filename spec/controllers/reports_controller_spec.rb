@@ -47,14 +47,17 @@ describe ReportsController do
       end
 
       context "when the phone number is below minimum" do
-        let(:too_small) {"12345"}
         it "should not create a notification" do
           expect{
-            post "gateway", :body => "Rua Tatajuba 1", :from => :too_small
-          }.to change(Notification, :count).by(0)
+            post "gateway", :body => "Rua Tatajuba 1", :from => "1"
+          }.not_to change(Notification, :count).by(1)
         end
+      end
+
+      pending "should have the correct date" do
 
       end
+
 
 			it "creates a new report with proper attributes" do
 				expect {
