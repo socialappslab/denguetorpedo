@@ -201,7 +201,6 @@ class ReportsController < NeighborhoodsBaseController
     if request.put?
       @report = Report.find_by_id(params[:report_id])
 
-
       if @report.sms_incomplete?
 
         location_params = params.slice(:street_name,:street_number,:street_type)

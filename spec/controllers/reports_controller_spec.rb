@@ -60,8 +60,13 @@ describe ReportsController do
         end
       end
 
-      pending "should have the correct date" do
+      it "should have the correct date" do
+        expect {
+          post "gateway", :body => "Testing the date", :from => user.phone_number
+        }.to change(Report, :count).by(1)
 
+        report = Report.find_by_report("Testing the date")
+        expect(report.created_at.strftime("%d %b. %Y")).to eq(Time.now.strftime("%d %b. %Y"))
       end
 
 
