@@ -24,6 +24,7 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # SMS Gateway routes.
+  # TODO: I can't find sms_gateway controller anywhere. Are these supposed to be here?
 
   get "/sb/rest/sms/inject" => "sms_gateway#inject"
   get "/sb/rest/sms/notifications" => "sms_gateway#notifications"
