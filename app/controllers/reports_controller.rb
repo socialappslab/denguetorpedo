@@ -110,14 +110,6 @@ class ReportsController < NeighborhoodsBaseController
     # used to handle errors, if error occurs then set to false
     create_complete = true
 
-    # TODO @dman7: What is this???
-    flash[:street_type] = params[:street_type]
-    flash[:street_name] = params[:street_name]
-    flash[:street_number] = params[:street_number]
-    flash[:description] = params[:report][:report]
-    flash[:x] = params[:x]
-    flash[:y] = params[:y]
-
     # If location was previously created, use that
     saved_location = Location.find_by_id(session[:location_id])
 
@@ -172,14 +164,8 @@ class ReportsController < NeighborhoodsBaseController
       redirect_to :action => 'index' and return
     end
 
-    # TODO @dman7: This is a hack to get to display the report errors.
-
-    # Let's see if we can improve on this.
-    #render_errors = @report.errors.full_messages.join("\n")
-    #flash[:alert] = render_errors
-    # used to return to create tab on error
-    #puts "SESSION3"
-    #puts params[:report]
+    # Before photo too large for session
+    params[:report].delete(:before_photo)
 
     session[:params] = params
     session[:location_id] = location.id
@@ -193,11 +179,14 @@ class ReportsController < NeighborhoodsBaseController
 
   def edit
 
-    @new_report = @current_user.created_reports.find(params[:id])
+    report_id = session[:id] || params[:id]
+
+    @new_report = @current_user.created_reports.find(report_id)
 
     @new_report_location = Location.find_by_id(@new_report.location.id)
     @new_report.location.latitude ||= 0
     @new_report.location.longitude ||= 0
+
     @elimination_types = EliminationType.pluck(:name)
 
   end
@@ -205,69 +194,112 @@ class ReportsController < NeighborhoodsBaseController
   #-----------------------------------------------------------------------------
 
   def update
+
     submission_points = 50
     submit_complete = true
 
     if request.put?
-
       @report = Report.find_by_id(params[:report_id])
+
 
       if @report.sms_incomplete?
 
+        location_params = params.slice(:street_name,:street_number,:street_type)
 
-        if !(params[:street_type] != "" && params[:street_name] != "" && params[:street_number] != "")
-          flash[:alert] = "Você precisa endereço válida para o seu foco."
-          redirect_to :back
-          return
-        end
-
-        if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
-          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco." #You need to score a valid location for your focus.
-          redirect_to :back
-          return
-        end
-
-        if !params[:report][:before_photo]
-          flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
-          redirect_to :back
-          return
-        end
-
-        if params[:x] and params[:y]
-
-          address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
-
-          location = Location.find_by_address(address)
-
-          if location.nil?
-            location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
-            location.save
-          else
-            location.update_attributes(latitude: params[:x], longitude: params[:y])
-
-          end
-          @report.location = location
+        # Location should have been created when user sends SMS
+        if @report.location
+          location = @report.location
+          location.update_attributes(location_params)
         else
-          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-          redierct_to :back
-          return
+          # for whatever reason if location doesn't exist create a new one
+          location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+              params[:street_type].downcase.titleize,
+              params[:street_name].downcase.titleize,
+              params[:street_number].downcase.titleize
+          )
         end
 
-        @report.report = params[:report][:report]
-        if params[:report][:before_photo]
-          @report.before_photo = params[:report][:before_photo]
+        location.latitude  = params[:x] if params[:x].present?
+        location.longitude = params[:y] if params[:y].present?
+        location.neighborhood = Neighborhood.find(params[:neighborhood_id]) if location.neighborhood.blank?
+
+        location.save
+
+        @report.update_attributes(params[:report])
+        @report.reporter_id  = @current_user.id
+        @report.location_id  = location.id
+        @report.status       = :reported
+        @report.before_photo = params[:report][:before_photo]
+
+
+        # Verify report saves and form submission is valid
+        if @report.save && validate_report_submission(params, @report)
+          flash[:notice] = 'Foco marcado com sucesso!'
+          @report.update_attribute(:completed_at, Time.now)
+
+          session.delete(:id)
+          redirect_to :action => 'index' and return
         end
 
-        if @report.save
-          @report.update_attributes(completed_at: Time.now)
-          flash[:notice] = "Foco completado com sucesso!"
-          redirect_to neighborhood_reports_path(@neighborhood)
-        else
-          flash[:alert] = "There was an error completing your report!"
-          redirect_to :back
-        end
-        return
-      end  # End of SMS
+
+        session[:id] = @report.id
+        redirect_to :back and return
+
+
+
+        #if !(params[:street_type] != "" && params[:street_name] != "" && params[:street_number] != "")
+        #  flash[:alert] = "Você precisa endereço válida para o seu foco."
+        #  redirect_to :back
+        #  return
+        #end
+        #
+        #if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
+        #  flash[:alert] = "Você precisa marcar uma localização válida para o seu foco." #You need to score a valid location for your focus.
+        #  redirect_to :back
+        #  return
+        #end
+        #
+        #if !params[:report][:before_photo]
+        #  flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
+        #  redirect_to :back
+        #  return
+        #end
+        #
+        #if params[:x] and params[:y]
+        #
+        #  address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
+        #
+        #  location = Location.find_by_address(address)
+        #
+        #  if location.nil?
+        #    location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
+        #    location.save
+        #  else
+        #    location.update_attributes(latitude: params[:x], longitude: params[:y])
+        #
+        #  end
+        #  @report.location = location
+        #else
+        #  flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
+        #  redierct_to :back
+        #  return
+        #end
+        #
+        #@report.report = params[:report][:report]
+        #if params[:report][:before_photo]
+        #  @report.before_photo = params[:report][:before_photo]
+        #end
+        #
+        #if @report.save
+        #  @report.update_attributes(completed_at: Time.now)
+        #  flash[:notice] = "Foco completado com sucesso!"
+        #  redirect_to neighborhood_reports_path(@neighborhood)
+        #else
+        #  flash[:alert] = "There was an error completing your report!"
+        #  redirect_to :back
+        #end
+        #return
+      end  # End of report creation from SMS
 
 
 
@@ -615,5 +647,44 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+
+  # Tests for the existence of report description ("report"), before_photo,
+  # elimination type, street type, street name, and street number
+  #
+  # Returns true if complete, else returns false with flash[:alert] filled
+  def validate_report_submission params, report
+    create_complete = true
+
+    # If no report was filled out, then ask them to fill it out.
+    if params[:report][:report] == ""
+      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
+      create_complete = false
+    end
+
+    # If there was no before photograph, then ask them to upload it.
+    if params[:report][:before_photo].blank?
+      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
+      create_complete = false
+    end
+
+    # If elimination type is not selected
+    if params[:report][:elimination_type].blank? && report.elimination_type.blank?
+      # TODO Placeholder translated via Google Translate. "You must select a type of foco"
+      flash[:alert] = flash[:alert].to_s + " Você deve selecionar um tipo de foco."
+      create_complete = false
+    end
+
+    # If address is not completely filled out
+    if (params[:street_name].blank? && report.location.street_name.blank?) ||
+        (params[:street_number].blank? && report.location.street_number.blank?) ||
+        (params[:street_type].blank? && report.location.street_type.blank?)
+      # TODO Placeholder translated via Google Translate. "You must submit the entire address."
+      flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
+      create_complete = false
+    end
+
+    return create_complete
+
+  end
 
 end
