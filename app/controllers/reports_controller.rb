@@ -245,60 +245,6 @@ class ReportsController < NeighborhoodsBaseController
         session[:id] = @report.id
         redirect_to :back and return
 
-
-
-        #if !(params[:street_type] != "" && params[:street_name] != "" && params[:street_number] != "")
-        #  flash[:alert] = "Você precisa endereço válida para o seu foco."
-        #  redirect_to :back
-        #  return
-        #end
-        #
-        #if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
-        #  flash[:alert] = "Você precisa marcar uma localização válida para o seu foco." #You need to score a valid location for your focus.
-        #  redirect_to :back
-        #  return
-        #end
-        #
-        #if !params[:report][:before_photo]
-        #  flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
-        #  redirect_to :back
-        #  return
-        #end
-        #
-        #if params[:x] and params[:y]
-        #
-        #  address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
-        #
-        #  location = Location.find_by_address(address)
-        #
-        #  if location.nil?
-        #    location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
-        #    location.save
-        #  else
-        #    location.update_attributes(latitude: params[:x], longitude: params[:y])
-        #
-        #  end
-        #  @report.location = location
-        #else
-        #  flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-        #  redierct_to :back
-        #  return
-        #end
-        #
-        #@report.report = params[:report][:report]
-        #if params[:report][:before_photo]
-        #  @report.before_photo = params[:report][:before_photo]
-        #end
-        #
-        #if @report.save
-        #  @report.update_attributes(completed_at: Time.now)
-        #  flash[:notice] = "Foco completado com sucesso!"
-        #  redirect_to neighborhood_reports_path(@neighborhood)
-        #else
-        #  flash[:alert] = "There was an error completing your report!"
-        #  redirect_to :back
-        #end
-        #return
       end  # End of report creation from SMS
 
 
