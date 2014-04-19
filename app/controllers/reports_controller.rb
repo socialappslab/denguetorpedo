@@ -179,9 +179,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def edit
 
-    report_id = params[:id]
-
-    @new_report = @current_user.created_reports.find(report_id)
+    @new_report = @current_user.created_reports.find(params[:id])
 
     @new_report_location = Location.find_by_id(@new_report.location.id)
     @new_report.location.latitude ||= 0
