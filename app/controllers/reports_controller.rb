@@ -165,9 +165,9 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     # Before photo too large for session
-    params[:report].delete(:before_photo)
+    params[:report].except(:before_photo)
 
-    session[:params] = params
+    #session[:params] = params
     session[:location_id] = location.id
 
     redirect_to :back and return
@@ -179,7 +179,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def edit
 
-    report_id = session[:id] || params[:id]
+    report_id = params[:id]
 
     @new_report = @current_user.created_reports.find(report_id)
 
@@ -220,7 +220,7 @@ class ReportsController < NeighborhoodsBaseController
 
         location.latitude  = params[:x] if params[:x].present?
         location.longitude = params[:y] if params[:y].present?
-        location.neighborhood = Neighborhood.find(params[:neighborhood_id]) if location.neighborhood.blank?
+        location.neighborhood = Neighborhood.find(params[:neighborhood_id])
 
         location.save
 
@@ -236,12 +236,9 @@ class ReportsController < NeighborhoodsBaseController
           flash[:notice] = 'Foco marcado com sucesso!'
           @report.update_attribute(:completed_at, Time.now)
 
-          session.delete(:id)
           redirect_to :action => 'index' and return
         end
 
-
-        session[:id] = @report.id
         redirect_to :back and return
 
       end  # End of report creation from SMS
