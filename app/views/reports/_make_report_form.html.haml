@@ -7,7 +7,7 @@
   -# TODO @awdorsett - refactor CSS for new_report_form
 
   #new_report_form
-    = form_for @new_report, :url => {:action => "create", :html => {:autocomplete => "off", :multipart => true}} do |f|
+    = form_for @new_report, url: neighborhood_reports_path, :html => {:autocomplete => "off", :multipart => true} do |f|
       = hidden_field_tag 'error', @create_error
       = hidden_field_tag 'report_id', @new_report.id
 
