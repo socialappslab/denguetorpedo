@@ -59,7 +59,7 @@ class House < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def reports
-    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".completed_at IS NOT NULL) ORDER BY "reports".updated_at DESC))
+    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status_cd IS NOT NULL) ORDER BY "reports".updated_at DESC))
     ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
     _reports
   end

@@ -216,7 +216,9 @@ class ReportsController < NeighborhoodsBaseController
         # Verify report saves and form submission is valid
         if @report.save && validate_report_submission(params, @report)
           flash[:notice] = 'Foco marcado com sucesso!'
-          @report.update_attributes({:completed_at => Time.now, :status => :reported})
+          @report.status = :reported   # TODO can't mass assign, is that by design?
+          @report.completed_at = Time.now
+          @report.save
 
           redirect_to :action => 'index' and return
         end
