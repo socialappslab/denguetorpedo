@@ -104,7 +104,52 @@ describe ReportsController do
 
 				visit neighborhood_reports_path(user.neighborhood)
 				expect(page).not_to have_content("Completar o foco")
-			end
+      end
+
+      context "when on My House (Minha Casa) page" do
+        before(:each) do
+          expect {
+            post "gateway", :body => "Not in my house!", :from => user.phone_number
+          }.to change(Report, :count).by(1)
+        end
+
+        it "should not be displayed for owner" do
+          sign_in(user)
+          visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
+          expect(page).not_to have_content("Not in my house!")
+        end
+
+        it "should not be displayed for other house members" do
+          other_user = FactoryGirl.create(:user)
+          sign_in(other_user)
+
+          visit neighborhood_house_path({:neighborhood_id => other_user.neighborhood.id, :id => other_user.house.id})
+          expect(page).not_to have_content("Not in my house!")
+        end
+
+        it "should display after completing" do
+
+          report = Report.find_by_report("Not in my house!")
+          expect(report).not_to eq(nil)
+
+          report.status = :reported
+          report.status_cd = 1
+          report.completed_at = Time.now
+          report.save!
+          report.reload
+
+          expect(report.status_cd).to eq(1)
+
+          sign_in(user)
+          visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
+
+          expect(page).to have_content("Not in my house!")
+
+        end
+
+
+
+      end
 
 		end
 
