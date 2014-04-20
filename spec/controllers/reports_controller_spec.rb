@@ -76,7 +76,7 @@ describe ReportsController do
 				}.to change(Report, :count).by(1)
 
 				report = Report.find_by_report("Rua Tatajuba 1")
-				expect(report.status_cd).to eq(0)
+				expect(report.status_cd).to eq(nil)
 				expect(report.sms).to eq(true)
 			end
 

@@ -20,7 +20,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # new report form attributes
     # use existing params if error occured during create
-    report_params = session[:params][:report] if session[:params]
+    report_params = session[:report]
 
     # if report_params is present an error occurred during create, triggers showing new report tab in view
     @create_error = report_params.present?
@@ -30,7 +30,7 @@ class ReportsController < NeighborhoodsBaseController
 
     @elimination_types = EliminationType.pluck(:name)
 
-    session[:params] = nil
+    session[:report] = nil
     session[:location_id] = nil
 
     @elimination_method_select = EliminationMethods.field_select
@@ -107,9 +107,6 @@ class ReportsController < NeighborhoodsBaseController
   # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
 
   def create
-    # used to handle errors, if error occurs then set to false
-    create_complete = true
-
     # If location was previously created, use that
     saved_location = Location.find_by_id(session[:location_id])
 
@@ -132,11 +129,10 @@ class ReportsController < NeighborhoodsBaseController
 
       location.latitude  = params[:x] if params[:x].present?
       location.longitude = params[:y] if params[:y].present?
-      location.neighborhood = Neighborhood.find(params[:neighborhood_id]) if location.neighborhood.blank?
+      location.neighborhood = Neighborhood.find(params[:neighborhood_id])
 
       location.save
     end
-
 
     @report              = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
@@ -146,28 +142,17 @@ class ReportsController < NeighborhoodsBaseController
     @report.completed_at = Time.now
     @report.before_photo = params[:report][:before_photo]
 
-    # If no report was filled out, then ask them to fill it out.
-    if params[:report][:report] == ""
-      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
-      create_complete = false
-    end
-
-    # If there was no before photograph, then ask them to upload it.
-    if params[:report][:before_photo].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
-      create_complete = false
-    end
-
     # Now let's save the report.
-    if create_complete && @report.save
+    if validate_report_submission(params, @report) && @report.save
+      session[:report] = nil
+      session[:location_id] = nil
+
       flash[:notice] = 'Foco marcado com sucesso!'
       redirect_to :action => 'index' and return
     end
 
     # Before photo too large for session
-    params[:report].except(:before_photo)
-
-    #session[:params] = params
+    session[:report] = params[:report].except(:before_photo)
     session[:location_id] = location.id
 
     redirect_to :back and return
@@ -225,14 +210,13 @@ class ReportsController < NeighborhoodsBaseController
         @report.update_attributes(params[:report])
         @report.reporter_id  = @current_user.id
         @report.location_id  = location.id
-        @report.status       = :reported
         @report.before_photo = params[:report][:before_photo]
 
 
         # Verify report saves and form submission is valid
         if @report.save && validate_report_submission(params, @report)
           flash[:notice] = 'Foco marcado com sucesso!'
-          @report.update_attribute(:completed_at, Time.now)
+          @report.update_attributes({:completed_at => Time.now, :status => :reported})
 
           redirect_to :action => 'index' and return
         end

@@ -300,8 +300,7 @@ class User < ActiveRecord::Base
     @location = Location.new_with_address(body)
     @location.update_attribute(:neighborhood_id, self.neighborhood_id)
 
-    @report           = Report.new(reporter: self, sms: true, status: :reported, report: body, location: @location)
-    @report.status_cd = 0
+    @report           = Report.new(reporter: self, sms: true, report: body, location: @location)
     return @report
   end
 

@@ -4,6 +4,7 @@ class HousesController < NeighborhoodsBaseController
 
   def show
     @house = House.includes(:members, :posts, :location).find(params[:id])
+
     head :not_found and return if @house.nil?
     head :not_found and return if @house.user.role == "lojista"
 

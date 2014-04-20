@@ -59,7 +59,7 @@ class House < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def reports
-    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id}) ORDER BY "reports".updated_at DESC))
+    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".completed_at IS NOT NULL) ORDER BY "reports".updated_at DESC))
     ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
     _reports
   end
@@ -75,6 +75,8 @@ class House < ActiveRecord::Base
   def eliminated_report_counts
     self.eliminated_reports.inject(Hash.new(0)) { |h, e| h[e.location_id] += 1; h }
   end
+
+
 
   def self.find_or_create(name, address, neighborhood, profile_photo=nil)
     if name.nil? || name.blank?
