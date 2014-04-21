@@ -39,6 +39,8 @@ FactoryGirl.define do
 		end
 	end
 
+	factory :notification
+	
 	factory :prize do
 		prize_name "Prize"
 		cost 100
