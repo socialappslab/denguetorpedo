@@ -50,7 +50,7 @@ class ReportsController < NeighborhoodsBaseController
     # @reports = Report.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
     @reports = current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
-    @reports = @reports.find_all {|r| r.location.neighborhood_id == @neighborhood.id }
+    @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
 
     # if report has been completed or has an error during update
     # TODO @awdorsett - more effecient way?
