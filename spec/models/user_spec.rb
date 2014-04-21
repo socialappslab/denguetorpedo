@@ -25,7 +25,7 @@ describe User do
 
 	context "when sends an sms by phone" do
 		before(:each) do
-			@report = user.report_by_phone({
+			@report = user.build_report_via_sms({
         :from => user.phone_number, :body => "Rua Tatajuba 50"
       })
 		end

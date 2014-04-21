@@ -107,10 +107,10 @@ describe ReportsController do
       end
 
       context "when on My House (Minha Casa) page" do
+				let(:other_user) { FactoryGirl.create(:user) }
+
         before(:each) do
-          expect {
-            post "gateway", :body => "Not in my house!", :from => user.phone_number
-          }.to change(Report, :count).by(1)
+          post "gateway", :body => "Not in my house!", :from => user.phone_number
         end
 
         it "should not be displayed for owner" do
@@ -120,31 +120,23 @@ describe ReportsController do
         end
 
         it "should not be displayed for other house members" do
-          other_user = FactoryGirl.create(:user)
           sign_in(other_user)
-
           visit neighborhood_house_path({:neighborhood_id => other_user.neighborhood.id, :id => other_user.house.id})
           expect(page).not_to have_content("Not in my house!")
         end
 
         it "should display after completing" do
-
-          report = Report.find_by_report("Not in my house!")
-          expect(report).not_to eq(nil)
-
-          report.status = :reported
-          report.status_cd = 1
+          report 						 = Report.find_by_report("Not in my house!")
+          report.status 			= :reported
+          report.status_cd 	 = 1
           report.completed_at = Time.now
           report.save!
-          report.reload
-
-          expect(report.status_cd).to eq(1)
 
           sign_in(user)
           visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
 
+					expect(report.reload.status_cd).to eq(1)
           expect(page).to have_content("Not in my house!")
-
         end
 
 
