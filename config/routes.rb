@@ -1,10 +1,4 @@
 Dengue::Application.routes.draw do
-
-  #----------------------------------------------------------------------------
-  # Temporary to resolve issues with SMS redirect issues
-  # TODO @dman7 @awdorsett - Possibly change this to something cleaner
-  post '/reports/gateway' => 'reports#gateway'
-
   #----------------------------------------------------------------------------
   # Sidekiq monitoring
 
@@ -30,6 +24,7 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # SMS Gateway routes.
+  # TODO: I can't find sms_gateway controller anywhere. Are these supposed to be here?
 
   get "/sb/rest/sms/inject" => "sms_gateway#inject"
   get "/sb/rest/sms/notifications" => "sms_gateway#notifications"
@@ -63,8 +58,6 @@ Dengue::Application.routes.draw do
         put 'update'
         post 'verify'
         post 'problem'
-        post 'gateway'
-        get 'notifications'
         get 'types'
       end
       member do
@@ -80,6 +73,14 @@ Dengue::Application.routes.draw do
   end
 
   #----------------------------------------------------------------------------
+  # Legacy SMS routes.
+  # NOTE: Do not change these unless you've also
+  # changed the paths in socialappslab/SMSGateway.
+
+  post '/reports/gateway'       => "reports#gateway"
+  get  "/reports/notifications" => "reports#notifications"
+
+  #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive
   # The following (2) resources are now nested under the neighborhood resource.
   # We're keeping them around in case users have gotten in the habit of using
@@ -90,30 +91,12 @@ Dengue::Application.routes.draw do
   # so we won't rely on this being a complete redirect solution.
 
   # TODO: We're keeping the original routes around so we don't get
-  # undefined '_path' errors. At some point, we should refacto these.
+  # undefined '_path' errors. At some point, we should refactor these.
   match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
-  # resources :reports do
-  #   collection do
-  #     put 'update'
-  #     post 'verify'
-  #     post 'problem'
-  #     post 'gateway'
-  #     get 'notifications'
-  #     get 'types'
-  #   end
-  #   member do
-  #     post 'creditar'
-  #     post 'credit'
-  #     post 'discredit'
-  #   end
-  # end
 
   match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
-  # resources :houses do
-  #   resources :posts
-  # end
 
   #----------------------------------------------------------------------------
   # Prizes
@@ -148,7 +131,6 @@ Dengue::Application.routes.draw do
   resources :sponsors
   get "dashboard/index"
   resources :dashboard
-  resources :notifications
   resources :badges
   resources :verifications
   resources :forums, :only => [:index]

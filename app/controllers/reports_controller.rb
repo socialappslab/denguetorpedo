@@ -20,7 +20,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # new report form attributes
     # use existing params if error occured during create
-    report_params = session[:params][:report] if session[:params]
+    report_params = session[:report]
 
     # if report_params is present an error occurred during create, triggers showing new report tab in view
     @create_error = report_params.present?
@@ -30,7 +30,7 @@ class ReportsController < NeighborhoodsBaseController
 
     @elimination_types = EliminationType.pluck(:name)
 
-    session[:params] = nil
+    session[:report] = nil
     session[:location_id] = nil
 
     @elimination_method_select = EliminationMethods.field_select
@@ -50,7 +50,7 @@ class ReportsController < NeighborhoodsBaseController
     # @reports = Report.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
     @reports = current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
-    @reports = @reports.find_all {|r| r.location.neighborhood_id == @neighborhood.id }
+    @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
 
     # if report has been completed or has an error during update
     # TODO @awdorsett - more effecient way?
@@ -76,6 +76,7 @@ class ReportsController < NeighborhoodsBaseController
             else
               open_locations << report.location
             end
+
         end
 
         locations << report.location
@@ -106,17 +107,6 @@ class ReportsController < NeighborhoodsBaseController
   # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
 
   def create
-    # used to handle errors, if error occurs then set to false
-    create_complete = true
-
-    # TODO @dman7: What is this???
-    flash[:street_type] = params[:street_type]
-    flash[:street_name] = params[:street_name]
-    flash[:street_number] = params[:street_number]
-    flash[:description] = params[:report][:report]
-    flash[:x] = params[:x]
-    flash[:y] = params[:y]
-
     # If location was previously created, use that
     saved_location = Location.find_by_id(session[:location_id])
 
@@ -139,7 +129,7 @@ class ReportsController < NeighborhoodsBaseController
 
       location.latitude  = params[:x] if params[:x].present?
       location.longitude = params[:y] if params[:y].present?
-      location.neighborhood = Neighborhood.find(params[:neighborhood_id]) if location.neighborhood.blank?
+      location.neighborhood = Neighborhood.find(params[:neighborhood_id])
 
       location.save
     end
@@ -152,34 +142,17 @@ class ReportsController < NeighborhoodsBaseController
     @report.completed_at = Time.now
     @report.before_photo = params[:report][:before_photo]
 
-    # If no report was filled out, then ask them to fill it out.
-    if params[:report][:report] == ""
-      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
-      create_complete = false
-    end
-
-    # If there was no before photograph, then ask them to upload it.
-    if params[:report][:before_photo].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
-      create_complete = false
-    end
-
     # Now let's save the report.
-    if create_complete && @report.save
+    if validate_report_submission(params, @report) && @report.save
+      session[:report] = nil
+      session[:location_id] = nil
+
       flash[:notice] = 'Foco marcado com sucesso!'
       redirect_to :action => 'index' and return
     end
 
-    # TODO @dman7: This is a hack to get to display the report errors.
-
-    # Let's see if we can improve on this.
-    #render_errors = @report.errors.full_messages.join("\n")
-    #flash[:alert] = render_errors
-    # used to return to create tab on error
-    #puts "SESSION3"
-    #puts params[:report]
-
-    session[:params] = params
+    # Before photo too large for session
+    session[:report] = params[:report].except(:before_photo)
     session[:location_id] = location.id
 
     redirect_to :back and return
@@ -190,16 +163,13 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/edit
 
   def edit
+
     @new_report = @current_user.created_reports.find(params[:id])
 
-    #flash[:street_type] = @report.location.street_type
-    #flash[:street_name] = @report.location.street_name
-    #flash[:street_number] = @report.location.street_number
-    #flash[:x] = @report.location.latitude
-    #flash[:y] = @report.location.longitude
     @new_report_location = Location.find_by_id(@new_report.location.id)
     @new_report.location.latitude ||= 0
     @new_report.location.longitude ||= 0
+
     @elimination_types = EliminationType.pluck(:name)
 
   end
@@ -207,69 +177,55 @@ class ReportsController < NeighborhoodsBaseController
   #-----------------------------------------------------------------------------
 
   def update
+
     submission_points = 50
     submit_complete = true
 
     if request.put?
-
       @report = Report.find_by_id(params[:report_id])
 
       if @report.sms_incomplete?
 
+        location_params = params.slice(:street_name,:street_number,:street_type)
 
-        if !(params[:street_type] != "" && params[:street_name] != "" && params[:street_number] != "")
-          flash[:alert] = "Você precisa endereço válida para o seu foco."
-          redirect_to :back
-          return
-        end
-
-        if params[:x].to_i == 0.0 || params[:y].to_i == 0.0
-          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco." #You need to score a valid location for your focus.
-          redirect_to :back
-          return
-        end
-
-        if !params[:report][:before_photo]
-          flash[:alert] = "Você tem que carregar uma foto do foco encontrado."
-          redirect_to :back
-          return
-        end
-
-        if params[:x] and params[:y]
-
-          address = params[:street_type].downcase.titleize + " " + params[:street_name].downcase.titleize + " " + params[:street_number].downcase.titleize
-
-          location = Location.find_by_address(address)
-
-          if location.nil?
-            location = Location.new(:street_type => params[:street_type].downcase.titleize, :street_name => params[:street_name].downcase.titleize, :street_number => params[:street_number].downcase.titleize, latitude: params[:x], longitude: params[:y])
-            location.save
-          else
-            location.update_attributes(latitude: params[:x], longitude: params[:y])
-
-          end
-          @report.location = location
+        # Location should have been created when user sends SMS
+        if @report.location
+          location = @report.location
+          location.update_attributes(location_params)
         else
-          flash[:alert] = "Você precisa marcar uma localização válida para o seu foco."
-          redierct_to :back
-          return
+          # for whatever reason if location doesn't exist create a new one
+          location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+              params[:street_type].downcase.titleize,
+              params[:street_name].downcase.titleize,
+              params[:street_number].downcase.titleize
+          )
         end
 
-        @report.report = params[:report][:report]
-        if params[:report][:before_photo]
-          @report.before_photo = params[:report][:before_photo]
+        location.latitude  = params[:x] if params[:x].present?
+        location.longitude = params[:y] if params[:y].present?
+        location.neighborhood = Neighborhood.find(params[:neighborhood_id])
+
+        location.save
+
+        @report.update_attributes(params[:report])
+        @report.reporter_id  = @current_user.id
+        @report.location_id  = location.id
+        @report.before_photo = params[:report][:before_photo]
+
+
+        # Verify report saves and form submission is valid
+        if @report.save && validate_report_submission(params, @report)
+          flash[:notice] = 'Foco marcado com sucesso!'
+          @report.status = :reported   # TODO can't mass assign, is that by design?
+          @report.completed_at = Time.now
+          @report.save
+
+          redirect_to :action => 'index' and return
         end
 
-        if @report.save
-          @report.update_attributes(completed_at: Time.now)
-          flash[:notice] = "Foco completado com sucesso!"
-          redirect_to neighborhood_reports_path(@neighborhood)
-        else
-          flash[:alert] = "There was an error completing your report!"
-          redirect_to :back
-        end
-        return
-      end
+        redirect_to :back and return
+
+      end  # End of report creation from SMS
 
 
 
@@ -505,45 +461,59 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
-  # POST /gateway
-  #
-  # NOTE: This is where the SMS come in
-  #------------------------------------
-
+  # POST /reports/gateway
+  # This is the path to which SMSBroadcastReceiver.java posts to when
+  # the SMSGateway receives an SMS. It expects a JSON response which it
+  # will display on the phone as a Toast (see
+  # http://developer.android.com/reference/android/widget/Toast.html for more).
   def gateway
-    @user = User.find_by_phone_number(params[:from]) if params[:from].present?
+    # Verify phone number minimum length and placeholder, otherwise ignore
+    if params[:from] == User::PHONE_NUMBER_PLACEHOLDER || params[:from].to_s.length < User::MIN_PHONE_LENGTH
+      render :nothing => true, :status => 400 and return
+    end
 
-    respond_to do |format|
-      if @user
-        if @user.residents?
-          @report = @user.report_by_phone(params)
-          if @report.save!
-            Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
-            format.json { render json: { message: "success", report: @report}}
-          else
-            Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema.")
-            format.json { render json: { message: @report.errors.full_messages}, status: 401}
-          end
-        else
-          Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
-          format.json { render json: { message: "Sponsors or verifiers"}, status: 401}
-        end
+    # Now let's try to identify the user.
+    user = User.find_by_phone_number(params[:from]) if params[:from].present?
+    if user.nil?
+      Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
+      render :json => { message: "There is no registered user with the given phone number." }, :status => 404 and return
+    end
+
+    # At this point, we're guaranteed for the user to exist.
+    # Now, check if user is morador, admin, or coordenador. If they are,
+    # then they're setup for SMS. Otherwise, they're not.
+    if user.residents?
+      @report = user.build_report_via_sms(params)
+      if @report.save!
+        Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
+        render :json => { message: "success", report: @report}
       else
-        Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
-        format.json { render json: { message: "There is no registered user with the given phone number."}, status: 404}
+        Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema.")
+        render :json => { message: @report.errors.full_messages }, :status => 401
       end
+    else
+      Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
+      render :json => { message: "Sponsors or verifiers" }, :status => 401
     end
   end
 
   #----------------------------------------------------------------------------
+  # GET /reports/notifications
+  # This is used by SMSGateway to fetch the latest notifications created in
+  # the 'gateway' action that will be sent out as SMS.
 
   def notifications
-    @notifications = Notification.unread
-    @notifications.each { |notification| notification.read = true; notification.save }
-    respond_to do |format|
-      format.json { render json: @notifications }
+    @notifications = Notification.where(:read => false)
+    @notifications.each do |notification|
+      notification.read = true
+      notification.save
     end
+
+    render :json => @notifications and return
   end
+
+  #----------------------------------------------------------------------------
+
 
   def creditar
     respond_to do |format|
@@ -597,5 +567,44 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+
+  # Tests for the existence of report description ("report"), before_photo,
+  # elimination type, street type, street name, and street number
+  #
+  # Returns true if complete, else returns false with flash[:alert] filled
+  def validate_report_submission params, report
+    create_complete = true
+
+    # If no report was filled out, then ask them to fill it out.
+    if params[:report][:report] == ""
+      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
+      create_complete = false
+    end
+
+    # If there was no before photograph, then ask them to upload it.
+    if params[:report][:before_photo].blank?
+      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
+      create_complete = false
+    end
+
+    # If elimination type is not selected
+    if params[:report][:elimination_type].blank? && report.elimination_type.blank?
+      # TODO Placeholder translated via Google Translate. "You must select a type of foco"
+      flash[:alert] = flash[:alert].to_s + " Você deve selecionar um tipo de foco."
+      create_complete = false
+    end
+
+    # If address is not completely filled out
+    if (params[:street_name].blank? && report.location.street_name.blank?) ||
+        (params[:street_number].blank? && report.location.street_number.blank?) ||
+        (params[:street_type].blank? && report.location.street_type.blank?)
+      # TODO Placeholder translated via Google Translate. "You must submit the entire address."
+      flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
+      create_complete = false
+    end
+
+    return create_complete
+
+  end
 
 end
