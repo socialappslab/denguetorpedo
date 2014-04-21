@@ -483,7 +483,7 @@ class ReportsController < NeighborhoodsBaseController
     # Now, check if user is morador, admin, or coordenador. If they are,
     # then they're setup for SMS. Otherwise, they're not.
     if user.residents?
-      @report = user.report_by_phone(params)
+      @report = user.build_report_via_sms(params)
       if @report.save!
         Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
         render :json => { message: "success", report: @report}

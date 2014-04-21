@@ -271,6 +271,8 @@ class User < ActiveRecord::Base
   def sponsor?
     self.role == "lojista"
   end
+  
+  #----------------------------------------------------------------------------
 
   def carrier_requirements
     if self.carrier.downcase == "vivo"
@@ -289,28 +291,36 @@ class User < ActiveRecord::Base
     req
   end
 
+  #----------------------------------------------------------------------------
+
   def residents?
     return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
   end
 
-  # TODO @dman7  - set the neighborhood_id by the neighborhood associated with user
-  def report_by_phone(params)
+  #----------------------------------------------------------------------------
+
+  def build_report_via_sms(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
-    @location = Location.new_with_address(body)
-    @location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    location = Location.new_with_address(body)
+    location.update_attribute(:neighborhood_id, self.neighborhood_id)
 
-    @report           = Report.new(reporter: self, sms: true, report: body, location: @location)
-    return @report
+    report = Report.new(reporter: self, sms: true, report: body, location: location)
+    return report
   end
+
+  #----------------------------------------------------------------------------
 
   def total_torpedos
     self.reports.sms.where('elimination_type IS NOT NULL')
   end
 
+  #----------------------------------------------------------------------------
+
   def creditable_torpedos
     self.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil)
   end
 
+  #----------------------------------------------------------------------------
 
 end
