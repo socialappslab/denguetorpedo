@@ -146,6 +146,7 @@ describe ReportsController do
 		context "Updating a report" do
 			let(:location) { FactoryGirl.create(:location) }
 			let(:report)   { FactoryGirl.create(:report, :location => location, :reporter => user) }
+			let(:elimination_type) { EliminationType.first }
 
 			context "when report comes in through SMS" do
 				before(:each) do
@@ -157,7 +158,7 @@ describe ReportsController do
 					visit edit_neighborhood_report_path(user.neighborhood, report)
 
 					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					select EliminationType.first.name, :from => "report_elimination_type"
+					select elimination_type.name, :from => "report_elimination_type"
 					click_button "Enviar!"
 
 					expect(page).to have_content("Você tem que descrever o local e/ou o foco")
@@ -166,7 +167,7 @@ describe ReportsController do
 				it "notifies the user if report before photo is empty" do
 					visit edit_neighborhood_report_path(user.neighborhood, report)
 
-					select EliminationType.first.name, :from => "report_elimination_type"
+					select elimination_type.name, :from => "report_elimination_type"
 					click_button "Enviar!"
 
 					expect(page).to have_content("")
@@ -180,6 +181,87 @@ describe ReportsController do
 					click_button "Enviar!"
 
 					expect(page).to have_content("Você deve selecionar um tipo de foco")
+				end
+
+				it "appears in the reports list as completed" do
+					pending "Select does not work for some reason"
+					
+					visit edit_neighborhood_report_path(user.neighborhood, report)
+
+					fill_in "street_type", 	 :with => "Rua"
+					fill_in "street_name", 	 :with => "Boca"
+					fill_in "street_number",  :with => "500"
+					fill_in "report_content", :with => "This is a description"
+					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
+					select elimination_type.name, :from => "report_elimination_type"
+					click_button "Enviar!"
+
+					expect(page).to have_content("Foco marcado com sucesso")
+
+					visit neighborhood_reports_path(user.neighborhood)
+					expect(page).to have_content("Em aberto")
+
+					elimination_method = elimination_type.elimination_methods.first
+					selection_option = elimination_method.method + " (" + elimination_method.points.to_s + " pontos)"
+					select selection_option, :from => "elimination_method"
+					find('#method_selection').find(:xpath, 'option[2]').select_option
+					attach_file("eliminate_after_photo", File.expand_path("spec/support/foco_marcado.jpg"))
+
+					save_and_open_page
+
+					within ".eliminate_prompt" do
+						click_button "Enviar!"
+					end
+
+					expect(page).to have_content("Você eliminou o foco")
+					expect(page).to have_content("Eliminado")
+					expect(page).to have_content("Eliminado por: #{report.reporter_name}")
+				end
+
+				context "when choosing elimination method" do
+					before(:each) do
+						visit edit_neighborhood_report_path(user.neighborhood, report)
+
+						fill_in "street_type", 	 :with => "Rua"
+						fill_in "street_name", 	 :with => "Boca"
+						fill_in "street_number",  :with => "500"
+						fill_in "report_content", :with => "This is a description"
+						attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
+						select EliminationType.first.name, :from => "report_elimination_type"
+
+						click_button "Enviar!"
+
+						visit neighborhood_reports_path(user.neighborhood)
+					end
+
+					# it "displays remaining time as 46 hours and 59 minutes", :js => true do
+					# 	pending "Setup PhantomJS"
+					# 	# expect(page).to have_content("46:59")
+					# end
+
+					it "displays user's name as the creator" do
+						expect(page).to have_content("Marcado por: #{report.reporter_name}")
+					end
+
+					it "displays report as open" do
+						expect(page).to have_content("Em aberto")
+					end
+
+					it "notifies user if elimination method isn't selected" do
+						within ".eliminate_prompt" do
+							click_button "Enviar!"
+						end
+
+						expect(page).to have_content("Você tem que escolher um método de eliminação")
+					end
+
+					it "notifies user if after photo isn't selected" do
+						within ".eliminate_prompt" do
+							click_button "Enviar!"
+						end
+
+						expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
+					end
 				end
 			end
 
