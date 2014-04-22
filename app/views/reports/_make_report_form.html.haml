@@ -9,7 +9,8 @@
   #new_report_form
     = form_for [@neighborhood, @new_report], :html => {:autocomplete => "off", :multipart => true} do |f|
       = hidden_field_tag 'error', session[:report].present?
-      = f.hidden_field :reporter_id, :value => @current_user.id
+      - if @new_report.reporter_id.blank?
+        = f.hidden_field :reporter_id, :value => @current_user.id
 
       #address
         %h3.new_report_label 1. Endereço do foco localizado
@@ -24,7 +25,7 @@
       #description
         %h3.new_report_label 2. Descrição da localização
         = f.text_area :report, :placeholder => 'Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente',
-          :id => 'report_content', :maxlength => 100, :rows => 3, :value =>  @new_report.report
+          :id => 'report_content', :maxlength => 100, :rows => 3
 
       #photo
         %h3.new_report_label 3. Carregue a imagem do foco encontrado:
