@@ -2,7 +2,15 @@
 require 'spec_helper'
 
 describe ReportsController do
-	let(:user) { FactoryGirl.create(:user) }
+	let(:user) 						{ FactoryGirl.create(:user) }
+	let(:elimination_type) { EliminationType.first }
+	let(:location_hash) {
+		{
+			:street_type => "Rua", :street_name => "Darci Vargas",
+			:street_number => "45", :latitude => "50.0", :longitude => "40.0"
+		}
+	}
+
 	#-----------------------------------------------------------------------------
 
 	it "returns unread notifications when accessing /reports/notifications" do
@@ -11,15 +19,62 @@ describe ReportsController do
 		expect(JSON.parse(response.body).length).to eq(1)
 	end
 
+	#-----------------------------------------------------------------------------
+
 	context "Creating a new report" do
-		render_views
+		context "through SMS" do
+			it "displays the report in the reports page" do
+				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
 
-		describe "with errors" do
-			it "alerts user if description is not present" do
+				sign_in(user)
+
+				visit neighborhood_reports_path(user.neighborhood)
+				expect(page).to have_content("Completar o foco")
 			end
-		end
 
-		context "via SMS" do
+			it "does not display report for other users" do
+				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+
+				other_user = FactoryGirl.create(:user)
+				sign_in(other_user)
+
+				visit neighborhood_reports_path(user.neighborhood)
+				expect(page).not_to have_content("Completar o foco")
+			end
+
+			context "when on My House (Minha Casa) page" do
+				let(:other_user) { FactoryGirl.create(:user) }
+
+				before(:each) do
+					post "gateway", :body => "Not in my house!", :from => user.phone_number
+				end
+
+				it "should not be displayed for owner" do
+					sign_in(user)
+					visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
+					expect(page).not_to have_content("Not in my house!")
+				end
+
+				it "should not be displayed for other house members" do
+					sign_in(other_user)
+					visit neighborhood_house_path({:neighborhood_id => other_user.neighborhood.id, :id => other_user.house.id})
+					expect(page).not_to have_content("Not in my house!")
+				end
+
+				it "should display after completing" do
+					report 						 = Report.find_by_report("Not in my house!")
+					report.status 			= :reported
+					report.status_cd 	 = 1
+					report.completed_at = Time.now
+					report.save!
+
+					sign_in(user)
+					visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
+
+					expect(report.reload.status_cd).to eq(1)
+					expect(page).to have_content("Not in my house!")
+				end
+			end
 
       # TODO Change text to be dynamic when additional languages are added
 
@@ -86,247 +141,17 @@ describe ReportsController do
 				expect(report.location).not_to eq(nil)
 				expect(report.location.neighborhood_id).to eq(user.neighborhood_id)
 			end
-
-			it "displays the report in the reports page" do
-				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-
-				sign_in(user)
-
-				visit neighborhood_reports_path(user.neighborhood)
-				expect(page).to have_content("Completar o foco")
-			end
-
-			it "does not display report for other users" do
-				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-
-				other_user = FactoryGirl.create(:user)
-				sign_in(other_user)
-
-				visit neighborhood_reports_path(user.neighborhood)
-				expect(page).not_to have_content("Completar o foco")
-      end
-
-      context "when on My House (Minha Casa) page" do
-				let(:other_user) { FactoryGirl.create(:user) }
-
-        before(:each) do
-          post "gateway", :body => "Not in my house!", :from => user.phone_number
-        end
-
-        it "should not be displayed for owner" do
-          sign_in(user)
-          visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
-          expect(page).not_to have_content("Not in my house!")
-        end
-
-        it "should not be displayed for other house members" do
-          sign_in(other_user)
-          visit neighborhood_house_path({:neighborhood_id => other_user.neighborhood.id, :id => other_user.house.id})
-          expect(page).not_to have_content("Not in my house!")
-        end
-
-        it "should display after completing" do
-          report 						 = Report.find_by_report("Not in my house!")
-          report.status 			= :reported
-          report.status_cd 	 = 1
-          report.completed_at = Time.now
-          report.save!
-
-          sign_in(user)
-          visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
-
-					expect(report.reload.status_cd).to eq(1)
-          expect(page).to have_content("Not in my house!")
-        end
-      end
 		end
 
 		#---------------------------------------------------------------------------
 
-		context "Updating a report" do
-			let(:location) { FactoryGirl.create(:location) }
-			let(:report)   { FactoryGirl.create(:report, :location => location, :reporter => user) }
-			let(:elimination_type) { EliminationType.first }
-
-			context "when report comes in through SMS" do
-				before(:each) do
-					report.update_attribute(:sms, true)
-					sign_in(user)
-				end
-
-				it "notifies the user if report description is empty" do
-					visit edit_neighborhood_report_path(user.neighborhood, report)
-
-					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					select elimination_type.name, :from => "report_elimination_type"
-					click_button "Enviar!"
-
-					expect(page).to have_content("Você tem que descrever o local e/ou o foco")
-				end
-
-				it "notifies the user if report before photo is empty" do
-					visit edit_neighborhood_report_path(user.neighborhood, report)
-
-					select elimination_type.name, :from => "report_elimination_type"
-					click_button "Enviar!"
-
-					expect(page).to have_content("")
-				end
-
-				it "notifies the user if identification type is empty" do
-					visit edit_neighborhood_report_path(user.neighborhood, report)
-
-					fill_in "report_content", :with => "This is a description"
-					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					click_button "Enviar!"
-
-					expect(page).to have_content("Você deve selecionar um tipo de foco")
-				end
-
-				it "appears in the reports list as completed" do
-					pending "Select does not work for some reason"
-					
-					visit edit_neighborhood_report_path(user.neighborhood, report)
-
-					fill_in "street_type", 	 :with => "Rua"
-					fill_in "street_name", 	 :with => "Boca"
-					fill_in "street_number",  :with => "500"
-					fill_in "report_content", :with => "This is a description"
-					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					select elimination_type.name, :from => "report_elimination_type"
-					click_button "Enviar!"
-
-					expect(page).to have_content("Foco marcado com sucesso")
-
-					visit neighborhood_reports_path(user.neighborhood)
-					expect(page).to have_content("Em aberto")
-
-					elimination_method = elimination_type.elimination_methods.first
-					selection_option = elimination_method.method + " (" + elimination_method.points.to_s + " pontos)"
-					select selection_option, :from => "elimination_method"
-					find('#method_selection').find(:xpath, 'option[2]').select_option
-					attach_file("eliminate_after_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-
-					save_and_open_page
-
-					within ".eliminate_prompt" do
-						click_button "Enviar!"
-					end
-
-					expect(page).to have_content("Você eliminou o foco")
-					expect(page).to have_content("Eliminado")
-					expect(page).to have_content("Eliminado por: #{report.reporter_name}")
-				end
-
-				context "when choosing elimination method" do
-					before(:each) do
-						visit edit_neighborhood_report_path(user.neighborhood, report)
-
-						fill_in "street_type", 	 :with => "Rua"
-						fill_in "street_name", 	 :with => "Boca"
-						fill_in "street_number",  :with => "500"
-						fill_in "report_content", :with => "This is a description"
-						attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-						select EliminationType.first.name, :from => "report_elimination_type"
-
-						click_button "Enviar!"
-
-						visit neighborhood_reports_path(user.neighborhood)
-					end
-
-					# it "displays remaining time as 46 hours and 59 minutes", :js => true do
-					# 	pending "Setup PhantomJS"
-					# 	# expect(page).to have_content("46:59")
-					# end
-
-					it "displays user's name as the creator" do
-						expect(page).to have_content("Marcado por: #{report.reporter_name}")
-					end
-
-					it "displays report as open" do
-						expect(page).to have_content("Em aberto")
-					end
-
-					it "notifies user if elimination method isn't selected" do
-						within ".eliminate_prompt" do
-							click_button "Enviar!"
-						end
-
-						expect(page).to have_content("Você tem que escolher um método de eliminação")
-					end
-
-					it "notifies user if after photo isn't selected" do
-						within ".eliminate_prompt" do
-							click_button "Enviar!"
-						end
-
-						expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
-					end
-				end
-			end
-
-			context "when report comes" do
-				before(:each) do
-					sign_in(user)
-				end
-
-				it "notifies the user if report description is empty" do
-					visit neighborhood_reports_path(user.neighborhood)
-
-					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					click_button "Enviar!"
-
-					expect(page).to have_content("Você tem que descrever o local e/ou o foco")
-				end
-
-				it "notifies the user if report before photo is empty" do
-					visit neighborhood_reports_path(user.neighborhood)
-
-					fill_in "report_content", :with => "This is a description"
-					click_button "Enviar!"
-					expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
-				end
-
-				it "notifies the user if report location is empty" do
-					visit neighborhood_reports_path(user.neighborhood)
-
-					fill_in "report_content", :with => "This is a description"
-					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					click_button "Enviar!"
-
-					expect(page).to have_content("Você deve enviar o endereço completo")
-				end
-
-				it "notifies the user if identification type is empty" do
-					visit neighborhood_reports_path(user.neighborhood)
-
-					fill_in "report_content", :with => "This is a description"
-					attach_file("report_before_photo", File.expand_path("spec/support/foco_marcado.jpg"))
-					click_button "Enviar!"
-
-					expect(page).to have_content("Você deve selecionar um tipo de foco")
-				end
-			end
-		end
-
-		#---------------------------------------------------------------------------
-
-		describe "successfully" do
-			let(:user)         		 { FactoryGirl.create(:user) }
-			let(:street_hash)  		 { {:street_type => "Rua", :street_name => "Darci Vargas", :street_number => "45"} }
+		context "through web app" do
 			let(:before_photo_file) { File.open("spec/support/foco_marcado.jpg") }
 			let(:uploaded_before_photo) { ActionDispatch::Http::UploadedFile.new(:tempfile => before_photo_file, :filename => File.basename(before_photo_file)) }
 
 			before(:each) do
 				cookies[:auth_token] = user.auth_token
 			end
-
-			it "creates a report if no map coordinates are present" do
-			end
-
-			it "automatically sets neighborhood on the location" do
-			end
-
 
 			# it "finds map coordinates even if user didn't submit them" do
 			# 	location = Location.find_by_street_type_and_street_number(street_hash[:street_type], street_hash[:street_number])
@@ -338,9 +163,95 @@ describe ReportsController do
 			# 	expect(location.latitude).to  eq(680555.9952487927)
 			# 	expect(location.longitude).to eq(7471957.144050697)
 			# end
+
+			it "creates a report if no map coordinates are present" do
+				location_hash.delete(:latitude, :longitude)
+
+				expect {
+					post :create, :neighorhood_id => Neighborhood.first, :report => {
+						:report => "This is a description",
+						:location_attributes => location_hash,
+						:elimination_type => elimination_type.name
+					}
+				}.to change(Report, :count).by(1)
+			end
+
+			it "sets neighborhood on the location" do
+				post :create, :neighorhood_id => Neighborhood.first, :report => {
+					:report => "This is a description",
+					:location_attributes => location_hash,
+					:elimination_type => elimination_type.name
+				}
+
+				expect(Report.last.location.neighborhood_id).to eq(Neighborhood.first.id)
+			end
+
+			it "saves the location attributes" do
+				post :create, :neighorhood_id => Neighborhood.first, :report => {
+					:report => "This is a description",
+					:location_attributes => location_hash,
+					:elimination_type => elimination_type.name
+				}
+
+				report 	= Report.last
+				location = report.location
+				expect(location.street_type).to eq("Rua")
+				expect(location.street_name).to eq("Darci Vargas")
+				expect(location.street_number).to eq("45")
+			end
+
+			it "adds latitude/longitude to location robject if found" do
+				post :create, :neighorhood_id => Neighborhood.first, :report => {
+					:report => "This is a description",
+					:location_attributes => location_hash,
+					:elimination_type => elimination_type.name
+				}
+
+				expect(Report.last.location.latitude).to  eq("50.0")
+				expect(Report.last.location.longitude).to eq("40.0")
+			end
 		end
 	end
 
 	#-----------------------------------------------------------------------------
+
+	context "Updating a report" do
+		let(:location) { FactoryGirl.create(:location) }
+		let(:report)   { FactoryGirl.create(:report, :location => location, :reporter => user) }
+
+		it "does not require coordinates" do
+			location_hash.delete(:latitude)
+			location_hash.delete(:longitude)
+
+			put :update, :neighorhood_id => Neighborhood.first, :report => {
+				:location_attributes => location_hash
+			}
+		end
+
+
+		it "saves the location attributes" do
+			put :update, :neighorhood_id => Neighborhood.first, :report => {
+				:location_attributes => location_hash
+			}
+
+			report 	= Report.last
+			location = report.location.reload
+			expect(location.reload.street_type).to eq("Rua")
+			expect(location.reload.street_name).to eq("Darci Vargas")
+			expect(location.reload.street_number).to eq("45")
+		end
+
+		it "adds latitude/longitude to location object if found" do
+			put :update, :neighorhood_id => Neighborhood.first, :report => {
+				:location_attributes => location_hash
+			}
+
+			expect(location.reload.latitude).to  eq("50.0")
+			expect(location.reload.longitude).to eq("40.0")
+		end
+
+	end
+
+	#---------------------------------------------------------------------------
 
 end
