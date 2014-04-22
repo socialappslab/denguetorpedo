@@ -23,6 +23,8 @@ describe ReportsController do
 
 	context "Creating a new report" do
 		context "through SMS" do
+			render_views
+
 			it "displays the report in the reports page" do
 				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
 
@@ -187,9 +189,11 @@ describe ReportsController do
 			end
 
 			it "saves the location attributes" do
-				post :create, :neighorhood_id => Neighborhood.first, :report => {
+				post :create, :neighborhood_id => Neighborhood.first.id, :report => {
 					:report => "This is a description",
 					:location_attributes => location_hash,
+					:reporter_id => user.id,
+					:before_photo => uploaded_before_photo,
 					:elimination_type => elimination_type.name
 				}
 
@@ -201,9 +205,11 @@ describe ReportsController do
 			end
 
 			it "adds latitude/longitude to location robject if found" do
-				post :create, :neighorhood_id => Neighborhood.first, :report => {
+				post :create, :neighborhood_id => Neighborhood.first.id, :report => {
 					:report => "This is a description",
+					:reporter_id => user.id,
 					:location_attributes => location_hash,
+					:before_photo => uploaded_before_photo,
 					:elimination_type => elimination_type.name
 				}
 
@@ -223,18 +229,17 @@ describe ReportsController do
 			location_hash.delete(:latitude)
 			location_hash.delete(:longitude)
 
-			put :update, :neighorhood_id => Neighborhood.first, :report => {
+			put :update, :neighorhood_id => Neighborhood.first.id, :report => {
 				:location_attributes => location_hash
 			}
 		end
 
 
 		it "saves the location attributes" do
-			put :update, :neighorhood_id => Neighborhood.first, :report => {
+			put :update, :neighorhood_id => Neighborhood.first.id, :report => {
 				:location_attributes => location_hash
 			}
 
-			report 	= Report.last
 			location = report.location.reload
 			expect(location.reload.street_type).to eq("Rua")
 			expect(location.reload.street_name).to eq("Darci Vargas")
@@ -242,7 +247,7 @@ describe ReportsController do
 		end
 
 		it "adds latitude/longitude to location object if found" do
-			put :update, :neighorhood_id => Neighborhood.first, :report => {
+			put :update, :neighorhood_id => Neighborhood.first.id, :report => {
 				:location_attributes => location_hash
 			}
 
