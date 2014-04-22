@@ -39,7 +39,10 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :reporter_id, :location, :location_attributes, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
+  attr_accessible :report, :status, :reporter_id, :location, :location_attributes,
+    :elimination_type, :elimination_method, :verifier_id, :reporter_name,
+    :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at,
+    :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
