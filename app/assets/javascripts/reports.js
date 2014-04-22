@@ -45,7 +45,7 @@ $(document).ready(function() {
 			window.location = "/feedbacks/new?title=other_type";
 		}
 	});
-	
+
 	$("select.elimination_methods").each(function() {
 		$(this).find("option").filter(function() {
 			return $(this).text() == "Método de eliminação";
@@ -128,7 +128,7 @@ function selected_tab_css_update(id){
 function update_location_coordinates_new_report(e){
     e.preventDefault();
 
-    if( $('#x').val() == '' || $('#y').val() == ''){
+    if( $('#latitude').val() == '' || $('#longitude').val() == ''){
         $('#new_report input[name=commit]').attr('disabled',true);
         var data = {"f": "pjson",
                     "Street": $('#street_type').val() +
@@ -146,8 +146,8 @@ function update_location_coordinates_new_report(e){
 
                 //possible location found, update form values
                 if (candidates.length > 0) {
-                    $('#x').val(candidates[0].location.x);
-                    $('#y').val(candidates[0].location.y);
+                    $('#latitude').val(candidates[0].location.x);
+                    $('#longitude').val(candidates[0].location.y);
                 }
 
             },

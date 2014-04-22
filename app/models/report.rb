@@ -39,7 +39,7 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
+  attr_accessible :report, :location, :location_attributes, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
@@ -63,6 +63,8 @@ class Report < ActiveRecord::Base
   validates :status, :presence => true, unless: :sms?
 
   #----------------------------------------------------------------------------
+
+  accepts_nested_attributes_for :location
 
   as_enum :status, [:reported, :eliminated, :sms_reported]
 

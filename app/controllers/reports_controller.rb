@@ -102,9 +102,24 @@ class ReportsController < NeighborhoodsBaseController
 
   #-----------------------------------------------------------------------------
   # POST /neighborhoods/1/reports
+  #  {"utf8"=>"✓",
+  # "authenticity_token"=>"94xRwimaBHn1i38ncPFUUODc8OaMuy1A00Qy7qtT36E=",
+  # "error"=>"false",
+  # "report_id"=>"",
+  # "report"=>{"location_attributes"=>{"street_type"=>"Rua",
+  # "street_name"=>"Tatajuba",
+  # "street_number"=>"50",
+  # "latitude"=>"",
+  # "longitude"=>""},
+  # "report"=>"",
+  # "elimination_type"=>""},
+  # "commit"=>"Enviar!",
+  # "neighborhood_id"=>"7"}
 
   def create
     # If location was previously created, use that
+    # TODO: The new refactoring will make this fail. Let's move away
+    # from usage of session.
     saved_location = Location.find_by_id(session[:location_id])
 
     if saved_location
@@ -119,13 +134,13 @@ class ReportsController < NeighborhoodsBaseController
       # worker to fetch the map coordinates.
 
       location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-        params[:street_type].downcase.titleize,
-        params[:street_name].downcase.titleize,
-        params[:street_number].downcase.titleize
+        params[:report][:location_attributes][:street_type].downcase.titleize,
+        params[:report][:location_attributes][:street_name].downcase.titleize,
+        params[:report][:location_attributes][:street_number].downcase.titleize
       )
 
-      location.latitude  = params[:x] if params[:x].present?
-      location.longitude = params[:y] if params[:y].present?
+      location.latitude  = params[:latitude] if params[:latitude].present?
+      location.longitude = params[:longitude] if params[:longitude].present?
       location.neighborhood = Neighborhood.find(params[:neighborhood_id])
 
       location.save
@@ -593,9 +608,9 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     # If address is not completely filled out
-    if (params[:street_name].blank? && report.location.street_name.blank?) ||
-        (params[:street_number].blank? && report.location.street_number.blank?) ||
-        (params[:street_type].blank? && report.location.street_type.blank?)
+    if (params[:report][:location_attributes][:street_name].blank? && report.location.street_name.blank?) ||
+        (params[:report][:location_attributes][:street_number].blank? && report.location.street_number.blank?) ||
+        (params[:report][:location_attributes][:street_type].blank? && report.location.street_type.blank?)
       # TODO Placeholder translated via Google Translate. "You must submit the entire address."
       flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
       create_complete = false

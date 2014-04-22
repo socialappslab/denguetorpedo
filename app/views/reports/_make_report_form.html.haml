@@ -14,12 +14,12 @@
       #address
         %h3.new_report_label 1. Endereço do foco localizado
         -# TODO @awdorsett - placeholder is cut off, fix styling
-        = text_field_tag :street_type, @new_report_location.street_type, placeholder: "Rua, Beco etc.", class: "middle_field address_field"
-        -# TODO @awdorsett - fix inline style
-        = text_field_tag :street_name, @new_report_location.street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.",
-          style: "width:200px;", class: 'address_field'
-        = text_field_tag :street_number, @new_report_location.street_number, placeholder: "Número", class: "middle_field address_field"
-
+        = f.fields_for :location, @new_report.location || Location.new do |location_fields|
+          = location_fields.text_field :street_type, :placeholder => "Rua, Beco etc.", :class => "middle_field address_field"
+          = location_fields.text_field :street_name, :placeholder => "Nome", :title => "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.", style: "width:200px;", class: 'address_field'
+          = location_fields.text_field :street_number, :placeholder => "Número", class: "middle_field address_field"
+          = location_fields.hidden_field :latitude,  :class => "location_field"
+          = location_fields.hidden_field :longitude, :class => "location_field"
 
       #description
         %h3.new_report_label 2. Descrição da localização
@@ -39,8 +39,6 @@
       #location
         %h3.new_report_label.inline_display 5.
         = link_to "Marcar no mapa", nil, id:'mark_map_btn', class: 'bttn', onclick:'update_location_coordinates_new_report(event)'
-        = hidden_field_tag "x", @new_report_location.latitude, class:'location_field'
-        = hidden_field_tag "y", @new_report_location.longitude, class: 'location_field'
         %br
         %br
 
