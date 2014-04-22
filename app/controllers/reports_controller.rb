@@ -118,7 +118,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def create
     # If location was previously created, use that
-    # TODO: The new refactoring will make this fail. Let's move away
+    # TODO @awdorsett: The new refactoring will make this fail. Let's move away
     # from usage of session.
     saved_location = Location.find_by_id(session[:location_id])
 
@@ -139,33 +139,32 @@ class ReportsController < NeighborhoodsBaseController
         params[:report][:location_attributes][:street_number].downcase.titleize
       )
 
-      location.latitude  = params[:latitude] if params[:latitude].present?
-      location.longitude = params[:longitude] if params[:longitude].present?
-      location.neighborhood = Neighborhood.find(params[:neighborhood_id])
-
+      location.latitude     = params[:latitude]  if params[:latitude].present?
+      location.longitude    = params[:longitude] if params[:longitude].present?
+      location.neighborhood = @neighborhood
       location.save
     end
 
     # TODO @dman7: why is status (type int) but is assigned a symbol?
     @report              = Report.new(params[:report])
     @report.status       = :reported
+    @report.location_id  = location.id
     @report.completed_at = Time.now
 
     # Now let's save the report.
     if validate_report_submission(params, @report) && @report.save
-      session[:report] = nil
+      session[:report]      = nil
       session[:location_id] = nil
 
       flash[:notice] = 'Foco marcado com sucesso!'
-      redirect_to :action => 'index' and return
+      redirect_to neighborhood_reports_path(@neighborhood) and return
     end
 
     # Before photo too large for session
-    session[:report] = params[:report].except(:before_photo)
+    session[:report]      = params[:report].except(:before_photo)
     session[:location_id] = location.id
 
-    redirect_to :back and return
-
+    redirect_to neighborhood_reports_path(@neighborhood) and return
   end
 
   #-----------------------------------------------------------------------------
