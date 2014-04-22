@@ -90,14 +90,11 @@
 
                 -# TODO @awdorsett - need to consider sms no being complete?
                 %h3.report_label Método de eliminação:
-                =select_tag "elimination_method", options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+                = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
 
-                -# TODO @awdorsett - why are we using selected_elimination_method instead of select tag? related to JS code?
-                = hidden_field_tag "selected_elimination_method"
-
-                -#stores location, used if location was not obtainable when creating report
-                = hidden_field_tag "latitude"
-                = hidden_field_tag "longitude"
+                = f.fields_for :location, report.location || Location.new do |location_fields|
+                  = location_fields.hidden_field :latitude
+                  = location_fields.hidden_field :longitude
 
                 -# TODO @awdorsett - what is this used for? Possibly countdown
                 :javascript

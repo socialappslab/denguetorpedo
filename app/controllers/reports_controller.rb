@@ -4,7 +4,7 @@
 class ReportsController < NeighborhoodsBaseController
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,    :only   => [:update, :creditar, :credit, :discredit]
-  before_filter :require_admin, :only   =>[:types]
+  before_filter :require_admin, :only   => [:types]
 
   #----------------------------------------------------------------------------
 
@@ -139,8 +139,8 @@ class ReportsController < NeighborhoodsBaseController
         params[:report][:location_attributes][:street_number].downcase.titleize
       )
 
-      location.latitude     = params[:latitude]  if params[:latitude].present?
-      location.longitude    = params[:longitude] if params[:longitude].present?
+      location.latitude     = params[:report][:location_attributes][:latitude]
+      location.longitude    = params[:report][:location_attributes][:longitude]
       location.neighborhood = @neighborhood
       location.save
     end
@@ -214,8 +214,8 @@ class ReportsController < NeighborhoodsBaseController
       )
     end
 
-    location.latitude     = params[:latitude] if params[:latitude].present?
-    location.longitude    = params[:longitude] if params[:longitude].present?
+    location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
+    location.longitude    = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
     location.neighborhood = Neighborhood.find(params[:neighborhood_id])
     location.save
 
