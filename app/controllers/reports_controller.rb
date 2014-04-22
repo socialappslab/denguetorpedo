@@ -146,13 +146,10 @@ class ReportsController < NeighborhoodsBaseController
       location.save
     end
 
+    # TODO @dman7: why is status (type int) but is assigned a symbol?
     @report              = Report.new(params[:report])
-    @report.reporter_id  = @current_user.id
-    @report.location_id  = location.id
-    @report.status       = :reported # TODO @dman7: why is status (type int) but is assigned a symbol?
-    @report.report       = params[:report][:report] # TODO: Not really needed. ensure that it's already there.
+    @report.status       = :reported
     @report.completed_at = Time.now
-    @report.before_photo = params[:report][:before_photo]
 
     # Now let's save the report.
     if validate_report_submission(params, @report) && @report.save
