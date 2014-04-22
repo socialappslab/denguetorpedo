@@ -51,6 +51,7 @@ $(document).ready(function() {
 			return $(this).text() == "Método de eliminação";
 		}).prop("selected", true);
 	});
+
 	$("select.elimination_methods").change(function() {
 		if ($(this).val() == "Outro método") {
 			window.location.href = "/feedbacks/new?title=other_method";

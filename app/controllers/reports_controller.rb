@@ -223,7 +223,7 @@ class ReportsController < NeighborhoodsBaseController
 
     if @report.sms_incomplete?
       # Verify report saves and form submission is valid
-      if @report.update_attributes(params[:report]) && validate_report_submission(params, @report)
+      if @report.update_attributes(params[:report]) && validate_report_elimination_submission(params, @report)
         flash[:notice] = 'Foco marcado com sucesso!'
 
         @report.status = :reported   # TODO can't mass assign, is that by design?
@@ -239,8 +239,7 @@ class ReportsController < NeighborhoodsBaseController
 
     session[:saved_report_id] = @report.id
 
-
-    if @report.update_attributes(params[:report]) && validate_report_submission(params, @report)
+    if @report.update_attributes(params[:report]) && validate_report_elimination_submission(params, @report)
       @current_user.update_attribute(:points, @current_user.points + submission_points)
       @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
 
@@ -460,33 +459,15 @@ class ReportsController < NeighborhoodsBaseController
       return false
     end
 
-    if params[:report][:after_photo].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado."
-      return false
-    end
-
     # User has created initial report but now needs to select an elimination type
     if params[:report][:elimination_type].blank?
       flash[:alert] = flash[:alert].to_s + " Você tem que escolher um tipo de foco."
       return false
     end
 
-    # Check to see if user has selected a method of elimination
-    if params[:report][:elimination_method].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que escolher um método de eliminação."
-      return false
-    end
-
     # If there was no before photograph, then ask them to upload it.
     if params[:report][:before_photo].blank?
       flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
-      return false
-    end
-
-    # If elimination type is not selected
-    if params[:report][:elimination_type].blank? && report.elimination_type.blank?
-      # TODO Placeholder translated via Google Translate. "You must select a type of foco"
-      flash[:alert] = flash[:alert].to_s + " Você deve selecionar um tipo de foco."
       return false
     end
 
@@ -498,6 +479,25 @@ class ReportsController < NeighborhoodsBaseController
       flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
       return false
     end
+
+    return true
+  end
+
+  #----------------------------------------------------------------------------
+
+  def validate_report_elimination_submission(params, report)
+    if params[:report][:after_photo].blank?
+      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado."
+      return false
+    end
+
+    # Check to see if user has selected a method of elimination
+    if params[:report][:elimination_method].blank?
+      flash[:alert] = flash[:alert].to_s + " Você tem que escolher um método de eliminação."
+      return false
+    end
+
+    return true
   end
 
   #----------------------------------------------------------------------------
