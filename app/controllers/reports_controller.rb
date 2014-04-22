@@ -2,12 +2,9 @@
 # encoding: utf-8
 
 class ReportsController < NeighborhoodsBaseController
-
   before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
-  before_filter :find_by_id, only: [:creditar, :credit, :discredit]
-  before_filter :require_admin, :only =>[:types]
-
-  #points user receives for submitting a site
+  before_filter :find_by_id,    :only   => [:creditar, :credit, :discredit]
+  before_filter :require_admin, :only   =>[:types]
 
   #----------------------------------------------------------------------------
 
@@ -29,6 +26,8 @@ class ReportsController < NeighborhoodsBaseController
     @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
 
     # TODO: Deprecate EliminationMethods in favor for EliminationMethod.
+    # TODO: This should not be an instance variable since we're only using
+    # it for select form tag.
     @points = EliminationMethods.points
 
     # We display the reports in the following order:
@@ -40,7 +39,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
 
     # TODO: Do we actually want to display reports that have completed_at column nil?
-    # @reports += Report.where("completed_at is NOT NULL").where("id != ?", session[:saved_report_id]).order("completed_at DESC").to_a
+    # Better alternative: @reports += Report.where("completed_at is NOT NULL").where("id != ?", session[:saved_report_id]).order("completed_at DESC").to_a
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
 
     # Now, let's filter the reports based on the neighborhood.
@@ -52,6 +51,7 @@ class ReportsController < NeighborhoodsBaseController
     session[:location_id]     = nil
 
     # Generate the different types of locations based on report.
+    # TODO: This iteration should be done in SQL!
     reports_with_status_filtered = []
     locations                    = []
     open_locations               = []
@@ -60,6 +60,7 @@ class ReportsController < NeighborhoodsBaseController
       next unless (report.reporter == current_user || report.elimination_type)
 
       # Add report to list of filtered status reports.
+      # TODO: Do we really need to do this.
       reports_with_status_filtered << report
 
       # In the case that the location is missing, then let's skip it.
@@ -83,8 +84,8 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     # Generate markers from the different types of locations.
-    @markers            = locations.map { |location| location.info}
-    @open_markers       = open_locations.map { |location| location.info}
+    @markers            = locations.map            { |location| location.info}
+    @open_markers       = open_locations.map       { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
 
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
@@ -94,7 +95,7 @@ class ReportsController < NeighborhoodsBaseController
     @open_counts       = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
 
-    # TODO: What? How is open reports = eliminated reports?
+    # TODO: What? How is open reports equal to eliminated reports?
     @open_feed         = @reports
     @eliminate_feed    = @reports
   end
