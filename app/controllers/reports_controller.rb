@@ -9,23 +9,23 @@ class ReportsController < NeighborhoodsBaseController
 
   #points user receives for submitting a site
 
+  #----------------------------------------------------------------------------
+
   def types
-    @types = EliminationType.all
+    @types   = EliminationType.all
     @methods = EliminationMethod.all
   end
 
+  #----------------------------------------------------------------------------
+
   def index
     @current_report = params[:report]
-    @current_user != nil ? @highlightReportItem = "nav_highlight" : @highlightReportItem = ""
 
     # new report form attributes
     # use existing params if error occured during create
     report_params = session[:report]
 
-    # if report_params is present an error occurred during create, triggers showing new report tab in view
-    @create_error = report_params.present?
-
-    @new_report = Report.new(report_params)
+    @new_report          = Report.new(report_params)
     @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
 
     @elimination_types = EliminationType.pluck(:name)
@@ -33,78 +33,67 @@ class ReportsController < NeighborhoodsBaseController
     session[:report] = nil
     session[:location_id] = nil
 
-    @elimination_method_select = EliminationMethods.field_select
+    # Reset the session variables
+    session[:saved_report_id] = nil
+    session[:report]          = nil
+    session[:location_id]     = nil
 
+    # Generate the different types of locations based on report.
     reports_with_status_filtered = []
     locations                    = []
     open_locations               = []
     eliminated_locations         = []
-
-    @points = EliminationMethods.points
-    # TODO @awdorsett - the first Report all may not be needed, is it for SMS or elim type selection?
-
-    # We only want to display the following reports:
-    # 1. Logged-in user's reports, localized to the viewed neighborhood,
-    # 2. All created reports (the misleading column completed_at is not nil)
-    # @reports = Report.all.reject(&:completed_at).sort_by(&:created_at).reverse
-    # @reports = Report.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
-    @reports = current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
-    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report]}.sort_by(&:completed_at).reverse
-    @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
-
-    # if report has been completed or has an error during update
-    # TODO @awdorsett - more effecient way?
-    if session[:saved_report]
-      @reports = [Report.find_by_id(session[:saved_report])] + @reports
-      session[:saved_report] = nil
-    end
-
-    # This should be what populates the markers for map
-    # TODO @awdorsett - refactor this
     @reports.each do |report|
-      if (report.reporter == @current_user or report.elimination_type)
-        if report.status == :reported
-          reports_with_status_filtered << report
-          open_locations << report.location
-        elsif report.status == :eliminated
-          reports_with_status_filtered << report
+      next unless (report.reporter == current_user || report.elimination_type)
+
+      # Add report to list of filtered status reports.
+      reports_with_status_filtered << report
+
+      # In the case that the location is missing, then let's skip it.
+      next if report.location.nil?
+
+      # TODO: Why the !!! are we using two types of columns to encode
+      # the same information (open versus eliminated). Get rid of one or the other.
+      if report.status == :reported
+        open_locations << report.location
+      elsif report.status == :eliminated
+        eliminated_locations << report.location
+      else
+        if report.status_cd == 1
           eliminated_locations << report.location
         else
-            reports_with_status_filtered << report
-            if report.status_cd == 1
-              eliminated_locations << report.location
-            else
-              open_locations << report.location
-            end
-
+          open_locations << report.location
         end
-
-        locations << report.location
       end
 
+      locations << report.location
     end
 
-    @markers = locations.compact.map { |location| location.info}
-    @open_markers = open_locations.compact.map { |location| location.info}
-    @eliminated_markers = eliminated_locations.compact.map { |location| location.info}
+    # Generate markers from the different types of locations.
+    @markers            = locations.map { |location| location.info}
+    @open_markers       = open_locations.map { |location| location.info}
+    @eliminated_markers = eliminated_locations.map { |location| location.info}
 
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
     #@reports = reports_with_status_filtered
     # TODO: These counts should be tied to the SQL query we're running to fetch the reports (see above)
-    @counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
-    @open_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
+    @counts            = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
+    @open_counts       = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
-    @open_feed = @reports
-    @eliminate_feed = @reports
+
+    # TODO: What? How is open reports = eliminated reports?
+    @open_feed         = @reports
+    @eliminate_feed    = @reports
   end
+
+  #----------------------------------------------------------------------------
 
   def new
     @report = Report.new
   end
 
-
   #-----------------------------------------------------------------------------
-  # POST /reports?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true
+  # POST /neighborhoods/1/reports
 
   def create
     # If location was previously created, use that
@@ -175,6 +164,7 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #-----------------------------------------------------------------------------
+  # PUT /neighborhoods/1/
 
   def update
 
@@ -336,7 +326,7 @@ class ReportsController < NeighborhoodsBaseController
       end
 
       # save the report so you can access it in index for errors and completions
-      session[:saved_report]= @report.id
+      session[:saved_report_id]= @report.id
       redirect_to :back
 
 

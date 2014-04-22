@@ -8,7 +8,7 @@
 
   #new_report_form
     = form_for @new_report, :url => neighborhood_reports_path, :html => {:autocomplete => "off", :multipart => true} do |f|
-      = hidden_field_tag 'error', @create_error
+      = hidden_field_tag 'error', session[:report].present?
       = hidden_field_tag 'report_id', @new_report.id
 
       #address
@@ -33,7 +33,7 @@
 
       #elimination_type
         %h3.new_report_label.inline_display 4. Tipo de foco
-        = f.select :elimination_type, options_for_select(@elimination_types, @new_report.elimination_type), prompt:"Selecione o tipo de foco"
+        = f.select :elimination_type, EliminationType.pluck(:name), :prompt => "Selecione o tipo de foco"
       %br
 
       #location

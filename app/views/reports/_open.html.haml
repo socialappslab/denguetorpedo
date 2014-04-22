@@ -86,11 +86,7 @@
                 -# TODO @awdorsett - elimination type is not required, something with SMS?
                 -# elimination type
                 %h3.report_label Tipo de foco:
-                -#- if report.elimination_type.present?
                 = report.elimination_type
-                -#- else
-                  = select_tag "elimination_type", options_for_select(@elimination_types), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type"
-
 
                 -# TODO @awdorsett - need to consider sms no being complete?
                 %h3.report_label Método de eliminação:
