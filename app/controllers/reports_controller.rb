@@ -28,10 +28,23 @@ class ReportsController < NeighborhoodsBaseController
     @new_report          = Report.new(report_params)
     @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
 
-    @elimination_types = EliminationType.pluck(:name)
+    # TODO: Deprecate EliminationMethods in favor for EliminationMethod.
+    @points = EliminationMethods.points
 
-    session[:report] = nil
-    session[:location_id] = nil
+    # We display the reports in the following order:
+    # 1. Unfinished report in the middle of being created,
+    # 1. Logged-in user's reports,
+    # 2. All created reports (aka, the misleading column completed_at is not nil)
+    @reports = []
+    @reports += [ Report.find_by_id(session[:saved_report_id]) ] if session[:saved_report_id].present?
+    @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
+
+    # TODO: Do we actually want to display reports that have completed_at column nil?
+    # @reports += Report.where("completed_at is NOT NULL").where("id != ?", session[:saved_report_id]).order("completed_at DESC").to_a
+    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
+
+    # Now, let's filter the reports based on the neighborhood.
+    @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
 
     # Reset the session variables
     session[:saved_report_id] = nil
