@@ -16,13 +16,7 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def index
-    @current_report = params[:report]
-
-    # new report form attributes
-    # use existing params if error occured during create
-    report_params = session[:report]
-
-    @new_report          = Report.new(report_params)
+    @new_report          = Report.new( params[:report] )
     @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
 
     # TODO: Deprecate EliminationMethods in favor for EliminationMethod.
