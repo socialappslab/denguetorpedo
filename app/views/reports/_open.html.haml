@@ -75,7 +75,7 @@
 
             -#form to enter in elimination method and after photo
             .eliminate_prompt{:style => "margin-top:5px;"}
-              = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => false}) do |f|
+              = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
 
                 - if report.sms_incomplete?
                   = link_to "Completar o foco", edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"

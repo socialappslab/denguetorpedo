@@ -65,6 +65,10 @@ describe "Reports", :type => :feature do
         click_button "Enviar!"
       end
 
+      it "sets the before photo" do
+        expect(photo_filepath).to include(Report.last.before_photo_file_name)
+      end
+
       it "sets the reporter id" do
         expect(Report.last.reporter_id).to eq(user.id)
       end
@@ -114,6 +118,18 @@ describe "Reports", :type => :feature do
 
     before(:each) do
       sign_in(user)
+    end
+
+    it "sets the after photo" do
+      visit neighborhood_reports_path(user.neighborhood)
+
+      select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
+      attach_file("report_after_photo", photo_filepath)
+      within ".eliminate_prompt" do
+        click_button "Enviar!"
+      end
+
+      expect( photo_filepath ).to include(report.reload.after_photo_file_name)
     end
 
     it "allows users to eliminate a report" do
