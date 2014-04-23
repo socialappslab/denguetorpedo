@@ -2,13 +2,13 @@
 require 'spec_helper'
 
 describe ReportsController do
-	let(:user) 						{ FactoryGirl.create(:user) }
-	let(:elimination_type) { EliminationType.first }
-	let(:location_hash) {
-		{
-			:street_type => "Rua", :street_name => "Darci Vargas",
-			:street_number => "45", :latitude => "50.0", :longitude => "40.0"
-		}
+	let(:user) 						 { FactoryGirl.create(:user) }
+	let(:elimination_type)  { EliminationType.first }
+	let(:photo_file) 			 { File.open("spec/support/foco_marcado.jpg") }
+	let(:uploaded_photo)    { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
+	let(:location_hash) 		{ {
+		:street_type => "Rua", :street_name => "Darci Vargas",
+		:street_number => "45", :latitude => "50.0", :longitude => "40.0"}
 	}
 
 	#-----------------------------------------------------------------------------
@@ -148,9 +148,6 @@ describe ReportsController do
 		#---------------------------------------------------------------------------
 
 		context "through web app" do
-			let(:before_photo_file) { File.open("spec/support/foco_marcado.jpg") }
-			let(:uploaded_before_photo) { ActionDispatch::Http::UploadedFile.new(:tempfile => before_photo_file, :filename => File.basename(before_photo_file)) }
-
 			before(:each) do
 				cookies[:auth_token] = user.auth_token
 			end
@@ -159,7 +156,7 @@ describe ReportsController do
 			# 	location = Location.find_by_street_type_and_street_number(street_hash[:street_type], street_hash[:street_number])
 			# 	expect(location).to  eq(nil)
 			#
-			# 	post :create, street_hash.merge(:report => { :report => "Testing", :before_photo => uploaded_before_photo })
+			# 	post :create, street_hash.merge(:report => { :report => "Testing", :before_photo => uploaded_photo })
 			#
 			# 	location = Location.find_by_street_type_and_street_number(street_hash[:street_type], street_hash[:street_number])
 			# 	expect(location.latitude).to  eq(680555.9952487927)
@@ -167,11 +164,14 @@ describe ReportsController do
 			# end
 
 			it "creates a report if no map coordinates are present" do
-				location_hash.delete(:latitude, :longitude)
+				location_hash.delete(:latitude)
+				location_hash.delete(:longitude)
 
 				expect {
-					post :create, :neighorhood_id => Neighborhood.first, :report => {
+					post :create, :neighborhood_id => Neighborhood.first.id, :report => {
 						:report => "This is a description",
+						:reporter_id => user.id,
+						:before_photo => uploaded_photo,
 						:location_attributes => location_hash,
 						:elimination_type => elimination_type.name
 					}
@@ -179,8 +179,10 @@ describe ReportsController do
 			end
 
 			it "sets neighborhood on the location" do
-				post :create, :neighorhood_id => Neighborhood.first, :report => {
+				post :create, :neighborhood_id => Neighborhood.first, :report => {
 					:report => "This is a description",
+					:reporter_id => user.id,
+					:before_photo => uploaded_photo,
 					:location_attributes => location_hash,
 					:elimination_type => elimination_type.name
 				}
@@ -193,7 +195,7 @@ describe ReportsController do
 					:report => "This is a description",
 					:location_attributes => location_hash,
 					:reporter_id => user.id,
-					:before_photo => uploaded_before_photo,
+					:before_photo => uploaded_photo,
 					:elimination_type => elimination_type.name
 				}
 
@@ -209,12 +211,12 @@ describe ReportsController do
 					:report => "This is a description",
 					:reporter_id => user.id,
 					:location_attributes => location_hash,
-					:before_photo => uploaded_before_photo,
+					:before_photo => uploaded_photo,
 					:elimination_type => elimination_type.name
 				}
 
-				expect(Report.last.location.latitude).to  eq("50.0")
-				expect(Report.last.location.longitude).to eq("40.0")
+				expect(Report.last.location.latitude).to  eq(50.0)
+				expect(Report.last.location.longitude).to eq(40.0)
 			end
 		end
 	end
@@ -225,19 +227,27 @@ describe ReportsController do
 		let(:location) { FactoryGirl.create(:location) }
 		let(:report)   { FactoryGirl.create(:report, :location => location, :reporter => user) }
 
+		before(:each) do
+			cookies[:auth_token] = user.auth_token
+		end
+
 		it "does not require coordinates" do
 			location_hash.delete(:latitude)
 			location_hash.delete(:longitude)
 
-			put :update, :neighorhood_id => Neighborhood.first.id, :report => {
-				:location_attributes => location_hash
+			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
+				:location_attributes => location_hash,
+				:after_photo => uploaded_photo,
+				:elimination_method => elimination_type.elimination_methods.first.method
 			}
 		end
 
 
 		it "saves the location attributes" do
-			put :update, :neighorhood_id => Neighborhood.first.id, :report => {
-				:location_attributes => location_hash
+			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
+				:location_attributes => location_hash,
+				:after_photo => uploaded_photo,
+				:elimination_method => elimination_type.elimination_methods.first.method
 			}
 
 			location = report.location.reload
@@ -247,12 +257,14 @@ describe ReportsController do
 		end
 
 		it "adds latitude/longitude to location object if found" do
-			put :update, :neighorhood_id => Neighborhood.first.id, :report => {
-				:location_attributes => location_hash
+			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
+				:location_attributes => location_hash,
+				:after_photo => uploaded_photo,
+				:elimination_method => elimination_type.elimination_methods.first.method
 			}
 
-			expect(location.reload.latitude).to  eq("50.0")
-			expect(location.reload.longitude).to eq("40.0")
+			expect(location.reload.latitude).to  eq(50.0)
+			expect(location.reload.longitude).to eq(40.0)
 		end
 
 	end

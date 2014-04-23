@@ -7,5 +7,5 @@ def sign_in(user)
 end
 
 def sign_out(user)
-  get "exit"
+  visit logout_path
 end
