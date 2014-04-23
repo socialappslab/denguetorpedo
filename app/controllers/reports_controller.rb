@@ -223,7 +223,7 @@ class ReportsController < NeighborhoodsBaseController
 
     if @report.sms_incomplete?
       # Verify report saves and form submission is valid
-      if @report.update_attributes(params[:report]) && validate_report_elimination_submission(params, @report)
+      if @report.update_attributes(params[:report]) && validate_report_submission(params, @report)
         flash[:notice] = 'Foco marcado com sucesso!'
 
         @report.status = :reported   # TODO can't mass assign, is that by design?
