@@ -45,12 +45,13 @@ $(document).ready(function() {
 			window.location = "/feedbacks/new?title=other_type";
 		}
 	});
-	
+
 	$("select.elimination_methods").each(function() {
 		$(this).find("option").filter(function() {
 			return $(this).text() == "Método de eliminação";
 		}).prop("selected", true);
 	});
+
 	$("select.elimination_methods").change(function() {
 		if ($(this).val() == "Outro método") {
 			window.location.href = "/feedbacks/new?title=other_method";
@@ -128,7 +129,7 @@ function selected_tab_css_update(id){
 function update_location_coordinates_new_report(e){
     e.preventDefault();
 
-    if( $('#x').val() == '' || $('#y').val() == ''){
+    if( $('#latitude').val() == '' || $('#longitude').val() == ''){
         $('#new_report input[name=commit]').attr('disabled',true);
         var data = {"f": "pjson",
                     "Street": $('#street_type').val() +
@@ -146,8 +147,8 @@ function update_location_coordinates_new_report(e){
 
                 //possible location found, update form values
                 if (candidates.length > 0) {
-                    $('#x').val(candidates[0].location.x);
-                    $('#y').val(candidates[0].location.y);
+                    $('#latitude').val(candidates[0].location.x);
+                    $('#longitude').val(candidates[0].location.y);
                 }
 
             },
@@ -171,43 +172,42 @@ function update_location_coordinates_new_report(e){
 // -# TODO @awdorsett - fix magic numbers
 function update_location_coordinates(location,event){
 
-    //make sure the form being submitted has long/lat input fields
-    //i.e. don't run when selecting elimination type
-    if(event.target.form[7].id == 'latitude' && event.target.form[8].id == 'longitude'){
+  //make sure the form being submitted has long/lat input fields
+  //i.e. don't run when selecting elimination type
+  if(event.target.form[7].id == "report_location_attributes_latitude" && event.target.form[8].id == "report_location_attributes_longitude"){
 
-        //if either value is null then try to get coords again
-        if (location.latitude == null || location.longitude == null){
-            event.preventDefault();
+    //if either value is null then try to get coords again
+    if (location.latitude == null || location.longitude == null){
+      event.preventDefault();
 
-            //disable submit button so user cant submit multiple times
-            $(".report_submission").attr("disabled",true);
+      //disable submit button so user cant submit multiple times
+      $(".report_submission").attr("disabled",true);
+        $.ajax({
+          url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+          type: "GET",
+          timeout: 5000, // milliseconds
+          dataType: "jsonp",
+          data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
+          success: function(m) {
+              var candidates = m.candidates;
 
-                $.ajax({
-                    url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-                    type: "GET",
-                    timeout: 5000, // milliseconds
-                    dataType: "jsonp",
-                    data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
-                    success: function(m) {
-                        var candidates = m.candidates;
+              //possible location found, update form values
+              if (candidates.length > 0) {
+                  event.target.form[7].value = candidates[0].location.x;
+                  event.target.form[8].value = candidates[0].location.y;
+              }
 
-                        //possible location found, update form values
-                        if (candidates.length > 0) {
-                            event.target.form[7].value = candidates[0].location.x;
-                            event.target.form[8].value = candidates[0].location.y;
-                        }
+             $(event.target.form).submit();
 
-                       $(event.target.form).submit();
-
-                    },
-                    error: function(m) {
-                        //ajax call unsuccessful, server may be down
-                        // TODO @awdorsett how to handle second request for map failure
-                        $(".report_submission").attr("disabled",false);
-                        $(event.target.form).submit();
-                    }
-                });
+          },
+          error: function(m) {
+              //ajax call unsuccessful, server may be down
+              // TODO @awdorsett how to handle second request for map failure
+              $(".report_submission").attr("disabled",false);
+              $(event.target.form).submit();
+          }
         }
-
+      );
     }
+  }
 }

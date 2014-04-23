@@ -1,4 +1,4 @@
-
+/ This partial is passed in a 'report' variable.
 .report.open
   .row
     .rp_report_status.status
@@ -23,9 +23,7 @@
         - if report.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
             Torpedo
-
         - else
-
           - if not report.expired?
             - if report.elimination_type
               .countdown.countdownHolder.timer
@@ -77,8 +75,7 @@
 
             -#form to enter in elimination method and after photo
             .eliminate_prompt{:style => "margin-top:5px;"}
-              = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
-                = hidden_field_tag 'report_id', report.id
+              = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
 
                 - if report.sms_incomplete?
                   = link_to "Completar o foco", edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
@@ -86,22 +83,15 @@
                 -# TODO @awdorsett - elimination type is not required, something with SMS?
                 -# elimination type
                 %h3.report_label Tipo de foco:
-                -#- if report.elimination_type.present?
                 = report.elimination_type
-                -#- else
-                  = select_tag "elimination_type", options_for_select(@elimination_types), :prompt => "Selecione o tipo de foco", :style => "width:430px;", class: "elimination_type"
-
 
                 -# TODO @awdorsett - need to consider sms no being complete?
                 %h3.report_label Método de eliminação:
-                =select_tag "elimination_method", options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+                = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
 
-                -# TODO @awdorsett - why are we using selected_elimination_method instead of select tag? related to JS code?
-                = hidden_field_tag "selected_elimination_method"
-
-                -#stores location, used if location was not obtainable when creating report
-                = hidden_field_tag "latitude"
-                = hidden_field_tag "longitude"
+                = f.fields_for :location, report.location || Location.new do |location_fields|
+                  = location_fields.hidden_field :latitude
+                  = location_fields.hidden_field :longitude
 
                 -# TODO @awdorsett - what is this used for? Possibly countdown
                 :javascript
@@ -115,7 +105,7 @@
 
                 -# TODO @awdorsett - give user the option to upload a replacement image?
                 %h3.report_label Carregue uma foto do foco eliminado:
-                = f.file_field :after_photo, :disabled => (report.after_photo_file_size or report.expired?)
+                = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?)
 
                 %br
                 = submit_tag "Enviar!",:onclick=>"update_location_coordinates(#{report.location.to_json},event);",:class=>'report_submission', :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or report.expired? or report.isVerified == "f" or report.sms_incomplete?)

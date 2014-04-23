@@ -39,14 +39,17 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :elimination_type, :elimination_method, :verifier_id, :reporter_name, :eliminator_name, :location_id, :reporter, :location, :sms, :is_credited, :credited_at, :completed_at, :verifier, :resolved_verifier, :eliminator
+  attr_accessible :report, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
+    :elimination_type, :elimination_method, :verifier_id, :reporter_name,
+    :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at,
+    :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
   #-------------------------
 
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
-  has_attached_file :after_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
+  has_attached_file :after_photo,  :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
 
   #----------------------------------------------------------------------------
   # Associations
@@ -63,6 +66,8 @@ class Report < ActiveRecord::Base
   validates :status, :presence => true, unless: :sms?
 
   #----------------------------------------------------------------------------
+
+  accepts_nested_attributes_for :location
 
   as_enum :status, [:reported, :eliminated, :sms_reported]
 

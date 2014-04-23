@@ -52,21 +52,16 @@ describe Report do
 		FactoryGirl.build(:report).should be_valid
 	end
 
-	describe "when a report is sent by SMS" do
-		it "should have SMS field to true" do
-			FactoryGirl.build(:sms).should be_sms
-		end
-	end
-
   describe "fetching" do
+		let(:user) { FactoryGirl.create(:user) }
   	before(:each) do
-  		@identified1 = FactoryGirl.create(:identified)
-  		@identified2 = FactoryGirl.create(:identified)
-  		@identified3 = FactoryGirl.create(:identified)
+  		@identified1 = FactoryGirl.create(:report, :elimination_type => "Type")
+  		@identified2 = FactoryGirl.create(:report, :elimination_type => "Type")
+  		@identified3 = FactoryGirl.create(:report, :elimination_type => "Type")
 
-  		@eliminated1 = FactoryGirl.create(:eliminated)
-  		@eliminated2 = FactoryGirl.create(:eliminated)
-  		@eliminated3 = FactoryGirl.create(:eliminated)
+  		@eliminated1 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
+  		@eliminated2 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
+  		@eliminated3 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
   	end
   	context "identified reports" do
 			it "returns identified results" do

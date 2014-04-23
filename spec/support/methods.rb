@@ -5,3 +5,7 @@ def sign_in(user)
   fill_in "password", :with => user.password
   click_button "Entrar"
 end
+
+def sign_out(user)
+  visit logout_path
+end
