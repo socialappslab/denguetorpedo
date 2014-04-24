@@ -34,11 +34,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # TODO: Do we actually want to display reports that have completed_at column nil?
     # Better alternative: @reports += Report.where("completed_at is NOT NULL").where("id != ?", session[:saved_report_id]).order("completed_at DESC").to_a
-    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
-
-    # Now, let's filter the reports based on the neighborhood.
-    # @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
-    
+    @reports += Report.where(:neighborhood_id => @neighborhood.id).select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
 
     # Reset the session variables
     session[:saved_report_id] = nil
@@ -147,10 +143,11 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     # TODO @dman7: why is status (type int) but is assigned a symbol?
-    @report              = Report.new(params[:report])
-    @report.status       = :reported
-    @report.location_id  = location.id
-    @report.completed_at = Time.now
+    @report                 = Report.new(params[:report])
+    @report.neighborhood_id = @neighborhood.id
+    @report.status          = :reported
+    @report.location_id     = location.id
+    @report.completed_at    = Time.now
 
     # Now let's save the report.
     if validate_report_submission(params, @report) && @report.save
@@ -217,7 +214,7 @@ class ReportsController < NeighborhoodsBaseController
 
     location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
     location.longitude    = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
-    location.neighborhood = Neighborhood.find(params[:neighborhood_id])
+    location.neighborhood = @neighborhood
     location.save
 
     @report.location_id  = location.id
@@ -227,8 +224,9 @@ class ReportsController < NeighborhoodsBaseController
       if @report.update_attributes(params[:report]) && validate_report_submission(params, @report)
         flash[:notice] = 'Foco marcado com sucesso!'
 
-        @report.status = :reported   # TODO can't mass assign, is that by design?
-        @report.completed_at = Time.now
+        @report.status          = :reported   # TODO can't mass assign, is that by design?
+        @report.neighborhood_id = @neighborhood.id
+        @report.completed_at    = Time.now
         @report.save
 
         redirect_to neighborhood_reports_path(@neighborhood) and return
@@ -248,6 +246,7 @@ class ReportsController < NeighborhoodsBaseController
       @report.update_attribute(:completed_at, Time.now)
       @report.touch(:eliminated_at)
       @report.update_attribute(:status_cd, 1)
+      @report.update_attribute(:neighborhood_id, @neighborhood.id)
       @report.update_attribute(:eliminator_id, @current_user.id)
       award_points @report, @current_user
 

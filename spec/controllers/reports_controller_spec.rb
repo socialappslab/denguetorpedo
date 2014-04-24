@@ -34,6 +34,7 @@ describe ReportsController do
 				expect(page).to have_content("Completar o foco")
 			end
 
+
 			it "does not display report for other users" do
 				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
 
@@ -134,14 +135,15 @@ describe ReportsController do
 
 				report = Report.find_by_report("Rua Tatajuba 1")
 				expect(report.status_cd).to eq(nil)
+				expect(report.neighborhood_id).to eq(user.neighborhood_id)
 				expect(report.sms).to eq(true)
 			end
 
 			it "creates a new location for the report with proper attributes" do
 				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
 				report = Report.find_by_report("Rua Tatajuba 1")
-				# expect(report.location).not_to eq(nil)
-				# expect(report.location.neighborhood_id).to eq(user.neighborhood_id)
+				expect(report.location).not_to eq(nil)
+				expect(report.location.neighborhood_id).to eq(user.neighborhood_id)
 			end
 		end
 
@@ -241,8 +243,7 @@ describe ReportsController do
 				:elimination_method => elimination_type.elimination_methods.first.method
 			}
 		end
-
-
+		
 		it "saves the location attributes" do
 			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:location_attributes => location_hash,

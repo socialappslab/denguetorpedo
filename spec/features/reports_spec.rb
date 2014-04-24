@@ -76,12 +76,14 @@ describe "Reports", :type => :feature do
       it "creates an associated location" do
         report 	= Report.last
         location = report.location
+
         expect(report).not_to eq(nil)
+        expect(report.neighborhood_id).to eq(Neighborhood.first.id)
+
         expect(location).not_to eq(nil)
         expect(location.street_type).to eq("Rua")
         expect(location.street_name).to eq("Darci Vargas")
         expect(location.street_number).to eq("45")
-        expect(location.neighborhood_id).to eq(Neighborhood.first.id)
       end
 
       it "displays user's name as the creator" do
@@ -114,7 +116,8 @@ describe "Reports", :type => :feature do
       :status => :reported,
       :completed_at => Time.now,
       :reporter_id => user.id,
-      :elimination_type => elimination_type.name) }
+      :elimination_type => elimination_type.name,
+      :neighborhood_id => Neighborhood.first.id) }
 
     before(:each) do
       sign_in(user)
@@ -122,6 +125,8 @@ describe "Reports", :type => :feature do
 
     it "sets the after photo" do
       visit neighborhood_reports_path(user.neighborhood)
+
+
 
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
@@ -205,11 +210,12 @@ describe "Reports", :type => :feature do
     # gateway action of ReportsController.
     let(:sms_body) { "This is an SMS message" }
     let(:location) { FactoryGirl.create(:location, :address => sms_body)}
-    let!(:report)   { FactoryGirl.create(:report, :reporter => user,
-      :sms => true, :report => sms_body, :location => location) }
 
     before(:each) do
       sign_in(user)
+
+      @report = user.build_report_via_sms(:body => sms_body)
+      @report.save!
     end
 
     it "displays the SMS report to the owner" do
@@ -231,11 +237,11 @@ describe "Reports", :type => :feature do
     it "allows owner to finish report" do
       visit neighborhood_reports_path(user.neighborhood)
       click_link("Completar o foco")
-      expect(current_path).to eq(edit_neighborhood_report_path(user.neighborhood, report))
+      expect(current_path).to eq(edit_neighborhood_report_path(user.neighborhood, @report))
     end
 
     it "notifies the user if report before photo is empty" do
-      visit edit_neighborhood_report_path(user.neighborhood, report)
+      visit edit_neighborhood_report_path(user.neighborhood, @report)
 
       fill_in "report_location_attributes_street_type", :with => "Rua"
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
@@ -248,7 +254,7 @@ describe "Reports", :type => :feature do
     end
 
     it "notifies the user if identification type is empty" do
-      visit edit_neighborhood_report_path(user.neighborhood, report)
+      visit edit_neighborhood_report_path(user.neighborhood, @report)
 
       fill_in "report_location_attributes_street_type", :with => "Rua"
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
@@ -263,7 +269,7 @@ describe "Reports", :type => :feature do
     it "appears in the reports list as completed" do
       pending "Select does not work for some reason"
 
-      visit edit_neighborhood_report_path(user.neighborhood, report)
+      visit edit_neighborhood_report_path(user.neighborhood, @report)
 
       fill_in "report_location_attributes_street_type", 	 :with => "Rua"
       fill_in "report_location_attributes_street_name", 	 :with => "Boca"
@@ -290,7 +296,7 @@ describe "Reports", :type => :feature do
 
       expect(page).to have_content("Você eliminou o foco")
       expect(page).to have_content("Eliminado")
-      expect(page).to have_content("Eliminado por: #{report.reporter_name}")
+      expect(page).to have_content("Eliminado por: #{@report.reporter_name}")
     end
   end
 
