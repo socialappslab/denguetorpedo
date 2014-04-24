@@ -37,7 +37,8 @@ class ReportsController < NeighborhoodsBaseController
     @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
 
     # Now, let's filter the reports based on the neighborhood.
-    @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
+    # @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
+    
 
     # Reset the session variables
     session[:saved_report_id] = nil

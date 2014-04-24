@@ -271,7 +271,7 @@ class User < ActiveRecord::Base
   def sponsor?
     self.role == "lojista"
   end
-  
+
   #----------------------------------------------------------------------------
 
   def carrier_requirements
@@ -303,14 +303,14 @@ class User < ActiveRecord::Base
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
     # location = Location.new_with_address(body)
-    location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-        "Rua".downcase.titleize,
-        "Sargento Silva Nunes".downcase.titleize,
-        "1012".downcase.titleize
-    )
-    location.update_attribute(:neighborhood_id, Neighborhood.first.id)
+    # location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+    #     "Rua".downcase.titleize,
+    #     "Sargento Silva Nunes".downcase.titleize,
+    #     "1012".downcase.titleize
+    # )
+    # location.update_attribute(:neighborhood_id, Neighborhood.first.id)
 
-    report = Report.new(reporter: self, sms: true, report: body, :location => location)
+    report = Report.new(reporter: self, sms: true, report: body)
     return report
   end
 
