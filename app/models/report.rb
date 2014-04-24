@@ -39,7 +39,7 @@
 
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
+  attr_accessible :report, :neighborhood_id, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
     :elimination_type, :elimination_method, :verifier_id, :reporter_name,
     :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at,
     :completed_at, :verifier, :resolved_verifier, :eliminator
@@ -61,9 +61,11 @@ class Report < ActiveRecord::Base
   belongs_to :location
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
-  validates :reporter_id, :presence => true
-  # validates :location_id, :presence => { on: :update }
+  belongs_to :neighborhood
+
   validates :status, :presence => true, unless: :sms?
+  validates :reporter_id, :presence => true
+  # validates :neighborhood_id, :presence => true
 
   #----------------------------------------------------------------------------
 
@@ -121,13 +123,6 @@ class Report < ActiveRecord::Base
   after_save do |report|
     Feed.create_from_object(report, report.reporter_id, :reported) if report.reporter_id_changed?
     Feed.create_from_object(report, report.eliminator_id, :eliminated) if report.eliminator_id_changed?
-  end
-
-  #----------------------------------------------------------------------------
-
-  def neighborhood
-    Neighborhood.first
-    # location.neighborhood
   end
 
   #----------------------------------------------------------------------------
