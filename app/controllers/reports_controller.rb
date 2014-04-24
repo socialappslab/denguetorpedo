@@ -344,6 +344,7 @@ class ReportsController < NeighborhoodsBaseController
   # will display on the phone as a Toast (see
   # http://developer.android.com/reference/android/widget/Toast.html for more).
   def gateway
+    puts "params: #{params}"
     # Verify phone number minimum length and placeholder, otherwise ignore
     if params[:from] == User::PHONE_NUMBER_PLACEHOLDER || params[:from].to_s.length < User::MIN_PHONE_LENGTH
       render :nothing => true, :status => 400 and return
