@@ -16,7 +16,7 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def index
-    @new_report          = Report.new( params[:report] )
+    @new_report          = Report.new(session[:report])
     @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
 
     # TODO: Deprecate EliminationMethods in favor for EliminationMethod.
@@ -152,17 +152,19 @@ class ReportsController < NeighborhoodsBaseController
     @report.completed_at = Time.now
 
     # Now let's save the report.
-    if validate_report_submission(params, @report) && @report.save
-      session[:report]      = nil
-      session[:location_id] = nil
-
+    if @report.save
+      session[:report], session[:location_id] = nil, nil
       flash[:notice] = 'Foco marcado com sucesso!'
-      redirect_to neighborhood_reports_path(@neighborhood) and return
-    end
 
-    # Before photo too large for session
-    session[:report]      = params[:report].except(:before_photo)
-    session[:location_id] = location.id
+    # An error has occurred
+    else
+      flash[:alert] = @report.errors.full_messages.join(" ")
+
+      # Before photo too large for session
+      session[:report]      = params[:report].except(:before_photo)
+      session[:location_id] = location.id
+
+    end
 
     redirect_to neighborhood_reports_path(@neighborhood) and return
   end
@@ -223,7 +225,7 @@ class ReportsController < NeighborhoodsBaseController
 
     if @report.sms_incomplete?
       # Verify report saves and form submission is valid
-      if @report.update_attributes(params[:report]) && validate_report_submission(params, @report)
+      if @report.update_attributes(params[:report])
         flash[:notice] = 'Foco marcado com sucesso!'
 
         @report.status = :reported   # TODO can't mass assign, is that by design?
@@ -255,18 +257,6 @@ class ReportsController < NeighborhoodsBaseController
       redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return
     end
 
-    # @report.save
-
-    # if every part of the report submission is complete, submit_complete = true
-    # if submit_complete
-    #   flash[:notice] = "Você eliminou o foco!"
-    #   @report.touch(:eliminated_at)
-    #   @report.update_attribute(:status_cd, 1)
-    #   @report.update_attribute(:eliminator_id, @current_user.id)
-    #   award_points @report, @current_user
-    # end
-
-    # save the report so you can access it in index for errors and completions
   end
 
   def destroy
@@ -441,47 +431,6 @@ class ReportsController < NeighborhoodsBaseController
       user.total_points += points
       user.save
     end
-  end
-
-  #----------------------------------------------------------------------------
-
-  # Tests for the existence of report description ("report"), before_photo,
-  # elimination type, street type, street name, and street number
-  #
-  # Returns true if complete, else returns false with flash[:alert] filled
-  # TODO @awdorsett: Some of these things, such as the :report and :before_photo could cleverly
-  # become model validations (e.g. validates :report, :presence => true). If you
-  # end up doing it, remember to make sure that report creation via SMS still works.
-
-  def validate_report_submission params, report
-    # If no report was filled out, then ask them to fill it out.
-    if params[:report][:report] == ""
-      flash[:alert] = flash[:alert].to_s + " Você tem que descrever o local e/ou o foco."
-      return false
-    end
-
-    # User has created initial report but now needs to select an elimination type
-    if params[:report][:elimination_type].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que escolher um tipo de foco."
-      return false
-    end
-
-    # If there was no before photograph, then ask them to upload it.
-    if params[:report][:before_photo].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco encontrado."
-      return false
-    end
-
-    # If address is not completely filled out
-    if (params[:report][:location_attributes][:street_name].blank? && report.location.street_name.blank?) ||
-        (params[:report][:location_attributes][:street_number].blank? && report.location.street_number.blank?) ||
-        (params[:report][:location_attributes][:street_type].blank? && report.location.street_type.blank?)
-      # TODO Placeholder translated via Google Translate. "You must submit the entire address."
-      flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
-      return false
-    end
-
-    return true
   end
 
   #----------------------------------------------------------------------------

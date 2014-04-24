@@ -65,8 +65,14 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
   # Validations
   #-------------
+  # TODO :report validation fails unexpectedly
+  # When creating a new report and a user doesn't submit a picture, he'll get an error to add a picture
+  # After adding a picture if the user tries to submit again they'll get an error about having to provide
+  #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
   validates :report, :presence => true
+
+  # Not required for SMS
   validates :before_photo,
             :elimination_type,
             :reporter_id,
