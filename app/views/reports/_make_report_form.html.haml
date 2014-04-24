@@ -8,7 +8,7 @@
   
   #new_report_form
     = form_for [@neighborhood, @new_report], :html => {:autocomplete => "off", :multipart => true} do |f|
-      = hidden_field_tag 'error', session[:report].present?
+      = hidden_field_tag 'error', @new_report_error
       - if @new_report.reporter_id.blank?
         = f.hidden_field :reporter_id, :value => @current_user.id
 

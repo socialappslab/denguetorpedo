@@ -70,17 +70,38 @@ class Report < ActiveRecord::Base
   # After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
+
+  # TODO refactor this code to be cleaner and find a better solution for all the scenarios
+
   validates :report, :presence => true
 
   # Not required for SMS
   validates :before_photo,
             :elimination_type,
+            :location_id,
             :reporter_id,
             :status,
-            :presence => true, :unless => :sms?
+            :presence => {:on => :create, :unless => :sms? }
 
-  validates :location_id, :presence => {:on => :update}
-  validates :status, :presence => {:on => :update}
+  # Updating a SMS
+  validates :before_photo,
+            :elimination_type,
+            :location_id,
+            :reporter_id,
+            :status,
+            :presence => {:on => :update, :if => :sms_incomplete? }
+
+  # Eliminating a report
+  validates :after_photo,
+            :before_photo,
+            :elimination_method,
+            :elimination_type,
+            :location_id,
+            :reporter_id,
+            :status,
+            :presence => {:on => :update, :unless => :sms_incomplete?}
+
+
 
 
   #----------------------------------------------------------------------------
@@ -263,5 +284,8 @@ class Report < ActiveRecord::Base
       self.reporter.update_attributes(points: self.reporter.points - 100)
     end
   end
+
+
+
 
 end

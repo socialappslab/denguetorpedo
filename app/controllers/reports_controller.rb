@@ -16,8 +16,9 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def index
-    @new_report          = Report.new(session[:report])
-    @new_report_location = Location.find_by_id(session[:location_id]) || Location.new
+    @new_report          = Report.new(params[:new_report])
+    @new_report_location = Location.find_by_id(params[:location]) || Location.new
+    @new_report_error    = params[:new_report].present? # :new_report only exists if error occurs
 
     # TODO: Deprecate EliminationMethods in favor for EliminationMethod.
     # TODO: This should not be an instance variable since we're only using
@@ -25,24 +26,29 @@ class ReportsController < NeighborhoodsBaseController
     @points = EliminationMethods.points
 
     # We display the reports in the following order:
-    # 1. Unfinished report in the middle of being created,
-    # 1. Logged-in user's reports,
-    # 2. All created reports (aka, the misleading column completed_at is not nil)
+    # 1. Reports that incurred an error when attempting to be eliminated
+    # 2. Incomplete SMS reports
+    # 3. All created reports (aka, the misleading column completed_at is not nil)
     @reports = []
-    @reports += [ Report.find_by_id(session[:saved_report_id]) ] if session[:saved_report_id].present?
+
+    #1.
+    if params[:report].present? &&  error_report = Report.find_by_id(params[:report])
+      # TODO : URL is messy when using params, possibly change to id when EliminationMethod implemented
+      error_report.elimination_method = params[:elimination_method]
+      @reports += [ error_report ]
+    end
+
+    #2.
     @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
 
-    # TODO: Do we actually want to display reports that have completed_at column nil?
-    # Better alternative: @reports += Report.where("completed_at is NOT NULL").where("id != ?", session[:saved_report_id]).order("completed_at DESC").to_a
-    @reports += Report.select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
+    #3.
+    @reports += Report.where("completed_at is NOT NULL").order("completed_at DESC").to_a
+
+    # Remove report that incurred an error, it should be at the top already
+    @reports.reject!{|r| r == params[:report]}
 
     # Now, let's filter the reports based on the neighborhood.
     @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
-
-    # Reset the session variables
-    session[:saved_report_id] = nil
-    session[:report]          = nil
-    session[:location_id]     = nil
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
@@ -50,6 +56,7 @@ class ReportsController < NeighborhoodsBaseController
     locations                    = []
     open_locations               = []
     eliminated_locations         = []
+
     @reports.each do |report|
       next unless (report.reporter == current_user || report.elimination_type)
 
@@ -90,6 +97,7 @@ class ReportsController < NeighborhoodsBaseController
     @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
 
     # TODO: What? How is open reports equal to eliminated reports?
+    # I think the "feed" variables where once used to filter reports based on map view. - awdorsett
     @open_feed         = @reports
     @eliminate_feed    = @reports
   end
@@ -120,7 +128,9 @@ class ReportsController < NeighborhoodsBaseController
     # If location was previously created, use that
     # TODO @awdorsett: The new refactoring will make this fail. Let's move away
     # from usage of session.
+
     saved_location = Location.find_by_id(session[:location_id])
+    location_attributes = params[:report][:location_attributes]
 
     if saved_location
       location = saved_location
@@ -134,39 +144,44 @@ class ReportsController < NeighborhoodsBaseController
       # worker to fetch the map coordinates.
 
       location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-        params[:report][:location_attributes][:street_type].downcase.titleize,
-        params[:report][:location_attributes][:street_name].downcase.titleize,
-        params[:report][:location_attributes][:street_number].downcase.titleize
+        location_attributes[:street_type].downcase.titleize,
+        location_attributes[:street_name].downcase.titleize,
+        location_attributes[:street_number].downcase.titleize
       )
 
-      location.latitude     = params[:report][:location_attributes][:latitude]
-      location.longitude    = params[:report][:location_attributes][:longitude]
+      location.latitude     = location_attributes[:latitude]
+      location.longitude    = location_attributes[:longitude]
       location.neighborhood = @neighborhood
       location.save
     end
 
     # TODO @dman7: why is status (type int) but is assigned a symbol?
+    # status and status_cd seem to be a product of the simple_enum gem
+    # https://github.com/lwe/simple_enum
     @report              = Report.new(params[:report])
     @report.status       = :reported
     @report.location_id  = location.id
     @report.completed_at = Time.now
 
+
+    # TODO seperated this from if statement in order to add all errors to flash[:alert], better way?
+    valid_address = validate_address(location_attributes,@report)
+
     # Now let's save the report.
-    if @report.save
-      session[:report], session[:location_id] = nil, nil
+    if @report.save && valid_address
       flash[:notice] = 'Foco marcado com sucesso!'
+
+      redirect_to neighborhood_reports_path(@neighborhood) and return
 
     # An error has occurred
     else
-      flash[:alert] = @report.errors.full_messages.join(" ")
+      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
 
-      # Before photo too large for session
-      session[:report]      = params[:report].except(:before_photo)
-      session[:location_id] = location.id
+      redirect_to neighborhood_reports_path(@neighborhood,
+        :params => {:new_report => params[:report].except(:before_photo), :location => location.id}) and return
 
     end
 
-    redirect_to neighborhood_reports_path(@neighborhood) and return
   end
 
   #-----------------------------------------------------------------------------
@@ -200,13 +215,9 @@ class ReportsController < NeighborhoodsBaseController
   def update
     submission_points = 50
 
-    # Update the location.
-    location_params = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
-
-    # Location should have been created when user sends SMS
     if @report.location
       location = @report.location
-      location.update_attributes(location_params)
+      location.update_attributes(params[:report][:location_attributes])
     else
       # for whatever reason if location doesn't exist create a new one
       location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
@@ -223,7 +234,9 @@ class ReportsController < NeighborhoodsBaseController
 
     @report.location_id  = location.id
 
+    # Update SMS
     if @report.sms_incomplete?
+
       # Verify report saves and form submission is valid
       if @report.update_attributes(params[:report])
         flash[:notice] = 'Foco marcado com sucesso!'
@@ -233,28 +246,35 @@ class ReportsController < NeighborhoodsBaseController
         @report.save
 
         redirect_to neighborhood_reports_path(@neighborhood) and return
+
+      # Error occurred when completing SMS report
       else
         redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return
       end
-    end  # End of report creation from SMS
+    end
 
 
-    session[:saved_report_id] = @report.id
-
-    if @report.update_attributes(params[:report]) && validate_report_elimination_submission(params, @report)
+    # Update web report
+    if @report.update_attributes(params[:report])
       @current_user.update_attribute(:points, @current_user.points + submission_points)
       @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
 
       flash[:notice] = "Você eliminou o foco!"
-      @report.update_attribute(:completed_at, Time.now)
+      #@report.update_attribute(:completed_at, Time.now)   # This shouldn't be needed.
       @report.touch(:eliminated_at)
       @report.update_attribute(:status_cd, 1)
       @report.update_attribute(:eliminator_id, @current_user.id)
       award_points @report, @current_user
 
       redirect_to neighborhood_reports_path(@neighborhood) and return
+
+    # Error occurred updating attributes
     else
-      redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return
+      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
+
+      #redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return
+      redirect_to neighborhood_reports_path(@neighborhood,
+        :params=>{:report => @report.id, :elimination_method => params[:report][:elimination_method]}) and return
     end
 
   end
@@ -434,22 +454,37 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  #
+  #def validate_report_elimination_submission(params, report)
+  #  if params[:report][:after_photo].blank?
+  #    flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado."
+  #    return false
+  #  end
+  #
+  #  # Check to see if user has selected a method of elimination
+  #  if params[:report][:elimination_method].blank?
+  #    flash[:alert] = flash[:alert].to_s + " Você tem que escolher um método de eliminação."
+  #    return false
+  #  end
+  #
+  #  return true
+  #end
 
-  def validate_report_elimination_submission(params, report)
-    if params[:report][:after_photo].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado."
-      return false
-    end
+  #----------------------------------------------------------------------------
 
-    # Check to see if user has selected a method of elimination
-    if params[:report][:elimination_method].blank?
-      flash[:alert] = flash[:alert].to_s + " Você tem que escolher um método de eliminação."
-      return false
+  def validate_address(location_params, report)
+    if (location_params[:street_name].blank? && report.location.street_name.blank?) ||
+       (location_params[:street_type].blank? && report.location.street_type.blank?) ||
+       (location_params[:street_number].blank? && report.location.street_number.blank?)
+
+        # TODO using translated version of "You must fill in an entire address."
+        flash[:alert] = flash[:alert].to_s + " Você deve preencher um endereço completo."
+
+        return false
     end
 
     return true
-  end
 
-  #----------------------------------------------------------------------------
+  end
 
 end
