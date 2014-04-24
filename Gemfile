@@ -15,7 +15,6 @@ gem 'magic_encoding'
 # Maps
 
 gem 'geokit'
-gem 'gmaps4rails'
 gem 'leaflet-rails'
 
 #------------------------------------------------------------------------------

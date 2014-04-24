@@ -1,24 +1,3 @@
-# == Schema Information
-#
-# Table name: locations
-#
-#  id                :integer          not null, primary key
-#  nation            :string(255)
-#  state             :string(255)
-#  city              :string(255)
-#  address           :string(255)
-#  latitude          :float
-#  longitude         :float
-#  gmaps             :boolean
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  formatted_address :string(255)
-#  neighborhood_id   :integer
-#  street_type       :string(255)      default("")
-#  street_name       :string(255)      default("")
-#  street_number     :string(255)      default("")
-#
-
 require 'spec_helper'
 
 describe Location do
@@ -42,4 +21,3 @@ describe Location do
     # Neighborhood.count.should == 2
   end
 end
-
