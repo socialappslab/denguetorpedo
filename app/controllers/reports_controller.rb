@@ -452,6 +452,7 @@ class ReportsController < NeighborhoodsBaseController
   # TODO @awdorsett: Some of these things, such as the :report and :before_photo could cleverly
   # become model validations (e.g. validates :report, :presence => true). If you
   # end up doing it, remember to make sure that report creation via SMS still works.
+
   def validate_report_submission params, report
     # If no report was filled out, then ask them to fill it out.
     if params[:report][:report] == ""

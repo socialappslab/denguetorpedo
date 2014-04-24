@@ -61,9 +61,21 @@ class Report < ActiveRecord::Base
   belongs_to :location
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
-  validates :reporter_id, :presence => true
-  validates :location_id, :presence => { on: :update }
-  validates :status, :presence => true, unless: :sms?
+
+  #----------------------------------------------------------------------------
+  # Validations
+  #-------------
+
+  validates :report, :presence => true
+  validates :before_photo,
+            :elimination_type,
+            :reporter_id,
+            :status,
+            :presence => true, :unless => :sms?
+
+  validates :location_id, :presence => {:on => :update}
+  validates :status, :presence => {:on => :update}
+
 
   #----------------------------------------------------------------------------
 

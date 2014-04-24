@@ -217,8 +217,44 @@ describe ReportsController do
 
 				expect(Report.last.location.latitude).to  eq(50.0)
 				expect(Report.last.location.longitude).to eq(40.0)
-			end
-		end
+      end
+
+      context "with an incomplete address" do
+        pending "it should not save" do
+
+        end
+
+        pending "it should return an error" do
+
+        end
+
+      end
+
+      context "without a description" do
+
+        pending "it should not save" do
+
+        end
+
+        pending "it should return an error" do
+
+        end
+      end
+
+      context "without a before photo" do
+
+        pending "it should not save" do
+
+        end
+
+        pending "it should return an error" do
+
+        end
+      end
+
+    end
+
+
 	end
 
 	#-----------------------------------------------------------------------------
