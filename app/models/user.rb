@@ -276,7 +276,7 @@ class User < ActiveRecord::Base
     location = Location.create
     location.update_attribute(:neighborhood_id, Neighborhood.first.id)
 
-    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood.id, :location => location)
+    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
     return report
   end
 
