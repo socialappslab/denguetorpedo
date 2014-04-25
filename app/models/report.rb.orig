@@ -23,11 +23,7 @@ class Report < ActiveRecord::Base
   belongs_to :location
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
-  belongs_to :neighborhood
-
-  validates :status, :presence => true, unless: :sms?
-  validates :reporter_id, :presence => true
-  # validates :neighborhood_id, :presence => true
+<<<<<<< HEAD
 
   #----------------------------------------------------------------------------
   # Validations
@@ -70,6 +66,13 @@ class Report < ActiveRecord::Base
 
 
 
+=======
+  belongs_to :neighborhood
+
+  validates :status, :presence => true, unless: :sms?
+  validates :reporter_id, :presence => true
+  # validates :neighborhood_id, :presence => true
+>>>>>>> 09514a927d63fb409f269c0c7e3d19d21e608488
 
   #----------------------------------------------------------------------------
 
@@ -245,5 +248,8 @@ class Report < ActiveRecord::Base
       self.reporter.update_attributes(points: self.reporter.points - 100)
     end
   end
+
+
+
 
 end

@@ -17,9 +17,9 @@ class HousesController < NeighborhoodsBaseController
     @highlightHouseItem = ""
 
     @marker = [{"lat" => @house.location.latitude, "lng" => @house.location.longitude}].to_json
-    @markers = @house.reports.map { |report| report.location && report.location.info}
-    @open_markers = @house.created_reports.map { |report| report.location && report.location.info}
-    @eliminated_markers = @house.eliminated_reports.map { |report| report.location && report.location.info}
+    @markers = @house.reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude]) }
+    @open_markers = @house.created_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
+    @eliminated_markers = @house.eliminated_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
 
     # @counts = @house.reports.group(:location_id).count
     # @open_counts = @house.created_report.group(:location_id).count

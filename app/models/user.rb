@@ -1,39 +1,4 @@
 # encoding: utf-8
-# == Schema Information
-#
-# Table name: users
-#
-#  id                         :integer          not null, primary key
-#  username                   :string(255)
-#  password_digest            :string(255)
-#  auth_token                 :string(255)
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#  email                      :string(255)
-#  password_reset_token       :string(255)
-#  password_reset_sent_at     :datetime
-#  phone_number               :string(255)
-#  points                     :integer          default(0), not null
-#  house_id                   :integer
-#  profile_photo_file_name    :string(255)
-#  profile_photo_content_type :string(255)
-#  profile_photo_file_size    :integer
-#  profile_photo_updated_at   :datetime
-#  is_verifier                :boolean          default(FALSE)
-#  is_fully_registered        :boolean          default(FALSE)
-#  is_health_agent            :boolean          default(FALSE)
-#  first_name                 :string(255)
-#  middle_name                :string(255)
-#  last_name                  :string(255)
-#  nickname                   :string(255)
-#  display                    :string(255)      default("firstmiddlelast")
-#  role                       :string(255)      default("morador")
-#  total_points               :integer          default(0)
-#  gender                     :boolean          default(TRUE)
-#  is_blocked                 :boolean          default(FALSE)
-#  carrier                    :string(255)      default("")
-#  prepaid                    :boolean
-#
 
 class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
@@ -271,7 +236,7 @@ class User < ActiveRecord::Base
   def sponsor?
     self.role == "lojista"
   end
-  
+
   #----------------------------------------------------------------------------
 
   def carrier_requirements
@@ -302,10 +267,16 @@ class User < ActiveRecord::Base
   def build_report_via_sms(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
-    location = Location.new_with_address(body)
-    location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    # location = Location.new_with_address(body)
+    # location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
+    #     "Rua".downcase.titleize,
+    #     "Sargento Silva Nunes".downcase.titleize,
+    #     "1012".downcase.titleize
+    # )
+    location = Location.create
+    location.update_attribute(:neighborhood_id, Neighborhood.first.id)
 
-    report = Report.new(reporter: self, sms: true, report: body, location: location)
+    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
     return report
   end
 
