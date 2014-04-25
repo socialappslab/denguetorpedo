@@ -146,11 +146,6 @@ class ReportsController < NeighborhoodsBaseController
     @report.status       = :reported
     @report.location_id  = location.id
     @report.completed_at = Time.now
-    @report                 = Report.new(params[:report])
-    @report.neighborhood_id = @neighborhood.id
-    @report.status          = :reported
-    @report.location_id     = location.id
-    @report.completed_at    = Time.now
 
 
     # TODO seperated this from if statement in order to add all errors to flash[:alert], better way?
