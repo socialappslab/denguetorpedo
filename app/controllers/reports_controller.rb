@@ -43,7 +43,6 @@ class ReportsController < NeighborhoodsBaseController
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
-    @locations            = []
     @open_locations       = []
     @eliminated_locations = []
     @reports.each do |report|
@@ -65,13 +64,10 @@ class ReportsController < NeighborhoodsBaseController
           @open_locations << report.location
         end
       end
-
-      @locations << report.location
     end
 
-    # TODO: What? How is open reports equal to eliminated reports?
-    @open_feed         = @reports
-    @eliminate_feed    = @reports
+    @open_locations.compact!
+    @eliminated_locations.compact!
   end
 
   #----------------------------------------------------------------------------
