@@ -59,7 +59,6 @@
 -# TODO @awdorsett - markers don't place correctly on click and move when zooming in
 :javascript
   // TODO @awdorsett - make initial points dynamic based on neighborhood
-  var map;
   var report_div;
 
   // used for click event to check if in new report tab
@@ -76,21 +75,49 @@
 
 
   // Load the map.
-  require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {
+  require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator",
+  "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer",
+  "esri/SpatialReference", "esri/geometry/Point", "esri/config",
+  "esri/graphic", "esri/symbols/SimpleMarkerSymbol",
+  "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol",
+  "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol",
+  "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup",
+  "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom",
+  "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator,
+  Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic,
+  SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol,
+  ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate)
+  {
+    //-------------------------------------------------------------------------
+    // Variable definitions
+    //---------------------
+    var popup             = new Popup({ highlight: false }, domConstruct.create("div"));
+    var mapMareSpatialRef = new esri.SpatialReference({wkid: 29193});
+    var customExtent      = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, mapMareSpatialRef);
 
-    var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
-
-    var popup = new Popup({
-      highlight: false
-    }, domConstruct.create("div"));
-
-    var point = new Point(680291.2151545063, 7470751.29586681, new esri.SpatialReference({wkid: 29193}));
-    map = new Map("map", {
+    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+    var point = new Point(680291.2151545063, 7470751.29586681, mapMareSpatialRef);
+    var map = new Map("map", {
       center: point,
       zoom: 4,
       extent: customExtent,
       infoWindow:popup
     });
+
+    var greyMarker   = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
+    var mixedMarker  = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
+    var orangeMarker = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
+
+    var coordinates = [];
+
+    // This top-level variable should be defined here since its existence is
+    // checked in other functions.
+    var blueGraphic;
+
+
+    //-------------------------------------------------------------------------
+    // Helpers
+    //--------
     function showLoading() {
       $("#loading").show();
       map.disableMapNavigation();
@@ -102,211 +129,209 @@
       map.enableMapNavigation();
       map.showZoomSlider();
     }
+
+    //-------------------------------------------------------------------------
+    // Create the map
+    //---------------
     map.on("update-start", showLoading);
     map.on("update-end", hideLoading);
-
-    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
     map.addLayer(tiled);
-
-    var coordinates = [];
-
-
-    var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
-    var gray = new PictureMarkerSymbol(picBaseUrl + "BlackPin1LargeB.png", 40, 40).setOffset(0, 15);
-    var blue = new PictureMarkerSymbol(picBaseUrl + "BluePin1LargeB.png", 40, 40).setOffset(0, 15);
-    var red = new PictureMarkerSymbol(picBaseUrl + "OrangePin1LargeB.png", 40, 40).setOffset(0, 15);
-
-
-    var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-    var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
-    var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
-
-
-
-    $(".mapa").click(function() {
-      var latitude = $(this).data("latitude");
-      var longitude = $(this).data("longitude");
-
-      map.centerAndZoom(new Point(latitude, longitude, new esri.SpatialReference({"wkid": 29193})), 8);
-
-      report_div = $(this).parent().parent().parent();
-
-      return false;
-    });
-
-    // if on new report tab add a marker when clicked and update values
-    map.on('click', function(e){
-      if(new_report_tab){
-        map.graphics.clear();
-
-        $("input#x").val(e.mapPoint.x);
-        $("input#y").val(e.mapPoint.y);
-
-        var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orange);
-
-        map.graphics.add(graphic);
-      }
-    });
 
     map.on("load", function() {
       map.infoWindow.resize(300, 200);
       load_markers(null);
     })
 
-    $("input#go_to_mare").click(function() {
-      map.centerAndZoom(new Point(point.x, point.y, new esri.SpatialReference({"wkid": 29193})), 4);
+    //-------------------------------------------------------------------------
+    // Listeners
+    //----------
+
+
+
+    // TODO: WTF is this?
+    // $(".mapa").click(function() {
+    //   var latitude  =  $(this).data("latitude");
+    //   var longitude = $(this).data("longitude");
+    //   var mapPoint  = new Point(latitude, longitude, mapMareSpatialRef)
+    //   map.centerAndZoom(mapPoint, 8);
+    //   report_div = $(this).parent().parent().parent();
+    //   return false;
+    // });
+
+    // TODO: Why do we want to add a marker and update values when clicked?
+    // if on new report tab add a marker when clicked and update values
+    // map.on('click', function(e){
+    //   if(new_report_tab){
+    //     map.graphics.clear();
+    //
+    //     $("input#x").val(e.mapPoint.x);
+    //     $("input#y").val(e.mapPoint.y);
+    //
+    //     var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orangeMarker);
+    //
+    //     map.graphics.add(graphic);
+    //   }
+    // });
+
+
+    $("#go_to_mare").on("click", function() {
+      var mapPoint = new Point(point.x, point.y, mapMareSpatialRef);
+      map.centerAndZoom(mapPoint, 4);
     });
 
-    map.on("extent-change", function(event) {
-      if (report_div) {
-        $("html, body").scrollTop($(report_div).offset().top - 20);
-      }
-    });
+    // TODO: These needs to change. If we're only listening when these points
+    // are updated by some other listeners, then we might as well just stash this
+    // code into those listeners.
+    $('.location_field').on('change', function(){
+      map.graphics.clear();
+      var graphic = new Graphic(new Point($("input#x").val(), $("input#y").val()), orangeMarker);
+      map.graphics.add(graphic);
+    })
 
-    var blueGraphic;
+
+
+    // TODO: WTF is this?
+    // map.on("extent-change", function(event) {
+    //   if (report_div) {
+    //     $("html, body").scrollTop($(report_div).offset().top - 20);
+    //   }
+    // });
 
     //-# TODO @awdorsett - is this function used? Can it be removed?
-    function addGraphic(evt) {
-      if (blueGraphic) {
-        map.graphics.remove(blueGraphic);
-      }
-      map.enableMapNavigation();
+    // function addGraphic(evt) {
+    //   if (blueGraphic) {
+    //     map.graphics.remove(blueGraphic);
+    //   }
+    //   map.enableMapNavigation();
+    //
+    //   // figure out which symbol to use
+    //   var symbol = new SimpleMarkerSymbol();
+    //   symbol.setStyle("STYLE_PATH");
+    //   symbol.setPath("M 10 10 L30 10 L20 30z");
+    //   symbol.setColor(new Color("blue"));
+    //
+    //   $("input#x").val(evt.geometry.x);
+    //   $("input#y").val(evt.geometry.y);
+    //
+    //   blueGraphic = new Graphic(evt.geometry, symbol);
+    //   map.graphics.add(blueGraphic);
+    //   map.centerAt(evt.mapPoint);
+    // }
 
-      // figure out which symbol to use
-      var symbol = new SimpleMarkerSymbol();
-      symbol.setStyle("STYLE_PATH");
-      symbol.setPath("M 10 10 L30 10 L20 30z");
-      symbol.setColor(new Color("blue"));
-
-      $("input#x").val(evt.geometry.x);
-      $("input#y").val(evt.geometry.y);
-
-      blueGraphic = new Graphic(evt.geometry, symbol);
-      map.graphics.add(blueGraphic);
-      map.centerAt(evt.mapPoint);
-
-    }
-
+    // Listener for sidebar address search.
     $("#address_search_form").submit(function(e) {
-      e.preventDefault();
 
       $.ajax({
         url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
         type: "GET",
         dataType: "jsonp",
         data: {"f": "pjson", "Street": $("#address_search").val()},
-        success: function(m) {
+        success: function(data) {
+          var candidates = data.candidates;
 
-          var candidates = m.candidates;
+          if (candidates.length == 0)
+            $("#map-error-description").text("O endereço não pode ser encontrado");
+          else
+          {
+            if (blueGraphic) { map.graphics.remove(blueGraphic); }
 
 
-          if (candidates.length > 0) {
-            if (blueGraphic) {
-              map.graphics.remove(blueGraphic);
-            }
+            latitude  = candidates[0].location.x
+            longitude = candidates[0].location.y
+
+            mapPoint  = new Point(latitude, longitude)
+
             var symbol = new SimpleMarkerSymbol();
             symbol.setStyle("STYLE_PATH");
             symbol.setPath("M 10 10 L30 10 L20 30z");
             symbol.setColor(new Color("blue"));
-            blueGraphic = new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), symbol);
-            map.graphics.add(blueGraphic);
-            $("input#x").val(candidates[0].location.x);
-            $("input#y").val(candidates[0].location.y);
 
-            map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 4);
+            blueGraphic = new Graphic(mapPoint, symbol);
+            map.graphics.add(blueGraphic);
+
+            var mapPoint = new Point(latitude, longitude, mapMareSpatialRef)
+            map.centerAndZoom(mapPoint, 4);
+
+            // Update the form so we can pass along the ESRI results.
+            $("#report_location_attributes_latitude").val(latitude);
+            $("#report_location_attributes_latitude").val(longitude);
           }
         },
-        error: function(m) {
-          console.log(JSON.stringify(m));
-        }
+        error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
       });
 
     });
 
     // Report tab listeners
 
-      //#- TODO @awdorsett - better way to handle new_report_tab?
+    //#- TODO @awdorsett - better way to handle new_report_tab?
 
-      $('#make_report_button').on('click', function(){
-        // clear map and enable adding a marker to map by clicking
-        map.graphics.clear();
-        new_report_tab = true;
-      });
-
-      $('#all_reports_button').on('click', function(){
-        load_markers(null);
-        new_report_tab = false;
-      })
-
-      $('#open_reports_button').on('click', function(){
-        load_markers('open');
-        new_report_tab = false;
-
-      })
-
-      $('#eliminated_reports_button').on('click', function(){
-        load_markers('eliminated');
-        new_report_tab = false;
-      })
-
-    // if any address field is changed and all address fields have a value
-    // try to update location value
-    $(".address_field").change(function() {
-
-      var all_fields_filled = true;
-
-      // loop through address fields and look check if unfilled
-      $('.address_field').each(function(){
-        if ( $(this).val() == "")
-          all_fields_filled = false;
-      })
-
-      // if all fields filled, make ajax call
-      if(all_fields_filled){
-
-        showLoading();
-        $.ajax({
-          url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-          type: "GET",
-          dataType: "jsonp",
-          data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
-          success: function(m) {
-            var candidates = m.candidates;
-
-            //#- TODO @awdorsett - in the future should we handle multiple results from api call? Currently considering first only
-            // if candidates found, update map location
-            if (candidates.length > 0) {
-              map.graphics.clear();
-
-              map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
-
-              $("input#x").val(candidates[0].location.x);
-              $("input#y").val(candidates[0].location.y);
-
-              map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
-            }
-          },
-          //#- TODO @awdorsett - is this an appropriate repsonse to error?
-          error: function(m) {
-            console.log(JSON.stringify(m));
-          },
-          complete: function() {
-            hideLoading();
-          }
-
-        });  // end of ajax call
-      }; // end of if statement
-
-    }); // end of function
-
-
-    $('.location_field').on('change', function(){
+    $('#make_report_button').on('click', function(){
+      // clear map and enable adding a marker to map by clicking
       map.graphics.clear();
+      new_report_tab = true;
+    });
 
-      var graphic = new Graphic(new Point($("input#x").val(), $("input#y").val()), orange);
-
-      map.graphics.add(graphic);
+    $('#all_reports_button').on('click', function(){
+      load_markers(null);
+      new_report_tab = false;
     })
+
+    $('#open_reports_button').on('click', function(){
+      load_markers('open');
+      new_report_tab = false;
+
+    })
+
+    $('#eliminated_reports_button').on('click', function(){
+      load_markers('eliminated');
+      new_report_tab = false;
+    })
+
+    //-------------------------------------------------------------------------
+    // Listener for location attribute updates
+    //----------------------------------------
+    $("#report_location_attributes_street_number").on("change", function()
+    {
+      showLoading();
+
+      var streetType   = $("#street_type").val();
+      var streetName   = $("#street_name").val();
+      var streetNumber = $("#street_number").val()
+
+      $.ajax({
+        url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+        type: "GET",
+        dataType: "jsonp",
+        data: {
+          "f": "pjson",
+          "Street": streetType + " " + streetName + " " + streetNumber
+        },
+        success: function(m) {
+          var candidates = m.candidates;
+
+
+          if (candidates.length == 0)
+            $("#map-error-description").text("O endereço não pode ser encontrado");
+          else
+          {
+            map.graphics.clear();
+            var mapGraphic = new Graphic(mapPoint, orangeMarker);
+            map.graphics.add(mapGraphic);
+
+            var mapPoint = new Point(latitude, longitude, mapMareSpatialRef)
+            map.centerAndZoom(mapPoint, 4);
+
+            // Update the form so we can pass along the ESRI results.
+            $("#report_location_attributes_latitude").val(latitude);
+            $("#report_location_attributes_latitude").val(longitude);
+          }
+        },
+        error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
+        complete: function() { hideLoading(); }
+      });
+    });
+
 
 
     //#- TODO @awdorsett - fix filter selection, bad to have to pass something if it's not going to be used
@@ -328,7 +353,7 @@
             template.content = "<p>Eliminados: " + count + "</p>";
             textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
 
-            var graphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), grey);
+            var graphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), greyMarker);
             var textGraphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), textSymbol);
             graphic.setInfoTemplate(template);
             textGraphic.setInfoTemplate(template);
@@ -353,7 +378,7 @@
             template.content = "<p>Em aberto: " + count + "</p>";
             textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
 
-            var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orange);
+            var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orangeMarker);
             var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
             graphic.setInfoTemplate(template);
             textGraphic.setInfoTemplate(template);
@@ -398,15 +423,15 @@
             }
 
             if (open_count && eliminated_count) {
-              graphic = new Graphic(new Point(x, y), mixed);
+              graphic = new Graphic(new Point(x, y), mixedMarker);
               template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
             }
             else if (open_count > 0) {
-              graphic = new Graphic(new Point(x, y), orange);
+              graphic = new Graphic(new Point(x, y), orangeMarker);
               template.content = "<p>Em aberto: " + open_count + "</p>";
             }
             else if (eliminated_count > 0) {
-              graphic = new Graphic(new Point(x, y), grey);
+              graphic = new Graphic(new Point(x, y), greyMarker);
               template.content = "<p>Eliminados: " + eliminated_count + "</p>";
             }
 
