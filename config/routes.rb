@@ -119,6 +119,10 @@ Dengue::Application.routes.draw do
   resources :password_resets, :only => [:new, :create, :edit, :update]
 
   #----------------------------------------------------------------------------
+  # Documentation Sections
+  resources :documentation_sections, :only => [:edit, :update]
+
+  #----------------------------------------------------------------------------
   # Prize Codes
 
   resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"

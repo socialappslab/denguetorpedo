@@ -1,0 +1,17 @@
+.row
+  .span12.offset1
+    = render :partial => "shared/flashes"
+    = render :partial => "shared/form_errors", :locals => {:item => @section}
+    %h1 Completar o foco
+    = form_for @section do |f|
+      = f.label :title
+      = f.text_field :title
+      = f.label :content
+      = f.text_area :content
+      = f.submit "Enviar!"
+
+    %p
+      - if @section.editor.present?
+        = "Note: Last edited #{time_ago_in_words(@section.updated_at)} ago by #{@section.editor.full_name}"
+      - else
+        = "Note: No one has edited this section before"
