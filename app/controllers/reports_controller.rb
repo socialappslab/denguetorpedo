@@ -89,19 +89,6 @@ class ReportsController < NeighborhoodsBaseController
 
   #-----------------------------------------------------------------------------
   # POST /neighborhoods/1/reports
-  #  {"utf8"=>"✓",
-  # "authenticity_token"=>"94xRwimaBHn1i38ncPFUUODc8OaMuy1A00Qy7qtT36E=",
-  # "error"=>"false",
-  # "report_id"=>"",
-  # "report"=>{"location_attributes"=>{"street_type"=>"Rua",
-  # "street_name"=>"Tatajuba",
-  # "street_number"=>"50",
-  # "latitude"=>"",
-  # "longitude"=>""},
-  # "report"=>"",
-  # "elimination_type"=>""},
-  # "commit"=>"Enviar!",
-  # "neighborhood_id"=>"7"}
 
   def create
     # If location was previously created, use that
