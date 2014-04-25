@@ -126,7 +126,6 @@ function selected_tab_css_update(id){
         if (tab_id == id)
             $("#" + tab_id).addClass('active');
         else {
-            console.log("tab_id",tab_id,"id",id);
             $("#" + tab_id).removeClass('active');
         }
     })
