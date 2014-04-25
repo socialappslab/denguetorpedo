@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140424191607) do
+ActiveRecord::Schema.define(:version => 20140425204643) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -186,7 +186,6 @@ ActiveRecord::Schema.define(:version => 20140424191607) do
     t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
-    t.integer  "status"
     t.integer  "eliminator_id"
     t.integer  "location_id"
     t.string   "before_photo_file_name"
@@ -215,6 +214,7 @@ ActiveRecord::Schema.define(:version => 20140424191607) do
     t.boolean  "is_credited"
     t.integer  "feed_type_cd"
     t.integer  "neighborhood_id"
+    t.string   "status"
   end
 
   create_table "users", :force => true do |t|

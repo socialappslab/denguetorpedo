@@ -114,9 +114,9 @@
             - for item in @combined_sorted
               - if item.is_a? Post
                 = render :partial => 'users/show_post', :object => item, :locals => {:full => true}
-              - elsif item.status == :reported
+              - elsif item.status == Report::STATUS[:reported]
                 = render :partial => "reports/open.html.haml", :object => item, as: 'report'
-              - elsif item.status == :eliminated
+              - elsif item.status == Report::STATUS[:eliminated]
                 = render :partial => "reports/resolved.html.haml", :object => item, as: 'report'
 
   .span4{ :style => "position:absolute; right:30px; top:160px;float:right;"}

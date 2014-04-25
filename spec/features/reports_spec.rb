@@ -113,7 +113,7 @@ describe "Reports", :type => :feature do
   context "Eliminating a Report" do
     let!(:report) { FactoryGirl.create(:report,
       :location_id => location.id,
-      :status => :reported,
+      :status => Report::STATUS[:reported],
       :completed_at => Time.now,
       :reporter_id => user.id,
       :elimination_type => elimination_type.name,

@@ -4,8 +4,8 @@
 			No reports in this area.
 	- else
 		- for report in @reports
-			- if report.status == :reported
+			- if report.status == Report::STATUS[:reported]
 				- if report.reporter == @current_user or report.elimination_type
 					= render :partial => "reports/open.html.haml", :object => report
-			- if report.status == :eliminated
+			- if report.status == Report::STATUS[:eliminated]
 				= render :partial => "reports/resolved.html.haml", :object => report

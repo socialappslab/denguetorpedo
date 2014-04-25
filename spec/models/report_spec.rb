@@ -18,9 +18,9 @@ describe Report do
   		@identified2 = FactoryGirl.create(:report, :elimination_type => "Type")
   		@identified3 = FactoryGirl.create(:report, :elimination_type => "Type")
 
-  		@eliminated1 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
-  		@eliminated2 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
-  		@eliminated3 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
+  		@eliminated1 = FactoryGirl.create(:report, :elimination_method => "Method", :status => Report::STATUS[:eliminated], :eliminator => user)
+  		@eliminated2 = FactoryGirl.create(:report, :elimination_method => "Method", :status => Report::STATUS[:eliminated], :eliminator => user)
+  		@eliminated3 = FactoryGirl.create(:report, :elimination_method => "Method", :status => Report::STATUS[:eliminated], :eliminator => user)
   	end
 		
   	context "identified reports" do

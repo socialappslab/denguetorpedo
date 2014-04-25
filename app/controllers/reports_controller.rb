@@ -59,12 +59,12 @@ class ReportsController < NeighborhoodsBaseController
 
       # TODO: Why the !!! are we using two types of columns to encode
       # the same information (open versus eliminated). Get rid of one or the other.
-      if report.status == :reported
+      if report.status == 'reported'
         @open_locations << report.location
-      elsif report.status == :eliminated
+      elsif report.status == Report::STATUS[:eliminated]
         @eliminated_locations << report.location
       else
-        if report.status_cd == 1
+        if report.status == Report::STATUS[:eliminated]
           @eliminated_locations << report.location
         else
           @open_locations << report.location
@@ -120,7 +120,7 @@ class ReportsController < NeighborhoodsBaseController
     # status and status_cd seem to be a product of the simple_enum gem
     # https://github.com/lwe/simple_enum
     @report              = Report.new(params[:report])
-    @report.status       = :reported
+    @report.status       = Report::STATUS[:reported]
     @report.location_id  = location.id
     @report.completed_at = Time.now
 
@@ -190,7 +190,7 @@ class ReportsController < NeighborhoodsBaseController
       if @report.update_attributes(params[:report])
         flash[:notice] = 'Foco marcado com sucesso!'
 
-        @report.status          = :reported   # TODO can't mass assign, is that by design?
+        @report.status          = Report::STATUS[:reported]
         @report.neighborhood_id = @neighborhood.id
         @report.completed_at    = Time.now
         @report.save
@@ -212,7 +212,7 @@ class ReportsController < NeighborhoodsBaseController
       flash[:notice] = "Você eliminou o foco!"
       #@report.update_attribute(:completed_at, Time.now)   # This shouldn't be needed.
       @report.touch(:eliminated_at)
-      @report.update_attribute(:status_cd, 1)
+      @report.update_attribute(:status, Report::STATUS[:eliminated])
       @report.update_attribute(:neighborhood_id, @neighborhood.id)
       @report.update_attribute(:eliminator_id, @current_user.id)
       award_points @report, @current_user
@@ -244,12 +244,12 @@ class ReportsController < NeighborhoodsBaseController
   def verify
     @report = Report.find(params[:id])
 
-    if @report.status_cd == 1
+    if @report.status == Report::STATUS[:eliminated]
       @report.is_resolved_verified = true
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
 
-    elsif @report.status_cd == 0
+    elsif @report.status == Report::STATUS[:reported]
       @report.isVerified = true
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now
@@ -272,13 +272,13 @@ class ReportsController < NeighborhoodsBaseController
   def problem
     @report = Report.find(params[:id])
 
-    if @report.status_cd == 1
+    if @report.status == Report::STATUS[:eliminated]
       @report.is_resolved_verified = false
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
       @report.resolved_verifier.points -= 100
       @report.resolved_verifier.save
-    elsif @report.status_cd == 0
+    elsif @report.status == Report::STATUS[:reported]
       @report.isVerified = false
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now

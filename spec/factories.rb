@@ -79,7 +79,7 @@ FactoryGirl.define do
 	end
 
 	factory :report do
-		status_cd 0
+		status Report::STATUS[:reported]
 		association :reporter, :factory => :user
 	end
 end

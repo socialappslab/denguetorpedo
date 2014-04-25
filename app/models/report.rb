@@ -7,6 +7,9 @@ class Report < ActiveRecord::Base
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
+  STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
+
+  #----------------------------------------------------------------------------
   # PaperClip configurations
   #-------------------------
 
@@ -36,6 +39,8 @@ class Report < ActiveRecord::Base
 
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
 
+  validates :status, :inclusion => {:in => STATUS.values}
+
   # SMS creation
   validates :location,
             :neighborhood_id,
@@ -44,7 +49,8 @@ class Report < ActiveRecord::Base
             :sms,
             :presence => true, :if => :sms?
 
-  # Not required for SMS
+
+  # Web report creation
   validates :before_photo,
             :elimination_type,
             :location_id,
@@ -52,6 +58,7 @@ class Report < ActiveRecord::Base
             :reporter_id,
             :status,
             :presence => {:on => :create, :unless => :sms? }
+
 
   # Updating a SMS
   validates :before_photo,
@@ -79,7 +86,7 @@ class Report < ActiveRecord::Base
 
   accepts_nested_attributes_for :location
 
-  as_enum :status, [:reported, :eliminated, :sms_reported]
+  #as_enum :status, [:reported, :eliminated, :sms_reported]
 
   scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
@@ -129,8 +136,8 @@ class Report < ActiveRecord::Base
 
   # callback to create the feeds
   after_save do |report|
-    Feed.create_from_object(report, report.reporter_id, :reported) if report.reporter_id_changed?
-    Feed.create_from_object(report, report.eliminator_id, :eliminated) if report.eliminator_id_changed?
+    Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
+    Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
   end
 
   #----------------------------------------------------------------------------
@@ -148,11 +155,11 @@ class Report < ActiveRecord::Base
   end
 
   def self.identified_reports
-    where(:status_cd => Report.reported)
+    where(:status => STATUS[:reported])
   end
 
   def self.eliminated_reports
-    where(:status_cd => Report.eliminated)
+    where(:status => STATUS[:eliminated])
   end
 
   #----------------------------------------------------------------------------
@@ -233,8 +240,8 @@ class Report < ActiveRecord::Base
   end
 
   def self.invalidateExpired
-    Report.where("created_at < ?", (Time.now - 3.days)).where(:status_cd => 0).each do |report|
-      report.status_cd =1
+    Report.where("created_at < ?", (Time.now - 3.days)).where(:status => STATUS[:reported]).each do |report|
+      report.status = STATUS[:eliminated]
       report.report = "This report has expired, it was not resolved within three days"
       report.save!
     end
