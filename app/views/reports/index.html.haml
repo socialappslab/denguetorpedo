@@ -130,6 +130,28 @@
       map.showZoomSlider();
     }
 
+    var updateMapWithLocations = function(locationsArray)
+    {
+      map.graphics.clear();
+      for (var i = 0; i < locationsArray.length; i++) {
+        loc = eliminated_markers[i];
+
+        console.log("iterating over eliminatedLoc: ")
+        console.log(loc)
+        addLocationToMap(loc, map);
+      }
+    };
+
+    var addLocationToMap = function(loc, map)
+    {
+      if (loc && loc.latitude > 0 && loc.longitude > 0)
+      {
+        var mapPoint   = new Point(loc.latitude, loc.longitude);
+        var mapGraphic = new Graphic(mapPoint, mixedMarker);
+        map.graphics.add(mapGraphic);
+      }
+    };
+
     //-------------------------------------------------------------------------
     // Create the map
     //---------------
@@ -139,41 +161,12 @@
 
     map.on("load", function() {
       map.infoWindow.resize(300, 200);
-      load_markers(null);
+      updateMapWithLocations(markers);
     })
 
     //-------------------------------------------------------------------------
     // Listeners
     //----------
-
-
-
-    // TODO: WTF is this?
-    // $(".mapa").click(function() {
-    //   var latitude  =  $(this).data("latitude");
-    //   var longitude = $(this).data("longitude");
-    //   var mapPoint  = new Point(latitude, longitude, mapMareSpatialRef)
-    //   map.centerAndZoom(mapPoint, 8);
-    //   report_div = $(this).parent().parent().parent();
-    //   return false;
-    // });
-
-    // TODO: Why do we want to add a marker and update values when clicked?
-    // if on new report tab add a marker when clicked and update values
-    // map.on('click', function(e){
-    //   if(new_report_tab){
-    //     map.graphics.clear();
-    //
-    //     $("input#x").val(e.mapPoint.x);
-    //     $("input#y").val(e.mapPoint.y);
-    //
-    //     var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orangeMarker);
-    //
-    //     map.graphics.add(graphic);
-    //   }
-    // });
-
-
     $("#go_to_mare").on("click", function() {
       var mapPoint = new Point(point.x, point.y, mapMareSpatialRef);
       map.centerAndZoom(mapPoint, 4);
@@ -188,39 +181,8 @@
       map.graphics.add(graphic);
     })
 
-
-
-    // TODO: WTF is this?
-    // map.on("extent-change", function(event) {
-    //   if (report_div) {
-    //     $("html, body").scrollTop($(report_div).offset().top - 20);
-    //   }
-    // });
-
-    //-# TODO @awdorsett - is this function used? Can it be removed?
-    // function addGraphic(evt) {
-    //   if (blueGraphic) {
-    //     map.graphics.remove(blueGraphic);
-    //   }
-    //   map.enableMapNavigation();
-    //
-    //   // figure out which symbol to use
-    //   var symbol = new SimpleMarkerSymbol();
-    //   symbol.setStyle("STYLE_PATH");
-    //   symbol.setPath("M 10 10 L30 10 L20 30z");
-    //   symbol.setColor(new Color("blue"));
-    //
-    //   $("input#x").val(evt.geometry.x);
-    //   $("input#y").val(evt.geometry.y);
-    //
-    //   blueGraphic = new Graphic(evt.geometry, symbol);
-    //   map.graphics.add(blueGraphic);
-    //   map.centerAt(evt.mapPoint);
-    // }
-
     // Listener for sidebar address search.
     $("#address_search_form").submit(function(e) {
-
       $.ajax({
         url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
         type: "GET",
@@ -259,7 +221,6 @@
         },
         error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
       });
-
     });
 
     // Report tab listeners
@@ -273,24 +234,22 @@
     });
 
     $('#all_reports_button').on('click', function(){
-      load_markers(null);
+      updateMapWithLocations(markers)
       new_report_tab = false;
     })
 
     $('#open_reports_button').on('click', function(){
-      load_markers('open');
+      updateMapWithLocations(open_markers)
       new_report_tab = false;
-
     })
 
     $('#eliminated_reports_button').on('click', function(){
-      load_markers('eliminated');
+      updateMapWithLocations(eliminated_markers)
       new_report_tab = false;
     })
 
-    //-------------------------------------------------------------------------
+
     // Listener for location attribute updates
-    //----------------------------------------
     $("#report_location_attributes_street_number").on("change", function()
     {
       showLoading();
@@ -333,124 +292,58 @@
     });
 
 
+    // TODO: WTF is this?
+    // $(".mapa").click(function() {
+    //   var latitude  =  $(this).data("latitude");
+    //   var longitude = $(this).data("longitude");
+    //   var mapPoint  = new Point(latitude, longitude, mapMareSpatialRef)
+    //   map.centerAndZoom(mapPoint, 8);
+    //   report_div = $(this).parent().parent().parent();
+    //   return false;
+    // });
 
-    //#- TODO @awdorsett - fix filter selection, bad to have to pass something if it's not going to be used
+    // TODO: Why do we want to add a marker and update values when clicked?
+    // if on new report tab add a marker when clicked and update values
+    // map.on('click', function(e){
+    //   if(new_report_tab){
+    //     map.graphics.clear();
+    //
+    //     $("input#x").val(e.mapPoint.x);
+    //     $("input#y").val(e.mapPoint.y);
+    //
+    //     var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orangeMarker);
+    //
+    //     map.graphics.add(graphic);
+    //   }
+    // });
 
-    // load markers based on passed filters (e.g. 'eliminated', 'open', etc), loads all markers by default
-    function load_markers(filter){
-      // clear any existing markers
-      map.graphics.clear();
-      var addresses = [];
+    // TODO: WTF is this?
+    // map.on("extent-change", function(event) {
+    //   if (report_div) {
+    //     $("html, body").scrollTop($(report_div).offset().top - 20);
+    //   }
+    // });
 
-      if (filter === 'eliminated'){
-        for (var i = 0; i < eliminated_markers.length; i++) {
-          if ($.inArray(eliminated_markers[i].address, addresses) == -1) {
-
-            var template = new InfoTemplate();
-            template.setTitle(eliminated_markers[i].address);
-
-            count = eliminated_counts[eliminated_markers[i].id];
-            template.content = "<p>Eliminados: " + count + "</p>";
-            textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-
-            var graphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), greyMarker);
-            var textGraphic = new Graphic(new Point(eliminated_markers[i].x, eliminated_markers[i].y), textSymbol);
-            graphic.setInfoTemplate(template);
-            textGraphic.setInfoTemplate(template);
-
-            map.graphics.add(graphic);
-            map.graphics.add(textGraphic);
-          }
-        }
-      }
-
-      else if (filter === 'open') {
-        for (var i = 0; i < open_markers.length; i++) {
-
-          if ($.inArray(open_markers[i].address, addresses) == -1) {
-
-            addresses.push(open_markers[i].address);
-
-            var template = new InfoTemplate();
-            template.setTitle(open_markers[i].address);
-
-            count = open_counts[open_markers[i].id];
-            template.content = "<p>Em aberto: " + count + "</p>";
-            textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-
-            var graphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), orangeMarker);
-            var textGraphic = new Graphic(new Point(open_markers[i].x, open_markers[i].y), textSymbol);
-            graphic.setInfoTemplate(template);
-            textGraphic.setInfoTemplate(template);
-
-            map.graphics.add(graphic);
-            map.graphics.add(textGraphic);
-          }
-
-        }
-      }
-      // show all by default
-      else{
-        for (var i = 0; i < markers.length; i++){
-
-          count = counts[markers[i].id];
-          open_count = open_counts[markers[i].id];
-          eliminated_count = eliminated_counts[markers[i].id];
-
-          var graphic;
-          var textGraphic;
-          var template = new InfoTemplate();
-          template.setTitle(markers[i].address);
-          template.content = "<p>Em aberto: </p><br><p>Eliminados: </p>";
-
-
-          if ($.inArray(markers[i].address, addresses) == -1) {
-
-            addresses.push(markers[i].address);
-
-            var x;
-            var y;
-
-            if ($.inArray(JSON.stringify({"x": markers[i].x, "y": markers[i].y}), coordinates) == -1) {
-
-              coordinates.push(JSON.stringify({"x": markers[i].x, "y": markers[i].y}));
-              x = markers[i].x;
-              y = markers[i].y;
-            }
-            else {
-              x = markers[i].x + Math.cos(Math.random()) * 20;
-              y = markers[i].y + Math.sin(Math.random()) * 20;
-            }
-
-            if (open_count && eliminated_count) {
-              graphic = new Graphic(new Point(x, y), mixedMarker);
-              template.content = "<p>Em aberto: " + open_count + "</p><br><p>Eliminados: " + eliminated_count + "</p>";
-            }
-            else if (open_count > 0) {
-              graphic = new Graphic(new Point(x, y), orangeMarker);
-              template.content = "<p>Em aberto: " + open_count + "</p>";
-            }
-            else if (eliminated_count > 0) {
-              graphic = new Graphic(new Point(x, y), greyMarker);
-              template.content = "<p>Eliminados: " + eliminated_count + "</p>";
-            }
-
-            graphic.setInfoTemplate(template);
-
-            textSymbol = new TextSymbol(count).setColor("#000000").setOffset(-11, 8);
-            textGraphic = new Graphic(new Point(x, y), textSymbol);
-            textGraphic.setInfoTemplate(template);
-
-            map.graphics.add(graphic);
-            map.graphics.add(textGraphic);
-          }
-
-        }
-      }
-
-    }// end of function load_markers
-
-
+    //-# TODO @awdorsett - is this function used? Can it be removed?
+    // function addGraphic(evt) {
+    //   if (blueGraphic) {
+    //     map.graphics.remove(blueGraphic);
+    //   }
+    //   map.enableMapNavigation();
+    //
+    //   // figure out which symbol to use
+    //   var symbol = new SimpleMarkerSymbol();
+    //   symbol.setStyle("STYLE_PATH");
+    //   symbol.setPath("M 10 10 L30 10 L20 30z");
+    //   symbol.setColor(new Color("blue"));
+    //
+    //   $("input#x").val(evt.geometry.x);
+    //   $("input#y").val(evt.geometry.y);
+    //
+    //   blueGraphic = new Graphic(evt.geometry, symbol);
+    //   map.graphics.add(blueGraphic);
+    //   map.centerAt(evt.mapPoint);
+    // }
   });
 
 .row{style: "height:600px;"}

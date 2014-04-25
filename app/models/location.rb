@@ -93,7 +93,8 @@ class Location < ActiveRecord::Base
   end
 
   def info
-    {x: self.latitude, y: self.longitude, id: self.id, address: self.complete_address }
+    return {"latitude" => self.latitude, "longitude" => self.longitude, "address" => self.complete_address}
+    # {x: self.latitude, y: self.longitude, id: self.id, address: self.complete_address }
   end
 
   def needs_location?
