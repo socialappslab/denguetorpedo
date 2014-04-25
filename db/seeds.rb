@@ -385,17 +385,24 @@ if ds.nil?
 
    Para saber quantos pontos você ganha eliminando diferentes tipos de foco, consulte a lista abaixo:
 
-  | Tipo de Foco | Método de Eliminação | Pontos |
-  ------------------------------------------------
-  | Pratinho de planta | Elimine fazendo furos no pratinho | 200 |
-  | Pratinho de planta | Prato removido (ou seja, não mais utilizado) | 200 |
-  | Pratinho de planta | Coloque areia | 100 |
-  | Pratinho de planta | Retire a água e esfregue para remover possíveis ovos (uma vez por semana). | 50 |
-  ------------------------------------------------
-  | Pneu | Desfaça-se do pneu (entregue ao serviço de limpeza) | 50 |
-  | Pneu | Arranje um uso alternativo para o pneu: preencha com terra e faça uma horta; preencha com areia, terra e cimento e utilize como degrau. | 450 |
-  | Pneu | Transferir o pneu sem água para um local coberto e seco. | 100 |
-  | Pneu | Cubra o pneu com algo que não se transforme em um foco potencial do mosquito. | 100 |
+  | Tipo de Foco         | Método de Eliminação                               | Pontos |
+  --------------------------------------------------------------------------------------
+  |                          | Elimine fazendo furos no pratinho                | 200     |
+  | Pratinho de planta | Prato removido (ou seja, não mais utilizado) | 200     |
+  |                          | Coloque areia | 100 |
+  |                          | Retire a água e esfregue para remover
+                                possíveis ovos (uma vez por semana).          | 50      |
+  --------------------------------------------------------------------------------------
+  | Pneu                  | Desfaça-se do pneu
+                               (entregue ao serviço de limpeza)                   | 50     |
+  | Pneu                   | Arranje um uso alternativo para o pneu:
+                                preencha com terra e faça uma horta;
+                                preencha com areia, terra e cimento e utilize
+                                como degrau.                                             | 450   |
+  | Pneu                   | Transferir o pneu sem água para um local
+                                coberto e seco.                                           | 100   |
+  | Pneu                   | Cubra o pneu com algo que não se transforme
+                                em um foco potencial do mosquito.                | 100   |
   ------------------------------------------------
   | Lixo (recipientes inutilizados) | Jogá-los em uma lixeira bem tampada. | 0 |
   | Lixo (recipientes inutilizados) | Organize um mutirão de limpeza na vizinhança (coordenado pelos Agentes de Vigilância Sanitária) OBS: em locais onde não há atuação dos garis comunitários. | 450 |
@@ -508,6 +515,7 @@ if ds.nil?
 
 
    Mais detalhes do sistema de troca de pontos por prêmios podem ser esclarecidos na seção 'Perguntas frequentes'.
+
 
   "
   ds.save!
