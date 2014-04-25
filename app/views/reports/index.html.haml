@@ -65,14 +65,9 @@
   var new_report_tab = false;
 
   // Declare different reports and their counts.
-  //var markers            = #{@locations.to_json(:only => [:id, :latitude, :longitude], :methods => [:complete_address])}
-  var markers            = #{@markers.to_json};
-  var open_markers       = #{@open_markers.to_json};
-  var eliminated_markers = #{@eliminated_markers.to_json};
-  var counts             = #{@counts.to_json};
-  var open_counts        = #{@open_counts.to_json};
-  var eliminated_counts  = #{@eliminated_counts.to_json};
-
+  var markers            = #{@locations.to_json(:only => [:latitude, :longitude])}
+  var open_markers       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
+  var eliminated_markers = #{@eliminated_locations.to_json(:only => [:latitude, :longitude])}
 
   // Load the map.
   require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator",
