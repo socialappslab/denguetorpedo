@@ -94,20 +94,28 @@ function display_new_report(e){
     selected_tab_css_update(e.target.id);
 
     if($('#new_report').css('display') == 'none'){
+      // clear existing form
+      //$('#new_report_form form').trigger('reset');
 
-        // clear existing form
-        $('#new_report_form form').trigger('reset');
+      // hide all reports
+      $('.report').each(function(){
+          $(this).css('display','none');
+      });
 
-        // hide all reports
-        $('.report').each(function(){
-            $(this).css('display','none');
-        });
-
-        // display new report div
-        $('#new_report').css('display','block');
+      // display new report div
+      $('#new_report').css('display','block');
     }
 
 }
+
+function showMapLoading() {
+  $("#loading").show();
+}
+
+function hideMapLoading() {
+  $("#loading").hide();
+}
+
 
 // pass the id of tab to change the css so that it appears as selected
 // e.g. larger size, different color, etc
@@ -126,46 +134,49 @@ function selected_tab_css_update(id){
 // TODO @awdorsett - refactor to reuse update location
 // TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
 // temporary to be used with "Marcar no mapa" button on new report form
-function update_location_coordinates_new_report(e){
-    e.preventDefault();
-
-    if( $('#latitude').val() == '' || $('#longitude').val() == ''){
-        $('#new_report input[name=commit]').attr('disabled',true);
-        var data = {"f": "pjson",
-                    "Street": $('#street_type').val() +
-                        " " + $('#street_name').val() +
-                        " " + $('#street_number').val()
-                    }
-        $.ajax({
-            url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-            type: "GET",
-            timeout: 5000, // milliseconds
-            dataType: "jsonp",
-            data: data,
-            success: function(m) {
-                var candidates = m.candidates;
-
-                //possible location found, update form values
-                if (candidates.length > 0) {
-                    $('#latitude').val(candidates[0].location.x);
-                    $('#longitude').val(candidates[0].location.y);
-                }
-
-            },
-            error: function(m) {
-                //ajax call unsuccessful, server may be down
-                // TODO @awdorsett how to handle map failure for macar no mapa
-            }
-        });
-        $('#new_report input[name=commit]').attr('disabled',false);
-
-    }
-    else{
-        // x and y have values, trigger dropping the marker
-        $('.location_field').trigger('change');
-    }
-
-}
+// function update_location_coordinates_new_report(){
+//   showMapLoading();
+//
+//   var streetType   = $("#report_location_attributes_street_type").val();
+//   var streetName   = $("#report_location_attributes_street_name").val();
+//   var streetNumber = $("#report_location_attributes_street_number").val()
+//
+//   $.ajax({
+//     url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+//     type: "GET",
+//     timeout: 5000, // milliseconds
+//     dataType: "jsonp",
+//     data: {
+//       "f": "pjson",
+//       "Street": streetType + " " + streetName + " " + streetNumber
+//     },
+//     success: function(m) {
+//       var candidates = m.candidates;
+//
+//       //possible location found, update form values
+//       if (candidates.length == 0)
+//         $("#map-error-description").text("O endereço não pode ser encontrado");
+//       else
+//       {
+//         latitude     = candidates[0].location.x
+//         longitude    = candidates[0].location.y
+//
+//         console.log(latitude)
+//         console.log(longitude)
+//
+//         $("#report_location_attributes_latitude").val(latitude);
+//         $("#report_location_attributes_longitude").val(longitude);
+//         $("#map-error-description").text("");
+//       }
+//     },
+//     error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
+//     complete: function() { hideMapLoading(); }
+//   });
+//
+//   // We're forcing a change event here so that we can invoke a listener
+//   // that will then render the map and map marker.
+//   $('.location_field').trigger('change');
+// }
 
 //@params location - json of location object for report
 //@params event - click event for form submission

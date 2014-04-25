@@ -47,8 +47,8 @@
         %h4= report.complete_address
 
     .span2
-      - if report.location && report.location.latitude && report.location.longitude
-        = link_to "Ache no mapa", "#", id: "mapa_#{report.id}", class: "mapa", data: { latitude: "#{report.location.latitude}", longitude: "#{report.location.longitude}"}
+      - if report.location && report.location.latitude.present? && report.location.longitude.present?
+        = link_to "Ache no mapa", nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
 
   .row{style: "margin-top:7px;"}
 
@@ -61,18 +61,10 @@
       %h3.report_label Descrição da localização:
       .description #{report.report}
 
-      -# TODO @awdorsett - need to figure out the process of handling SMS
-      -#- else
-      -#  - if !report.sms_incomplete?
-      -#    = text_area_tag("report_description", report.report, style: "width:430px;")
-
       -# TODO @awdorsett - when will current_user be nil?
       - if @current_user != nil
         .row
           .span7
-
-
-
             -#form to enter in elimination method and after photo
             .eliminate_prompt{:style => "margin-top:5px;"}
               = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|

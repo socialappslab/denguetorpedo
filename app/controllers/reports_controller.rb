@@ -43,16 +43,11 @@ class ReportsController < NeighborhoodsBaseController
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
-    reports_with_status_filtered = []
-    locations                    = []
-    open_locations               = []
-    eliminated_locations         = []
+    @locations            = []
+    @open_locations       = []
+    @eliminated_locations = []
     @reports.each do |report|
       next unless (report.reporter == current_user || report.elimination_type)
-
-      # Add report to list of filtered status reports.
-      # TODO: Do we really need to do this.
-      reports_with_status_filtered << report
 
       # In the case that the location is missing, then let's skip it.
       next if report.location.nil?
@@ -60,31 +55,19 @@ class ReportsController < NeighborhoodsBaseController
       # TODO: Why the !!! are we using two types of columns to encode
       # the same information (open versus eliminated). Get rid of one or the other.
       if report.status == :reported
-        open_locations << report.location
+        @open_locations << report.location
       elsif report.status == :eliminated
-        eliminated_locations << report.location
+        @eliminated_locations << report.location
       else
         if report.status_cd == 1
-          eliminated_locations << report.location
+          @eliminated_locations << report.location
         else
-          open_locations << report.location
+          @open_locations << report.location
         end
       end
 
-      locations << report.location
+      @locations << report.location
     end
-
-    # Generate markers from the different types of locations.
-    @markers            = locations.map            { |location| location.info}
-    @open_markers       = open_locations.map       { |location| location.info}
-    @eliminated_markers = eliminated_locations.map { |location| location.info}
-
-    # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
-    #@reports = reports_with_status_filtered
-    # TODO: These counts should be tied to the SQL query we're running to fetch the reports (see above)
-    @counts            = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
-    @open_counts       = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
-    @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
 
     # TODO: What? How is open reports equal to eliminated reports?
     @open_feed         = @reports
