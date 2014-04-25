@@ -38,7 +38,6 @@
   .row
     #report_display.span9.offset1
       -# TODO @awdorsett - all reports sorted by most recent?
-
       -# all reports
       #reports
         - @reports.each do |report|
@@ -54,18 +53,8 @@
     = render :partial => "reports/map"
 
 
-
--# Javascript for map
--# TODO @awdorsett - markers don't place correctly on click and move when zooming in
 :javascript
-  // TODO @awdorsett - make initial points dynamic based on neighborhood
-  var report_div;
-
-  // used for click event to check if in new report tab
-  var new_report_tab = false;
-
   // Declare different reports and their counts.
-  var markers            = #{@locations.to_json(:only => [:latitude, :longitude])}
   var open_markers       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
   var eliminated_markers = #{@eliminated_locations.to_json(:only => [:latitude, :longitude])}
 
@@ -95,7 +84,6 @@
     var map = new Map("map", { center: point, zoom: 4, extent: customExtent, infoWindow:popup });
 
     var greyMarker   = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-    var mixedMarker  = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
     var orangeMarker = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
 
     var coordinates = [];
@@ -112,12 +100,8 @@
 
     var updateMapWithLocationsAndMarker = function(locationsArray, marker)
     {
-      map.graphics.clear();
       for (var i = 0; i < locationsArray.length; i++) {
         loc = locationsArray[i];
-
-        // console.log("iterating over eliminatedLoc: ")
-        // console.log(loc)
         addLocationToMapWithMarker(loc, map, marker);
       }
     };
@@ -141,7 +125,10 @@
 
     map.on("load", function() {
       map.infoWindow.resize(300, 200);
-      updateMapWithLocationsAndMarker(markers, mixedMarker);
+
+      map.graphics.clear();
+      updateMapWithLocationsAndMarker(open_markers, orangeMarker)
+      updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
     })
 
     //-------------------------------------------------------------------------
@@ -158,22 +145,22 @@
     $('#make_report_button').on('click', function(){
       // clear map and enable adding a marker to map by clicking
       map.graphics.clear();
-      new_report_tab = true;
     });
 
     $('#all_reports_button').on('click', function(){
-      updateMapWithLocationsAndMarker(markers, mixedMarker)
-      new_report_tab = false;
+      map.graphics.clear();
+      updateMapWithLocationsAndMarker(open_markers, orangeMarker)
+      updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
     })
 
     $('#open_reports_button').on('click', function(){
+      map.graphics.clear();
       updateMapWithLocationsAndMarker(open_markers, orangeMarker)
-      new_report_tab = false;
     })
 
     $('#eliminated_reports_button').on('click', function(){
+      map.graphics.clear();
       updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
-      new_report_tab = false;
     })
 
 
