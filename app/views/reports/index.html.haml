@@ -121,8 +121,8 @@
       for (var i = 0; i < locationsArray.length; i++) {
         loc = locationsArray[i];
 
-        console.log("iterating over eliminatedLoc: ")
-        console.log(loc)
+        // console.log("iterating over eliminatedLoc: ")
+        // console.log(loc)
         addLocationToMapWithMarker(loc, map, marker);
       }
     };
@@ -183,7 +183,7 @@
 
 
     // Listener for location attribute updates
-    $("#report_location_attributes_street_number").on("change", function()
+    $("#new_report #report_location_attributes_street_number").on("change", function()
     {
       showMapLoading();
 
@@ -202,7 +202,7 @@
         success: function(m) {
           var candidates = m.candidates;
 
-          console.log(candidates)
+          // console.log(candidates)
 
 
           if (candidates.length == 0)
@@ -220,9 +220,9 @@
             map.centerAndZoom(mapPoint, 4);
 
             // Update the form so we can pass along the ESRI results.
-            $("#report_location_attributes_latitude").val(latitude);
-            $("#report_location_attributes_latitude").val(longitude);
-            $("#map-error-description").text("");
+            $("#new_report #report_location_attributes_latitude").val(latitude);
+            $("#new_report #report_location_attributes_longitude").val(longitude);
+            $("#new_report #map-error-description").text("");
           }
         },
         error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
@@ -230,23 +230,27 @@
       });
     });
 
-    $("#mark_map_btn").on("click", function()
+    $("#new_report #mark_map_btn").on("click", function()
     {
-      $("#report_location_attributes_street_number").trigger("change")
+      $("#new_report #report_location_attributes_street_number").trigger("change")
     });
 
 
-    // TODO: WTF is this?
-    // $(".mapa").click(function() {
-    //   var latitude  =  $(this).data("latitude");
-    //   var longitude = $(this).data("longitude");
-    //   var mapPoint  = new Point(latitude, longitude, mapMareSpatialRef)
-    //   map.centerAndZoom(mapPoint, 8);
-    //   report_div = $(this).parent().parent().parent();
-    //   return false;
-    // });
+    // Listener for "Ache no Mapa". This allows users to click a button
+    // and see the map update to the location.
+    $(".mapa").on("click", function() {
+      var latitude  = $(this).data("location").latitude;
+      var longitude = $(this).data("location").longitude;
 
-    // TODO: Why do we want to add a marker and update values when clicked?
+      if (latitude > 0 && longitude > 0)
+      {
+        var mapPoint  = new Point(latitude, longitude, mapMareSpatialRef)
+        map.centerAndZoom(mapPoint, 6);
+      }
+
+      return false;
+    });
+
     // if on new report tab add a marker when clicked and update values
     // map.on('click', function(e){
     //   if(new_report_tab){

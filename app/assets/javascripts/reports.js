@@ -94,17 +94,16 @@ function display_new_report(e){
     selected_tab_css_update(e.target.id);
 
     if($('#new_report').css('display') == 'none'){
+      // clear existing form
+      //$('#new_report_form form').trigger('reset');
 
-        // clear existing form
-        //$('#new_report_form form').trigger('reset');
+      // hide all reports
+      $('.report').each(function(){
+          $(this).css('display','none');
+      });
 
-        // hide all reports
-        $('.report').each(function(){
-            $(this).css('display','none');
-        });
-
-        // display new report div
-        $('#new_report').css('display','block');
+      // display new report div
+      $('#new_report').css('display','block');
     }
 
 }

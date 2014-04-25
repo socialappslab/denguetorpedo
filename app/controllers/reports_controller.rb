@@ -84,9 +84,9 @@ class ReportsController < NeighborhoodsBaseController
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
     #@reports = reports_with_status_filtered
     # TODO: These counts should be tied to the SQL query we're running to fetch the reports (see above)
-    @counts            = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
-    @open_counts       = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
-    @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
+    # @counts            = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).group(:location_id).count
+    # @open_counts       = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 0).group(:location_id).count
+    # @eliminated_counts = Report.where('reporter_id = ? OR elimination_type IS NOT NULL', @current_user.id).where(status_cd: 1).group(:location_id).count
 
     # TODO: What? How is open reports equal to eliminated reports?
     @open_feed         = @reports
