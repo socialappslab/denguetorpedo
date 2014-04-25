@@ -1,12 +1,13 @@
 .span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
   .row
     .span8
-      .report_map_search{style: "overflow:auto;overflow-y:hidden;overflow-x:hidden;"}
-        - if true
-          %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}2. Ajuste o marcador na localização correta clicando no mapa.
-          %input{type: "button", value: "Vá para a Maré", style: "float:right;margin:-20px 5px 5px 0px;font-size:12px;", id: "go_to_mare"}
-        - else
-          %h2{style: 'margin-left: 10px;', title: "Para ajustar, dê um zoom ou arraste o mapa."} Ajuste para filtar os focos.
+      .report_map_search
+        %h2 Ajuste o marcador na localização correta clicando no mapa.
+        %input{type: "button", value: "Vá para a Maré", id: "go_to_mare"}
+        -# - if false
+          -# %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}2. Ajuste o marcador na localização correta clicando no mapa.
+        -# - else
+        -#   %h2{style: 'margin-left: 10px;', title: "Para ajustar, dê um zoom ou arraste o mapa."} Ajuste para filtar os focos.
 
 
           %h2{style: 'margin-left: 10px;'} Ou procure perto do endereço:
