@@ -78,6 +78,8 @@ class ReportsController < NeighborhoodsBaseController
     @markers            = locations.map            { |location| location.info}
     @open_markers       = open_locations.map       { |location| location.info}
     @eliminated_markers = eliminated_locations.map { |location| location.info}
+    @locations = locations
+
 
     # TODO @awdorsett - Does this affect anything? possibly used when you chose elimination type afterwards
     #@reports = reports_with_status_filtered

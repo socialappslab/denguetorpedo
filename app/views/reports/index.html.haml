@@ -100,12 +100,14 @@
         var new_report_tab = false;
 
         // Declare different reports and their counts.
+        //var markers            = #{@locations.to_json(:only => [:id, :latitude, :longitude], :methods => [:complete_address])}
         var markers            = #{@markers.to_json};
         var open_markers       = #{@open_markers.to_json};
         var eliminated_markers = #{@eliminated_markers.to_json};
         var counts             = #{@counts.to_json};
         var open_counts        = #{@open_counts.to_json};
         var eliminated_counts  = #{@eliminated_counts.to_json};
+
 
         // Load the map.
         require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup", "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom", "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate) {

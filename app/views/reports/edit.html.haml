@@ -23,108 +23,143 @@
             %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}2. Ajuste o marcador na localização correta clicando no mapa.
             %input{type: "button", value: "Va para Maré", style: "float:right;margin:-20px 5px 5px 0px;", id: "go_to_mare"}
 
+          .span#map-error-description{ style: "color: red; font-weight: bold; font-size: 16px;" }
+
+
+
       #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;"}
         #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}
           = image_tag "loading.gif", style: "width:50px; height:50px;"
           %p{style: "margin-left:-120px;margin-top:10px;"} Carregando o Mapa da Prefeitura RJ - IPP
-      :javascript
-          var map, tb;
-          require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator", "esri/layers/ArcGISTiledMapServiceLayer", "esri/SpatialReference", "esri/geometry/Point", "esri/config", "esri/graphic", "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol", "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer", "dojo/domReady!"], function(Map, Draw, Locator, Tiled, SpatialReference, Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer) {
-            var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, new esri.SpatialReference({"wkid":29193}));
-
-            var picBaseUrl = "http://static.arcgis.com/images/Symbols/Shapes/";
-            var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-            var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 48, 48).setOffset(0, 0);
-            var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
-            var point = new Point(680291.2151545063, 7470751.29586681, new esri.SpatialReference({wkid: 29193}));
-            map = new Map("map", {
-              center: point,
-              zoom: 5,
-              extent: customExtent
-            });
-
-            var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
-            map.addLayer(tiled);
-            map.on("update-start", showLoading);
-            map.on("update-end", hideLoading);
-            map.on("load", function() {
-
-              tb = new Draw(map);
-              tb.on("draw-end", addGraphic);
-              tb.activate("point");
-              var graphic = new Graphic(new Point(#{@new_report.location.latitude}, #{@new_report.location.longitude}), orange);
-
-              map.graphics.add(graphic);
-
-            });
 
 
 
-            function addGraphic(evt) {
-              map.graphics.clear();
-              map.enableMapNavigation();
+:javascript
+  var map, tb;
+  require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator",
+  "esri/layers/ArcGISTiledMapServiceLayer", "esri/SpatialReference",
+  "esri/geometry/Point", "esri/config", "esri/graphic",
+  "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol",
+  "esri/symbols/TextSymbol", "dojo/_base/Color",
+  "esri/symbols/PictureMarkerSymbol", "esri/renderers/ClassBreaksRenderer",
+  "dojo/domReady!"], function(Map, Draw, Locator, Tiled, SpatialReference,
+  Point, Geometry, Graphic, SimpleMarkerSymbol, SimpleLineSymbol,
+  TextSymbol, Color, PictureMarkerSymbol, ClassBreaksRenderer)
+  {
+    //-----------------------------------------------------------------
+    // Variable definitions
+    //---------------------
 
-              // figure out which symbol to use
-              var symbol = new SimpleMarkerSymbol();
-              symbol.setStyle("STYLE_PATH");
-              symbol.setPath("M 10 10 L30 10 L20 30z");
-              symbol.setColor(new Color("red"));
+    var mapMareSpatialRef  = new esri.SpatialReference({"wkid": 29193});
+    var mapMareCenterPoint = new Point(680291.2151545063, 7470751.29586681, mapMareSpatialRef);
 
-              $("input#x").val(evt.geometry.x);
-              $("input#y").val(evt.geometry.y);
-              map.graphics.add(new Graphic(evt.geometry, orange));
-              map.centerAt(evt.mapPoint);
+    var customExtent = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, mapMareSpatialRef);
+    var orangeMarker = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
 
-            }
+    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+    var map   = new Map("map", { center: mapMareCenterPoint, zoom: 5, extent: customExtent });
 
-            $("#street_type").change(function() {
+    //-----------------------------------------------------------------
+    // Helper functions.
+    //------------------
 
-            });
-            $("#street_name").change(function() {
-            });
+    function showLoading() {
+      $("#loading").show();
+      map.disableMapNavigation();
+      map.hideZoomSlider();
+    }
+
+    function hideLoading() {
+      $("#loading").hide();
+      map.enableMapNavigation();
+      map.showZoomSlider();
+    }
+
+    function addGraphic(evt) {
+      map.graphics.clear();
+      map.enableMapNavigation();
+
+      // figure out which symbol to use
+      var symbol = new SimpleMarkerSymbol();
+      symbol.setStyle("STYLE_PATH");
+      symbol.setPath("M 10 10 L30 10 L20 30z");
+      symbol.setColor(new Color("red"));
+
+      $("#report_location_attributes_latitude").val(evt.geometry.x);
+      $("#report_location_attributes_longitude").val(evt.geometry.y);
+      map.graphics.add(new Graphic(evt.geometry, orangeMarker));
+      map.centerAt(evt.mapPoint);
+    }
 
 
-            $("#street_number").change(function() {
-              showLoading();
-              $.ajax({
-                url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-                type: "GET",
-                dataType: "jsonp",
-                data: {"f": "pjson", "Street": $("#street_type").val() + " " + $("#street_name").val() + " " + $("#street_number").val()},
-                success: function(m) {
-                  map.graphics.clear();
-                  var candidates = m.candidates;
+    //-----------------------------------------------------------------
+    // Create the map
+    //---------------
+    map.addLayer(tiled);
+    map.on("update-start", showLoading);
+    map.on("update-end", hideLoading);
+    map.on("load", function() {
+      tb = new Draw(map);
+      tb.on("draw-end", addGraphic);
+      tb.activate("point");
+      var locationData = #{@new_report.location.to_json(:only => [:latitude, :longitude])}
+      if (locationData.latitude > 0 && locationData.longitude > 0)
+      {
+        var locationPoint   = new Point(locationData.latitude, locationData.longitude);
+        var locationGraphic = new Graphic(locationPoint, orangeMarker);
+        map.graphics.add(locationGraphic);
+      }
+    });
 
 
-                  if (candidates.length > 0) {
-                    map.graphics.add(new Graphic(new Point(candidates[0].location.x, candidates[0].location.y), orange));
-                    $("input#x").val(candidates[0].location.x);
-                    $("input#y").val(candidates[0].location.y);
+    //-----------------------------------------------------------------
+    // Listeners
+    //----------
+    $("#go_to_mare").on("click", function() {
+      map.centerAndZoom(mapMareCenterPoint, 5)
+    });
 
-                    map.centerAndZoom(new Point(candidates[0].location.x, candidates[0].location.y, new esri.SpatialReference({"wkid": 29193})), 5);
-                  }
-                },
-                error: function(m) {
-                  console.log(JSON.stringify(m));
-                },
-                complete: function() {
-                  hideLoading();
-                }
-              });
-            });
-            $("input#go_to_mare").click(function() {
-              map.centerAndZoom(new Point(680291.2151545063, 7471401.29586681, new esri.SpatialReference({"wkid": 29193})), 5)
-            });
+    $("#report_location_attributes_street_number").change(function() {
+      showLoading();
 
-            function showLoading() {
-              $("#loading").show();
-              map.disableMapNavigation();
-              map.hideZoomSlider();
-            }
+      var streetType = $("#report_location_attributes_street_type").val();
+      var streetName = $("#report_location_attributes_street_name").val();
+      var streetNumber = $("#report_location_attributes_street_number").val();
 
-            function hideLoading() {
-              $("#loading").hide();
-              map.enableMapNavigation();
-              map.showZoomSlider();
-            }
-          });
+      $.ajax({
+        url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+        type: "GET",
+        dataType: "jsonp",
+        data: {
+          "f": "pjson",
+          "Street": streetType + " " + streetName + " " + streetNumber
+        },
+
+        success: function(data) {
+          map.graphics.clear();
+          var candidates = data.candidates;
+
+          if (candidates.length == 0)
+            $("#map-error-description").text("O endereço não pode ser encontrado")
+          else {
+            latitude  = candidates[0].location.x
+            longitude = candidates[0].location.y
+
+            mapPoint   = new Point(latitude, longitude);
+            mapGraphic = new Graphic(mapPoint, orangeMarker);
+            map.graphics.add(mapGraphic);
+
+            mapSpatialReference = new esri.SpatialReference({"wkid": 29193})
+            mapPoint = new Point(latitude, longitude, mapSpatialReference)
+            map.centerAndZoom(mapPoint, 5);
+
+            // Update the form so we can save the actual latitude/longitude.
+            $("#report_location_attributes_latitude").val(latitude);
+            $("#report_location_attributes_latitude").val(longitude);
+          }
+        },
+        error: function()    { $("#map-error-description").text("O endereço não pode ser encontrado") },
+        complete: function() { hideLoading(); }
+      });
+    });
+  });
