@@ -32,7 +32,9 @@ class ReportsController < NeighborhoodsBaseController
     @reports = []
 
     #1.
-    if params[:report].present? &&  error_report = Report.find_by_id(params[:report])
+    error_report = Report.find_by_id(params[:report])
+
+    if error_report
       # TODO : URL is messy when using params, possibly change to id when EliminationMethod implemented
       error_report.elimination_method = params[:elimination_method]
       @reports += [ error_report ]
@@ -42,10 +44,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
 
     #3.
-    @reports += Report.where("completed_at is NOT NULL").order("completed_at DESC").to_a
-    # TODO: Do we actually want to display reports that have completed_at column nil?
-    # Better alternative: @reports += Report.where("completed_at is NOT NULL").where("id != ?", session[:saved_report_id]).order("completed_at DESC").to_a
-    @reports += Report.where(:neighborhood_id => @neighborhood.id).select(&:completed_at).reject{|r| r.id == session[:saved_report_id]}.sort_by(&:completed_at).reverse
+    @reports += Report.where(:neighborhood_id => @neighborhood.id).select(&:completed_at).sort_by(&:completed_at).reverse
 
     # Remove report that incurred an error, it should be at the top already
     @reports.reject!{|r| r == params[:report]}
@@ -82,6 +81,7 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     # TODO: What? How is open reports equal to eliminated reports?
+    # I think feeds were used to filter reports when someone zoomed into the map
     @open_feed         = @reports
     @eliminate_feed    = @reports
   end

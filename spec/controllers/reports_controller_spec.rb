@@ -69,7 +69,7 @@ describe ReportsController do
 					report.status 			= :reported
 					report.status_cd 	 = 1
 					report.completed_at = Time.now
-					report.save!
+					report.save!(:validate => false)
 
 					sign_in(user)
 					visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})

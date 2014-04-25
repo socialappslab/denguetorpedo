@@ -25,10 +25,6 @@ class Report < ActiveRecord::Base
   belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :neighborhood
 
-  validates :status, :presence => true, unless: :sms?
-  validates :reporter_id, :presence => true
-  # validates :neighborhood_id, :presence => true
-
   #----------------------------------------------------------------------------
   # Validations
   #-------------
@@ -40,12 +36,19 @@ class Report < ActiveRecord::Base
 
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
 
-  validates :report, :presence => true
+  # SMS creation
+  validates :location,
+            :neighborhood_id,
+            :report,
+            :reporter_id,
+            :sms,
+            :presence => true, :if => :sms?
 
   # Not required for SMS
   validates :before_photo,
             :elimination_type,
             :location_id,
+            :report,
             :reporter_id,
             :status,
             :presence => {:on => :create, :unless => :sms? }
@@ -54,6 +57,7 @@ class Report < ActiveRecord::Base
   validates :before_photo,
             :elimination_type,
             :location_id,
+            :report,
             :reporter_id,
             :status,
             :presence => {:on => :update, :if => :sms_incomplete? }
