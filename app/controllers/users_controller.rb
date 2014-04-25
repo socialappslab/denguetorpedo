@@ -47,7 +47,6 @@ class UsersController < ApplicationController
     head :not_found and return if @user.nil?
 
     @user_posts = @user.posts
-    @elimination_method_select = EliminationMethods.field_select
 
     @prize_ids = @prizes.collect{|prize| prize.id}
 
@@ -69,24 +68,10 @@ class UsersController < ApplicationController
     @stats_hash['opened'] = @user.created_reports.count
     @stats_hash['eliminated'] = @user.eliminated_reports.count
 
-    @elimination_method_select = EliminationMethods.field_select
     @elimination_types = EliminationType.pluck(:name)
     reports_with_status_filtered = []
     locations = []
 
-    @prantinho = EliminationMethods.prantinho
-    @pneu = EliminationMethods.pneu
-    @lixo = EliminationMethods.lixo
-    @pequenos = EliminationMethods.pequenos
-    @caixa = EliminationMethods.caixa
-    @grandes = EliminationMethods.grandes
-    @calha = EliminationMethods.calha
-    @registros = EliminationMethods.registros
-    @laje = EliminationMethods.laje
-    @piscinas = EliminationMethods.piscinas
-    @pocas = EliminationMethods.pocas
-    @ralos = EliminationMethods.ralos
-    @plantas = EliminationMethods.plantas
     respond_to do |format|
       format.html
       format.json { render json: {user: @user, house: @house, prizes: @prizes, badges: @badges}}

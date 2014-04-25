@@ -20,11 +20,6 @@ class ReportsController < NeighborhoodsBaseController
     @new_report_location = Location.find_by_id(params[:location]) || Location.new
     @new_report_error    = params[:new_report].present? # :new_report only exists if error occurs
 
-    # TODO: Deprecate EliminationMethods in favor for EliminationMethod.
-    # TODO: This should not be an instance variable since we're only using
-    # it for select form tag.
-    @points = EliminationMethods.points
-
     # We display the reports in the following order:
     # 1. Reports that incurred an error when attempting to be eliminated
     # 2. Incomplete SMS reports
@@ -179,22 +174,6 @@ class ReportsController < NeighborhoodsBaseController
 
   #-----------------------------------------------------------------------------
   # PUT /neighborhoods/1/reports
-  # {"utf8"=>"✓",
-  #  "_method"=>"put",
-  #  "authenticity_token"=>"94xRwimaBHn1i38ncPFUUODc8OaMuy1A00Qy7qtT36E=",
-  #  "error"=>"false",
-  #  "report"=>{"reporter_id"=>"13",
-  #  "location_attributes"=>{"street_type"=>"",
-  #  "street_name"=>"",
-  #  "street_number"=>"",
-  #  "latitude"=>"0.0",
-  #  "longitude"=>"0.0",
-  #  "id"=>"38"},
-  #  "report"=>"This is a report",
-  #  "elimination_type"=>""},
-  #  "commit"=>"Enviar!",
-  #  "neighborhood_id"=>"7",
-  #  "id"=>"38"}
 
   def update
     submission_points = 50
