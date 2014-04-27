@@ -20,7 +20,7 @@ class DocumentationSectionsController < ApplicationController
     @section.editor_id = @current_user.id
 
     if @section.update_attributes(params[:documentation_section])
-      flash[:notice] = "Successfully updated"
+      flash[:notice] = "A seção foi atualizada com sucesso"
       redirect_to howto_path and return
     else
       render "edit" and return
@@ -35,7 +35,7 @@ class DocumentationSectionsController < ApplicationController
 
   def ensure_admin
     unless (@current_user.role == "admin")
-      redirect_to howto_path, :alert => "You don't have proper permission to access this" and return
+      redirect_to howto_path, :alert => "Você não pode acessar esse conteúdo" and return
     end
   end
 
