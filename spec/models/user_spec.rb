@@ -1,10 +1,17 @@
-
+# encoding: utf-8
 
 require 'spec_helper'
 require "cancan/matchers"
 
 describe User do
 	let(:user) { FactoryGirl.create(:user) }
+
+	it "validates presence of neighborhood" do
+		puts "I18n.locale: #{I18n.locale}"
+		user.neighborhood_id = nil
+		user.save
+		expect(user.errors.full_messages).to include("Comunidade é obrigatório")
+	end
 
 	describe "abilities" do
     before(:each) do
