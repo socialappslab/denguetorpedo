@@ -3,23 +3,25 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_filter :current_user
+  before_filter :set_locale
+
+  #----------------------------------------------------------------------------
 
   rescue_from CanCan::AccessDenied do |exception|
     render :file => "public/401.html", :status => :unauthorized
   end
 
-  private
-
-  def current_user
-    @current_user ||= User.find_by_auth_token(cookies[:auth_token]) if cookies[:auth_token]
-  end
-
+  #----------------------------------------------------------------------------
 
   protected
+
+  #----------------------------------------------------------------------------
 
   def is_admin?
     ["coordenador", "admin"].include? @current_user.role
   end
+
+  #----------------------------------------------------------------------------
 
   def require_login
     @current_user ||= User.find_by_auth_token(params[:auth_token])
@@ -28,11 +30,30 @@ class ApplicationController < ActionController::Base
     # head :u and return if @current_user.nil?
   end
 
+  #----------------------------------------------------------------------------
+
   def require_admin
     unless is_admin?
        redirect_to root_url
     end
   end
 
+  #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  def current_user
+    @current_user ||= User.find_by_auth_token(cookies[:auth_token]) if cookies[:auth_token]
+  end
+
+  #----------------------------------------------------------------------------
+
+  def set_locale
+    I18n.locale = params[:locale] || I18n.default_locale
+  end
+
+  #----------------------------------------------------------------------------
 
 end
