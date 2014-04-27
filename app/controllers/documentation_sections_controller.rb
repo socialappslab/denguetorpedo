@@ -34,7 +34,7 @@ class DocumentationSectionsController < ApplicationController
   #-----------------------------------------------------------------------------
 
   def ensure_admin
-    unless (@current_user.role == "admin")
+    unless ["admin", "coordenador"].include?(@current_user.role)
       redirect_to howto_path, :alert => "Você não pode acessar esse conteúdo" and return
     end
   end

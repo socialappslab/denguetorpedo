@@ -27,8 +27,8 @@ describe "How To", :type => :feature do
     expect(page).to have_content("Você não pode acessar esse conteúdo")
   end
 
-  context "as an Admin" do
-    let(:admin)   { FactoryGirl.create(:user, :role => "admin") }
+  context "as a coordinator" do
+    let(:admin)   { FactoryGirl.create(:user, :role => "coordenador") }
 
     before(:each) do
       sign_in(admin)
