@@ -24,7 +24,7 @@ describe "How To", :type => :feature do
   it "doesn't allow editing of sections for logged-in users" do
     sign_in(user)
     visit edit_documentation_section_path(section)
-    expect(page).to have_content("You don't have proper permission to access this")
+    expect(page).to have_content("Você não pode acessar esse conteúdo")
   end
 
   context "as an Admin" do
@@ -46,13 +46,13 @@ describe "How To", :type => :feature do
         click_link "Edit"
       end
 
-      expect(page).to have_content("Title")
-      expect(page).to have_content("Content")
+      expect(page).to have_content("Título")
+      expect(page).to have_content("Conteúdo")
     end
 
     it "displays that no one has edited the section before" do
       visit edit_documentation_section_path(section)
-      expect(page).to have_content("No one has edited this section before")
+      expect(page).to have_content("Essa seção ainda não foi editada")
     end
 
     it "allows title change" do
@@ -60,7 +60,7 @@ describe "How To", :type => :feature do
       fill_in "documentation_section_title", :with => "TEST"
       click_button "Enviar!"
       expect(page).to have_content("TEST")
-      expect(page).to have_content("Successfully updated")
+      expect(page).to have_content("A seção foi atualizada com sucesso")
     end
 
     it "allows content change" do
@@ -68,21 +68,21 @@ describe "How To", :type => :feature do
       fill_in "documentation_section_content", :with => "TEST"
       click_button "Enviar!"
       expect(page).to have_content("TEST")
-      expect(page).to have_content("Successfully updated")
+      expect(page).to have_content("A seção foi atualizada com sucesso")
     end
 
     it "requires title" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_title", :with => ""
       click_button "Enviar!"
-      expect(page).to have_content("Title é obrigatório")
+      expect(page).to have_content("Título é obrigatório")
     end
 
     it "requires content" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_content", :with => ""
       click_button "Enviar!"
-      expect(page).to have_content("Content é obrigatório")
+      expect(page).to have_content("Conteúdo é obrigatório")
     end
   end
 

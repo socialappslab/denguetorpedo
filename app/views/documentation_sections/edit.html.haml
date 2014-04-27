@@ -12,6 +12,6 @@
 
     %p
       - if @section.editor.present?
-        = "Note: Last edited #{time_ago_in_words(@section.updated_at)} ago by #{@section.editor.full_name}"
+        = "Nota: Última edicação às #{time_ago_in_words(@section.updated_at)} atrás por #{@section.editor.full_name}"
       - else
-        = "Note: No one has edited this section before"
+        = "Nota: Essa seção ainda não foi editada"
