@@ -262,7 +262,11 @@ describe ReportsController do
 
 	context "Updating a report" do
 		let(:location) { FactoryGirl.create(:location) }
-		let(:report)   { FactoryGirl.create(:report, :location => location, :reporter => user) }
+		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+                                        :location => location,
+                                        :reporter => user,
+                                        :elimination_type => elimination_type,
+                                        :report => "Description") }
 
 		before(:each) do
 			cookies[:auth_token] = user.auth_token

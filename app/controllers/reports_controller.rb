@@ -86,6 +86,7 @@ class ReportsController < NeighborhoodsBaseController
   # POST /neighborhoods/1/reports
 
   def create
+
     # If location was previously created, use that
     # TODO @awdorsett: The new refactoring will make this fail. Let's move away
     # from usage of session.
@@ -120,6 +121,7 @@ class ReportsController < NeighborhoodsBaseController
     # status and status_cd seem to be a product of the simple_enum gem
     # https://github.com/lwe/simple_enum
     @report              = Report.new(params[:report])
+    @report.neighborhood_id = @neighborhood.id
     @report.status       = Report::STATUS[:reported]
     @report.location_id  = location.id
     @report.completed_at = Time.now
@@ -149,9 +151,17 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/edit
 
   def edit
+
     @new_report = @current_user.created_reports.find(params[:id])
     @new_report.location.latitude  ||= 0
     @new_report.location.longitude ||= 0
+
+    # saved_params will exist if an error occurred and the user was redirect to the edit page
+    if params[:report].present?
+      @new_report.elimination_type = params[:report][:elimination_type]
+      @new_report.report =  params[:report][:report]
+    end
+
   end
 
   #-----------------------------------------------------------------------------
@@ -199,7 +209,8 @@ class ReportsController < NeighborhoodsBaseController
 
       # Error occurred when completing SMS report
       else
-        redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return
+        flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
+        redirect_to edit_neighborhood_report_path(@neighborhood, {:report => params[:report]}) and return
       end
     end
 
@@ -429,7 +440,7 @@ class ReportsController < NeighborhoodsBaseController
        (location_params[:street_number].blank? && report.location.street_number.blank?)
 
         # TODO using translated version of "You must fill in an entire address."
-        flash[:alert] = flash[:alert].to_s + " Você deve preencher um endereço completo."
+        flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
 
         return false
     end

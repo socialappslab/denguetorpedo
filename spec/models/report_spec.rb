@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Report do
 
 	it "does not require presence of location" do
-		r = FactoryGirl.build(:report)
+		r = FactoryGirl.build(:full_report)
 		expect { r.save }.to change(Report, :count).by(1)
 	end
 
@@ -18,10 +18,30 @@ describe Report do
   		@identified2 = FactoryGirl.create(:report, :elimination_type => "Type")
   		@identified3 = FactoryGirl.create(:report, :elimination_type => "Type")
 
-  		@eliminated1 = FactoryGirl.create(:report, :elimination_method => "Method", :status => Report::STATUS[:eliminated], :eliminator => user)
-  		@eliminated2 = FactoryGirl.create(:report, :elimination_method => "Method", :status => Report::STATUS[:eliminated], :eliminator => user)
-  		@eliminated3 = FactoryGirl.create(:report, :elimination_method => "Method", :status => Report::STATUS[:eliminated], :eliminator => user)
-  	end
+  		@eliminated1 = FactoryGirl.create(:full_report,
+                                        :elimination_method => "Method",
+                                        :status => Report::STATUS[:eliminated],
+                                        :eliminator => user,
+                                        :after_photo => :full_report.before_photo)
+
+      @eliminated2 = FactoryGirl.create(:full_report,
+                                        :elimination_method => "Method",
+                                        :status => Report::STATUS[:eliminated],
+                                        :eliminator => user,
+                                        :after_photo => :full_report.before_photo)
+      @eliminated3 = FactoryGirl.create(:full_report,
+                                        :elimination_method => "Method",
+                                        :status => Report::STATUS[:eliminated],
+                                        :eliminator => user,
+                                        :after_photo => :full_report.before_photo)
+
+  		#@eliminated2 = FactoryGirl.create(:full_report, :elimination_method => "Method",
+       #                                 :status => Report::STATUS[:eliminated], :eliminator => user)
+  		#@eliminated3 = FactoryGirl.create(:full_report, :elimination_method => "Method",
+       #                                 :status => Report::STATUS[:eliminated], :eliminator => user)
+
+
+    end
 		
   	context "identified reports" do
 			it "returns identified results" do

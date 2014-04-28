@@ -7,6 +7,7 @@ class Report < ActiveRecord::Base
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
+
   STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
 
   #----------------------------------------------------------------------------
