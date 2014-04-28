@@ -41,39 +41,25 @@ class Report < ActiveRecord::Base
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
 
   validates :status, :inclusion => {:in => STATUS.values}
+  validates :neighborhood_id, :report, :reporter_id, :status,
+            :presence => true
+
 
   # SMS creation
-  validates :neighborhood_id,
-            :report,
-            :reporter_id,
-            :sms,
+  validates :sms,
             :presence => true, :if => :sms?
 
-
   # Web report creation
-  validates :before_photo,
-            :elimination_type,
-            :report,
-            :reporter_id,
-            :status,
-            :presence => {:on => :create, :unless => :sms? }
+  validates :before_photo, :elimination_type,
+            :presence => true, :unless => :sms?
 
 
   # Updating a SMS
-  validates :before_photo,
-            :elimination_type,
-            :report,
-            :reporter_id,
-            :status,
+  validates :before_photo, :elimination_type,
             :presence => {:on => :update, :if => :sms_incomplete? }
 
   # Eliminating a report
-  validates :after_photo,
-            :before_photo,
-            :elimination_method,
-            :elimination_type,
-            :reporter_id,
-            :status,
+  validates :after_photo, :elimination_method,
             :presence => {:on => :update, :unless => :sms_incomplete?}
 
 

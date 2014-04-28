@@ -86,6 +86,7 @@ FactoryGirl.define do
     elimination_type "Type"
     report "Description"
     before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+    neighborhood_id Neighborhood.first.id
 
   end
 
