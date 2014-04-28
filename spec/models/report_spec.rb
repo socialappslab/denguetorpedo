@@ -1,10 +1,11 @@
 require 'spec_helper'
+require 'rack/test'
 
 describe Report do
 
 	it "does not require presence of location" do
-		r = FactoryGirl.build(:full_report)
-		expect { r.save }.to change(Report, :count).by(1)
+		r = FactoryGirl.build(:report)
+    expect { r.save! }.to change(Report, :count).by(1)
 	end
 
 	it "has a valid factory" do
@@ -14,32 +15,19 @@ describe Report do
   describe "fetching" do
 		let(:user) { FactoryGirl.create(:user) }
   	before(:each) do
-  		@identified1 = FactoryGirl.create(:report, :elimination_type => "Type")
-  		@identified2 = FactoryGirl.create(:report, :elimination_type => "Type")
-  		@identified3 = FactoryGirl.create(:report, :elimination_type => "Type")
 
-  		@eliminated1 = FactoryGirl.create(:full_report,
-                                        :elimination_method => "Method",
-                                        :status => Report::STATUS[:eliminated],
-                                        :eliminator => user,
-                                        :after_photo => :full_report.before_photo)
+      eliminated_attributes = {:elimination_method => "Method",
+                               :status => Report::STATUS[:eliminated],
+                               :eliminator => user,
+                               :after_photo => Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')}
 
-      @eliminated2 = FactoryGirl.create(:full_report,
-                                        :elimination_method => "Method",
-                                        :status => Report::STATUS[:eliminated],
-                                        :eliminator => user,
-                                        :after_photo => :full_report.before_photo)
-      @eliminated3 = FactoryGirl.create(:full_report,
-                                        :elimination_method => "Method",
-                                        :status => Report::STATUS[:eliminated],
-                                        :eliminator => user,
-                                        :after_photo => :full_report.before_photo)
+  		@identified1 = FactoryGirl.create(:report)
+  		@identified2 = FactoryGirl.create(:report)
+  		@identified3 = FactoryGirl.create(:report)
 
-  		#@eliminated2 = FactoryGirl.create(:full_report, :elimination_method => "Method",
-       #                                 :status => Report::STATUS[:eliminated], :eliminator => user)
-  		#@eliminated3 = FactoryGirl.create(:full_report, :elimination_method => "Method",
-       #                                 :status => Report::STATUS[:eliminated], :eliminator => user)
-
+  		@eliminated1 = FactoryGirl.create(:report, eliminated_attributes)
+      @eliminated2 = FactoryGirl.create(:report, eliminated_attributes)
+      @eliminated3 = FactoryGirl.create(:report, eliminated_attributes)
 
     end
 		

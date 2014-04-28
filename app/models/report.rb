@@ -43,8 +43,7 @@ class Report < ActiveRecord::Base
   validates :status, :inclusion => {:in => STATUS.values}
 
   # SMS creation
-  validates :location,
-            :neighborhood_id,
+  validates :neighborhood_id,
             :report,
             :reporter_id,
             :sms,
@@ -54,7 +53,6 @@ class Report < ActiveRecord::Base
   # Web report creation
   validates :before_photo,
             :elimination_type,
-            :location_id,
             :report,
             :reporter_id,
             :status,
@@ -64,7 +62,6 @@ class Report < ActiveRecord::Base
   # Updating a SMS
   validates :before_photo,
             :elimination_type,
-            :location_id,
             :report,
             :reporter_id,
             :status,
@@ -75,7 +72,6 @@ class Report < ActiveRecord::Base
             :before_photo,
             :elimination_method,
             :elimination_type,
-            :location_id,
             :reporter_id,
             :status,
             :presence => {:on => :update, :unless => :sms_incomplete?}
