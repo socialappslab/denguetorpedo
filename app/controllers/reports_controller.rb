@@ -25,7 +25,7 @@ class ReportsController < NeighborhoodsBaseController
     # 2. Incomplete SMS reports
     # 3. All created reports (aka, the misleading column completed_at is not nil)
     @reports = []
-
+    @params = params
     #1.
     error_report = Report.find_by_id(params[:report])
 
@@ -117,10 +117,8 @@ class ReportsController < NeighborhoodsBaseController
       location.save
     end
 
-    # TODO @dman7: why is status (type int) but is assigned a symbol?
-    # status and status_cd seem to be a product of the simple_enum gem
-    # https://github.com/lwe/simple_enum
     @report              = Report.new(params[:report])
+    @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
     @report.status       = Report::STATUS[:reported]
     @report.location_id  = location.id
