@@ -170,20 +170,16 @@ class ReportsController < NeighborhoodsBaseController
   def update
     submission_points = 50
 
-    # Update the location.
-    location_params = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
+    address = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
+    address.each{ |k,v| address[k] = v.downcase.titleize}
 
-    # Location should have been created when user sends SMS
+    # Update the location.
     if @report.location
       location = @report.location
-      location.update_attributes(location_params)
+      location.update_attributes(address)
     else
       # for whatever reason if location doesn't exist create a new one
-      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-          params[:report][:location_attributes][:street_type].downcase.titleize,
-          params[:report][:location_attributes][:street_name].downcase.titleize,
-          params[:report][:location_attributes][:street_number].downcase.titleize
-      )
+      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(address)
     end
 
     location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
@@ -234,12 +230,13 @@ class ReportsController < NeighborhoodsBaseController
     else
       flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
 
-      #redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return
       redirect_to neighborhood_reports_path(@neighborhood,
         :params=>{:report => @report.id, :elimination_method => params[:report][:elimination_method]}) and return
     end
 
+
   end
+
 
   def destroy
     if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
