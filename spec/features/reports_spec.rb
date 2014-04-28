@@ -26,7 +26,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.name, :from => "report_elimination_type")
       click_button "Enviar!"
       #expect(page).to have_content("Você tem que descrever o local e/ou o foco")
-      expect(page).to have_content("Report é obrigatório.")
+      expect(page).to have_content("Report é obrigatório")
     end
 
     it "notifies the user if report before photo is empty" do
@@ -37,7 +37,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.name, :from => "report_elimination_type")
       click_button "Enviar!"
       #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
-      expect(page).to have_content("A foto do foco é obrigatória.")
+      expect(page).to have_content("A foto do foco é obrigatório")
 
     end
 
@@ -57,7 +57,7 @@ describe "Reports", :type => :feature do
       attach_file("report_before_photo", photo_filepath)
       click_button "Enviar!"
       #expect(page).to have_content("Você tem que escolher um tipo de foco")
-      expect(page).to have_content("Elimination type é obrigatório.")
+      expect(page).to have_content("Elimination type é obrigatório")
 
     end
 
@@ -198,7 +198,7 @@ describe "Reports", :type => :feature do
       end
 
       #expect(page).to have_content("Você tem que escolher um método de eliminação")
-      expect(page).to have_content("Elimination method é obrigatório.")
+      expect(page).to have_content("Elimination method é obrigatório")
     end
 
     it "notifies user if after photo isn't selected" do
@@ -210,7 +210,7 @@ describe "Reports", :type => :feature do
       end
 
       #expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
-      expect(page).to have_content("After photo é obrigatória.")
+      expect(page).to have_content("After photo é obrigatório")
     end
   end
 
@@ -262,7 +262,7 @@ describe "Reports", :type => :feature do
       click_button "Enviar!"
 
       #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
-      expect(page).to have_content("A foto do foco é obrigatória.")
+      expect(page).to have_content("A foto do foco é obrigatório")
     end
 
     it "notifies the user if identification type is empty" do
@@ -276,7 +276,7 @@ describe "Reports", :type => :feature do
       click_button "Enviar!"
 
       #expect(page).to have_content("Você tem que escolher um tipo de foco")
-      expect(page).to have_content("Elimination type é obrigatório.")
+      expect(page).to have_content("Elimination type é obrigatório")
     end
 
     it "appears in the reports list as completed" do
