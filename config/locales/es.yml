@@ -1,39 +1,10 @@
 # Sample localization file for Spanish (Mexico). Add more files in this directory for other locales.
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
-en:
-#   activerecord:
-#   	errors:
-#   		template:
-#   			header:
-#   				one: "1 error prohibited this %{model} from being saved"
-#   				other: "%{count} errors prohibited this %{model} from being saved hahaha"
-#   			body: "gogo"
-#   		messages:
-#         accepted: "must be accepted"
-#         blank: "can't be blank"
-#         confirmation: "doesn't match confirmation"
-#         empty: "can't be empty"
-#         equal_to: "must be equal to {{count}}"
-#         even: "must be even"
-#         exclusion: "is reserved"
-#         greater_than: "must be greater than {{count}}"
-#         greater_than_or_equal_to: "must be greater than or equal to {{count}}"
-#         inclusion: "is not included in the list"
-#         invalid: "is invalid"
-#         less_than: "must be less than {{count}}"
-#         less_than_or_equal_to: "must be less than or equal to {{count}}"
-#         not_a_number: "is not a number"
-#         odd: "must be odd"
-#         taken: "is already taken"
-#         too_long: "is too long (maximum is {{count}} characters)"
-#         too_short: "is too short (minimum is {{count}} characters)"
-#         wrong_length: "is the wrong length (should be {{count}} characters)"
-#   		models:
-#   			user:
-#   				attributes:
-#   					password:
-#   						confirmation: "Password match"
+es:
+  attributes:
+    title: "Título"
+    
   activerecord:
     models:
       user: Usuario
@@ -52,7 +23,6 @@ en:
         prepaid: "Pre-pago"
         house_id: "Identificación de casa"
       feedback:
-        title: "Título"
         name: "Nombre"
         message: "Mensage"
       report:
@@ -63,168 +33,12 @@ en:
           one: "1 error impidió que el %{model} fuese salvado."
           other: "%{count} errores impidieron que el %{model} fuese salvado."
       messages:
-        blank: "se requiere."
-        confirmation: "no confirmado."
-        empty: "es obligatorio."
-        exclusion: "está reservado."
-        invalid: "no es válido."
-        taken: "ya está en uso."
-        too_long: "es muy largo. (máximo de %{count} caracteres)"
-        too_short: "es muy corto. (mínimo de %{count} caracteres)"
-        not_a_number: "debe ser un número."
-      models:
-        user:
-          header:
-            one: "Gogogogo"
-          attributes:
-            password:
-              blank: "es obligatoria."
-              confirmation: "no confirmado."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            password_digest:
-              blank: "es obligatoria."
-              confirmation: "no confirmado."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "no es número."
-            password_confirmation:
-              blank: "es obligatoria"
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-        feedback:
-          attributes:
-            message:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-        report:
-          attributes:
-            before_photo:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            after_photo:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            description:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-        prize:
-          attributes:
-            description:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-        post:
-          attributes:
-            content:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-        notice:
-          attributes:
-            date:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            description:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            summary:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            photo:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-            institution_name:
-              blank: "es obligatoria."
-              confirmation: "no confirmada."
-              empty: "es obligatoria."
-              exclusion: "está reservada."
-              invalid: "no es válida."
-              taken: "ya está en uso."
-              too_long: "es muy larga. (máximo de %{count} caracteres)"
-              too_short: "es muy corta. (mínimo de %{count} caracteres)"
-              not_a_number: "debe ser un número."
-
+        blank: "es obligatoria"
+        confirmation: "no confirmado"
+        empty: "es obligatoria"
+        exclusion: "está reservada"
+        invalid: "no es válida"
+        taken: "ya está en uso"
+        too_long: "es muy larga. (máximo de %{count} caracteres)"
+        too_short: "es muy corta. (mínimo de %{count} caracteres)"
+        not_a_number: "debe ser un número"

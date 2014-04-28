@@ -1,15 +1,22 @@
+# encoding: utf-8
+
 require 'spec_helper'
 require 'rack/test'
 
 describe Report do
+	it "validates status" do
+		report = Report.create(:reporter_id => 1)
+		expect(report.errors.full_messages).to include("Status é obrigatório")
+	end
+
+	it "validates reporter" do
+		report = Report.create(:status => :reported)
+		expect(report.errors.full_messages).to include("Reporter é obrigatório")
+	end
 
 	it "does not require presence of location" do
 		r = FactoryGirl.build(:report)
-    expect { r.save! }.to change(Report, :count).by(1)
-	end
-
-	it "has a valid factory" do
-		FactoryGirl.build(:report).should be_valid
+		expect { r.save }.to change(Report, :count).by(1)
 	end
 
   describe "fetching" do
