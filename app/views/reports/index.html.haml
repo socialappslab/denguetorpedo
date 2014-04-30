@@ -231,6 +231,8 @@
     // the location attributes with the clicked point.
     map.on('click', function(e){
       if ( $("#make_report_button").hasClass("active") ){
+        map.graphics.clear();
+        
         var latitude  = e.mapPoint.x;
         var longitude = e.mapPoint.y;
         $("#new_report #report_location_attributes_latitude").val( latitude )
