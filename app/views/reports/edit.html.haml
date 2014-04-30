@@ -16,7 +16,8 @@
   .row
     .span9.offset1
       = render :partial => "reports/make_report_form"
-    = render :partial => "reports/map"
+    - if @neighborhood.name == "Maré"
+      = render :partial => "reports/map"
 
 
 :javascript
