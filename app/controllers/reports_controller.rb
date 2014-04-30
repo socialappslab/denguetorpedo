@@ -59,11 +59,7 @@ class ReportsController < NeighborhoodsBaseController
       elsif report.status == Report::STATUS[:eliminated]
         @eliminated_locations << report.location
       else
-        if report.status == Report::STATUS[:eliminated]
-          @eliminated_locations << report.location
-        else
-          @open_locations << report.location
-        end
+        @open_locations << report.location
       end
     end
 
