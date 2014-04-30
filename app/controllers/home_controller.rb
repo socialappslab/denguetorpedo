@@ -1,42 +1,52 @@
 class HomeController < ApplicationController
+  #----------------------------------------------------------------------------
+  # GET /
+
   def index
-    @collapse = 'collapse'
+    @user = @current_user || User.new
 
-    if (flash[:user].nil?)
-      @user = User.new
-    else
-      @user = flash[:user]
-    end
-
-    @all_neighborhoods = Neighborhood.order(:id).limit(3)
-
-    if params[:neighborhood].nil?
-      if @all_neighborhoods.first.nil?
-        @selected_neighborhood = Neighborhood.new
+    # NOTE: This is a hack that allows us to reuse this action with both
+    # logged-in and visitors. Basically, a logged-in user cares only about
+    # his/her own neighborhood.
+    if @current_user.present?
+      if @current_user.neighborhood.present?
+        @all_neighborhoods = [ @current_user.neighborhood ]
       else
-        @selected_neighborhood = @all_neighborhoods.first
+        @all_neighborhoods = [ Neighborhood.first ]
       end
     else
-      @selected_neighborhood = Neighborhood.find(params[:neighborhood])
+      @all_neighborhoods     = Neighborhood.order(:id).limit(3)
     end
-    @participants = @selected_neighborhood.members.where('role != ?', "lojista")
 
-    @houses = @participants.map { |participant| participant.house }.uniq.shuffle
+    @selected_neighborhood = @all_neighborhoods.first
 
+    @notices      = @selected_neighborhood.notices.limit(5).order(:date)
+    @houses       = @selected_neighborhood.houses.limit(5) # @participants.map { |participant| participant.house }.shuffle
 
-    @prizes = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new)
-    @notices = @selected_neighborhood.notices.where('date > ?', Time.now).order(:date)[0..5]
-    @total_reports_in_neighborhood = @selected_neighborhood.total_reports.count
-    @opened_reports_in_neighborhood = @selected_neighborhood.open_reports.count
-    @eliminated_reports_in_neighborhood = @selected_neighborhood.eliminated_reports.count
+    # We want to limit number of houses displayed on the splash page for non-logged
+    # in users.
+    @houses = @houses[0..5] if @current_user.nil?
+
+    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).limit(3)
   end
-  respond_to do |format|
-    format.html
-    format.json { render json: { user: @user }}
-  end
+
+  #----------------------------------------------------------------------------
+  # GET /howto
 
   def howto
     @sections = DocumentationSection.order("order_id ASC")
   end
 
+  #----------------------------------------------------------------------------
+  # POST /neighborhood-search
+  #
+  # Parameters:
+  # { "neighborhood"=>{"name"=>"Vila Autódromo"} }
+
+  def neighborhood_search
+    neighborhood = Neighborhood.find_by_name(params[:neighborhood][:name])
+    redirect_to neighborhood_path(neighborhood)
+  end
+
+  #----------------------------------------------------------------------------
 end

@@ -26,22 +26,17 @@ class House < ActiveRecord::Base
 
   has_many :members, :class_name => "User"
   has_many :posts, :as => :wall
-  has_many :all_reports, :through => :members
-  has_many :created_reports, :through => :members, :conditions => {:status =>Report::STATUS[:reported]}
-  has_many :eliminated_reports, :through => :members, :conditions => {:status => Report::STATUS[:eliminated]}
+  has_many :reports, :through => :members
+  has_one :user
 
   belongs_to :location
   belongs_to :neighborhood
 
-  has_one :user
   accepts_nested_attributes_for :location, :allow_destroy => true
 
   ## validations
-
-  validates_presence_of :name, :message => "Preencha o nome da casa"
-  validates_length_of   :name, :minimum => 2, :message => "Insira um nome da casa válido"
-
-
+  validates :name, :presence => true # :message => "Preencha o nome da casa"
+  validates :name, :length => { :minimum => 2 } #, :message => "Insira um nome da casa válido"
   validates :neighborhood_id, :presence => true
 
   #----------------------------------------------------------------------------
@@ -55,8 +50,6 @@ class House < ActiveRecord::Base
   def complete_address
     self.location.complete_address
   end
-
-  #----------------------------------------------------------------------------
 
   def reports
     _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status != "sms") ORDER BY "reports".updated_at DESC))

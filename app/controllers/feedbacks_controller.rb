@@ -47,11 +47,11 @@ class FeedbacksController < ApplicationController
     respond_to do |format|
       if @feedback.save
         UserMailer.send_contact(params[:feedback][:title], params[:feedback][:email], params[:feedback][:name], params[:feedback][:message]).deliver
-        if @current_user 
+        if @current_user
           format.html { redirect_to :back, notice: 'Mensagem enviada com sucesso!' }
           format.json { render json: @feedback, status: :created, location: @feedback }
         else
-          format.html { redirect_to root_url, alert: 'Mensagem enviada com sucesso!' }
+          format.html { redirect_to root_url, notice: 'Mensagem enviada com sucesso!' }
           format.json { render json: @feedback, status: :created, location: @feedback }
         end
       else

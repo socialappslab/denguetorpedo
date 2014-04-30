@@ -1,55 +1,87 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
 = render :partial => 'orange_slider'
-  
 %br
-#neighborhood_search{style: "width:1000px;"}
+
+/------------------------------------------------------------------------------
+
+/ We only want to display all neighborhood pictures to visitors. If a user
+/ is logged in, they care only about their neighborhood.
+- if @current_user.nil?
   .row
-    #neighborhood_search_background.offset2{style: "width:690px;float:left;"}
-      %input.span10{:type => 'text', :placeholder => "Aguarde os futuros participantes!", style: "width:88%;"}
-      %button Busca
+    %h2.offset1 Comunidades em destaque no Dengue Torpedo
+  .row
+    .span15.offset1
+      = render "home/neighborhood_list"
+
+%br
+
+- @all_neighborhoods.each do |neighborhood|
+  .row
+    #neighborhood_stats.offset1
+      #home_visit_neighborhood_button.span5
+        = link_to "Vá para a #{neighborhood.name}", neighborhood_path(neighborhood)
+      .span3{style: "margin-left: 35px;"}
+        %b= neighborhood.total_reports.count
+        %br Total de focos marcados
+      .span3{style: "margin-left: 45px;"}
+        .row
+          #neighborhood_open_report_button.span1
+          .span2
+            %b= neighborhood.open_reports.count
+            %br em aberto
+      .span3
+        .row
+          #neighborhood_resolved_report_button.span1
+          .span2
+            %b= neighborhood.eliminated_reports.count
+            %br eliminados
+
+/ Futura comunidade is meant to be a way for people to reach out to DT
+/ and become the next neighborhood.
+- unless @current_user
+  .row
+    #neighborhood_stats.offset1
+      #home_visit_neighborhood_button.span5
+        = link_to "Futura comunidade", neighborhood_invitation_path
+
+
+%br
+
+.row{style: "text-align: center;"}
+  #neighborhood_search
+    #neighborhood_search_background{style: "width:600px; margin: auto; text-align: center; display: inline-block; padding-top: 0px; padding-bottom: 0px;"}
+      %p{style: "margin-bottom: 10px; font-weight: bold;"}
+        Ache outras comunidades participantes!
+      = form_tag neighborhood_search_path, :style => "margin: 0px;" do
+        = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :include_blank => true, :style => "width: 50%;")
+        = submit_tag "Busca", :class => "button"
     - if @current_user
-      #sms_button{style: "margin-top: 2px;margin-left: 20px;float:right;font-size:10px;"}
-        %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
+      #sms_button{style: "margin-left: 20px; font-size:10px; display: inline-block;"}
+        %button{style: "width:100px; margin-top: -30px; background-color:green; font-size:18px;line-height:22px; height: 65px;", id: "redetrel_button1"}
           SMS Grátis!
         :javascript
           $("#redetrel_button1").click(function() {
             location.href = "sponsors/3";
           });
 
-.row
-  %h2.offset1 Comunidades em destaque no Dengue Torpedo
+/------------------------------------------------------------------------------
 
-.row
-  .span15.offset1
-    = render "home/neighborhood_list"
+/ Display the neighborhood houses only if the logged-in user is viewing it.
 
-.row
+- if @current_user.present?
+  .row
   %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
-
-.row
-  #neighborhood_stats.offset1
-    #home_visit_neighborhood_button.span5
-      = render "home/visit_neighborhood_button"
-    .span3{style: "margin-left: 35px;"}
-      %b= @total_reports_in_neighborhood
-      %br Total de focos marcados
-    .span3{style: "margin-left: 45px;"}
-      .row
-        #neighborhood_open_report_button.span1
-        .span2
-          %b= @opened_reports_in_neighborhood
-          %br em aberto
-    .span3
-      .row
-        #neighborhood_resolved_report_button.span1
-        .span2
-          %b= @eliminated_reports_in_neighborhood
-          %br eliminados
+- else
+  .row
+  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas
 
 .row
   #houses.span15.offset1
     = render "home/house_list"
+
+
+/------------------------------------------------------------------------------
 
 %br
 .row
@@ -61,20 +93,41 @@
       - @prizes.shuffle.each do |prize|
         = render :partial => "prizes/prize", :object => prize
 
-.row
-  .offset1
-    #neighborhood_news
-      %h2 Notícias da comunidade
-      %ul
-        - @notices.each do |notice|
-          %a{:href => notice_path(notice)}
-            %li.span4.neighborhood_news_title
-              .row
-                .span5
-                  - if notice.title.size > 30
-                    = notice.title[0..30] + "..."
-                  - else
-                    = notice.title
+      %li.span3.prizes.possible
+        .status.possible
+          .name{style: "height:20px;"}
+          .points
+        .prize_content
+          .description{:style => "height: 100%;"}
+            %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
+              = link_to "+ Mais", neighborhood_path(@selected_neighborhood)
+
+
+
+
+
+/------------------------------------------------------------------------------
+
+/ Display neighborhood news only if a logged-in user is viewing it.
+- if @current_user.present?
+  .row
+    .offset1
+      #neighborhood_news
+        %h2 Notícias da comunidade
+        %ul
+          - @notices.each do |notice|
+            %a{:href => notice_path(notice)}
+              %li.span4.neighborhood_news_title
+                .row
+                  .span5
+                    - if notice.title.size > 30
+                      = notice.title[0..30] + "..."
+                    - else
+                      = notice.title
+
+
+/------------------------------------------------------------------------------
+
 %br
 .row
   %h2.offset1{style: 'font-size: 18px;'} Parceiros

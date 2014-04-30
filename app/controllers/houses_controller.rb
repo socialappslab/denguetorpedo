@@ -15,8 +15,13 @@ class HousesController < NeighborhoodsBaseController
     @neighbors = @neighbors.where(:locations => { :neighborhood_id => @neighborhood.id})
     @neighbors = @neighbors.where('users.role NOT IN (?) AND houses.id != ?', excluded_roles, @house.id).uniq.shuffle[0..6]
 
-    @open_markers       = @house.created_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
-    @eliminated_markers = @house.eliminated_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
+    # TODO: Make this specific to each neighborhood.
+    @reports                  = @house.reports.find_all { |r| r.neighborhood_id == @neighborhood.id }
+    @open_house_reports       = @reports.find_all { |r| r.status == Report::STATUS[:reported] }
+    @eliminated_house_reports = @reports.find_all { |r| r.status == Report::STATUS[:eliminated] }
+
+    @open_markers       = @open_house_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
+    @eliminated_markers = @eliminated_house_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
 
     @open_markers.compact!
     @eliminated_markers.compact!

@@ -86,7 +86,7 @@ class Location < ActiveRecord::Base
     # self.gmaps4rails_address
     # currently hardcoded....
     if self.street_type
-      return self.street_type + " " + self.street_name + " " + self.street_number + " " + "Maré"
+      return self.street_type + " " + self.street_name + " " + self.street_number # + " " + "Maré"
     else
       return self.address
     end

@@ -1,18 +1,17 @@
 %ul#neighborhood_list
   .row
-    - @all_neighborhoods.each_with_index do |neighborhood, index|  
+    - @all_neighborhoods.each_with_index do |neighborhood, index|
       %li
         .neighborhood_selection
           .neighborhood_selection_header
-            %h3= link_to "Nº #{index+1} #{neighborhood.name}", neighborhood_path(neighborhood)        
+            %h3= link_to "Nº #{index+1} #{neighborhood.name}", neighborhood_path(neighborhood)
           = link_to image_tag("home_images/neighborhood#{index+1}.jpg"), neighborhood_path(neighborhood), :class => 'neighborhood_selection_photo'
-    
+
     - if @all_neighborhoods.count < 3
       - (3 - @all_neighborhoods.count).times do
         %li
           .neighborhood_selection
             .neighborhood_selection_header
-              %h3 Futuro Participante
+              %h3= link_to "Futura comunidade", neighborhood_invitation_path
             .neighborhood_selection_photo
-              = image_tag("neighborhood_default.png")
- 
+              = link_to image_tag("neighborhood_default.png", :style => "width: 300px; height: 300px;"), neighborhood_invitation_path

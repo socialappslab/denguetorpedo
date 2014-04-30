@@ -12,7 +12,7 @@
     = f.label :user_id, "Patrocinador / Apoio"
     = f.select(:user_id, @users)
     = f.label :user_id, "Comunidade"
-    = f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]}, :include_blank => true )
+    = f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]}, :include_blank => false, :prompt => "Todas comunidades" )
   .field{ :style => "margin-bottom: 18px;"}
     = f.label :prize_name, "Nome do prêmio"
     = f.text_field :prize_name, :placeholder => "max 35 caracteres"
