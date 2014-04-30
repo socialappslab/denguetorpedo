@@ -249,7 +249,7 @@ describe UsersController do
 					click_button "Confirmar"
 				end
 
-				expect(page).to have_content("Preencha o nome da casa")
+				expect(page).to have_content("Nome é obrigatório")
 			end
 
 			it "notifies the user of a short house name" do
@@ -260,7 +260,7 @@ describe UsersController do
 					click_button "Confirmar"
 				end
 
-				expect(page).to have_content("Insira um nome da casa válido")
+				expect(page).to have_content("Nome é muito curto")
 			end
 
 			it "notifies the user of missing house name" do
@@ -271,7 +271,7 @@ describe UsersController do
 					click_button "Confirmar"
 				end
 
-				expect(page).to have_content("Preencha o nome da casa")
+				expect(page).to have_content("Nome é obrigatório")
 			end
 
 			it "creates a new instance if user chooses a new house" do
