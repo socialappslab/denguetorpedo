@@ -28,11 +28,9 @@ pt:
       report:
         before_photo: A foto do foco
         elimination_type: Tipo de foco
-      documentation_section: Conteúdo
+      documentation_section:
+        content: Conteúdo
     errors:
-      attributes:
-        title: "Título"
-
       template:
         header:
           one: "1 erro impediu que o %{model} fosse salvo."

@@ -35,4 +35,8 @@ class HomeController < ApplicationController
     format.json { render json: { user: @user }}
   end
 
+  def howto
+    @sections = DocumentationSection.order("order_id ASC")
+  end
+
 end
