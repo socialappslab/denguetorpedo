@@ -18,7 +18,6 @@ class ReportsController < NeighborhoodsBaseController
   def index
     @new_report          = Report.new(params[:new_report])
     @new_report_location = Location.find_by_id(params[:location]) || Location.new
-    @new_report_error    = params[:new_report].present? # :new_report only exists if error occurs
 
     # We display the reports in the following order:
     # 1. Reports that incurred an error when attempting to be eliminated
