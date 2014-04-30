@@ -17,14 +17,6 @@
 // TopUp.images_path = "assets/top_up/";
 // TopUp.players_path = "assets/players/";
 
-//Prevent Enter from submitting forms on site
-// $(window).on("keypress",function(e){
-//     if (e.keyCode == 13) {
-//         e.preventDefault();
-//     }
-// });
-
-
 // TRANSITION
 !function( $ ) {
 
