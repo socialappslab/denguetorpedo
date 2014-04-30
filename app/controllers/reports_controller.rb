@@ -24,7 +24,6 @@ class ReportsController < NeighborhoodsBaseController
     # 2. Incomplete SMS reports
     # 3. All created reports (aka, the misleading column completed_at is not nil)
     @reports = []
-    @params = params
     #1.
     error_report = Report.find_by_id(params[:report])
 
@@ -136,7 +135,6 @@ class ReportsController < NeighborhoodsBaseController
 
       redirect_to neighborhood_reports_path(@neighborhood,
         :params => {:new_report => params[:report].except(:before_photo), :location => location.id}) and return
-
     end
 
   end
