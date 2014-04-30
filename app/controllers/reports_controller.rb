@@ -56,7 +56,7 @@ class ReportsController < NeighborhoodsBaseController
 
       # TODO: Why the !!! are we using two types of columns to encode
       # the same information (open versus eliminated). Get rid of one or the other.
-      if report.status == 'reported'
+      if report.status == Report::STATUS[:reported]
         @open_locations << report.location
       elsif report.status == Report::STATUS[:eliminated]
         @eliminated_locations << report.location
