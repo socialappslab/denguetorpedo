@@ -408,23 +408,6 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
-  #
-  #def validate_report_elimination_submission(params, report)
-  #  if params[:report][:after_photo].blank?
-  #    flash[:alert] = flash[:alert].to_s + " Você tem que carregar uma foto do foco eliminado."
-  #    return false
-  #  end
-  #
-  #  # Check to see if user has selected a method of elimination
-  #  if params[:report][:elimination_method].blank?
-  #    flash[:alert] = flash[:alert].to_s + " Você tem que escolher um método de eliminação."
-  #    return false
-  #  end
-  #
-  #  return true
-  #end
-
-  #----------------------------------------------------------------------------
 
   def validate_address(location_params, report)
     if (location_params[:street_name].blank? && report.location.street_name.blank?) ||

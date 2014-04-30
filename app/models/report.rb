@@ -69,8 +69,6 @@ class Report < ActiveRecord::Base
 
   accepts_nested_attributes_for :location
 
-  #as_enum :status, [:reported, :eliminated, :sms_reported]
-
   scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
 
