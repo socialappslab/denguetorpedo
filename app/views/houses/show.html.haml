@@ -89,10 +89,11 @@
     .row{:style => "margin-top:-37px;"}
       %h2.span6 Focos marcados pela casa:
       #house_reports.span6
-        .row
-          .span6
-            #map{style: "margin-left:5px;height: 500px;position:relative;"}
-              = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:225px;left:195px;z-index:100"
+        - if @neighborhood.name == "Maré"
+          .row
+            .span6
+              #map{style: "margin-left:5px;height: 500px;position:relative;"}
+                = image_tag "loading.gif", id: "loading", style: "position:absolute;width:50px; height:50px;top:225px;left:195px;z-index:100"
 
         .row
           .span6
@@ -102,24 +103,24 @@
                   %a{:href => "#", :style => "color:black;", :id => "house_todos_report_button"}
                     #house_all_report_button.house_report_button.span1.active
                       .row
-                        = @house.reports.count
+                        = @reports.count
                       .row Todos
                 %li
                   %a{:href => "#", :id => "house_open_report_button"}
                     #house_open_report_button.house_report_button.span1
                       .row
-                        = @house.created_reports.count
+                        = @open_house_reports.count
                       .row Em aberto
                 %li
                   %a{:href => "#", :id => "house_resolved_report_button"}
                     #house_resolved_report_button.house_report_button.span1
                       .row
-                        = @house.eliminated_reports.count
+                        = @eliminated_house_reports.count
                       .row Eliminados
 
         .row
           #list_of_house_reports
-            - for report in @house.reports
+            - for report in @reports
               .row
                 - if report.status == Report::STATUS[:reported]
                   = render :partial => "/houses/open_report", :object => report

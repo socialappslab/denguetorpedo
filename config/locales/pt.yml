@@ -5,11 +5,12 @@ pt:
   attributes:
     title: "Título"
     neighborhood_id: "Comunidade"
+    name: Nome
   activerecord:
     models:
       user: Usuário
       feedback: Mensagem
-      house: Casa info
+      house: Casa
       documentation_section: Seção
     attributes:
       user:
