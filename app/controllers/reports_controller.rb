@@ -44,9 +44,6 @@ class ReportsController < NeighborhoodsBaseController
     # Remove report that incurred an error, it should be at the top already
     @reports.reject!{|r| r == params[:report]}
 
-    # Now, let's filter the reports based on the neighborhood.
-    @reports = @reports.find_all {|r| r.location && r.location.neighborhood_id == @neighborhood.id }
-
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
     @open_locations       = []
