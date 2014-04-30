@@ -97,7 +97,7 @@ class ReportReader < ActionMailer::Base
           logger.info "location: #{location}"
 
           before_photo = parsed_email.default_media
-          report_obj = Report.create_from_user(report, :status => :reported, :reporter => user, :location => location, :before_photo => before_photo)
+          report_obj = Report.create_from_user(report, :status => Report::STATUS[:reported], :reporter => user, :location => location, :before_photo => before_photo)
 
           if report_obj.save 
             logger.info "new report sucessfully added"

@@ -43,9 +43,9 @@
         - @reports.each do |report|
           - if report.sms_incomplete?
             = render :partial => "reports/sms.html.haml", :object => report, as: 'report'
-          - elsif report.status == :reported
+          - elsif report.status == Report::STATUS[:reported]
             = render :partial => "reports/open.html.haml", :object => report, as: 'report'
-          - elsif report.status == :eliminated
+          - elsif report.status == Report::STATUS[:eliminated]
             = render :partial => "reports/resolved.html.haml", :object => report, as: 'report'
 
       #new_report
@@ -188,7 +188,7 @@
 
 
           if (candidates.length == 0)
-            $("#map-error-description").text("O endereço não pode ser encontrado");
+            $("#map-error-description").show();
           else
           {
             map.graphics.clear();
@@ -204,19 +204,13 @@
             // Update the form so we can pass along the ESRI results.
             $("#new_report #report_location_attributes_latitude").val(latitude);
             $("#new_report #report_location_attributes_longitude").val(longitude);
-            $("#new_report #map-error-description").text("");
+            $("#new_report #map-error-description").hide();
           }
         },
-        error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
+        error: function() { $("#map-error-description").show(); },
         complete: function() { hideMapLoading(); }
       });
     });
-
-    $("#new_report #mark_map_btn").on("click", function()
-    {
-      $("#new_report #report_location_attributes_street_number").trigger("change")
-    });
-
 
     // Listener for "Ache no Mapa". This allows users to click a button
     // and see the map update to the location.
@@ -233,26 +227,23 @@
       return false;
     });
 
-    // if on new report tab add a marker when clicked and update values
-    // map.on('click', function(e){
-    //   if(new_report_tab){
-    //     map.graphics.clear();
-    //
-    //     $("input#x").val(e.mapPoint.x);
-    //     $("input#y").val(e.mapPoint.y);
-    //
-    //     var graphic = new Graphic(new Point(e.mapPoint.x, e.mapPoint.y), orangeMarker);
-    //
-    //     map.graphics.add(graphic);
-    //   }
-    // });
+    // Listener on the map. This allows users to click on the map, and update
+    // the location attributes with the clicked point.
+    map.on('click', function(e){
+      if ( $("#make_report_button").hasClass("active") ){
+        map.graphics.clear();
+        
+        var latitude  = e.mapPoint.x;
+        var longitude = e.mapPoint.y;
+        $("#new_report #report_location_attributes_latitude").val( latitude )
+        $("#new_report #report_location_attributes_longitude").val( longitude )
 
-    // TODO: WTF is this?
-    // map.on("extent-change", function(event) {
-    //   if (report_div) {
-    //     $("html, body").scrollTop($(report_div).offset().top - 20);
-    //   }
-    // });
+        var mapPoint = new Point(latitude, longitude);
+        var graphic  = new Graphic(mapPoint, orangeMarker);
+        map.graphics.add(graphic);
+      }
+    });
+
   });
 
 .row{style: "height:600px;"}

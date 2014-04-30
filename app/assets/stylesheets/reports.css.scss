@@ -428,4 +428,14 @@
   display:inline;
 }
 
+/* TODO fix overflowing height to look nicer */
+#report_elimination_method{
+  width: 90%;
+  height: auto;
+}
+
+.error_glow{
+  box-shadow: 0 0 10px red;
+}
+
 

@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   ROLES = ["morador", "logista", "visitante"]
+  MIN_PHONE_LENGTH = 7
+  PHONE_NUMBER_PLACEHOLDER = "000000000000"
 
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
@@ -62,10 +64,6 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  MIN_PHONE_LENGTH = 7
-  PHONE_NUMBER_PLACEHOLDER = "000000000000"
-
-  #----------------------------------------------------------------------------
 
   def location
     house && house.location
@@ -276,7 +274,7 @@ class User < ActiveRecord::Base
     location = Location.create
     location.update_attribute(:neighborhood_id, Neighborhood.first.id)
 
-    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
+    report = Report.new(reporter: self, :sms => true, :status => Report::STATUS[:sms], :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
     return report
   end
 

@@ -48,18 +48,6 @@
     // Helper functions.
     //------------------
 
-    function showLoading() {
-      $("#loading").show();
-      map.disableMapNavigation();
-      map.hideZoomSlider();
-    }
-
-    function hideLoading() {
-      $("#loading").hide();
-      map.enableMapNavigation();
-      map.showZoomSlider();
-    }
-
     function addGraphic(evt) {
       map.graphics.clear();
       map.enableMapNavigation();
@@ -81,8 +69,8 @@
     // Create the map
     //---------------
     map.addLayer(tiled);
-    map.on("update-start", showLoading);
-    map.on("update-end", hideLoading);
+    map.on("update-start", showMapLoading);
+    map.on("update-end", hideMapLoading);
     map.on("load", function() {
       tb = new Draw(map);
       tb.on("draw-end", addGraphic);
@@ -125,7 +113,7 @@
           var candidates = data.candidates;
 
           if (candidates.length == 0)
-            $("#map-error-description").text("O endereço não pode ser encontrado")
+            $("#map-error-description").show()
           else {
             latitude  = candidates[0].location.x
             longitude = candidates[0].location.y
@@ -141,10 +129,31 @@
             // Update the form so we can save the actual latitude/longitude.
             $("#report_location_attributes_latitude").val(latitude);
             $("#report_location_attributes_latitude").val(longitude);
+
+            $("#map-error-description").hide()
           }
         },
-        error: function()    { $("#map-error-description").text("O endereço não pode ser encontrado") },
-        complete: function() { hideLoading(); }
+        error: function()    { $("#map-error-description").show() },
+        complete: function() { hideMapLoading(); }
       });
     });
+
+    // Listener on the map. This allows users to click on the map, and update
+    // the location attributes with the clicked point.
+    map.on('click', function(e){
+      if ( $("#make_report_button").hasClass("active") ){
+        map.graphics.clear();
+
+        var latitude  = e.mapPoint.x;
+        var longitude = e.mapPoint.y;
+        $("#new_report #report_location_attributes_latitude").val( latitude )
+        $("#new_report #report_location_attributes_longitude").val( longitude )
+
+        var mapPoint = new Point(latitude, longitude);
+        var graphic  = new Graphic(mapPoint, orangeMarker);
+        map.graphics.add(graphic);
+      }
+    });
+
+
   });

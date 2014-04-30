@@ -1,24 +1,13 @@
-.span7#map_div{style: "margin-top:-63px;position:absolute;right:30px;overflow-y:hidden;overflow-x:hidden;"}
+.span7#map_div{style: "margin-top:-63px; position:absolute; right:30px;overflow-y:hidden;overflow-x:hidden;"}
   .row
-    .span8
-      .report_map_search
-        %h2 Ajuste o marcador na localização correta clicando no mapa.
-        %input{type: "button", value: "Vá para a Maré", id: "go_to_mare"}
-        -# - if false
-          -# %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}2. Ajuste o marcador na localização correta clicando no mapa.
-        -# - else
-        -#   %h2{style: 'margin-left: 10px;', title: "Para ajustar, dê um zoom ou arraste o mapa."} Ajuste para filtar os focos.
+    .span5
+      &nbsp;
+      #map-error-description{ style: "color: red; font-weight: bold; font-size: 10px; display: none;" }
+        Endereço não encontrado. Marque manualmente.
 
+    .span4
+    %input{type: "button", value: "Vá para a Maré", id: "go_to_mare"}
 
-          %h2{style: 'margin-left: 10px;'} Ou procure perto do endereço:
-          %svg{display:"inline", style: "width:30px;height:30px;float:left;margin-left:8px;margin-top:2px; "}
-            %path{d: "M 6 6 L18 6 L12 18z", style: "fill:blue;stroke:black;"}
-          %form{id: "address_search_form", style: "margin-bottom:0px;"}
-            %input.span6{:type => 'text', id: "address_search", :placeholder => 'Digite "Rua nº" e pressione enter.', :style => 'width: 280px;'}
-            %input{type: "button", value: "Vá para a Maré", style: "margin-left:325px;margin-bottom:10px;margin-top:-37px;font-size:12px;", id: "go_to_mare"}
-
-
-      .span#map-error-description{ style: "color: red; font-weight: bold; font-size: 16px;" }
 
   #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;overflow-y:hidden;"}
     #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}

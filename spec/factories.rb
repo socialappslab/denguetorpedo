@@ -1,3 +1,5 @@
+require 'rack/test'
+
 FactoryGirl.define do
 	factory :user do |user|
 		user.first_name { Faker::Name.first_name }
@@ -80,8 +82,14 @@ FactoryGirl.define do
 		date Date.new
 	end
 
-	factory :report do
-		status_cd 0
+  factory :report do
+		status Report::STATUS[:reported]
 		association :reporter, :factory => :user
-	end
+    elimination_type "Type"
+    report "Description"
+    before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+    neighborhood_id Neighborhood.first.id
+
+  end
+
 end
