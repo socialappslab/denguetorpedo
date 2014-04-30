@@ -7,6 +7,10 @@ class Report < ActiveRecord::Base
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
+
+  STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
+
+  #----------------------------------------------------------------------------
   # PaperClip configurations
   #-------------------------
 
@@ -25,15 +29,34 @@ class Report < ActiveRecord::Base
   belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :neighborhood
 
-  validates :status, :presence => true, unless: :sms?
-  validates :reporter_id, :presence => true
-  # validates :neighborhood_id, :presence => true
+  #----------------------------------------------------------------------------
+  # Validations
+  #-------------
+  # TODO :report validation fails unexpectedly
+  # When creating a new report and a user doesn't submit a picture, he'll get an error to add a picture
+  # After adding a picture if the user tries to submit again they'll get an error about having to provide
+  #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
+
+
+  # TODO refactor this code to be cleaner and find a better solution for all the scenarios
+  validates :neighborhood_id, :report, :reporter_id, :status, :presence => true
+
+
+  # SMS creation
+  validates :sms, :presence => true, :if => :sms?
+
+  # Web report creation
+  validates :before_photo, :elimination_type, :presence => true, :unless => :sms?
+
+  # Updating a SMS
+  validates :before_photo, :elimination_type, :presence => {:on => :update, :if => :sms_incomplete? }
+
+  # Eliminating a report
+  validates :after_photo, :elimination_method, :presence => {:on => :update, :unless => :sms_incomplete?}
 
   #----------------------------------------------------------------------------
 
   accepts_nested_attributes_for :location
-
-  as_enum :status, [:reported, :eliminated, :sms_reported]
 
   scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
@@ -83,8 +106,8 @@ class Report < ActiveRecord::Base
 
   # callback to create the feeds
   after_save do |report|
-    Feed.create_from_object(report, report.reporter_id, :reported) if report.reporter_id_changed?
-    Feed.create_from_object(report, report.eliminator_id, :eliminated) if report.eliminator_id_changed?
+    Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
+    Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
   end
 
   #----------------------------------------------------------------------------
@@ -102,11 +125,11 @@ class Report < ActiveRecord::Base
   end
 
   def self.identified_reports
-    where(:status_cd => Report.reported)
+    where(:status => STATUS[:reported])
   end
 
   def self.eliminated_reports
-    where(:status_cd => Report.eliminated)
+    where(:status => STATUS[:eliminated])
   end
 
   #----------------------------------------------------------------------------
@@ -187,8 +210,8 @@ class Report < ActiveRecord::Base
   end
 
   def self.invalidateExpired
-    Report.where("created_at < ?", (Time.now - 3.days)).where(:status_cd => 0).each do |report|
-      report.status_cd =1
+    Report.where("created_at < ?", (Time.now - 3.days)).where(:status => STATUS[:reported]).each do |report|
+      report.status = STATUS[:eliminated]
       report.report = "This report has expired, it was not resolved within three days"
       report.save!
     end

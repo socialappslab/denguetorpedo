@@ -27,8 +27,8 @@ class House < ActiveRecord::Base
   has_many :members, :class_name => "User"
   has_many :posts, :as => :wall
   has_many :all_reports, :through => :members
-  has_many :created_reports, :through => :members, :conditions => {:status_cd => 0}
-  has_many :eliminated_reports, :through => :members, :conditions => {:status_cd => 1}
+  has_many :created_reports, :through => :members, :conditions => {:status =>Report::STATUS[:reported]}
+  has_many :eliminated_reports, :through => :members, :conditions => {:status => Report::STATUS[:eliminated]}
 
   belongs_to :location
   belongs_to :neighborhood
@@ -59,7 +59,7 @@ class House < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def reports
-    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status_cd IS NOT NULL) ORDER BY "reports".updated_at DESC))
+    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status != "sms") ORDER BY "reports".updated_at DESC))
     ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
     _reports
   end

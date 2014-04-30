@@ -6,6 +6,8 @@ describe "Reports", :type => :feature do
   let(:other_user)       { FactoryGirl.create(:user) }
   let(:elimination_type) { EliminationType.first }
   let(:photo_filepath)   { File.expand_path("spec/support/foco_marcado.jpg") }
+  let(:photo_file) 			 { File.open("spec/support/foco_marcado.jpg") }
+  let(:uploaded_photo)    { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
   let(:location)         { FactoryGirl.create(:location, :neighborhood => Neighborhood.first) }
 
   #-----------------------------------------------------------------------------
@@ -23,7 +25,8 @@ describe "Reports", :type => :feature do
       attach_file("report_before_photo", photo_filepath)
       select(elimination_type.name, :from => "report_elimination_type")
       click_button "Enviar!"
-      expect(page).to have_content("Você tem que descrever o local e/ou o foco")
+      #expect(page).to have_content("Você tem que descrever o local e/ou o foco")
+      expect(page).to have_content("Report é obrigatório")
     end
 
     it "notifies the user if report before photo is empty" do
@@ -33,7 +36,9 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       select(elimination_type.name, :from => "report_elimination_type")
       click_button "Enviar!"
-      expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
+      #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
+      expect(page).to have_content("A foto do foco é obrigatório")
+
     end
 
     it "notifies the user if report location is empty" do
@@ -51,7 +56,9 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
       click_button "Enviar!"
-      expect(page).to have_content("Você tem que escolher um tipo de foco")
+      #expect(page).to have_content("Você tem que escolher um tipo de foco")
+      expect(page).to have_content("Tipo de foco é obrigatório")
+
     end
 
     context "successfully" do
@@ -113,7 +120,9 @@ describe "Reports", :type => :feature do
   context "Eliminating a Report" do
     let!(:report) { FactoryGirl.create(:report,
       :location_id => location.id,
-      :status => :reported,
+      :before_photo => uploaded_photo,
+      :report => "Description",
+      :status => Report::STATUS[:reported],
       :completed_at => Time.now,
       :reporter_id => user.id,
       :elimination_type => elimination_type.name,
@@ -188,7 +197,8 @@ describe "Reports", :type => :feature do
         click_button "Enviar!"
       end
 
-      expect(page).to have_content("Você tem que escolher um método de eliminação")
+      #expect(page).to have_content("Você tem que escolher um método de eliminação")
+      expect(page).to have_content("Elimination method é obrigatório")
     end
 
     it "notifies user if after photo isn't selected" do
@@ -199,7 +209,8 @@ describe "Reports", :type => :feature do
         click_button "Enviar!"
       end
 
-      expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
+      #expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
+      expect(page).to have_content("After photo é obrigatório")
     end
   end
 
@@ -250,7 +261,8 @@ describe "Reports", :type => :feature do
       select(elimination_type.name, :from => "report_elimination_type")
       click_button "Enviar!"
 
-      expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
+      #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
+      expect(page).to have_content("A foto do foco é obrigatório")
     end
 
     it "notifies the user if identification type is empty" do
@@ -263,7 +275,7 @@ describe "Reports", :type => :feature do
       attach_file("report_before_photo", photo_filepath)
       click_button "Enviar!"
 
-      expect(page).to have_content("Você tem que escolher um tipo de foco")
+      expect(page).to have_content("Tipo de foco é obrigatório")
     end
 
     it "appears in the reports list as completed" do

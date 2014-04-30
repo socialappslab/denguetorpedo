@@ -1,4 +1,8 @@
 class EliminationMethodsController < ApplicationController
+  # Used in creating and editing elimination types and methods via reports/types.html.haml
+  # TODO - This doesn't seem like the best way to handle updating types and methods
+  # TODO - Check security for ajax calls to update methods
+
 	def create
 		@method = EliminationMethod.new(method: params[:name], points: params[:points])
 		@type = EliminationType.find(params[:type_id])

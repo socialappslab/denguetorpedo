@@ -37,6 +37,9 @@
         %td 
           = link_to "Salvar", "", class: "new_method type_#{type.id}", id: "new_method_#{type.id}", data: { id: type.id }
         %td
+
+  -# TODO remove JS from view and put into file'
+
   :javascript
     $("#type_submit").click(function() {
       var name = $("#type_name").val();

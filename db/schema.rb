@@ -11,13 +11,31 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140424191607) do
+ActiveRecord::Schema.define(:version => 20140425204643) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
     t.string   "email"
     t.string   "name"
     t.text     "message"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "descriptions", :force => true do |t|
+    t.datetime "time"
+    t.string   "text"
+    t.string   "description"
+    t.string   "updated_by"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "documentation_sections", :force => true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "editor_id"
+    t.integer  "creator_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -83,6 +101,14 @@ ActiveRecord::Schema.define(:version => 20140424191607) do
     t.string   "street_type",       :default => ""
     t.string   "street_name",       :default => ""
     t.string   "street_number",     :default => ""
+  end
+
+  create_table "manual_instructions", :force => true do |t|
+    t.string  "title"
+    t.text    "description"
+    t.integer "user_id"
+    t.time    "created_at",  :null => false
+    t.time    "updated_at",  :null => false
   end
 
   create_table "neighborhoods", :force => true do |t|
@@ -182,10 +208,8 @@ ActiveRecord::Schema.define(:version => 20140424191607) do
     t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
-    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
-    t.integer  "status"
     t.integer  "eliminator_id"
     t.integer  "location_id"
     t.string   "before_photo_file_name"
@@ -214,6 +238,7 @@ ActiveRecord::Schema.define(:version => 20140424191607) do
     t.boolean  "is_credited"
     t.integer  "feed_type_cd"
     t.integer  "neighborhood_id"
+    t.string   "status"
   end
 
   create_table "users", :force => true do |t|
