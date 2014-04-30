@@ -66,15 +66,14 @@ describe ReportsController do
 
 				it "should display after completing" do
 					report 						 = Report.find_by_report("Not in my house!")
-					report.status 			= :reported
-					report.status_cd 	 = 1
+					report.status 			= Report::STATUS[:reported]
 					report.completed_at = Time.now
-					report.save!
+					report.save!(:validate => false)
 
 					sign_in(user)
 					visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
 
-					expect(report.reload.status_cd).to eq(1)
+					expect(report.reload.status).to eq(Report::STATUS[:reported])
 					expect(page).to have_content("Not in my house!")
 				end
 			end
@@ -134,7 +133,7 @@ describe ReportsController do
 				}.to change(Report, :count).by(1)
 
 				report = Report.find_by_report("Rua Tatajuba 1")
-				expect(report.status_cd).to eq(nil)
+				expect(report.status).to eq(Report::STATUS[:sms])
 				expect(report.neighborhood_id).to eq(user.neighborhood_id)
 				expect(report.sms).to eq(true)
 			end
@@ -219,15 +218,22 @@ describe ReportsController do
 
 				expect(Report.last.location.latitude).to  eq(50.0)
 				expect(Report.last.location.longitude).to eq(40.0)
-			end
-		end
+      end
+
+    end
+
+
 	end
 
 	#-----------------------------------------------------------------------------
 
 	context "Updating a report" do
 		let(:location) { FactoryGirl.create(:location) }
-		let(:report)   { FactoryGirl.create(:report, :location => location, :reporter => user) }
+		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+                                        :location => location,
+                                        :reporter => user,
+                                        :elimination_type => elimination_type,
+                                        :report => "Description") }
 
 		before(:each) do
 			cookies[:auth_token] = user.auth_token

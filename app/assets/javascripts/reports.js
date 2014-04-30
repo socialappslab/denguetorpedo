@@ -9,7 +9,7 @@ $(document).ready(function() {
 
     if($('#error').val() == "true"){
         // update CSS to show it being selected
-        selected_tab_css_update('new_report_button');
+        selected_tab_css_update('make_report_button');
 
         // hide open/elimanted reports
         $('.report').each(function(){
@@ -125,8 +125,9 @@ function selected_tab_css_update(id){
     $.each(report_tabs, function(i, tab_id){
         if (tab_id == id)
             $("#" + tab_id).addClass('active');
-        else
+        else {
             $("#" + tab_id).removeClass('active');
+        }
     })
 }
 

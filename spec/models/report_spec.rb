@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'rack/test'
 
 describe Report do
 	it "validates status" do
@@ -21,15 +22,22 @@ describe Report do
   describe "fetching" do
 		let(:user) { FactoryGirl.create(:user) }
   	before(:each) do
-  		@identified1 = FactoryGirl.create(:report, :elimination_type => "Type")
-  		@identified2 = FactoryGirl.create(:report, :elimination_type => "Type")
-  		@identified3 = FactoryGirl.create(:report, :elimination_type => "Type")
 
-  		@eliminated1 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
-  		@eliminated2 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
-  		@eliminated3 = FactoryGirl.create(:report, :elimination_method => "Method", :status_cd => 1, :eliminator => user)
-  	end
+      eliminated_attributes = {:elimination_method => "Method",
+                               :status => Report::STATUS[:eliminated],
+                               :eliminator => user,
+                               :after_photo => Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')}
 
+  		@identified1 = FactoryGirl.create(:report)
+  		@identified2 = FactoryGirl.create(:report)
+  		@identified3 = FactoryGirl.create(:report)
+
+  		@eliminated1 = FactoryGirl.create(:report, eliminated_attributes)
+      @eliminated2 = FactoryGirl.create(:report, eliminated_attributes)
+      @eliminated3 = FactoryGirl.create(:report, eliminated_attributes)
+
+    end
+		
   	context "identified reports" do
 			it "returns identified results" do
 				Report.identified_reports.should ==  [@identified1, @identified2, @identified3]

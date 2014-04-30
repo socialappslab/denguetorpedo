@@ -121,9 +121,9 @@
           #list_of_house_reports
             - for report in @house.reports
               .row
-                - if report.status == :reported
+                - if report.status == Report::STATUS[:reported]
                   = render :partial => "/houses/open_report", :object => report
-                - if report.status == :eliminated
+                - if report.status == Report::STATUS[:eliminated]
                   = render :partial => "/houses/resolved_report", :object => report
 
 :javascript

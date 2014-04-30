@@ -27,6 +27,7 @@ pt:
         message: Mensagem
       report:
         before_photo: A foto do foco
+        elimination_type: Tipo de foco
       documentation_section: Conteúdo
     errors:
       attributes:

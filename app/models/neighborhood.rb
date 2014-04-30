@@ -41,7 +41,7 @@ class Neighborhood < ActiveRecord::Base
     open_reports = []
     self.members.each do |member|
       member.reports.each do |report|
-        open_report = open_reports.append(report) if report.status == :reported
+        open_report = open_reports.append(report) if report.status == Report::STATUS[:reported]
       end
     end
     open_reports
@@ -51,7 +51,7 @@ class Neighborhood < ActiveRecord::Base
     eliminated_reports = []
     self.members.each do |member|
       member.reports.each do |report|
-        eliminated_report = eliminated_reports.append(report) if report.status == :eliminated
+        eliminated_report = eliminated_reports.append(report) if report.status == Report::STATUS[:eliminated]
       end
     end
     eliminated_reports

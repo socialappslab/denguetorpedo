@@ -18,17 +18,18 @@
         %li
           #neighborhood_open_report_button
             .button_text
-              %h1.darkgray_text= @neighborhood.reports.where(:status_cd => Report.reported).count
+              %h1.darkgray_text= @neighborhood.reports.where(:status => Report::STATUS[:reported]).count
               %p.darkgray_text open
         %li
           #neighborhood_claimed_report_button
             .button_text
+              -# TODO not sure what Report.claimed is
               %h1.darkgray_text= @neighborhood.reports.where(:status_cd => Report.claimed).count
               %p.darkgray_text claimed
         %li
           #neighborhood_resolved_report_button
             .button_text
-              %h1.darkgray_text= @neighborhood.reports.where(:status_cd => Report.eliminated).count
+              %h1.darkgray_text= @neighborhood.reports.where(:status => Report::STATUS[:eliminated]).count
               %p.darkgray_text resolved
         %li
           #status_text
