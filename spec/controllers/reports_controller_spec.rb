@@ -123,7 +123,7 @@ describe ReportsController do
         }.to change(Report, :count).by(1)
 
         report = Report.find_by_report("Testing the date")
-        expect(report.created_at.strftime("%d %b. %Y")).to eq(Time.now.strftime("%d %b. %Y"))
+        expect(report.created_at.strftime("%b. %Y")).to eq(Time.now.strftime("%b. %Y"))
       end
 
 
@@ -249,7 +249,7 @@ describe ReportsController do
 				:elimination_method => elimination_type.elimination_methods.first.method
 			}
 		end
-		
+
 		it "saves the location attributes" do
 			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:location_attributes => location_hash,
