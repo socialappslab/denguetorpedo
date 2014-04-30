@@ -188,7 +188,7 @@
 
 
           if (candidates.length == 0)
-            $("#map-error-description").text("O endereço não pode ser encontrado");
+            $("#map-error-description").show();
           else
           {
             map.graphics.clear();
@@ -204,10 +204,10 @@
             // Update the form so we can pass along the ESRI results.
             $("#new_report #report_location_attributes_latitude").val(latitude);
             $("#new_report #report_location_attributes_longitude").val(longitude);
-            $("#new_report #map-error-description").text("");
+            $("#new_report #map-error-description").hide();
           }
         },
-        error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
+        error: function() { $("#map-error-description").show(); },
         complete: function() { hideMapLoading(); }
       });
     });

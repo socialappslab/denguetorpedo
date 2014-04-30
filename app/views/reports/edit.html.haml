@@ -125,7 +125,7 @@
           var candidates = data.candidates;
 
           if (candidates.length == 0)
-            $("#map-error-description").text("O endereço não pode ser encontrado")
+            $("#map-error-description").show()
           else {
             latitude  = candidates[0].location.x
             longitude = candidates[0].location.y
@@ -141,9 +141,11 @@
             // Update the form so we can save the actual latitude/longitude.
             $("#report_location_attributes_latitude").val(latitude);
             $("#report_location_attributes_latitude").val(longitude);
+
+            $("#map-error-description").hide()
           }
         },
-        error: function()    { $("#map-error-description").text("O endereço não pode ser encontrado") },
+        error: function()    { $("#map-error-description").show() },
         complete: function() { hideLoading(); }
       });
     });

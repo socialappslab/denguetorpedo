@@ -1,6 +1,13 @@
 .span7#map_div{style: "margin-top:-63px; position:absolute; right:30px;overflow-y:hidden;overflow-x:hidden;"}
-  %input{type: "button", value: "Vá para a Maré", id: "go_to_mare", style: "float: right;"}
-  .span#map-error-description{ style: "color: red; font-weight: bold; font-size: 16px;" }
+  .row
+    .span5
+      &nbsp;
+      #map-error-description{ style: "color: red; font-weight: bold; font-size: 10px; display: none;" }
+        Endereço não encontrado. Marque manualmente.
+
+    .span4
+    %input{type: "button", value: "Vá para a Maré", id: "go_to_mare"}
+
 
   #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;overflow-y:hidden;"}
     #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}
