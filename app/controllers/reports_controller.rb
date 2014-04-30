@@ -131,7 +131,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # An error has occurred
     else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
+      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
 
       redirect_to neighborhood_reports_path(@neighborhood,
         :params => {:new_report => params[:report].except(:before_photo), :location => location.id}) and return
