@@ -93,6 +93,17 @@
       - @prizes.shuffle.each do |prize|
         = render :partial => "prizes/prize", :object => prize
 
+      %li.span3.prizes.possible
+        .status.possible
+          .name{style: "height:20px;"}
+          .points
+        .prize_content
+          .description{:style => "height: 100%;"}
+            %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
+              = link_to "+ Mais", neighborhood_path(@selected_neighborhood)
+
+
+
 
 
 /------------------------------------------------------------------------------
@@ -124,7 +135,3 @@
     <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
 
 /------------------------------------------------------------------------------
-
-- if flash[:alert]
-  %script
-    alert("#{flash[:alert]}");

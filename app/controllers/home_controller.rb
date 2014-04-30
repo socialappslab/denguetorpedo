@@ -19,16 +19,15 @@ class HomeController < ApplicationController
     end
 
     @selected_neighborhood = @all_neighborhoods.first
-    @participants          = @selected_neighborhood.members.where('role != ?', "lojista")
 
     @notices      = @selected_neighborhood.notices.limit(5).order(:date)
-    @houses       = @participants.map { |participant| participant.house }.uniq.shuffle
+    @houses       = @selected_neighborhood.houses.limit(5) # @participants.map { |participant| participant.house }.shuffle
 
     # We want to limit number of houses displayed on the splash page for non-logged
     # in users.
     @houses = @houses[0..5] if @current_user.nil?
 
-    @prizes       = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new)
+    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).limit(3)
   end
 
   #----------------------------------------------------------------------------
