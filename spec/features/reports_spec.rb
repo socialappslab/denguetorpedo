@@ -57,7 +57,7 @@ describe "Reports", :type => :feature do
       attach_file("report_before_photo", photo_filepath)
       click_button "Enviar!"
       #expect(page).to have_content("Você tem que escolher um tipo de foco")
-      expect(page).to have_content("Elimination type é obrigatório")
+      expect(page).to have_content("Tipo de foco é obrigatório")
 
     end
 
@@ -275,8 +275,7 @@ describe "Reports", :type => :feature do
       attach_file("report_before_photo", photo_filepath)
       click_button "Enviar!"
 
-      #expect(page).to have_content("Você tem que escolher um tipo de foco")
-      expect(page).to have_content("Elimination type é obrigatório")
+      expect(page).to have_content("Tipo de foco é obrigatório")
     end
 
     it "appears in the reports list as completed" do
