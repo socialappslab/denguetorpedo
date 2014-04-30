@@ -49,7 +49,7 @@ puts "\n" * 3
 
 
 Neighborhood.find_or_create_by_name("Maré")
-Neighborhood.find_or_create_by_name("Vila Autódromo")
+# Neighborhood.find_or_create_by_name("Vila Autódromo")
 
 puts "\n" * 3
 puts "[ok] Done seeding neighborhoods..."
