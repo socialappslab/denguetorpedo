@@ -37,14 +37,8 @@
         = f.select :elimination_type, EliminationType.pluck(:name), :prompt => "Selecione o tipo de foco"
       %br
 
-      #location
-        %h3.new_report_label.inline_display 5.
-        = link_to "Marcar no mapa", "#", id:'mark_map_btn', class: 'bttn'
-        %br
-        %br
-
       #attention_div
-      %p
+      %p{style: "font-weight: bold;"}
         %b{style: "color:red;"}
           ATENÇÃO:
         O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador.
