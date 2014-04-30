@@ -36,7 +36,7 @@ class HomeController < ApplicationController
   end
 
   def howto
-    @sections = DocumentationSection.all
+    @sections = DocumentationSection.order("order_id ASC")
   end
 
 end

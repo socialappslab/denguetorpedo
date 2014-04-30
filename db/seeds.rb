@@ -128,9 +128,10 @@ puts "-" * 80
 
 ds = DocumentationSection.find_by_title("Como se cadastrar")
 if ds.nil?
-  ds         = DocumentationSection.new
-  ds.title   = "Como se cadastrar"
-  ds.content = "Fazer o seu cadastro no Dengue Torpedo (DT) é fácil!
+  ds          = DocumentationSection.new
+  ds.order_id = 1
+  ds.title    = "Como se cadastrar"
+  ds.content  = "Fazer o seu cadastro no Dengue Torpedo (DT) é fácil!
   Na página inicial insira todas as informações nos campos solicitados.
   Email;
   Nome;
@@ -151,9 +152,10 @@ end
 
 ds = DocumentationSection.find_by_title("Como completar sua conta")
 if ds.nil?
-  ds = DocumentationSection.new
-  ds.title = "Como completar sua conta"
-  ds.content = "Para completar a sua conta você precisa fornecer mais alguns dados pessoais.
+  ds          = DocumentationSection.new
+  ds.order_id = 2
+  ds.title    = "Como completar sua conta"
+  ds.content  = "Para completar a sua conta você precisa fornecer mais alguns dados pessoais.
    Assim que você apertar o botão Cadastre-se na página principal, você será direcionado para a página de Configurações.
    Nela os dados que você inseriu na página principal já estarão preenchidos. Você só precisa inserir os outros dados que ajudarão a personalizar a sua conta, deixando ela com a sua cara!  Os campos estão divididos em dois grupos: Configurações de morador e Configurações da casa.
 
@@ -190,9 +192,10 @@ end
 
 ds = DocumentationSection.find_by_title("Barra de navegação")
 if ds.nil?
-  ds = DocumentationSection.new
-  ds.title = "Barra de navegação"
-  ds.content = "Na barra de navegação você encontra os links para acessar cada página do site:
+  ds          = DocumentationSection.new
+  ds.order_id = 3
+  ds.title    = "Barra de navegação"
+  ds.content  = "Na barra de navegação você encontra os links para acessar cada página do site:
 
      * Meu Perfil;
      * Minha Casa;
@@ -212,9 +215,10 @@ end
 
 ds = DocumentationSection.find_by_title("O que é um foco?")
 if ds.nil?
-  ds = DocumentationSection.new
-  ds.title = "O que é um foco?"
-  ds.content = "Um foco é um lugar com água parada, geralmente limpo, onde os mosquitos põem seus ovos.
+  ds          = DocumentationSection.new
+  ds.order_id = 4
+  ds.title    = "O que é um foco?"
+  ds.content  = "Um foco é um lugar com água parada, geralmente limpo, onde os mosquitos põem seus ovos.
 
      Dengue Torpedo reconhece que há dois tipos de focos:
      * Focos ativos -- com pupas ou larvas de mosquito;
@@ -228,9 +232,10 @@ end
 
 ds = DocumentationSection.find_by_title("Como jogar")
 if ds.nil?
-  ds = DocumentationSection.new
-  ds.title = "Como jogar"
-  ds.content = "Há várias formas de jogar. Você pode:
+  ds          = DocumentationSection.new
+  ds.order_id = 5
+  ds.title    = "Como jogar"
+  ds.content  = "Há várias formas de jogar. Você pode:
 
   * Marcar focos;
   * Eliminar focos;
@@ -370,9 +375,10 @@ end
 
 ds = DocumentationSection.find_by_title("Como ganhar")
 if ds.nil?
-  ds = DocumentationSection.new
-  ds.title = "Como ganhar"
-  ds.content = "Ganhando pontos
+  ds          = DocumentationSection.new
+  ds.order_id = 6
+  ds.title    = "Como ganhar"
+  ds.content  = "Ganhando pontos
   ---------------
    No Dengue Torpedo cada jogador ganha pontos de acordo com as suas ações no combate da dengue. Por exemplo:
 
@@ -525,9 +531,10 @@ end
 
 ds = DocumentationSection.find_by_title("Como participar")
 if ds.nil?
-  ds         = DocumentationSection.new
-  ds.title   = "Como participar"
-  ds.content = "O Dengue Torpedo está sendo lançado no bairro da Maré. Essa é uma iniciativa pioneira que se der certo será expandida para outros bairros da cidade. Dessa forma, apenas moradores da Maré podem participar dessa fase pioneira.
+  ds          = DocumentationSection.new
+  ds.order_id = 7
+  ds.title    = "Como participar"
+  ds.content  = "O Dengue Torpedo está sendo lançado no bairro da Maré. Essa é uma iniciativa pioneira que se der certo será expandida para outros bairros da cidade. Dessa forma, apenas moradores da Maré podem participar dessa fase pioneira.
 
   Moradores
   ---------
@@ -555,10 +562,10 @@ end
 
 ds = DocumentationSection.find_by_title("Minha comunidade")
 if ds.nil?
-  ds         = DocumentationSection.new
-  ds.title   = "Minha comunidade"
-  ds.content = "A página 'Minha Comunidade' é onde você encontra as casas participantes e outros destaques da sua comunidade. É nessa página que você encontra notícias, oficinas e outras atividades."
-
+  ds          = DocumentationSection.new
+  ds.order_id = 8
+  ds.title    = "Minha comunidade"
+  ds.content  = "A página 'Minha Comunidade' é onde você encontra as casas participantes e outros destaques da sua comunidade. É nessa página que você encontra notícias, oficinas e outras atividades."
   ds.save!
 end
 
