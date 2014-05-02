@@ -1,24 +1,5 @@
 # encoding: UTF-8
 
-# == Schema Information
-#
-# Table name: houses
-#
-#  id                         :integer          not null, primary key
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#  name                       :string(255)
-#  featured_event_id          :integer
-#  location_id                :integer
-#  profile_photo_file_name    :string(255)
-#  profile_photo_content_type :string(255)
-#  profile_photo_file_size    :integer
-#  profile_photo_updated_at   :datetime
-#  phone_number               :string(255)      default("")
-#  house_type                 :string(255)      default("morador")
-#  user_id                    :integer
-#
-
 class House < ActiveRecord::Base
   attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes, :neighborhood_id
 
@@ -51,12 +32,6 @@ class House < ActiveRecord::Base
     self.location.complete_address
   end
 
-  # def reports
-  #   _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status != "sms") ORDER BY "reports".updated_at DESC))
-  #   ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
-  #   _reports
-  # end
-
   def self.find_or_create(name, address, neighborhood, profile_photo=nil)
     if name.nil? || name.blank?
       return nil
@@ -71,10 +46,7 @@ class House < ActiveRecord::Base
       house.save
       return house
     end
-
-    # address is not required
-    #return nil if address.nil? || address.blank?
-
+    
     # create the location
     location = Location.find_or_create(address, neighborhood)
 

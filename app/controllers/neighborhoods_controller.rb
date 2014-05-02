@@ -10,7 +10,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @coordinators = @participants.where(:role => User::Types::COORDINATOR)
     @verifiers    = @participants.where(:role => User::Types::VERIFIER)
 
-    @houses  = @neighborhood.houses
+    @houses  = @neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
     @reports = @neighborhood.reports
     @notices = @neighborhood.notices.order("updated_at DESC")
 

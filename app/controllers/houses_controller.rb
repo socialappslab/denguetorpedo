@@ -3,16 +3,14 @@ class HousesController < NeighborhoodsBaseController
   before_filter :require_login
 
   def show
-    @house = House.includes(:members, :posts, :location).find(params[:id])
+    @house = House.includes(:members, :posts).find(params[:id])
 
     head :not_found and return if @house.nil?
-    head :not_found and return if @house.user.role == "lojista"
+    head :not_found and return if @house.user.role == User::Types::SPONSOR
 
     @post = Post.new
     excluded_roles = ["lojista", "verificador"]
-    @mare      = Neighborhood.find_by_name('Maré')
-    @neighbors = House.joins(:location).joins(:user)
-    @neighbors = @neighbors.where(:locations => { :neighborhood_id => @neighborhood.id})
+    @neighbors = House.joins(:user).where(:neighborhood_id => @neighborhood.id)
     @neighbors = @neighbors.where('users.role NOT IN (?) AND houses.id != ?', excluded_roles, @house.id).uniq.shuffle[0..6]
 
     # TODO: Make this specific to each neighborhood.
