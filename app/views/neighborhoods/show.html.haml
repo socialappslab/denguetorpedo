@@ -25,9 +25,9 @@
 .row
   #neighborhood_view{:style => "font-weight:bold;"}
     .span.offset1
-      = link_to 'Casas (' + @number_of_houses.to_s + ')', neighborhood_path(params[:id]), :class => @houses_view_active
+      = link_to 'Casas (' + @houses.count.to_s + ')', neighborhood_path(params[:id]), :class => @houses_view_active
     .span
-      = link_to 'Participantes (' + @number_of_participants.to_s + ')', neighborhood_path(params[:id], :view => 'participants'), :class => @participants_view_active
+      = link_to 'Participantes (' + @participants.count.to_s + ')', neighborhood_path(params[:id], :view => 'participants'), :class => @participants_view_active
 %br
 .row
   - if params[:view] == 'participants'

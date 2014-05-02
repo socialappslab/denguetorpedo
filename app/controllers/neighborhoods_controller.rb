@@ -8,20 +8,12 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @participants = @neighborhood.members.where('role != ?', "lojista").where(is_blocked: false).order(:first_name)
     @participants_view_active = ''
 
-    @houses = @participants.map { |participant| participant.house }.uniq
-    @total_reports_in_neighborhood = @neighborhood.total_reports.count
-    @opened_reports_in_neighborhood = @neighborhood.open_reports.count
+    @houses                             = @neighborhood.houses
+    @total_reports_in_neighborhood      = @neighborhood.total_reports.count
+    @opened_reports_in_neighborhood     = @neighborhood.open_reports.count
     @eliminated_reports_in_neighborhood = @neighborhood.eliminated_reports.count
-    @number_of_houses = @houses.count
-    @number_of_participants = @participants.count
 
     @notices = @neighborhood.notices.order(:date)
-    @highlightNeighborhoodItem = ""
-
-    if (@current_user != nil && (@neighborhood.members.member? @current_user))
-      @highlightNeighborhoodItem = "nav_highlight"
-    end
-
 
     @houses_view_active = ''
 
