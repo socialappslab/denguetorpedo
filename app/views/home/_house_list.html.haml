@@ -1,5 +1,5 @@
 %ul#house_list
-  - @houses.each do |house|
+  - @houses.shuffle.each do |house|
     %li
       #house_photo_thumb
         - if house.profile_photo_file_name.nil?
