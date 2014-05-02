@@ -13,7 +13,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @opened_reports_in_neighborhood     = @neighborhood.open_reports.count
     @eliminated_reports_in_neighborhood = @neighborhood.eliminated_reports.count
 
-    @notices = @neighborhood.notices.order(:date)
+    @notices = @neighborhood.notices.order("updated_at DESC")
 
     @houses_view_active = ''
 
