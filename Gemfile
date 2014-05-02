@@ -110,13 +110,10 @@ group :test, :development do
 end
 
 group :test do
-  gem 'cucumber-rails-training-wheels' # some pre-fabbed step definitions
-  gem 'cucumber-rails', :require => false
   gem 'guard-rspec'
-  gem 'database_cleaner' # to clear Cucumber's test database between runs
+  gem 'database_cleaner'
 
   gem 'faker'
-  # gem 'sms-spec'
 end
 
 #------------------------------------------------------------------------------
