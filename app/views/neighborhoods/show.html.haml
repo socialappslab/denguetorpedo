@@ -72,10 +72,10 @@
                     = notice.location
                   .row
                     Data
-                    = notice.date.strftime("%d/%m/%Y")
+                    = notice.updated_at.strftime("%d/%m/%Y")
                   .row
                     Hora
-                    = notice.date.strftime("%H:%M")
+                    = notice.updated_at.strftime("%H:%M")
 
 
   - else
@@ -95,7 +95,7 @@
               Futura casa
       .row{style: "margin-top:50px;"}
         %h2 Notícias da comunidade
-      #neighborhood_news{style: "height:310px;overflow-x:scroll;width:690px;"}
+      #neighborhood_news{style: "height:400px;overflow-x:scroll;width:690px;"}
         %ul
           - @notices.each do |notice|
             %a{:href => notice_path(notice)}
@@ -119,10 +119,10 @@
                     = notice.location
                   .row
                     Data
-                    = notice.date.strftime("%d/%m/%Y")
+                    = notice.updated_at.strftime("%d/%m/%Y")
                   .row
                     Hora
-                    = notice.date.strftime("%H:%M")
+                    = notice.updated_at.strftime("%H:%M")
   #neighborhood_right_panel.span5{:style => "margin-top:-165px;margin-left:0px;"}
     %h2 Destaques da comunidade
     .row
