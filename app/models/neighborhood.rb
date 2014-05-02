@@ -14,7 +14,7 @@ class Neighborhood < ActiveRecord::Base
 
   has_many :locations
   has_many :houses
-  has_many :members, :through => :houses
+  has_many :members, :class_name => "User"
   has_many :reports, :through => :locations
 
   has_many :notices
