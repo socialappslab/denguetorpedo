@@ -15,7 +15,7 @@ class Neighborhood < ActiveRecord::Base
   has_many :locations
   has_many :houses
   has_many :members, :class_name => "User"
-  has_many :reports, :through => :locations
+  has_many :reports
 
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
@@ -27,34 +27,41 @@ class Neighborhood < ActiveRecord::Base
     0
   end
 
+  # TODO: Deprecate this.
   def total_reports
-    total_reports = []
-    self.members.each do |member|
-      member.reports.each do |report|
-        total_report = total_reports.append(report)
-      end
-    end
-    total_reports
+    # total_reports = []
+    # self.members.each do |member|
+    #   member.reports.each do |report|
+    #     total_report = total_reports.append(report)
+    #   end
+    # end
+    # total_reports
+
+    return self.reports.to_a
   end
 
   def open_reports
-    open_reports = []
-    self.members.each do |member|
-      member.reports.each do |report|
-        open_report = open_reports.append(report) if report.status == Report::STATUS[:reported]
-      end
-    end
-    open_reports
+    # open_reports = []
+    # self.members.each do |member|
+    #   member.reports.each do |report|
+    #     open_report = open_reports.append(report) if report.status == Report::STATUS[:reported]
+    #   end
+    # end
+    # open_reports
+
+    return self.reports.where(:status => Report::STATUS[:reported]).to_a
   end
 
   def eliminated_reports
-    eliminated_reports = []
-    self.members.each do |member|
-      member.reports.each do |report|
-        eliminated_report = eliminated_reports.append(report) if report.status == Report::STATUS[:eliminated]
-      end
-    end
-    eliminated_reports
+    # eliminated_reports = []
+    # self.members.each do |member|
+    #   member.reports.each do |report|
+    #     eliminated_report = eliminated_reports.append(report) if report.status == Report::STATUS[:eliminated]
+    #   end
+    # end
+    # eliminated_reports
+
+    return self.reports.where(:status => Report::STATUS[:eliminated]).to_a
   end
 
 end
