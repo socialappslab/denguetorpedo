@@ -7,7 +7,7 @@ tmp/
 *#
 *.swp
 *.swo
-*.DS_Store
+.DS_Store
 public/system/
 .idea
 .idea/*
