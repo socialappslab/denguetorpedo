@@ -51,11 +51,11 @@ class House < ActiveRecord::Base
     self.location.complete_address
   end
 
-  def reports
-    _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status != "sms") ORDER BY "reports".updated_at DESC))
-    ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
-    _reports
-  end
+  # def reports
+  #   _reports = Report.find_by_sql(%Q(SELECT DISTINCT "reports".* FROM "reports", "users" WHERE (("reports".reporter_id = "users".id OR "reports".eliminator_Id = "users".id) AND "users".house_id = #{id} AND "reports".status != "sms") ORDER BY "reports".updated_at DESC))
+  #   ActiveRecord::Associations::Preloader.new(_reports, [:location]).run
+  #   _reports
+  # end
 
   def self.find_or_create(name, address, neighborhood, profile_photo=nil)
     if name.nil? || name.blank?
