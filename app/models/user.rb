@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
     COORDINATOR = "coordenador"
     SPONSOR     = "lojista"
     VERIFIER    = "verificador"
+    RESIDENT    = "morador"
   end
 
   has_secure_password

@@ -1,12 +1,12 @@
 .row
   .span15.offset1
     %h1
-      - if @house.user.role == "verificador"
+      - if @house.user && @house.user.role == User::Types::VERIFIER
         - if @house.user.gender == true
           #{@house.name} (verificador)
         - else
           #{@house.name} (verificadora)
-      - elsif @house.user.role == "coordenador"
+      - elsif @house.user && @house.user.role == User::Types::COORDINATOR
         - if @house.user.gender == true
           Casa #{@house.name} (coordenador)
         - else

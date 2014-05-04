@@ -14,7 +14,7 @@ FactoryGirl.define do
 		user.carrier "XXX"
 		user.prepaid true
 		association :house
-		role "morador"
+		role 			 User::Types::RESIDENT
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
 		profile_photo_file_size 1024

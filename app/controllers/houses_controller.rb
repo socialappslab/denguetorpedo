@@ -6,7 +6,7 @@ class HousesController < NeighborhoodsBaseController
     @house = House.includes(:members, :posts).find(params[:id])
 
     head :not_found and return if @house.nil?
-    head :not_found and return if @house.user.role == User::Types::SPONSOR
+    head :not_found and return if @house.user && @house.user.role == User::Types::SPONSOR
 
     @post = Post.new
     excluded_roles = ["lojista", "verificador"]
