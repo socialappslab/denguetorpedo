@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+#------------------------------------------------------------------------------
+
 def populate_notices
   mare = Neighborhood.find_by_name('Maré')
 
@@ -8,6 +10,7 @@ def populate_notices
   end
 end
 
+#------------------------------------------------------------------------------
 
 def populate_houses
   mare = Neighborhood.find_by_name('Maré')
@@ -18,3 +21,15 @@ def populate_houses
 
   House.create!(:neighborhood_id => mare.id, :name => "House Sponsor!", :house_type => "lojista")
 end
+
+#------------------------------------------------------------------------------
+
+def populate_sponsors
+  mare = Neighborhood.find_by_name('Maré')
+
+  5.times do |index|
+    User.create!(:email => "sponsor_#{index}@denguetorpedo.com", :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
+  end
+end
+
+#------------------------------------------------------------------------------

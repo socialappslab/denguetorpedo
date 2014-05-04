@@ -19,8 +19,8 @@
           %b= @eliminated_reports_in_neighborhood
           %br eliminados
 %br
-%br
 
+/------------------------------------------------------------------------------
 
 .row
   #neighborhood_view{:style => "font-weight:bold;"}
@@ -28,138 +28,79 @@
       = link_to 'Casas (' + @houses.count.to_s + ')', neighborhood_path(params[:id]), :class => @houses_view_active
     .span
       = link_to 'Participantes (' + @participants.count.to_s + ')', neighborhood_path(params[:id], :view => 'participants'), :class => @participants_view_active
+
+
 %br
+
+/------------------------------------------------------------------------------
+
 .row
   - if params[:view] == 'participants'
-    .span11.offset1
-      %ul#neighborhood_participants_list
-        - @participants.each do |participant|
-          %li.neighborhood_participant_photo_thumb.span3
-            - if participant.profile_photo_file_name.nil?
-              = link_to image_tag("default_images/profile_default_image.png"), user_path(participant)
-            - else
-              = link_to image_tag(participant.profile_photo.url(:large)), user_path(participant)
-
-            = link_to participant.display_name, user_path(participant)
-        - if @participants.count < 9
-          - (12 - @participants.count).times do
-            %li.neighborhood_participant_photo_thumb.span3
-              = image_tag("default_images/profile_default_image.png")
-              Futuro participante
-      .row{style: "margin-top:50px;"}
-        %h2 Notícias da comunidade
-      #neighborhood_news{style: "height:310px;overflow-x:scroll;width:690px;"}
-        %ul
-          - @notices.each do |notice|
-            %a{:href => notice_path(notice)}
-              %li.span4.neighborhood_news_title{:style => "height:270px;position:relative;"}
-                .row
-                  .span5
-                    - if notice.title.size > 33
-                      = notice.title[0..30] + "..."
-                    - else
-                      = notice.title
-                %br
-                .row
-                  .span1.neighborhood_news_thumb
-                    = image_tag(notice.photo.url(:medium))
-                  .span3.neighborhood_news_content
-                    = notice.summary
-                .row{style: 'margin-top: 20px;margin-left:10px;position:absolute;bottom:10px;width:280px;'}
-                  .row
-                    = notice.institution_name
-                  .row
-                    = notice.location
-                  .row
-                    Data
-                    = notice.updated_at.strftime("%d/%m/%Y")
-                  .row
-                    Hora
-                    = notice.updated_at.strftime("%H:%M")
-
-
+    = render :partial => "neighborhoods/participant_view"
   - else
-    .span11.offset1
-      %ul#neighborhood_house_list
-        - @houses.shuffle.each do |house|
-          %li.neighborhood_house_photo_thumb.span3
-            - if house.profile_photo_file_name.nil?
-              = link_to image_tag("default_images/house_default_image.png"), neighborhood_house_path(@neighborhood, house)
-            - else
-              = link_to image_tag(house.profile_photo.url(:large)), neighborhood_house_path(@neighborhood, house)
-            = link_to house.name, neighborhood_house_path(@neighborhood, house)
-        - if @houses.count < 7
-          - (9 - @houses.count).times do
-            %li.neighborhood_house_photo_thumb.span3
-              = image_tag("default_images/house_default_image.png")
-              Futura casa
-      .row{style: "margin-top:50px;"}
-        %h2 Notícias da comunidade
-      #neighborhood_news{style: "height:400px;overflow-x:scroll;width:690px;"}
-        %ul
-          - @notices.each do |notice|
-            %a{:href => notice_path(notice)}
-              %li.span4.neighborhood_news_title{:style => "height:270px;position:relative;"}
-                .row
-                  .span5
-                    - if notice.title.size > 33
-                      = notice.title[0..30] + "..."
-                    - else
-                      = notice.title
-                %br
-                .row
-                  .span1.neighborhood_news_thumb
-                    = image_tag(notice.photo.url(:medium))
-                  .span3.neighborhood_news_content
-                    = notice.summary
-                .row{style: 'margin-top: 20px;margin-left:10px;position:absolute;bottom:10px;'}
-                  .row
-                    = notice.institution_name
-                  .row
-                    = notice.location
-                  .row
-                    Data
-                    = notice.updated_at.strftime("%d/%m/%Y")
-                  .row
-                    Hora
-                    = notice.updated_at.strftime("%H:%M")
-  #neighborhood_right_panel.span5{:style => "margin-top:-165px;margin-left:0px;"}
-    %h2 Destaques da comunidade
-    .row
-      %h3{:style => "margin-left:10px;"} Coordenadores comunitários
-      #neighborhood_coordinator.span5
-        - @coordinator_blogs.each do |blog|
-          - if blog
-            .neighborhood_profile_box{style: "margin-bottom:10px;"}
-              .span1.neighborhood_pf_picture
-                = image_tag(blog.user.profile_photo.url(:small))
-              .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
-                .neighborhood_person_name
-                  = link_to blog.user.display_name, user_path(blog.user)
-                .neighborhood_post
-                  = auto_link(blog.content)
+    = render :partial => "neighborhoods/houses_view"
 
-    .row
-      %h3{:style => "margin-left:10px;"} Verificadores
-      #neighborhood_health_agent.span5
-        - @verifier_blogs.each do |blog|
-          - if blog
-            .neighborhood_profile_box
-              .span1.neighborhood_pf_picture
-                = image_tag(blog.user.profile_photo.url(:small))
-              .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
-                .neighborhood_person_name
-                  = link_to blog.user.display_name, user_path(blog.user)
-                .neighboorhood_past
-                  = auto_link(blog.content)
-  .row
-    .offset1.span12{:style => "width:650px;"}
-      #neighborhood_sponsors{:style => "margin-top:20px;"}
-        %h2 Patrocinadores
-        %ul{:style => "height:120px; overflow-x:auto;"}
-          - @sponsors.each do |sponsor|
-            %li{:style => "width:100px; height:100px;display:inline;"}
-              - if sponsor.house.profile_photo_file_name.nil?
-                = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 100, :height => 100, style: "border:1px solid #cccccc;"), sponsor_path(sponsor), {title: "#{sponsor.house.name}"}
-              - else
-                = link_to image_tag(sponsor.house.profile_photo.url(:medium), :width => 100, :height => 100), sponsor_path(sponsor)
+%br
+
+/------------------------------------------------------------------------------
+
+.row
+  .offset1
+    = render :partial => "neighborhoods/news"
+
+%br
+
+/------------------------------------------------------------------------------
+
+.row
+  .span12.offset1
+    #neighborhood_right_panel
+      %h2 Destaques da comunidade
+      .row
+        %h3{:style => "margin-left:10px;"} Coordenadores comunitários
+        #neighborhood_coordinator.span5
+          - @coordinator_blogs.each do |blog|
+            - if blog
+              .neighborhood_profile_box{style: "margin-bottom:10px;"}
+                .span1.neighborhood_pf_picture
+                  = image_tag(blog.user.profile_photo.url(:small))
+                .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
+                  .neighborhood_person_name
+                    = link_to blog.user.display_name, user_path(blog.user)
+                  .neighborhood_post
+                    = auto_link(blog.content)
+
+      .row
+        %h3{:style => "margin-left:10px;"} Verificadores
+        #neighborhood_health_agent.span5
+          - @verifier_blogs.each do |blog|
+            - if blog
+              .neighborhood_profile_box
+                .span1.neighborhood_pf_picture
+                  = image_tag(blog.user.profile_photo.url(:small))
+                .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
+                  .neighborhood_person_name
+                    = link_to blog.user.display_name, user_path(blog.user)
+                  .neighboorhood_past
+                    = auto_link(blog.content)
+
+
+
+%br
+
+/------------------------------------------------------------------------------
+
+.row
+  .offset1
+    #neighborhood_sponsors{:style => "margin-top:20px;"}
+      %h2 Patrocinadores
+      %ul{:style => "height:300px; overflow-x:auto;"}
+        - @sponsors.each do |sponsor|
+          %li{:style => "width:100px; height:100px;display:inline;"}
+            - if sponsor.house && sponsor.house.profile_photo_file_name.present?
+              = link_to image_tag(sponsor.house.profile_photo.url(:medium), :width => 100, :height => 100), sponsor_path(sponsor)
+            - else
+              = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 100, :height => 100, style: "border:1px solid #cccccc;"), sponsor_path(sponsor)
+
+
+/------------------------------------------------------------------------------
