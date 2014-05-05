@@ -139,10 +139,12 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/edit
 
   def edit
-
     @new_report = @current_user.created_reports.find(params[:id])
-    @new_report.location.latitude  ||= 0
-    @new_report.location.longitude ||= 0
+
+    if @new_report.location
+      @new_report.location.latitude  ||= 0
+      @new_report.location.longitude ||= 0
+    end
 
     # saved_params will exist if an error occurred and the user was redirect to the edit page
     if params[:report].present?

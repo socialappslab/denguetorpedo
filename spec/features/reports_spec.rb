@@ -135,8 +135,6 @@ describe "Reports", :type => :feature do
     it "sets the after photo" do
       visit neighborhood_reports_path(user.neighborhood)
 
-
-
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
       within ".eliminate_prompt" do

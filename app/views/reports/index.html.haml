@@ -20,7 +20,6 @@
   !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 
 
-
 .row
   .span6.offset1
     = render :partial => "shared/flashes"
@@ -73,6 +72,14 @@
         = render :partial => 'make_report_form'
     - if @neighborhood.name == "Maré"
       = render :partial => "reports/map"
+
+
+/------------------------------------------------------------------------------
+/ ArcGIS map
+/-----------
+- if @neighborhood.name == "Maré"
+  %link{rel: "stylesheet", href: "http://js.arcgis.com/3.6/js/esri/css/esri.css"}
+  %script{src: "http://js.arcgis.com/3.6/init.js"}
 
 
 :javascript
