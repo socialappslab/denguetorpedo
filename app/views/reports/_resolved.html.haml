@@ -1,7 +1,13 @@
 .report.eliminated
   .row
     .rp_report_status.status
-      Eliminado
+      .span1
+        .fb-share-button{:data => {:href => "https://denguetorpedo.com/#{neighborhood_reports_path(@neighborhood)}", :type => "button"} }
+      .span2
+        = link_to "Tweet", "https://twitter.com/share", :class => "twitter-share-button", :data => {:related => "denguetorpedo", :lang => "pt", :count => "none", :url => "#{neighborhood_reports_url(@neighborhood)}", :text => "Acabei de eliminar um foco no @DengueTorpedo."}
+
+
+
       .rp_report_options{:style => "margin-top:-3px;"}
 
         - if report.is_resolved_verified == "t"
@@ -12,6 +18,10 @@
           - if @current_user.role == "verificador" or @current_user.role == "admin" or @current_user.role == "coordenador"
             = link_to (image_tag 'icons/reports icon/x.png', :width => 25, :height => 25),     problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
             = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
+
+      .span{:style => "float:right;"}
+        Eliminado
+
   .row
     .span6{:style => "margin-top:10px;"}
       %h4= report.complete_address
