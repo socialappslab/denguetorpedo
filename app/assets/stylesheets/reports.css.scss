@@ -22,7 +22,7 @@
 .confirm_prompt {
   margin-top: 5px;
   color: $red;
-  height: 25px;  
+  height: 25px;
 }
 
 .eliminate_prompt {
@@ -31,7 +31,7 @@
   color: black;
 }
 
-.confirm_button, input[type='submit'] { 
+.confirm_button, input[type='submit'] {
   border: 2px solid $light-gray;
   color: black;
   font-size: 12px;
@@ -39,13 +39,13 @@
   padding: 2px 10px;
   border-radius: 8px;
 }
-  
+
 .eliminate_cancel {
   margin-top: 3px;
   padding: 2p 10px;
   font-size: 12px;
 }
-  
+
 .report {
   background-color: white;
   border-style: solid;
@@ -54,7 +54,7 @@
   padding: 10px;
   margin: 10px;
   margin-left: 0px;
-  
+
   h4 {
     font-size: 14px;
   }
@@ -93,11 +93,11 @@
 }
 
 #user_report_favorite {
-  
+
 }
 
 #user_report_delete {
-  
+
 }
 
 .rp_report_options {
@@ -135,7 +135,7 @@
 
 .rp_claimed_report {
   border-color: $blue;
-  
+
   .status {
     background: $blue;
   }
@@ -166,7 +166,7 @@
 .eliminated{
   border-color: $dark-gray;
   min-height: 265px;
-  
+
   .status {
     background: $dark-gray;
   }
@@ -201,23 +201,23 @@
     margin: 5px;
   }
   }
-  
+
 }
 
 #new_report_form {
   margin-top: 10px;
   background: white;
-  border: 1px solid $light-gray; 
+  border: 1px solid $light-gray;
   padding: 10px 20px;
   margin-left: 20px;
-  
+
   input[type = "text"] {
     width: 520px;
-  } 
-  
+  }
+
   textarea {
     width: 520px;
-  } 
+  }
 }
 
 #report_buttons {
@@ -239,23 +239,23 @@
     text-align: center;
 
     padding: 8px 5px;
-    
+
     &:hover {
       cursor: pointer;
       color: #000000;
     }
-    
+
     &:mousedown {
       border-bottom: thick dotted #ff0000;
     }
   } */
 
-  
+
   .reports_open_button {
     color: $dark-gray;
     background-color: #ffffff;
   }
-  
+
   #make_report_button {
     color: $dark-gray;
     background-color: #60BB50;
@@ -270,7 +270,7 @@
     }
 
   }
-  
+
   .reports_resolved_button {
     color: $dark-gray;
     background-color: #ffffff;
@@ -279,7 +279,7 @@
   .reports_feed_button {
     color: $dark-gray;
   }
-     
+
   input{
     height: 30px;
     border: 0px;
@@ -287,11 +287,11 @@
     background-color: #FFFFFF;
     opacity: 1;
     font-size: 13px;
-    margin-top: 2px;   
+    margin-top: 2px;
   }
-    
-  
-  
+
+
+
   //.active {
   //  color: #FFFFFF;
   //  font-weight: bold;
@@ -312,10 +312,10 @@
       color: white;
     }
   }
-  
+
   //.make_report_button.active {
   //}
-  
+
   //.reports_resolved_button.active {
   //  background-color: gray;
   //}
@@ -337,14 +337,14 @@
 #report_stats {
   font-size: 14px;
   margin-top: 10px;
-  
+
   #rank_box {
     background-color:$light-gray;
     text-align: center;
     padding: 10px 5px 10px 5px;
     width: 80px;
   }
-  
+
 }
 
 .esriPopup .actionsPane .zoomTo {
@@ -437,5 +437,3 @@
 .error_glow{
   box-shadow: 0 0 10px red;
 }
-
-
