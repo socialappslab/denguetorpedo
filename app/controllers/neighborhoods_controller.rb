@@ -10,7 +10,10 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @coordinators = @participants.where(:role => User::Types::COORDINATOR)
     @verifiers    = @participants.where(:role => User::Types::VERIFIER)
 
-    @houses  = @neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
+    # Fetch all houses that have at least one member.
+    @houses = @neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
+    @houses = @houses.find_all {|h| h.members.count > 0}
+
     @reports = @neighborhood.reports
     @notices = @neighborhood.notices.order("updated_at DESC")
 
