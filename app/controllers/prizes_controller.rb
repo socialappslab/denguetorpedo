@@ -8,24 +8,21 @@ class PrizesController < ApplicationController
   #-----------------------------------------------------------------------------
 
   def index
-
     @user = current_user
 
-    @prizes = Prize.where(:is_badge => false).sort { |a, b| a.expired? <=> b.expired? }
+    @prizes    = Prize.where(:is_badge => false).sort { |a, b| a.expired? <=> b.expired? }
     @available = Prize.where('stock > 0').where('expire_on >= ?', Time.new).where(:is_badge => false)
-    @redeemed = Prize.where('stock = 0 OR expire_on < ?', Time.new).where(:is_badge => false)
+    @redeemed  = Prize.where('stock = 0 OR expire_on < ?', Time.new).where(:is_badge => false)
 
     @redetrel = House.where(name: "Rede Trel").first
-
-    if @redetrel
-      @redetrel = @redetrel.user
-    end
+    @redetrel = @redetrel.user if @redetrel
 
     @redeemed_counts = PrizeCode.count
     @medals = Prize.where(:is_badge => true).order(:cost)
     @filter = params[:filter]
     @max = params[:max]
-    @sponsors = User.where(:role => 'lojista').where(is_blocked: false).sort { |x, y| x.house.name <=> y.house.name}
+    @sponsors = User.where(:role => User::Types::SPONSOR).where(is_blocked: false) #.sort { |x, y| x.house.name <=> y.house.name}
+
     if @filter == "pontos"
       if @max == "500"
         @filtered_prizes = Prize.where('cost <= 500').where(:is_badge => false)
@@ -46,6 +43,7 @@ class PrizesController < ApplicationController
       @individual = Prize.where(:community_prize => false, :is_badge => false).sort { |a, b| a.expired? <=> b.expired? }
       @community = Prize.where(:community_prize => true, :is_badge => false).sort { |a, b| a.available? <=> b.available? }
     end
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @prizes }
