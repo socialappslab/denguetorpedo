@@ -218,7 +218,6 @@ describe "Reports", :type => :feature do
     # The following definitions is how a report is created through SMS in
     # gateway action of ReportsController.
     let(:sms_body) { "This is an SMS message" }
-    let(:location) { FactoryGirl.create(:location, :address => sms_body)}
 
     before(:each) do
       sign_in(user)
