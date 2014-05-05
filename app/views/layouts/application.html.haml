@@ -9,6 +9,10 @@
     %script{src: "http://js.arcgis.com/3.6/init.js"}
     = csrf_meta_tags
 
+    %meta{:property => "og:url", :content => "https://www.denguetorpedo.com"}
+    %meta{:property => "og:title", :content => "DengueTorpedo"}
+    %meta{:property => "og:image", :content => "http://www.denguetorpedo.com/assets/home_images/logo-fc71eb88602a2ceb327672fc84547f7c.png"}
+
     / Google Analytics tracking
     - if Rails.env.production?
       :javascript
