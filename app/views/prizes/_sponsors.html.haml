@@ -5,17 +5,17 @@
         .name{style: "height:20px;width:140px;"}
           = link_to "Rede Trel", sponsor_path(@redetrel)
       .prize_content
-        = link_to image_tag(@redetrel.house.profile_photo.url(:small), :class => "prizes"), sponsor_path(@redetrel)
+        = link_to image_tag(@redetrel.house.profile_photo.url(:small), :class => "prizes"), sponsor_path(@redetrel) if @redetrel.house.present?
         .description
           = link_to truncate("SMS grátis para o Dengue Torpedo!", length: 40), sponsor_path(@redetrel)
   %select{:id => "sponsors_select", :onchange => "location = this.options[this.selectedIndex].value;", :style => "width:263px;"}
     %option Patrocinador / Apoio (#{@sponsors.count})
     - @sponsors.each do |sponsor|
-      %option{:value => sponsor_path(sponsor)} #{sponsor.house.name}
+      %option{:value => sponsor_path(sponsor)} #{sponsor.house && sponsor.house.name}
   .sponsors_box{ :style => "background-color:white;height:420px;width:255px;padding:5px;overflow-y:auto;"}
     - @sponsors.shuffle.each do |sponsor|
       .sponsors
-        - if sponsor.house.profile_photo_file_size.nil?
-          = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 63, :height => 63, style: "border:1px solid #cccccc;"), "sponsors/#{sponsor.id}", {title: "#{sponsor.house.name}"}
+        - if sponsor.house.nil? || sponsor.house.profile_photo_file_size.nil?
+          = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 63, :height => 63, style: "border:1px solid #cccccc;"), "sponsors/#{sponsor.id}"
         - else
           = link_to image_tag(sponsor.house.profile_photo.url(:medium), :width => 65, :height => 65), "sponsors/#{sponsor.id}"

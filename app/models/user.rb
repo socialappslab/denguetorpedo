@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
     SPONSOR     = "lojista"
     VERIFIER    = "verificador"
     RESIDENT    = "morador"
+    VISITOR     = "visitante"
   end
 
   has_secure_password

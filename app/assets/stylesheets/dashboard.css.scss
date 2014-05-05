@@ -6,23 +6,24 @@
 
 #dashboard_bar {
   background-color: white;
-  height: 41px;
+  height: 50px;
   border-width: 0px 0px 3px 0px;
   border-style: solid;
   border-color: $orange;
-  
+
   ul {
     margin: -15px;
     margin-left: -20px;
-    float: left;
-    
+    display: inline-block;
+
     li {
+      line-height: 40px;
       height: 40px;
       display: inline;
       margin-right: 10px;
       padding-right: 2px;
       a {
-        font-size: 14px;
+        font-size: 17px;
       }
     }
   }
@@ -40,8 +41,4 @@
   a{
     color:gray;
   }
-}
-
-#menu_bar {
-  margin-left: 240px;
 }

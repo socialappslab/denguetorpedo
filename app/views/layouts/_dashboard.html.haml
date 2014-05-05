@@ -1,80 +1,96 @@
 #dashboard_bar{:style => "z-index:2;position:relative;"}
-  #menu_bar
-    %ul
-      %li{:style => "display:inline-block;"}
-        /= image_tag("icons/profile_icon.png")
-        - if @current_user.house && @current_user.house.id
-          - if @current_user.role == "lojista"
-            = link_to sponsor_path(@current_user) do
-              = image_tag("icons/profile_icon.png")
-              Meu Perfil
-            /= link_to 'Meu Perfil', sponsor_path(@current_user), :class => highlight_active_link(sponsor_path(@current_user))
-          - else
-            =link_to user_path(@current_user)do
-              = image_tag("icons/profile_icon.png")
-              Meu Perfil
-            /= link_to 'Meu Perfil', user_path(@current_user), :class => highlight_active_link(user_path(@current_user))
-        -else
-          - if @current_user.role != "visitante"
-            = link_to edit_user_path(@current_user) do
-              = image_tag("icons/profile_icon.png")
-              Meu Perfil
-            /= link_to 'Meu Perfil', edit_user_path(@current_user), :class => highlight_active_link(edit_user_path(@current_user))
-          - else
-            Meu Perfil
-      %li
-        /= image_tag("icons/house_icon.png")
-        - if @current_user.neighborhood && @current_user.house && @current_user.house.id
-          - if @current_user.role != "lojista"
-            = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house) do
-              = image_tag("icons/house_icon.png")
-              Minha Casa
-          - else
-            Minha Casa
 
+  %ul{:style => "margin-left: 240px;"}
+
+    /------------------------------------------------------------------------
+
+    %li
+      - bold_header_title = ( current_page?(:controller => "users", :action => "show") ? "font-weight: bold;" : "" )
+
+      - if @current_user.house && @current_user.house.id
+        - if @current_user.role == User::Types::SPONSOR
+          = link_to sponsor_path(@current_user), :style => "#{bold_header_title}" do
+            /= image_tag("icons/profile_icon.png")
+            %i.fa.fa-user.fa-2
+            %p
+              Meu Perfil
         - else
-          - if @current_user.role != "visitante"
-            =link_to edit_user_path(@current_user) do
-              = image_tag("icons/house_icon.png")
-              Minha Casa
-            /= link_to 'Minha Casa', edit_user_path(@current_user), :class => highlight_active_link(edit_user_path(@current_user))
-          - else
+          =link_to user_path(@current_user), :style => "#{bold_header_title}" do
+            /= image_tag("icons/profile_icon.png")
+            %i.fa.fa-user.fa-2
+            Meu Perfil
+      -else
+        - if @current_user.role != User::Types::VISITOR
+          = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
+            /= image_tag("icons/profile_icon.png")
+            %i.fa.fa-user.fa-2
+            Meu Perfil
+        - else
+          Meu Perfil
+
+    /------------------------------------------------------------------------
+
+    %li
+      - bold_header_title = ( current_page?(:controller => "houses", :action => "show") ? "font-weight: bold;" : "" )
+
+      - if @current_user.neighborhood && @current_user.house && @current_user.house.id
+        - if @current_user.role != User::Types::SPONSOR
+          = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house), :style => "#{bold_header_title}" do
+            /= image_tag("icons/house_icon.png")
+            %i.fa.fa-home.fa-2
             Minha Casa
-      %li
+        - else
+          Minha Casa
+
+      - else
+        - if @current_user.role != User::Types::VISITOR
+          =link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
+            /= image_tag("icons/house_icon.png")
+            %i.fa.fa-home.fa-2
+            Minha Casa
+        - else
+          Minha Casa
+
+    /------------------------------------------------------------------------
+
+    %li
+      - bold_header_title = ( current_page?(:controller => "neighborhoods", :action => "show") ? "font-weight: bold;" : "" )
+
+      - if @current_user && @current_user.neighborhood
+        - relevant_link = neighborhood_path(@current_user.neighborhood)
+      - elsif @current_user.role != User::Types::VISITOR
+        - relevant_link = edit_user_path(@current_user)
+      - else
+        - relevant_link = neighborhood_path(Neighborhood.first)
+      = link_to relevant_link, :style => "#{bold_header_title}" do
         /= image_tag("icons/neighborhood_icon.png")
-        - if @current_user && @current_user.neighborhood
-          =link_to neighborhood_path(@current_user.neighborhood) do
-            = image_tag("icons/neighborhood_icon.png")
-            Minha Comunidade
-          /= link_to 'Minha Comunidade', neighborhood_path(@current_user.neighborhood), :class => highlight_active_link(neighborhood_path(@current_user.neighborhood))
-        - else
-          - if @current_user.role != "visitante"
-            =link_to edit_user_path(@current_user) do
-              = image_tag("icons/neighborhood_icon.png")
-              Minha Comunidade
-            /= link_to 'Minha Comunidade', edit_user_path(@current_user), :class => highlight_active_link(edit_user_path(@current_user))
-          - else
-            =link_to neighborhood_path(Neighborhood.first) do
-              = image_tag("icons/neighborhood_icon.png")
-              Minha Comunidade
-            /= link_to 'Minha Comunidade', neighborhood_path(Neighborhood.first), :class => highlight_active_link(neighborhood_path(Neighborhood.first))
-      %li
-        - if @current_user && @current_user.neighborhood
-          = link_to neighborhood_reports_path(@current_user.neighborhood) do
-            =image_tag("icons/make_report_icon.png")
-            Focos Marcados
-        - else
-          - if @current_user.role != "visitante"
-            =link_to edit_user_path(@current_user) do
-              = image_tag("icons/make_report_icon.png")
-              Focos Marcados
-          - else
-            =link_to reports_path do
-              = image_tag("icons/make_report_icon.png")
-              Focos Marcados
-      %li
-        =link_to edit_user_path(@current_user) do
-          = image_tag("icons/account_setting_icon.png")
-          Configurações
-      /  = image_tag("icons/account_setting_icon.png")
-      / = link_to 'Configurações', edit_user_path(@current_user), :class => highlight_active_link(edit_user_path(@current_user))
+        %i.fa.fa-users.fa-2
+        Minha Comunidade
+
+
+
+    /------------------------------------------------------------------------
+
+    %li
+      - bold_header_title = ( current_page?(:controller => "reports", :action => "index") ? "font-weight: bold;" : "" )
+
+      - if @current_user && @current_user.neighborhood
+        - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
+      - elsif @current_user.role != User::Types::VISITOR
+        - relevant_link = edit_user_path(@current_user)
+      - else
+        - relevant_link = reports_path
+      = link_to relevant_link, :style => "#{bold_header_title}" do
+        /=image_tag("icons/make_report_icon.png")
+        %i.fa.fa-plus.fa-2
+        Focos Marcados
+
+    /------------------------------------------------------------------------
+
+    %li
+      - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
+
+      =link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
+        /= image_tag("icons/account_setting_icon.png")
+        %i.fa.fa-gear.fa-2
+        Configurações
