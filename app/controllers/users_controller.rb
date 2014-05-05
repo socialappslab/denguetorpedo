@@ -309,14 +309,16 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
-    if @user.house.members.count == 0
+
+    # Destroy the user's house if he is the only one in the house.
+    if @user.house && @user.house.members.count == 1
       @user.house.destroy
     end
-    respond_to do |format|
-      format.html { redirect_to users_url, :notice => "Usuário deletado com sucesso." }
-      format.json { head :no_content }
-    end
+
+    # Finally, let's delete the user.
+    @user.destroy
+
+    redirect_to users_url, :notice => "Usuário deletado com sucesso." and return
   end
 
   #----------------------------------------------------------------------------

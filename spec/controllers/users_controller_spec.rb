@@ -6,6 +6,45 @@ describe UsersController do
 
 	#-----------------------------------------------------------------------------
 
+	context "Deleting a user" do
+		let(:house) 			{ FactoryGirl.create(:house) }
+		let!(:user)  			{ FactoryGirl.create(:user, :house_id => house.id)  }
+		let!(:second_user) { FactoryGirl.create(:user) }
+
+		it "deletes the user from the database" do
+			expect {
+				delete :destroy, :id => user.id
+			}.to change(User, :count).by(-1)
+		end
+
+		it "deletes the house if only the user lives there" do
+			expect {
+				delete :destroy, :id => user.id
+			}.to change(House, :count).by(-1)
+		end
+
+		it "keeps the house if more than 1 person lives there" do
+			second_user.house_id = house.id
+			second_user.save!
+
+			expect {
+				delete :destroy, :id => user.id
+			}.to change(House, :count).by(0)
+		end
+
+		it "deletes the user even if he has no house" do
+			user.house = nil
+			user.save!
+
+			expect {
+				delete :destroy, :id => user.id
+			}.to change(User, :count).by(-1)
+		end
+
+
+	end
+	#-----------------------------------------------------------------------------
+
 	context "Registering a user" do
 		context "when user inputs valid information" do
 			it "redirects them to their edit page" do
