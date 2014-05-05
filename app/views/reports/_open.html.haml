@@ -1,12 +1,20 @@
 / This partial is passed in a 'report' variable.
+:javascript
+  $(document).ready(function()
+  {
+    var newYear = new Date(#{report.expire_date.strftime("%s").to_i * 1000});
+    $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
+  });
+
 .report.open
   .row
     .rp_report_status.status
-      -# TODO @awdorsett - better way to do expired
-      - if report.expired?
-        %del Em aberto
-      - else
-        Em aberto
+      .span1
+        .fb-share-button{:data => {:href => "https://denguetorpedo.com/#{neighborhood_reports_path(@neighborhood)}", :type => "button"} }
+      .span2
+        = link_to "Tweet", "https://twitter.com/share", :class => "twitter-share-button", :data => {:related => "denguetorpedo", :lang => "pt", :count => "none", :url => "#{neighborhood_reports_url(@neighborhood)}", :text => "Acabei de marcar um foco no @DengueTorpedo."}
+
+
 
       .rp_report_options
         -# TODO @awdorsett - are reports verified before they're eliminated?
@@ -28,13 +36,7 @@
             - if report.elimination_type
               .countdown.countdownHolder.timer
               .span.countdown_label
-                Tempo restante
-                -# TODO @awdorsett - move JS out of view
-                -# TODO @awdorsett - time zone is messed up
-                :javascript
-                  var newYear = new Date(#{report.expire_date.strftime("%s").to_i * 1000});
-                  $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
-
+                Em aberto por
           - else
             .span.time_expired
               Tempo expirado
@@ -85,10 +87,6 @@
                   = location_fields.hidden_field :latitude
                   = location_fields.hidden_field :longitude
 
-                -# TODO @awdorsett - what is this used for? Possibly countdown
-                :javascript
-                  $(".selectpicker").selectpicker();
-
                 -#after photo
                 - if report.after_photo_file_size
                   .rp_report_people
@@ -100,7 +98,10 @@
                 = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?)
 
                 %br
-                = submit_tag "Enviar!",:onclick=>"update_location_coordinates(#{report.location.to_json},event);",:class=>'report_submission', :disabled => ((@current_user.role == "verificador" or @current_user.role == "visitante") or report.expired? or report.isVerified == "f" or report.sms_incomplete?)
+                .row
+                  .span2
+                    - should_disable = ( (@current_user.role == "verificador" || @current_user.role == "visitante") || report.expired? || report.isVerified == "f" || report.sms_incomplete?)
+                    = submit_tag "Enviar!", :class=>'report_submission', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
 
 
                 -# Submission status, show name and date of person who submitted, eliminated, and verified

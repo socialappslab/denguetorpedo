@@ -2,7 +2,7 @@ function reflectChangeInName() {
 	// for (var i = 0; i < length; i++) {
 	// 	var child = $("#display_select").children()[i];
 	// 	var id = $(child).attr("id");
-		
+
 	// }
 
 	// alert($("#firstmiddlelast").html());
@@ -10,11 +10,12 @@ function reflectChangeInName() {
 	$("#firstlast").html($("#user_first_name").val() + " " + $("#user_last_name").val());
 	$("#first").html($("#user_first_name").val());
 	$("#nickname").html($("#user_nickname").val());
-	$("#firstlastnickname").html($("#user_first_name").val() + " " + $("#user_last_name").val() + " (" + $("#user_nickname").val() + ")"); 
+	$("#firstlastnickname").html($("#user_first_name").val() + " " + $("#user_last_name").val() + " (" + $("#user_nickname").val() + ")");
 }
 
 $(document).ready(function() {
-	$(document).tooltip();
+	// TODO: We don't want to tooltip the whole site.
+	// $(document).tooltip();
 
 	$("#user_first_name").keyup(function() {
 		reflectChangeInName();
@@ -57,7 +58,7 @@ $(document).ready(function() {
 			$("#role_title").html("Configurações de moradora");
 		}
 	});
-	
+
 
 	$("select#role").change(function() {
 		if($("select#role").val() == "lojista") {
