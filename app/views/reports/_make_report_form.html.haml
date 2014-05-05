@@ -10,7 +10,7 @@
     = form_for [@neighborhood, @new_report], :html => {:autocomplete => "off", :multipart => true} do |f|
       = hidden_field_tag 'error', params[:new_report].present?
       - if @new_report.reporter_id.blank?
-        = f.hidden_field :reporter_id, :value => @current_user.id
+        = f.hidden_field :reporter_id, :value => @current_user && @current_user.id
 
       #address
         %h3.new_report_label 1. Endereço do foco localizado

@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 class ReportsController < NeighborhoodsBaseController
-  before_filter :require_login, :except => [:verification, :gateway, :notifications, :creditar, :credit, :discredit]
+  before_filter :require_login, :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,    :only   => [:update, :creditar, :credit, :discredit]
   before_filter :require_admin, :only   => [:types]
 
@@ -34,7 +34,7 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     #2.
-    @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a
+    @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a if current_user
 
     #3.
     @reports += Report.where(:neighborhood_id => @neighborhood.id).select(&:completed_at).sort_by(&:completed_at).reverse

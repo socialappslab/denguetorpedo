@@ -14,6 +14,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @houses = @neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
     @houses = @houses.find_all {|h| h.members.count > 0}
 
+
     @reports = @neighborhood.reports
     @notices = @neighborhood.notices.order("updated_at DESC")
 

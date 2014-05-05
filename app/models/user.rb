@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   PHONE_NUMBER_PLACEHOLDER = "000000000000"
 
   module Types
-    ADMIN       = ""
+    ADMIN       = "admin"
     COORDINATOR = "coordenador"
     SPONSOR     = "lojista"
     VERIFIER    = "verificador"
