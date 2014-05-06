@@ -95,7 +95,7 @@
 
 
   - if @user == @current_user
-    - if @current_user.role == "admin" or @current_user.role == "coordenador"
+    - if [User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
       #role_specific.offset9
         %h2 Configurações de coordenador
         %p.link
@@ -114,7 +114,7 @@
           = link_to "Administrar contatos", feedbacks_path
         %p.link
           = link_to "Administrar tipos e métodos", "/reports/types"
-    - elsif @current_user.role == "lojista"
+    - elsif @current_user.role == User::Types::SPONSOR
       #role_specific.offset9
         %h2 Configurações de patrocinador
         %p.link
@@ -122,7 +122,7 @@
 
 
   = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:autocomplete => "off", :multipart => true}}) do |f|
-    - if @user.role != "visitante"
+    - if @user.role != User::Types::VISITOR
       -##map_div{style: "position:absolute;margin-left:570px;height:500px;width:400px;margin-top:440px;"}
         %h2{style: 'margin-left:10px;font-size:15px;line-height:25px;;line-height:20px;', title: "O mapa pode não encontrar o seu endereço. Nesse caso, mova o marcador clicando na localização correta."}
           %b{style: "color:red;"}
@@ -315,7 +315,7 @@
         Pós-pago
 
 
-      =check_box_tag :cellphone, false
+      = check_box_tag :cellphone, nil, true
       Clique aqui se você não tiver um celular.
 
       %br
