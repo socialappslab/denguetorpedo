@@ -1,0 +1,40 @@
+
+
+.row
+  .span15.offset1
+    = render :partial => "shared/flashes"
+    = render :partial => "shared/form_errors", :locals => {:item => @house}
+
+    = form_for [@neighborhood, @house] do |house_form|
+      = house_form.hidden_field :name_confirmation,  :value => @house_name_confirmation
+      - if @current_user.role == User::Types::SPONSOR
+        = house_form.label "Nome do estabelecimento"
+        = house_form.text_field :name
+      - elsif @current_user.role == User::Types::VERIFIER
+        = house_form.label "Nome do organização"
+        = house_form.text_field :name
+      - else
+        = house_form.label "Nome da casa (máximo 16 caracteres)"
+        = house_form.text_field :name, :placeholder => "ex. Maria Santos ou Maria e Paulo", :maxlength => 16
+
+
+      .question_mark_div
+      / TODO: We're disabling choosing other neighborhoods until we introduce
+      / another neighborhood
+      /= f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
+      = house_form.label :neighborhood_id
+      = house_form.select(:neighborhood_id, [ [@neighborhood.name, @neighborhood.id] ])
+
+
+      - if @current_user.role == User::Types::SPONSOR
+        = house_form.label "Telefone comercial"
+        = house_form.text_field :phone_number
+        = house_form.label "Logo digital (opcional)"
+      - elsif @current_user.role == User::Types::VERIFIER
+        = house_form.label "Fodo do organização"
+      - else
+        = house_form.label "Foto da casa (opcional)"
+      = house_form.file_field :profile_photo
+
+
+      = house_form.submit "Enviar!"
