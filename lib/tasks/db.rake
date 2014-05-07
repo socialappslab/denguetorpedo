@@ -6,7 +6,7 @@ namespace :db do
     task :prepare => [:environment] do
       ['db:reset', 'db:create', 'db:schema:load', 'db:seed'].each { |s| Rake::Task[s].invoke }
 
-      populate_users_and_houses()
+      populate_users_houses_and_reports()
       populate_notices_houses_sponsors_and_prizes()
     end
   end

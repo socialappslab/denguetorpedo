@@ -2,7 +2,7 @@
 
 #------------------------------------------------------------------------------
 
-def populate_users_and_houses
+def populate_users_houses_and_reports
   mare = Neighborhood.find_by_name('Maré')
 
   10.times do |index|
@@ -27,6 +27,12 @@ def populate_users_and_houses
     u.role       = "admin"
     u.save!
   end
+
+  ["a", "b", "c"].each_with_index do |letter, index|
+    u = User.find_by_email("#{letter}@denguetorpedo.com")
+    Report.create!(:reporter_id => u.id, :status => Report::STATUS[:reported], :elimination_type => EliminationType.first, :report => "This is a report by #{u.display_name}", :neighborhood_id => mare.id, :completed_at => Time.now, :before_photo => File.open("./spec/support/foco_marcado.jpg"))
+  end
+
 end
 
 #------------------------------------------------------------------------------
