@@ -20,7 +20,7 @@ class HomeController < ApplicationController
 
     @selected_neighborhood = @all_neighborhoods.first
 
-    @notices  = @selected_neighborhood.notices.order(:created_at).limit(6)
+    @notices  = @selected_neighborhood.notices.order("date DESC").limit(6)
 
     @houses   = @selected_neighborhood.houses.limit(5) # @participants.map { |participant| participant.house }.shuffle
     @houses   = @houses[0..5] if @current_user.nil?
