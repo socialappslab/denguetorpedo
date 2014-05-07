@@ -2,12 +2,19 @@
 
 #------------------------------------------------------------------------------
 
-def populate_users
+def populate_users_and_houses
+  mare = Neighborhood.find_by_name('Maré')
+
+  10.times do |index|
+    h = House.create!(:neighborhood_id => mare.id, :name => "House #{index}!")
+  end
+
   ["a", "b", "c"].each_with_index do |letter, index|
-    u = User.create!(:email => "#{letter}@denguetorpedo.com")
-    u.password = "abcdefg"
+    u = User.new(:email => "#{letter}@denguetorpedo.com")
+    u.password   = "abcdefg"
     u.first_name = "#{letter}#{index}"
     u.last_name  = "Tester"
+    u.house_id   = House.all.sample.id
     u.save!
   end
 
@@ -30,11 +37,6 @@ def populate_notices_houses_sponsors_and_prizes
   10.times do |index|
     Notice.create!(:neighborhood_id => mare.id, :title => "Hello News ##{index}!", :description => "We are now live for the #{index}th time!")
   end
-
-  5.times do |index|
-    House.create!(:neighborhood_id => mare.id, :name => "House #{index}!")
-  end
-
 
   5.times do |index|
     h = House.create!(:neighborhood_id => mare.id, :name => "House Sponsor #{index}!", :house_type => User::Types::SPONSOR)

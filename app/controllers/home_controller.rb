@@ -20,11 +20,15 @@ class HomeController < ApplicationController
 
     @selected_neighborhood = @all_neighborhoods.first
 
+    # Display ordered news.
     @notices  = @selected_neighborhood.notices.order("date DESC").limit(6)
 
-    @houses   = @selected_neighborhood.houses.limit(5) # @participants.map { |participant| participant.house }.shuffle
-    @houses   = @houses[0..5] if @current_user.nil?
+    # Display 5 non-empty houses.
+    @houses = @selected_neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
+    @houses = @houses.find_all {|h| h.members.count > 0}
+    @houses = @houses.shuffle[0..5]
 
+    # Display active prizes.
     @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(3)
   end
 
