@@ -157,12 +157,10 @@ ul#house_list {
   margin-top: 5px;
   margin-bottom: 20px;
   max-height: 350px;
-  overflow: auto;
   ul {
     padding: 9px;
     li {
       display: inline-block;
-      overflow: auto;
       margin-right: 0px;
       border: 1px solid $gray;
 
