@@ -1,7 +1,7 @@
 .report.eliminated
   .row
     .rp_report_status.status
-      .span1
+      .span2{:style => "width:100px;"}
         .fb-share-button{:data => {:href => "https://denguetorpedo.com/#{neighborhood_reports_path(@neighborhood)}", :type => "button"} }
       .span2
         = link_to "Tweet", "https://twitter.com/share", :class => "twitter-share-button", :data => {:related => "denguetorpedo", :lang => "pt", :count => "none", :url => "#{neighborhood_reports_url(@neighborhood)}", :text => "Acabei de eliminar um foco no @DengueTorpedo."}
