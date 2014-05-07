@@ -25,7 +25,7 @@ class HomeController < ApplicationController
     @houses   = @selected_neighborhood.houses.limit(5) # @participants.map { |participant| participant.house }.shuffle
     @houses   = @houses[0..5] if @current_user.nil?
 
-    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).limit(3)
+    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(3)
   end
 
   #----------------------------------------------------------------------------

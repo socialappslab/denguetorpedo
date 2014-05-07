@@ -90,7 +90,7 @@
   #sponsors.offset1{style: "margin-left:61px;"}
 
     %ul
-      - @prizes.shuffle.each do |prize|
+      - @prizes.each do |prize|
         = render :partial => "prizes/prize", :object => prize
 
       %li.span3.prizes.possible
