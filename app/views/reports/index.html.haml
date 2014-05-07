@@ -2,9 +2,9 @@
 -# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
 
 - content_for :head do
-  %meta{:property => "og:url", :content => "https://www.denguetorpedo.com/"}
-  %meta{:property => "og:title", :content => "Acabei de marcar o eliminar um foco no @DengueTorpedo."}
-
+  %meta{:property => "og:url",         :content => neighborhood_reports_url(@neighborhood)}
+  %meta{:property => "og:title",       :content => "Focos Marcados"}
+  %meta{:property => "og:description", :content => "Acabei de marcar o eliminar um foco no @DengueTorpedo."}
 
 #fb-root
 :javascript
