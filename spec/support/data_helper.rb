@@ -2,6 +2,28 @@
 
 #------------------------------------------------------------------------------
 
+def populate_users
+  ["a", "b", "c"].each_with_index do |letter, index|
+    u = User.create!(:email => "#{letter}@denguetorpedo.com")
+    u.password = "abcdefg"
+    u.first_name = "#{letter}#{index}"
+    u.last_name  = "Tester"
+    u.save!
+  end
+
+  u = User.find_by_email("admin@denguetorpedo.com")
+  if u.nil?
+    u = User.new(:email => "admin@denguetorpedo.com")
+    u.password   = "abcdefg"
+    u.first_name = "Admin"
+    u.last_name  = "Admin"
+    u.role       = "admin"
+    u.save!
+  end
+end
+
+#------------------------------------------------------------------------------
+
 def populate_notices_houses_sponsors_and_prizes
   mare = Neighborhood.find_by_name('Maré')
 

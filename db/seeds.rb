@@ -1,46 +1,6 @@
 # encoding: UTF-8
 
 #------------------------------------------------------------------------------
-# Users
-
-puts "-" * 80
-puts "[!] Seeding users..."
-puts "\n" * 3
-
-u = User.find_by_email("a@denguetorpedo.com")
-if u.nil?
-  u = User.new(:email => "a@denguetorpedo.com")
-  u.password   = "abcdefg"
-  u.first_name = "AA"
-  u.last_name  = "Tester"
-  u.save!
-end
-
-u = User.find_by_email("b@denguetorpedo.com")
-if u.nil?
-  u = User.new(:email => "b@denguetorpedo.com")
-  u.password   = "abcdefg"
-  u.first_name = "BB"
-  u.last_name  = "Tester"
-  u.save!
-end
-
-u = User.find_by_email("admin@denguetorpedo.com")
-if u.nil?
-  u = User.new(:email => "admin@denguetorpedo.com")
-  u.password   = "OZGKzDAIcTsyRISiyOw9B1NGRmztGr"
-  u.first_name = "Admin"
-  u.last_name  = "Admin"
-  u.role       = "admin"
-  u.save!
-end
-
-
-puts "\n" * 3
-puts "[ok] Done seeding users..."
-puts "-" * 80
-
-#------------------------------------------------------------------------------
 # Neighborhoods
 
 puts "-" * 80
