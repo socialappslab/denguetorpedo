@@ -29,6 +29,8 @@ class Report < ActiveRecord::Base
   belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :neighborhood
 
+  has_and_belongs_to_many :likes, :class_name => "User"
+
   #----------------------------------------------------------------------------
   # Validations
   #-------------
