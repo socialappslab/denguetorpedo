@@ -7,6 +7,7 @@ class UsersController < ApplicationController
 
   before_filter :require_login, :only => [:edit, :update, :index, :show]
   before_filter :ensure_mare_neighborhood, :only => [:update]
+  before_filter :identify_student, :only => [:edit, :update]
 
   def index
 
@@ -431,4 +432,11 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+
+  def identify_student
+    @user = User.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+
 end
