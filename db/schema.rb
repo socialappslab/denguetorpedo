@@ -95,14 +95,6 @@ ActiveRecord::Schema.define(:version => 20140430071253) do
     t.string   "street_number",     :default => ""
   end
 
-  create_table "manual_instructions", :force => true do |t|
-    t.string  "title"
-    t.text    "description"
-    t.integer "user_id"
-    t.time    "created_at",  :null => false
-    t.time    "updated_at",  :null => false
-  end
-
   create_table "neighborhoods", :force => true do |t|
     t.string   "name"
     t.datetime "created_at",     :null => false

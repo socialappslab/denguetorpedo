@@ -73,6 +73,10 @@ describe UsersController do
 			click_button "Cadastre-se!"
 
 			check("cellphone")
+			# This is a hack that bypasses need for JS driver.
+			fill_in :user_phone_number, :with => User::PHONE_NUMBER_PLACEHOLDER
+			fill_in :user_carrier, :with => "xxx"
+
 			fill_in "user_house_attributes_name", :with => "MY NEW HOUSE"
 
 			within "#house_configuration" do
@@ -95,6 +99,10 @@ describe UsersController do
 			click_button "Cadastre-se!"
 
 			check("cellphone")
+			# This is a hack that bypasses need for JS driver.
+			fill_in :user_phone_number, :with => User::PHONE_NUMBER_PLACEHOLDER
+			fill_in :user_carrier, :with => "xxx"
+
 			fill_in "user_house_attributes_name", :with => house.name
 
 			within "#house_configuration" do
@@ -216,9 +224,9 @@ describe UsersController do
 				user.house.save(:validate => false)
 
 				visit edit_user_path(user)
-				fill_in "user_location_street_type", 	:with => "Rua"
-				fill_in "user_location_street_name", 	:with => "Boca"
-				fill_in "user_location_street_number", :with => "50"
+				fill_in "user_house_attributes_location_attributes_street_type", 	:with => "Rua"
+				fill_in "user_house_attributes_location_attributes_street_name", 	:with => "Boca"
+				fill_in "user_house_attributes_location_attributes_street_number", :with => "50"
 
 				within "#house_configuration" do
 					click_button "Confirmar"
@@ -230,9 +238,9 @@ describe UsersController do
 
 			it "updates the user's house location" do
 				visit edit_user_path(user)
-				fill_in "user_location_street_type", 	:with => "Rua"
-				fill_in "user_location_street_name", 	:with => "Boca"
-				fill_in "user_location_street_number", :with => "50"
+				fill_in "user_house_attributes_location_attributes_street_type", 	:with => "Rua"
+				fill_in "user_house_attributes_location_attributes_street_name", 	:with => "Boca"
+				fill_in "user_house_attributes_location_attributes_street_number", :with => "50"
 
 				within "#house_configuration" do
 					click_button "Confirmar"
