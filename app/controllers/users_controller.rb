@@ -204,47 +204,47 @@ class UsersController < ApplicationController
       end
     end
 
+    #---------------------------------------------------------------------------
+    # Handle carrier and prepaid errors.
+    if params[:cellphone] == "false"
+      # TODO: This is a hack to save the phone information in the case that user
+      # registers with existing house name (the confirmation clears any temporary
+      # variable results of cellphone information).
 
-    if @user.update_attributes(user_params)
-      @user.update_attribute(:is_fully_registered, true)
-
-      # Identify the recruiter for this user.
-      recruiter = User.find_by_id( params[:recruiter_id] )
-      if recruiter
-        @user.recruiter = recruiter
-        recruiter.points       += 50
-        recruiter.total_points += 50
-        recruiter.save
-      end
+      # We still need this when the user object will be saved later in this method.
+      # params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
     else
-      @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
-                          [@user.first_name,"first"]
-                         ]
+      if params[:user][:carrier].blank?
+        flash[:alert] = "Informe a sua operadora."
 
-      # if nickname exists, allow display name as option
-      @display_options += [[@user.nickname,"nickname"],
-                           [@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")","firstlastnickname"]
-                          ] if @user.nickname.present?
+        @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+        @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
 
-      render "edit" and return
+        render "edit" and return
+      elsif params[:user][:prepaid].blank?
+        flash[:alert] = "Marque pré ou pós-pago."
+
+        @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+        @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
+
+        render "edit" and return
+      end
     end
 
-    #--------------------------------------------------------------------------
-    # Finally, let's update the location of the house, if specified.
-    location = @user.house.location
-    location = Location.new if location.nil?
+    if @user.update_attributes(user_params)
+      if @user.is_fully_registered == false
+        # Identify the recruiter for this user.
+        recruiter = User.find_by_id( params[:recruiter_id] )
+        if recruiter
+          @user.recruiter = recruiter
+          recruiter.points       += 50
+          recruiter.total_points += 50
+          recruiter.save
+        end
+      end
 
-    location.street_type      = params[:user][:location][:street_type]
-    location.street_name      = params[:user][:location][:street_name]
-    location.street_number    = params[:user] [:location][:street_number]
-    location.neighborhood_id  = @user.neighborhood.id
-    location.latitude         = params[:x]
-    location.longitude        = params[:y]
-
-    if location.save
-      @user.house.update_attribute(:location_id, location.id)
+      @user.update_attribute(:is_fully_registered, true)
     else
-      flash[:notice] = "Insira um endereço válido."
       render "edit" and return
     end
 
