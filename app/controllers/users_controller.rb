@@ -114,6 +114,7 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/1
 
   def edit
     @user = User.find(params[:id])
@@ -140,24 +141,7 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # Started PUT "/users/3?html%5Bautocomplete%5D=off&html%5Bmultipart%5D=true" for 127.0.0.1 at 2014-03-27 20:41:53 -0700
-  # Parameters: {
-  #   "user" => {
-  #     "first_name"=>"Mister",
-  #     "last_name"=>"Tester",
-  #     "nickname"=>"",
-  #     "gender"=>"true",
-  #     "email"=>"a@denguetorpedo.com",
-  #     "phone_number"=>"000000000000",
-  #     "carrier"=>"xxx",
-  #     "prepaid"=>"true",
-  #     "house_attributes"=>{"name"=>"Test"},
-  #     "neighborhood_id"=>"3",
-  #     "location"=>{"street_type"=>"", "street_name"=>"", "street_number"=>""}
-  #   },
-  #   "display"=>"firstmiddlelast", "id"=>"3"
-  # }
-
+  # PUT "/users/1
 
   def update
     @user = User.find(params[:id])

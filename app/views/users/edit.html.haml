@@ -1,8 +1,8 @@
 - content_for :scripts do
   :javascript
     $("#complete_name").tooltip();
-    var verifiers = #{@verifiers.as_json};
-    var residents = #{@residents.as_json};
+    var verifiers = #{@verifiers.to_json};
+    var residents = #{@residents.to_json};
 
     $("select#recruitment").change(function()
     {
@@ -47,35 +47,50 @@
     {
       if($("#cellphone").prop("checked"))
       {
-        $("#user_phone_number").prop("disabled", true)
-        $("#user_carrier").prop("disabled", true)
-        $("#pre_paid_radio").prop("disabled", true)
-        $("#post_paid_radio").prop("disabled", true)
+        // $("#user_phone_number").prop("disabled", true)
+        // $("#user_carrier").prop("disabled", true)
+        // $("#pre_paid_radio").prop("disabled", true)
+        // $("#post_paid_radio").prop("disabled", true)
+
+        $("#user_phone_number").val("000000000000")
+        $("#user_carrier").val("xxx")
       }
       else
       {
-        $("#user_phone_number").prop("disabled", false)
-        $("#user_carrier").prop("disabled", false)
-        $("#pre_paid_radio").prop("disabled", false)
-        $("#post_paid_radio").prop("disabled", false)
+        // $("#user_phone_number").prop("disabled", false)
+        // $("#user_carrier").prop("disabled", false)
+        // $("#pre_paid_radio").prop("disabled", false)
+        // $("#post_paid_radio").prop("disabled", false)
+
+        // $("#user_phone_number").val("")
+        // $("#user_carrier").val("")
       }
+
+      if ($("#user_phone_number").val() == "000000000000" && $("#user_carrier").val() == "xxx")
+        $("#cellphone").attr("checked", true)
     });
 
     $("#cellphone").on("change", function()
     {
       if(this.checked)
       {
-        $("#user_phone_number").prop("disabled", true)
-        $("#user_carrier").prop("disabled", true)
-        $("#pre_paid_radio").prop("disabled", true)
-        $("#post_paid_radio").prop("disabled", true)
+        // $("#user_phone_number").prop("disabled", true)
+        // $("#user_carrier").prop("disabled", true)
+        // $("#pre_paid_radio").prop("disabled", true)
+        // $("#post_paid_radio").prop("disabled", true)
+
+        $("#user_phone_number").val("000000000000")
+        $("#user_carrier").val("xxx")
       }
       else
       {
-        $("#user_phone_number").prop("disabled", false)
-        $("#user_carrier").prop("disabled", false)
-        $("#pre_paid_radio").prop("disabled", false)
-        $("#post_paid_radio").prop("disabled", false)
+        // $("#user_phone_number").prop("disabled", false)
+        // $("#user_carrier").prop("disabled", false)
+        // $("#pre_paid_radio").prop("disabled", false)
+        // $("#post_paid_radio").prop("disabled", false)
+
+        $("#user_phone_number").val("")
+        $("#user_carrier").val("")
       }
     });
 
@@ -271,11 +286,6 @@
 
           = f.text_field :first_name, :placeholder => "* Nome"
           %br
-
-          -#Removed middle name criteria
-          -#= f.label :middle_name,  "* Nome do meio",
-          -#= f.text_field :middle_name, :placeholder => "Nome do meio (opcional)"
-          -#%br
 
           = f.text_field :last_name, :placeholder => "* Sobrenome"
           %br
