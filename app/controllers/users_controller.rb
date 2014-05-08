@@ -117,27 +117,10 @@ class UsersController < ApplicationController
   # GET /users/1
 
   def edit
-    @user = User.find(params[:id])
-    @user.house ||= House.new
-    @user.house.location ||= Location.new
-    @user.house.location.latitude ||= 0
-    @user.house.location.longitude ||= 0
+    authorize!(:edit, @user) if @user != @current_user
 
-    @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
-                        [@user.first_name,"first"]
-                       ]
-
-    # if nickname exists, allow display name as option
-    @display_options += [[@user.nickname,"nickname"],
-                         [@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")","firstlastnickname"]
-                        ] if @user.nickname.present?
-
-    @highlightAccountItem = "nav_highlight"
-    @verifiers = User.where(:role => "verificador").map { |verifier| {:value => verifier.id, :label => verifier.full_name}}.to_json
-    @residents = User.residents.map { |resident| {:value => resident.id, :label => resident.full_name}}.to_json
-    if @user != @current_user
-      authorize! :edit, @user
-    end
+    @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+    @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
   end
 
   #----------------------------------------------------------------------------

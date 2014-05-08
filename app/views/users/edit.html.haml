@@ -294,7 +294,7 @@
           %br
           = f.label "Mostrar nome como"
 
-          =f.select :display, options_for_select(@display_options, @user.display),{:name => "display", :id => "display_select"}
+          =f.select :display, options_for_select(@user.display_name_options, @user.display),{:name => "display", :id => "display_select"}
           %br
           %br
           = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
