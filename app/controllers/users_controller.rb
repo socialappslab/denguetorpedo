@@ -127,32 +127,7 @@ class UsersController < ApplicationController
   # PUT "/users/1
 
   def update
-    @user = User.find(params[:id])
-
-    #--------------------------------------------------------------------------
-    # Handle carrier and prepaid errors.
-    if params[:cellphone] == "false"
-      # TODO: This is a hack to save the phone information in the case that user
-      # registers with existing house name (the confirmation clears any temporary
-      # variable results of cellphone information).
-      @user.update_attribute(:phone_number, "000000000000")
-      @user.update_attribute(:carrier, "xxx")
-      @user.update_attribute(:prepaid, true)
-
-      # We still need this when the user object will be saved later in this method.
-      params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
-    else
-
-      if params[:user][:carrier].blank?
-        flash[:alert] = "Informe a sua operadora."
-        redirect_to edit_user_path(@user) and return
-      elsif params[:user][:prepaid].blank?
-        flash[:alert] = "Marque pré ou pós-pago."
-        redirect_to edit_user_path(@user) and return
-      end
-
-    end
-
+    @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid, :neighborhood_id)) if params[:cellphone] == "false"
 
     #--------------------------------------------------------------------------
     # If the user has written down an existing house, then we need to confirm
@@ -164,14 +139,8 @@ class UsersController < ApplicationController
       @house_name_confirmation = true
       flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
 
-      @display_options = [[@user.first_name + " " + @user.last_name,"firstlast"],
-                          [@user.first_name,"first"]
-                         ]
-
-      # if nickname exists, allow display name as option
-      @display_options += [[@user.nickname,"nickname"],
-                           [@user.first_name + " " + @user.last_name + " (" + @user.get_nickname + ")","firstlastnickname"]
-                          ] if @user.nickname.present?
+      @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+      @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
 
       render "edit" and return
     end
@@ -196,27 +165,37 @@ class UsersController < ApplicationController
 
     #--------------------------------------------------------------------------
     # Update the user and the house
-    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :phone_number, :carrier, :prepaid, :neighborhood_id)
+    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :carrier, :prepaid)
 
 
     # TODO add in checks to rename or join existing house?
     # TODO should we allow users from neighborhood A join houses in neighborhood B
     # if house already exists, join existing house
-    if house.present?
-      @user.house = house
-
-    # user already has a house, update its name
-    elsif @user.house.present?
-      @user.house.name = params[:user][:house_attributes][:name]
-
-    # else create a new house
-    else
-      @user.house = House.create(
-                  :name=>params[:user][:house_attributes][:name],
-                  :user=>@user,
-                  :neighborhood_id => user_params[:neighborhood_id])
-
+    location = Location.find_by_street_type_and_street_name_and_street_number(
+      params[:user][:house_attributes][:location_attributes][:street_type],
+      params[:user][:house_attributes][:location_attributes][:street_name],
+      params[:user][:house_attributes][:location_attributes][:street_number]
+      )
+    if location.nil?
+      location = Location.new(params[:user][:house_attributes][:location_attributes])
+      location.neighborhood_id = user_params[:neighborhood_id]
+      location.save
     end
+
+    if house.present?
+      house.update_attribute(:location_id, location.id)
+      @user.house = house
+    else
+      params[:user][:house_attributes].delete(:location_attributes)
+      params[:user][:house_attributes].merge!(:location_id => location.id)
+
+      if @user.house.present?
+        @user.house.update_attributes(params[:user][:house_attributes]) #.name = params[:user][:house_attributes][:name]
+      else
+        @user.house = House.new(params[:user][:house_attributes])
+      end
+    end
+
 
     # if nickname is blank and display name includes nickname, change to firstlast
     if user_params[:nickname].blank?
