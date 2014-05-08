@@ -78,6 +78,7 @@ class User < ActiveRecord::Base
     house && house.location
   end
 
+
   def check_house(house_attributes)
     if house = House.find_by_name(house_attributes[:name])
       return true
@@ -137,12 +138,25 @@ class User < ActiveRecord::Base
     end
   end
 
-  # def join_group_buy_in(group_buy_in_id)
-  #   @group = GroupBuyIn.find(group_buy_in_id)
-  #   return false if self.points < @group.points_per_person
-  #   self.points -= @group.points_per_person
-  #   return true
-  # end
+  #----------------------------------------------------------------------------
+
+  def display_name_options
+    options = [
+      [self.first_name + " " + self.last_name,"firstlast"],
+      [self.first_name,"first"]
+    ]
+
+    if self.nickname.present?
+      options += [
+        [self.nickname, "nickname"],
+        [self.first_name + " " + self.last_name + " (" + self.nickname + ")","firstlastnickname"]
+      ]
+    end
+
+    return options
+  end
+
+  #----------------------------------------------------------------------------
 
   def display_name
     if self.display == "firstmiddlelast"
@@ -167,13 +181,10 @@ class User < ActiveRecord::Base
 
     end
 
-    # if display_name.size > 33
-    #   return display_name[0..33] + "..."
-    # else
-    #   return display_name
-    # end
     return display_name
   end
+
+  #----------------------------------------------------------------------------
 
   def shorter_display_name
     if self.display == "firstmiddlelast"
@@ -199,6 +210,8 @@ class User < ActiveRecord::Base
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def full_name
     name = self.first_name
     if self.middle_name
@@ -218,18 +231,6 @@ class User < ActiveRecord::Base
 
   def self.ordinary_users
     return User.where("role = 'morador' OR role = 'verificador' OR role = 'coordenador'")
-  end
-
-  # def self.residents
-  #   return User.where("role = 'morador' OR role = 'coordenador'")
-  # end
-
-  def get_nickname
-    if self.nickname
-      return nickname
-    else
-      return ""
-    end
   end
 
   def admin?
