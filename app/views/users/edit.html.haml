@@ -315,15 +315,10 @@
         Pós-pago
 
 
-      =check_box_tag :cellphone, false
+      = check_box_tag :cellphone, false
       Clique aqui se você não tiver um celular.
 
       %br
-      /= f.label :phone_number,  "* Confirmar celular"
-      -#= text_field_tag("phone_number_confirmation", nil, :placeholder => "Confirmar celular")
-      -#= text_field_tag("carrier_confirmation", nil, :placeholder => "Confirmar operadora", :style => "width:150px;")
-      %br
-      /= f.label :email,  "* Email"
 
       = f.label :profile_photo,  "Foto do perfil (opcional)", class:"config_form_title"
       = f.file_field :profile_photo
@@ -346,7 +341,7 @@
 
         -# Name of home / Nome da casa
         %br
-        = f.fields_for :house do |house_form|
+        = f.fields_for :house, (@user.house || House.new) do |house_form|
           - if @user.role == "lojista"
             = house_form.label "Nome do estabelecimento"
             = house_form.text_field :name
@@ -371,7 +366,7 @@
         %br
 
         -#Photo of house / Foto de casa
-        = f.fields_for :house do |house_form|
+        = f.fields_for :house, (@user.house || House.new) do |house_form|
           - if @user.role == "lojista"
             = house_form.label "Telefone comercial"
             = house_form.text_field :phone_number
@@ -381,18 +376,16 @@
           - else
             = house_form.label "Foto da casa (opcional)", class:"config_form_title"
           = house_form.file_field :profile_photo
-        %br
-        %br
-        = f.fields_for :location do |location_form|
-          = location_form.label "Endereço (opcional)", class:"config_form_title"
-          -#= location_form.label "* Endereço da casa"
-          =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
 
-          = location_form.text_field :street_type,  placeholder: "Rua, Beco etc.", class: "short_field"
-          = location_form.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
-          = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
+          = house_form.fields_for :location, (@user.house || House.new).location || Location.new do |location_form|
+            = location_form.label "Endereço (opcional)", class:"config_form_title"
+            =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
 
-      %br
+            = location_form.text_field :street_type,  placeholder: "Rua, Beco etc.", class: "short_field"
+            = location_form.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
+            = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
+
+        %br
       %br
       - unless @user.is_fully_registered
         %h1 Alguém o convidou a se cadastrar no DT?
@@ -409,6 +402,7 @@
         = text_area_tag "bio", nil, rows: 10, placeholder: "Descreva suas informações pessoais e profissionais."
 
     %br
-      = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
-      %button{ :class => "cancel_button", :style => "height:26px;"}
-        = link_to "Cancelar", edit_user_path(@user)
+      .edit_house
+        = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
+        %button{ :class => "cancel_button", :style => "height:26px;"}
+          = link_to "Cancelar", edit_user_path(@user)
