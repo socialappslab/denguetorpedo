@@ -10,7 +10,7 @@
 //= require jquery.ui.all
 //= require_tree .
 //= require leaflet
-
+//= require bootstrap
 
 //TopUp
 // TopUp.host = "http://localhost:5000/";

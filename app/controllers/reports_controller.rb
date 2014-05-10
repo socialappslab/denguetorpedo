@@ -121,6 +121,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Now let's save the report.
     if @report.save && valid_address
+      flash[:should_render_social_media_buttons] = true
       flash[:notice] = 'Foco marcado com sucesso!'
 
       redirect_to neighborhood_reports_path(@neighborhood) and return

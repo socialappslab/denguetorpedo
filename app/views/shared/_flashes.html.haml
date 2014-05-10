@@ -1,12 +1,16 @@
-.row
-  .span16.offset1
+.row{:style => "z-index: 10;"}
+  .span15.offset1
     - if flash[:notice]
-      .row
-        %div{:style => "z-index: 10; margin-bottom: 30px; background-color: #5cb85c;"}
-          %p{:style => "color: #fff; font-size: 20px; padding: 20px;"}
-            = flash[:notice]
+      .alert.alert-success.alert-dismissable{:style => "padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
+        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+          &times;
+        %span{:style => "font-size: 20px; float: right;"}
+          - if flash[:should_render_social_media_buttons]
+            = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => "Acabei de marcar um foco no @DengueTorpedo."}
+        = flash[:notice]
+
     - if flash[:alert]
-      .row#flash_dat_alert{:style => "z-index: 10;"}
-        #flashAlert
-          %p
-            = flash[:alert]
+      .alert.alert-danger.alert-dismissable
+        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+          &times;
+        = flash[:alert]
