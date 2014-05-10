@@ -103,11 +103,11 @@
 
 
 
+= render :partial => "shared/flashes"
+
 .user_form.offset1
   /%h1 Configurações da conta
-  = render :partial => "shared/flashes"
   = render :partial => "shared/form_errors", :locals => {:item => @user}
-
 
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
