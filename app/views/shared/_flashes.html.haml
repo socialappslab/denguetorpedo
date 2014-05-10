@@ -1,10 +1,12 @@
-- if flash[:notice]
-  .row#flash_dat_notice{:style => "z-index: 10;"}
-    #flashNotice
-      %p
-        = flash[:notice]
-- if flash[:alert]
-  .row#flash_dat_alert{:style => "z-index: 10;"}
-    #flashAlert
-      %p
-        = flash[:alert]
+.row
+  .span16.offset1
+    - if flash[:notice]
+      .row
+        %div{:style => "z-index: 10; margin-bottom: 30px; background-color: #5cb85c;"}
+          %p{:style => "color: #fff; font-size: 20px; padding: 20px;"}
+            = flash[:notice]
+    - if flash[:alert]
+      .row#flash_dat_alert{:style => "z-index: 10;"}
+        #flashAlert
+          %p
+            = flash[:alert]
