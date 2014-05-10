@@ -3,8 +3,8 @@
 
 - content_for :head do
   %meta{:property => "og:url",         :content => neighborhood_reports_url(@neighborhood)}
-  %meta{:property => "og:title",       :content => "Focos Marcados"}
-  %meta{:property => "og:description", :content => "Acabei de marcar o eliminar um foco no @DengueTorpedo."}
+  %meta{:property => "og:title",       :content => "Dengue Torpedo"}
+  %meta{:property => "og:description", :content => "Eu estou no combate à dengue no @DengueTorpedo"}
 
 #fb-root
 :javascript
@@ -21,10 +21,18 @@
 
 
 .row
-  .span6.offset1
+  .span12.offset1
     = render :partial => "shared/flashes"
-    %h1
-      = "Focos marcados de #{@neighborhood.name }"
+
+    .row
+      .span5
+        %h1
+          = "Focos marcados de #{@neighborhood.name }"
+      .span4
+        %span{:style => "display: block; line-height: 36px;"}
+          = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => "Eu estou no combate à dengue no @DengueTorpedo."}
+
+
   %br
   .span#report_buttons{:style => "font-size:20px;"}
     / %h1 Marcar um foco
