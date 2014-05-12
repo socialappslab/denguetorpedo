@@ -22,6 +22,7 @@ gem 'leaflet-rails'
 # SMS communication
 
 gem 'nexmo'
+gem 'mms2r'
 
 #------------------------------------------------------------------------------
 # PDF-related
@@ -46,8 +47,6 @@ gem 'dynamic_form'
 #------------------------------------------------------------------------------
 
 gem 'ruby-gmail'
-gem 'daemons'
-gem 'mms2r'
 gem 'mime'
 gem 'rmagick'
 gem 'bcrypt-ruby', '~> 3.0.0'
