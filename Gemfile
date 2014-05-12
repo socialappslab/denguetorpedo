@@ -43,6 +43,7 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dynamic_form'
+gem 'rails_autolink'
 
 #------------------------------------------------------------------------------
 
@@ -53,10 +54,7 @@ gem 'therubyracer' # this is required for the coffeescript compiler to work on l
 gem 'simple_enum'
 gem 'awesome_nested_set'
 gem 'uuid'
-gem 'eventmachine', '~> 1.0.0.beta.4.1'
 gem 'cancan'
-gem 'rails_autolink'
-
 
 #------------------------------------------------------------------------------
 # Assets
