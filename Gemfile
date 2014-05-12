@@ -48,14 +48,11 @@ gem 'dynamic_form'
 
 gem 'ruby-gmail'
 gem 'mime'
-gem 'rmagick'
 gem 'bcrypt-ruby', '~> 3.0.0'
-gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
 gem 'therubyracer' # this is required for the coffeescript compiler to work on linux
 gem 'simple_enum'
 gem 'awesome_nested_set'
 gem 'uuid'
-gem 'whenever', :require => false
 gem 'eventmachine', '~> 1.0.0.beta.4.1'
 gem 'cancan'
 gem 'rails_autolink'
@@ -63,8 +60,7 @@ gem 'rails_autolink'
 
 #------------------------------------------------------------------------------
 # Assets
-# Gems used only for assets and not required
-# in production environments by default.
+
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
   gem 'bootstrap-sass', '~> 2.0.3'
@@ -75,13 +71,11 @@ end
 gem 'yui-compressor'
 
 #------------------------------------------------------------------------------
-# File Management
+# Image Management and Processing
 
 gem 'aws-sdk'
-
-
-# for geocoding transformation
-# gem 'proj4rb'
+gem 'rmagick'
+gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
 
 #------------------------------------------------------------------------------
 # Server Management
@@ -94,11 +88,6 @@ gem "foreman"
 
 gem "sidekiq"
 gem 'sinatra', '>= 1.3.0', :require => nil
-
-#------------------------------------------------------------------------------
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
 
 #------------------------------------------------------------------------------
 # Testing
@@ -114,7 +103,6 @@ end
 group :test do
   gem 'guard-rspec'
   gem 'database_cleaner'
-
   gem 'faker'
 end
 
