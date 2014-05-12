@@ -127,8 +127,15 @@ class UsersController < ApplicationController
   # PUT "/users/1
 
   def update
+    # NOTE: These horrendous actions are a result of trying to save form information,
+    # even when later information may not be correct.
     @user.update_attribute(:gender, params[:user][:gender])
     @user.update_attribute(:neighborhood_id, params[:user][:neighborhood_id])
+    @user.update_attribute(:first_name, params[:user][:first_name])
+    @user.update_attribute(:last_name, params[:user][:last_name])
+    @user.update_attribute(:nickname, params[:user][:nickname])
+    @user.update_attribute(:display, params[:user][:display])
+
     @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
     #--------------------------------------------------------------------------

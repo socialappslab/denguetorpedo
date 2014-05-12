@@ -1,10 +1,7 @@
 # encoding: utf-8
+
 require 'spec_helper'
-
 describe "Users", :type => :feature do
-
-  #-----------------------------------------------------------------------------
-
   context "when editing one's information" do
     let!(:user) { FactoryGirl.create(:user, :phone_number => nil, :carrier => nil, :house_id => nil, :prepaid => nil, :neighborhood_id => nil, ) }
 
@@ -48,6 +45,42 @@ describe "Users", :type => :feature do
         end
 
         expect(page).to have_css("#user_gender_false[checked='checked']")
+      end
+
+      it "keeps first name information" do
+        fill_in :user_first_name, :with => "I AM TESTER"
+        within "#name_edit_box" do
+          click_button "Confirmar"
+        end
+        expect(find_field("user_first_name").value).to eq("I AM TESTER")
+      end
+
+
+      it "keeps last name information" do
+        fill_in :user_last_name, :with => "I AM TESTER"
+        within "#name_edit_box" do
+          click_button "Confirmar"
+        end
+        expect(find_field("user_last_name").value).to eq("I AM TESTER")
+      end
+
+      it "keeps nickname information" do
+        fill_in :user_nickname, :with => "I AM TESTER"
+        within "#name_edit_box" do
+          click_button "Confirmar"
+        end
+        expect(find_field("user_nickname").value).to eq("I AM TESTER")
+      end
+
+      it "keeps nickname information" do
+        selected_name = user.display_name_options[1]
+        expect(find_field("user_display").value).not_to eq(selected_name[1])
+
+        select selected_name[0], :from => "user_display"
+        within "#name_edit_box" do
+          click_button "Confirmar"
+        end
+        expect(find_field("user_display").value).to eq(selected_name[1])
       end
     end
   end
