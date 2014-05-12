@@ -301,11 +301,13 @@
           %button{ :class => "cancel_button", :style => "height:26px;"}
             = link_to "Cancelar", edit_user_path(@user)
 
-
-      = f.radio_button :gender, "true"
+      = f.radio_button :gender, "true", :checked => (@user.gender == true)
       masculino
-      = f.radio_button :gender, "false", id:"gender_female_radio"
+      = f.radio_button :gender, "false", :checked => (@user.gender == false)
       feminino
+
+
+
       %br
       %br
       %br

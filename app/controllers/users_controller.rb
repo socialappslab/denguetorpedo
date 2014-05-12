@@ -127,7 +127,9 @@ class UsersController < ApplicationController
   # PUT "/users/1
 
   def update
-    @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid, :neighborhood_id)) if params[:cellphone] == "false"
+    @user.update_attribute(:gender, params[:user][:gender])
+    @user.update_attribute(:neighborhood_id, params[:user][:neighborhood_id])
+    @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
     #--------------------------------------------------------------------------
     # If the user has written down an existing house, then we need to confirm
