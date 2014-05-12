@@ -343,6 +343,8 @@
 
     -# House Settings / Configurações da casa
     %br
+    %br
+    %br
     - if @user.role != "visitante"
       - if @user.role == "lojista"
         %h1 Configurações da estabelecimento
@@ -398,6 +400,10 @@
             = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
 
         %br
+
+          
+      %br
+      %br
       %br
       - unless @user.is_fully_registered
         %h1 Alguém o convidou a se cadastrar no DT?
