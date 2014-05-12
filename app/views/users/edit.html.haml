@@ -331,6 +331,7 @@
       Clique aqui se você não tiver um celular.
 
       %br
+      %br
 
       = f.label :profile_photo,  "Foto do perfil (opcional)", class:"config_form_title"
       = f.file_field :profile_photo
@@ -391,6 +392,8 @@
             = house_form.label "Foto da casa (opcional)", class:"config_form_title"
           = house_form.file_field :profile_photo
 
+          %br
+          %br
           = house_form.fields_for :location, (@user.house || House.new).location || Location.new do |location_form|
             = location_form.label "Endereço (opcional)", class:"config_form_title"
             =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
@@ -401,7 +404,7 @@
 
         %br
 
-          
+
       %br
       %br
       %br
