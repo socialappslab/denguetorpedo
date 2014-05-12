@@ -11,6 +11,7 @@ end
 # Encoding support
 
 gem 'magic_encoding'
+gem 'mime' # TODO: Possibly deprecate?
 
 #------------------------------------------------------------------------------
 # Maps
@@ -23,6 +24,16 @@ gem 'leaflet-rails'
 
 gem 'nexmo'
 gem 'mms2r'
+
+#------------------------------------------------------------------------------
+# Security
+
+gem 'bcrypt-ruby', '~> 3.0.0'
+
+#------------------------------------------------------------------------------
+# Email communication
+
+gem 'ruby-gmail'
 
 #------------------------------------------------------------------------------
 # PDF-related
@@ -47,14 +58,14 @@ gem 'rails_autolink'
 
 #------------------------------------------------------------------------------
 
-gem 'ruby-gmail'
-gem 'mime'
-gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'therubyracer' # this is required for the coffeescript compiler to work on linux
-gem 'simple_enum'
-gem 'awesome_nested_set'
-gem 'uuid'
 gem 'cancan'
+
+# TODO: Deprecate after refactoring Post model.
+gem 'awesome_nested_set'
+
+# TODO: Deprecate after refactoring Feed model.
+gem 'simple_enum'
 
 #------------------------------------------------------------------------------
 # Assets
