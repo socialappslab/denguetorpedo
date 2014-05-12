@@ -26,9 +26,10 @@ gem 'nexmo'
 gem 'mms2r'
 
 #------------------------------------------------------------------------------
-# Security
+# User management
 
 gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'cancan'
 
 #------------------------------------------------------------------------------
 # Email communication
@@ -57,27 +58,15 @@ gem 'dynamic_form'
 gem 'rails_autolink'
 
 #------------------------------------------------------------------------------
-
-gem 'therubyracer' # this is required for the coffeescript compiler to work on linux
-gem 'cancan'
-
-# TODO: Deprecate after refactoring Post model.
-gem 'awesome_nested_set'
-
-# TODO: Deprecate after refactoring Feed model.
-gem 'simple_enum'
-
-#------------------------------------------------------------------------------
 # Assets
 
+gem 'yui-compressor'
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
   gem 'bootstrap-sass', '~> 2.0.3'
   gem 'coffee-rails', "~> 3.2.1"
   gem 'uglifier', '>= 1.0.3'
 end
-
-gem 'yui-compressor'
 
 #------------------------------------------------------------------------------
 # Image Management and Processing
@@ -91,6 +80,7 @@ gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
 
 gem "puma"
 gem "foreman"
+gem "therubyracer"
 
 #------------------------------------------------------------------------------
 # Workers
@@ -114,5 +104,15 @@ group :test do
   gem 'database_cleaner'
   gem 'faker'
 end
+
+
+#------------------------------------------------------------------------------
+# TODO
+
+# TODO: Deprecate after refactoring Post model.
+gem 'awesome_nested_set'
+
+# TODO: Deprecate after refactoring Feed model.
+gem 'simple_enum'
 
 #------------------------------------------------------------------------------
