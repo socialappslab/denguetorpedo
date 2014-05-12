@@ -4,7 +4,6 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
-//= require top_up-min
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
@@ -12,10 +11,6 @@
 //= require leaflet
 //= require bootstrap
 
-//TopUp
-// TopUp.host = "http://localhost:5000/";
-// TopUp.images_path = "assets/top_up/";
-// TopUp.players_path = "assets/players/";
 
 // TRANSITION
 !function( $ ) {
