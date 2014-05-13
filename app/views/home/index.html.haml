@@ -108,9 +108,6 @@
               = link_to "+ #{I18n.t("common_terms.more")}", prizes_path
 
 
-
-
-
 /------------------------------------------------------------------------------
 
 / Display neighborhood news only if a logged-in user is viewing it.
@@ -118,7 +115,8 @@
   .row
     .offset1
       #neighborhood_news
-        %h2 Notícias da comunidade
+        %h2
+          = I18n.t("landing_page.news.title")
         %ul
           - @notices.each do |notice|
             %a{:href => notice_path(notice)}
@@ -135,7 +133,8 @@
 
 %br
 .row
-  %h2.offset1{style: 'font-size: 18px;'} Parceiros
+  %h2.offset1{style: 'font-size: 18px;'}
+    = I18n.t("common_terms.partners")
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
     <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
 

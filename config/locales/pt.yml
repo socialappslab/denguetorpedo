@@ -82,6 +82,8 @@ pt:
     house:
       title_with_name: Casas %{name}
       title: Casas
+    news:
+      title: Notícias da comunidade
     orange_banner:
       tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
       registration_form:
@@ -100,3 +102,4 @@ pt:
     free_sms: SMS Grátis
     search: Busca
     more: Mais
+    partners: Parceiros
