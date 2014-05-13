@@ -97,9 +97,15 @@ pt:
     eliminated_reports: eliminados
     search_for_other_communities: Ache outras comunidades participantes!
 
+  dashboard:
+    my_profile: Meu Perfil
+    my_house: Minha Casa
+    my_community: Minha Comunidade
+    reports: Focos Marcados
 
   common_terms:
     free_sms: SMS Grátis
     search: Busca
     more: Mais
     partners: Parceiros
+    configuration: Configurações
