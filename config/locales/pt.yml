@@ -12,6 +12,9 @@ pt:
       feedback: Mensagem
       house: Casa
       documentation_section: Seção
+      prize:
+        one: Prêmio
+        other: Prêmios
     attributes:
       user:
         password: "Senha"

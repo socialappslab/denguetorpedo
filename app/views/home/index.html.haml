@@ -92,9 +92,8 @@
 %br
 .row
   %h2.offset1{style: 'font-size: 18px;'}
-    = link_to "Prêmios", prizes_path
+    = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path
   #sponsors.offset1{style: "margin-left:61px;"}
-
     %ul
       - @prizes.each do |prize|
         = render :partial => "prizes/prize", :object => prize
@@ -106,7 +105,7 @@
         .prize_content
           .description{:style => "height: 100%;"}
             %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
-              = link_to "+ Mais", prizes_path
+              = link_to "+ #{I18n.t("common_terms.more")}", prizes_path
 
 
 
