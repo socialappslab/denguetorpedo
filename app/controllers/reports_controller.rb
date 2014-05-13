@@ -227,6 +227,10 @@ class ReportsController < NeighborhoodsBaseController
 
   end
 
+  def like
+
+  end
+
 
   def destroy
     if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
