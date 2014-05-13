@@ -3,18 +3,22 @@
     %ul
       = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
       %li.main_nav_button.span3.offset4{style: 'margin-left: 240px;'}
-        =link_to education_path do
-          %h1{style: 'color:black;'} SAIBA MAIS
-          %h3 Sobre a dengue
+        = link_to education_path do
+          %h1{style: 'color:black;'}
+            = I18n.t("home_navigation.education.title")
+          %h3
+            = I18n.t("home_navigation.education.description")
       %li.main_nav_button.span2.offset1{style: 'margin-left: -10px;'}
-        =link_to howto_path do
-          %h1{style: 'color:black;'} JOGUE
-          %h3{style: "margin-left:-5px;"} &nbsp;&nbsp;Como?
+        = link_to howto_path do
+          %h1{style: 'color:black;'}
+            = I18n.t("home_navigation.howto.title")
+          %h3{style: "margin-left:-5px;"}
+            = I18n.t("home_navigation.howto.description")
       %li.main_nav_button.span2.offset1{style: 'margin-left: -10px;'}
-        =link_to prizes_path do
-          %h1{style: 'color:black;'} GANHE
-          %h3 Prêmios
-        /%h1= link_to "GANHE", prizes_path
-        /%h3 Prêmios
+        = link_to prizes_path do
+          %h1{style: 'color:black;'}
+            = I18n.t("home_navigation.prizes.title")
+          %h3
+            = I18n.t("home_navigation.prizes.description")
       %li.span3
         = render "layouts/login"

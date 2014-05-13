@@ -46,3 +46,17 @@ pt:
         too_long: "é muito longo. (mínimo de %{count} caracteres)"
         too_short: "é muito curto. (mínimo de %{count} caracteres)"
         not_a_number: "não é um número"
+
+  #----------------------------------------------------------------------------
+  # Custom text
+  #------------
+  home_navigation:
+    education:
+      title: SAIBA MAIS
+      description: Sobre a dengue
+    howto:
+      title: JOGUE
+      description: Como?
+    prizes:
+      title: GANHE
+      description: Prêmios
