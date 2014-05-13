@@ -47,6 +47,12 @@ pt:
         too_short: "é muito curto. (mínimo de %{count} caracteres)"
         not_a_number: "não é um número"
 
+    common_terms:
+      prize:
+        cost: %{cost} pontos
+        quantity: "Estoque: %{quantity}"
+        expiration: "Prazo: %{time}"
+
   #----------------------------------------------------------------------------
   # Custom text
   #------------
@@ -67,8 +73,27 @@ pt:
     logout: Sair
 
   landing_page:
+    community:
+      title: Comunidades em destaque no Dengue Torpedo
+      future_community: Futura comunidade
+    house:
+      title_with_name: Casas %{name}
+      title: Casas
     orange_banner:
-      free_sms: SMS Grátis!
       tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
       registration_form:
         register: Cadastre-se
+
+
+  community:
+    visit_community: Vá para a %{name}
+    total_reports: Total de focos marcados
+    open_reports: em aberto
+    eliminated_reports: eliminados
+    search_for_other_communities: Ache outras comunidades participantes!
+
+
+  common_terms:
+    free_sms: SMS Grátis
+    search: Busca
+    more: Mais

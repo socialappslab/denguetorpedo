@@ -27,7 +27,7 @@
               = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
               #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
                 %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
-                  = I18n.t("landing_page.orange_banner.free_sms")
+                  = I18n.t("common_terms.free_sms")
                 :javascript
                   $("#redetrel_button1").click(function() {
                     location.href = "sponsors/3";

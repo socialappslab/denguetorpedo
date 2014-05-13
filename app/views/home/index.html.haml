@@ -9,7 +9,8 @@
 / is logged in, they care only about their neighborhood.
 - if @current_user.nil?
   .row
-    %h2.offset1 Comunidades em destaque no Dengue Torpedo
+    %h2.offset1
+      = I18n.t("landing_page.community.title")
   .row
     .span15.offset1
       = render "home/neighborhood_list"
@@ -20,22 +21,25 @@
   .row
     #neighborhood_stats.offset1
       #home_visit_neighborhood_button.span5
-        = link_to "Vá para a #{neighborhood.name}", neighborhood_path(neighborhood)
+        = link_to I18n.t("community.visit_community", :name => neighborhood.name), neighborhood_path(neighborhood)
       .span3{style: "margin-left: 35px;"}
         %b= neighborhood.total_reports.count
-        %br Total de focos marcados
+        %br
+          = I18n.t("community.total_reports")
       .span3{style: "margin-left: 45px;"}
         .row
           #neighborhood_open_report_button.span1
           .span2
             %b= neighborhood.open_reports.count
-            %br em aberto
+            %br
+              = I18n.t("community.open_reports")
       .span3
         .row
           #neighborhood_resolved_report_button.span1
           .span2
             %b= neighborhood.eliminated_reports.count
-            %br eliminados
+            %br
+              = I18n.t("community.eliminated_reports")
 
 / Futura comunidade is meant to be a way for people to reach out to DT
 / and become the next neighborhood.
@@ -43,7 +47,7 @@
   .row
     #neighborhood_stats.offset1
       #home_visit_neighborhood_button.span5
-        = link_to "Futura comunidade", neighborhood_invitation_path
+        = link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
 
 
 %br
@@ -52,14 +56,14 @@
   #neighborhood_search
     #neighborhood_search_background{style: "width:600px; margin: auto; text-align: center; display: inline-block; padding-top: 0px; padding-bottom: 0px;"}
       %p{style: "margin-bottom: 10px; font-weight: bold;"}
-        Ache outras comunidades participantes!
+        = I18n.t("community.search_for_other_communities")
       = form_tag neighborhood_search_path, :style => "margin: 0px;" do
         = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :include_blank => true, :style => "width: 50%;")
-        = submit_tag "Busca", :class => "button"
+        = submit_tag I18n.t("common_terms.search"), :class => "button"
     - if @current_user
       #sms_button{style: "margin-left: 20px; font-size:10px; display: inline-block;"}
         %button{style: "width:100px; margin-top: -30px; background-color:green; font-size:18px;line-height:22px; height: 65px;", id: "redetrel_button1"}
-          SMS Grátis!
+          = I18n.t("common_terms.free_sms")
         :javascript
           $("#redetrel_button1").click(function() {
             location.href = "sponsors/3";
@@ -71,10 +75,12 @@
 
 - if @current_user.present?
   .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
+  %h2.offset1#home_houses{style: 'font-size: 18px;'}
+    = I18n.t("landing_page.house.title_with_name", :name => @selected_neighborhood.name)
 - else
   .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas
+  %h2.offset1#home_houses{style: 'font-size: 18px;'}
+    = I18n.t("landing_page.house.title")
 
 .row
   #houses.span15.offset1
