@@ -65,3 +65,10 @@ pt:
     forgot_password: Esqueceu sua senha?
     greeting: Olá %{name}!
     logout: Sair
+
+  landing_page:
+    orange_banner:
+      free_sms: SMS Grátis!
+      tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
+      registration_form:
+        register: Cadastre-se
