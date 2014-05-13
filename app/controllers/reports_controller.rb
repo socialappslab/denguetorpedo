@@ -229,14 +229,20 @@ class ReportsController < NeighborhoodsBaseController
 
   def like
 
-    if report = Report.find(params[:id])
+    if request.xhr?
+      report = Report.find(params[:id])
 
-      # If user already likes report, remove like (e.g. 'unlike'), else add to likes
-      unless report.likes.delete(@current_user)
-        report.likes << @current_user
+      if report && @current_user.present?
+
+        # If user already likes report, remove like (e.g. 'unlike'), else add to likes
+        if report.likes.include? @current_user
+          report.likes.delete(@current_user)
+        else
+          report.likes << @current_user
+        end
+
+        render :json => {'count' => report.likes.count}
       end
-
-      return report.likes.count
 
     end
 

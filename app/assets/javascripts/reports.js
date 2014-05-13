@@ -61,6 +61,20 @@ $(document).ready(function() {
 	});
     // end of methods
 
+
+
+    $(".like_button").click(function(event){
+        event.preventDefault();
+
+        $.ajax({
+            url: location.href + "/" + $(this).data("report_id") + "/like",
+            type: "POST",
+            success : function(report){
+                $(event.target).text("Likes " + report.count.toString());
+            }
+        })
+    });
+
 });
 
 
@@ -223,3 +237,4 @@ function update_location_coordinates(location,event){
     }
   }
 }
+
