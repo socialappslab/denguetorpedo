@@ -34,6 +34,11 @@ pt:
         elimination_type: Tipo de foco
       documentation_section:
         content: Conteúdo
+      prize:
+        cost:
+          one: "1 ponto"
+          other: "%{count} pontos"
+
     errors:
       template:
         header:
@@ -50,15 +55,9 @@ pt:
         too_short: "é muito curto. (mínimo de %{count} caracteres)"
         not_a_number: "não é um número"
 
-    common_terms:
-      prize:
-        cost: %{cost} pontos
-        quantity: "Estoque: %{quantity}"
-        expiration: "Prazo: %{time}"
-
   #----------------------------------------------------------------------------
-  # Custom text
-  #------------
+  # Home Navigation
+  #----------------
   home_navigation:
     education:
       title: SAIBA MAIS
@@ -70,40 +69,56 @@ pt:
       title: GANHE
       description: Prêmios
 
-  login_navigation:
-    forgot_password: Esqueceu sua senha?
-    greeting: Olá %{name}!
-    logout: Sair
 
-  landing_page:
-    community:
-      title: Comunidades em destaque no Dengue Torpedo
-      future_community: Futura comunidade
-    house:
-      title_with_name: Casas %{name}
-      title: Casas
-    news:
-      title: Notícias da comunidade
-    orange_banner:
-      tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
-      registration_form:
-        register: Cadastre-se
-
-
-  community:
-    visit_community: Vá para a %{name}
-    total_reports: Total de focos marcados
-    open_reports: em aberto
-    eliminated_reports: eliminados
-    search_for_other_communities: Ache outras comunidades participantes!
-
+  #----------------------------------------------------------------------------
+  # Dashboard
+  #----------
   dashboard:
     my_profile: Meu Perfil
     my_house: Minha Casa
     my_community: Minha Comunidade
     reports: Focos Marcados
 
+
+  #----------------------------------------------------------------------------
+  # Login Form
+  #-----------
+  login_form:
+    forgot_password: Esqueceu sua senha?
+    greeting: Olá %{name}!
+    logout: Sair
+
+
+  #----------------------------------------------------------------------------
+  # Landing page
+  #-------------
+  landing_page:
+    community:
+      title: Comunidades em destaque no Dengue Torpedo
+      future_community: Futura comunidade
+      visit: Vá para a %{name}
+      total_reports: Total de focos marcados
+      open_reports: em aberto
+      eliminated_reports: eliminados
+      search_for_other_communities: Ache outras comunidades participantes!
+    house:
+      title_with_name: Casas %{name}
+      title: Casas
+    news:
+      title: Notícias da comunidade
+    prize:
+      quantity: "Estoque: %{quantity}"
+      expiration: "Prazo: %{time}"
+    orange_banner:
+      tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
+
+
+
+  #----------------------------------------------------------------------------
+  # Commonly used words and sentences
+  #----------------------------------
   common_terms:
+    register: Cadastre-se
     free_sms: SMS Grátis
     search: Busca
     more: Mais
