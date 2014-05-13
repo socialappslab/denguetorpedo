@@ -229,6 +229,17 @@ class ReportsController < NeighborhoodsBaseController
 
   def like
 
+    if report = Report.find(params[:id])
+
+      # If user already likes report, remove like (e.g. 'unlike'), else add to likes
+      unless report.likes.delete(@current_user)
+        report.likes << @current_user
+      end
+
+      return report.likes.count
+
+    end
+
   end
 
 
