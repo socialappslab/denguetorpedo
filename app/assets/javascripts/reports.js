@@ -71,6 +71,9 @@ $(document).ready(function() {
             type: "POST",
             success : function(report){
                 $(event.target).text("Likes " + report.count.toString());
+            },
+            error : function(){
+                // TODO anything special for handling error?
             }
         })
     });

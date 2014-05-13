@@ -65,7 +65,7 @@ class User < ActiveRecord::Base
 
   scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
 
-  has_and_belongs_to_many :report_likes, :class_name => "Report"
+  has_and_belongs_to_many :likes, :class_name => "Report"
 
   #----------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ class User < ActiveRecord::Base
   end
 
   def reports
-    Report.includes(:reporter, :eliminator, :location).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
+    Report.includes(:reporter, :eliminator, :location, :likes).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
   end
 
   def buy_prize(prize_id)
