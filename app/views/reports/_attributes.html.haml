@@ -20,6 +20,7 @@
         %br
 
 
+
   - if @current_user.present?
     .eliminate_prompt{:style => "margin-top:5px;"}
       - if report.sms_incomplete?
@@ -31,7 +32,7 @@
         = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
           %h3.report_label
             = "#{I18n.t("activerecord.models.elimination_method")}:"
-          = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+          = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=> I18n.t("common_terms.select_elimination_method"), :id=>"method_selection", :class=>"elimination_methods"
 
           = f.fields_for :location, report.location || Location.new do |location_fields|
             = location_fields.hidden_field :latitude

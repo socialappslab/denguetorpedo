@@ -74,10 +74,6 @@ class Location < ActiveRecord::Base
     self.formatted_address = data["formatted_address"]
   end
 
-  def self.within_bounds(bounds)
-      self.where(:location.within => {"$box" => bounds })
-  end
-
   def points
     house.nil? ? 0 : house.points
   end
@@ -92,18 +88,9 @@ class Location < ActiveRecord::Base
     end
   end
 
-  def needs_location?
-    !(self.latitude && self.longitude)
-  end
 
   def self.new_with_address(address)
     location = Location.new(address: address)
-    # streets = location.address.split(' ') if location.address
-    # if streets.size  >= 3
-    #   location.street_type = streets[0]
-    #   location.street_number = streets[streets.size - 1]
-    #   location.street_name = streets[1..streets.size-2].join(' ')
-    # end
     location.save
     return location
   end

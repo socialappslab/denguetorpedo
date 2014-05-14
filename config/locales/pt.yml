@@ -151,6 +151,7 @@ pt:
     report_attention: "ATENÇÃO: O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador."
     location_not_found: Endereço não encontrado. Marque manualmente.
     go_to_community_on_map: "Vá para a %{name}"
+    select_elimination_method: "Selecione o método de eliminação"
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
