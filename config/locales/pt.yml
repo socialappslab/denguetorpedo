@@ -149,7 +149,8 @@ pt:
     photo_of_report: Carregue a imagem do foco encontrado
     select_elimination_type: "Selecione o tipo de foco"
     report_attention: "ATENÇÃO: O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador."
-
+    location_not_found: Endereço não encontrado. Marque manualmente.
+    go_to_community_on_map: "Vá para a %{name}"
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
