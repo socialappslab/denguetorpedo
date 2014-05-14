@@ -108,6 +108,14 @@ class Report < ActiveRecord::Base
     return (self.isVerified == "f")
   end
 
+  def is_eliminated_report_valid?
+    return (self.is_resolved_verified == "t")
+  end
+
+  def is_eliminated_report_invalid?
+    return (self.is_resolved_verified == "f")
+  end
+
   #----------------------------------------------------------------------------
 
   def self.create_from_user(report_content, params)
