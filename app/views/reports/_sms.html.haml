@@ -1,97 +1,22 @@
 .report.open
   .row
     .rp_report_status.status
-      -# TODO @awdorsett - better way to do expired
       - if report.expired?
-        %del Em aberto
+        %del
+          = I18n.t("common_terms.open_reports")
       - else
-        Em aberto
+        = I18n.t("common_terms.open_reports")
 
       .rp_report_options
-        -# TODO @awdorsett - are reports verified before they're eliminated?
-        - if report.isVerified == "t"
-          = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
-        - elsif report.isVerified == "f"
-          = image_tag 'icons/reports icon/x.png', :width => 25, :height => 25, :style => "float:right;"
-        - else
-          - if !report.expired? and report.elimination_type
-            - if @current_user.role == "verificador" or @current_user.role == "admin" or @current_user.role == "coordenador"
-              = link_to (image_tag 'icons/reports icon/x.png', :width => 25, :height => 25), problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
-              = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
+        = render :partial => "reports/topbar", :locals => {:report => report}
 
         - if report.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
-            Torpedo
+            = I18n.t("common_terms.sms")
 
   .row.address_row
     .span6.address
       %h4= report.report
 
-
   .row{style: "margin-top:7px;"}
-
-    -#before picture
-    .span2.rp_before_photo
-      =image_tag report.before_photo(:medium)
-
-    -#report description
-    .span5{style: "margin-top:9px;"}
-      %h3.report_label Descrição da localização:
-      .description #{report.report}
-
-      -# TODO @awdorsett - need to figure out the process of handling SMS
-      -#- else
-      -#  - if !report.sms_incomplete?
-      -#    = text_area_tag("report_description", report.report, style: "width:430px;")
-
-      -# TODO @awdorsett - when will current_user be nil?
-      - if @current_user != nil
-        .row
-          .span7
-
-
-
-            -#form to enter in elimination method and after photo
-            .eliminate_prompt{:style => "margin-top:5px;"}
-              = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
-                = hidden_field_tag 'report_id', report.id
-
-                - if report.sms_incomplete?
-                  = link_to "Completar o foco", edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:408px;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
-
-
-                -# TODO @awdorsett - what is this used for? Possibly countdown
-                :javascript
-                  $(".selectpicker").selectpicker();
-
-
-
-                -# TODO @awdorsett - give user the option to upload a replacement image?
-                %br
-
-
-                -# Submission status, show name and date of person who submitted, eliminated, and verified
-                .row.rp_report_people{style: "width:430px;"}
-
-                  -# site reported by
-                  - if report.elimination_type and report.reporter_id
-                    Marcado por:
-                    =link_to report.reporter_name + " " + report.strftime_with(:created_at), user_path(report.reporter), :class => "user"
-                    %br
-
-                  -# site verified by
-                  - if report.isVerified == "t" and report.verifier_id
-                    Verificado por:
-                    = link_to report.verifier_name + " " + report.strftime_with(:created_at), user_path(report.verifier), :class => "user"
-                    %br
-                  - elsif report.isVerified == "f" and report.verifier_id
-                    -# problem with site verification
-                    %p{:style => "color:red;font-weight:bold;margin-top:10px;"}
-                      Problema no foco marcado. Entre em contato conosco.
-
-    .row
-      .rp_report_options
-        -# delete report option for owner and admins
-        -# TODO @awdorsett - removed elimination_type == nil, double check if that's okay
-        - if @current_user.admin? or report.reporter == @current_user
-          =link_to (image_tag 'icons/reports icon/delete2.png', :id=>'user_report_delete'), neighborhood_report_path(@neighborhood, report), :confirm => "Você tem certeza?", :method => :delete, :style => "margin-right:5px;"
+    = render :partial => "reports/attributes", :locals => {:report => report}

@@ -1,0 +1,33 @@
+- if @current_user
+  - if report.is_open?
+    - if @current_user.admin? || report.reporter == @current_user
+      = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
+        %i.fa.fa-trash-o.fa-2
+  - elsif report.is_eliminated?
+    - if @current_user.admin?
+      = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
+        %i.fa.fa-trash-o.fa-2
+  - else
+    - if @current_user.admin? || report.reporter == @current_user
+      = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
+        %i.fa.fa-trash-o.fa-2
+
+
+- if report.is_open?
+  - if report.is_valid?
+    %i.fa.fa-check.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
+  - elsif report.is_invalid?
+    %i.fa.fa-times.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
+
+- elsif report.is_eliminated?
+  - if report.is_eliminated_report_valid?
+    %i.fa.fa-check.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
+  - elsif report.is_eliminated_report_invalid?
+    %i.fa.fa-times.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
+
+- else
+  - if @current_user && [User::Types::VERIFIER, User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
+    = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "margin-right:10px; margin-left:10px; float:right; font-size: 20px;" do
+      %i.fa.fa-times.fa-2
+    = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "margin-right:10px; margin-left:10px; float:right; font-size: 20px;" do
+      %i.fa.fa-check.fa-2

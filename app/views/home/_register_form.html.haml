@@ -1,6 +1,4 @@
 #register
-  %h3.black{style: "margin-bottom:0px;"}
-    = I18n.t("landing_page.orange_banner.registration_form.register")
   %ul
     = form_for(@user, html: {name: "registration_form" }) do |f|
       %li= f.error_messages
@@ -11,4 +9,4 @@
       %li= f.password_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :class => "fields"
       %li= f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :class => "fields"
       <br>
-      %li= f.submit I18n.t("landing_page.orange_banner.registration_form.register")
+      %li= f.submit I18n.t("common_terms.register")

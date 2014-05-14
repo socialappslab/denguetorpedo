@@ -275,7 +275,6 @@ class User < ActiveRecord::Base
   def build_report_via_sms(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
-    # location = Location.new_with_address(body)
     # location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
     #     "Rua".downcase.titleize,
     #     "Sargento Silva Nunes".downcase.titleize,

@@ -3,7 +3,7 @@
 		.name{style: "height:20px;"}
 			= link_to truncate(prize.sponsor_name, length: 18), sponsor_path(prize.user)
 		.points
-			= I18n.t("activerecord.common_terms.prize.cost", :cost => prize.cost)
+			= I18n.t("activerecord.attributes.prize.cost", :count => prize.cost)
 	.prize_content
 		- if prize.prize_photo_file_name.nil?
 			= link_to image_tag("home_images/logo.png", :class => "prizes"), prize_path(prize)
@@ -12,8 +12,8 @@
 		.description
 			= link_to truncate(prize.prize_name, length: 40), prize_path(prize)
 		.stock
-			= I18n.t("activerecord.common_terms.prize.quantity", :quantity => prize.stock)
+			= I18n.t("landing_page.prize.quantity", :quantity => prize.stock)
 
 		.redeem_by
 			- if prize.expire_on
-				= I18n.t("activerecord.common_terms.prize.expiration", :time => prize.expire_on.strftime("%d/%m/%Y"))
+				= I18n.t("landing_page.prize.expiration", :time => prize.expire_on.strftime("%d/%m/%Y"))

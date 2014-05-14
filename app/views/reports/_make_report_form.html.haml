@@ -1,11 +1,9 @@
--# TODO @awdorsett - make placeholders dynamic for multiple languages
 -# TODO @awdorsett - update "Marcar no mapa" button if location is found
 -# TODO @awdorsett - Update before photo area to indicate a photo has been uploaded
 -# such as when you're returned to a page during after an error
+-# TODO @awdorsett - refactor CSS for new_report_form
 
 .row
-  -# TODO @awdorsett - refactor CSS for new_report_form
-
   #new_report_form
     = form_for [@neighborhood, @new_report], :html => {:autocomplete => "off", :multipart => true} do |f|
       = hidden_field_tag 'error', params[:new_report].present?
@@ -13,35 +11,38 @@
         = f.hidden_field :reporter_id, :value => @current_user && @current_user.id
 
       #address
-        %h3.new_report_label 1. Endereço do foco localizado
-        -# TODO @awdorsett - placeholder is cut off, fix styling
+        %h3.new_report_label
+          = I18n.t("common_terms.address_of_report")
+
         = f.fields_for :location, @new_report.location || Location.new do |location_fields|
-          = location_fields.text_field :street_type, :placeholder => "Rua, Beco etc.", :class => "middle_field address_field"
-          = location_fields.text_field :street_name, :placeholder => "Nome", :title => "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze.", style: "width:200px;", class: 'address_field'
-          = location_fields.text_field :street_number, :placeholder => "Número", class: "middle_field address_field"
+          = location_fields.text_field :street_type, :placeholder => I18n.t("common_terms.example_of_street_type"), :class => "middle_field address_field"
+          = location_fields.text_field :street_name, :placeholder => I18n.t("attributes.name"), style: "width:200px;", class: 'address_field'
+          = location_fields.text_field :street_number, :placeholder => I18n.t("attributes.number"), class: "middle_field address_field"
           = location_fields.hidden_field :latitude
           = location_fields.hidden_field :longitude
 
       #description
-        %h3.new_report_label 2. Descrição da localização
-        = f.text_area :report, :placeholder => 'Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente',
+        %h3.new_report_label
+        = f.label :report
+        = f.text_area :report, :placeholder => I18n.t("common_terms.example_of_description"),
           :id => 'report_content', :maxlength => 100, :rows => 3
 
       #photo
-        %h3.new_report_label 3. Carregue a imagem do foco encontrado:
+        %h3.new_report_label
+          = I18n.t("common_terms.photo_of_report")
         = f.file_field :before_photo
       %br
 
       #elimination_type
-        %h3.new_report_label.inline_display 4. Tipo de foco
-        = f.select :elimination_type, EliminationType.pluck(:name), :prompt => "Selecione o tipo de foco"
+        %h3.new_report_label.inline_display
+          = I18n.t("activerecord.attributes.report.elimination_type")
+        = f.select :elimination_type, EliminationType.pluck(:name), :prompt => I18n.t("common_terms.select_elimination_type")
       %br
 
       #attention_div
       %p{style: "font-weight: bold;"}
         %b{style: "color:red;"}
-          ATENÇÃO:
-        O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador.
+          = I18n.t("common_terms.report_attention")
       %br
 
-      = f.submit "Enviar!"
+      = f.submit I18n.t("common_terms.submit")
