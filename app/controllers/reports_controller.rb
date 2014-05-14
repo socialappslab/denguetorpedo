@@ -254,7 +254,7 @@ class ReportsController < NeighborhoodsBaseController
 
     @report.verifier_name = @current_user.display_name
 
-    if @report.save
+    if @report.save(:validate => false)
       @current_user.points += 50
       @current_user.total_points += 50
       @current_user.save
