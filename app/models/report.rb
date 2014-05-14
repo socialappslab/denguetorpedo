@@ -97,23 +97,26 @@ class Report < ActiveRecord::Base
     self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
   end
 
-  # A valid report is a report that has been verified by a 3rd party.
+  # A valid report is a report that is
+  # a) open, and verified to be valid by a 3rd party, OR
+  # b) eliminated, and verified to be valid by a 3rd party.
   def is_valid?
-    return (self.isVerified == "t")
+    if self.is_open?
+      return (self.isVerified == "t")
+    elsif self.is_eliminated?
+      return (self.is_resolved_verified == "t")
+    end
   end
 
-  # A valid report is a report that has problems and has been verified
-  # so by a 3rd party.
+  # A valid report is a report that is
+  # a) open, and verified to be problematic by a 3rd party, OR
+  # b) eliminated, and verified to be problematic by a 3rd party.
   def is_invalid?
-    return (self.isVerified == "f")
-  end
-
-  def is_eliminated_report_valid?
-    return (self.is_resolved_verified == "t")
-  end
-
-  def is_eliminated_report_invalid?
-    return (self.is_resolved_verified == "f")
+    if self.is_open?
+      return (self.isVerified == "f")
+    elsif self.is_eliminated?
+      return (self.is_resolved_verified == "f")
+    end
   end
 
   #----------------------------------------------------------------------------

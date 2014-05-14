@@ -1,5 +1,5 @@
 .span8
-  - if report.is_invalid? || report.is_eliminated_report_invalid?
+  - if report.is_invalid?
     %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
       = I18n.t("common_terms.problem_with_report")
 

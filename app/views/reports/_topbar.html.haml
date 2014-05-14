@@ -12,17 +12,9 @@
       = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
         %i.fa.fa-trash-o.fa-2
 
-
-- if report.is_open?
   - if report.is_valid?
-    %i.fa.fa-check.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
+      %i.fa.fa-check.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
   - elsif report.is_invalid?
-    %i.fa.fa-times.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
-
-- elsif report.is_eliminated?
-  - if report.is_eliminated_report_valid?
-    %i.fa.fa-check.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
-  - elsif report.is_eliminated_report_invalid?
     %i.fa.fa-times.fa-2{:style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;"}
 
 - else
