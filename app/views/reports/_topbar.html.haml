@@ -1,0 +1,12 @@
+- if report.isVerified == "t"
+  %i.fa.fa-check.fa-2
+
+  = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
+- elsif report.isVerified == "f"
+  = image_tag 'icons/reports icon/x.png', :width => 25, :height => 25, :style => "float:right;"
+- else
+  - if @current_user && [User::Types::VERIFIER, User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
+    = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right; font-size: 20px;" do
+      %i.fa.fa-times.fa-2
+    = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right; font-size: 20px;" do
+      %i.fa.fa-check.fa-2

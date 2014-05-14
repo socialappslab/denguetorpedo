@@ -2,15 +2,7 @@
   .row
     .rp_report_status.status
       .rp_report_options{:style => "margin-top:-3px;"}
-
-        - if report.is_resolved_verified == "t"
-          = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
-        - elsif report.is_resolved_verified == "f"
-          = image_tag 'icons/reports icon/x.png', :width => 25, :height => 25, :style => "float:right;"
-        - else
-          - if @current_user && [User::Types::VERIFIER, User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
-            = link_to (image_tag 'icons/reports icon/x.png', :width => 25, :height => 25),     problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
-            = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
+        = render :partial => "reports/topbar", :locals => {:report => report}
 
       .span{:style => "float:right;"}
         = I18n.t("common_terms.eliminated")
