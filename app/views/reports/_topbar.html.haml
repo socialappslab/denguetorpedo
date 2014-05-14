@@ -14,9 +14,9 @@
 
 
 - if report.isVerified == "t"
-  %i{:style => "float: right; font-size: 20px;"}.fa.fa-check.fa-2
+  %i.fa.fa-check.fa-2{:style => "float: right; font-size: 20px;"}
 - elsif report.isVerified == "f"
-  %i{:style => "float: right; font-size: 20px;"}.fa.fa-times.fa-2
+  %i.fa.fa-times.fa-2{:style => "float: right; font-size: 20px;"}
 - else
   - if @current_user && [User::Types::VERIFIER, User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
     = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "margin-right:10px; margin-left:10px; float:right; font-size: 20px;" do
