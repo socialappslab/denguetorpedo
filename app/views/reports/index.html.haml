@@ -4,7 +4,7 @@
 - content_for :head do
   %meta{:property => "og:url",         :content => neighborhood_reports_url(@neighborhood)}
   %meta{:property => "og:title",       :content => "Dengue Torpedo"}
-  %meta{:property => "og:description", :content => "Eu estou no combate à dengue no @DengueTorpedo"}
+  %meta{:property => "og:description", :content => I18n.t("facebook.description")}
 
 #fb-root
 :javascript
@@ -12,7 +12,7 @@
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
+    js.src = "//connect.facebook.net/#{@facebook_locale}/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 

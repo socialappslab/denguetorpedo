@@ -52,6 +52,14 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
+
+    if I18n.locale == :pt
+      @facebook_locale = "pt_BR"
+    elsif I18n.locale == :es
+      @facebook_locale = "es_LA"
+    else
+      @facebook_locale = "en_US"
+    end
   end
 
   #----------------------------------------------------------------------------

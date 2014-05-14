@@ -124,3 +124,10 @@ pt:
     more: Mais
     partners: Parceiros
     configuration: Configurações
+
+  facebook:
+    description: "Eu estou no combate à dengue no @DengueTorpedo"
+
+
+  reports_feed:
+    title: "Focos marcados de %{name}"
