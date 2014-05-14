@@ -222,10 +222,9 @@ class ReportsController < NeighborhoodsBaseController
       redirect_to neighborhood_reports_path(@neighborhood,
         :params=>{:report => @report.id, :elimination_method => params[:report][:elimination_method]}) and return
     end
-
-
   end
 
+  #----------------------------------------------------------------------------
 
   def destroy
     if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
@@ -237,6 +236,8 @@ class ReportsController < NeighborhoodsBaseController
 
     redirect_to neighborhood_reports_path(@neighborhood) and return
   end
+
+  #----------------------------------------------------------------------------
 
   def verify
     @report = Report.find(params[:id])
@@ -265,23 +266,26 @@ class ReportsController < NeighborhoodsBaseController
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def problem
     @report = Report.find(params[:id])
 
-    if @report.status == Report::STATUS[:eliminated]
+    if @report.is_eliminated?
       @report.is_resolved_verified = false
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
       @report.resolved_verifier.points -= 100
       @report.resolved_verifier.save
-    elsif @report.status == Report::STATUS[:reported]
+    elsif @report.is_open?
       @report.isVerified = false
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now
       @report.verifier.points -= 100
       @report.verifier.save
     end
-    if @report.save
+
+    if @report.save(:validate => false)
       flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood)
     else

@@ -13,9 +13,9 @@
         %i.fa.fa-trash-o.fa-2
 
 
-- if report.isVerified == "t"
+- if report.is_valid?
   %i.fa.fa-check.fa-2{:style => "float: right; font-size: 20px;"}
-- elsif report.isVerified == "f"
+- elsif report.is_invalid?
   %i.fa.fa-times.fa-2{:style => "float: right; font-size: 20px;"}
 - else
   - if @current_user && [User::Types::VERIFIER, User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
