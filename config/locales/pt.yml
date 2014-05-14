@@ -160,6 +160,7 @@ pt:
     select_elimination_method: "Selecione o método de eliminação"
     email_or_password_incorrect: "E-mail ou senha inválido"
     fill_in_complete_address: Você deve enviar o endereço completo
+    fetching_map: Carregando o Mapa
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
