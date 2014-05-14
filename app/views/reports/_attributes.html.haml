@@ -1,0 +1,72 @@
+.span2.rp_before_photo
+  = image_tag report.before_photo(:medium)
+
+  - if report.after_photo.present?
+    = image_tag report.after_photo(:medium)
+
+.span6{style: "margin-top:9px;"}
+  %h3.report_label
+    = I18n.t("activerecord.attributes.report.report")
+  .description #{report.report}
+
+  - if report.elimination_type.present?
+    .rp_report_people
+      %h3{:style => "font-weight:bold;"} Tipo de foco:
+      = report.elimination_type
+
+      - if report.elimination_method.present?
+        %h3{:style => "font-weight:bold;"} Método de eliminação:
+        = report.elimination_method
+        %br
+
+
+  - if @current_user.present?
+    .eliminate_prompt{:style => "margin-top:5px;"}
+      - if report.sms_incomplete?
+        = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
+          = hidden_field_tag 'report_id', report.id
+          = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:100%;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
+
+      - elsif report.elimination_method.blank?
+        = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
+          %h3.report_label Método de eliminação:
+          = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=>report.method_prompt, :id=>"method_selection", :class=>"elimination_methods"
+
+          = f.fields_for :location, report.location || Location.new do |location_fields|
+            = location_fields.hidden_field :latitude
+            = location_fields.hidden_field :longitude
+
+          - if report.after_photo_file_size
+            .rp_report_people
+              Foto carregada:
+              = link_to "#{report.after_photo_file_name}", report.after_photo.url, :class => "user"
+
+          -# TODO @awdorsett - give user the option to upload a replacement image?
+          %h3.report_label Carregue uma foto do foco eliminado:
+          = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?)
+
+          %br
+          .row
+            .span2
+              - should_disable = ( @current_user && (@current_user.role == "verificador" || @current_user.role == "visitante") || report.expired? || report.isVerified == "f" || report.sms_incomplete?)
+              = submit_tag "Enviar!", :class=>'report_submission', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
+
+
+  = render :partial => "reports/users_involved", :locals => {:report => report}
+
+  /----------------------------------------------------------------------------
+  / Permissions
+  /------------
+  .rp_report_options
+    - if report.status == Report::STATUS[:reported]
+      - if @current_user && (@current_user.admin? || report.reporter == @current_user)
+        = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:5px; font-size: 20px;" do
+          %i.fa.fa-trash-o.fa-2
+    - elsif report.status == Report::STATUS[:eliminated]
+      - if @current_user && @current_user.admin?
+        = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:5px; font-size: 20px;" do
+          %i.fa.fa-trash-o.fa-2
+    - else
+      - if @current_user.admin? || report.reporter == @current_user
+        = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:5px; font-size: 20px;" do
+          %i.fa.fa-trash-o.fa-2
