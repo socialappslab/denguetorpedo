@@ -12,6 +12,9 @@ pt:
       feedback: Mensagem
       house: Casa
       documentation_section: Seção
+      prize:
+        one: Prêmio
+        other: Prêmios
     attributes:
       user:
         password: "Senha"
@@ -46,3 +49,63 @@ pt:
         too_long: "é muito longo. (mínimo de %{count} caracteres)"
         too_short: "é muito curto. (mínimo de %{count} caracteres)"
         not_a_number: "não é um número"
+
+    common_terms:
+      prize:
+        cost: %{cost} pontos
+        quantity: "Estoque: %{quantity}"
+        expiration: "Prazo: %{time}"
+
+  #----------------------------------------------------------------------------
+  # Custom text
+  #------------
+  home_navigation:
+    education:
+      title: SAIBA MAIS
+      description: Sobre a dengue
+    howto:
+      title: JOGUE
+      description: Como?
+    prizes:
+      title: GANHE
+      description: Prêmios
+
+  login_navigation:
+    forgot_password: Esqueceu sua senha?
+    greeting: Olá %{name}!
+    logout: Sair
+
+  landing_page:
+    community:
+      title: Comunidades em destaque no Dengue Torpedo
+      future_community: Futura comunidade
+    house:
+      title_with_name: Casas %{name}
+      title: Casas
+    news:
+      title: Notícias da comunidade
+    orange_banner:
+      tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
+      registration_form:
+        register: Cadastre-se
+
+
+  community:
+    visit_community: Vá para a %{name}
+    total_reports: Total de focos marcados
+    open_reports: em aberto
+    eliminated_reports: eliminados
+    search_for_other_communities: Ache outras comunidades participantes!
+
+  dashboard:
+    my_profile: Meu Perfil
+    my_house: Minha Casa
+    my_community: Minha Comunidade
+    reports: Focos Marcados
+
+  common_terms:
+    free_sms: SMS Grátis
+    search: Busca
+    more: Mais
+    partners: Parceiros
+    configuration: Configurações
