@@ -20,7 +20,7 @@
       %h4= report.complete_address
     .span2
       - if report.location.latitude and report.location.longitude
-        = link_to "Ache no mapa", "#", id: "mapa_#{report.id}", class: "mapa", data: { latitude: "#{report.location.latitude}", longitude: "#{report.location.longitude}"}, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;"
+        = link_to I18n.t("common_terms.find_on_map"), "#", id: "mapa_#{report.id}", class: "mapa", data: { latitude: "#{report.location.latitude}", longitude: "#{report.location.longitude}"}, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;"
 
   .row
     .span2.rp_before_photo

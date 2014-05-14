@@ -23,16 +23,17 @@
 
         - if report.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
-            Torpedo
+            = I18n.t("common_terms.sms")
         - else
           - if not report.expired?
             - if report.elimination_type
               .countdown.countdownHolder.timer
               .span.countdown_label
-                Em aberto por
+                = I18n.t("common_terms.open_for")
           - else
             .span.time_expired
-              Tempo expirado
+              = I18n.t("common_terms.time_expired")
+
 
   .row.address_row
     .span6.address
@@ -43,7 +44,7 @@
 
     .span2
       - if report.location && report.location.latitude.present? && report.location.longitude.present?
-        = link_to "Ache no mapa", nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
+        = link_to I18n.t("common_terms.find_on_map"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
 
   .row{style: "margin-top:7px;"}
 

@@ -3,12 +3,12 @@
     .rp_report_status.status
       -# TODO @awdorsett - better way to do expired
       - if report.expired?
-        %del Em aberto
+        %del
+          = I18n.t("common_terms.open_reports")
       - else
-        Em aberto
+        = I18n.t("common_terms.open_reports")
 
       .rp_report_options
-        -# TODO @awdorsett - are reports verified before they're eliminated?
         - if report.isVerified == "t"
           = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
         - elsif report.isVerified == "f"
@@ -21,12 +21,11 @@
 
         - if report.sms_incomplete?
           .span{style: "margin-top:3px; margin-right:10px;"}
-            Torpedo
+            = I18n.t("common_terms.sms")
 
   .row.address_row
     .span6.address
       %h4= report.report
-
 
   .row{style: "margin-top:7px;"}
 

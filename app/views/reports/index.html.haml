@@ -28,35 +28,32 @@
     .row
       .span5
         %h1
-          = "Focos marcados de #{@neighborhood.name }"
+          = I18n.t("reports_feed.title", :name => @neighborhood.name)
       .span4
         %div{:style => "margin-top: 7px;"}
           = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => "Eu estou no combate à dengue no @DengueTorpedo."}
 
-
   %br
   .span#report_buttons{:style => "font-size:20px;"}
-    / %h1 Marcar um foco
-
 
 .row
   .row.span10.offset1
     #report_buttons
       -# all reports
-      = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
+      = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
         :onclick => 'filter_reports(event,"all")'
 
       -# open reports
-      = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
+      = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
         :onclick => 'filter_reports(event,"open")'
 
       -# eliminated reports
-      = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
+      = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
         :onclick => 'filter_reports(event,"eliminated")'
 
       -# new report
       - if @current_user
-        = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
+        = link_to I18n.t("common_terms.create_a_report"), nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
 
 
   .row

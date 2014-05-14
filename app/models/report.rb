@@ -62,7 +62,7 @@ class Report < ActiveRecord::Base
   scope :type_selected, where("elimination_type IS NOT NULL")
 
   before_save :set_names
-
+  
   #----------------------------------------------------------------------------
 
   def self.create_from_user(report_content, params)

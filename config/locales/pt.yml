@@ -32,6 +32,7 @@ pt:
       report:
         before_photo: A foto do foco
         elimination_type: Tipo de foco
+        report: Descrição
       documentation_section:
         content: Conteúdo
       prize:
@@ -98,8 +99,6 @@ pt:
       future_community: Futura comunidade
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
-      open_reports: em aberto
-      eliminated_reports: eliminados
       search_for_other_communities: Ache outras comunidades participantes!
     house:
       title_with_name: Casas %{name}
@@ -124,6 +123,20 @@ pt:
     more: Mais
     partners: Parceiros
     configuration: Configurações
+    all: Todos
+    open_reports: Em aberto
+    eliminated_reports: Eliminados
+    create_a_report: Marcar um foco
+    sms: Torpedo
+    complete_report: Completar o foco
+    marked_by: Marcado por
+    verified_by: Verificado por
+    problem_with_report: Problema no foco marcado. Entre em contato conosco.
+    confirm_delete: Você tem certeza?
+    open_for: Em aberto por
+    time_expired: Tempo expirado
+    find_on_map: Ache no mapa
+
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
