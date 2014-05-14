@@ -10,7 +10,6 @@
   .row
     .rp_report_status.status
       .rp_report_options
-        -# TODO @awdorsett - are reports verified before they're eliminated?
         - if report.isVerified == "t"
           = image_tag 'icons/reports icon/check.png', :width => 25, :height => 25, :style => "float:right;"
         - elsif report.isVerified == "f"

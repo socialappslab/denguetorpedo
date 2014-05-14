@@ -13,7 +13,7 @@
             = link_to (image_tag 'icons/reports icon/check.png', :width => 25, :height => 25), verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "float:right;"
 
       .span{:style => "float:right;"}
-        Eliminado
+        = I18n.t("common_terms.eliminated")
 
   .row
     .span6{:style => "margin-top:10px;"}

@@ -39,19 +39,13 @@
 .row
   .row.span10.offset1
     #report_buttons
-      -# all reports
       = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
         :onclick => 'filter_reports(event,"all")'
-
-      -# open reports
       = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
         :onclick => 'filter_reports(event,"open")'
-
-      -# eliminated reports
       = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
         :onclick => 'filter_reports(event,"eliminated")'
 
-      -# new report
       - if @current_user
         = link_to I18n.t("common_terms.create_a_report"), nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
 

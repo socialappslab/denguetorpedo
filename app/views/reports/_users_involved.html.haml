@@ -21,9 +21,9 @@
     %br
 
   - if report.eliminator_id
-    Eliminado por:
-    =link_to report.eliminator_name + " " + report.strftime_with(:eliminated_at), user_path(report.eliminator), :class => "user", :style => "width:100%;"
+    = "#{I18n.t("common_terms.eliminated_by")}:"
+    = link_to report.eliminator_name + " " + report.strftime_with(:eliminated_at), user_path(report.eliminator), :class => "user", :style => "width:100%;"
   - else
-    -if report.eliminated_at
-      Eliminador por: #{report.eliminator_name + " " + report.strftime_with(:eliminated_at)}
+    - if report.eliminated_at
+      = "#{I18n.t("common_terms.eliminated_by")}: #{report.eliminator_name + " " + report.strftime_with(:eliminated_at)}"
   %br

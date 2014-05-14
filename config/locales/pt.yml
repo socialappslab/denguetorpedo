@@ -6,12 +6,14 @@ pt:
     title: "Título"
     neighborhood_id: "Comunidade"
     name: Nome
+    number: Número
   activerecord:
     models:
       user: Usuário
       feedback: Mensagem
       house: Casa
       documentation_section: Seção
+      elimination_method: Método de eliminação
       prize:
         one: Prêmio
         other: Prêmios
@@ -131,11 +133,22 @@ pt:
     complete_report: Completar o foco
     marked_by: Marcado por
     verified_by: Verificado por
+    eliminated_by: Eliminado por
     problem_with_report: Problema no foco marcado. Entre em contato conosco.
     confirm_delete: Você tem certeza?
     open_for: Em aberto por
     time_expired: Tempo expirado
     find_on_map: Ache no mapa
+    uploaded_photo: Foto carregada
+    upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
+    submit: Enviar
+    eliminated: Eliminado
+    address_of_report: Endereço do foco localizado
+    example_of_street_type: "Rua, Beco etc."
+    example_of_description: "Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente"
+    photo_of_report: Carregue a imagem do foco encontrado
+    select_elimination_type: "Selecione o tipo de foco"
+    report_attention: "ATENÇÃO: O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador."
 
 
   facebook:

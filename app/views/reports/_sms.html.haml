@@ -1,7 +1,6 @@
 .report.open
   .row
     .rp_report_status.status
-      -# TODO @awdorsett - better way to do expired
       - if report.expired?
         %del
           = I18n.t("common_terms.open_reports")
