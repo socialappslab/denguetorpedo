@@ -1,7 +1,7 @@
 .span8
   - if report.is_invalid?
     %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
-      = I18n.t("common_terms.problem_with_report")
+      = I18n.t("report.form.problem_with_verification")
 
 .span2.rp_before_photo
   = image_tag report.before_photo(:medium)
@@ -37,7 +37,7 @@
         = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
           %h3.report_label
             = "#{I18n.t("activerecord.models.elimination_method")}:"
-          = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=> I18n.t("common_terms.select_elimination_method"), :id=>"method_selection", :class=>"elimination_methods"
+          = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=> I18n.t("report.form.select_elimination_method"), :id=>"method_selection", :class=>"elimination_methods"
 
           = f.fields_for :location, report.location || Location.new do |location_fields|
             = location_fields.hidden_field :latitude
@@ -49,7 +49,7 @@
               = link_to "#{report.after_photo_file_name}", report.after_photo.url, :class => "user"
 
           %h3.report_label
-            = "#{I18n.t("common_terms.upload_photo_of_eliminated_report")}:"
+            = "#{I18n.t("report.form.upload_photo_of_eliminated_report")}:"
           = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?)
 
           %br

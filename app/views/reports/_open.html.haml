@@ -36,7 +36,7 @@
 
     .span2
       - if report.location && report.location.latitude.present? && report.location.longitude.present?
-        = link_to I18n.t("common_terms.find_on_map"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
+        = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
 
   .row{style: "margin-top:7px;"}
     = render :partial => "reports/attributes", :locals => {:report => report}

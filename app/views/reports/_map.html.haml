@@ -3,12 +3,12 @@
     .span5
       &nbsp;
       #map-error-description{ style: "color: red; font-weight: bold; font-size: 10px; display: none;" }
-        = I18n.t("common_terms.location_not_found")
+        = I18n.t("map.location_not_found")
     .span4
-    %input{type: "button", value: I18n.t("common_terms.go_to_community_on_map", :name => "Maré"), id: "go_to_mare"}
+    %input{type: "button", value: I18n.t("map.go_to_community", :name => "Maré"), id: "go_to_mare"}
 
   #map{style: "height: 500px;width:440px;margin-left:10px; margin-top:10px;position:relative;overflow-y:hidden;"}
     #loading{style: "position:absolute;width:440px; height:100px;top:200px;left:195px;z-index:100"}
       = image_tag "loading.gif", style: "width:50px; height:50px;"
       %p{style: "margin-left:-40px;margin-top:10px;"}
-        = I18n.t("common_terms.fetching_map")
+        = I18n.t("map.loading")

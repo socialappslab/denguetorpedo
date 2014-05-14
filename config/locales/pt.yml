@@ -132,39 +132,43 @@ pt:
     partners: Parceiros
     configuration: Configurações
     all: Todos
-    open_reports: Em aberto
-    eliminated_reports: Eliminados
-    create_a_report: Marcar um foco
     sms: Torpedo
-    complete_report: Completar o foco
     marked_by: Marcado por
     verified_by: Verificado por
     eliminated_by: Eliminado por
-    problem_with_report: Problema no foco marcado. Entre em contato conosco.
     confirm_delete: Você tem certeza?
     open_for: Em aberto por
-    time_expired: Tempo expirado
-    find_on_map: Ache no mapa
-    uploaded_photo: Foto carregada
-    upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
     submit: Enviar
-    eliminated: Eliminado
-    address_of_report: Endereço do foco localizado
-    example_of_street_type: "Rua, Beco etc."
-    example_of_description: "Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente"
-    photo_of_report: Carregue a imagem do foco encontrado
-    select_elimination_type: "Selecione o tipo de foco"
-    report_attention: "ATENÇÃO: O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador."
-    location_not_found: Endereço não encontrado. Marque manualmente.
-    go_to_community_on_map: "Vá para a %{name}"
-    select_elimination_method: "Selecione o método de eliminação"
     email_or_password_incorrect: "E-mail ou senha inválido"
-    fill_in_complete_address: Você deve enviar o endereço completo
-    fetching_map: Carregando o Mapa
+    open_reports: Em aberto
+    eliminated_reports: Eliminados
+    time_expired: Tempo expirado
+    uploaded_photo: Foto carregada
+    eliminated: Eliminado
+    create_a_report: Marcar um foco
+    complete_report: Completar o foco
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
 
-
   reports_feed:
     title: "Focos marcados de %{name}"
+
+  map:
+    location_not_found: Endereço não encontrado. Marque manualmente.
+    loading: Carregando o Mapa
+    go_to_community: "Vá para a %{name}"
+    find: Ache no mapa
+
+  report:
+    form:
+      address: Endereço do foco localizado
+      example_of_street_type: "Rua, Beco etc."
+      example_of_description: "Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente"
+      photo_of_report: Carregue a imagem do foco encontrado
+      select_elimination_type: "Selecione o tipo de foco"
+      select_elimination_method: "Selecione o método de eliminação"
+      attention: "ATENÇÃO: O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador."
+      fill_in_complete_address: Você deve enviar o endereço completo
+      problem_with_verification: Problema no foco marcado. Entre em contato conosco.
+      upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado

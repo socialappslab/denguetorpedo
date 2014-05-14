@@ -411,7 +411,7 @@ class ReportsController < NeighborhoodsBaseController
        (location_params[:street_type].blank? && report.location.street_type.blank?) ||
        (location_params[:street_number].blank? && report.location.street_number.blank?)
 
-        flash[:alert] = flash[:alert].to_s + " " + I18n.t("common_terms.fill_in_complete_address")
+        flash[:alert] = flash[:alert].to_s + " " + I18n.t("report.form.fill_in_complete_address")
         return false
     end
 

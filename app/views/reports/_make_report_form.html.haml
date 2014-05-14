@@ -12,10 +12,10 @@
 
       #address
         %h3.new_report_label
-          = I18n.t("common_terms.address_of_report")
+          = I18n.t("report.form.address")
 
         = f.fields_for :location, @new_report.location || Location.new do |location_fields|
-          = location_fields.text_field :street_type, :placeholder => I18n.t("common_terms.example_of_street_type"), :class => "middle_field address_field"
+          = location_fields.text_field :street_type, :placeholder => I18n.t("report.form.example_of_street_type"), :class => "middle_field address_field"
           = location_fields.text_field :street_name, :placeholder => I18n.t("attributes.name"), style: "width:200px;", class: 'address_field'
           = location_fields.text_field :street_number, :placeholder => I18n.t("attributes.number"), class: "middle_field address_field"
           = location_fields.hidden_field :latitude
@@ -24,25 +24,25 @@
       #description
         %h3.new_report_label
         = f.label :report
-        = f.text_area :report, :placeholder => I18n.t("common_terms.example_of_description"),
+        = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"),
           :id => 'report_content', :maxlength => 100, :rows => 3
 
       #photo
         %h3.new_report_label
-          = I18n.t("common_terms.photo_of_report")
+          = I18n.t("report.form.photo_of_report")
         = f.file_field :before_photo
       %br
 
       #elimination_type
         %h3.new_report_label.inline_display
           = I18n.t("activerecord.attributes.report.elimination_type")
-        = f.select :elimination_type, EliminationType.pluck(:name), :prompt => I18n.t("common_terms.select_elimination_type")
+        = f.select :elimination_type, EliminationType.pluck(:name), :prompt => I18n.t("report.form.select_elimination_type")
       %br
 
       #attention_div
       %p{style: "font-weight: bold;"}
         %b{style: "color:red;"}
-          = I18n.t("common_terms.report_attention")
+          = I18n.t("report.form.attention")
       %br
 
       = f.submit I18n.t("common_terms.submit")
