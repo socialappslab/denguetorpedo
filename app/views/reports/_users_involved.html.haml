@@ -2,7 +2,6 @@
 -# TODO @awdorsett - what is this used for? Possibly countdown
 :javascript
   $(".selectpicker").selectpicker();
-%br
 
 .row.rp_report_people{style: "width:430px;"}
   - if report.is_open? && report.reporter
@@ -13,10 +12,6 @@
   - if report.is_valid? && report.verifier
     = "#{I18n.t("common_terms.verified_by")}:"
     = link_to report.verifier.display_name + " " + report.strftime_with(:created_at), user_path(report.verifier), :class => "user"
-    %br
-  - elsif report.is_invalid?
-    %p{:style => "color:red;font-weight:bold;margin-top:10px;"}
-      = I18n.t("common_terms.problem_with_report")
     %br
 
   - if report.is_eliminated? && report.eliminator
