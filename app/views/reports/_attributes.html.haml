@@ -60,11 +60,11 @@
   / Permissions
   /------------
   .rp_report_options
-    - if report.status == Report::STATUS[:reported]
+    - if report.is_open?
       - if @current_user && (@current_user.admin? || report.reporter == @current_user)
         = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:5px; font-size: 20px;" do
           %i.fa.fa-trash-o.fa-2
-    - elsif report.status == Report::STATUS[:eliminated]
+    - elsif report.is_eliminated?
       - if @current_user && @current_user.admin?
         = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("common_terms.confirm_delete"), :method => :delete, :style => "margin-right:5px; font-size: 20px;" do
           %i.fa.fa-trash-o.fa-2
