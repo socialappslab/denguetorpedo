@@ -122,11 +122,10 @@ class ReportsController < NeighborhoodsBaseController
     # Now let's save the report.
     if @report.save && valid_address
       flash[:should_render_social_media_buttons] = true
-      flash[:notice] = 'Foco marcado com sucesso!'
+      flash[:notice] = I18n.t("activerecord.success.report.create")
 
       redirect_to neighborhood_reports_path(@neighborhood) and return
 
-    # An error has occurred
     else
       flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
 
@@ -185,7 +184,7 @@ class ReportsController < NeighborhoodsBaseController
 
       # Verify report saves and form submission is valid
       if @report.update_attributes(params[:report])
-        flash[:notice] = 'Foco marcado com sucesso!'
+        flash[:notice] = I18n.t("activerecord.success.report.create")
 
         @report.status          = Report::STATUS[:reported]
         @report.neighborhood_id = @neighborhood.id
@@ -207,8 +206,7 @@ class ReportsController < NeighborhoodsBaseController
       @current_user.update_attribute(:points, @current_user.points + submission_points)
       @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
 
-      flash[:notice] = "Você eliminou o foco!"
-      #@report.update_attribute(:completed_at, Time.now)   # This shouldn't be needed.
+      flash[:notice] = I18n.t("activerecord.success.report.eliminate")
       @report.touch(:eliminated_at)
       @report.update_attribute(:status, Report::STATUS[:eliminated])
       @report.update_attribute(:neighborhood_id, @neighborhood.id)
@@ -234,7 +232,7 @@ class ReportsController < NeighborhoodsBaseController
       @report = Report.find(params[:id])
       @report.deduct_points
       @report.destroy
-      flash[:notice] = "Foco deletado com sucesso."
+      flash[:notice] = I18n.t("activerecord.success.report.delete")
     end
 
     redirect_to neighborhood_reports_path(@neighborhood) and return
@@ -257,11 +255,10 @@ class ReportsController < NeighborhoodsBaseController
     @report.verifier_name = @current_user.display_name
 
     if @report.save
-
       @current_user.points += 50
       @current_user.total_points += 50
       @current_user.save
-      flash[:notice] = "O foco foi verificado."
+      flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood)
     else
       redirect_to :back
@@ -285,7 +282,7 @@ class ReportsController < NeighborhoodsBaseController
       @report.verifier.save
     end
     if @report.save
-      flash[:notice] = "O foco foi verificado."
+      flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood)
     else
       redirect_to :back
@@ -410,14 +407,13 @@ class ReportsController < NeighborhoodsBaseController
        (location_params[:street_type].blank? && report.location.street_type.blank?) ||
        (location_params[:street_number].blank? && report.location.street_number.blank?)
 
-        # TODO using translated version of "You must fill in an entire address."
-        flash[:alert] = flash[:alert].to_s + " Você deve enviar o endereço completo."
-
+        flash[:alert] = flash[:alert].to_s + " " + I18n.t("common_terms.fill_in_complete_address")
         return false
     end
 
     return true
-
   end
+
+  #----------------------------------------------------------------------------
 
 end

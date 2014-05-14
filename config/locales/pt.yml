@@ -57,6 +57,12 @@ pt:
         too_long: "é muito longo. (mínimo de %{count} caracteres)"
         too_short: "é muito curto. (mínimo de %{count} caracteres)"
         not_a_number: "não é um número"
+    success:
+      report:
+        create: Foco marcado com sucesso
+        eliminate: Você eliminou o foco
+        delete: Foco deletado com sucesso
+        verify: O foco foi verificado
 
   #----------------------------------------------------------------------------
   # Home Navigation
@@ -152,6 +158,8 @@ pt:
     location_not_found: Endereço não encontrado. Marque manualmente.
     go_to_community_on_map: "Vá para a %{name}"
     select_elimination_method: "Selecione o método de eliminação"
+    email_or_password_incorrect: "E-mail ou senha inválido"
+    fill_in_complete_address: Você deve enviar o endereço completo
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
