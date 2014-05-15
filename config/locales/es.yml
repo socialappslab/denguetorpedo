@@ -4,12 +4,19 @@
 es:
   attributes:
     title: "Título"
-    
+    neighborhood_id: "Comunidad"
+    name: Nombre
+    number: Número    
   activerecord:
     models:
       user: Usuario
       feedback: Mensage
       house: Identificación de casa
+      documentation_section: Sección
+      elimination_method: Método de eliminación
+      prize:
+        one: Premio
+        other: Premios
     attributes:
       user:
         password: "Contraseña"
@@ -21,24 +28,148 @@ es:
         carrier: "Compañía"
         carrier_confirmation: "Confirmación de compañía"
         prepaid: "Pre-pago"
-        house_id: "Identificación de casa"
       feedback:
         name: "Nombre"
         message: "Mensage"
       report:
         before_photo: "Foto del foco"
+        elimination_type: Tipo de foco
+        report: Descripción
+      documentation_section:
+        content: Contenido
+      prize:
+        cost:
+          one: "1 punto"
+          other: "%{count} puntos"
+
     errors:
       template:
         header:
           one: "1 error impidió que el %{model} fuese salvado."
           other: "%{count} errores impidieron que el %{model} fuese salvado."
       messages:
-        blank: "es obligatoria"
+        blank: "es obligatorio"
         confirmation: "no confirmado"
-        empty: "es obligatoria"
-        exclusion: "está reservada"
-        invalid: "no es válida"
+        empty: "es obligatorio"
+        exclusion: "está reservado"
+        invalid: "no es válido"
         taken: "ya está en uso"
-        too_long: "es muy larga. (máximo de %{count} caracteres)"
+        too_long: "es muy largo. (máximo de %{count} caracteres)"
         too_short: "es muy corta. (mínimo de %{count} caracteres)"
         not_a_number: "debe ser un número"
+
+    success:
+      report:
+        create: Foco marcado con éxito
+        eliminate: Usted ha eliminado el foco
+        delete: Foco eliminado correctamente
+        verify: El foco se verificó
+
+  #----------------------------------------------------------------------------
+  # Home Navigation
+  #----------------
+  home_navigation:
+    education:
+      title: MÁS INFORMACIÓN
+      description: Sobre el dengue
+    howto:
+      title: Juego
+      description: ¿Como?
+    prizes:
+      title: GANE
+      description: Premios
+
+
+  #----------------------------------------------------------------------------
+  # Dashboard
+  #----------
+  dashboard:
+    my_profile: Mi Perfíl
+    my_house: Mi Casa
+    my_community: Mi Comunidad
+    reports: Focos Marcados
+
+
+  #----------------------------------------------------------------------------
+  # Login Form
+  #-----------
+  login_form:
+    forgot_password: ¿Olvidaste tu contraseña?
+    greeting: Hola %{name}!
+    logout: Salir
+
+
+  #----------------------------------------------------------------------------
+  # Landing page
+  #-------------
+  landing_page:
+    community:
+      title: Comunidades destacadas en Dengue Torpedo
+      future_community: Futura comunidad
+      visit: Visite  %{name}
+      total_reports: Total de focos marcados
+      search_for_other_communities: ¡Encuentre otras comunidades participantes!
+    house:
+      title_with_name: Casas %{name}
+      title: Casas
+    news:
+      title: Notícias de la comunidad
+    prize:
+      quantity: "Cantidad: %{quantity}"
+      expiration: "Vencimiento: %{time}"
+    orange_banner:
+      tagline: Utilice el teléfono celular para eliminar los mosquitos. ¡Participe en Dengue Torpedo y gane premios!
+
+
+  #----------------------------------------------------------------------------
+  # Commonly used words and sentences
+  #----------------------------------
+  common_terms:
+    register: Regístrese
+    free_sms: SMS Grátis
+    search: Búsqueda
+    more: Más
+    partners: Socios
+    configuration: Configuración
+    all: Todos
+    sms: Mensaje de texto
+    marked_by: Marcado por
+    verified_by: Verificado por
+    eliminated_by: Eliminado por
+    confirm_delete: ¿Confirmar la eliminación?
+    open_for: Abierto para
+    submit: Enviar
+    email_or_password_incorrect: "E-mail o contraseña inválido"
+    open_reports: Reportes abiertos
+    eliminated_reports: Reportes eliminados
+    time_expired: Tiempo expirado
+    uploaded_photo: Foto subida
+    eliminated: Eliminado
+    create_a_report: Crear un reporte
+    complete_report: Completar un reporte
+
+  facebook:
+    description: "Estoy en la lucha contra el dengue en @DengueTorpedo"
+
+  reports_feed:
+    title: "Focos marcados de %{name}"
+
+  map:
+    location_not_found: Dirección no encontrada. Captúrela manualmente.
+    loading: Cargando el mapa
+    go_to_community: "Ir a %{name}"
+    find: Buscar en el mapa
+
+  report:
+    form:
+      address: Dirección de foco localizada
+      example_of_street_type: "Calle, callejón, etc."
+      example_of_description: "Describa la ubicación del foco (max 100 caracteres) Ej: Foco en el terreno de un lado; la acera de enfrente, etc"
+      photo_of_report: Cargue la imagen del foco encontrado
+      select_elimination_type: "Selecione el tipo de foco"
+      select_elimination_method: "Selecione el método de eliminación"
+      attention: "ATENCIÓN: Este mapa no puede encontrar su dirección. En ese caso, busque la ubicación correcta y de forma manual, haga clic en para añadir el marcador"
+      fill_in_complete_address: Envíe la dirección completa
+      problem_with_verification: Problema, no se pudo marcar el foco.  Pónganse en contacto con nosotros.
+      upload_photo_of_eliminated_report: Cargue una foto del foco eliminado.
+
