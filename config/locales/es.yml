@@ -170,6 +170,6 @@ es:
       select_elimination_method: "Selecione el método de eliminación"
       attention: "ATENCIÓN: Este mapa no puede encontrar su dirección. En ese caso, busque la ubicación correcta y de forma manual, haga clic en para añadir el marcador"
       fill_in_complete_address: Envíe la dirección completa
-      problem_with_verification: Problema, no se pudo marcar el foco.  Pónganse en contacto con nosotros.
+      problem_with_verification: No se pudo marcar el foco.  Pónganse en contacto con nosotros.
       upload_photo_of_eliminated_report: Cargue una foto del foco eliminado.
 
