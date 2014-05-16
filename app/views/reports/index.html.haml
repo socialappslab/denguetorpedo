@@ -31,7 +31,7 @@
           = I18n.t("reports_feed.title", :name => @neighborhood.name)
       .span4
         %div{:style => "margin-top: 7px;"}
-          = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => "Eu estou no combate à dengue no @DengueTorpedo."}
+          = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
 
   %br
   .span#report_buttons{:style => "font-size:20px;"}
