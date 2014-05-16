@@ -152,7 +152,7 @@ pt:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
 
   reports_feed:
-    title: "Focos marcados de %{name}"
+    title: "Focos marcados na %{name}"
 
   map:
     location_not_found: Endereço não encontrado. Marque manualmente.
