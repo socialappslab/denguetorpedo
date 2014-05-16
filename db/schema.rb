@@ -81,12 +81,6 @@ ActiveRecord::Schema.define(:version => 20140508224751) do
     t.integer  "neighborhood_id"
   end
 
-  create_table "likes", :force => true do |t|
-    t.integer  "count"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "locations", :force => true do |t|
     t.string   "address"
     t.float    "latitude"
@@ -99,14 +93,6 @@ ActiveRecord::Schema.define(:version => 20140508224751) do
     t.string   "street_type",       :default => ""
     t.string   "street_name",       :default => ""
     t.string   "street_number",     :default => ""
-  end
-
-  create_table "manual_instructions", :force => true do |t|
-    t.string  "title"
-    t.text    "description"
-    t.integer "user_id"
-    t.time    "created_at",  :null => false
-    t.time    "updated_at",  :null => false
   end
 
   create_table "neighborhoods", :force => true do |t|
@@ -206,6 +192,7 @@ ActiveRecord::Schema.define(:version => 20140508224751) do
     t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
+    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.integer  "eliminator_id"
