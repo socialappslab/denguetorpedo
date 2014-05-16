@@ -6,7 +6,7 @@
           &times;
         %span{:style => "font-size: 20px; float: right;"}
           - if flash[:should_render_social_media_buttons]
-            = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => "Acabei de marcar um foco no @DengueTorpedo."}
+            = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("twitter.created_new_report")}
         = flash[:notice]
 
     - if flash[:alert]
