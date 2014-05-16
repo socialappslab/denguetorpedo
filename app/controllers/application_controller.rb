@@ -51,7 +51,12 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   def set_locale
-    I18n.locale = params[:locale] || I18n.default_locale
+    if cookies[:locale_preference].nil?
+      cookies[:locale_preference] = params[:locale] || I18n.default_locale
+    else
+      cookies[:locale_preference] = params[:locale] if params[:locale].present?
+    end
+    I18n.locale = cookies[:locale_preference]
 
     if I18n.locale == :pt
       @facebook_locale = "pt_BR"
