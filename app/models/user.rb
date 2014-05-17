@@ -65,6 +65,8 @@ class User < ActiveRecord::Base
 
   scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
 
+  has_and_belongs_to_many :report_likes, :class_name => "Report"
+
   #----------------------------------------------------------------------------
 
   accepts_nested_attributes_for :house, :allow_destroy => true

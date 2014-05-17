@@ -42,6 +42,8 @@ class Report < ActiveRecord::Base
   belongs_to :resolved_verifier, :class_name => "User"
 
 
+  has_and_belongs_to_many :likes, :class_name => "User"
+
   #----------------------------------------------------------------------------
   # Validations
   #-------------
@@ -220,5 +222,13 @@ class Report < ActiveRecord::Base
       self.reporter.update_attributes(points: self.reporter.points - 100)
     end
   end
+
+  #----------------------------------------------------------------------------
+
+  def likes_count
+    return self.likes.count
+  end
+
+  #----------------------------------------------------------------------------
 
 end

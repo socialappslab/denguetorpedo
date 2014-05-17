@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140430071253) do
+ActiveRecord::Schema.define(:version => 20140508224751) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(:version => 20140430071253) do
     t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
+    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.integer  "eliminator_id"
@@ -223,6 +224,11 @@ ActiveRecord::Schema.define(:version => 20140430071253) do
     t.integer  "feed_type_cd"
     t.integer  "neighborhood_id"
     t.string   "status"
+  end
+
+  create_table "reports_users", :id => false, :force => true do |t|
+    t.integer "report_id"
+    t.integer "user_id"
   end
 
   create_table "users", :force => true do |t|
