@@ -1,24 +1,29 @@
 #home_nav_bar
-  .row{style: "height:inherit;"}
-    %ul
-      = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
-      %li.main_nav_button.span3.offset4{style: 'margin-left: 240px;'}
-        = link_to education_path do
-          %h1{style: 'color:black; font-size: 15px;'}
-            = I18n.t("home_navigation.education.title")
-          %h3
-            = I18n.t("home_navigation.education.description")
-      %li.main_nav_button.span2.offset1{style: 'margin-left: -10px;'}
-        = link_to howto_path do
-          %h1{style: 'color:black;'}
-            = I18n.t("home_navigation.howto.title")
-          %h3{style: "margin-left:-5px;"}
-            = I18n.t("home_navigation.howto.description")
-      %li.main_nav_button.span2.offset1{style: 'margin-left: -10px;'}
-        = link_to prizes_path do
-          %h1{style: 'color:black;'}
-            = I18n.t("home_navigation.prizes.title")
-          %h3
-            = I18n.t("home_navigation.prizes.description")
-      %li.span3
-        = render "layouts/login"
+  .row
+    = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
+
+    .main_nav_button.span3.offset3
+      = link_to education_path do
+        %h1{style: 'color:black; font-size: 15px;'}
+          = I18n.t("home_navigation.education.title")
+        %h3
+          = I18n.t("home_navigation.education.description")
+    .main_nav_button.span2
+      = link_to howto_path do
+        %h1{style: 'color:black;'}
+          = I18n.t("home_navigation.howto.title")
+        %h3{style: "margin-left:-5px;"}
+          = I18n.t("home_navigation.howto.description")
+    .main_nav_button.span2
+      = link_to prizes_path do
+        %h1{style: 'color:black;'}
+          = I18n.t("home_navigation.prizes.title")
+        %h3
+          = I18n.t("home_navigation.prizes.description")
+    .span1{:style => "text-align: center; margin-top: 10px; padding-bottom:3px;"}
+      = link_to "?locale=pt" do
+        = image_tag "br.png", :style => "width: 20px; margin: 5px; "
+      = link_to "?locale=es" do
+        = image_tag "mx.png", :style => "width: 20px; margin: 5px;"
+    .span3
+      = render "layouts/login"
