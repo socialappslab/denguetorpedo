@@ -1,6 +1,7 @@
+= render :partial => "shared/flashes"
+
 .row
   .span12.offset1
-    = render :partial => "shared/flashes"
     = render :partial => "shared/form_errors", :locals => {:item => @section}
     %h1 Completar o foco
     = form_for @section do |f|

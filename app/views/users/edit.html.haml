@@ -103,11 +103,11 @@
 
 
 
+= render :partial => "shared/flashes"
+
 .user_form.offset1
   /%h1 Configurações da conta
-  = render :partial => "shared/flashes"
   = render :partial => "shared/form_errors", :locals => {:item => @user}
-
 
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
@@ -301,11 +301,13 @@
           %button{ :class => "cancel_button", :style => "height:26px;"}
             = link_to "Cancelar", edit_user_path(@user)
 
-
-      = f.radio_button :gender, "true"
+      = f.radio_button :gender, "true", :checked => (@user.gender == true)
       masculino
-      = f.radio_button :gender, "false", id:"gender_female_radio"
+      = f.radio_button :gender, "false", :checked => (@user.gender == false)
       feminino
+
+
+
       %br
       %br
       %br
@@ -329,6 +331,7 @@
       Clique aqui se você não tiver um celular.
 
       %br
+      %br
 
       = f.label :profile_photo,  "Foto do perfil (opcional)", class:"config_form_title"
       = f.file_field :profile_photo
@@ -340,6 +343,8 @@
       %br
 
     -# House Settings / Configurações da casa
+    %br
+    %br
     %br
     - if @user.role != "visitante"
       - if @user.role == "lojista"
@@ -387,6 +392,8 @@
             = house_form.label "Foto da casa (opcional)", class:"config_form_title"
           = house_form.file_field :profile_photo
 
+          %br
+          %br
           = house_form.fields_for :location, (@user.house || House.new).location || Location.new do |location_form|
             = location_form.label "Endereço (opcional)", class:"config_form_title"
             =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
@@ -396,6 +403,10 @@
             = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
 
         %br
+
+
+      %br
+      %br
       %br
       - unless @user.is_fully_registered
         %h1 Alguém o convidou a se cadastrar no DT?

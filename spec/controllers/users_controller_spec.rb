@@ -55,7 +55,7 @@ describe UsersController do
 				fill_in "user_last_name",  					 :with => "Tester"
 				fill_in "user_password", 						 :with => "abcdefg"
 				fill_in "user_password_confirmation", :with => "abcdefg"
-				click_button "Cadastre-se!"
+				click_button "Cadastre-se"
 
 				user = User.find_by_email("test@denguetorpedo.com")
 				expect(current_path).to eq( edit_user_path(user) )
@@ -70,7 +70,7 @@ describe UsersController do
 			fill_in "user_last_name",  					 :with => "Tester"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
-			click_button "Cadastre-se!"
+			click_button "Cadastre-se"
 
 			check("cellphone")
 			# This is a hack that bypasses need for JS driver.
@@ -96,7 +96,7 @@ describe UsersController do
 			fill_in "user_last_name",  					 :with => "Tester"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
-			click_button "Cadastre-se!"
+			click_button "Cadastre-se"
 
 			check("cellphone")
 			# This is a hack that bypasses need for JS driver.
@@ -260,7 +260,7 @@ describe UsersController do
 				fill_in "user_last_name",  					 :with => "Tester"
 				fill_in "user_password", 						 :with => "abcdefg"
 				fill_in "user_password_confirmation", :with => "abcdefg"
-				click_button "Cadastre-se!"
+				click_button "Cadastre-se"
 
 				expect(page).to have_content("Alguém o convidou a se cadastrar no DT?")
 			end

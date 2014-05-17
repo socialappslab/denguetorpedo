@@ -6,12 +6,17 @@ pt:
     title: "Título"
     neighborhood_id: "Comunidade"
     name: Nome
+    number: Número
   activerecord:
     models:
       user: Usuário
       feedback: Mensagem
       house: Casa
       documentation_section: Seção
+      elimination_method: Método de eliminação
+      prize:
+        one: Prêmio
+        other: Prêmios
     attributes:
       user:
         password: "Senha"
@@ -29,8 +34,14 @@ pt:
       report:
         before_photo: A foto do foco
         elimination_type: Tipo de foco
+        report: Descrição
       documentation_section:
         content: Conteúdo
+      prize:
+        cost:
+          one: "1 ponto"
+          other: "%{count} pontos"
+
     errors:
       template:
         header:
@@ -46,3 +57,121 @@ pt:
         too_long: "é muito longo. (mínimo de %{count} caracteres)"
         too_short: "é muito curto. (mínimo de %{count} caracteres)"
         not_a_number: "não é um número"
+    success:
+      report:
+        create: Foco marcado com sucesso
+        eliminate: Você eliminou o foco
+        delete: Foco deletado com sucesso
+        verify: O foco foi verificado
+
+  #----------------------------------------------------------------------------
+  # Home Navigation
+  #----------------
+  home_navigation:
+    education:
+      title: SAIBA MAIS
+      description: Sobre a dengue
+    howto:
+      title: JOGUE
+      description: Como?
+    prizes:
+      title: GANHE
+      description: Prêmios
+
+
+  #----------------------------------------------------------------------------
+  # Dashboard
+  #----------
+  dashboard:
+    my_profile: Meu Perfil
+    my_house: Minha Casa
+    my_community: Minha Comunidade
+    reports: Focos Marcados
+
+
+  #----------------------------------------------------------------------------
+  # Login Form
+  #-----------
+  login_form:
+    forgot_password: Esqueceu sua senha?
+    greeting: Olá %{name}!
+    logout: Sair
+
+
+  #----------------------------------------------------------------------------
+  # Landing page
+  #-------------
+  landing_page:
+    community:
+      title: Comunidades em destaque no Dengue Torpedo
+      future_community: Futura comunidade
+      visit: Vá para a %{name}
+      total_reports: Total de focos marcados
+      search_for_other_communities: Ache outras comunidades participantes!
+    house:
+      title_with_name: Casas %{name}
+      title: Casas
+    news:
+      title: Notícias da comunidade
+    prize:
+      quantity: "Estoque: %{quantity}"
+      expiration: "Prazo: %{time}"
+    orange_banner:
+      tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
+
+
+
+  #----------------------------------------------------------------------------
+  # Commonly used words and sentences
+  #----------------------------------
+  common_terms:
+    register: Cadastre-se
+    free_sms: SMS Grátis
+    search: Busca
+    more: Mais
+    partners: Parceiros
+    configuration: Configurações
+    all: Todos
+    sms: Torpedo
+    marked_by: Marcado por
+    verified_by: Verificado por
+    eliminated_by: Eliminado por
+    confirm_delete: Você tem certeza?
+    open_for: Em aberto por
+    submit: Enviar
+    email_or_password_incorrect: "E-mail ou senha inválido"
+    open_reports: Em aberto
+    eliminated_reports: Eliminados
+    time_expired: Tempo expirado
+    uploaded_photo: Foto carregada
+    eliminated: Eliminado
+    create_a_report: Marcar um foco
+    complete_report: Completar o foco
+
+  facebook:
+    description: "Eu estou no combate à dengue no @DengueTorpedo"
+
+  twitter:
+    created_new_report: "Acabei de marcar um foco no @DengueTorpedo."
+
+  reports_feed:
+    title: "Focos marcados na %{name}"
+
+  map:
+    location_not_found: Endereço não encontrado. Marque manualmente.
+    loading: Carregando o Mapa
+    go_to_community: "Vá para a %{name}"
+    find: Ache no mapa
+
+  report:
+    form:
+      address: Endereço do foco localizado
+      example_of_street_type: "Rua, Beco etc."
+      example_of_description: "Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente"
+      photo_of_report: Carregue a imagem do foco encontrado
+      select_elimination_type: "Selecione o tipo de foco"
+      select_elimination_method: "Selecione o método de eliminação"
+      attention: "ATENÇÃO: O mapa pode não encontrar o seu endereço. Nesse caso, procure a localização correta e clique manualmente para adicionar o marcador."
+      fill_in_complete_address: Você deve enviar o endereço completo
+      problem_with_verification: Problema no foco marcado. Entre em contato conosco.
+      upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado

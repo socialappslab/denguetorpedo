@@ -9,7 +9,8 @@
 / is logged in, they care only about their neighborhood.
 - if @current_user.nil?
   .row
-    %h2.offset1 Comunidades em destaque no Dengue Torpedo
+    %h2.offset1
+      = I18n.t("landing_page.community.title")
   .row
     .span15.offset1
       = render "home/neighborhood_list"
@@ -20,22 +21,25 @@
   .row
     #neighborhood_stats.offset1
       #home_visit_neighborhood_button.span5
-        = link_to "Vá para a #{neighborhood.name}", neighborhood_path(neighborhood)
+        = link_to I18n.t("landing_page.community.visit", :name => neighborhood.name), neighborhood_path(neighborhood)
       .span3{style: "margin-left: 35px;"}
         %b= neighborhood.total_reports.count
-        %br Total de focos marcados
+        %br
+          = I18n.t("landing_page.community.total_reports")
       .span3{style: "margin-left: 45px;"}
         .row
           #neighborhood_open_report_button.span1
           .span2
             %b= neighborhood.open_reports.count
-            %br em aberto
+            %br
+              = I18n.t("common_terms.open_reports")
       .span3
         .row
           #neighborhood_resolved_report_button.span1
           .span2
             %b= neighborhood.eliminated_reports.count
-            %br eliminados
+            %br
+              = I18n.t("common_terms.eliminated_reports")
 
 / Futura comunidade is meant to be a way for people to reach out to DT
 / and become the next neighborhood.
@@ -43,7 +47,7 @@
   .row
     #neighborhood_stats.offset1
       #home_visit_neighborhood_button.span5
-        = link_to "Futura comunidade", neighborhood_invitation_path
+        = link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
 
 
 %br
@@ -52,14 +56,14 @@
   #neighborhood_search
     #neighborhood_search_background{style: "width:600px; margin: auto; text-align: center; display: inline-block; padding-top: 0px; padding-bottom: 0px;"}
       %p{style: "margin-bottom: 10px; font-weight: bold;"}
-        Ache outras comunidades participantes!
+        = I18n.t("landing_page.community.search_for_other_communities")
       = form_tag neighborhood_search_path, :style => "margin: 0px;" do
         = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :include_blank => true, :style => "width: 50%;")
-        = submit_tag "Busca", :class => "button"
+        = submit_tag I18n.t("common_terms.search"), :class => "button"
     - if @current_user
       #sms_button{style: "margin-left: 20px; font-size:10px; display: inline-block;"}
         %button{style: "width:100px; margin-top: -30px; background-color:green; font-size:18px;line-height:22px; height: 65px;", id: "redetrel_button1"}
-          SMS Grátis!
+          = I18n.t("common_terms.free_sms")
         :javascript
           $("#redetrel_button1").click(function() {
             location.href = "sponsors/3";
@@ -71,10 +75,12 @@
 
 - if @current_user.present?
   .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas #{@selected_neighborhood.name}
+  %h2.offset1#home_houses{style: 'font-size: 18px;'}
+    = I18n.t("landing_page.house.title_with_name", :name => @selected_neighborhood.name)
 - else
   .row
-  %h2.offset1#home_houses{style: 'font-size: 18px;'}  Casas
+  %h2.offset1#home_houses{style: 'font-size: 18px;'}
+    = I18n.t("landing_page.house.title")
 
 .row
   #houses.span15.offset1
@@ -86,9 +92,8 @@
 %br
 .row
   %h2.offset1{style: 'font-size: 18px;'}
-    = link_to "Prêmios", prizes_path
+    = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path
   #sponsors.offset1{style: "margin-left:61px;"}
-
     %ul
       - @prizes.each do |prize|
         = render :partial => "prizes/prize", :object => prize
@@ -100,10 +105,7 @@
         .prize_content
           .description{:style => "height: 100%;"}
             %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
-              = link_to "+ Mais", prizes_path
-
-
-
+              = link_to "+ #{I18n.t("common_terms.more")}", prizes_path
 
 
 /------------------------------------------------------------------------------
@@ -113,7 +115,8 @@
   .row
     .offset1
       #neighborhood_news
-        %h2 Notícias da comunidade
+        %h2
+          = I18n.t("landing_page.news.title")
         %ul
           - @notices.each do |notice|
             %a{:href => notice_path(notice)}
@@ -130,7 +133,8 @@
 
 %br
 .row
-  %h2.offset1{style: 'font-size: 18px;'} Parceiros
+  %h2.offset1{style: 'font-size: 18px;'}
+    = I18n.t("common_terms.partners")
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
     <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
 

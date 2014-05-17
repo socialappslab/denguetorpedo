@@ -24,9 +24,9 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
       select(elimination_type.name, :from => "report_elimination_type")
-      click_button "Enviar!"
+      click_button "Enviar"
       #expect(page).to have_content("Você tem que descrever o local e/ou o foco")
-      expect(page).to have_content("Report é obrigatório")
+      expect(page).to have_content("Descrição é obrigatório")
     end
 
     it "notifies the user if report before photo is empty" do
@@ -35,7 +35,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       select(elimination_type.name, :from => "report_elimination_type")
-      click_button "Enviar!"
+      click_button "Enviar"
       #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
       expect(page).to have_content("A foto do foco é obrigatório")
 
@@ -45,7 +45,7 @@ describe "Reports", :type => :feature do
       fill_in "report_content", :with => "This is a description"
       select(elimination_type.name, :from => "report_elimination_type")
       attach_file("report_before_photo", photo_filepath)
-      click_button "Enviar!"
+      click_button "Enviar"
       expect(page).to have_content("Você deve enviar o endereço completo")
     end
 
@@ -55,7 +55,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
-      click_button "Enviar!"
+      click_button "Enviar"
       #expect(page).to have_content("Você tem que escolher um tipo de foco")
       expect(page).to have_content("Tipo de foco é obrigatório")
 
@@ -69,7 +69,7 @@ describe "Reports", :type => :feature do
         fill_in "report_content", :with => "This is a description"
         attach_file("report_before_photo", photo_filepath)
         select(elimination_type.name, :from => "report_elimination_type")
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       it "sets the before photo" do
@@ -138,7 +138,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       expect( photo_filepath ).to include(report.reload.after_photo_file_name)
@@ -150,7 +150,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       expect(page).to have_content("Eliminado")
@@ -165,7 +165,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       expect(report.reload.reporter_id).to eq(user.id)
@@ -180,7 +180,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       expect(report.reload.eliminator_id).to eq(other_user.id)
@@ -192,7 +192,7 @@ describe "Reports", :type => :feature do
 
       attach_file("report_after_photo", photo_filepath)
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       #expect(page).to have_content("Você tem que escolher um método de eliminação")
@@ -204,7 +204,7 @@ describe "Reports", :type => :feature do
 
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       #expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
@@ -256,7 +256,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       fill_in "report_content", :with => "This is a description"
       select(elimination_type.name, :from => "report_elimination_type")
-      click_button "Enviar!"
+      click_button "Enviar"
 
       #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
       expect(page).to have_content("A foto do foco é obrigatório")
@@ -270,7 +270,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
-      click_button "Enviar!"
+      click_button "Enviar"
 
       expect(page).to have_content("Tipo de foco é obrigatório")
     end
@@ -286,7 +286,7 @@ describe "Reports", :type => :feature do
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
       select elimination_type.name, :from => "report_elimination_type"
-      click_button "Enviar!"
+      click_button "Enviar"
 
       expect(page).to have_content("Foco marcado com sucesso")
 
@@ -300,7 +300,7 @@ describe "Reports", :type => :feature do
       attach_file("eliminate_after_photo", photo_filepath)
 
       within ".eliminate_prompt" do
-        click_button "Enviar!"
+        click_button "Enviar"
       end
 
       expect(page).to have_content("Você eliminou o foco")

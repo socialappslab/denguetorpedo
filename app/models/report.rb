@@ -8,6 +8,14 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # callback to create the feeds
+  after_save do |report|
+    Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
+    Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
+  end
+
+  #----------------------------------------------------------------------------
+
   STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
 
   #----------------------------------------------------------------------------
@@ -17,17 +25,22 @@ class Report < ActiveRecord::Base
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo,  :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
 
+
   #----------------------------------------------------------------------------
   # Associations
   #-------------
 
   has_many :feeds, :as => :target
+  belongs_to :location
+  belongs_to :neighborhood
+
+  # The following belongs_to define all the types of users that a report
+  # can have.
   belongs_to :reporter, :class_name => "User"
   belongs_to :eliminator, :class_name => "User"
-  belongs_to :location
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
-  belongs_to :neighborhood
+
 
   has_and_belongs_to_many :likes, :class_name => "User"
 
@@ -64,6 +77,49 @@ class Report < ActiveRecord::Base
   scope :type_selected, where("elimination_type IS NOT NULL")
 
   before_save :set_names
+
+  #----------------------------------------------------------------------------
+  # These methods are the authoritative way of determining if a report
+  # is eliminated, open, expired or SMS.
+
+  def is_eliminated?
+    return self.status == Report::STATUS[:eliminated]
+  end
+
+  # NOTE: Open does not mean active. An open report can be expired.
+  def is_open?
+    return self.status == Report::STATUS[:reported]
+  end
+
+  def sms_incomplete?
+    return (self.sms && self.completed_at == nil)
+  end
+
+  def expired?
+    self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
+  end
+
+  # A valid report is a report that is
+  # a) open, and verified to be valid by a 3rd party, OR
+  # b) eliminated, and verified to be valid by a 3rd party.
+  def is_valid?
+    if self.is_open?
+      return (self.isVerified == "t")
+    elsif self.is_eliminated?
+      return (self.is_resolved_verified == "t")
+    end
+  end
+
+  # A valid report is a report that is
+  # a) open, and verified to be problematic by a 3rd party, OR
+  # b) eliminated, and verified to be problematic by a 3rd party.
+  def is_invalid?
+    if self.is_open?
+      return (self.isVerified == "f")
+    elsif self.is_eliminated?
+      return (self.is_resolved_verified == "f")
+    end
+  end
 
   #----------------------------------------------------------------------------
 
@@ -104,13 +160,6 @@ class Report < ActiveRecord::Base
     update_attributes(is_credited: false, credited_at: Time.now)
   end
 
-  #----------------------------------------------------------------------------
-
-  # callback to create the feeds
-  after_save do |report|
-    Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
-    Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
-  end
 
   #----------------------------------------------------------------------------
 
@@ -142,39 +191,8 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def self.within_bounds(bounds)
-    reports_in_bounds = []
-    for report in Report.all(:order => "created_at desc")
-      if self.inBounds(report.location, bounds)
-        reports_in_bounds.append(report)
-        puts report.inspect + ' added'
-      end
-    end
-    return reports_in_bounds
-  end
-
-  def self.inBounds(location, bounds)
-    swlng = bounds[1]
-    swlat = bounds[0]
-    nelng = bounds[3]
-    nelat = bounds[2]
-    sw = Geokit::LatLng.new(swlat, swlng)
-    ne = Geokit::LatLng.new(nelat, nelng)
-    calculated_bounds = Geokit::Bounds.new(sw,ne)
-    point = Geokit::LatLng.new(location.latitude, location.longitude)
-    return calculated_bounds.contains?(point)
-  end
-
-  def expired?
-    self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
-  end
-
   def expire_date
     self.completed_at + 3600 * 50
-  end
-
-  def not_sms?
-    not sms
   end
 
   def set_names
@@ -195,30 +213,6 @@ class Report < ActiveRecord::Base
     end
   end
 
-  def method_prompt
-    if self.elimination_type
-      "Selecione o método de eliminação"
-    else
-      "Método de eliminação"
-    end
-  end
-
-  def needs_location?
-    self.sms and self.location.needs_location?
-  end
-
-  def sms_incomplete?
-    self.sms and self.completed_at == nil
-  end
-
-  def self.invalidateExpired
-    Report.where("created_at < ?", (Time.now - 3.days)).where(:status => STATUS[:reported]).each do |report|
-      report.status = STATUS[:eliminated]
-      report.report = "This report has expired, it was not resolved within three days"
-      report.save!
-    end
-  end
-
   def deduct_points
     if self.eliminator
       if self.is_resolved_verified == false
@@ -229,8 +223,12 @@ class Report < ActiveRecord::Base
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def likes_count
-    Report.count_by_sql "SELECT COUNT(*) FROM reports_users WHERE report_id = " + self.id.to_s
+    return self.likes.count
   end
+
+  #----------------------------------------------------------------------------
 
 end

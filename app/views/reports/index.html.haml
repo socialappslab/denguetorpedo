@@ -3,8 +3,8 @@
 
 - content_for :head do
   %meta{:property => "og:url",         :content => neighborhood_reports_url(@neighborhood)}
-  %meta{:property => "og:title",       :content => "Focos Marcados"}
-  %meta{:property => "og:description", :content => "Acabei de marcar o eliminar um foco no @DengueTorpedo."}
+  %meta{:property => "og:title",       :content => "Dengue Torpedo"}
+  %meta{:property => "og:description", :content => I18n.t("facebook.description")}
 
 #fb-root
 :javascript
@@ -12,7 +12,7 @@
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
+    js.src = "//connect.facebook.net/#{@facebook_locale}/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
@@ -20,34 +20,34 @@
   !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 
 
+= render :partial => "shared/flashes"
+
+
 .row
-  .span6.offset1
-    = render :partial => "shared/flashes"
-    %h1
-      = "Focos marcados de #{@neighborhood.name }"
+  .span12.offset1
+    .row
+      .span5
+        %h1
+          = I18n.t("reports_feed.title", :name => @neighborhood.name)
+      .span4
+        %div{:style => "margin-top: 7px;"}
+          = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
+
   %br
   .span#report_buttons{:style => "font-size:20px;"}
-    / %h1 Marcar um foco
-
 
 .row
   .row.span10.offset1
     #report_buttons
-      -# all reports
-      = link_to 'Todos', nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
+      = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
         :onclick => 'filter_reports(event,"all")'
-
-      -# open reports
-      = link_to 'Em aberto', nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
+      = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
         :onclick => 'filter_reports(event,"open")'
-
-      -# eliminated reports
-      = link_to 'Eliminados', nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
+      = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
         :onclick => 'filter_reports(event,"eliminated")'
 
-      -# new report
       - if @current_user
-        = link_to "Marcar um foco", nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
+        = link_to I18n.t("common_terms.create_a_report"), nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
 
 
   .row
@@ -58,9 +58,9 @@
         - @reports.each do |report|
           - if report.sms_incomplete?
             = render :partial => "reports/sms.html.haml", :object => report, as: 'report'
-          - elsif report.status == Report::STATUS[:reported]
+          - elsif report.is_open?
             = render :partial => "reports/open.html.haml", :object => report, as: 'report'
-          - elsif report.status == Report::STATUS[:eliminated]
+          - elsif report.is_eliminated?
             = render :partial => "reports/resolved.html.haml", :object => report, as: 'report'
 
       #new_report

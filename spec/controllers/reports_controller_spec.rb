@@ -278,4 +278,137 @@ describe ReportsController do
 
 	#---------------------------------------------------------------------------
 
+	context "when verifying open reports" do
+		let(:admin)   { FactoryGirl.create(:admin)}
+		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+
+																				:reporter => user,
+																				:elimination_type => elimination_type,
+																				:report => "Description") }
+
+
+		before(:each) do
+			cookies[:auth_token] = admin.auth_token
+		end
+
+		it "sets the verified status" do
+			expect(report.isVerified).to eq(nil)
+			post :verify, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.isVerified).to eq("t")
+		end
+
+		it "sets the verifier id" do
+			expect(report.verifier_id).to eq(nil)
+			post :verify, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.verifier_id).to eq(admin.id)
+		end
+
+		it "sets the verified time" do
+			expect(report.verified_at).to eq(nil)
+			post :verify, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.verified_at).not_to eq(nil)
+		end
+	end
+
+	#---------------------------------------------------------------------------
+
+	context "when verifying eliminated reports" do
+		let(:admin)   { FactoryGirl.create(:admin)}
+		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+																				:status => Report::STATUS[:eliminated],
+																				:reporter => user,
+																				:elimination_type => elimination_type,
+																				:report => "Description") }
+
+
+		before(:each) do
+			cookies[:auth_token] = admin.auth_token
+		end
+
+		it "sets the verified status" do
+			expect(report.is_resolved_verified).to eq(nil)
+			post :verify, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.is_resolved_verified).to eq("t")
+		end
+
+		it "sets the verifier id" do
+			expect(report.resolved_verifier_id).to eq(nil)
+			post :verify, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.resolved_verifier_id).to eq(admin.id)
+		end
+
+		it "sets the verified time" do
+			expect(report.resolved_verified_at).to eq(nil)
+			post :verify, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.resolved_verified_at).not_to eq(nil)
+		end
+	end
+
+	#---------------------------------------------------------------------------
+
+	context "when verifying problems with open reports" do
+		let(:admin)  { FactoryGirl.create(:admin)}
+		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+										:reporter => user,
+										:elimination_type => elimination_type,
+										:report => "Description") }
+
+		before(:each) do
+			cookies[:auth_token] = admin.auth_token
+		end
+
+		it "sets the verified status" do
+			expect(report.isVerified).to eq(nil)
+			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.isVerified).to eq("f")
+		end
+
+		it "sets the verifier id" do
+			expect(report.verifier_id).to eq(nil)
+			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.verifier_id).to eq(admin.id)
+		end
+
+		it "sets the verified time" do
+			expect(report.verified_at).to eq(nil)
+			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.verified_at).not_to eq(nil)
+		end
+	end
+
+	#---------------------------------------------------------------------------
+
+	context "when verifying problems with eliminated reports" do
+		let(:admin)  { FactoryGirl.create(:admin)}
+		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+										:status => Report::STATUS[:eliminated],
+										:reporter => user,
+										:elimination_type => elimination_type,
+										:report => "Description") }
+
+		before(:each) do
+			cookies[:auth_token] = admin.auth_token
+		end
+
+		it "sets the verified status" do
+			expect(report.is_resolved_verified).to eq(nil)
+			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.is_resolved_verified).to eq("f")
+		end
+
+		it "sets the verifier id" do
+			expect(report.resolved_verifier_id).to eq(nil)
+			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.resolved_verifier_id).to eq(admin.id)
+		end
+
+		it "sets the verified time" do
+			expect(report.resolved_verified_at).to eq(nil)
+			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
+			expect(report.reload.resolved_verified_at).not_to eq(nil)
+		end
+	end
+
+	#---------------------------------------------------------------------------
+
 end
