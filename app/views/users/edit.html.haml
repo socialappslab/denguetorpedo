@@ -297,9 +297,8 @@
           =f.select :display, options_for_select(@user.display_name_options, @user.display),{:name => "display", :id => "display_select"}
           %br
           %br
-          = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
-          %button{ :class => "cancel_button", :style => "height:26px;"}
-            = link_to "Cancelar", edit_user_path(@user)
+          = f.submit I18n.t("views.button.confirm"), {:style => "margin-bottom: 20px;", :class => "btn btn-success"}
+
 
       = f.radio_button :gender, "true", :checked => (@user.gender == true)
       masculino
@@ -424,6 +423,4 @@
 
     %br
       .edit_house
-        = f.submit "Confirmar", {:style => "margin-bottom: 20px;"}
-        %button{ :class => "cancel_button", :style => "height:26px;"}
-          = link_to "Cancelar", edit_user_path(@user)
+        = f.submit I18n.t("views.button.confirm"), {:style => "margin-bottom: 20px;", :class => "btn btn-success"}

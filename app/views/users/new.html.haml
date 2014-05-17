@@ -11,4 +11,4 @@
       %li= f.password_field :password, :placeholder => "Senha", :class => "fields", :class => "fields"
       %li= f.password_field :password_confirmation, :placeholder => "Confirmar senha", :class => "fields"
     %br
-    = f.submit "Fazer inscrição"
+    = f.submit I18n.t("common_terms.submit"), :class => "btn btn-success"
