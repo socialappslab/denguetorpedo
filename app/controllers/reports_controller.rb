@@ -228,19 +228,24 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   def like
+
     if request.xhr?
+
       report = Report.find(params[:id])
+      count = params[:count].to_i
 
       if report && @current_user.present?
 
         # If user already likes report, remove like (e.g. 'unlike'), else add to likes
         if report.likes.include? @current_user
           report.likes.delete(@current_user)
+          count -= 1
         else
           report.likes << @current_user
+          count += 1
         end
 
-        render :json => {'count' => report.likes.count} and return
+        render :json => {'count' => count.to_s} and return
       end
 
       # status 400 -> Bad Request (error)

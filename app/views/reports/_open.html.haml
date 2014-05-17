@@ -10,7 +10,7 @@
   .row
     .rp_report_status.status
       .span1
-        = link_to  "Likes " + report.likes.count.to_s,nil, :class => "like_button", "data-report_id" => report.id
+        = link_to  "Likes ", nil, :class => "like_button", "data-report_id" => report.id, "data-likes_count" => report.likes_count
       .span2{:style => "width:100px;"}
         .fb-share-button{:data => {:href => "https://denguetorpedo.com/#{neighborhood_reports_path(@neighborhood)}", :type => "button"} }
       .span2
