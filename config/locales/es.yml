@@ -145,11 +145,14 @@ es:
     time_expired: Tiempo expirado
     uploaded_photo: Foto subida
     eliminated: Eliminado
-    create_a_report: Crear un reporte
+    create_a_report: Marcar un foco
     complete_report: Completar un reporte
 
   facebook:
     description: "Estoy en la lucha contra el dengue en @DengueTorpedo"
+
+  twitter:
+    created_new_report: "Acabo de marcar un foco en @DengueTorpedo."
 
   reports_feed:
     title: "Focos marcados de %{name}"
