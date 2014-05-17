@@ -127,7 +127,6 @@ pt:
   common_terms:
     register: Cadastre-se
     free_sms: SMS Grátis
-    search: Busca
     more: Mais
     partners: Parceiros
     configuration: Configurações
@@ -185,3 +184,4 @@ pt:
     button:
       publish: "Publicar"
       confirm: "Confirmar"
+      search:  "Busca"

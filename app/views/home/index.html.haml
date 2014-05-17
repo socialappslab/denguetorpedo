@@ -59,7 +59,7 @@
         = I18n.t("landing_page.community.search_for_other_communities")
       = form_tag neighborhood_search_path, :style => "margin: 0px;" do
         = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :include_blank => true, :style => "width: 50%;")
-        = submit_tag I18n.t("common_terms.search"), :class => "button"
+        = submit_tag I18n.t("views.button.search"), :class => "button"
     - if @current_user
       #sms_button{style: "margin-left: 20px; font-size:10px; display: inline-block;"}
         %button{style: "width:100px; margin-top: -30px; background-color:green; font-size:18px;line-height:22px; height: 65px;", id: "redetrel_button1"}
