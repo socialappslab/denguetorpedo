@@ -31,14 +31,14 @@
   color: black;
 }
 
-.confirm_button, input[type='submit'] {
-  border: 2px solid $light-gray;
-  color: black;
-  font-size: 12px;
-  text-align: center;
-  padding: 2px 10px;
-  border-radius: 8px;
-}
+// .confirm_button, input[type='submit'] {
+//   border: 2px solid $light-gray;
+//   color: black;
+//   font-size: 12px;
+//   text-align: center;
+//   padding: 2px 10px;
+//   border-radius: 8px;
+// }
 
 .eliminate_cancel {
   margin-top: 3px;
@@ -278,15 +278,15 @@
     color: $dark-gray;
   }
 
-  input{
-    height: 30px;
-    border: 0px;
-    color: gray;
-    background-color: #FFFFFF;
-    opacity: 1;
-    font-size: 13px;
-    margin-top: 2px;
-  }
+  // input{
+  //   height: 30px;
+  //   border: 0px;
+  //   color: gray;
+  //   background-color: #FFFFFF;
+  //   opacity: 1;
+  //   font-size: 13px;
+  //   margin-top: 2px;
+  // }
 
 
 

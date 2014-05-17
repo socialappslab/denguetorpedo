@@ -9,4 +9,5 @@
       %li= f.password_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :class => "fields"
       %li= f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :class => "fields"
       <br>
-      %li= f.submit I18n.t("common_terms.register")
+      %li
+        = f.submit I18n.t("common_terms.register"), :style => "btn btn-success"
