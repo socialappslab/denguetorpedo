@@ -51,15 +51,6 @@
               - if @user.recruitees.count > 0
                 Recrutei
                 = link_to @user.recruitees.last.first_name, user_path(@user.recruitees.last), class: "users"
-      / .row{:style => "margin-top:15px;"}
-      /   .span4.offset8{:style => "position:absolute;font-size:14px;"}
-      /     - if @user.recruiter
-      /       Recrutado por
-      /       = link_to @user.recruiter.first_name, user_path(@user.recruiter)
-      /       %br
-      /     - if @user.recruitees.count > 0
-      /       Recrutei
-      /       = link_to @user.recruitees.last.first_name, user_path(@user.recruitees.last)
       .row{:style => "margin-top:43px;"}
         .user_force_position.span2.offset4{:style => "margin-left:244px;"}
           %h3.user_house
