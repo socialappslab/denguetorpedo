@@ -229,4 +229,8 @@ class Report < ActiveRecord::Base
     end
   end
 
+  def likes_count
+    Report.count_by_sql "SELECT COUNT(*) FROM reports_users WHERE report_id = " + self.id.to_s
+  end
+
 end
