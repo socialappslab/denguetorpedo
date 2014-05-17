@@ -137,7 +137,6 @@ pt:
     eliminated_by: Eliminado por
     confirm_delete: Você tem certeza?
     open_for: Em aberto por
-    submit: Enviar
     email_or_password_incorrect: "E-mail ou senha inválido"
     open_reports: Em aberto
     eliminated_reports: Eliminados
@@ -175,13 +174,12 @@ pt:
       problem_with_verification: Problema no foco marcado. Entre em contato conosco.
       upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
 
-
-
-
-
-
   views:
+    password_resets:
+      title: Redefinir sua senha
+      enter_email: "Digite o seu e-mail cadastrado"
     button:
       publish: "Publicar"
       confirm: "Confirmar"
       search:  "Busca"
+      submit:  "Enviar"
