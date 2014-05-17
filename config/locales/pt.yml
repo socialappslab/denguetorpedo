@@ -175,3 +175,13 @@ pt:
       fill_in_complete_address: Você deve enviar o endereço completo
       problem_with_verification: Problema no foco marcado. Entre em contato conosco.
       upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
+
+
+
+
+
+
+  views:
+    button:
+      publish: "Publicar"
+      confirm: "Confirmar"
