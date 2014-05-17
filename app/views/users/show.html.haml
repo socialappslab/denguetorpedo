@@ -1,14 +1,5 @@
-- if flash[:notice]
-  .row.offset1#flash_dat_notice{style: "width: 724px;"}
-    #flashNotice
-      %p
-        = flash[:notice]
+= render :partial => "shared/flashes"
 
-- if flash[:alert]
-  .row#flash_dat_alert{style: "width: 724px; margin-left:65px;"}
-    #flashAlert
-      %p
-        = flash[:alert]
 #content{style: "min-height:700px;"}
   #user_top_bar
     #user_top_text
