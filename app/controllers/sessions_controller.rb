@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
         redirect_to root_url, :alert => "Sua conta está bloqueada temporariamente.  Por favor, entre em contato com o Dengue Torpedo."
       end
     else
-      redirect_to root_url, :alert => "E-mail ou senha inválido."
+      redirect_to root_url, :alert => I18n.t("common_terms.email_or_password_incorrect")
     end
   end
 
@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
 
   def destroy
     cookies.delete(:auth_token)
-    redirect_to root_url #, :notice => "Signed out!"
+    redirect_to root_url
   end
 
   #----------------------------------------------------------------------------

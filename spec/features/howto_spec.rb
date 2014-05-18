@@ -58,7 +58,7 @@ describe "How To", :type => :feature do
     it "allows title change" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_title", :with => "TEST"
-      click_button "Enviar!"
+      click_button "Enviar"
       expect(page).to have_content("TEST")
       expect(page).to have_content("A seção foi atualizada com sucesso")
     end
@@ -66,7 +66,7 @@ describe "How To", :type => :feature do
     it "allows content change" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_content", :with => "TEST"
-      click_button "Enviar!"
+      click_button "Enviar"
       expect(page).to have_content("TEST")
       expect(page).to have_content("A seção foi atualizada com sucesso")
     end
@@ -74,14 +74,14 @@ describe "How To", :type => :feature do
     it "requires title" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_title", :with => ""
-      click_button "Enviar!"
+      click_button "Enviar"
       expect(page).to have_content("Título é obrigatório")
     end
 
     it "requires content" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_content", :with => ""
-      click_button "Enviar!"
+      click_button "Enviar"
       expect(page).to have_content("Conteúdo é obrigatório")
     end
   end

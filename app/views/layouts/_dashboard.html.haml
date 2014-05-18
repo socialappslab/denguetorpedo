@@ -10,23 +10,19 @@
       - if @current_user.house && @current_user.house.id
         - if @current_user.role == User::Types::SPONSOR
           = link_to sponsor_path(@current_user), :style => "#{bold_header_title}" do
-            /= image_tag("icons/profile_icon.png")
             %i.fa.fa-user.fa-2
-            %p
-              Meu Perfil
+            = I18n.t("dashboard.my_profile")
         - else
-          =link_to user_path(@current_user), :style => "#{bold_header_title}" do
-            /= image_tag("icons/profile_icon.png")
+          = link_to user_path(@current_user), :style => "#{bold_header_title}" do
             %i.fa.fa-user.fa-2
-            Meu Perfil
+            = I18n.t("dashboard.my_profile")
       -else
         - if @current_user.role != User::Types::VISITOR
           = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
-            /= image_tag("icons/profile_icon.png")
             %i.fa.fa-user.fa-2
-            Meu Perfil
+            = I18n.t("dashboard.my_profile")
         - else
-          Meu Perfil
+          = I18n.t("dashboard.my_profile")
 
     /------------------------------------------------------------------------
 
@@ -36,20 +32,18 @@
       - if @current_user.neighborhood && @current_user.house && @current_user.house.id
         - if @current_user.role != User::Types::SPONSOR
           = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house), :style => "#{bold_header_title}" do
-            /= image_tag("icons/house_icon.png")
             %i.fa.fa-home.fa-2
-            Minha Casa
+            = I18n.t("dashboard.my_house")
         - else
-          Minha Casa
+          = I18n.t("dashboard.my_house")
 
       - else
         - if @current_user.role != User::Types::VISITOR
-          =link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
-            /= image_tag("icons/house_icon.png")
+          = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
             %i.fa.fa-home.fa-2
-            Minha Casa
+            = I18n.t("dashboard.my_house")
         - else
-          Minha Casa
+          = I18n.t("dashboard.my_house")
 
     /------------------------------------------------------------------------
 
@@ -63,9 +57,9 @@
       - else
         - relevant_link = neighborhood_path(Neighborhood.first)
       = link_to relevant_link, :style => "#{bold_header_title}" do
-        /= image_tag("icons/neighborhood_icon.png")
         %i.fa.fa-users.fa-2
-        Minha Comunidade
+        = I18n.t("dashboard.my_community")
+
 
 
 
@@ -81,16 +75,14 @@
       - else
         - relevant_link = reports_path
       = link_to relevant_link, :style => "#{bold_header_title}" do
-        /=image_tag("icons/make_report_icon.png")
         %i.fa.fa-plus.fa-2
-        Focos Marcados
+        = I18n.t("dashboard.reports")
 
     /------------------------------------------------------------------------
 
     %li
       - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
 
-      =link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
-        /= image_tag("icons/account_setting_icon.png")
+      = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
         %i.fa.fa-gear.fa-2
-        Configurações
+        = I18n.t("common_terms.configuration")

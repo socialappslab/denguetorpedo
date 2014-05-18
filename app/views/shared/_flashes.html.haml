@@ -1,10 +1,16 @@
-- if flash[:notice]
-  .row#flash_dat_notice{:style => "z-index: 10;"}
-    #flashNotice
-      %p
+.row{:style => "z-index: 10;"}
+  .span15.offset1
+    - if flash[:notice]
+      .alert.alert-success.alert-dismissable{:style => "padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
+        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+          &times;
+        %span{:style => "font-size: 20px; float: right;"}
+          - if flash[:should_render_social_media_buttons]
+            = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("twitter.created_new_report")}
         = flash[:notice]
-- if flash[:alert]
-  .row#flash_dat_alert{:style => "z-index: 10;"}
-    #flashAlert
-      %p
+
+    - if flash[:alert]
+      .alert.alert-danger.alert-dismissable
+        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+          &times;
         = flash[:alert]

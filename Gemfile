@@ -7,7 +7,11 @@ group :staging, :production do
   gem 'pg'
 end
 
+#------------------------------------------------------------------------------
+# Encoding support
+
 gem 'magic_encoding'
+gem 'mime' # TODO: Possibly deprecate?
 
 #------------------------------------------------------------------------------
 # Maps
@@ -19,6 +23,18 @@ gem 'leaflet-rails'
 # SMS communication
 
 gem 'nexmo'
+gem 'mms2r'
+
+#------------------------------------------------------------------------------
+# User management
+
+gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'cancan'
+
+#------------------------------------------------------------------------------
+# Email communication
+
+gem 'ruby-gmail'
 
 #------------------------------------------------------------------------------
 # PDF-related
@@ -39,30 +55,12 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dynamic_form'
-
-#------------------------------------------------------------------------------
-
-gem 'ruby-gmail'
-gem 'daemons'
-gem 'mms2r'
-gem 'mime'
-gem 'rmagick'
-gem 'bcrypt-ruby', '~> 3.0.0'
-gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
-gem 'therubyracer' # this is required for the coffeescript compiler to work on linux
-gem 'simple_enum'
-gem 'awesome_nested_set'
-gem 'uuid'
-gem 'whenever', :require => false
-gem 'eventmachine', '~> 1.0.0.beta.4.1'
-gem 'cancan'
 gem 'rails_autolink'
-
 
 #------------------------------------------------------------------------------
 # Assets
-# Gems used only for assets and not required
-# in production environments by default.
+
+gem 'yui-compressor'
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
   gem 'bootstrap-sass', '~> 2.0.3'
@@ -70,33 +68,25 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'yui-compressor'
-
 #------------------------------------------------------------------------------
-# File Management
+# Image Management and Processing
 
 gem 'aws-sdk'
-
-
-# for geocoding transformation
-# gem 'proj4rb'
+gem 'rmagick'
+gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
 
 #------------------------------------------------------------------------------
 # Server Management
 
 gem "puma"
 gem "foreman"
+gem "therubyracer"
 
 #------------------------------------------------------------------------------
 # Workers
 
 gem "sidekiq"
 gem 'sinatra', '>= 1.3.0', :require => nil
-
-#------------------------------------------------------------------------------
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
 
 #------------------------------------------------------------------------------
 # Testing
@@ -112,8 +102,17 @@ end
 group :test do
   gem 'guard-rspec'
   gem 'database_cleaner'
-
   gem 'faker'
 end
+
+
+#------------------------------------------------------------------------------
+# TODO
+
+# TODO: Deprecate after refactoring Post model.
+gem 'awesome_nested_set'
+
+# TODO: Deprecate after refactoring Feed model.
+gem 'simple_enum'
 
 #------------------------------------------------------------------------------
