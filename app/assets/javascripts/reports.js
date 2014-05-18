@@ -2,7 +2,6 @@
 // strings correspond to ids of report div
 // used with function display_report_div
 var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_reports_button', 'make_report_button'];
-var like_report_path = "";
 
 $(document).ready(function() {
 
