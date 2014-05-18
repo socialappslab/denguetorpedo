@@ -62,24 +62,22 @@ $(document).ready(function() {
 	});
     // end of methods
 
-
     // Loop through like buttons and update count
     $(".like_button").each(function(){
-       $(this).text("Likes " + $(this).data("likes_count"));
+       $(this).find(".like_text").text($(this).data("likes_count"));
     });
 
     $(".like_button").click(function(event){
         event.preventDefault();
+
+        // Trim the count of the text
         $.ajax({
             url: $(this).data("path"),
             type: "POST",
             data: {"count" : $(this).data("likes_count")},
             success : function(report){
-                $(event.target).text("Likes " + report.count.toString());
-                $(event.target).data("likes_count", report.count.toString());
-            },
-            error : function(){
-                // TODO anything special for handling error?
+                $(event.currentTarget).find('.like_text').text(report.count.toString());
+                $(event.currentTarget).data("likes_count", report.count.toString());
             }
         })
     });

@@ -235,7 +235,7 @@ class ReportsController < NeighborhoodsBaseController
 
         # If user already likes report, remove like (e.g. 'unlike'), else add to likes
         if report.likes.include? @current_user
-          report.likes.delete(@current_user)
+          report.likes.destroy(@current_user)
           count -= 1
         else
           report.likes << @current_user

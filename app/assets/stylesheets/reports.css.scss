@@ -435,3 +435,25 @@
 .error_glow{
   box-shadow: 0 0 10px red;
 }
+
+.like_span{
+  margin:auto;
+  margin-top:1px;
+}
+.like_button{
+
+  .like_text{
+    display:inline;
+  }
+
+  color:white;
+
+  border:solid;
+  border-radius: 2px;
+  border-width: 1px;
+  border-color: #60BB50;
+  background: #60BB50;
+  padding-left: 5px;
+  padding-right: 5px;
+
+}
