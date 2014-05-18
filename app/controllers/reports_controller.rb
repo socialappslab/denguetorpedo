@@ -229,8 +229,6 @@ class ReportsController < NeighborhoodsBaseController
 
   def like
 
-    if request.xhr?
-
       report = Report.find(params[:id])
       count = params[:count].to_i
 
@@ -250,8 +248,6 @@ class ReportsController < NeighborhoodsBaseController
 
       # status 400 -> Bad Request (error)
       render :nothing => true, :status => 400
-
-    end
 
   end
 

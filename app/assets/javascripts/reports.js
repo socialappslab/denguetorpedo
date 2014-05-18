@@ -2,6 +2,7 @@
 // strings correspond to ids of report div
 // used with function display_report_div
 var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_reports_button', 'make_report_button'];
+var like_report_path = "";
 
 $(document).ready(function() {
 
@@ -69,9 +70,8 @@ $(document).ready(function() {
 
     $(".like_button").click(function(event){
         event.preventDefault();
-
         $.ajax({
-            url: location.href + "/" + $(this).data("report_id") + "/like",
+            url: $(this).data("path"),
             type: "POST",
             data: {"count" : $(this).data("likes_count")},
             success : function(report){
