@@ -1,10 +1,10 @@
 .report.eliminated
   .row
     .rp_report_status.status
-      .span4.like_span
-        = link_to nil, :class => "like_button", "data-path" => like_neighborhood_report_path(:id => report.id),"data-likes_count" => report.likes_count do
+      .span4.likes_span
+        = link_to nil, :class => "likes_button", "data-path" => like_neighborhood_report_path(:id => report.id),"data-likes_count" => report.likes_count do
           %i.fa.fa-thumbs-up
-          %span.like_text
+          %span.likes_text
           = I18n.t("report.form.likes")
 
       .rp_report_options{:style => "margin-top:-3px;"}
