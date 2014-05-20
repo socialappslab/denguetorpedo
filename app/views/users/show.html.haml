@@ -1,11 +1,18 @@
 = render :partial => "shared/flashes"
 
 #content{style: "min-height:700px;"}
-  #user_top_bar
-    #user_top_text
-      .row
-        .span9.offset4{ :style => "margin-top: -10px;"}
-          %h1.user_name.span10{:title => @user.display_name}
+  .row
+    .span4{:style => "border-right: 1px solid #ccc;"}
+
+      .offset1
+        .user_profile_picture{:style => "float:left;margin-top:0px; width: 70px;"}
+          - if @user.profile_photo_file_name.nil?
+            = image_tag("default_images/profile_default_image.png")
+          - else
+            = image_tag(@user.profile_photo.url(:large))
+
+        .row
+          .user_name.span10{:title => @user.display_name}
             - if @user.role == "lojista"
               #{@user.shorter_display_name} (patrocinador)
             - elsif @user.role == "verificador"
@@ -20,86 +27,87 @@
                 #{@user.shorter_display_name} (coordenadora)
             - else
               = @user.shorter_display_name
-        .span7.offset7{:style => "margin-top:-40px;"}
-          .span2.user_points
-            %h2 pontos
-          .span2.user_points{:style => "margin-top:22px;margin-left:-15px;"}
-            .row
-              %h2 disponível
-            .user_points_bg
-              = @user.points
-          .span2.user_points{:style => "margin-top:22px;"}
-            .row
-              %h2 total
-            .user_points_bg
-              = @user.total_points
-          .row{style: "margin-top:126px;position:absolute;"}
-            .span4{style: "margin-left:36px;"}
-              - if @user.recruiter
-                Recrutado por
-                = link_to @user.recruiter.first_name, user_path(@user.recruiter), class: "users"
-                %br
-              - if @user.recruitees.count > 0
-                Recrutei
-                = link_to @user.recruitees.last.first_name, user_path(@user.recruitees.last), class: "users"
-      .row{:style => "margin-top:43px;"}
-        .user_force_position.span2.offset4{:style => "margin-left:244px;"}
-          %h3.user_house
-            - if @house
-              - if @user.role == "lojista" or @user.role == "verificador"
-                = link_to @house.name, neighborhood_house_path(@neighborhood, @house)
-              - else
-                = link_to "Casa " + @house.name, neighborhood_house_path(@neighborhood, @house)
-            - else
-              = link_to "Create My House", edit_user_path(@user)
-        .span2{:style => "margin-left:25px;"}
-          %h3.user_neighborhood
-            =link_to @neighborhood.name, neighborhood_path(@neighborhood)
-
-    .row
-      #user_top_pictures
-        .span10.offset1
-          .user_profile_picture{:style => "float:left;margin-top:0px;"}
-            - if @user.profile_photo_file_name.nil?
-              = image_tag("default_images/profile_default_image.png")
-            - else
-              = image_tag(@user.profile_photo.url(:large))
-          .user_house_picture{:style => "float:left;margin-top:47px;margin-left:5px;"}
-            - if @house.profile_photo_file_name.nil?
-              = link_to image_tag("default_images/house_default_image.png"), neighborhood_house_path(@neighborhood, @house)
-            - else
-              = link_to image_tag(@user.house.profile_photo.url(:medium)), neighborhood_house_path(@neighborhood, @house)
-
-          .user_neighborhood_picture{:style => "float:left;margin-top:47px;margin-left:5px;"}
-            =link_to image_tag("default_images/neighborhood_default_image.png"), neighborhood_path(@neighborhood)
 
 
-    .row
-      #user_recent_activity.span15.offset1
-        .row{:style => "margin-top:10px;"}
-          .span11
-            - if @isPrivatePage
-              = render :partial => 'posts/new', locals: { wall: @house }
-        .row
-          %h3.span15
-            Atividade recente
+
         .row
           .span12
-            = link_to 'Todos', user_path(@user, :filter => 'all'), :class => @feed_active_all
-            |
-            = link_to 'Focos', user_path(@user, :filter => 'reports'), :class => @feed_active_reports
-            |
-            = link_to 'Blog', user_path(@user, :filter => 'posts'), :class => @feed_active_posts
-        .row{ :style => "width: 1150px;"}
+            = link_to edit_user_path(@current_user) do
+              %i.fa.fa-gear.fa-2
+              = I18n.t("common_terms.configuration")
+          .span12
+            - if @current_user.neighborhood && @current_user.house && @current_user.house.id
+              - if @current_user.role != User::Types::SPONSOR
+                = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house) do
+                  %i.fa.fa-home.fa-2
+                  = I18n.t("dashboard.my_house")
+              - else
+                = I18n.t("dashboard.my_house")
 
-          #user_reports.span11
-            - for item in @combined_sorted
-              - if item.is_a? Post
-                = render :partial => 'users/show_post', :object => item, :locals => {:full => true}
-              - elsif item.status == Report::STATUS[:reported]
-                = render :partial => "reports/open.html.haml", :object => item, as: 'report'
-              - elsif item.status == Report::STATUS[:eliminated]
-                = render :partial => "reports/resolved.html.haml", :object => item, as: 'report'
+            - else
+              - if @current_user.role != User::Types::VISITOR
+                = link_to edit_user_path(@current_user) do
+                  %i.fa.fa-home.fa-2
+                  = I18n.t("dashboard.my_house")
+              - else
+                = I18n.t("dashboard.my_house")
+
+          .span12
+            - if @current_user && @current_user.neighborhood
+              - relevant_link = neighborhood_path(@current_user.neighborhood)
+            - elsif @current_user.role != User::Types::VISITOR
+              - relevant_link = edit_user_path(@current_user)
+            - else
+              - relevant_link = neighborhood_path(Neighborhood.first)
+            = link_to relevant_link do
+              %i.fa.fa-users.fa-2
+              = I18n.t("dashboard.my_community")
+
+
+
+    .span8
+      .row
+        .span4
+          %h1{:style => "color: #5cb85c; font-size: 50px;"}
+            = @user.total_points
+          %p{:style => "margin-top: 10px;"}
+            = I18n.t("common_terms.points")
+        .span4
+          What...
+
+
+
+      .row{:style => "margin-top:10px;"}
+        .span11
+          - if @isPrivatePage
+            = render :partial => 'posts/new', locals: { wall: @house }
+
+
+
+
+
+
+
+      .row
+        #user_recent_activity
+
+          .row
+            .span12
+              = link_to 'Todos', user_path(@user, :filter => 'all'), :class => @feed_active_all
+              |
+              = link_to 'Focos', user_path(@user, :filter => 'reports'), :class => @feed_active_reports
+              |
+              = link_to 'Blog', user_path(@user, :filter => 'posts'), :class => @feed_active_posts
+          .row{ :style => "width: 1150px;"}
+
+            #user_reports.span11
+              - for item in @combined_sorted
+                - if item.is_a? Post
+                  = render :partial => 'users/show_post', :object => item, :locals => {:full => true}
+                - elsif item.status == Report::STATUS[:reported]
+                  = render :partial => "reports/open.html.haml", :object => item, as: 'report'
+                - elsif item.status == Report::STATUS[:eliminated]
+                  = render :partial => "reports/resolved.html.haml", :object => item, as: 'report'
 
   .span4{ :style => "position:absolute; right:30px; top:160px;float:right;"}
     .row{:style => "text-align:center;"}

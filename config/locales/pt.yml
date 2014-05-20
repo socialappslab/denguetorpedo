@@ -145,6 +145,7 @@ pt:
     eliminated: Eliminado
     create_a_report: Marcar um foco
     complete_report: Completar o foco
+    points: Pontos
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
