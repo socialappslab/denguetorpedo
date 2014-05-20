@@ -2,9 +2,9 @@
 %div{:style => "margin-left: 30px; margin-right: 30px;"}
   .user_profile_picture{:style => "text-align: center;"}
     - if @user.profile_photo_file_name.nil?
-      = image_tag("default_images/profile_default_image.png")
+      = image_tag("default_images/profile_default_image.png", :style => " width: 100px;")
     - else
-      = image_tag(@user.profile_photo.url(:large))
+      = image_tag(@user.profile_photo.url(:large), :style => " width: 100px;")
 
     %div{:style => "text-align: center;"}
       = @user.first_name
