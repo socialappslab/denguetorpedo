@@ -1,0 +1,24 @@
+
+.row{:style => "margin-bottom: 50px;"}
+  .span8{:style => "text-align: center;"}
+    %h1{:style => "color: #5cb85c; font-size: 50px;"}
+      = @user.total_points
+    %p{:style => "margin-top: 10px;"}
+      = I18n.t("common_terms.points")
+
+
+.row{:style => "margin-top:10px;"}
+  .span8
+    - if (@user == @current_user)
+      = render :partial => 'posts/new', locals: { wall: @house }
+
+.row
+  #user_recent_activity
+    #user_reports.span9
+      - for item in @combined_sorted
+        - if item.is_a? Post
+          = render :partial => 'users/show_post', :object => item, :locals => {:full => true}
+        - elsif item.status == Report::STATUS[:reported]
+          = render :partial => "reports/open.html.haml", :object => item, as: 'report'
+        - elsif item.status == Report::STATUS[:eliminated]
+          = render :partial => "reports/resolved.html.haml", :object => item, as: 'report'

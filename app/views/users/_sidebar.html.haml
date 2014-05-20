@@ -1,0 +1,62 @@
+
+%div{:style => "margin-left: 30px; margin-right: 30px;"}
+  .user_profile_picture{:style => "text-align: center;"}
+    - if @user.profile_photo_file_name.nil?
+      = image_tag("default_images/profile_default_image.png")
+    - else
+      = image_tag(@user.profile_photo.url(:large))
+
+    %div{:style => "text-align: center;"}
+      = @user.first_name
+    -# - if @user.role == "lojista"
+    -#   #{@user.shorter_display_name} (patrocinador)
+    -# - elsif @user.role == "verificador"
+    -#   - if @user.gender == true
+    -#     #{@user.shorter_display_name} (verificador)
+    -#   - else
+    -#     #{@user.shorter_display_name} (verificadora)
+    -# -elsif @user.role == "coordenador"
+    -#   - if @user.gender == true
+    -#     #{@user.shorter_display_name} (coordenador)
+    -#   - else
+    -#     #{@user.shorter_display_name} (coordenadora)
+    -# - else
+    -#   = @user.shorter_display_name
+
+
+
+  .row
+    = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+      %i.fa.fa-gear.fa-2
+      = I18n.t("common_terms.configuration")
+
+    - if @current_user.neighborhood && @current_user.house && @current_user.house.id
+      - if @current_user.role != User::Types::SPONSOR
+        = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+          %i.fa.fa-home.fa-2
+          = I18n.t("dashboard.my_house")
+      - else
+        = I18n.t("dashboard.my_house")
+
+    - else
+      - if @current_user.role != User::Types::VISITOR
+        = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+          %i.fa.fa-home.fa-2
+          = I18n.t("dashboard.my_house")
+      - else
+        = I18n.t("dashboard.my_house")
+
+
+    - if @current_user && @current_user.neighborhood
+      - relevant_link = neighborhood_path(@current_user.neighborhood)
+    - elsif @current_user.role != User::Types::VISITOR
+      - relevant_link = edit_user_path(@current_user)
+    - else
+      - relevant_link = neighborhood_path(Neighborhood.first)
+    = link_to relevant_link, :style => "display: block; font-size: 15px; margin-top: 20px;" do
+      %i.fa.fa-users.fa-2
+      = I18n.t("dashboard.my_community")
+
+  %div{:style => "margin-top: 20px;"}
+
+  = render :partial => "users/badges"
