@@ -1,6 +1,6 @@
 .user_activity_item{:style => "margin-left: 0px;"}
   .row
-    .user_activity_thumb.span2
+    .span2
       - if @user.profile_photo_file_name.nil?
         = image_tag("default_images/profile_default_image.png")
       - else
