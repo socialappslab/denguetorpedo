@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     @user_posts = @user.posts
 
     # Find if user can redeem prizes
-    @prizes            = Prize.where('stock > 0').where('expire_on >= ? || expire_on is NULL', Time.new).where(:is_badge => false)
+    @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
     @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
 
     # See if the user has created any reports.
