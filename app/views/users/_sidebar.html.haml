@@ -35,16 +35,14 @@
         = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
           %i.fa.fa-home.fa-2
           = I18n.t("dashboard.my_house")
-      - else
-        = I18n.t("dashboard.my_house")
+
 
     - else
       - if @current_user.role != User::Types::VISITOR
         = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
           %i.fa.fa-home.fa-2
           = I18n.t("dashboard.my_house")
-      - else
-        = I18n.t("dashboard.my_house")
+
 
 
     - if @current_user && @current_user.neighborhood

@@ -40,14 +40,19 @@ class UsersController < ApplicationController
     @user         = User.find_by_id(params[:id])
     @neighborhood = @user.neighborhood
     @house        = @user.house
-    @prizes       = @user.prizes
     @badges       = @user.badges
 
     head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
     head :not_found and return if @user.nil?
 
     @user_posts = @user.posts
-    @prize_ids = @prizes.collect{|prize| prize.id}
+
+    # Find if user can redeem prizes
+    @prizes            = Prize.where('stock > 0').where('expire_on >= ? || expire_on is NULL', Time.new).where(:is_badge => false)
+    @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
+
+    # See if the user has created any reports.
+    @reports = @user.reports
 
     @coupons = @user.prize_codes
     if params[:filter] == 'reports'
@@ -60,7 +65,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: {user: @user, house: @house, prizes: @prizes, badges: @badges}}
+      format.json { render json: {user: @user, house: @house, badges: @badges}}
     end
   end
 
