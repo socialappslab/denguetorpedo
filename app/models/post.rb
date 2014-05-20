@@ -1,21 +1,3 @@
-# == Schema Information
-#
-# Table name: posts
-#
-#  id         :integer          not null, primary key
-#  user_id    :integer
-#  title      :string(255)
-#  content    :text
-#  type_cd    :integer
-#  parent_id  :integer
-#  lft        :integer
-#  rgt        :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  wall_id    :integer
-#  wall_type  :string(255)
-#
-
 class Post < ActiveRecord::Base
   attr_accessible :content, :title, :user_id, :parent_id
   acts_as_nested_set
