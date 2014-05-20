@@ -175,7 +175,7 @@ es:
       problem_with_verification: No se pudo marcar el foco.  Pónganse en contacto con nosotros.
       upload_photo_of_eliminated_report: Cargue una foto del foco eliminado.
 
-views:
+  views:
     password_resets:
       title: Redefinir su contraseña
       enter_email: "Teclee su e-mail registrado"
@@ -184,4 +184,3 @@ views:
       confirm: "Confirmar"
       search: "Busca"
       submit: "Enviar"
-
