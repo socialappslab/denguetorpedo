@@ -55,18 +55,19 @@ class UsersController < ApplicationController
     @reports   = @user.reports
     @coupons   = @user.prize_codes
 
-    # Load the community news feed. We explicitly limit activity to this week
+    # Load the community news feed. We explicitly limit activity to this month
     # so that we don't inadvertedly create a humongous array.
     # TODO: As activity on the site picks up, come back to rethink this inefficient
     # query.
+    # TODO: Move the magic number '4.weeks.ago'
     @neighborhood = @user.neighborhood
-    neighborhood_reports = @neighborhood.reports.where("created_at > ?", 1.week.ago)
+    neighborhood_reports = @neighborhood.reports.where("created_at > ?", 4.weeks.ago)
     neighborhood_reports = neighborhood_reports.find_all {|r| r.is_public? }
 
     # Now, let's load all the users, and their posts.
     neighborhood_posts = []
     @neighborhood.members.each do |m|
-      user_posts = m.posts.where("created_at > ?", 1.week.ago)
+      user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
       neighborhood_posts << user_posts
     end
     neighborhood_posts.flatten!
