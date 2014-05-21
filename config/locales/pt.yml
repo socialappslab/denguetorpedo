@@ -148,6 +148,8 @@ pt:
     points: Pontos
     exchange_points_for_prizes: "Trocar pontos por prêmios"
     go_to_report: "Vá para o foco"
+    their_house: Seu casa
+    their_community: Seu comunidade
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

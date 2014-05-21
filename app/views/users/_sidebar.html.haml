@@ -26,34 +26,27 @@
 
 
   .row
-    = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-      %i.fa.fa-gear.fa-2
-      = I18n.t("common_terms.configuration")
+    - if @user == @current_user
+      = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+        %i.fa.fa-gear.fa-2
+        = I18n.t("common_terms.configuration")
 
-    - if @current_user.neighborhood && @current_user.house && @current_user.house.id
-      - if @current_user.role != User::Types::SPONSOR
-        = link_to neighborhood_house_path(@current_user.neighborhood, @current_user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-          %i.fa.fa-home.fa-2
-          = I18n.t("dashboard.my_house")
-
-
+    - if @user == @current_user
+      - house_link_text = I18n.t("dashboard.my_house")
+      - community_link_text = I18n.t("dashboard.my_community")
     - else
-      - if @current_user.role != User::Types::VISITOR
-        = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-          %i.fa.fa-home.fa-2
-          = I18n.t("dashboard.my_house")
+      - house_link_text = I18n.t("common_terms.their_house")
+      - community_link_text = I18n.t("common_terms.their_community")
 
+    - if @user.neighborhood && @user.house
+      = link_to neighborhood_house_path(@user.neighborhood, @user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+        %i.fa.fa-home.fa-2
+        = house_link_text
 
-
-    - if @current_user && @current_user.neighborhood
-      - relevant_link = neighborhood_path(@current_user.neighborhood)
-    - elsif @current_user.role != User::Types::VISITOR
-      - relevant_link = edit_user_path(@current_user)
-    - else
-      - relevant_link = neighborhood_path(Neighborhood.first)
-    = link_to relevant_link, :style => "display: block; font-size: 15px; margin-top: 20px;" do
-      %i.fa.fa-users.fa-2
-      = I18n.t("dashboard.my_community")
+    - if @user.neighborhood
+      = link_to neighborhood_path(@user.neighborhood), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+        %i.fa.fa-users.fa-2
+        = community_link_text
 
   %div{:style => "margin-top: 20px;"}
 
