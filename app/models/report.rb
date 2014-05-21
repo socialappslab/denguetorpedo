@@ -95,6 +95,13 @@ class Report < ActiveRecord::Base
     return (self.sms && self.completed_at == nil)
   end
 
+  # We define a report to be public if it's not SMS.
+  # TODO: This is obviously not a future proof solution, so come back to this
+  # when you're ready.
+  def is_public?
+    return !self.sms
+  end
+
   def expired?
     self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
   end
