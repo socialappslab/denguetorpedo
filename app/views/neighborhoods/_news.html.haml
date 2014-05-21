@@ -14,9 +14,9 @@
                 = notice.title
           %br
           .row
-            .span1.neighborhood_news_thumb
-              = image_tag(notice.photo.url(:medium))
-            .span3.neighborhood_news_content
+            .span1
+              = image_tag(notice.photo.url(:small), :style => "width: 100px;")
+            .span3
               // TODO: Move this into the model.
               - if notice.summary.size > 33
                 = notice.summary[0..30] + "..."
