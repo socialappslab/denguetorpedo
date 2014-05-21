@@ -150,6 +150,7 @@ pt:
     go_to_report: "Vá para o foco"
     their_house: Seu casa
     their_community: Seu comunidade
+    this_user_has_no_activity: Este usuário não tem qualquer atividade
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

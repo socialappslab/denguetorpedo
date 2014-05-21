@@ -46,33 +46,37 @@ class UsersController < ApplicationController
     @house        = @user.house
     @badges       = @user.badges
     @user_posts   = @user.posts
+    @reports      = @user.reports
+    @coupons      = @user.prize_codes
 
     # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
     @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
 
     # See if the user has created any reports.
-    @reports   = @user.reports
-    @coupons   = @user.prize_codes
+
 
     # Load the community news feed. We explicitly limit activity to this month
     # so that we don't inadvertedly create a humongous array.
     # TODO: As activity on the site picks up, come back to rethink this inefficient
     # query.
     # TODO: Move the magic number '4.weeks.ago'
-    @neighborhood = @user.neighborhood
-    neighborhood_reports = @neighborhood.reports.where("created_at > ?", 4.weeks.ago)
-    neighborhood_reports = neighborhood_reports.find_all {|r| r.is_public? }
+    if @current_user == @user
+      neighborhood_reports = @neighborhood.reports.where("created_at > ?", 4.weeks.ago)
+      neighborhood_reports = neighborhood_reports.find_all {|r| r.is_public? }
 
-    # Now, let's load all the users, and their posts.
-    neighborhood_posts = []
-    @neighborhood.members.each do |m|
-      user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
-      neighborhood_posts << user_posts
+      # Now, let's load all the users, and their posts.
+      neighborhood_posts = []
+      @neighborhood.members.each do |m|
+        user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
+        neighborhood_posts << user_posts
+      end
+      neighborhood_posts.flatten!
+
+      @news_feed = (neighborhood_reports + neighborhood_posts).sort{|a,b| b.created_at <=> a.created_at }
+    else
+      @news_feed = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
-    neighborhood_posts.flatten!
-
-    @news_feed = (neighborhood_reports + neighborhood_posts).sort{|a,b| b.created_at <=> a.created_at }
 
     respond_to do |format|
       format.html
