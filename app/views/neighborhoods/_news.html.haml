@@ -8,8 +8,8 @@
         %li.span4.neighborhood_news_title{:style => "height:270px;position:relative;"}
           .row
             .span5
-              - if notice.title.size > 33
-                = notice.title[0..30] + "..."
+              - if notice.title.size > 28
+                = notice.title[0..25] + "..."
               - else
                 = notice.title
           %br
