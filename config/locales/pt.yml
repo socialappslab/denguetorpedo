@@ -147,6 +147,7 @@ pt:
     complete_report: Completar o foco
     points: Pontos
     exchange_points_for_prizes: "Trocar pontos por prêmios"
+    go_to_report: "Vá para o foco"
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
