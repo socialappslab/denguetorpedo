@@ -33,35 +33,28 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/1/
 
   def show
-    @post = Post.new
+    @user = User.find_by_id(params[:id])
 
-    @user         = User.find_by_id(params[:id])
+    head :not_found and return if @user.nil?
+    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
+
+    @post         = Post.new
     @neighborhood = @user.neighborhood
     @house        = @user.house
     @badges       = @user.badges
+    @user_posts   = @user.posts
 
-    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
-    head :not_found and return if @user.nil?
-
-    @user_posts = @user.posts
-
-    # Find if user can redeem prizes
+    # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
     @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
 
     # See if the user has created any reports.
     @reports = @user.reports
-
     @coupons = @user.prize_codes
-    if params[:filter] == 'reports'
-      @combined_sorted = @user.reports.where('elimination_type IS NOT NULL')
-    elsif params[:filter] == 'posts'
-      @combined_sorted = @user.posts
-    else
-      @combined_sorted = (@user.reports.where('elimination_type IS NOT NULL') + @user.posts).sort{|a,b| b.created_at <=> a.created_at }
-    end
+    @news_feed = (@reports + @posts).sort{|a,b| b.created_at <=> a.created_at }
 
     respond_to do |format|
       format.html
@@ -70,6 +63,7 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/new
 
   def new
     @user = User.new
