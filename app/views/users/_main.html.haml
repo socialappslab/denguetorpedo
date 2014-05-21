@@ -8,7 +8,7 @@
       = I18n.t("common_terms.points")
 
     - if @redeemable_prizes.count > 0
-      = link_to I18n.t("common_terms.exchange_points_for_prizes"), prizes_path
+      = link_to I18n.t("common_terms.exchange_points_for_prizes"), prizes_path, :style => "display:block;"
 
   .span5{:style => "text-align: right;"}
     - if @reports.count == 0
