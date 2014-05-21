@@ -36,12 +36,4 @@
       = render :partial => 'posts/new', locals: { wall: @house }
 
 .row
-  #user_recent_activity
-    #user_reports.span9
-      - for item in @combined_sorted
-        - if item.is_a? Post
-          = render :partial => 'users/show_post', :object => item, :locals => {:full => true}
-        - elsif item.status == Report::STATUS[:reported]
-          = render :partial => "reports/open.html.haml", :object => item, as: 'report'
-        - elsif item.status == Report::STATUS[:eliminated]
-          = render :partial => "reports/resolved.html.haml", :object => item, as: 'report'
+  = render :partial => "shared/news_feed"
