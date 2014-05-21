@@ -34,7 +34,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     end
 
 
-    @sponsors = @neighborhood.members.where(:role => "lojista")
+    @sponsors = @neighborhood.members.where(:role => User::Types::SPONSOR).where(is_blocked: false)
     @random_sponsors = []
     9.times do
       @random_sponsors.push('home_images/sponsor'+(rand(5)+1).to_s+'.png')
