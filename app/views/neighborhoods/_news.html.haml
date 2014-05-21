@@ -17,7 +17,11 @@
             .span1.neighborhood_news_thumb
               = image_tag(notice.photo.url(:medium))
             .span3.neighborhood_news_content
-              = notice.summary
+              // TODO: Move this into the model.
+              - if notice.summary.size > 33
+                = notice.summary[0..30] + "..."
+              - else
+                = notice.summary
           .row{style: 'margin-top: 20px;margin-left:10px;position:absolute;bottom:10px;'}
             .row
               = notice.institution_name
