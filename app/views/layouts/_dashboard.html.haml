@@ -5,20 +5,23 @@
     /------------------------------------------------------------------------
 
     %li
-      - bold_header_title = ( current_page?(:controller => "users", :action => "show") ? "font-weight: bold;" : "" )
+      - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
+        - header_styling = "font-weight: bold;"
+      - else
+        - header_styling = ""
 
       - if @current_user.house && @current_user.house.id
         - if @current_user.role == User::Types::SPONSOR
-          = link_to sponsor_path(@current_user), :style => "#{bold_header_title}" do
+          = link_to sponsor_path(@current_user), :style => "#{header_styling}" do
             %i.fa.fa-user.fa-2
             = I18n.t("dashboard.my_profile")
         - else
-          = link_to user_path(@current_user), :style => "#{bold_header_title}" do
+          = link_to user_path(@current_user), :style => "#{header_styling}" do
             %i.fa.fa-user.fa-2
             = I18n.t("dashboard.my_profile")
       -else
         - if @current_user.role != User::Types::VISITOR
-          = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
+          = link_to edit_user_path(@current_user), :style => "#{header_styling}" do
             %i.fa.fa-user.fa-2
             = I18n.t("dashboard.my_profile")
         - else
@@ -27,7 +30,10 @@
     /------------------------------------------------------------------------
 
     %li
-      - bold_header_title = ( current_page?(:controller => "neighborhoods", :action => "show") ? "font-weight: bold;" : "" )
+      - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
+        - header_styling = "font-weight: bold;"
+      - else
+        - header_styling = ""
 
       - if @current_user && @current_user.neighborhood
         - relevant_link = neighborhood_path(@current_user.neighborhood)
@@ -35,7 +41,7 @@
         - relevant_link = edit_user_path(@current_user)
       - else
         - relevant_link = neighborhood_path(Neighborhood.first)
-      = link_to relevant_link, :style => "#{bold_header_title}" do
+      = link_to relevant_link, :style => "#{header_styling}" do
         %i.fa.fa-users.fa-2
         = I18n.t("dashboard.my_community")
 
@@ -43,15 +49,13 @@
     /------------------------------------------------------------------------
 
     %li
-      - bold_header_title = ( current_page?(:controller => "reports", :action => "index") ? "font-weight: bold;" : "" )
-
       - if @current_user && @current_user.neighborhood
         - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
       - elsif @current_user.role != User::Types::VISITOR
         - relevant_link = edit_user_path(@current_user)
       - else
         - relevant_link = reports_path
-      = link_to relevant_link, :style => "#{bold_header_title}" do
+      = link_to relevant_link do
         %i.fa.fa-plus.fa-2
         = I18n.t("dashboard.reports")
 
