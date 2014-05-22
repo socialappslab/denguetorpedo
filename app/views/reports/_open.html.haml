@@ -26,7 +26,7 @@
             - else
               - if !report.expired?
                 - if report.elimination_type
-                  .countdown.timer.countdown_label
+                  .countdown.timer
               - else
                 .time_expired{:style => "display: inline;"}
                   = I18n.t("common_terms.time_expired")

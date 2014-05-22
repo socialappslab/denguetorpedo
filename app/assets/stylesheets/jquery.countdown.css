@@ -16,6 +16,10 @@
 	display: inline;
 }
 
+.countdown {
+	display: inline;
+}
+
 .position{
 	display: inline-block;
 	height: 1.6em;
