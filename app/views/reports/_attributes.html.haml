@@ -4,10 +4,10 @@
       = I18n.t("report.form.problem_with_verification")
 
 .span2.rp_before_photo
-  = image_tag report.before_photo(:medium, :style => "width: 100px; height: 100px;")
+  = image_tag report.before_photo(:medium), :style => "width: 100px; height: 100px;"
 
   - if report.after_photo.present?
-    = image_tag report.after_photo(:medium, :style => "width: 100px; height: 100px;")
+    = image_tag report.after_photo(:medium), :style => "width: 100px; height: 100px;"
 
 .span6{style: "margin-top:9px;"}
   %h3.report_label
