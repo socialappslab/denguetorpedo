@@ -40,41 +40,32 @@ class UsersController < ApplicationController
     @user         = User.find_by_id(params[:id])
     @neighborhood = @user.neighborhood
     @house        = @user.house
-    @prizes       = @user.prizes
     @badges       = @user.badges
 
-    head :not_found and return if @user != @current_user and @user.role == "lojista"
+    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
     head :not_found and return if @user.nil?
 
     @user_posts = @user.posts
 
-    @prize_ids = @prizes.collect{|prize| prize.id}
+    # Find if user can redeem prizes
+    @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
+    @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
 
-    @isPrivatePage = (@user == @current_user)
-    @highlightProfileItem = @isPrivatePage ? "nav_highlight" : ""
+    # See if the user has created any reports.
+    @reports = @user.reports
+
     @coupons = @user.prize_codes
     if params[:filter] == 'reports'
-      @feed_active_reports = 'active'
       @combined_sorted = @user.reports.where('elimination_type IS NOT NULL')
     elsif params[:filter] == 'posts'
       @combined_sorted = @user.posts
-      @feed_active_posts = 'active'
     else
-      @feed_active_all = 'active'
       @combined_sorted = (@user.reports.where('elimination_type IS NOT NULL') + @user.posts).sort{|a,b| b.created_at <=> a.created_at }
     end
 
-    @stats_hash = {}
-    @stats_hash['opened'] = @user.created_reports.count
-    @stats_hash['eliminated'] = @user.eliminated_reports.count
-
-    @elimination_types = EliminationType.pluck(:name)
-    reports_with_status_filtered = []
-    locations = []
-
     respond_to do |format|
       format.html
-      format.json { render json: {user: @user, house: @house, prizes: @prizes, badges: @badges}}
+      format.json { render json: {user: @user, house: @house, badges: @badges}}
     end
   end
 

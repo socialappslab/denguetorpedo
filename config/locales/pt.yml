@@ -145,6 +145,8 @@ pt:
     eliminated: Eliminado
     create_a_report: Marcar um foco
     complete_report: Completar o foco
+    points: Pontos
+    exchange_points_for_prizes: "Trocar pontos por prêmios"
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
