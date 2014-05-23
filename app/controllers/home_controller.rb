@@ -3,21 +3,9 @@ class HomeController < ApplicationController
   # GET /
 
   def index
-    @user = @current_user || User.new
-
-    # NOTE: This is a hack that allows us to reuse this action with both
-    # logged-in and visitors. Basically, a logged-in user cares only about
-    # his/her own neighborhood.
-    if @current_user.present?
-      if @current_user.neighborhood.present?
-        @all_neighborhoods = [ @current_user.neighborhood ]
-      else
-        @all_neighborhoods = [ Neighborhood.first ]
-      end
-    else
-      @all_neighborhoods     = Neighborhood.order(:id).limit(3)
-    end
-
+    @user = User.new
+    
+    @all_neighborhoods     = Neighborhood.order(:id).limit(3)
     @selected_neighborhood = @all_neighborhoods.first
 
     # Display ordered news.
