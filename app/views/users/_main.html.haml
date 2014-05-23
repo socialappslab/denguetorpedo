@@ -30,11 +30,9 @@
       = link_to I18n.t("common_terms.create_a_report"), neighborhood_reports_path(@neighborhood), :style => "display: block;"
 
 
-
-.row{:style => "margin-top:10px;"}
-  .span8
-    - if (@user == @current_user)
-      = render :partial => 'posts/new', locals: { wall: @house }
+- if (@user == @current_user)
+  .row{:style => "margin-top:10px;"}
+    = render :partial => 'posts/new', locals: { wall: @house }
 
 .row
   = render :partial => "shared/news_feed"
