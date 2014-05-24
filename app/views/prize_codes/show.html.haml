@@ -46,7 +46,8 @@
         • Resgate até: O cupom é válido em até 7 dias. (até #{@deadline.strftime("%d/%m/%Y")})
 
       .statement
-        • Endereço: #{@prize.user.house.location.address}
+        - if @prize.user.house && @prize.user.house.location
+          • Endereço: #{@prize.user.house.location.address}
       %br
       #map{:style => "width:400px; height:400px; border:1px solid #aaaaaa;"}
       :javascript
@@ -60,15 +61,12 @@
             zoom: 6,
             extent: customExtent
           });
-          
+
           var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
           map.addLayer(tiled);
           var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 64, 64).setOffset(15, 15);
 
           map.on("load", function() {
             map.graphics.add(new Graphic(point, orange));
-          });   
-        }); 
-
-
-
+          });
+        });
