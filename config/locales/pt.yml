@@ -17,6 +17,9 @@ pt:
       prize:
         one: Prêmio
         other: Prêmios
+      prize_code:
+        one: Cupom
+        other: Cupons
     attributes:
       user:
         password: "Senha"
@@ -151,6 +154,7 @@ pt:
     their_house: Seu casa
     their_community: Seu comunidade
     this_user_has_no_activity: Este usuário não tem qualquer atividade
+    redeem_by: Resgate até
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

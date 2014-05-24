@@ -10,7 +10,7 @@
     .status
       .name
         = link_to @prize.user.house.name
-      
+
       .pontos
         #{@prize.cost} pontos
       - if @prize_code.expired?
@@ -27,7 +27,7 @@
       - else
         = image_tag(@prize.prize_photo.url(:large))
       %h1 #{@prize.prize_name}
-      
+
       .description
         #{@prize.description}
       .users
