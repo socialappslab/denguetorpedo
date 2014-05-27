@@ -1,0 +1,38 @@
+.user_activity_item{:style => "margin-left: 0px; min-height: 60px;"}
+  .row
+    .span1
+      - if notice.photo_file_name.nil?
+        = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
+      - else
+        = image_tag(notice.photo.url(:small), :style => "width: 100px;")
+
+    .span7
+      .row
+        .span7
+          %b
+            = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
+          %span{:style => "color: #8899a6; display: inline;"}
+            %i.fa.fa-clock-o
+            = notice.created_at.strftime("%d/%m/%Y")
+
+      .row
+        .span7
+          - if notice.title.present?
+            = notice.title
+
+          - if notice.summary.present?
+            %div{:style => "margin-top: 5px;"}
+              %i.fa.fa-book
+              = notice.summary
+
+          - if notice.location.present?
+            %div{:style => "margin-top: 5px;"}
+              %i.fa.fa-bank
+              = notice.location
+
+          %div{:style => "margin-top: 5px;"}
+            %i.fa.fa-calendar
+            = notice.date.strftime("%H:%M, %d/%m/%Y")
+
+          %div{:style => "margin-top: 10px;"}
+            = link_to I18n.t("common_terms.go_to_notices"), notice_path(notice), :style => "display: block;"
