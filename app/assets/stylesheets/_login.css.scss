@@ -4,6 +4,7 @@
   width: 400px;
   height: 90px;
   text-align: left;
+  margin-top: 20px;
 
   ul {
     li {
@@ -31,10 +32,10 @@
 
 #logged_in{
   height: 75px;
-  width: 400px;
+  // width: 400px;
   margin-top: 20px;
   margin-right: 10px;
-  margin-left: 100px;
+  // margin-left: 100px;
   text-align: left;
   h3{
 	color:white;
@@ -60,15 +61,4 @@
     margin-bottom: 0px;
     font-color: #333333;
   }
-}
-
-
-
-#login_error {
-  border-width: 0px;
-  height: $login_error_height;
-  vertical-align: text-top;
-  margin-bottom: 5px;
-  margin-right: -5px;
-  font-color: $red_alert;
 }
