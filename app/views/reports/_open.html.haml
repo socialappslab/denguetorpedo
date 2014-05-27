@@ -7,15 +7,14 @@
   });
 
 
-.user_activity_item{:style => "margin-left: 0px; min-height: 60px;"}
+.user_activity_item{:style => "margin-left: 0px; min-height: 200px;"}
   .row
-    .span1
-      = image_tag report.before_photo(:medium)
+    .span2
+      = image_tag report.before_photo(:medium), :style => "width: 100px; height: 100px;"
 
-    .span7
-      .row
+    .span6{:style => "font-size: 15px;"}
+      .row{:style => "margin-bottom: 15px;"}
         .span7
-          = link_to report.reporter.first_name, user_path(report.reporter), :style => "font-weight: bold;"
           %span{:style => "color: #8899a6; display: inline;"}
             %i.fa.fa-clock-o
 
@@ -26,6 +25,7 @@
             - else
               - if !report.expired?
                 - if report.elimination_type
+                  = I18n.t("common_terms.open_for")
                   .countdown.timer
               - else
                 .time_expired{:style => "display: inline;"}
@@ -33,55 +33,57 @@
 
 
 
-
-          %span{:style => "color: #8899a6; display: inline;"}
-            %i.fa.fa-location-arrow
-            - if report.location && report.location.latitude.present? && report.location.longitude.present?
-              = link_to nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) } do
+          - if report.location.present?
+            %span{:style => "color: #8899a6; display: inline;"}
+              %i.fa.fa-location-arrow
+              - if report.location && report.location.latitude.present? && report.location.longitude.present?
+                = link_to nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) } do
+                  = report.complete_address
+              - else
                 = report.complete_address
-            - else
-              = report.complete_address
 
           = render :partial => "reports/topbar", :locals => {:report => report}
 
-      .row
+
+      .row{:style => "margin-bottom: 15px;"}
         .span7
+          %i.fa.fa-users
+          = I18n.t("common_terms.marked_by")
+          = link_to report.reporter.first_name, user_path(report.reporter), :style => "font-weight: bold;"
+
+
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %i.fa.fa-info-circle
           = auto_link(report.report)
 
 
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %i.fa.fa-crosshairs
+          = report.elimination_type
 
 
+      - if report.elimination_method.blank?
+        = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
+          = f.fields_for :location, report.location || Location.new do |location_fields|
+            = location_fields.hidden_field :latitude
+            = location_fields.hidden_field :longitude
+
+          .row{:style => "margin-bottom: 15px;"}
+            .span7
+
+              %i.fa.fa-ban
+              = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=> I18n.t("report.form.select_elimination_method"), :id=>"method_selection", :class=>"elimination_methods"
 
 
+          .row{:style => "margin-bottom: 15px;"}
+            .span7
+              %i.fa.fa-camera
+              = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?)
 
-
-.report.open
-  .row
-    .rp_report_status.status
-      .rp_report_options
-        = render :partial => "reports/topbar", :locals => {:report => report}
-
-
-        - if report.sms_incomplete?
-          .span{style: "margin-top:3px; margin-right:10px;"}
-            = I18n.t("common_terms.sms")
-        - else
-          - if not report.expired?
-            - if report.elimination_type
-              .countdown.countdownHolder.timer
-              .span.countdown_label
-                = I18n.t("common_terms.open_for")
-          - else
-            .span.time_expired
-              = I18n.t("common_terms.time_expired")
-
-
-  .row.address_row
-    .span6.address
-      - if report.sms_incomplete?
-        %h4= report.report
-      - else
-        %h4= report.complete_address
-
-  .row{style: "margin-top:7px;"}
-    = render :partial => "reports/attributes", :locals => {:report => report}
+              %br
+              .row
+                .span2
+                  - should_disable = ( @current_user && (@current_user.role == "verificador" || @current_user.role == "visitante") || report.expired? || report.isVerified == "f" || report.sms_incomplete?)
+                  = submit_tag I18n.t("views.button.submit"), :class=>'report_submission btn btn-success', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
