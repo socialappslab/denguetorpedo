@@ -26,4 +26,14 @@ module ApplicationHelper
 
   #----------------------------------------------------------------------------
 
+  def format_timestamp(timestamp)
+    if (timestamp - Time.now) < 7.days
+      time_ago_in_words(timestamp) + " " + I18n.t("common_terms.ago")
+    else
+      return timestamp.strftime("%d/%m/%Y")
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
 end
