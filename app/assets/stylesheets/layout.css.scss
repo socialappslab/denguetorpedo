@@ -62,14 +62,14 @@ body {
     // }
 
     &[type = "file"] {
-      height: 28px;
-      border-style:solid;
-      border-radius: 2px;
-      border-width:1px;
-      border-color: $light-gray;
-      padding-left: 5px;
-      padding-right: 5px;
-      margin-bottom: 10px;
+      // height: 28px;
+      // border-style:solid;
+      // border-radius: 2px;
+      // border-width:1px;
+      // border-color: $light-gray;
+      // padding-left: 5px;
+      // padding-right: 5px;
+      // margin-bottom: 10px;
     }
   }
 }
@@ -161,7 +161,7 @@ body, #container {
   background: $background-color;
 }
 
-body > #container { 
+body > #container {
   height: auto;
   min-height: 100%;
   padding-bottom: 20px;
