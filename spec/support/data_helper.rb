@@ -15,6 +15,7 @@ def populate_data
     u.first_name = "#{letter}#{index}"
     u.last_name  = "Tester"
     u.house_id   = House.all.sample.id
+    u.neighborhood_id = mare.id
     u.save!
   end
 
@@ -25,6 +26,7 @@ def populate_data
     u.first_name = "Admin"
     u.last_name  = "Admin"
     u.role       = "admin"
+    u.neighborhood_id = mare.id
     u.save!
   end
 
@@ -35,7 +37,13 @@ def populate_data
 
   # Populate news
   10.times do |index|
-    Notice.create!(:neighborhood_id => mare.id, :title => "Hello News ##{index}!", :description => "We are now live for the #{index}th time!")
+    Notice.create!(:neighborhood_id => mare.id,
+      :title => "Hello News ##{index}!",
+      :description => "We are now live for the #{index}th time!",
+      :date => Time.now + index.days,
+      :location => "Mare's #{index}th block",
+      :summary => "We are now live for the #{index}th time!",
+      :institution_name => "Institution ##{index}")
   end
 
   # Populate houses and prizes.
