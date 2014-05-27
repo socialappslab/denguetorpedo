@@ -41,7 +41,7 @@ def populate_notices_houses_sponsors_and_prizes
   mare = Neighborhood.find_by_name('Maré')
 
   10.times do |index|
-    Notice.create!(:neighborhood_id => mare.id, :title => "Hello News ##{index}!", :description => "We are now live for the #{index}th time!")
+    Notice.create!(:neighborhood_id => mare.id, :title => "Hello Hello Hello Hello Hello Hello News ##{index}!", :description => "We are now live for the #{index}th time!")
   end
 
   5.times do |index|
