@@ -48,6 +48,7 @@ class UsersController < ApplicationController
     @user_posts   = @user.posts
     @reports      = @user.reports
     @coupons      = @user.prize_codes
+    @notices      = @neighborhood.notices.order("updated_at DESC")
 
     # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
@@ -73,9 +74,9 @@ class UsersController < ApplicationController
       end
       neighborhood_posts.flatten!
 
-      @news_feed = (neighborhood_reports + neighborhood_posts).sort{|a,b| b.created_at <=> a.created_at }
+      @news_feed = (neighborhood_reports + neighborhood_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @news_feed = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @news_feed = (@reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
 
     respond_to do |format|
