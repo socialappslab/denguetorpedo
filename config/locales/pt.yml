@@ -14,9 +14,13 @@ pt:
       house: Casa
       documentation_section: Seção
       elimination_method: Método de eliminação
+      notice: Notícias
       prize:
         one: Prêmio
         other: Prêmios
+      prize_code:
+        one: Cupom
+        other: Cupons
     attributes:
       user:
         password: "Senha"
@@ -148,9 +152,12 @@ pt:
     points: Pontos
     exchange_points_for_prizes: "Trocar pontos por prêmios"
     go_to_report: "Vá para o foco"
+    go_to_notices: "Vá para a notícias"
     their_house: Seu casa
     their_community: Seu comunidade
     this_user_has_no_activity: Este usuário não tem qualquer atividade
+    redeem_by: Resgate até
+    ago: atrás
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

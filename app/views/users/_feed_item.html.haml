@@ -12,7 +12,7 @@
           = link_to owner.first_name, user_path(owner), :style => "font-weight: bold;"
           %span{:style => "color: #8899a6; display: inline;"}
             %i.fa.fa-clock-o
-            = post.created_at.strftime("%d/%m/%Y")
+            = format_timestamp(post.created_at)
 
           - if @current_user == owner
             = link_to user_post_path(owner, post), :id => 'user_post_delete', :confirm => "Are you sure?", :method => :delete do

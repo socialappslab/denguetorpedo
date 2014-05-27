@@ -2,28 +2,12 @@
 %div{:style => "margin-left: 30px; margin-right: 30px;"}
   .user_profile_picture{:style => "text-align: center;"}
     - if @user.profile_photo_file_name.nil?
-      = image_tag("default_images/profile_default_image.png", :style => " width: 100px;")
+      = image_tag("default_images/profile_default_image.png", :style => " width: 150px;")
     - else
-      = image_tag(@user.profile_photo.url(:large), :style => " width: 100px;")
+      = image_tag(@user.profile_photo.url(:large), :style => " width: 150px;")
 
     %div{:style => "text-align: center;"}
       = @user.first_name
-    -# - if @user.role == "lojista"
-    -#   #{@user.shorter_display_name} (patrocinador)
-    -# - elsif @user.role == "verificador"
-    -#   - if @user.gender == true
-    -#     #{@user.shorter_display_name} (verificador)
-    -#   - else
-    -#     #{@user.shorter_display_name} (verificadora)
-    -# -elsif @user.role == "coordenador"
-    -#   - if @user.gender == true
-    -#     #{@user.shorter_display_name} (coordenador)
-    -#   - else
-    -#     #{@user.shorter_display_name} (coordenadora)
-    -# - else
-    -#   = @user.shorter_display_name
-
-
 
   .row
     - if @user == @current_user
@@ -48,6 +32,17 @@
         %i.fa.fa-users.fa-2
         = community_link_text
 
-  %div{:style => "margin-top: 20px;"}
 
-  = render :partial => "users/badges"
+  - if @user.total_points >= 100
+    %hr{:style => "border-bottom: 1px solid #ccc;"}
+    %h1{:style => "text-align: center; color: #ccc;"}
+      = I18n.t("activerecord.models.prize.other")
+    .row{:style => "text-align: center; margin-top: 20px;"}
+      = render :partial => "users/badges"
+
+  - if @coupons.present?
+    %hr{:style => "border-bottom: 1px solid #ccc;"}
+    %h1{:style => "text-align: center; color: #ccc;"}
+      = I18n.t("activerecord.models.prize_code.other")
+    .row
+      = render :partial => "users/coupons"

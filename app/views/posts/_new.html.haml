@@ -1,17 +1,5 @@
 -# %h3 Compartilhe suas idéias com a turma do Dengue Torpedo!
-.row
-  .span8
-    = form_for [@neighborhood, wall, @post] do |f|
-      .row
-        .span8
-          = f.error_messages
-      .row
-        .span8
-          /= f.text_field :title, :placeholder => "Escolha um titulo", :class => "house_post_title"
-      .row
-        .span8
-          = f.text_area :content, :placeholder => "Qual é a sua idéia?", :class => "house_post_text_field", :maxlength => 350
-      .row
-        .row
-          .span2.offset7
-            = f.submit I18n.t("views.button.publish"), :class => "btn btn-success btn-large", :style => "float: right;"
+.span9
+  = form_for [@neighborhood, wall, @post] do |f|
+    = f.text_area :content, :placeholder => "Qual é a sua idéia?", :style => "width: 100%;"
+    = f.submit I18n.t("views.button.publish"), :class => "btn btn-success btn-large", :style => "float: right;"
