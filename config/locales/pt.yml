@@ -158,6 +158,7 @@ pt:
     this_user_has_no_activity: Este usuário não tem qualquer atividade
     redeem_by: Resgate até
     ago: atrás
+    and: e
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

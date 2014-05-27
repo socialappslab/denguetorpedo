@@ -1,18 +1,53 @@
-.report.eliminated
+.user_activity_item{:style => "margin-left: 0px; min-height: 200px;"}
   .row
-    .rp_report_status.status
-      .rp_report_options{:style => "margin-top:-3px;"}
-        = render :partial => "reports/topbar", :locals => {:report => report}
-
-      .span{:style => "float:right;"}
-        = I18n.t("common_terms.eliminated")
-
-  .row
-    .span6{:style => "margin-top:10px;"}
-      %h4= report.complete_address
     .span2
-      - if report.location.latitude and report.location.longitude
-        = link_to I18n.t("map.find"), "#", id: "mapa_#{report.id}", class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;"
+      = image_tag report.before_photo(:medium), :style => "width: 100px; height: 100px;"
 
-  .row
-    = render :partial => "reports/attributes", :locals => {:report => report}
+      - if report.after_photo.present?
+        = image_tag report.after_photo(:medium), :style => "width: 100px; height: 100px; margin-top: 5px;"
+
+    .span6{:style => "font-size: 15px;"}
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %span{:style => "color: #8899a6; display: inline;"}
+            %i.fa.fa-clock-o
+            = format_timestamp(report.created_at)
+
+          - if report.location.present?
+            %span{:style => "color: #8899a6; display: inline;"}
+              %i.fa.fa-location-arrow
+              - if report.location && report.location.latitude.present? && report.location.longitude.present?
+                = link_to nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) } do
+                  = report.complete_address
+              - else
+                = report.complete_address
+
+
+          = render :partial => "reports/topbar", :locals => {:report => report}
+
+
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %i.fa.fa-users
+          = I18n.t("common_terms.marked_by")
+          = link_to report.reporter.first_name, user_path(report.reporter), :style => "font-weight: bold;"
+          = I18n.t("common_terms.and")
+          = I18n.t("common_terms.eliminated_by").downcase
+          = link_to report.eliminator.first_name, user_path(report.eliminator), :style => "font-weight: bold;"
+
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %i.fa.fa-info-circle
+          = auto_link(report.report)
+
+
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %i.fa.fa-crosshairs
+          = report.elimination_type
+
+      .row{:style => "margin-bottom: 15px;"}
+        .span7
+          %i.fa.fa-ban
+          - if report.elimination_method.present?
+            = report.elimination_method
