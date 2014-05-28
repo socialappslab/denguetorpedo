@@ -20,9 +20,12 @@
       .row
         .span7
           - if report.is_open?
-            - report_feed_content = "Encontrou um foco @ #{report.elimination_type.downcase}"
+
+            - report_feed_content = "Encontrou um foco"
+            - report_feed_content += " @ #{report.elimination_type.downcase}" if report.elimination_type.present?
           - elsif report.is_eliminated?
-            - report_feed_content = "Eliminou um foco @ #{report.elimination_type.downcase}"
+            - report_feed_content = "Eliminou um foco"
+            - report_feed_content += "  @ #{report.elimination_type.downcase}" if report.elimination_type.present?
           - if report_feed_content && report.complete_address.present?
             - report_feed_content += " no #{report.complete_address}"
           = report_feed_content
