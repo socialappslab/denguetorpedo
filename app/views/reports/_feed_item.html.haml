@@ -1,13 +1,11 @@
 .user_activity_item{:style => "margin-left: 0px; min-height: 60px;"}
   .row
     .span1
-      = link_to neighborhood_reports_path(report.neighborhood), :style => "display: block;" do
-        - if report.is_open? && report.before_photo_file_name.present?
-          = image_tag(report.before_photo.url(:thumb), :style => "width: 100px;")
-        - elsif report.is_eliminated? && report.after_photo_file_name.present?
-          = image_tag(report.after_photo.url(:thumb), :style => "width: 100px;")
+      = link_to user_path(owner) do
+        - if owner.profile_photo_file_name.nil?
+          = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
         - else
-          = image_tag("default_images/report_before_photo.png", :style => "width: 100px;")
+          = image_tag(owner.profile_photo.url(:small), :style => "width: 100px;")
 
     .span7
       .row
@@ -17,7 +15,7 @@
             %i.fa.fa-clock-o
             = format_timestamp(report.created_at)
 
-      .row
+      .row{:style => "margin-bottom: 20px;"}
         .span7
           - if report.is_open?
 
@@ -29,3 +27,14 @@
           - if report_feed_content && report.complete_address.present?
             - report_feed_content += " no #{report.complete_address}"
           = report_feed_content
+
+
+  .row{:style => "margin-bottom: 20px; text-align: center;"}
+    .span8
+      = link_to neighborhood_reports_path(report.neighborhood), :style => "display: block;" do
+        - if report.is_open? && report.before_photo_file_name.present?
+          = image_tag(report.before_photo.url(:thumb), :style => "width: 200px; height: 200px;")
+        - elsif report.is_eliminated? && report.after_photo_file_name.present?
+          = image_tag(report.after_photo.url(:thumb), :style => "width: 200px; height: 200px;")
+        - else
+          = image_tag("default_images/report_before_photo.png", :style => "width: 200px;")
