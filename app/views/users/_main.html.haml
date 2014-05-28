@@ -12,7 +12,7 @@
     %p{:style => "text-align: left; display: inline;"}
       = I18n.t("common_terms.points")
 
-    - if @redeemable_prizes.count > 0
+    - if @current_user == @user && @redeemable_prizes.count > 0
       = link_to I18n.t("common_terms.exchange_points_for_prizes"), prizes_path, :style => "display:block;"
 
   .span5{:style => "text-align: right;"}
@@ -26,22 +26,13 @@
     %p{:style => "margin-top: 10px; display: inline;"}
       = I18n.t("dashboard.reports")
 
-    = link_to I18n.t("common_terms.create_a_report"), neighborhood_reports_path(@neighborhood), :style => "display: block;"
+    - if @current_user == @user
+      = link_to I18n.t("common_terms.create_a_report"), neighborhood_reports_path(@neighborhood), :style => "display: block;"
 
 
-
-.row{:style => "margin-top:10px;"}
-  .span8
-    - if (@user == @current_user)
-      = render :partial => 'posts/new', locals: { wall: @house }
+- if (@user == @current_user)
+  .row{:style => "margin-top:10px;"}
+    = render :partial => 'posts/new', locals: { wall: @house }
 
 .row
-  #user_recent_activity
-    #user_reports.span9
-      - for item in @combined_sorted
-        - if item.is_a? Post
-          = render :partial => 'users/show_post', :object => item, :locals => {:full => true}
-        - elsif item.status == Report::STATUS[:reported]
-          = render :partial => "reports/open.html.haml", :object => item, as: 'report'
-        - elsif item.status == Report::STATUS[:eliminated]
-          = render :partial => "reports/resolved.html.haml", :object => item, as: 'report'
+  = render :partial => "shared/news_feed"

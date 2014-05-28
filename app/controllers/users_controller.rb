@@ -33,34 +33,50 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/1/
 
   def show
-    @post = Post.new
+    @user = User.find_by_id(params[:id])
 
-    @user         = User.find_by_id(params[:id])
+    head :not_found and return if @user.nil?
+    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
+
+    @post         = Post.new
     @neighborhood = @user.neighborhood
     @house        = @user.house
     @badges       = @user.badges
+    @user_posts   = @user.posts
+    @reports      = @user.reports
+    @coupons      = @user.prize_codes
+    @notices      = @neighborhood.notices.order("updated_at DESC")
 
-    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
-    head :not_found and return if @user.nil?
-
-    @user_posts = @user.posts
-
-    # Find if user can redeem prizes
+    # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
     @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
 
     # See if the user has created any reports.
-    @reports = @user.reports
 
-    @coupons = @user.prize_codes
-    if params[:filter] == 'reports'
-      @combined_sorted = @user.reports.where('elimination_type IS NOT NULL')
-    elsif params[:filter] == 'posts'
-      @combined_sorted = @user.posts
+
+    # Load the community news feed. We explicitly limit activity to this month
+    # so that we don't inadvertedly create a humongous array.
+    # TODO: As activity on the site picks up, come back to rethink this inefficient
+    # query.
+    # TODO: Move the magic number '4.weeks.ago'
+    if @current_user == @user
+      neighborhood_reports = @neighborhood.reports.where("created_at > ?", 4.weeks.ago)
+      neighborhood_reports = neighborhood_reports.find_all {|r| r.is_public? }
+
+      # Now, let's load all the users, and their posts.
+      neighborhood_posts = []
+      @neighborhood.members.each do |m|
+        user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
+        neighborhood_posts << user_posts
+      end
+      neighborhood_posts.flatten!
+
+      @news_feed = (neighborhood_reports + neighborhood_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @combined_sorted = (@user.reports.where('elimination_type IS NOT NULL') + @user.posts).sort{|a,b| b.created_at <=> a.created_at }
+      @news_feed = (@reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
 
     respond_to do |format|
@@ -70,6 +86,7 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/new
 
   def new
     @user = User.new

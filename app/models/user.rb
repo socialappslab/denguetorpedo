@@ -45,6 +45,7 @@ class User < ActiveRecord::Base
   # Associations
   #-------------
 
+  # TODO: reports should include both eliminator_id and reporter_id.
   has_many :reports, :foreign_key => "reporter_id", :dependent => :nullify
   has_many :created_reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify

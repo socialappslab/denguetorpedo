@@ -1,6 +1,9 @@
 #home_nav_bar
   .row
-    = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
+    - if @current_user
+      = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), user_path(@current_user)
+    - else
+      = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
 
     .main_nav_button.span3.offset3
       = link_to education_path do

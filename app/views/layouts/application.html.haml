@@ -32,7 +32,7 @@
     /--------------------------------------------------------------------------
     / FontAwesome fonts
     /------------------
-    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", :rel => "stylesheet"}
+    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", :rel => "stylesheet"}
 
     = csrf_meta_tags
 
@@ -41,7 +41,7 @@
   %body{:class => [params[:controller].parameterize, params[:action].parameterize]}
     #container{style: "overflow-y: auto;overflow:hidden;"}
       = render "layouts/home_nav"
-      #white_spacer
+      -# #white_spacer
       -if !@current_user.nil?
         = render "layouts/dashboard"
 
