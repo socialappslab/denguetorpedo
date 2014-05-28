@@ -35,14 +35,14 @@
 
   - if @user.total_points >= 100
     %hr{:style => "border-bottom: 1px solid #ccc;"}
-    %h1{:style => "text-align: center; color: #ccc;"}
-      = I18n.t("activerecord.models.prize.other")
+    %h1{:style => "text-align: center; color: #333;"}
+      = I18n.t("common_terms.badges").capitalize
     .row{:style => "text-align: center; margin-top: 20px;"}
       = render :partial => "users/badges"
 
   - if @coupons.present?
     %hr{:style => "border-bottom: 1px solid #ccc;"}
-    %h1{:style => "text-align: center; color: #ccc;"}
+    %h1{:style => "text-align: center; color: #333;"}
       = I18n.t("activerecord.models.prize_code.other")
-    .row
+    .row{:style => "text-align: center; margin-top: 20px;"}
       = render :partial => "users/coupons"
