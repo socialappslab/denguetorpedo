@@ -38,7 +38,7 @@ def populate_data
   # Populate news
   10.times do |index|
     Notice.create!(:neighborhood_id => mare.id,
-      :title => "Hello News ##{index}!",
+      :title => "Hello Hello Hello Hello Hello Hello News ##{index}!",
       :description => "We are now live for the #{index}th time!",
       :date => Time.now + index.days,
       :location => "Mare's #{index}th block",
