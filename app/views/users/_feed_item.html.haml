@@ -20,4 +20,24 @@
 
       .row
         .span7
-          = auto_link(post.content)
+          - if post.content.length >= Post::CHARACTER_LIMIT
+            = auto_link(post.content[0..Post::CHARACTER_LIMIT])
+            #hidden-post-content{:style => "display: none;"}
+              = auto_link(post.content[Post::CHARACTER_LIMIT..-1])
+            #show-more-content-link{:style => "display: block;"}
+              = link_to "", :style => "color: #6655ee;" do
+                %i.fa.fa-chevron-down
+                Mas
+          - else
+            = auto_link(post.content)
+
+
+:javascript
+  $("#show-more-content-link").on("click", function(eventObj)
+  {
+      eventObj.preventDefault()
+
+      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+      hiddenContent.css("display", "inline")
+      $(eventObj.currentTarget).hide()
+  })

@@ -18,6 +18,12 @@ class Post < ActiveRecord::Base
     Feed.create_from_object(post, post.user_id, :post)
   end
 
+  #----------------------------------------------------------------------------
+
+  CHARACTER_LIMIT = 350
+
+  #----------------------------------------------------------------------------
+
   def strf_created_at
     self.created_at.strftime("%d/%m/%Y")
   end
