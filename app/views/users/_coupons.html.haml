@@ -1,13 +1,14 @@
 - @coupons.each do |coupon|
   %div{:style => "display: block; text-align: center; margin-top: 10px;"}
-    - if coupon.prize.prize_photo_file_name.nil?
-      = image_tag("default_images/prize_default_image.png", :class => "prizes img-circle", :style => "width: 100px;")
-    - else
-      = image_tag(coupon.prize.prize_photo.url(:small), :class => "prizes img-circle", :style => "width: 100px;")
+    = link_to prize_code_path(coupon) do
+      - if coupon.prize.prize_photo_file_name.nil?
+        = image_tag("default_images/prize_default_image.png", :class => "prizes img-circle", :style => "width: 100px;")
+      - else
+        = image_tag(coupon.prize.prize_photo.url(:small), :class => "prizes img-circle", :style => "width: 100px;")
 
     %div
       = coupon.prize.prize_name
 
-    - if @current_user == coupon.user
+    - if @current_user == coupon.user && coupon.available? && !coupon.redeemed? 
       %div
-        = link_to I18n.t("common_terms.redeem_by") + ": " + coupon.expire_date.strftime("%d/%m/%Y"), prize_code_path(coupon)
+        = I18n.t("common_terms.redeem_by") + ": " + coupon.expire_date.strftime("%d/%m/%Y")
