@@ -52,6 +52,10 @@ class UsersController < ApplicationController
     # Avoid displaying coupons that expired and were never redeemed.
     @coupons = @user.prize_codes.reject {|coupon| coupon.expired? && !coupon.is_redeemed? }
 
+    # Order the coupons by those that haven't been redeemed first, then those
+    # that have.
+    @coupons = @coupons.find_all {|c| !c.redeemed? } + @coupons.find_all {|c| c.redeemed? }
+
     # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
     @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
