@@ -286,15 +286,13 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/1/buy_prize/1
 
-  #Get /user/:id/buy_prize/prize_id
   def buy_prize
-    @user = User.find(params[:id])
-    bought = @user.buy_prize(params[:prize_id])
-    if bought
-      @prize_code = PrizeCode.where(:prize_id => params[:prize_id], :user_id => params[:id]).limit(1)[0]
-    end
-    render :partial => "prizes/prizeconfirmation", :locals => {:bought => bought}
+    @user       = User.find(params[:id])
+    @prize      = Prize.find(params[:prize_id])
+    @prize_code = @user.generate_coupon_for_prize(@prize)
+    render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
   end
 
   #----------------------------------------------------------------------------

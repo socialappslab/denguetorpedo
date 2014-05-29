@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 class Prize < ActiveRecord::Base
+  #----------------------------------------------------------------------------
+
   attr_accessible :cost, :neighborhood_id, :description, :expire_on, :prize_name, :redemption_directions, :stock, :user_id, :prize_photo, :community_prize, :self_prize, :is_badge, :user, :prazo
 
   #----------------------------------------------------------------------------
