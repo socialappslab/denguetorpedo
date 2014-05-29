@@ -160,6 +160,7 @@ pt:
     redeem_by: Resgate até
     ago: atrás
     badges: medalhas
+    redeemed_prizes: Prêmios Resgatados
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
