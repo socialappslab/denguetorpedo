@@ -129,10 +129,6 @@ class Report < ActiveRecord::Base
     end
   end
 
-  def valid?
-    return self.is_valid?
-  end
-
   # A valid report is a report that is
   # a) open, and verified to be problematic by a 3rd party, OR
   # b) eliminated, and verified to be problematic by a 3rd party.
