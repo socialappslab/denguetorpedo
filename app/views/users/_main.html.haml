@@ -13,9 +13,10 @@
       = I18n.t("common_terms.points")
 
     - if @current_user == @user && @redeemable_prizes.count > 0
-      = link_to I18n.t("common_terms.exchange_points_for_prizes"), prizes_path, :style => "display:block;"
+      = link_to prizes_path, :class => "btn btn-success btn-mini profile-view-points-button" do
+        = I18n.t("common_terms.exchange_points_for_prizes")
 
-  .span5{:style => "text-align: right;"}
+  .span3.offset2{:style => "text-align: right;"}
     - if @reports.count == 0
       - num_of_reports_color = "#d9534f";
     - else
@@ -27,7 +28,8 @@
       = I18n.t("dashboard.reports")
 
     - if @current_user == @user
-      = link_to I18n.t("common_terms.create_a_report"), neighborhood_reports_path(@neighborhood), :style => "display: block;"
+      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-success btn-mini profile-view-reports-button", :style => "display: inline-block;" do
+        = I18n.t("common_terms.create_reports")
 
 
 - if (@user == @current_user)

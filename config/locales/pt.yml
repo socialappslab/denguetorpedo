@@ -148,9 +148,10 @@ pt:
     uploaded_photo: Foto carregada
     eliminated: Eliminado
     create_a_report: Marcar um foco
+    create_reports: Marcar focos
     complete_report: Completar o foco
     points: Pontos
-    exchange_points_for_prizes: "Trocar pontos por prêmios"
+    exchange_points_for_prizes: "Trocar pontos"
     go_to_report: "Vá para o foco"
     go_to_notices: "Vá para a notícias"
     their_house: Seu casa
