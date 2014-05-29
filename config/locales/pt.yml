@@ -111,7 +111,7 @@ pt:
       future_community: Futura comunidade
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
-      search_for_other_communities: Ache outras comunidades participantes!
+      search_for_other_communities: Ache outras comunidades
     house:
       title_with_name: Casas %{name}
       title: Casas
