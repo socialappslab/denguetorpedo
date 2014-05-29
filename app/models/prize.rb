@@ -28,7 +28,6 @@ class Prize < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def generate_prize_code(user_id)
-    # code = self.generate_activation_code
     prize_code = PrizeCode.create({:user_id => user_id, :prize_id => self.id})
     user = User.find_by_id(user_id)
     if user
@@ -38,14 +37,6 @@ class Prize < ActiveRecord::Base
       self.save
     end
     return prize_code
-  end
-
-
-  #----------------------------------------------------------------------------
-
-  def generate_activation_code(size = 12)
-    charset = %w{ 2 3 4 6 7 9 A C D E F G H J K M N P Q R T V W X Y Z}
-    (0...size).map{ charset.to_a[rand(charset.size)] }.join
   end
 
   #----------------------------------------------------------------------------

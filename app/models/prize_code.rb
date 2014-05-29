@@ -1,25 +1,26 @@
-# == Schema Information
+# A PrizeCode instance is a coupon for a prize.
+# It allows the user to redeem the prize by using the
+# code associated with the coupon.
 #
-# Table name: prize_codes
+# a) We say a coupon is *claimed* if a user has given up points to
+#    receive the coupon.
+# b) We say a coupon is *redeemed* if the user has claimed it and redeemed
+#    it for the prize.
 #
-#  id          :integer          not null, primary key
-#  user_id     :integer
-#  prize_id    :integer
-#  expire_by   :datetime
-#  code        :string(255)
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  redeemed    :boolean          default(FALSE), not null
-#  expired     :boolean          default(FALSE), not null
-#  obtained_on :datetime
-#
-
-# TODO: Portuguese, testing
-
 class PrizeCode < ActiveRecord::Base
+  #----------------------------------------------------------------------------
+
   attr_accessible :code, :expire_by, :prize_id, :user_id, :redeemed, :expired
+
+  #----------------------------------------------------------------------------
+
   belongs_to :user
   belongs_to :prize
+
+  #----------------------------------------------------------------------------
+
+  before_validation :generate_activation_code
+
   validates :code, :presence => true, :uniqueness => { :scope => :prize_id, :message => "We need a unique prize code for each user for a given prize"}
   validates :user, :presence => true
   validates :prize, :presence => true
@@ -55,8 +56,16 @@ class PrizeCode < ActiveRecord::Base
     self.created_at + 3600 * 24 * 7
   end
 
+  #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
   def generate_activation_code(size = 12)
     charset = %w{ 2 3 4 6 7 9 A C D E F G H J K M N P Q R T V W X Y Z}
     self.code = (0...size).map{ charset.to_a[rand(charset.size)] }.join
   end
+
+  #----------------------------------------------------------------------------
 end
