@@ -25,35 +25,26 @@ class PrizeCode < ActiveRecord::Base
   validates :user, :presence => true
   validates :prize, :presence => true
 
-  before_validation :generate_activation_code
+  #----------------------------------------------------------------------------
 
-  # TODO: more stuff
-  # TODO @dman7: Deprecating this since we don't use Twilio.
-  # def self.send_no(phone_number)
-  # 	@account_sid = 'AC696e86d23ebba91cbf65f1383cf63e7d'
-  #   @auth_token = 'a49ee186176ead11c760fd77aeaeb26c'
-  #   @client = Twilio::REST::Client.new(@account_sid, @auth_token)
-  #   @account = @client.account
-  #   body = "Not a valid code." # Portuguese PLS
-  #   @account.sms.messages.create(:from => '+15109854798', :to => phone_number , :body  => body)
-  # end
-  #
-  # def send_yes(phone_number)
-  # 	@account_sid = 'AC696e86d23ebba91cbf65f1383cf63e7d'
-  #   @auth_token = 'a49ee186176ead11c760fd77aeaeb26c'
-  #   @client = Twilio::REST::Client.new(@account_sid, @auth_token)
-  #   @account = @client.account
-  #   body = "Valid code!"
-  #   @account.sms.messages.create(:from => '+15109854798', :to => phone_number , :body  => body)
-  #   self.destoy
-  # end
+  EXPIRY = 7.days
+
+  #----------------------------------------------------------------------------
+
+  def is_redemeed?
+    return self.redemeed
+  end
+
+  def is_claimed?
+    return !self.is_redeemed?
+  end
 
   def expired?
-    return self.created_at + 3600 * 24 * 7 < Time.new
+    return (self.created_at < EXPIRY.ago)
   end
 
   def expire_date
-    self.created_at + 3600 * 24 * 7
+    self.created_at + EXPIRY
   end
 
   #----------------------------------------------------------------------------
