@@ -159,6 +159,7 @@ pt:
     redeem_by: Resgate até
     ago: atrás
     badges: medalhas
+    like: Curtir
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
@@ -177,7 +178,6 @@ pt:
 
   report:
     form:
-      likes: "Pessoas como este"
       address: Endereço do foco localizado
       example_of_street_type: "Rua, Beco etc."
       example_of_description: "Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente"

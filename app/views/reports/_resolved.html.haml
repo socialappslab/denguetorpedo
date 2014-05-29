@@ -1,18 +1,9 @@
 .report.eliminated
   .row
     .rp_report_status.status
-      .span4.likes_span
-        = link_to nil, :class => "likes_button", "data-path" => like_neighborhood_report_path(:id => report.id),"data-likes_count" => report.likes_count do
-          %i.fa.fa-thumbs-up
-          %span.likes_text
-          = I18n.t("report.form.likes")
+      = render :partial => "reports/topbar", :locals => {:report => report}
 
-      .rp_report_options{:style => "margin-top:-3px;"}
-        = render :partial => "reports/topbar", :locals => {:report => report}
-
-      .span{:style => "float:right;"}
-        = I18n.t("common_terms.eliminated")
-
+        
   .row
     .span6{:style => "margin-top:10px;"}
       %h4= report.complete_address
