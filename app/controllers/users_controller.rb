@@ -42,20 +42,19 @@ class UsersController < ApplicationController
     head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
 
     @post         = Post.new
-    @neighborhood = @user.neighborhood
+    @neighborhood = @user.neighborhood || Neighborhood.first
     @house        = @user.house
     @badges       = @user.badges
     @user_posts   = @user.posts
     @reports      = @user.reports
-    @coupons      = @user.prize_codes
     @notices      = @neighborhood.notices.order("updated_at DESC")
+
+    # Avoid displaying coupons that expired and were never redeemed.
+    @coupons = @user.prize_codes.reject {|coupon| coupon.expired? && !coupon.is_redeemed? }
 
     # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
     @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
-
-    # See if the user has created any reports.
-
 
     # Load the community news feed. We explicitly limit activity to this month
     # so that we don't inadvertedly create a humongous array.
