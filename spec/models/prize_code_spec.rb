@@ -18,11 +18,16 @@ describe PrizeCode do
 
   it "identifies expired coupons if the prize has expired" do
     prize.update_attribute(:stock, 0)
-    expect(coupon.reload.expired).to eq(true)
+    expect(coupon.reload.expired?).to eq(true)
   end
 
   it "identifies expired coupons if the prize has expired" do
     prize.update_attribute(:expire_on, 7.days.ago)
-    expect(coupon.reload.expired).to eq(true)
+    expect(coupon.reload.expired?).to eq(true)
+  end
+
+  it "identifies redeemed coupons" do
+    coupon.update_attribute(:redeemed, true)
+    expect(coupon.reload.is_redeemed?).to eq(true)
   end
 end

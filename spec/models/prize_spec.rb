@@ -19,10 +19,4 @@ describe Prize do
     prize.update_attribute(:stock, 0)
     expect(prize.reload.expired?).to eq(true)
   end
-
-  it "creates a coupon with the correct user" do
-    expect {
-      prize.(user)
-    }.to change(PrizeCode, :count).by(1)
-  end
 end

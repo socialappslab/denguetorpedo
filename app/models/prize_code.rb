@@ -31,16 +31,20 @@ class PrizeCode < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def is_redemeed?
-    return self.redemeed
+  def is_redeemed?
+    return self.redeemed
   end
 
-  def is_claimed?
-    return !self.is_redeemed?
+  def redeemed?
+    return self.is_redeemed?
   end
 
   def expired?
     return (self.created_at < EXPIRY.ago) || self.prize.expired?
+  end
+
+  def available?
+    return !self.expired?
   end
 
   def expire_date
