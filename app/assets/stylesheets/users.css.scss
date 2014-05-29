@@ -236,14 +236,15 @@ ul#user_right_panel {
   }
 
     .user_activity_item {
-      margin-left: 10px;
-
-
-      background: white;
+      min-height: 60px;
+      background: #fff;
       padding: 10px;
+      margin-bottom: 10px;
 
-      border-bottom: 1px solid #ccc;
-
+      border-bottom: 1px solid #e5e6e9;
+      -webkit-border-radius: 3px;
+         -moz-border-radius: 3px;
+              border-radius: 3px;
 
       .user_activity_options {
         margin-left: 0px;
@@ -268,6 +269,7 @@ ul#user_right_panel {
       }
     }
   }
+
 
 
 //OLD BELOW HERE
