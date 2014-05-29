@@ -19,7 +19,7 @@
       .row.feed-item-content
         .span7
           - if notice.title.present?
-            = notice.title
+            = link_to notice.title, notice_path(notice)
 
           - if notice.summary.present?
             %div{:style => "margin-top: 5px;"}
