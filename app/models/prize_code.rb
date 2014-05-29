@@ -40,7 +40,7 @@ class PrizeCode < ActiveRecord::Base
   end
 
   def expired?
-    return (self.created_at < EXPIRY.ago)
+    return (self.created_at < EXPIRY.ago) || self.prize.expired?
   end
 
   def expire_date
