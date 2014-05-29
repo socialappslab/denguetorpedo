@@ -55,11 +55,11 @@
 .row{style: "text-align: center;"}
   #neighborhood_search
     #neighborhood_search_background{style: "width:600px; margin: auto; text-align: center; display: inline-block; padding-top: 0px; padding-bottom: 0px;"}
-      %p{style: "margin-bottom: 10px; font-weight: bold;"}
+      %p{style: "font-weight: bold;"}
         = I18n.t("landing_page.community.search_for_other_communities")
       = form_tag neighborhood_search_path, :style => "margin: 0px;" do
         = select_tag("neighborhood[name]", options_for_select(Neighborhood.all.map(&:name)), :include_blank => true, :style => "width: 50%;")
-        = submit_tag I18n.t("common_terms.search"), :class => "button"
+        = submit_tag I18n.t("views.button.search"), :class => "btn btn-info", :style => "margin-bottom: 9px;"
     - if @current_user
       #sms_button{style: "margin-left: 20px; font-size:10px; display: inline-block;"}
         %button{style: "width:100px; margin-top: -30px; background-color:green; font-size:18px;line-height:22px; height: 65px;", id: "redetrel_button1"}
@@ -123,19 +123,20 @@
               %li.span4.neighborhood_news_title
                 .row
                   .span5
-                    - if notice.title.size > 30
-                      = notice.title[0..30] + "..."
+                    - if notice.title.size > 28
+                      = notice.title[0..25] + "..."
                     - else
                       = notice.title
 
 
 /------------------------------------------------------------------------------
 
-%br
-.row
-  %h2.offset1{style: 'font-size: 18px;'}
-    = I18n.t("common_terms.partners")
-  #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
-    <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
+- if @current_user.blank?
+  %br
+  .row
+    %h2.offset1{style: 'font-size: 18px;'}
+      = I18n.t("common_terms.partners")
+    #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
+      <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
 
 /------------------------------------------------------------------------------

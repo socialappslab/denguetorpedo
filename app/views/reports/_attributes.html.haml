@@ -3,11 +3,11 @@
     %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
       = I18n.t("report.form.problem_with_verification")
 
-.span2.rp_before_photo
-  = image_tag report.before_photo(:medium)
+.span2.rp_before_photo{:style => "margin: 10px 0px 0px 10px;"}
+  = image_tag report.before_photo(:medium), :style => "width: 100px; height: 100px;"
 
   - if report.after_photo.present?
-    = image_tag report.after_photo(:medium)
+    = image_tag report.after_photo(:medium), :style => "width: 100px; height: 100px; margin-top: 5px;"
 
 .span6{style: "margin-top:9px;"}
   %h3.report_label
@@ -31,7 +31,7 @@
       - if report.sms_incomplete?
         = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
           = hidden_field_tag 'report_id', report.id
-          = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", style: "width:100%;background-color:#60BB50;background-image:-webkit-linear-gradient(top, #60BB50, #60BB50);border-color:#60BB50 #60BB50 #60BB50;margin-bottom:10px;"
+          = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
 
       - elsif report.elimination_method.blank?
         = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
@@ -56,7 +56,7 @@
           .row
             .span2
               - should_disable = ( @current_user && (@current_user.role == "verificador" || @current_user.role == "visitante") || report.expired? || report.isVerified == "f" || report.sms_incomplete?)
-              = submit_tag I18n.t("common_terms.submit"), :class=>'report_submission', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
+              = submit_tag I18n.t("views.button.submit"), :class=>'report_submission btn btn-success', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
 
 
   = render :partial => "reports/users_involved", :locals => {:report => report}

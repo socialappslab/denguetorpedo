@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 class Prize < ActiveRecord::Base
+  #----------------------------------------------------------------------------
+
   attr_accessible :cost, :neighborhood_id, :description, :expire_on, :prize_name, :redemption_directions, :stock, :user_id, :prize_photo, :community_prize, :self_prize, :is_badge, :user, :prazo
 
   #----------------------------------------------------------------------------
@@ -20,53 +22,12 @@ class Prize < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def give_badge(user_id)
-    @user = User.find(user_id)
-    Badge.create({:user_id => user_id, :prize_id => self.id})
+  def expired?
+    return self.stock == 0 || (self.expire_on.present? && self.expire_on < Time.now)
   end
 
-  #----------------------------------------------------------------------------
-
-  def generate_prize_code(user_id)
-    # code = self.generate_activation_code
-    prize_code = PrizeCode.create({:user_id => user_id, :prize_id => self.id})
-    user = User.find_by_id(user_id)
-    if user
-      user.points = user.points - self.cost
-      user.save
-      self.decrease_stock(1)
-      self.save
-    end
-    return prize_code
-  end
-
-
-  #----------------------------------------------------------------------------
-
-  def generate_activation_code(size = 12)
-    charset = %w{ 2 3 4 6 7 9 A C D E F G H J K M N P Q R T V W X Y Z}
-    (0...size).map{ charset.to_a[rand(charset.size)] }.join
-  end
-
-  #----------------------------------------------------------------------------
-
-  def in_stock
-    return true if self.stock < 0 or self.stock > 0
-    return false
-  end
-
-  #----------------------------------------------------------------------------
-
-  def decrease_stock(n = 1)
-    if stock > 0
-      temp = self.stock
-      self.stock = stock - n
-      if self.stock < 0
-        self.stock = temp
-        return false
-      end
-    end
-    return true
+  def available?
+    return !self.expired?
   end
 
   #----------------------------------------------------------------------------
@@ -77,16 +38,5 @@ class Prize < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def expired?
-    if self.stock == 0 or (self.expire_on and self.expire_on <= Time.now)
-      1
-    else
-      0
-    end
-  end
-
-  def available?
-    not self.expired?
-  end
 
 end

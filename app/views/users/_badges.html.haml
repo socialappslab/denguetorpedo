@@ -1,0 +1,11 @@
+
+- if @user.total_points >= 100
+  = image_tag("badges/de_olho.png", :style => "width: 90px; margin-top: 10px;")
+- if @user.total_points >= 450
+  = image_tag("badges/exterminador.png", :style => "width: 90px; margin-top: 10px;")
+- if @user.total_points >= 900
+  = image_tag("badges/guerreiro.png", :style => "width: 90px; margin-top: 10px;")
+- if @user.total_points >= 1350
+  = image_tag("badges/saudavel.png", :style => "width: 90px; margin-top: 10px;")
+- if @user.total_points >= 1800
+  = image_tag("badges/cuido.png", :style => "width: 90px; margin-top: 10px;")

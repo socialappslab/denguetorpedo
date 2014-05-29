@@ -35,32 +35,32 @@ body {
   background: #eeeeee;*/
   margin-top: 0px;
   height: 100%;
-  
+
   input, input:focus {
-    background-color: #ffffff;
-    outline: none;
-    
+    // background-color: #ffffff;
+    // outline: none;
+
     &[type = "text"], &[type = "password"], &[type = "number"] {
       height: 28px;
       border-radius: 5px;
     }
 
-    &[type = "submit"] { 
-      margin: 0px;
-      vertical-align: middle;
-      font-size: 12px;
-      color: #ffffff;
-      padding: 4px;
-      border-style: none;
-      border-radius: 2px;
-      background-color: $dark-gray;
-      margin-top: -6px;
-      
-      &:hover {
-       color: #000000;
-      }
-    }
-    
+    // &[type = "submit"] {
+    //   margin: 0px;
+    //   vertical-align: middle;
+    //   font-size: 12px;
+    //   color: #ffffff;
+    //   padding: 4px;
+    //   border-style: none;
+    //   border-radius: 2px;
+    //   background-color: $dark-gray;
+    //   margin-top: -6px;
+    //
+    //   &:hover {
+    //    color: #000000;
+    //   }
+    // }
+
     &[type = "file"] {
       height: 28px;
       border-style:solid;
@@ -85,11 +85,11 @@ button {
   background-color: $dark-gray;
   padding-left: 10px;
   padding-right: 10px;
-  
+
   &:hover {
    color: #000000;
   }
-  
+
   a:link, a:visited {
     color: #ffffff;
   }

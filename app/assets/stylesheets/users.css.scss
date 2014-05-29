@@ -212,18 +212,16 @@ ul#user_right_panel {
 .main_nav_button {
   text-align: center;
   margin-top: 10px;
-  padding-left:5px;
-  padding-right:5px;
   padding-bottom:3px;
 
   h1{
-  font-weight:bold;
-   }
+    font-weight:bold;
+  }
 
   h3 {
     color: #ffffff;
-  font-weight:normal;
-  margin-top:-10px;
+    font-weight:normal;
+    margin-top:-10px;
   }
 }
 
@@ -239,18 +237,14 @@ ul#user_right_panel {
 
     .user_activity_item {
       margin-left: 10px;
-      width: 686px;
+
 
       background: white;
       padding: 10px;
-      margin-bottom: 10px;
-      border: 2px solid #8C8C8C;
-      border-radius: 3px;
 
-      .user_activity_thumb {
-    border:1px solid $gray;
-        width: 100px;
-      }
+      border-bottom: 1px solid #ccc;
+
+
       .user_activity_options {
         margin-left: 0px;
         text-align: right;

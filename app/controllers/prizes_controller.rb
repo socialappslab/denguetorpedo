@@ -10,7 +10,7 @@ class PrizesController < ApplicationController
   def index
     @user = current_user
 
-    @prizes    = Prize.where(:is_badge => false).sort { |a, b| a.expired? <=> b.expired? }
+    @prizes    = Prize.where(:is_badge => false).sort { |a, b| (a.expired? ? 1 : 0) <=> (b.expired? ? 1 : 0) }
     @available = Prize.where('stock > 0').where('expire_on >= ?', Time.new).where(:is_badge => false)
     @redeemed  = Prize.where('stock = 0 OR expire_on < ?', Time.new).where(:is_badge => false)
 
@@ -40,8 +40,8 @@ class PrizesController < ApplicationController
     elsif @filter == "community"
       @filtered_prizes = Prize.where(:community_prize => true).where(:is_badge => false)
     else
-      @individual = Prize.where(:community_prize => false, :is_badge => false).sort { |a, b| a.expired? <=> b.expired? }
-      @community = Prize.where(:community_prize => true, :is_badge => false).sort { |a, b| a.available? <=> b.available? }
+      @individual = Prize.where(:community_prize => false, :is_badge => false).sort { |a, b| (a.expired? ? 1 : 0) <=> (b.expired? ? 1 : 0) }
+      @community  = Prize.where(:community_prize => true, :is_badge => false).sort { |a, b| a.available? <=> b.available? }
     end
 
     respond_to do |format|
@@ -83,33 +83,31 @@ class PrizesController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
   # POST /prizes/1
-  def new_prize_code
-    begin
-      unless @current_user.nil?
-        @prize = Prize.find(params[:id])
 
-        respond_to do |format|
-          if @current_user.points >= @prize.cost
-            if !@current_user.phone_number.nil?
-              @prize_code = @prize.generate_prize_code(@current_user.id)
-              format.html { redirect_to(@prize_code, :notice => "Prêmio resgatado! Vôce tem #{@current_user.points - @prize.cost} pontos".encode("UTF-8")) }
-            else
-              format.html { redirect_to(@prize_code, :alert => 'Need a valid phone number to redeem prize.') }
-            end
-          else
-            format.html { redirect_to(@prize_code, :alert => "Vôce precisa de mais pontos. Vôce tem #{@current_user.points} pontos") }
-          end
+  # TODO: The conditionals create an ugly nesting with too many special cases.
+  # Furthermore, do we need the phone number???
+  def new_prize_code
+    @prize = Prize.find(params[:id])
+
+    respond_to do |format|
+      if @current_user.total_points >= @prize.cost
+        if !@current_user.phone_number.nil?
+          @prize_code = PrizeCode.create(:user_id => @current_user, :prize_id => @prize.id)
+          format.html { redirect_to(@prize_code, :notice => "Prêmio resgatado! Vôce tem #{@current_user.total_points - @prize.cost} pontos".encode("UTF-8")) }
+        else
+          format.html { redirect_to(@prize_code, :alert => 'Need a valid phone number to redeem prize.') }
         end
-      end
-    rescue
-      respond_to do |format|
-        format.html { redirect_to(@prize, :alert => "Something went wrong. Please try again later.") }
+      else
+        format.html { redirect_to(@prize_code, :alert => "Vôce precisa de mais pontos. Vôce tem #{@current_user.total_points} pontos") }
       end
     end
   end
 
+  #----------------------------------------------------------------------------
   # GET /prizes/1/edit
+
   def edit
     @prize = Prize.find(params[:id])
     @user = @current_user

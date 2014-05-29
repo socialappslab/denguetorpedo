@@ -71,7 +71,7 @@
             - for neighbor in @neighbors
               %li
                 - if neighbor.profile_photo_file_name.nil?
-                  = link_to image_tag("default_images/house_small_default_image.png"), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
+                  = link_to image_tag("default_images/house_default_image.png"), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
                 - else
                   = link_to image_tag(neighbor.profile_photo.url(:small), :width => 70, :height => 70), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
 

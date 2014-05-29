@@ -1,23 +1,13 @@
 class HomeController < ApplicationController
+  before_filter :redirect_if_logged_in, :only => [:index]
+
   #----------------------------------------------------------------------------
   # GET /
 
   def index
-    @user = @current_user || User.new
+    @user = User.new
 
-    # NOTE: This is a hack that allows us to reuse this action with both
-    # logged-in and visitors. Basically, a logged-in user cares only about
-    # his/her own neighborhood.
-    if @current_user.present?
-      if @current_user.neighborhood.present?
-        @all_neighborhoods = [ @current_user.neighborhood ]
-      else
-        @all_neighborhoods = [ Neighborhood.first ]
-      end
-    else
-      @all_neighborhoods     = Neighborhood.order(:id).limit(3)
-    end
-
+    @all_neighborhoods     = Neighborhood.order(:id).limit(3)
     @selected_neighborhood = @all_neighborhoods.first
 
     # Display ordered news.
@@ -41,14 +31,22 @@ class HomeController < ApplicationController
 
   #----------------------------------------------------------------------------
   # POST /neighborhood-search
-  #
-  # Parameters:
-  # { "neighborhood"=>{"name"=>"Vila Autódromo"} }
-
+  
   def neighborhood_search
     neighborhood = Neighborhood.find_by_name(params[:neighborhood][:name])
     redirect_to neighborhood_path(neighborhood)
   end
 
   #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  def redirect_if_logged_in
+    redirect_to user_path(@current_user) if @current_user.present?
+  end
+
+  #----------------------------------------------------------------------------
+
 end

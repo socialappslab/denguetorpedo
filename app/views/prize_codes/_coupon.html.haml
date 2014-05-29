@@ -1,24 +1,13 @@
-%li.span3.prizes.possible
-	.status.possible
-		.name{style: "height:20px;"}
-			= link_to coupon.prize.sponsor_name, "/sponsors/#{coupon.prize.user.id}"
-		.points
-			#{coupon.prize.cost} pontos
-	.prize_content
-		- if coupon.user == @current_user
-			- if coupon.prize.prize_photo_file_name.nil?
-				= link_to image_tag("default_images/prize_default_image.png", :class => "prizes"), prize_code_path(coupon)
-			- else
-				= link_to image_tag(coupon.prize.prize_photo.url(:large), :class => "prizes"), prize_code_path(coupon)
-		- else
-			= image_tag(coupon.prize.prize_photo.url(:large), :class => "prizes")
-		.description
-			- if coupon.user == @current_user
-				= link_to truncate(coupon.prize.prize_name, length: 30), prize_code_path(coupon)	
-			- else
-				= truncate(coupon.prize.prize_name, length: 30)
-		- if coupon.user == @current_user
-			.stock
-				= coupon.code
-			.redeem_by
-				Resgate até: #{coupon.expire_date.strftime("%d/%m/%Y") }
+
+%div{:style => "display: block; text-align: center; margin-top: 10px;"}
+	- if coupon.prize.prize_photo_file_name.nil?
+		= image_tag("default_images/prize_default_image.png", :class => "prizes img-circle", :style => "width: 100px;")
+	- else
+		= image_tag(coupon.prize.prize_photo.url(:small), :class => "prizes img-circle", :style => "width: 100px;")
+
+	%div
+		= coupon.prize.prize_name
+
+	- if @current_user == coupon.user
+		%div
+			= link_to I18n.t("common_terms.redeem_by") + ": " + coupon.expire_date.strftime("%d/%m/%Y"), prize_code_path(coupon)

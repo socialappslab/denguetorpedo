@@ -45,6 +45,8 @@ FactoryGirl.define do
 
 	factory :documentation_section
 
+	factory :prize_code
+
 	factory :prize do
 		prize_name "Prize"
 		cost 100
@@ -89,7 +91,6 @@ FactoryGirl.define do
     report "Description"
     before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
     neighborhood_id Neighborhood.first.id
-
   end
 
 end

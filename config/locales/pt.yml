@@ -14,9 +14,13 @@ pt:
       house: Casa
       documentation_section: Seção
       elimination_method: Método de eliminação
+      notice: Notícias
       prize:
         one: Prêmio
         other: Prêmios
+      prize_code:
+        one: Cupom
+        other: Cupons
     attributes:
       user:
         password: "Senha"
@@ -127,7 +131,6 @@ pt:
   common_terms:
     register: Cadastre-se
     free_sms: SMS Grátis
-    search: Busca
     more: Mais
     partners: Parceiros
     configuration: Configurações
@@ -138,7 +141,6 @@ pt:
     eliminated_by: Eliminado por
     confirm_delete: Você tem certeza?
     open_for: Em aberto por
-    submit: Enviar
     email_or_password_incorrect: "E-mail ou senha inválido"
     open_reports: Em aberto
     eliminated_reports: Eliminados
@@ -147,6 +149,16 @@ pt:
     eliminated: Eliminado
     create_a_report: Marcar um foco
     complete_report: Completar o foco
+    points: Pontos
+    exchange_points_for_prizes: "Trocar pontos por prêmios"
+    go_to_report: "Vá para o foco"
+    go_to_notices: "Vá para a notícias"
+    their_house: Seu casa
+    their_community: Seu comunidade
+    this_user_has_no_activity: Este usuário não tem qualquer atividade
+    redeem_by: Resgate até
+    ago: atrás
+    badges: medalhas
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
@@ -176,3 +188,15 @@ pt:
       fill_in_complete_address: Você deve enviar o endereço completo
       problem_with_verification: Problema no foco marcado. Entre em contato conosco.
       upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
+
+  views:
+    password_resets:
+      title: Redefinir sua senha
+      enter_email: "Digite o seu e-mail cadastrado"
+    button:
+      publish: "Publicar"
+      confirm: "Confirmar"
+      search:  "Busca"
+      submit:  "Enviar"
+    post:
+      text_placeholder: Compartilhe suas idéas com a turma do Dengue Torpedo!

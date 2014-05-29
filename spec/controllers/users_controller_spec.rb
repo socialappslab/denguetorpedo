@@ -406,4 +406,28 @@ describe UsersController do
 	end
 
 	#-----------------------------------------------------------------------------
+
+	context "Buying prizes" do
+		let(:user)  { FactoryGirl.create(:user, :total_points => 1000)  }
+		let(:prize) { FactoryGirl.create(:prize) }
+
+		it "creates a PrizeCode instance" do
+			expect {
+				get :buy_prize, :id => user.id, :prize_id => prize.id
+			}.to change(PrizeCode, :count).by(1)
+		end
+
+		it "updates user's total points" do
+			before_point_count = user.total_points
+			puts "total points: #{before_point_count}"
+			get :buy_prize, :id => user.id, :prize_id => prize.id
+			expect(user.reload.total_points).to eq(before_point_count - prize.cost)
+		end
+
+		it "decreases prize stock" do
+			before_count = prize.stock
+			get :buy_prize, :id => user.id, :prize_id => prize.id
+			expect(prize.reload.stock).to eq(before_count - 1)
+		end
+	end
 end

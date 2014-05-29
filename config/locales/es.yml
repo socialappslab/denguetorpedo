@@ -6,7 +6,7 @@ es:
     title: "Título"
     neighborhood_id: "Comunidad"
     name: Nombre
-    number: Número    
+    number: Número
   activerecord:
     models:
       user: Usuario
@@ -73,7 +73,7 @@ es:
       title: MÁS INFORMACIÓN
       description: Sobre el dengue
     howto:
-      title: Juego
+      title: JUEGO
       description: ¿Como?
     prizes:
       title: GANE
@@ -127,7 +127,6 @@ es:
   common_terms:
     register: Regístrese
     free_sms: SMS Grátis
-    search: Búsqueda
     more: Más
     partners: Socios
     configuration: Configuración
@@ -177,3 +176,12 @@ es:
       problem_with_verification: No se pudo marcar el foco.  Pónganse en contacto con nosotros.
       upload_photo_of_eliminated_report: Cargue una foto del foco eliminado.
 
+  views:
+    password_resets:
+      title: Redefinir su contraseña
+      enter_email: "Teclee su e-mail registrado"
+    button:
+      publish: "Publicar"
+      confirm: "Confirmar"
+      search: "Busca"
+      submit: "Enviar"

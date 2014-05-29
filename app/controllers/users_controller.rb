@@ -33,52 +33,63 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/1/
 
   def show
-    @post = Post.new
+    @user = User.find_by_id(params[:id])
 
-    @user         = User.find_by_id(params[:id])
-    @neighborhood = @user.neighborhood
-    @house        = @user.house
-    @prizes       = @user.prizes
-    @badges       = @user.badges
-
-    head :not_found and return if @user != @current_user and @user.role == "lojista"
     head :not_found and return if @user.nil?
+    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
 
-    @user_posts = @user.posts
+    @post         = Post.new
+    @neighborhood = @user.neighborhood || Neighborhood.first
+    @house        = @user.house
+    @badges       = @user.badges
+    @user_posts   = @user.posts
+    @reports      = @user.reports
+    @notices      = @neighborhood.notices.order("updated_at DESC")
 
-    @prize_ids = @prizes.collect{|prize| prize.id}
+    # Avoid displaying coupons that expired and were never redeemed.
+    @coupons = @user.prize_codes.reject {|coupon| coupon.expired? && !coupon.is_redeemed? }
 
-    @isPrivatePage = (@user == @current_user)
-    @highlightProfileItem = @isPrivatePage ? "nav_highlight" : ""
-    @coupons = @user.prize_codes
-    if params[:filter] == 'reports'
-      @feed_active_reports = 'active'
-      @combined_sorted = @user.reports.where('elimination_type IS NOT NULL')
-    elsif params[:filter] == 'posts'
-      @combined_sorted = @user.posts
-      @feed_active_posts = 'active'
+    # Order the coupons by those that haven't been redeemed first, then those
+    # that have.
+    @coupons = @coupons.find_all {|c| !c.redeemed? } + @coupons.find_all {|c| c.redeemed? }
+
+    # Find if user can redeem prizes.
+    @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
+    @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
+
+    # Load the community news feed. We explicitly limit activity to this month
+    # so that we don't inadvertedly create a humongous array.
+    # TODO: As activity on the site picks up, come back to rethink this inefficient
+    # query.
+    # TODO: Move the magic number '4.weeks.ago'
+    if @current_user == @user
+      neighborhood_reports = @neighborhood.reports.where("created_at > ?", 4.weeks.ago)
+      neighborhood_reports = neighborhood_reports.find_all {|r| r.is_public? }
+
+      # Now, let's load all the users, and their posts.
+      neighborhood_posts = []
+      @neighborhood.members.each do |m|
+        user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
+        neighborhood_posts << user_posts
+      end
+      neighborhood_posts.flatten!
+
+      @news_feed = (neighborhood_reports + neighborhood_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @feed_active_all = 'active'
-      @combined_sorted = (@user.reports.where('elimination_type IS NOT NULL') + @user.posts).sort{|a,b| b.created_at <=> a.created_at }
+      @news_feed = (@reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
-
-    @stats_hash = {}
-    @stats_hash['opened'] = @user.created_reports.count
-    @stats_hash['eliminated'] = @user.eliminated_reports.count
-
-    @elimination_types = EliminationType.pluck(:name)
-    reports_with_status_filtered = []
-    locations = []
 
     respond_to do |format|
       format.html
-      format.json { render json: {user: @user, house: @house, prizes: @prizes, badges: @badges}}
+      format.json { render json: {user: @user, house: @house, badges: @badges}}
     end
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/new
 
   def new
     @user = User.new
@@ -278,15 +289,13 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/1/buy_prize/1
 
-  #Get /user/:id/buy_prize/prize_id
   def buy_prize
-    @user = User.find(params[:id])
-    bought = @user.buy_prize(params[:prize_id])
-    if bought
-      @prize_code = PrizeCode.where(:prize_id => params[:prize_id], :user_id => params[:id]).limit(1)[0]
-    end
-    render :partial => "prizes/prizeconfirmation", :locals => {:bought => bought}
+    @user       = User.find(params[:id])
+    @prize      = Prize.find(params[:prize_id])
+    @prize_code = @user.generate_coupon_for_prize(@prize)
+    render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
   end
 
   #----------------------------------------------------------------------------

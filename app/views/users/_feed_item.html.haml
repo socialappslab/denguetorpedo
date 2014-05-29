@@ -1,0 +1,43 @@
+.user_activity_item{:style => "margin-left: 0px; min-height: 60px;"}
+  .row
+    .span1
+      - if owner.profile_photo_file_name.nil?
+        = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
+      - else
+        = image_tag(owner.profile_photo.url(:small), :style => "width: 100px;")
+
+    .span7
+      .row
+        .span7
+          = link_to owner.first_name, user_path(owner), :style => "font-weight: bold;"
+          %span{:style => "color: #8899a6; display: inline;"}
+            %i.fa.fa-clock-o
+            = format_timestamp(post.created_at)
+
+          - if @current_user == owner
+            = link_to user_post_path(owner, post), :id => 'user_post_delete', :confirm => "Are you sure?", :method => :delete do
+              %i.fa.fa-trash-o
+
+      .row
+        .span7
+          - if post.content.length >= Post::CHARACTER_LIMIT
+            = auto_link(post.content[0..Post::CHARACTER_LIMIT])
+            #hidden-post-content{:style => "display: none;"}
+              = auto_link(post.content[Post::CHARACTER_LIMIT..-1])
+            #show-more-content-link{:style => "display: block;"}
+              = link_to "", :style => "color: #6655ee;" do
+                %i.fa.fa-chevron-down
+                Mas
+          - else
+            = auto_link(post.content)
+
+
+:javascript
+  $("#show-more-content-link").on("click", function(eventObj)
+  {
+      eventObj.preventDefault()
+
+      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+      hiddenContent.css("display", "inline")
+      $(eventObj.currentTarget).hide()
+  })

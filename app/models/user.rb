@@ -45,6 +45,7 @@ class User < ActiveRecord::Base
   # Associations
   #-------------
 
+  # TODO: reports should include both eliminator_id and reporter_id.
   has_many :reports, :foreign_key => "reporter_id", :dependent => :nullify
   has_many :created_reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
@@ -123,20 +124,25 @@ class User < ActiveRecord::Base
     end
   end
 
+  #----------------------------------------------------------------------------
+
   def reports
     Report.includes(:reporter, :eliminator, :location, :likes).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
   end
 
-  def buy_prize(prize_id)
-    @prize = Prize.find(prize_id)
-    return false if self.points < @prize.cost or not @prize.in_stock
-    @prize.decrease_stock(1)
-    self.points -= @prize.cost
-    self.save
-    if @prize.is_badge?
-      @prize.give_badge(self.id)
-    else
-      @prize.generate_prize_code(self.id)
+  #----------------------------------------------------------------------------
+  # In order to generate a coupon for a prize, the following must happen:
+  # a) Prize stock must decrease by 1, and
+  # b) User's total points must decrease by the right amount.
+
+  def generate_coupon_for_prize(prize)
+    return nil if self.total_points < prize.cost || prize.expired?
+
+    unless prize.is_badge?
+      prize.update_attribute(:stock, [0, prize.stock - 1].max)
+      self.update_attribute(:total_points, self.total_points - prize.cost)
+
+      return PrizeCode.create(:user_id => self.id, :prize_id => prize.id)
     end
   end
 

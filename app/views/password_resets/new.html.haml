@@ -1,11 +1,10 @@
 .reset_password_form.offset1{:style => "margin-top:20px;"}
-  
-  %h1 Redefinir sua senha
+
+  %h1
+    = I18n.t("views.password_resets.title")
 
   %ul
     = form_tag password_resets_path, :method => :post do
-      %li= label_tag :email, "Digite o seu e-mail cadastrado", style: "margin-top:20px;"
+      %li= label_tag :email, I18n.t("views.password_resets.enter_email"), style: "margin-top:20px;"
       %li= text_field_tag :email
-      %br
-      %li= submit_tag "Submeta"
-  
+      %li= submit_tag I18n.t("views.button.submit"), :class => "btn btn-success"
