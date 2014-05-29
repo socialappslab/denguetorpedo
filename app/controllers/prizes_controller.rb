@@ -83,33 +83,31 @@ class PrizesController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
   # POST /prizes/1
-  def new_prize_code
-    begin
-      unless @current_user.nil?
-        @prize = Prize.find(params[:id])
 
-        respond_to do |format|
-          if @current_user.points >= @prize.cost
-            if !@current_user.phone_number.nil?
-              @prize_code = @prize.generate_prize_code(@current_user.id)
-              format.html { redirect_to(@prize_code, :notice => "Prêmio resgatado! Vôce tem #{@current_user.points - @prize.cost} pontos".encode("UTF-8")) }
-            else
-              format.html { redirect_to(@prize_code, :alert => 'Need a valid phone number to redeem prize.') }
-            end
-          else
-            format.html { redirect_to(@prize_code, :alert => "Vôce precisa de mais pontos. Vôce tem #{@current_user.points} pontos") }
-          end
+  # TODO: The conditionals create an ugly nesting with too many special cases.
+  # Furthermore, do we need the phone number???
+  def new_prize_code
+    @prize = Prize.find(params[:id])
+
+    respond_to do |format|
+      if @current_user.total_points >= @prize.cost
+        if !@current_user.phone_number.nil?
+          @prize_code = PrizeCode.create(:user_id => @current_user, :prize_id => @prize.id)
+          format.html { redirect_to(@prize_code, :notice => "Prêmio resgatado! Vôce tem #{@current_user.total_points - @prize.cost} pontos".encode("UTF-8")) }
+        else
+          format.html { redirect_to(@prize_code, :alert => 'Need a valid phone number to redeem prize.') }
         end
-      end
-    rescue
-      respond_to do |format|
-        format.html { redirect_to(@prize, :alert => "Something went wrong. Please try again later.") }
+      else
+        format.html { redirect_to(@prize_code, :alert => "Vôce precisa de mais pontos. Vôce tem #{@current_user.total_points} pontos") }
       end
     end
   end
 
+  #----------------------------------------------------------------------------
   # GET /prizes/1/edit
+
   def edit
     @prize = Prize.find(params[:id])
     @user = @current_user
