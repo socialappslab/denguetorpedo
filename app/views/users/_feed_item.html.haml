@@ -1,16 +1,17 @@
 .user_activity_item
   .row
     .span1
-      - if owner.profile_photo_file_name.nil?
-        = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
-      - else
-        = image_tag(owner.profile_photo.url(:small), :style => "width: 100px;")
+      = link_to user_path(owner) do
+        - if owner.profile_photo_file_name.nil?
+          = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
+        - else
+          = image_tag(owner.profile_photo.url(:small), :style => "width: 100px;")
 
     .span7
-      .row
+      .row.feed-item-bar
         .span7
           = link_to owner.first_name, user_path(owner), :style => "font-weight: bold;"
-          %span{:style => "color: #8899a6; display: inline;"}
+          .feed-item-timestamp
             %i.fa.fa-clock-o
             = format_timestamp(post.created_at)
 

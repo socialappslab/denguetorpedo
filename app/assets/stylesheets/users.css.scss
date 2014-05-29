@@ -234,41 +234,63 @@ ul#user_right_panel {
   .active {
     font-weight: bold;
   }
+}
 
-    .user_activity_item {
-      min-height: 60px;
-      background: #fff;
-      padding: 10px;
-      margin-bottom: 10px;
 
-      border-bottom: 1px solid #e5e6e9;
-      -webkit-border-radius: 3px;
-         -moz-border-radius: 3px;
-              border-radius: 3px;
 
-      .user_activity_options {
-        margin-left: 0px;
-        text-align: right;
-      }
-      .user_activity_options_full {
-        margin-left:300px;
-        text-align:right;
-      }
-      .user_activity_headline {
-      }
-      .user_activity_location {
-            text-align: right;
-      }
-      .user_activity_balloon {
-          float: left;
-      }
-      .user_activity_icons {
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
-      }
-    }
+//-----------------------------------------------------------------------------
+// Feed-related customizations
+//-----------------------------------------------------------------------------
+
+.feed-item-bar {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.feed-item-timestamp {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  color: #8899a6;
+  display: inline;
+}
+
+.user_activity_item {
+  min-height: 60px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  border-bottom: 1px solid #e5e6e9;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+
+  .user_activity_options {
+    margin-left: 0px;
+    text-align: right;
   }
+  .user_activity_options_full {
+    margin-left:300px;
+    text-align:right;
+  }
+  .user_activity_headline {
+  }
+  .user_activity_location {
+        text-align: right;
+  }
+  .user_activity_balloon {
+      float: left;
+  }
+  .user_activity_icons {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+
 
 
 
