@@ -15,7 +15,7 @@
             %i.fa.fa-clock-o
             = format_timestamp(report.created_at)
 
-      .row{:style => "margin-bottom: 20px;"}
+      .row.feed-item-content{:style => "margin-bottom: 20px;"}
         .span7
           - if report.is_open?
 
@@ -29,12 +29,12 @@
           = report_feed_content
 
 
-  .row{:style => "margin-bottom: 20px; text-align: center;"}
-    .span8
+  .row.feed-item-report-photo
+    .span9
       = link_to neighborhood_reports_path(report.neighborhood), :style => "display: block;" do
         - if report.is_open? && report.before_photo_file_name.present?
-          = image_tag(report.before_photo.url(:thumb), :style => "width: 200px; height: 200px;")
+          = image_tag(report.before_photo.url(:thumb))
         - elsif report.is_eliminated? && report.after_photo_file_name.present?
-          = image_tag(report.after_photo.url(:thumb), :style => "width: 200px; height: 200px;")
+          = image_tag(report.after_photo.url(:thumb))
         - else
-          = image_tag("default_images/report_before_photo.png", :style => "width: 200px;")
+          = image_tag("default_images/report_before_photo.png")

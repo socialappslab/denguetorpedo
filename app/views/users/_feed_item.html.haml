@@ -19,7 +19,7 @@
             = link_to user_post_path(owner, post), :id => 'user_post_delete', :confirm => "Are you sure?", :method => :delete do
               %i.fa.fa-trash-o
 
-      .row
+      .row.feed-item-content
         .span7
           - if post.content.length >= Post::CHARACTER_LIMIT
             = auto_link(post.content[0..Post::CHARACTER_LIMIT])

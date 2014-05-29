@@ -245,12 +245,29 @@ ul#user_right_panel {
   width: 50px;
   height: 50px;
 }
+
 .feed-item-profile-photo img {
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
           border-radius: 4px;
   width: 50px;
   height: 50px;
+}
+
+// .feed-item-content {
+//   font-size: 16px;
+// }
+
+.feed-item-report-photo {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.feed-item-report-photo img {
+  // width: 400px;
+  width: 200px;
+  height: 200px;
+
 }
 
 .feed-item-bar {
