@@ -9,11 +9,11 @@
     %h1{:style => "color: #{total_points_color}; font-size: 50px; display: inline;"}
       = @user.total_points
 
-    %p{:style => "text-align: left; display: inline;"}
+    %p{:style => "text-align: left; display: inline; font-size: 16px;"}
       = I18n.t("common_terms.points")
 
     - if @current_user == @user && @redeemable_prizes.count > 0
-      = link_to prizes_path, :class => "btn btn-success btn-mini profile-view-points-button" do
+      = link_to prizes_path, :class => "btn btn-warning btn-small profile-view-points-button" do
         = I18n.t("common_terms.exchange_points_for_prizes")
 
   .span3.offset2{:style => "text-align: right;"}
@@ -24,11 +24,11 @@
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
       = @reports.count
-    %p{:style => "margin-top: 10px; display: inline;"}
+    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
       = I18n.t("dashboard.reports")
 
     - if @current_user == @user
-      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-success btn-mini profile-view-reports-button", :style => "display: inline-block;" do
+      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-warning btn-small profile-view-reports-button", :style => "display: inline-block;" do
         = I18n.t("common_terms.create_reports")
 
 
