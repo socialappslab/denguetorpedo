@@ -1,11 +1,11 @@
 .user_activity_item
   .row
-    .span1
+    .span1.feed-item-profile-photo
       = link_to user_path(owner) do
         - if owner.profile_photo_file_name.nil?
-          = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
+          = image_tag("default_images/user_default_alt.png")
         - else
-          = image_tag(owner.profile_photo.url(:small), :style => "width: 100px;")
+          = image_tag(owner.profile_photo.url(:small))
 
     .span7
       .row.feed-item-bar
