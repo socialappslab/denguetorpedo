@@ -20,6 +20,14 @@ class HomeController < ApplicationController
 
     # Display active prizes.
     @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(3)
+
+
+    # Load the news feed.
+    @user_posts = Post.order(:created_at).limit(3)
+    @reports    = Report.where(:neighborhood_id => @selected_neighborhood.id).order(:created_at).limit(3)
+    @reports    = @reports.find_all {|r| r.is_public? }
+
+    @news_feed = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------
