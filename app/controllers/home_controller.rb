@@ -23,9 +23,9 @@ class HomeController < ApplicationController
 
 
     # Load the news feed.
-    @user_posts = Post.order(:created_at).limit(3)
-    @reports    = Report.where(:neighborhood_id => @selected_neighborhood.id).order(:created_at).limit(3)
-    @reports    = @reports.find_all {|r| r.is_public? }
+    @user_posts = Post.order("created_at DESC").limit(3)
+    @reports    = Report.where(:neighborhood_id => @selected_neighborhood.id).order("created_at DESC").limit(10)
+    @reports    = @reports.find_all {|r| r.is_public? }[0..3]
 
     @news_feed = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
