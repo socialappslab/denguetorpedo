@@ -28,7 +28,7 @@
             #show-more-content-link{:style => "display: block;"}
               = link_to "", :style => "color: #6655ee;" do
                 %i.fa.fa-chevron-down
-                Mas
+                = I18n.t("common_terms.more")
           - else
             = auto_link(post.content)
 

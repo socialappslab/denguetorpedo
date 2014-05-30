@@ -26,7 +26,17 @@
 
 /------------------------------------------------------------------------------
 
-/ Display the neighborhood houses only if the logged-in user is viewing it.
+.row
+  .span11.offset4
+    = render :partial => "shared/news_feed"
+
+    .span9{:style => "text-align: center;"}
+      = link_to users_path, :style => "color: #6655ee; font-size: 20px;" do
+        %i.fa.fa-chevron-down
+        = I18n.t("common_terms.more")
+
+
+/------------------------------------------------------------------------------
 
 .row
   .span10.offset1#home_houses
