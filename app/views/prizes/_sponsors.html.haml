@@ -1,4 +1,4 @@
-.span4{ :style => "margin-top:-200px;height:467px;"}
+.span4
   - if @redetrel
     %li.span3.prizes.possible{style: "margin-bottom:32px;"}
       .status.possible
@@ -12,7 +12,7 @@
     %option Patrocinador / Apoio (#{@sponsors.count})
     - @sponsors.each do |sponsor|
       %option{:value => sponsor_path(sponsor)} #{sponsor.house && sponsor.house.name}
-  .sponsors_box{ :style => "background-color:white;height:420px;width:255px;padding:5px;overflow-y:auto;"}
+  .sponsors_box{ :style => "background-color:white;width:255px;padding:5px;overflow-y:auto;"}
     - @sponsors.shuffle.each do |sponsor|
       .sponsors
         - if sponsor.house.nil? || sponsor.house.profile_photo_file_size.nil?

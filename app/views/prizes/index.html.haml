@@ -1,109 +1,50 @@
 .row
-  .span8.offset1
-    %h1 Prêmios
-  .button_to#how_to
-    = link_to "Como ganhar pontos?", "/faq"
-%br
-.row
-  #neighborhood_stats.offset1
-    .span4
-      .row
-        #available_prizes_button.span1 
-        .span3
-          %b= @available.sum(:stock)
-          %br Disponiveis
-    .span4
-      .row
-        #neighborhood_resolved_report_button.span1 
-        .span3
-          %b= @redeemed_counts
-          %br Resgatados
-    / .span2
-    /   .house_count
-    /     %b= @sponsors.count
-    /     %br Patrocinadores
-
-%br
-.row{:style => "margin-top:10px;"}
-  .span8.offset1
-    %h2 Categorias
-.row
   .span12.offset1
-    #filters.offset1
-    - if params[:filter] == nil
-      .filters.active.small
-        = link_to "Todos", "/premios"
-    - else
-      .filters.small
-        = link_to "Todos", "/premios"
-    - if params[:filter] == "badges"
-      .filters.active.large
-        = link_to "Medalhas", "/premios?filter=badges"
-    - else
-      .filters.large
-        = link_to "Medalhas", "/premios?filter=badges"
-    - if params[:filter] == "individual"
-      .filters.active.large
-        = link_to "Individual", "/premios?filter=individual"
-    - else
-      .filters.large
-        = link_to "Individual", "/premios?filter=individual"
+    %h1 Prêmios
 
-    - if params[:filter] == "community"
-      .filters.active.large
-        = link_to "Comunidade", "/premios?filter=community"
-    - else
-      .filters.large
-        = link_to "Comunidade", "/premios?filter=community"
-    .filters.space
-      Por pontos:
-    - if params[:filter] == "pontos" and params[:max] == "500"
-      .filters.active.small
-        = link_to "0-499", "/premios?filter=pontos&max=500"
-    - else
-      .filters.small
-        = link_to "0-499", "/premios?filter=pontos&max=500"
-
-    - if params[:filter] == "pontos" and params[:max] == "1000"
-      .filters.active.large
-        = link_to "500-999", "/premios?filter=pontos&max=1000"
-    -else
-      .filters.large
-        = link_to "500-999", "/premios?filter=pontos&max=1000"
-
-    - if params[:filter] == "pontos" and params[:max] == "5000"
-      .filters.active.large
-        = link_to "1000-4999", "/premios?filter=pontos&max=5000"
-    - else
-      .filters.large
-        = link_to "1000-4999", "/premios?filter=pontos&max=5000"
-
-    - if params[:filter] == "pontos" and params[:max] == nil
-      .filters.active.small
-        = link_to ">5000", "/premios?filter=pontos"
-    - else
-      .filters.small
-        = link_to ">5000", "/premios?filter=pontos"
+    .button_to#how_to
+      = link_to "Como ganhar pontos?", "/faq"
 
     %br
+
+    .row#neighborhood_stats
+      .span4
+        .row
+          #available_prizes_button.span1
+          .span3
+            %b= @available.sum(:stock)
+            %br Disponiveis
+
+      .span4
+        .row
+          #neighborhood_resolved_report_button.span1
+          .span3
+            %b= @redeemed_counts
+            %br Resgatados
+
     %br
-    / .filters
-    /   %select
-    /     %option Patrocinadores
-    /     - @sponsors.each do |sponsor|
-    /       %option #{sponsor.full_name}
+    .row
+      .span8
+        %h2 Categorias
+
+    .row
+      .span12
+        = render :partial => "prizes/filters"
+        %br
+
+    .row
+      .span15.prizes_list
+        - if params[:filter] == nil
+          = render :partial => "prizes/default_list"
+        - else
+          - if params[:filter] == "individual"
+            %h2 Para você
+          - elsif params[:filter] == "community"
+            %br
+            %h2 Para a comunidade
+          - elsif params[:filter] == "badges"
+            %h2 Medalhas
+          = render :partial => "prizes/filtered_list"
 
 
-.row
-  .span12.offset1.prizes_list
-    - if params[:filter] == nil
-      = render :partial => "prizes/default_list"
-    - else
-      - if params[:filter] == "individual"
-        %h2 Para você
-      - elsif params[:filter] == "community"
-        %h2 Para a comunidade
-      - elsif params[:filter] == "badges"
-        %h2 Medalhas
-      = render :partial => "prizes/filtered_list"
   = render :partial => "prizes/sponsors"
