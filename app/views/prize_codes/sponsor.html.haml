@@ -13,19 +13,20 @@
     %ul
     - @prizes.sort.each do |prize|
       %h2 #{prize.prize_name}
-      %table{:cellpadding => 20}
-        %tr
+      %table.table.table-bordered
+        %thead
           %th Resgatado
           %th Código
           %th Usuário
           %th Celular
           %th Operadora
-        - prize.prize_codes.each do |cupon|
-          %tr
-            %td{style: "text-align:center;"}
-              %input{type: "checkbox"}
-            %td= cupon.code
-            %td= cupon.user.display_name
-            %td= cupon.user.phone_number
-            %td{style: "text-align:center;"}
-              = cupon.user.carrier
+        %tbody
+          - prize.prize_codes.each do |cupon|
+            %tr
+              %td{style: "text-align:center;"}
+                %input{type: "checkbox"}
+              %td= cupon.code
+              %td= cupon.user.display_name
+              %td= cupon.user.phone_number
+              %td{style: "text-align:center;"}
+                = cupon.user.carrier
