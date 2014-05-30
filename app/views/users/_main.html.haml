@@ -13,7 +13,7 @@
       = I18n.t("common_terms.points")
 
     - if @current_user == @user && @redeemable_prizes.count > 0
-      = link_to prizes_path, :class => "btn btn-warning btn-small profile-view-points-button" do
+      = link_to prizes_path, :class => "btn btn-orange btn-small profile-view-points-button" do
         = I18n.t("common_terms.exchange_points_for_prizes")
 
   .span3.offset2{:style => "text-align: right;"}
@@ -28,7 +28,7 @@
       = I18n.t("dashboard.reports")
 
     - if @current_user == @user
-      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-warning btn-small profile-view-reports-button", :style => "display: inline-block;" do
+      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-orange btn-small profile-view-reports-button", :style => "display: inline-block;" do
         = I18n.t("common_terms.create_reports")
 
 

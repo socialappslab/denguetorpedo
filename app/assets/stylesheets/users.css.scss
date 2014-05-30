@@ -4,6 +4,27 @@
 
 @import "variables";
 
+.btn-orange {
+  background-color: #ff6600;
+  color: white;
+  background-image: -webkit-linear-gradient(top, #ff6600, #ff6600);
+
+  &:hover, &:active, &.active, &.disabled, &[disabled] {
+    color: white;
+    background-color: #ff6600;
+  }
+
+  text-shadow: none;
+
+  &:active,
+  &.active {
+    background-color: darken(#ff6600, 10%) e("\9");
+  }
+}
+
+
+
+
 .user_points {
   margin-top: 20px;
   padding-top: 0px;
