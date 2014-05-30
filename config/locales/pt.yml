@@ -162,6 +162,7 @@ pt:
     badges: medalhas
     redeemed_prizes: Prêmios Resgatados
     go_to_reports: "Vá para focos marcados"
+    eliminate_and_gain_points: Eliminar e ganhar pontos
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

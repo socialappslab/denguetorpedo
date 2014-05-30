@@ -260,14 +260,36 @@ ul#user_right_panel {
 
 .feed-item-report-photo {
   margin-bottom: 20px;
-  text-align: center;
+  // text-align: center;
 }
 
 .feed-item-report-photo img {
   // width: 400px;
-  width: 200px;
-  height: 200px;
+  width: 175px;
+  height: 175px;
+}
 
+.feed-item-elimination-incentive {
+  border: 1px #ccc solid;
+  height: 175px;
+  width: 175px;
+  // background-color: #E9EAED;
+  background-image: image-url("phone-prize.png");
+
+  display: table-cell;
+  vertical-align: middle;
+
+  margin-left: 60px;
+
+
+
+  p {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 27px;
+    line-height: 40px;
+    text-align: center;
+  }
 }
 
 .feed-item-bar {
