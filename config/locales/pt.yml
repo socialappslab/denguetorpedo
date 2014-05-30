@@ -161,6 +161,7 @@ pt:
     ago: atrás
     badges: medalhas
     redeemed_prizes: Prêmios Resgatados
+    go_to_reports: "Vá para focos marcados"
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"

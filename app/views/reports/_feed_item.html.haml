@@ -18,23 +18,45 @@
       .row.feed-item-content{:style => "margin-bottom: 20px;"}
         .span7
           - if report.is_open?
-
-            - report_feed_content = "Encontrou um foco"
-            - report_feed_content += " @ #{report.elimination_type.downcase}" if report.elimination_type.present?
+            - report_feed_content = "Encontrei um foco"
           - elsif report.is_eliminated?
-            - report_feed_content = "Eliminou um foco"
-            - report_feed_content += "  @ #{report.elimination_type.downcase}" if report.elimination_type.present?
+            - report_feed_content = "Eliminei um foco"
+
           - if report_feed_content && report.complete_address.present?
-            - report_feed_content += " no #{report.complete_address}"
-          = report_feed_content
+            - report_feed_content += " @ #{report.complete_address}"
+
+          = report_feed_content + "!"
 
 
   .row.feed-item-report-photo
     .span9
-      = link_to neighborhood_reports_path(report.neighborhood), :style => "display: block;" do
-        - if report.is_open? && report.before_photo_file_name.present?
-          = image_tag(report.before_photo.url(:thumb))
-        - elsif report.is_eliminated? && report.after_photo_file_name.present?
-          = image_tag(report.after_photo.url(:thumb))
-        - else
-          = image_tag("default_images/report_before_photo.png")
+
+      .row
+        .span5
+          %i.fa.fa-eye
+          = report.elimination_type
+          = link_to neighborhood_reports_path(report.neighborhood), :style => "display: block;" do
+            - if report.before_photo_file_name.present?
+              = image_tag(report.before_photo.url(:thumb))
+            - else
+              = image_tag("default_images/report_before_photo.png")
+
+
+        .span3
+          %i.fa.fa-ban
+          - if report.is_eliminated? && report.elimination_method
+            = report.elimination_method
+          - else
+            = link_to neighborhood_reports_path(report.neighborhood) do
+              = I18n.t("common_terms.go_to_reports")
+
+          = link_to neighborhood_reports_path(report.neighborhood), :style => "display: block;" do
+            - if report.is_eliminated? && report.after_photo_file_name.present?
+              = image_tag(report.after_photo.url(:thumb))
+            - elsif report.is_open?
+              %div{:style => "border: 1px #ccc solid; height: 200px; width: 200px; line-height: 200px;"}
+                %p{:style => " font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 200; font-size: 25px; line-height: 40px;"}
+                  Eliminar e ganhar pintos
+
+            - else
+              = image_tag("default_images/report_before_photo.png")
