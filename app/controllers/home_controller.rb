@@ -31,7 +31,7 @@ class HomeController < ApplicationController
 
   #----------------------------------------------------------------------------
   # POST /neighborhood-search
-  
+
   def neighborhood_search
     neighborhood = Neighborhood.find_by_name(params[:neighborhood][:name])
     redirect_to neighborhood_path(neighborhood)
