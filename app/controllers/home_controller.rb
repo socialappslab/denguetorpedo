@@ -16,10 +16,10 @@ class HomeController < ApplicationController
     # Display 5 non-empty houses.
     @houses = @selected_neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
     @houses = @houses.find_all {|h| h.members.count > 0}
-    @houses = @houses.shuffle[0..4]
+    @houses = @houses.shuffle[0..10]
 
     # Display active prizes.
-    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(3)
+    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(10)
 
 
     # Load the news feed.

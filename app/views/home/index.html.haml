@@ -28,12 +28,12 @@
 
 .row
   .span3.offset1
-    %h2{style: 'font-size: 18px;'}
-      = I18n.t("landing_page.house.title")
+    -# %h2{style: 'font-size: 18px;'}
+    -#   = I18n.t("landing_page.house.title")
     = render "home/house_list"
 
 
-  .span10
+  .span9
     = render :partial => "shared/news_feed"
     .span9{:style => "text-align: center;"}
       = link_to users_path, :style => "color: #6655ee; font-size: 20px;" do
@@ -41,23 +41,23 @@
         = I18n.t("common_terms.more")
 
   .span4
-    %h2{style: 'font-size: 18px;'}
-      = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
+    -# %h2{style: 'font-size: 18px;'}
+    -#   = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
+    -#
 
-
-    #sponsors
+    #sponsors{:style => "margin-top: 17px;"}
       %ul
         - @prizes.each do |prize|
           = render :partial => "prizes/prize", :object => prize
 
-        %li.span3.prizes.possible
-          .status.possible
-            .name{style: "height:20px;"}
-            .points
-          .prize_content
-            .description{:style => "height: 100%;"}
-              %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
-                = link_to "+ #{I18n.t("common_terms.more")}", prizes_path
+        -# %li.span3.prizes.possible
+        -#   .status.possible
+        -#     .name{style: "height:20px;"}
+        -#     .points
+        -#   .prize_content
+        -#     .description{:style => "height: 100%;"}
+        -#       %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
+        -#         = link_to "+ #{I18n.t("common_terms.more")}", prizes_path
 
 
 /------------------------------------------------------------------------------
