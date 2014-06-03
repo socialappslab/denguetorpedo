@@ -1,9 +1,7 @@
-
 .offset4
   = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-
-#register
+#register{:style => "margin: auto; width: 25%; text-align: center;"}
   .well
     %h1 Inscreva-se
     %br
@@ -11,15 +9,15 @@
 
       .control-group
         .controls
-          = f.text_field :email, :placeholder => "E-mail", :style => "width: 100%;"
+          = f.text_field :email, :placeholder => I18n.t("activerecord.attributes.user.email"), :style => "width: 100%;"
         .controls
-          = f.text_field :first_name, :placeholder => "Nome", :style => "width: 100%;"
+          = f.text_field :first_name, :placeholder => I18n.t("activerecord.attributes.user.first_name"), :style => "width: 100%;"
         .controls
-          = f.text_field :last_name, :placeholder => "Sobrenome", :style => "width: 100%;"
+          = f.text_field :last_name, :placeholder => I18n.t("activerecord.attributes.user.last_name"), :style => "width: 100%;"
         .controls
-          = f.text_field :password, :placeholder => "Senha", :style => "width: 100%;"
+          = f.text_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width: 100%;"
         .controls
-          = f.text_field :password_confirmation, :placeholder => "Confirmar senha", :style => "width: 100%;"
+          = f.text_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
 
         .controls
           = f.submit I18n.t("views.button.submit"), :class => "btn btn-success btn-block btn-large"

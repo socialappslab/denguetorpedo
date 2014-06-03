@@ -23,6 +23,7 @@ pt:
         other: Cupons
     attributes:
       user:
+        email: "Email"
         password: "Senha"
         phone_number: "Celular"
         first_name: "Nome"
