@@ -7,7 +7,7 @@ $gridColumnWidth: 55px;
 $gridGutterWidth: 10px;
 $gridColumnWidthLarge: 60px;
 $gridGutterWidthLarge: 10px;
-$gridRowWidth: ($gridColumns * $gridColumnWidth) + ($gridGutterWidth * ($gridColumns - 1))+80;
+$gridRowWidth: ($gridColumns * $gridColumnWidth) + ($gridGutterWidth * ($gridColumns - 1)) + 140;
 
 @import 'bootstrap';
 @import "variables";
@@ -161,7 +161,7 @@ body, #container {
   background: $background-color;
 }
 
-body > #container { 
+body > #container {
   height: auto;
   min-height: 100%;
   padding-bottom: 20px;
