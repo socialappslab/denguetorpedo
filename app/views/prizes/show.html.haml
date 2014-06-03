@@ -1,15 +1,15 @@
 - unless @prize.nil?
   .row
     .span15.offset1
-      - if flash[:notice] 
+      - if flash[:notice]
         .row#flash_dat_notice
-          #flashNotice 
+          #flashNotice
             %p
               = flash[:notice]
 
-      - if flash[:alert] 
+      - if flash[:alert]
         .row#flash_dat_alert
-          #flashAlert 
+          #flashAlert
             %p
               = flash[:alert]
       .row#prize_name_and_photo
@@ -29,10 +29,10 @@
                 %h5
                   #{@prize.cost} pontos
                 %br
-                
+
                 - if @prize.is_badge
                   %p{ :style => "font-size:18px;margin-top:30px;"}
-                    Medalha digital premiada automaticamente. 
+                    Medalha digital premiada automaticamente.
                   %p{:style => "font-size:18px;"}
                     Você não precisa utilizar seus pontos!
                 - else
@@ -53,7 +53,7 @@
               %div#prize_cost
                 #current_user
                   %h5{:style => "color:#333333;font-size:60px; text-align:center;"}
-                    = number_with_delimiter(@user.points, :delimiter => ".")
+                    = @user.total_points
                 #cant_use_points_sucka
                   %h6
                     Seus pontos
