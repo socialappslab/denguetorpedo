@@ -95,15 +95,15 @@
         .row#sponsor_spot
           .row#more_bootstrap_sucks
             .span3
-              %div#sponsor_image 
+              %div#sponsor_image
                 = link_to image_tag(@prize.user.house.profile_photo.url(:small), :width => 100), sponsor_path(@prize.user)
             .span7
               %div#sponsor_info
                 %h4
                   #{@prize.user.house.name}
                 %p
-                  = @prize.user.house.location.address
-                  
+                  = @prize.user.house.location.address if @prize.user.house.location
+
             .span5
               #map{style: "width:300px; height:300px; border: 1px solid gray;margin-top:20px;"}
               :javascript
@@ -116,17 +116,17 @@
                     zoom: 5,
                     extent: customExtent
                   });
-                  
+
                   var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
                   map.addLayer(tiled);
 
                   var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 64, 64).setOffset(15, 15);
                   var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 64, 64).setOffset(15, 15);
                   var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 64, 64).setOffset(15, 15);
-                  
+
                   map.on("load", function() {
                     map.graphics.add(new Graphic(point, orange));
                   });
 
-                  
+
                 });
