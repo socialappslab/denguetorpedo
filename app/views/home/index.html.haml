@@ -12,56 +12,39 @@
     .span10.offset1
       %h2
         = I18n.t("landing_page.community.title")
-    .span5
+    .span5{:style => "width: 325px;"}
       = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
         - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }
         - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
         = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
 
   .row
-    .span16.offset1
-      = render "home/neighborhood_list"
+    = render "home/neighborhood_list"
 
+%br
 %br
 
 /------------------------------------------------------------------------------
 
 .row
-  .span11.offset4
-    = render :partial => "shared/news_feed"
+  .span3.offset1
+    %h2{style: 'font-size: 18px;'}
+      = I18n.t("landing_page.house.title")
+    = render "home/house_list"
 
+
+  .span10
+    = render :partial => "shared/news_feed"
     .span9{:style => "text-align: center;"}
       = link_to users_path, :style => "color: #6655ee; font-size: 20px;" do
         %i.fa.fa-chevron-down
         = I18n.t("common_terms.more")
 
-
-/------------------------------------------------------------------------------
-
-.row
-  .span10.offset1#home_houses
-    %h2{style: 'font-size: 18px;'}
-      - if @current_user.present?
-        = I18n.t("landing_page.house.title_with_name", :name => @selected_neighborhood.name)
-      - else
-        = I18n.t("landing_page.house.title")
-
-.row
-  .span15.offset1
-    #houses
-      = render "home/house_list"
-
-
-/------------------------------------------------------------------------------
-
-%br
-.row
-  .span10.offset1
+  .span4
     %h2{style: 'font-size: 18px;'}
       = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
 
-.row
-  .span15.offset1{style: "margin-left:61px;"}
+
     #sponsors
       %ul
         - @prizes.each do |prize|
