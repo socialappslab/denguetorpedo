@@ -36,7 +36,7 @@
   .span9
     = render :partial => "shared/news_feed"
     .span9{:style => "text-align: center;"}
-      = link_to users_path, :style => "color: #6655ee; font-size: 20px;" do
+      = link_to new_user_path, :style => "color: #6655ee; font-size: 20px;" do
         %i.fa.fa-chevron-down
         = I18n.t("common_terms.more")
 
@@ -99,4 +99,14 @@
     $("#search-neighborhoods").change(function() {
       window.location.href = $(this).val()
     });
+  })
+
+
+  $(".show-more-content-link").on("click", function(eventObj)
+  {
+      eventObj.preventDefault()
+
+      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+      hiddenContent.css("display", "inline")
+      $(eventObj.currentTarget).hide()
   })
