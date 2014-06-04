@@ -2,15 +2,14 @@
 # encoding: utf-8
 
 class UsersController < ApplicationController
-
-  #----------------------------------------------------------------------------
-
   before_filter :require_login, :only => [:edit, :update, :index, :show]
   before_filter :ensure_mare_neighborhood, :only => [:update]
   before_filter :identify_student, :only => [:edit, :update]
 
-  def index
+  #----------------------------------------------------------------------------
+  # GET /users/
 
+  def index
     if params[:q].nil? or params[:q] == ""
       @users = User.residents.order(:first_name)
       @sponsors = User.where(:role => "lojista").order(:first_name)
@@ -54,7 +53,7 @@ class UsersController < ApplicationController
 
     # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
-    @redeemable_prizes = @prizes.where("cost < ?", @user.total_points)
+    @redeemable_prizes = @prizes.where("cost < ?", @user.total_points).shuffle
 
     # Load the community news feed. We explicitly limit activity to this month
     # so that we don't inadvertedly create a humongous array.
@@ -93,6 +92,7 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
+  # TODO: Figure out whether this is needed.
   def special_new
     authorize! :edit, User.new
     @user ||= User.new
@@ -108,7 +108,6 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   def create
-    #remove whitespace from user signup
     params[:user].each{|key,val| params[:user][key] = params[:user][key].strip}
 
     @user = User.new(params[:user])
@@ -121,7 +120,7 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /users/1
+  # GET /users/1/edit
 
   def edit
     authorize!(:edit, @user) if @user != @current_user
@@ -131,7 +130,7 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # PUT "/users/1
+  # PUT /users/1
 
   def update
     # NOTE: These horrendous actions are a result of trying to save form information,
@@ -296,6 +295,7 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
+  # TODO: Figure out if this is still needed.
   def special_create
 
     @user = User.new(params[:user])
@@ -363,19 +363,6 @@ class UsersController < ApplicationController
     else
       redirect_to users_path, notice: "There was an error blocking the user"
     end
-  end
-
-  #----------------------------------------------------------------------------
-
-  private
-
-  #----------------------------------------------------------------------------
-
-  # TODO: We're disabling choosing other neighborhoods until we introduce
-  # another neighborhood. See seeds.rb for more.
-  def ensure_mare_neighborhood
-    neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
-    raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"
   end
 
   #----------------------------------------------------------------------------

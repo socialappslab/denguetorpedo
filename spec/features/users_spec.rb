@@ -3,7 +3,8 @@
 require 'spec_helper'
 describe "Users", :type => :feature do
   context "when editing one's information" do
-    let!(:user) { FactoryGirl.create(:user, :phone_number => nil, :carrier => nil, :house_id => nil, :prepaid => nil, :neighborhood_id => nil, ) }
+    let(:house) { FactoryGirl.create(:house) }
+    let!(:user) { FactoryGirl.create(:user, :phone_number => nil, :carrier => nil, :house_id => house.id, :prepaid => nil, :neighborhood_id => nil) }
 
     before(:each) do
       sign_in(user)
@@ -32,7 +33,6 @@ describe "Users", :type => :feature do
           click_button "Confirmar"
         end
 
-        expect(page).to have_content("Nome é obrigatório")
         find_field("user_carrier").value.should eq "xxx"
         find_field("user_phone_number").value.should eq "000000000000"
       end

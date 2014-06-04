@@ -56,12 +56,18 @@ class PrizesController < ApplicationController
     @prize = Prize.find(params[:id])
     @user = current_user
 
-    @latitude = @prize.user.house.location.latitude || 0
-    @longitude = @prize.user.house.location.longitude || 0
-    if @current_user.nil?
-      enoughPoints = false
+    if @prize.user.house.location
+      @latitude = @prize.user.house.location.latitude || 0
+      @longitude = @prize.user.house.location.longitude || 0
     else
-      @enoughPoints = @current_user.points >= @prize.cost ? true : false
+      @latitude  = 0
+      @longitude = 0
+    end
+
+    if @current_user.nil?
+      @enoughPoints = false
+    else
+      @enoughPoints = @current_user.total_points >= @prize.cost ? true : false
     end
 
     respond_to do |format|
@@ -97,10 +103,10 @@ class PrizesController < ApplicationController
           @prize_code = PrizeCode.create(:user_id => @current_user, :prize_id => @prize.id)
           format.html { redirect_to(@prize_code, :notice => "Prêmio resgatado! Vôce tem #{@current_user.total_points - @prize.cost} pontos".encode("UTF-8")) }
         else
-          format.html { redirect_to(@prize_code, :alert => 'Need a valid phone number to redeem prize.') }
+          format.html { redirect_to(@prize, :alert => 'Need a valid phone number to redeem prize.') }
         end
       else
-        format.html { redirect_to(@prize_code, :alert => "Vôce precisa de mais pontos. Vôce tem #{@current_user.total_points} pontos") }
+        format.html { redirect_to(@prize, :alert => "Vôce precisa de mais pontos. Vôce tem #{@current_user.total_points} pontos") }
       end
     end
   end
