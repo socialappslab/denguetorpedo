@@ -53,7 +53,7 @@ class UsersController < ApplicationController
 
     # Find if user can redeem prizes.
     @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
-    @redeemable_prizes = @prizes.where("cost < ?", @user.total_points).shuffle
+    @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
     # Load the community news feed. We explicitly limit activity to this month
     # so that we don't inadvertedly create a humongous array.
