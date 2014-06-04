@@ -23,6 +23,7 @@ pt:
         other: Cupons
     attributes:
       user:
+        email: "Email"
         password: "Senha"
         phone_number: "Celular"
         first_name: "Nome"
@@ -111,7 +112,7 @@ pt:
       future_community: Futura comunidade
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
-      search_for_other_communities: Ache outras comunidades participantes!
+      search_for_other_communities: Ache outras comunidades
     house:
       title_with_name: Casas %{name}
       title: Casas
@@ -148,18 +149,22 @@ pt:
     uploaded_photo: Foto carregada
     eliminated: Eliminado
     create_a_report: Marcar um foco
+    create_reports: Marcar focos
     complete_report: Completar o foco
     points: Pontos
     exchange_points_for_prizes: "Trocar pontos por prêmios"
     go_to_report: "Vá para o foco"
     go_to_notices: "Vá para a notícias"
-    their_house: Seu casa
-    their_community: Seu comunidade
+    their_house: Sua casa
+    their_community: Sua comunidade
     this_user_has_no_activity: Este usuário não tem qualquer atividade
     redeem_by: Resgate até
     ago: atrás
     badges: medalhas
     like: Curtir
+    redeemed_prizes: Prêmios Resgatados
+    go_to_reports: "Vá para focos marcados"
+    eliminate_and_gain_points: Eliminar e ganhar pontos
 
   facebook:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
@@ -199,4 +204,4 @@ pt:
       search:  "Busca"
       submit:  "Enviar"
     post:
-      text_placeholder: Compartilhe suas idéas com a turma do Dengue Torpedo!
+      text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"

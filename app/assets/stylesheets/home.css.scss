@@ -56,24 +56,22 @@
   text-align: center;
 }
 
-ul#neighborhood_list {
+#neighborhood_list {
   li {
-    margin-left: 10px;
+    margin-left: 15px;
     display: inline-block;
     margin-right: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
   }
   .neighborhood_selection {
-    width: 300px;
 
 
     .neighborhood_selection_header {
-      width: auto;
       background: #dddddd;
       margin-bottom: 5px;
       text-align: left;
-      padding:5px 0px 5px 10px;
+      padding: 5px 0px 5px 10px;
 
       a, h3 {
         font-size: 17px;
@@ -152,7 +150,7 @@ ul#house_list {
 }
 
 #sponsors {
-  width: 1010px;
+  // width: 1010px;
   margin-top: 5px;
   margin-bottom: 20px;
   max-height: 350px;

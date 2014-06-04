@@ -3,7 +3,6 @@
     %h1= @sponsor.house.name
     %br
     %h2{style: "font-size:20px;"} Códigos de controle dos prêmios
-    %p Clique nos links dos prêmios abaixo para ver o código que foi gerado para cada prêmio.
     %br
 
     %br
@@ -13,19 +12,19 @@
     %ul
     - @prizes.sort.each do |prize|
       %h2 #{prize.prize_name}
-      %table{:cellpadding => 20}
-        %tr
-          %th Resgatado
+      %table.table.table-bordered
+        %thead
           %th Código
           %th Usuário
           %th Celular
           %th Operadora
-        - prize.prize_codes.each do |cupon|
-          %tr
-            %td{style: "text-align:center;"}
-              %input{type: "checkbox"}
-            %td= cupon.code
-            %td= cupon.user.display_name
-            %td= cupon.user.phone_number
-            %td{style: "text-align:center;"}
-              = cupon.user.carrier
+          %th Nome Completo
+        %tbody
+          - prize.prize_codes.each do |cupon|
+            %tr
+              %td= cupon.code
+              %td= cupon.user.display_name
+              %td= cupon.user.phone_number
+              %td{style: "text-align:center;"}
+                = cupon.user.carrier
+              %td= cupon.user.full_name

@@ -32,7 +32,7 @@ def populate_data
 
   ["a", "b", "c"].each_with_index do |letter, index|
     u = User.find_by_email("#{letter}@denguetorpedo.com")
-    Report.create!(:reporter_id => u.id, :status => Report::STATUS[:reported], :elimination_type => EliminationType.first, :report => "This is a report by #{u.display_name}", :neighborhood_id => mare.id, :completed_at => Time.now, :before_photo => File.open("./spec/support/foco_marcado.jpg"))
+    Report.create!(:reporter_id => u.id, :status => Report::STATUS[:reported], :elimination_type => EliminationType.first.name, :report => "This is a report by #{u.display_name}", :neighborhood_id => mare.id, :completed_at => Time.now, :before_photo => File.open("./spec/support/foco_marcado.jpg"))
   end
 
   # Populate news
@@ -47,10 +47,10 @@ def populate_data
   end
 
   # Populate houses and prizes.
-  5.times do |index|
+  10.times do |index|
     h = House.create!(:neighborhood_id => mare.id, :name => "House Sponsor #{index}!", :house_type => User::Types::SPONSOR)
     u = User.create!(:email => "sponsor_#{index}@denguetorpedo.com", :house_id => h.id, :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
-    Prize.create!(:user_id => u.id, :prize_name => "Prize ##{index}", :description => "This is a prize ##{index}", :cost => index * 100, :stock => index, :neighborhood_id => mare.id)
+    Prize.create!(:user_id => u.id, :prize_name => "Prize ##{index}", :description => "This is a prize ##{index}", :cost => index * 100, :stock => index, :neighborhood_id => mare.id, :expire_on => Time.now + 10.days)
   end
 
   # Now, let's add prize codes which allow users to redeem prizes.

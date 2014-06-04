@@ -4,6 +4,27 @@
 
 @import "variables";
 
+.btn-orange {
+  background-color: #ff6600;
+  color: white;
+  background-image: -webkit-linear-gradient(top, #ff6600, #ff6600);
+
+  &:hover, &:active, &.active, &.disabled, &[disabled] {
+    color: white;
+    background-color: #ff6600;
+  }
+
+  text-shadow: none;
+
+  &:active,
+  &.active {
+    background-color: darken(#ff6600, 10%) e("\9");
+  }
+}
+
+
+
+
 .user_points {
   margin-top: 20px;
   padding-top: 0px;
@@ -234,40 +255,115 @@ ul#user_right_panel {
   .active {
     font-weight: bold;
   }
-
-    .user_activity_item {
-      margin-left: 10px;
+}
 
 
-      background: white;
-      padding: 10px;
 
-      border-bottom: 1px solid #ccc;
+//-----------------------------------------------------------------------------
+// Feed-related customizations
+//-----------------------------------------------------------------------------
+.feed-item-profile-photo {
+  width: 50px;
+  height: 50px;
+}
+
+.feed-item-profile-photo img {
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  width: 50px;
+  height: 50px;
+}
 
 
-      .user_activity_options {
-        margin-left: 0px;
-        text-align: right;
-      }
-      .user_activity_options_full {
-        margin-left:300px;
-        text-align:right;
-      }
-      .user_activity_headline {
-      }
-      .user_activity_location {
-            text-align: right;
-      }
-      .user_activity_balloon {
-          float: left;
-      }
-      .user_activity_icons {
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
-      }
-    }
+.feed-item-report-photo img {
+  // width: 400px;
+  width: 175px;
+  height: 175px;
+}
+
+.feed-item-elimination-incentive {
+  border: 1px #ccc solid;
+  height: 175px;
+  width: 175px;
+  // background-color: #E9EAED;
+  background-image: image-url("phone-prize.png");
+
+  display: table-cell;
+  vertical-align: middle;
+
+  margin-left: 60px;
+
+
+
+  p {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 27px;
+    line-height: 40px;
+    text-align: center;
   }
+}
+
+.feed-item-bar {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.feed-item-timestamp {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  color: #8899a6;
+  display: inline;
+}
+
+.user_activity_item {
+  min-height: 60px;
+  background: #fff;
+  padding: 10px;
+  padding-bottom: 20px;
+  margin-bottom: 10px;
+
+  border-bottom: 1px solid #e5e6e9;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+
+  .user_activity_options {
+    margin-left: 0px;
+    text-align: right;
+  }
+  .user_activity_options_full {
+    margin-left:300px;
+    text-align:right;
+  }
+  .user_activity_headline {
+  }
+  .user_activity_location {
+        text-align: right;
+  }
+  .user_activity_balloon {
+      float: left;
+  }
+  .user_activity_icons {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+
+.profile-view-points-button {
+  margin-top: 10px;
+}
+
+.profile-view-reports-button {
+  margin-top: 10px;
+}
+
+
 
 
 //OLD BELOW HERE

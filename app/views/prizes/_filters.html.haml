@@ -1,0 +1,57 @@
+#filters.offset1
+- if params[:filter] == nil
+  .filters.active.small
+    = link_to "Todos", "/premios"
+- else
+  .filters.small
+    = link_to "Todos", "/premios"
+- if params[:filter] == "badges"
+  .filters.active.large
+    = link_to "Medalhas", "/premios?filter=badges"
+- else
+  .filters.large
+    = link_to "Medalhas", "/premios?filter=badges"
+- if params[:filter] == "individual"
+  .filters.active.large
+    = link_to "Individual", "/premios?filter=individual"
+- else
+  .filters.large
+    = link_to "Individual", "/premios?filter=individual"
+
+- if params[:filter] == "community"
+  .filters.active.large
+    = link_to "Comunidade", "/premios?filter=community"
+- else
+  .filters.large
+    = link_to "Comunidade", "/premios?filter=community"
+.filters.space
+
+-# .row
+-#   Por pontos:
+-#   - if params[:filter] == "pontos" and params[:max] == "500"
+-#     .filters.active.small
+-#       = link_to "0-499", "/premios?filter=pontos&max=500"
+-#   - else
+-#     .filters.small
+-#       = link_to "0-499", "/premios?filter=pontos&max=500"
+-#
+-#   - if params[:filter] == "pontos" and params[:max] == "1000"
+-#     .filters.active.large
+-#       = link_to "500-999", "/premios?filter=pontos&max=1000"
+-#   -else
+-#     .filters.large
+-#       = link_to "500-999", "/premios?filter=pontos&max=1000"
+-#
+-#   - if params[:filter] == "pontos" and params[:max] == "5000"
+-#     .filters.active.large
+-#       = link_to "1000-4999", "/premios?filter=pontos&max=5000"
+-#   - else
+-#     .filters.large
+-#       = link_to "1000-4999", "/premios?filter=pontos&max=5000"
+-#
+-#   - if params[:filter] == "pontos" and params[:max] == nil
+-#     .filters.active.small
+-#       = link_to ">5000", "/premios?filter=pontos"
+-#   - else
+-#     .filters.small
+-#       = link_to ">5000", "/premios?filter=pontos"

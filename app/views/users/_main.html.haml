@@ -9,13 +9,14 @@
     %h1{:style => "color: #{total_points_color}; font-size: 50px; display: inline;"}
       = @user.total_points
 
-    %p{:style => "text-align: left; display: inline;"}
+    %p{:style => "text-align: left; display: inline; font-size: 16px;"}
       = I18n.t("common_terms.points")
 
     - if @current_user == @user && @redeemable_prizes.count > 0
-      = link_to I18n.t("common_terms.exchange_points_for_prizes"), prizes_path, :style => "display:block;"
+      = link_to prizes_path, :class => "btn btn-orange btn-small profile-view-points-button" do
+        = I18n.t("common_terms.exchange_points_for_prizes")
 
-  .span5{:style => "text-align: right;"}
+  .span3.offset2{:style => "text-align: right;"}
     - if @reports.count == 0
       - num_of_reports_color = "#d9534f";
     - else
@@ -23,11 +24,12 @@
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
       = @reports.count
-    %p{:style => "margin-top: 10px; display: inline;"}
+    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
       = I18n.t("dashboard.reports")
 
     - if @current_user == @user
-      = link_to I18n.t("common_terms.create_a_report"), neighborhood_reports_path(@neighborhood), :style => "display: block;"
+      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-orange btn-small profile-view-reports-button", :style => "display: inline-block;" do
+        = I18n.t("common_terms.create_reports")
 
 
 - if (@user == @current_user)
@@ -36,3 +38,15 @@
 
 .row
   = render :partial => "shared/news_feed"
+
+
+
+:javascript
+  $(".show-more-content-link").on("click", function(eventObj)
+  {
+      eventObj.preventDefault()
+
+      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+      hiddenContent.css("display", "inline")
+      $(eventObj.currentTarget).hide()
+  })

@@ -1,14 +1,23 @@
-#register.offset1
-  %h1 Inscreva-se
-  = form_for(@user) do |f|
-    %ul
-      %li= f.error_messages
-      %li= f.text_field :email, :placeholder => "E-mail", :class => "fields"
-      %li= f.text_field :first_name, :placeholder => "Nome", :class => "fields"
-      -#%li= f.text_field :middle_name, :placeholder => "Nome do meio", :class => "fields"
-      %li= f.text_field :last_name, :placeholder => "Sobrenome", :class => "fields"
-      /%li= f.text_field :phone_number, :placeholder => "Celular: 0219xxxxxxxx", :class => "fields"
-      %li= f.password_field :password, :placeholder => "Senha", :class => "fields", :class => "fields"
-      %li= f.password_field :password_confirmation, :placeholder => "Confirmar senha", :class => "fields"
+.offset4
+  = render :partial => "shared/form_errors", :locals => {:item => @user}
+
+#register{:style => "margin: auto; width: 25%; text-align: center;"}
+  .well
+    %h1 Inscreva-se
     %br
-    = f.submit I18n.t("views.button.submit"), :class => "btn btn-success"
+    = form_for(@user, :class => "form-horizontal") do |f|
+
+      .control-group
+        .controls
+          = f.text_field :email, :placeholder => I18n.t("activerecord.attributes.user.email"), :style => "width: 100%;"
+        .controls
+          = f.text_field :first_name, :placeholder => I18n.t("activerecord.attributes.user.first_name"), :style => "width: 100%;"
+        .controls
+          = f.text_field :last_name, :placeholder => I18n.t("activerecord.attributes.user.last_name"), :style => "width: 100%;"
+        .controls
+          = f.text_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width: 100%;"
+        .controls
+          = f.text_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
+
+        .controls
+          = f.submit I18n.t("views.button.submit"), :class => "btn btn-success btn-block btn-large"

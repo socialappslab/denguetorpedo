@@ -1,25 +1,25 @@
-.user_activity_item{:style => "margin-left: 0px; min-height: 60px;"}
+.user_activity_item
   .row
-    .span1
+    .span1.feed-item-profile-photo
       = link_to notice_path(notice) do
         - if notice.photo_file_name.nil?
-          = image_tag("default_images/profile_default_image.png", :style => "width: 100px;")
+          = image_tag("default_images/user_default_alt.png")
         - else
-          = image_tag(notice.photo.url(:small), :style => "width: 100px;")
+          = image_tag(notice.photo.url(:small))
 
     .span7
-      .row{:style => "margin-bottom: 15px;"}
+      .row.feed-item-bar
         .span7
           %b
             = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
-          %span{:style => "color: #8899a6; display: inline;"}
+          .feed-item-timestamp
             %i.fa.fa-clock-o
             = format_timestamp(notice.created_at)
 
-      .row
+      .row.feed-item-content
         .span7
           - if notice.title.present?
-            = notice.title
+            = link_to notice.title, notice_path(notice)
 
           - if notice.summary.present?
             %div{:style => "margin-top: 5px;"}

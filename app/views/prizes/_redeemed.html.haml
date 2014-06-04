@@ -1,4 +1,4 @@
-%li.span3.prizes.redeemed
+.span4.prizes.redeemed
 	.status.redeemed
 		.name{style: "height:20px;"}
 			= link_to redeemed.sponsor_name, "/sponsors/#{redeemed.user.id}"
@@ -12,7 +12,7 @@
 		.description
 			= truncate(redeemed.prize_name, length: 35)
 		.stock
-			
+
 			- if redeemed.stock == 0
 				Estoque: #{redeemed.stock}
 			- else

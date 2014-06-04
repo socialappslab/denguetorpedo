@@ -1,13 +1,11 @@
-#register
+#register{:style => "margin-left: 40px;"}
   %ul
     = form_for(@user, html: {name: "registration_form" }) do |f|
-      %li= f.error_messages
+      %li= f.text_field :email, :placeholder => I18n.t("activerecord.attributes.user.email"), :style => "width: 100%;"
+      %li= f.text_field :first_name, :placeholder => I18n.t("activerecord.attributes.user.first_name"), :style => "width: 100%;"
+      %li= f.text_field :last_name, :placeholder => I18n.t("activerecord.attributes.user.last_name"), :style => "width: 100%;"
+      %li= f.password_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width: 100%;"
+      %li= f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
 
-      %li= f.text_field :email, :placeholder => "Email", :class => "fields"
-      %li= f.text_field :first_name, :placeholder => I18n.t("activerecord.attributes.user.first_name"), :class => "fields"
-      %li= f.text_field :last_name, :placeholder => I18n.t("activerecord.attributes.user.last_name"), :class => "fields"
-      %li= f.password_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :class => "fields"
-      %li= f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :class => "fields"
-      <br>
       %li
-        = f.submit I18n.t("common_terms.register"), :class => "btn btn-success"
+        = f.submit I18n.t("common_terms.register"), :class => "btn btn-success btn-block btn-large"

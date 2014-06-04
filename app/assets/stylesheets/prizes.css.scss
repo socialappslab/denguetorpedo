@@ -502,7 +502,7 @@ div.prizes {
   display: inline-block;
 }
 
-li.prizes {
+.span4.prizes, .span3.prizes {
   // display: inline-block;
   background-color: white;
   border: 1px solid #60BB50;
@@ -561,7 +561,8 @@ img.prizes {
 }
 
 div.filters {
-  float: left;
+  // float: left;
+  display: inline;
   margin-left: 10px;
   margin-right: 10px;
   a:hover {
@@ -592,7 +593,7 @@ div.active {
   background-color: #60BB50;
   border-radius: 2px;
   height: 40px;
-  width: 50px;
+  // width: 50px;
 }
 
 div.redeem_button {
