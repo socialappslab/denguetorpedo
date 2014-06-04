@@ -15,6 +15,14 @@
     - if @current_user == @user && @redeemable_prizes.count > 0
       = link_to prizes_path, :class => "btn btn-orange btn-small profile-view-points-button" do
         = I18n.t("common_terms.exchange_points_for_prizes")
+      %div{:style => "display: block; margin-top: 10px;"}
+        - @redeemable_prizes.limit(4).each do |p|
+          = link_to prize_path(p), :style => "display: inline-block;" do
+            = image_tag p.prize_photo(:small), :class => "img-circle", :style => "width: 50px; height: 50px; display: block;"
+            %span{:style => "text-align: center; color: #5cb85c;"}
+              = p.cost
+            %span{:style => "font-size: 10px; text-align: center;"}
+              = I18n.t("common_terms.points").downcase
 
   .span3.offset2{:style => "text-align: right;"}
     - if @reports.count == 0

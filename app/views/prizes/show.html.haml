@@ -1,15 +1,15 @@
 - unless @prize.nil?
   .row
     .span15.offset1
-      - if flash[:notice] 
+      - if flash[:notice]
         .row#flash_dat_notice
-          #flashNotice 
+          #flashNotice
             %p
               = flash[:notice]
 
-      - if flash[:alert] 
+      - if flash[:alert]
         .row#flash_dat_alert
-          #flashAlert 
+          #flashAlert
             %p
               = flash[:alert]
       .row#prize_name_and_photo
@@ -29,10 +29,10 @@
                 %h5
                   #{@prize.cost} pontos
                 %br
-                
+
                 - if @prize.is_badge
                   %p{ :style => "font-size:18px;margin-top:30px;"}
-                    Medalha digital premiada automaticamente. 
+                    Medalha digital premiada automaticamente.
                   %p{:style => "font-size:18px;"}
                     Você não precisa utilizar seus pontos!
                 - else
@@ -53,7 +53,7 @@
               %div#prize_cost
                 #current_user
                   %h5{:style => "color:#333333;font-size:60px; text-align:center;"}
-                    = number_with_delimiter(@user.points, :delimiter => ".")
+                    = @user.total_points
                 #cant_use_points_sucka
                   %h6
                     Seus pontos
@@ -95,15 +95,15 @@
         .row#sponsor_spot
           .row#more_bootstrap_sucks
             .span3
-              %div#sponsor_image 
+              %div#sponsor_image
                 = link_to image_tag(@prize.user.house.profile_photo.url(:small), :width => 100), sponsor_path(@prize.user)
             .span7
               %div#sponsor_info
                 %h4
                   #{@prize.user.house.name}
                 %p
-                  = @prize.user.house.location.address
-                  
+                  = @prize.user.house.location.address if @prize.user.house.location
+
             .span5
               #map{style: "width:300px; height:300px; border: 1px solid gray;margin-top:20px;"}
               :javascript
@@ -116,17 +116,17 @@
                     zoom: 5,
                     extent: customExtent
                   });
-                  
+
                   var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
                   map.addLayer(tiled);
 
                   var grey = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 64, 64).setOffset(15, 15);
                   var orange = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 64, 64).setOffset(15, 15);
                   var mixed = new PictureMarkerSymbol("/assets/markers/mixed_marker.png", 64, 64).setOffset(15, 15);
-                  
+
                   map.on("load", function() {
                     map.graphics.add(new Graphic(point, orange));
                   });
 
-                  
+
                 });
