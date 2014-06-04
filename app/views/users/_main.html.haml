@@ -53,7 +53,7 @@
             = image_tag("home_images/logo.png", :class => "prizes img-rounded")
           - else
             = image_tag(prize.prize_photo.url(:large), :class => "prizes img-rounded")
-          .description{:style => "height: 35px;"}
+          .description{:style => "height: 35px; overflow: none;"}
             = truncate(prize.prize_name, length: 40)
           .points
             %span{:style => "color: #5cb85c; display: inline; font-weight: bold;"}
