@@ -17,10 +17,11 @@
         - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }
         - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
         = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
-
+  %br
   .row
     = render "home/neighborhood_list"
 
+%br
 %br
 %br
 
