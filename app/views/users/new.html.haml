@@ -3,7 +3,10 @@
 
 #register{:style => "margin: auto; width: 25%; text-align: center;"}
   .well
-    %h1 Inscreva-se
+    %h1
+      = I18n.t("common_terms.register")
+    %p
+      = I18n.t("common_terms.login_to_play_dengue_torpedo")
     %br
     = form_for(@user, :class => "form-horizontal") do |f|
 
