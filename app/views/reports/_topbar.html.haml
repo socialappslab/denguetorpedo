@@ -1,7 +1,7 @@
 .rp_report_status.status
   .span2
     = link_to nil, :class => "likes_button", "data-path" => like_neighborhood_report_path(:id => report.id),"data-likes_count" => report.likes_count do
-      = I18n.t("common_terms.like")
+      -# = I18n.t("common_terms.like")
       %i.fa.fa-thumbs-up
       %span.likes_text
 
