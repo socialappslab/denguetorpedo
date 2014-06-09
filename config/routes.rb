@@ -41,7 +41,11 @@ Dengue::Application.routes.draw do
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
   resources :users do
     resources :reports, :except => [:show]
-    resources :posts
+
+    resources :posts do
+      post "like"
+    end
+
     collection do
       get 'special_new'
       post 'special_create'
@@ -133,7 +137,11 @@ Dengue::Application.routes.draw do
   # Miscellaneous routes.
 
   resources :feedbacks
-  resources :notices
+
+  resources :notices do
+    post "like"
+  end
+
   resources :sponsors
   get "dashboard/index"
   resources :dashboard
