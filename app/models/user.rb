@@ -127,7 +127,7 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def reports
-    Report.includes(:reporter, :eliminator, :location).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
+    Report.includes(:reporter, :eliminator, :location, :likes).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
   end
 
   #----------------------------------------------------------------------------

@@ -1,11 +1,7 @@
 .report.eliminated
   .row
-    .rp_report_status.status
-      .rp_report_options{:style => "margin-top:-3px;"}
-        = render :partial => "reports/topbar", :locals => {:report => report}
+    = render :partial => "reports/topbar", :locals => {:report => report}
 
-      .span{:style => "float:right;"}
-        = I18n.t("common_terms.eliminated")
 
   .row
     .span6{:style => "margin-top:10px;"}
