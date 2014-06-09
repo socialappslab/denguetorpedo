@@ -85,4 +85,33 @@ class NoticesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  #----------------------------------------------------------------------------
+  # POST /notices/1/like
+
+  def like
+    news  = Notice.find(params[:id])
+    count = params[:count].to_i
+
+    # Return immediately if the news instance can't be found or the user is
+    # not logged in.
+    render :nothing => true, :status => 400 if (news.blank? || @current_user.blank?)
+
+
+    # If the user already liked the news, and has clicked like, then
+    # remove their like. Otherwise, add a like.
+    existing_like = notices.likes.find {|like| like.user_id == @current_user.id }
+    if existing_like
+      existing_like.destroy
+      count -= 1
+    else
+      Like.create(:user_id => @current_user.id, :likeable_id => news.id, :likeable_type => Notice.name)
+      count += 1
+    end
+
+    render :json => {'count' => count.to_s} and return
+  end
+
+  #----------------------------------------------------------------------------
+
 end
