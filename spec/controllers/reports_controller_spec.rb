@@ -281,7 +281,6 @@ describe ReportsController do
 	context "when verifying open reports" do
 		let(:admin)   { FactoryGirl.create(:admin)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
-
 																				:reporter => user,
 																				:elimination_type => elimination_type,
 																				:report => "Description") }
@@ -411,4 +410,29 @@ describe ReportsController do
 
 	#---------------------------------------------------------------------------
 
+	context "when liking a report" do
+		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+																				:reporter => user,
+																				:elimination_type => elimination_type,
+																				:report => "Description") }
+
+
+		before(:each) do
+			cookies[:auth_token] = user.auth_token
+		end
+
+		it "increments number of likes" do
+			expect {
+				post :like, :id => report.id
+			}.to change(Like, :count).by(1)
+		end
+
+		it "decrements number of likes" do
+			Like.create(:user_id => user.id, :likeable_id => report.id, :likeable_type => Report.name)
+
+			expect {
+				post :like, :id => report.id
+			}.to change(Like, :count).by(-1)
+		end
+	end
 end
