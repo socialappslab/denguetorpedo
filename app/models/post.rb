@@ -2,11 +2,15 @@ class Post < ActiveRecord::Base
   attr_accessible :content, :title, :user_id, :parent_id
   acts_as_nested_set
 
-  # associations
+  #----------------------------------------------------------------------------
+
   belongs_to :user
   has_one :feed, :as => :target
   belongs_to :wall, :polymorphic => true
+  has_many :likes, :as => :likeable
 
+  #----------------------------------------------------------------------------
+  
   # validations
   # validates :title, presence: true
   validates :user_id, :presence => true
