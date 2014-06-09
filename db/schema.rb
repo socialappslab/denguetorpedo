@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140609220154) do
+ActiveRecord::Schema.define(:version => 20140609221808) do
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -88,6 +88,8 @@ ActiveRecord::Schema.define(:version => 20140609220154) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  add_index "likes", ["user_id", "likeable_id", "likeable_type"], :name => "index_likes_on_user_id_and_likeable_id_and_likeable_type", :unique => true
 
   create_table "locations", :force => true do |t|
     t.string   "address"
