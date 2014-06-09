@@ -225,29 +225,29 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # POST /neighborhoods/1/reports/1/like
 
   def like
+    report = Report.find(params[:id])
+    count = params[:count].to_i
 
-      report = Report.find(params[:id])
-      count = params[:count].to_i
+    if report && @current_user.present?
+      existing_like = report.likes.find {|like| like.user_id == @current_user.id }
 
-      if report && @current_user.present?
-
-        # If user already likes report, remove like (e.g. 'unlike'), else add to likes
-        if report.likes.include? @current_user
-          report.likes.destroy(@current_user)
-          count -= 1
-        else
-          report.likes << @current_user
-          count += 1
-        end
-
-        render :json => {'count' => count.to_s} and return
+      # If user already likes report, remove like (e.g. 'unlike'), else add to likes
+      if existing_like
+        existing_like.destroy
+        count -= 1
+      else
+        Like.create(:user_id => @current_user.id, :likeable_id => report.id, :likeable_type => Report.name)
+        count += 1
       end
 
-      # status 400 -> Bad Request (error)
-      render :nothing => true, :status => 400
+      render :json => {'count' => count.to_s} and return
+    end
 
+    # status 400 -> Bad Request (error)
+    render :nothing => true, :status => 400
   end
 
   #----------------------------------------------------------------------------
