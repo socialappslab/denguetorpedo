@@ -8,9 +8,9 @@ class Like < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   module Types
-    POST           = "Post"
-    REPORT         = "Report"
-    COMMUNITY_NEWS = "Notice"
+    POST   = Post.name
+    REPORT = Report.name
+    NOTICE = Notice.name
   end
 
   #----------------------------------------------------------------------------
