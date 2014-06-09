@@ -164,6 +164,7 @@ es:
 
   report:
     form:
+      likes: "Personas les gusta esto"
       address: Dirección de foco localizada
       example_of_street_type: "Calle, callejón, etc."
       example_of_description: "Describa la ubicación del foco (max 100 caracteres) Ej: Foco en el terreno de un lado; la acera de enfrente, etc"

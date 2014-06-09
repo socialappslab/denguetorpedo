@@ -86,9 +86,17 @@ class Report < ActiveRecord::Base
     return self.status == Report::STATUS[:eliminated]
   end
 
+  def eliminated?
+    return self.is_eliminated?
+  end
+
   # NOTE: Open does not mean active. An open report can be expired.
   def is_open?
     return self.status == Report::STATUS[:reported]
+  end
+
+  def open?
+    return self.is_open?
   end
 
   def sms_incomplete?
@@ -100,6 +108,10 @@ class Report < ActiveRecord::Base
   # when you're ready.
   def is_public?
     return !self.sms
+  end
+
+  def public?
+    return self.is_public?
   end
 
   def expired?
@@ -126,6 +138,10 @@ class Report < ActiveRecord::Base
     elsif self.is_eliminated?
       return (self.is_resolved_verified == "f")
     end
+  end
+
+  def invalid?
+    return self.is_invalid?
   end
 
   #----------------------------------------------------------------------------

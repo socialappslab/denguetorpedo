@@ -8,23 +8,8 @@
 
 .report.open
   .row
-    .rp_report_status.status
-      .rp_report_options
-        = render :partial => "reports/topbar", :locals => {:report => report}
+    = render :partial => "reports/topbar", :locals => {:report => report}
 
-
-        - if report.sms_incomplete?
-          .span{style: "margin-top:3px; margin-right:10px;"}
-            = I18n.t("common_terms.sms")
-        - else
-          - if not report.expired?
-            - if report.elimination_type
-              .countdown.countdownHolder.timer
-              .span.countdown_label
-                = I18n.t("common_terms.open_for")
-          - else
-            .span.time_expired
-              = I18n.t("common_terms.time_expired")
 
 
   .row.address_row

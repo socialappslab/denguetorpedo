@@ -37,7 +37,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a if current_user
 
     #3.
-    @reports += Report.where(:neighborhood_id => @neighborhood.id).select(&:completed_at).sort_by(&:completed_at).reverse
+    @reports += Report.includes(:likes).where(:neighborhood_id => @neighborhood.id).select(&:completed_at).sort_by(&:completed_at).reverse
 
     # Remove report that incurred an error, it should be at the top already
     @reports.reject!{|r| r == params[:report]}
@@ -222,6 +222,32 @@ class ReportsController < NeighborhoodsBaseController
       redirect_to neighborhood_reports_path(@neighborhood,
         :params=>{:report => @report.id, :elimination_method => params[:report][:elimination_method]}) and return
     end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def like
+
+      report = Report.find(params[:id])
+      count = params[:count].to_i
+
+      if report && @current_user.present?
+
+        # If user already likes report, remove like (e.g. 'unlike'), else add to likes
+        if report.likes.include? @current_user
+          report.likes.destroy(@current_user)
+          count -= 1
+        else
+          report.likes << @current_user
+          count += 1
+        end
+
+        render :json => {'count' => count.to_s} and return
+      end
+
+      # status 400 -> Bad Request (error)
+      render :nothing => true, :status => 400
+
   end
 
   #----------------------------------------------------------------------------

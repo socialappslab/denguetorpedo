@@ -62,6 +62,7 @@ Dengue::Application.routes.draw do
         get 'types'
       end
       member do
+        post 'like'
         post 'creditar'
         post 'credit'
         post 'discredit'
