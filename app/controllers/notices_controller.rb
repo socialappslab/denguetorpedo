@@ -100,7 +100,7 @@ class NoticesController < ApplicationController
 
     # If the user already liked the news, and has clicked like, then
     # remove their like. Otherwise, add a like.
-    existing_like = notices.likes.find {|like| like.user_id == @current_user.id }
+    existing_like = news.likes.find {|like| like.user_id == @current_user.id }
     if existing_like
       existing_like.destroy
       count -= 1
