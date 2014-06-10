@@ -10,7 +10,7 @@ class Post < ActiveRecord::Base
   has_many :likes, :as => :likeable
 
   #----------------------------------------------------------------------------
-  
+
   # validations
   # validates :title, presence: true
   validates :user_id, :presence => true

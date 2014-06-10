@@ -2,7 +2,7 @@
 
 class PostsController < ApplicationController
   before_filter :require_login, :except => [:index]
-  before_filter :load_wall
+  before_filter :load_wall, :except => [:like]
 
   def index
     @posts = Post.all
