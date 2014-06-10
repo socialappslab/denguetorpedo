@@ -2,7 +2,7 @@
 
 class PostsController < ApplicationController
   before_filter :require_login, :except => [:index]
-  before_filter :load_wall
+  before_filter :load_wall, :except => [:like]
 
   def index
     @posts = Post.all
@@ -49,8 +49,36 @@ class PostsController < ApplicationController
     redirect_to(:back)
   end
 
+  #----------------------------------------------------------------------------
+  # POST /users/1/posts/1/like
+
+  def like
+    post  = Post.find(params[:id])
+    count = params[:count].to_i
+
+    # Return immediately if the news instance can't be found or the user is
+    # not logged in.
+    render :nothing => true, :status => 400 if (post.blank? || @current_user.blank?)
+
+    # If the user already liked the news, and has clicked like, then
+    # remove their like. Otherwise, add a like.
+    existing_like = post.likes.find {|like| like.user_id == @current_user.id }
+    if existing_like
+      existing_like.destroy
+      count -= 1
+    else
+      Like.create(:user_id => @current_user.id, :likeable_id => post.id, :likeable_type => Post.name)
+      count += 1
+    end
+
+    render :json => {'count' => count.to_s} and return
+  end
+
+  #----------------------------------------------------------------------------
 
   private
+
+  #----------------------------------------------------------------------------
 
   def load_wall
     # TODO @dman7: This is not the way of identifying resources...

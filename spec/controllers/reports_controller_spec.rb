@@ -281,7 +281,6 @@ describe ReportsController do
 	context "when verifying open reports" do
 		let(:admin)   { FactoryGirl.create(:admin)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
-
 																				:reporter => user,
 																				:elimination_type => elimination_type,
 																				:report => "Description") }
@@ -406,6 +405,42 @@ describe ReportsController do
 			expect(report.resolved_verified_at).to eq(nil)
 			post :problem, :id => report.id, :neighborhood_id => report.neighborhood_id
 			expect(report.reload.resolved_verified_at).not_to eq(nil)
+		end
+	end
+
+	#---------------------------------------------------------------------------
+
+	context "when liking a report" do
+		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
+																				:reporter => user,
+																				:elimination_type => elimination_type,
+																				:report => "Description") }
+
+		before(:each) do
+			cookies[:auth_token] = user.auth_token
+		end
+
+		it "increments number of likes" do
+			expect {
+				post :like, :id => report.id
+			}.to change(Like, :count).by(1)
+		end
+
+		it "decrements number of likes" do
+			Like.create(:user_id => user.id, :likeable_id => report.id, :likeable_type => Report.name)
+
+			expect {
+				post :like, :id => report.id
+			}.to change(Like, :count).by(-1)
+		end
+
+		it "creates a Like instance with correct attributes" do
+			post :like, :id => report.id
+
+			like = Like.first
+			expect(like.user_id).to eq(user.id)
+			expect(like.likeable_id).to eq(report.id)
+			expect(like.likeable_type).to eq(report.class.name)
 		end
 	end
 
