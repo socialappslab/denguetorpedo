@@ -416,7 +416,6 @@ describe ReportsController do
 																				:elimination_type => elimination_type,
 																				:report => "Description") }
 
-
 		before(:each) do
 			cookies[:auth_token] = user.auth_token
 		end
@@ -434,5 +433,17 @@ describe ReportsController do
 				post :like, :id => report.id
 			}.to change(Like, :count).by(-1)
 		end
+
+		it "creates a Like instance with correct attributes" do
+			post :like, :id => report.id
+
+			like = Like.first
+			expect(like.user_id).to eq(user.id)
+			expect(like.likeable_id).to eq(report.id)
+			expect(like.likeable_type).to eq(report.class.name)
+		end
 	end
+
+	#---------------------------------------------------------------------------
+
 end

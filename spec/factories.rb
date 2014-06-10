@@ -84,6 +84,10 @@ FactoryGirl.define do
 		date Date.new
 	end
 
+	factory :post do
+		content "Hello world"
+	end
+
   factory :report do
 		status Report::STATUS[:reported]
 		association :reporter, :factory => :user
