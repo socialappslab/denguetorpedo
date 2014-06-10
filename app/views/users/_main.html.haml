@@ -59,10 +59,10 @@
             %span{:style => "color: #5cb85c; display: inline; font-weight: bold;"}
               = prize.cost
             = I18n.t("common_terms.points")
-
-  .span1
-    = link_to prizes_path do
-      %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
+  - if @redeemable_prizes.any?
+    .span1
+      = link_to prizes_path do
+        %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
 
 - if (@user == @current_user)
   .row{:style => "margin-top:60px;"}
