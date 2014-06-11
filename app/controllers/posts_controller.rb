@@ -75,6 +75,21 @@ class PostsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # POST /users/1/posts/1/comment
+
+  def comment
+    redirect_to :back and return if ( @current_user.blank? || @post.blank? )
+
+    c         = Comment.new(:user_id => @current_user.id, :commentable_id => @post.id, :commentable_type => Post.name)
+    c.content = params[:comment][:content]
+    if c.save
+      redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
+    else
+      redirect_to :back and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
 
   private
 

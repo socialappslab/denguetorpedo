@@ -117,5 +117,29 @@ class NoticesController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # POST /notices/1/comment
 
+  def comment
+    redirect_to :back and return if ( @current_user.blank? || @news.blank? )
+
+    c         = Comment.new(:user_id => @current_user.id, :commentable_id => @news.id, :commentable_type => Notice.name)
+    c.content = params[:comment][:content]
+    if c.save
+      redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
+    else
+      redirect_to :back and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  def find_by_id
+    @news = Notice.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
 end

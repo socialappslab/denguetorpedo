@@ -3,7 +3,7 @@
 
 class ReportsController < NeighborhoodsBaseController
   before_filter :require_login, :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
-  before_filter :find_by_id,    :only   => [:update, :creditar, :credit, :discredit]
+  before_filter :find_by_id,    :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
   before_filter :require_admin, :only   => [:types]
 
   #----------------------------------------------------------------------------
@@ -246,6 +246,23 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     render :json => {'count' => count.to_s} and return
+  end
+
+  #----------------------------------------------------------------------------
+  # POST /neighborhoods/1/reports/1/comment
+
+  def comment
+    # Return immediately if the news instance can't be found or the user is
+    # not logged in.
+    redirect_to :back and return if ( @current_user.blank? || @report.blank? )
+
+    c         = Comment.new(:user_id => @current_user.id, :commentable_id => @report.id, :commentable_type => Report.name)
+    c.content = params[:comment][:content]
+    if c.save
+      redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
+    else
+      redirect_to :back and return
+    end
   end
 
   #----------------------------------------------------------------------------
