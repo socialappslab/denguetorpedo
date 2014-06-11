@@ -43,7 +43,6 @@ Dengue::Application.routes.draw do
     resources :reports, :except => [:show]
 
     resources :posts do
-      post "like", :on => :member
     end
 
     collection do
@@ -74,7 +73,9 @@ Dengue::Application.routes.draw do
     end
 
     resources :houses do
-      resources :posts
+      resources :posts do
+        post "like", :on => :member
+      end
     end
   end
 
