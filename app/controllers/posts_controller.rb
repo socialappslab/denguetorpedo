@@ -3,6 +3,7 @@
 class PostsController < ApplicationController
   before_filter :require_login, :except => [:index]
   before_filter :load_wall, :except => [:like]
+  before_filter :find_by_id, :only => [:like, :comment]
 
   def index
     @posts = Post.all
@@ -53,25 +54,39 @@ class PostsController < ApplicationController
   # POST /users/1/posts/1/like
 
   def like
-    post  = Post.find(params[:id])
     count = params[:count].to_i
 
     # Return immediately if the news instance can't be found or the user is
     # not logged in.
-    render :nothing => true, :status => 400 if (post.blank? || @current_user.blank?)
+    render :nothing => true, :status => 400 if (@post.blank? || @current_user.blank?)
 
     # If the user already liked the news, and has clicked like, then
     # remove their like. Otherwise, add a like.
-    existing_like = post.likes.find {|like| like.user_id == @current_user.id }
+    existing_like = @post.likes.find {|like| like.user_id == @current_user.id }
     if existing_like.present?
       existing_like.destroy
       count -= 1
     else
-      Like.create(:user_id => @current_user.id, :likeable_id => post.id, :likeable_type => Post.name)
+      Like.create(:user_id => @current_user.id, :likeable_id => @post.id, :likeable_type => Post.name)
       count += 1
     end
 
     render :json => {'count' => count.to_s} and return
+  end
+
+  #----------------------------------------------------------------------------
+  # POST /users/1/posts/1/comment
+
+  def comment
+    redirect_to :back and return if ( @current_user.blank? || @post.blank? )
+
+    c         = Comment.new(:user_id => @current_user.id, :commentable_id => @post.id, :commentable_type => Post.name)
+    c.content = params[:comment][:content]
+    if c.save
+      redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
+    else
+      redirect_to :back, :alert => I18n.t("attributes.content") + " " + I18n.t("activerecord.errors.comments.blank") and return
+    end
   end
 
   #----------------------------------------------------------------------------
@@ -85,4 +100,13 @@ class PostsController < ApplicationController
     resource, id = request.path.split('/')[3,4]
     @wall = resource.singularize.classify.constantize.find(id)
   end
+
+  #----------------------------------------------------------------------------
+
+  def find_by_id
+    @post = Post.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+
 end

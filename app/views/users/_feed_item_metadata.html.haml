@@ -1,0 +1,10 @@
+.row.feed-item-bar
+  .span7
+    = link_to user.first_name, user_path(user), :style => "font-weight: bold;"
+    .feed-item-timestamp
+      %i.fa.fa-clock-o
+      = format_timestamp(item.created_at)
+
+    - if @current_user == user && item.class == Post
+      = link_to path, :id => 'user_post_delete', :confirm => "Are you sure?", :method => :delete do
+        %i.fa.fa-trash-o

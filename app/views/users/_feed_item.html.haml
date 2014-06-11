@@ -1,40 +1,34 @@
-.user_activity_item
-  .row
-    .span1.feed-item-profile-photo
-      = link_to user_path(owner) do
-        - if owner.profile_photo_file_name.nil?
-          = image_tag("default_images/user_default_alt.png")
-        - else
-          = image_tag(owner.profile_photo.url(:small))
-
-    .span7
-      .row.feed-item-bar
-        .span7
-          = link_to owner.first_name, user_path(owner), :style => "font-weight: bold;"
-          .feed-item-timestamp
-            %i.fa.fa-clock-o
-            = format_timestamp(post.created_at)
-
-          - if @current_user == owner
-            = link_to user_post_path(owner, post), :id => 'user_post_delete', :confirm => "Are you sure?", :method => :delete do
-              %i.fa.fa-trash-o
-
-      .row.feed-item-content
-        .span7
-          - if post.content.length >= Post::CHARACTER_LIMIT
-            = auto_link(post.content[0..Post::CHARACTER_LIMIT - 1])
-            #hidden-post-content{:style => "display: none;"}
-              = auto_link(post.content[Post::CHARACTER_LIMIT..-1])
-            .show-more-content-link{:style => "display: block;"}
-              = link_to "", :style => "color: #6655ee;" do
-                %i.fa.fa-chevron-down
-                = I18n.t("common_terms.more")
+.feed-item
+  .user_activity_item
+    .row
+      .span1.feed-item-profile-photo
+        = link_to user_path(owner) do
+          - if owner.profile_photo_file_name.nil?
+            = image_tag("default_images/user_default_alt.png")
           - else
-            = auto_link(post.content)
+            = image_tag(owner.profile_photo.url(:small))
+
+      .span7
+        = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => user_post_path(owner, post)}
+
+        .row.feed-item-content
+          .span7
+            - if post.content.length >= Post::CHARACTER_LIMIT
+              = auto_link(post.content[0..Post::CHARACTER_LIMIT - 1])
+              #hidden-post-content{:style => "display: none;"}
+                = auto_link(post.content[Post::CHARACTER_LIMIT..-1])
+              .show-more-content-link{:style => "display: block;"}
+                = link_to "", :style => "color: #6655ee;" do
+                  %i.fa.fa-chevron-down
+                  = I18n.t("common_terms.more")
+            - else
+              = auto_link(post.content)
+
+    - if @current_user
+      .row.feed-item-interaction-menu
+        .span7
+          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_neighborhood_house_post_path(@neighborhood, owner, post)}
 
 
-  .row.feed-item-interaction-menu
-    .span7
-      = link_to like_neighborhood_house_post_path(@neighborhood, owner, post), :class => "likes_button", "data-path" => like_neighborhood_house_post_path(@neighborhood, owner, post), "data-likes_count" => post.likes.count do
-        %i.fa.fa-thumbs-up
-        %span.likes_text
+
+  = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_neighborhood_house_post_path(@neighborhood, owner, post)}

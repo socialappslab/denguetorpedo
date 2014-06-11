@@ -1,71 +1,66 @@
-.user_activity_item
-  .row
-    .span1.feed-item-profile-photo
-      = link_to user_path(owner) do
-        - if owner.profile_photo_file_name.nil?
-          = image_tag("default_images/user_default_alt.png")
-        - else
-          = image_tag(owner.profile_photo.url(:small))
+.feed-item
+  .user_activity_item
+    .row
+      .span1.feed-item-profile-photo
+        = link_to user_path(owner) do
+          - if owner.profile_photo_file_name.nil?
+            = image_tag("default_images/user_default_alt.png")
+          - else
+            = image_tag(owner.profile_photo.url(:small))
 
-    .span7
-      .row.feed-item-bar
+      .span7
+        = render :partial => "users/feed_item_metadata", :locals => {:item => report, :user => owner, :path => user_path(owner)}
+
+        .row.feed-item-content{:style => "margin-bottom: 20px;"}
+          .span7
+            - if report.is_open?
+              - report_feed_content = "Encontrei um foco"
+            - elsif report.is_eliminated?
+              - report_feed_content = "Eliminei um foco"
+
+            - if report_feed_content && report.complete_address.present?
+              - report_feed_content += " @ #{report.complete_address}"
+
+            = report_feed_content + "!"
+
+
+    .row.feed-item-report-photo
+      .span9
+
+        .row
+          .span3.offset1
+            = link_to neighborhood_reports_path(report.neighborhood) do
+              - if report.before_photo_file_name.present?
+                = image_tag(report.before_photo.url(:thumb), :class => "img-rounded")
+              - else
+                = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
+
+            %div
+              %i.fa.fa-eye
+              = report.elimination_type
+
+          .span3.offset1
+            = link_to neighborhood_reports_path(report.neighborhood) do
+              - if report.is_eliminated? && report.after_photo_file_name.present?
+                = image_tag(report.after_photo.url(:thumb), :class => "img-rounded")
+              - elsif report.is_open?
+                .feed-item-elimination-incentive
+                  %p
+                    = I18n.t("common_terms.eliminate_and_gain_points")
+
+              - else
+                = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
+
+            %div
+              - if report.is_eliminated? && report.elimination_method
+                %i.fa.fa-ban
+                = report.elimination_method
+
+    - if @current_user
+      .row.feed-item-interaction-menu
         .span7
-          = link_to owner.first_name, user_path(owner), :style => "font-weight: bold;"
-          .feed-item-timestamp
-            %i.fa.fa-clock-o
-            = format_timestamp(report.created_at)
-
-      .row.feed-item-content{:style => "margin-bottom: 20px;"}
-        .span7
-          - if report.is_open?
-            - report_feed_content = "Encontrei um foco"
-          - elsif report.is_eliminated?
-            - report_feed_content = "Eliminei um foco"
-
-          - if report_feed_content && report.complete_address.present?
-            - report_feed_content += " @ #{report.complete_address}"
-
-          = report_feed_content + "!"
+          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
 
 
-  .row.feed-item-report-photo
-    .span9
 
-      .row
-        .span3.offset1
-          = link_to neighborhood_reports_path(report.neighborhood) do
-            - if report.before_photo_file_name.present?
-              = image_tag(report.before_photo.url(:thumb), :class => "img-rounded")
-            - else
-              = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
-
-          %div
-            %i.fa.fa-eye
-            = report.elimination_type
-
-        .span3.offset1
-          = link_to neighborhood_reports_path(report.neighborhood) do
-            - if report.is_eliminated? && report.after_photo_file_name.present?
-              = image_tag(report.after_photo.url(:thumb), :class => "img-rounded")
-            - elsif report.is_open?
-              .feed-item-elimination-incentive
-                %p
-                  = I18n.t("common_terms.eliminate_and_gain_points")
-
-            - else
-              = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
-
-          %div
-            - if report.is_eliminated? && report.elimination_method
-              %i.fa.fa-ban
-              = report.elimination_method
-            - else
-              -# = link_to neighborhood_reports_path(report.neighborhood) do
-              -#   = I18n.t("common_terms.eliminate_and_gain_points")
-
-
-  .row.feed-item-interaction-menu
-    .span7
-      = link_to like_neighborhood_report_path(report.neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(report.neighborhood, report), "data-likes_count" => report.likes.count do
-        %i.fa.fa-thumbs-up
-        %span.likes_text
+  = render :partial => "users/comments", :locals => {:commentable => report, :path => comment_neighborhood_report_path(report.neighborhood, report)}
