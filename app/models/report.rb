@@ -41,9 +41,8 @@ class Report < ActiveRecord::Base
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
 
-
-  # has_and_belongs_to_many :likes, :class_name => "User"
-  has_many :likes, :as => :likeable
+  has_many :likes,    :as => :likeable
+  has_many :comments, :as => :commentable
 
   #----------------------------------------------------------------------------
   # Validations

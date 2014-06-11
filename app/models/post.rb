@@ -7,7 +7,9 @@ class Post < ActiveRecord::Base
   belongs_to :user
   has_one :feed, :as => :target
   belongs_to :wall, :polymorphic => true
-  has_many :likes, :as => :likeable
+
+  has_many :likes,    :as => :likeable
+  has_many :comments, :as => :commentable
 
   #----------------------------------------------------------------------------
 
