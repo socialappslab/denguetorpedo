@@ -42,8 +42,7 @@ Dengue::Application.routes.draw do
   resources :users do
     resources :reports, :except => [:show]
 
-    resources :posts do
-    end
+    resources :posts
 
     collection do
       get 'special_new'
@@ -66,6 +65,7 @@ Dengue::Application.routes.draw do
       end
       member do
         post 'like'
+        post "comment"
         post 'creditar'
         post 'credit'
         post 'discredit'
@@ -74,7 +74,8 @@ Dengue::Application.routes.draw do
 
     resources :houses do
       resources :posts do
-        post "like", :on => :member
+        post "like",    :on => :member
+        post "comment", :on => :member
       end
     end
   end
@@ -140,7 +141,8 @@ Dengue::Application.routes.draw do
   resources :feedbacks
 
   resources :notices do
-    post "like", :on => :member
+    post "like",    :on => :member
+    post "comment", :on => :member
   end
 
   resources :sponsors
