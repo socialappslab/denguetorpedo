@@ -228,21 +228,20 @@ class ReportsController < NeighborhoodsBaseController
   # POST /neighborhoods/1/reports/1/like
 
   def like
-    report = Report.find(params[:id])
     count  = params[:count].to_i
 
     # Return immediately if the news instance can't be found or the user is
     # not logged in.
-    render :nothing => true, :status => 400 if (report.blank? || @current_user.blank?)
+    render :nothing => true, :status => 400 if (@report.blank? || @current_user.blank?)
 
     # If the user already liked the news, and has clicked like, then
     # remove their like. Otherwise, add a like.
-    existing_like = report.likes.find {|like| like.user_id == @current_user.id }
+    existing_like = @report.likes.find {|like| like.user_id == @current_user.id }
     if existing_like.present?
       existing_like.destroy
       count -= 1
     else
-      Like.create(:user_id => @current_user.id, :likeable_id => report.id, :likeable_type => Report.name)
+      Like.create(:user_id => @current_user.id, :likeable_id => @report.id, :likeable_type => Report.name)
       count += 1
     end
 
