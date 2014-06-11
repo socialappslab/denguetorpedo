@@ -9,16 +9,7 @@
             = image_tag(owner.profile_photo.url(:small))
 
       .span7
-        .row.feed-item-bar
-          .span7
-            = link_to owner.first_name, user_path(owner), :style => "font-weight: bold;"
-            .feed-item-timestamp
-              %i.fa.fa-clock-o
-              = format_timestamp(post.created_at)
-
-            - if @current_user == owner
-              = link_to user_post_path(owner, post), :id => 'user_post_delete', :confirm => "Are you sure?", :method => :delete do
-                %i.fa.fa-trash-o
+        = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => user_post_path(owner, post)}
 
         .row.feed-item-content
           .span7
