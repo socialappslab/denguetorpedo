@@ -1,8 +1,8 @@
-.feed-item-comments{:style => "#{commentable.comments.any? ? '' : 'display: none;' }"}
-  - commentable.comments.order("created_at ASC").each do |comment|
-    .feed-item-comment
-      = render :partial => "users/feed_item_comment", :locals => {:comment => comment, :user => comment.user}
 
-
+- commentable.comments.order("created_at ASC").each do |comment|
   .feed-item-comment
-    = render :partial => "users/feed_item_new_comment", :locals => {:path => path}
+    = render :partial => "users/feed_item_comment", :locals => {:comment => comment, :user => comment.user}
+
+
+.feed-item-comment.feed-item-new-comment{:style => "display: none;"}
+  = render :partial => "users/feed_item_new_comment", :locals => {:path => path}

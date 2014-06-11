@@ -5,6 +5,6 @@ $(document).ready(function()
     eventObj.preventDefault();
 
     parent = $(eventObj.currentTarget).parents(".feed-item")
-    parent.children(".feed-item-comments").show()
+    parent.children(".feed-item-new-comment").show()
   })
 })
