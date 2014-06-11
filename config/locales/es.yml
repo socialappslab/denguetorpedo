@@ -146,6 +146,7 @@ es:
     eliminated: Eliminado
     create_a_report: Marcar un foco
     complete_report: Completar un reporte
+    comment: Comentar
 
   facebook:
     description: "Estoy en la lucha contra el dengue en @DengueTorpedo"
