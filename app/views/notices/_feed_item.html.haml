@@ -34,3 +34,9 @@
           %div{:style => "margin-top: 5px;"}
             %i.fa.fa-calendar
             = notice.date.strftime("%H:%M, %d/%m/%Y")
+
+  .row.feed-item-interaction-menu
+    .span7
+      = link_to like_notice_path(notice), :class => "likes_button", "data-path" => like_notice_path(notice), "data-likes_count" => notice.likes.count do
+        %i.fa.fa-thumbs-up
+        %span.likes_text
