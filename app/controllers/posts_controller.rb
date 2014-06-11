@@ -85,7 +85,7 @@ class PostsController < ApplicationController
     if c.save
       redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
     else
-      redirect_to :back and return
+      redirect_to :back, :alert => I18n.t("attributes.content") + " " + I18n.t("activerecord.errors.comments.blank") and return
     end
   end
 
