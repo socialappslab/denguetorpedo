@@ -56,10 +56,10 @@
                 %i.fa.fa-ban
                 = report.elimination_method
 
-
-    .row.feed-item-interaction-menu
-      .span7
-        = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
+    - if @current_user
+      .row.feed-item-interaction-menu
+        .span7
+          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
 
 
 

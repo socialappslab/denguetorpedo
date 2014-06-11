@@ -24,10 +24,10 @@
             - else
               = auto_link(post.content)
 
-
-    .row.feed-item-interaction-menu
-      .span7
-        = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_neighborhood_house_post_path(@neighborhood, owner, post)}
+    - if @current_user
+      .row.feed-item-interaction-menu
+        .span7
+          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_neighborhood_house_post_path(@neighborhood, owner, post)}
 
 
 

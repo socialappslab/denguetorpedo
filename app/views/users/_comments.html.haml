@@ -3,6 +3,6 @@
   .feed-item-comment
     = render :partial => "users/feed_item_comment", :locals => {:comment => comment, :user => comment.user}
 
-
-.feed-item-comment.feed-item-new-comment{:style => "display: none;"}
-  = render :partial => "users/feed_item_new_comment", :locals => {:path => path}
+- if @current_user
+  .feed-item-comment.feed-item-new-comment{:style => "display: none;"}
+    = render :partial => "users/feed_item_new_comment", :locals => {:path => path}

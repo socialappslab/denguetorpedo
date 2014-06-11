@@ -36,9 +36,10 @@
               %i.fa.fa-calendar
               = notice.date.strftime("%H:%M, %d/%m/%Y")
 
-    .row.feed-item-interaction-menu
-      .span7
-        = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => notice, :path => like_notice_path(notice)}
+    - if @current_user
+      .row.feed-item-interaction-menu
+        .span7
+          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => notice, :path => like_notice_path(notice)}
 
 
   = render :partial => "users/comments", :locals => {:commentable => notice, :path => comment_notice_path(notice)}
