@@ -63,7 +63,7 @@ class PostsController < ApplicationController
     # If the user already liked the news, and has clicked like, then
     # remove their like. Otherwise, add a like.
     existing_like = post.likes.find {|like| like.user_id == @current_user.id }
-    if existing_like
+    if existing_like.present?
       existing_like.destroy
       count -= 1
     else

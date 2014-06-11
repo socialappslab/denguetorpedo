@@ -97,11 +97,10 @@ class NoticesController < ApplicationController
     # not logged in.
     render :nothing => true, :status => 400 if (news.blank? || @current_user.blank?)
 
-
     # If the user already liked the news, and has clicked like, then
     # remove their like. Otherwise, add a like.
     existing_like = news.likes.find {|like| like.user_id == @current_user.id }
-    if existing_like
+    if existing_like.present?
       existing_like.destroy
       count -= 1
     else
