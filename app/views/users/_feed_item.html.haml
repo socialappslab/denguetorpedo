@@ -31,3 +31,10 @@
                 = I18n.t("common_terms.more")
           - else
             = auto_link(post.content)
+
+
+  .row.feed-item-interaction-menu
+    .span7
+      = link_to like_neighborhood_house_post_path(@neighborhood, owner, post), :class => "likes_button", "data-path" => like_neighborhood_house_post_path(@neighborhood, owner, post), "data-likes_count" => post.likes.count do
+        %i.fa.fa-thumbs-up
+        %span.likes_text

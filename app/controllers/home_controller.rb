@@ -9,6 +9,7 @@ class HomeController < ApplicationController
 
     @all_neighborhoods     = Neighborhood.order(:id).limit(3)
     @selected_neighborhood = @all_neighborhoods.first
+    @neighborhood          = @selected_neighborhood
 
     # Display ordered news.
     @notices  = @selected_neighborhood.notices.order("date DESC").limit(6)
