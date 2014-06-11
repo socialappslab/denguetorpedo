@@ -361,10 +361,26 @@ ul#user_right_panel {
 
 .feed-item-interaction-menu {
   margin-top: 20px;
+  color: #8899a6;
 
   a {
     color: #8899a6;
   }
+}
+
+.feed-item-comment {
+  margin-left: 75px;
+  margin-top: -10px;
+  min-height: 30px;
+  background: #fff;
+  padding: 10px;
+  // padding-bottom: 20px;
+  margin-bottom: 10px;
+
+  border-bottom: 1px #e5e6e9 solid;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,42 +1,44 @@
-.user_activity_item
-  .row
-    .span1.feed-item-profile-photo
-      = link_to notice_path(notice) do
-        - if notice.photo_file_name.nil?
-          = image_tag("default_images/user_default_alt.png")
-        - else
-          = image_tag(notice.photo.url(:small))
+.feed-item
+  .user_activity_item
+    .row
+      .span1.feed-item-profile-photo
+        = link_to notice_path(notice) do
+          - if notice.photo_file_name.nil?
+            = image_tag("default_images/user_default_alt.png")
+          - else
+            = image_tag(notice.photo.url(:small))
 
-    .span7
-      .row.feed-item-bar
-        .span7
-          %b
-            = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
-          .feed-item-timestamp
-            %i.fa.fa-clock-o
-            = format_timestamp(notice.created_at)
+      .span7
+        .row.feed-item-bar
+          .span7
+            %b
+              = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
+            .feed-item-timestamp
+              %i.fa.fa-clock-o
+              = format_timestamp(notice.created_at)
 
-      .row.feed-item-content
-        .span7
-          - if notice.title.present?
-            = link_to notice.title, notice_path(notice)
+        .row.feed-item-content
+          .span7
+            - if notice.title.present?
+              = link_to notice.title, notice_path(notice)
 
-          - if notice.summary.present?
+            - if notice.summary.present?
+              %div{:style => "margin-top: 5px;"}
+                %i.fa.fa-info-circle
+                = notice.summary
+
+            - if notice.location.present?
+              %div{:style => "margin-top: 5px;"}
+                %i.fa.fa-bank
+                = notice.location
+
             %div{:style => "margin-top: 5px;"}
-              %i.fa.fa-info-circle
-              = notice.summary
+              %i.fa.fa-calendar
+              = notice.date.strftime("%H:%M, %d/%m/%Y")
 
-          - if notice.location.present?
-            %div{:style => "margin-top: 5px;"}
-              %i.fa.fa-bank
-              = notice.location
+    .row.feed-item-interaction-menu
+      .span7
+        = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => notice, :path => like_notice_path(notice)}
 
-          %div{:style => "margin-top: 5px;"}
-            %i.fa.fa-calendar
-            = notice.date.strftime("%H:%M, %d/%m/%Y")
 
-  .row.feed-item-interaction-menu
-    .span7
-      = link_to like_notice_path(notice), :class => "likes_button", "data-path" => like_notice_path(notice), "data-likes_count" => notice.likes.count do
-        %i.fa.fa-thumbs-up
-        %span.likes_text
+  = render :partial => "users/comments", :locals => {:commentable => notice, :path => comment_notice_path(notice)}

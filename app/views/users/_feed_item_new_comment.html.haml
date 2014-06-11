@@ -1,0 +1,17 @@
+.row
+  .span1.feed-item-profile-photo
+    - if @current_user.profile_photo_file_name.nil?
+      = image_tag("default_images/user_default_alt.png")
+    - else
+      = image_tag(@current_user.profile_photo.url(:small))
+  .span6
+    .row.feed-item-bar
+      .span6
+        %span{:style => "font-weight: bold;"}
+          = @current_user.first_name
+
+    .row
+      .span6
+        = form_tag path do
+          = text_area_tag "comment[content]", nil, :style => "width: 100%; display: block;"
+          = submit_tag I18n.t("views.button.publish"), :class => "btn btn-success btn-right", :style => "float: right; display: inline-block;"

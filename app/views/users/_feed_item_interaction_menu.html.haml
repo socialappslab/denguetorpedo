@@ -1,0 +1,8 @@
+= link_to path, :class => "likes_button", "data-path" => path, "data-likes_count" => likeable.likes.count do
+  %i.fa.fa-thumbs-up
+  %span.likes_text
+
+&#183;
+
+= link_to nil, :class => "comment-button" do
+  = I18n.t("common_terms.comment")
