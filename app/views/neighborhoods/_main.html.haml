@@ -38,9 +38,11 @@
         %p{:style => "font-size: 20px; line-height: 30px; text-align: center;"}
           = I18n.t("common_terms.this_community_has_no_activity")
       - else
-        - for item in @notices
-          = render :partial => 'notices/feed_item', :locals => {:notice => item}
-
+        - for item in @news_feed
+          - if item.is_a? Post
+            = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
+          - elsif item.is_a? Notice
+            = render :partial => 'notices/feed_item', :locals => {:notice => item}
 
 %br
 
