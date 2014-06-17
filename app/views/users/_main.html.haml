@@ -32,29 +32,29 @@
         = I18n.t("common_terms.create_reports")
 
 .row
+  - if @current_user == @user
+    - @redeemable_prizes[0..2].each do |prize|
+      .span3.prizes.possible{:style => "height: 100px;"}
+        .status.possible
+          .name{style: "height:20px;"}
+            = link_to truncate(prize.sponsor_name, length: 18), sponsor_path(prize.user)
 
-  - @redeemable_prizes[0..2].each do |prize|
-    .span3.prizes.possible{:style => "height: 100px;"}
-      .status.possible
-        .name{style: "height:20px;"}
-          = link_to truncate(prize.sponsor_name, length: 18), sponsor_path(prize.user)
-
-      .prize_content
-        = link_to prize_path(prize) do
-          - if prize.prize_photo_file_name.nil?
-            = image_tag("home_images/logo.png", :class => "prizes img-rounded")
-          - else
-            = image_tag(prize.prize_photo.url(:large), :class => "prizes img-rounded")
-          .description{:style => "height: 35px; overflow: none;"}
-            = truncate(prize.prize_name, length: 40)
-          .points
-            %span{:style => "color: #5cb85c; display: inline; font-weight: bold;"}
-              = prize.cost
-            = I18n.t("common_terms.points")
-  - if @redeemable_prizes.any?
-    .span1
-      = link_to prizes_path do
-        %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
+        .prize_content
+          = link_to prize_path(prize) do
+            - if prize.prize_photo_file_name.nil?
+              = image_tag("home_images/logo.png", :class => "prizes img-rounded")
+            - else
+              = image_tag(prize.prize_photo.url(:large), :class => "prizes img-rounded")
+            .description{:style => "height: 35px; overflow: none;"}
+              = truncate(prize.prize_name, length: 40)
+            .points
+              %span{:style => "color: #5cb85c; display: inline; font-weight: bold;"}
+                = prize.cost
+              = I18n.t("common_terms.points")
+    - if @redeemable_prizes.any?
+      .span1
+        = link_to prizes_path do
+          %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
 
 - if (@user == @current_user)
   .row{:style => "margin-top:60px;"}
