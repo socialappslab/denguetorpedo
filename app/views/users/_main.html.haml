@@ -9,14 +9,14 @@
     %h1{:style => "color: #{total_points_color}; font-size: 50px; display: inline;"}
       = @user.total_points
 
-    %p{:style => "text-align: left; display: inline; font-size: 16px;"}
+    %p{:style => "text-align: left; display: inline; font-size: 15px;"}
       = I18n.t("common_terms.points")
 
     - if @current_user == @user && @redeemable_prizes.count > 0
       = link_to prizes_path, :class => "btn btn-orange btn-large profile-view-points-button" do
         = I18n.t("common_terms.exchange_points_for_prizes")
 
-  .span3.offset1{:style => "text-align: right;"}
+  .span4{:style => "text-align: right;"}
     - if @reports.count == 0
       - num_of_reports_color = "#d9534f";
     - else
@@ -24,7 +24,7 @@
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
       = @reports.count
-    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
+    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("dashboard.reports")
 
     - if @current_user == @user

@@ -10,12 +10,12 @@
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = pretty_print_points(@total_points)
-    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
+      = @total_points
+    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("common_terms.points")
 
 
-  .span3.offset1{:style => "text-align: right;"}
+  .span4{:style => "text-align: right;"}
     - if @total_reports_in_neighborhood == 0
       - num_of_reports_color = "#d9534f";
     - else
@@ -23,7 +23,7 @@
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
       = @total_reports_in_neighborhood
-    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
+    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("dashboard.reports")
 
 /------------------------------------------------------------------------------
