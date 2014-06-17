@@ -6,14 +6,15 @@ class NeighborhoodsController < NeighborhoodsBaseController
   def show
     @neighborhood = Neighborhood.find(params[:id])
 
+    # Identify the different types of users in the community.
     @participants = @neighborhood.members.where('role != ?', User::Types::SPONSOR).where(is_blocked: false).order(:first_name)
     @coordinators = @participants.where(:role => User::Types::COORDINATOR)
     @verifiers    = @participants.where(:role => User::Types::VERIFIER)
+    @sponsors     = @neighborhood.members.where(:role => User::Types::SPONSOR).where(is_blocked: false)
 
     # Fetch all houses that have at least one member.
     @houses = @neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
     @houses = @houses.find_all {|h| h.members.count > 0}
-
 
     @reports = @neighborhood.reports
     @notices = @neighborhood.notices.order("updated_at DESC")
@@ -24,21 +25,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     @coordinator_blogs = @coordinators.map { |coor| coor.posts.last }.select{ |x| !x.nil?}.sort { |x, y| y.created_at <=> x.created_at}
     @verifier_blogs    = @verifiers.map    { |veri| veri.posts.last }.select{ |x| !x.nil?}.sort { |x, y| y.created_at <=> x.created_at }
-
-    @houses_view_active = ''
-    @participants_view_active = ''
-    if params[:view] == 'participants'
-      @participants_view_active = 'active'
-    else # view == houses
-      @houses_view_active = 'active '
-    end
-
-
-    @sponsors = @neighborhood.members.where(:role => User::Types::SPONSOR).where(is_blocked: false)
-    @random_sponsors = []
-    9.times do
-      @random_sponsors.push('home_images/sponsor'+(rand(5)+1).to_s+'.png')
-    end
   end
 
   #----------------------------------------------------------------------------
@@ -46,7 +32,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
   #------------------------------
 
   def invitation
-    @title = "Participar da Dengue Torpedo"
+    @title    = "Participar da Dengue Torpedo"
     @feedback = Feedback.new
   end
 
