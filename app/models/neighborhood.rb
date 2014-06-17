@@ -64,4 +64,12 @@ class Neighborhood < ActiveRecord::Base
     return self.reports.where(:status => Report::STATUS[:eliminated]).to_a
   end
 
+  #----------------------------------------------------------------------------
+
+  def total_points
+    self.members.sum(:total_points)
+  end
+
+  #----------------------------------------------------------------------------
+  
 end

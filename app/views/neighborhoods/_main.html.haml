@@ -4,29 +4,27 @@
 
 .row{:style => "margin-bottom: 20px;"}
   .span5
-    - if @opened_reports_in_neighborhood == 0
+    - if @total_points == 0
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = @opened_reports_in_neighborhood
+      = @total_points
     %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
-      = "em aberto"
+      = I18n.t("common_terms.points")
+
 
   .span3.offset1{:style => "text-align: right;"}
-    - if @eliminated_reports_in_neighborhood == 0
+    - if @total_reports_in_neighborhood == 0
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = @eliminated_reports_in_neighborhood
+      = @total_reports_in_neighborhood
     %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
-      = "eliminados"
-
-
-
+      = I18n.t("dashboard.reports")
 
 /------------------------------------------------------------------------------
 

@@ -23,6 +23,8 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @opened_reports_in_neighborhood     = @reports.where( :status => Report::STATUS[:reported] ).count
     @eliminated_reports_in_neighborhood = @reports.where( :status => Report::STATUS[:eliminated] ).count
 
+    @total_points = @neighborhood.total_points
+
     @posts = []
     community_coordinators = @participants.where("role = ? OR role = ?", User::Types::COORDINATOR, User::Types::VERIFIER)
     community_coordinators.each do |cc|

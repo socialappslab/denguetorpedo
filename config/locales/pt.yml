@@ -10,6 +10,9 @@ pt:
     content: Conteúdo
   activerecord:
     models:
+      report:
+        one: Foco
+        other: Focos
       user: Usuário
       neighborhood: Comunidade
       feedback: Mensagem
