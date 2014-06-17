@@ -10,7 +10,7 @@
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = @total_points
+      = pretty_print_points(@total_points)
     %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
       = I18n.t("common_terms.points")
 
