@@ -1,0 +1,88 @@
+
+
+/------------------------------------------------------------------------------
+
+.row{:style => "margin-bottom: 20px;"}
+  .span5
+    - if @opened_reports_in_neighborhood == 0
+      - num_of_reports_color = "#d9534f";
+    - else
+      - num_of_reports_color = "#5cb85c";
+
+    %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
+      = @opened_reports_in_neighborhood
+    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
+      = "em aberto"
+
+  .span3.offset1{:style => "text-align: right;"}
+    - if @eliminated_reports_in_neighborhood == 0
+      - num_of_reports_color = "#d9534f";
+    - else
+      - num_of_reports_color = "#5cb85c";
+
+    %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
+      = @eliminated_reports_in_neighborhood
+    %p{:style => "margin-top: 10px; display: inline; font-size: 16px;"}
+      = "eliminados"
+
+
+
+
+/------------------------------------------------------------------------------
+
+.row
+  //= render :partial => "neighborhoods/news"
+  #user_recent_activity
+    #user_reports.span9
+      - if @notices.blank?
+        %p{:style => "font-size: 20px; line-height: 30px; text-align: center;"}
+          = I18n.t("common_terms.this_community_has_no_activity")
+      - else
+        - for item in @notices
+          = render :partial => 'notices/feed_item', :locals => {:notice => item}
+
+
+%br
+
+/------------------------------------------------------------------------------
+
+-# .row
+-#   .span12
+-#     #neighborhood_right_panel
+-#       %h2 Destaques da comunidade
+-#       .row
+-#         %h3{:style => "margin-left:10px;"} Coordenadores comunitários
+-#         #neighborhood_coordinator.span5
+-#           - @coordinator_blogs.each do |blog|
+-#             - if blog
+-#               .neighborhood_profile_box{style: "margin-bottom:10px;"}
+-#                 .span1.neighborhood_pf_picture
+-#                   = image_tag(blog.user.profile_photo.url(:small))
+-#                 .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
+-#                   .neighborhood_person_name
+-#                     = link_to blog.user.display_name, user_path(blog.user)
+-#                   .neighborhood_post
+-#                     = auto_link(blog.content)
+-#
+-#       .row
+-#         %h3{:style => "margin-left:10px;"} Verificadores
+-#         #neighborhood_health_agent.span5
+-#           - @verifier_blogs.each do |blog|
+-#             - if blog
+-#               .neighborhood_profile_box
+-#                 .span1.neighborhood_pf_picture
+-#                   = image_tag(blog.user.profile_photo.url(:small))
+-#                 .neighborhood_quote{:style => "margin-top:-8px;padding-left:10px;"}
+-#                   .neighborhood_person_name
+-#                     = link_to blog.user.display_name, user_path(blog.user)
+-#                   .neighboorhood_past
+-#                     = auto_link(blog.content)
+-#
+-#
+-#
+-# %br
+
+/------------------------------------------------------------------------------
+
+
+/------------------------------------------------------------------------------

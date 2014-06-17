@@ -1,0 +1,53 @@
+
+%div{:style => "margin-left: 30px; margin-right: 30px;"}
+  .user_profile_picture{:style => "text-align: center;"}
+    = image_tag("home_images/neighborhood1.jpg", :style => " width: 150px;")
+
+    %div{:style => "text-align: center;"}
+      = @neighborhood.name
+
+
+  %hr{:style => "border-bottom: 1px solid #ccc;"}
+  %h1{:style => "text-align: center; color: #333;"}
+    = I18n.t("common_terms.houses").capitalize
+  .row{:style => "margin-top: 20px;"}
+    = render :partial => "neighborhoods/houses_view"
+
+
+  %hr{:style => "border-bottom: 1px solid #ccc;"}
+  %h1{:style => "text-align: center; color: #333;"}
+    = I18n.t("common_terms.participants").capitalize
+  .row{:style => "margin-top: 20px;"}
+    = render :partial => "neighborhoods/participant_view"
+
+
+  - if @sponsors.present?
+    %hr{:style => "border-bottom: 1px solid #ccc;"}
+    %h1{:style => "text-align: center; color: #333;"}
+      = I18n.t("common_terms.sponsors").capitalize
+
+    .row
+      #neighborhood_sponsors{:style => "margin-top:20px;"}
+        - @sponsors.each do |sponsor|
+          .span3
+            - if sponsor.house && sponsor.house.profile_photo_file_name.present?
+              = link_to image_tag(sponsor.house.profile_photo.url(:small), :width => 50, :height => 50), sponsor_path(sponsor)
+            - else
+              = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 50, :height => 50, style: "border:1px solid #cccccc;"), sponsor_path(sponsor)
+            = link_to sponsor.display_name, user_path(sponsor)
+
+
+  -# %h1{:style => "text-align: center; color: #333;"}
+  -#   = I18n.t("common_terms.badges").capitalize
+  -#
+  -# - if @user.total_points >= 100
+  -#   .row{:style => "text-align: center; margin-top: 20px;"}
+  -#     = render :partial => "users/badges"
+  -#
+  -# %hr{:style => "border-bottom: 1px solid #ccc;"}
+  -# %h1{:style => "text-align: center; color: #333;"}
+  -#   = I18n.t("common_terms.redeemed_prizes")
+  -#
+  -# - if @coupons.present?
+  -#   .row{:style => "text-align: center; margin-top: 20px;"}
+  -#     = render :partial => "users/coupons"
