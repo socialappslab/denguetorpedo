@@ -37,63 +37,8 @@
   }
 }
 
-ul#neighborhood_participants_list {
-  list-style-type: none;
-  margin-top: 10px;
-  font-size: 16px;
-  overflow:auto;
-  overflow-y:scroll;
-  height: 550px;
 
-  li.neighborhood_participant_photo_thumb {
-    display: inline-block;
-    margin-bottom: 10px;
-    margin-left: 0px;
-    margin-right: 10px;
-    width: 120px;
-    height: 176px;
-    text-align: center;
-    font-size: 13px;
-  }
 
-  img {
-    width: 120px;
-    height: 120px;
-    border: 1px solid $gray;
-    overflow: hidden;
-  }
-  a {
-    font-size: 13px;
-  }
-}
-
-ul#neighborhood_house_list {
-  margin-top: 10px;
-  font-size: 16px;
-  overflow:auto;
-  overflow-y:scroll;
-  height: 550px;
-
-  li.neighborhood_house_photo_thumb {
-    display: inline-block;
-    margin-bottom: 10px;
-    margin-left: 0px;
-    margin-right: 10px;
-    width: 120px;
-    height: 176px;
-    text-align: center;
-  }
-
-  img {
-    width: 120px;
-    height: 120px;
-    border: 1px solid $gray;
-    overflow: hidden;
-  }
-  a {
-    font-size: 13px;
-  }
-}
 
 #neighborhood_right_panel {
   h4 {

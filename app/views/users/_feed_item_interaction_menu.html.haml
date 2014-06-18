@@ -1,6 +1,9 @@
+- is_liked = likeable.likes.map(&:user_id).include?(@current_user.id)
+
 = link_to path, :class => "likes_button", "data-path" => path, "data-likes_count" => likeable.likes.count do
-  %i.fa.fa-thumbs-up
+  %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
   %span.likes_text
+    = likeable.likes.count
 
 &#183;
 

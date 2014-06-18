@@ -1,9 +1,12 @@
 .rp_report_status.status
   .span2
-    = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report),"data-likes_count" => report.likes.count do
-      -# = I18n.t("common_terms.like")
-      %i.fa.fa-thumbs-up{:style => "color: white;"}
-      %span.likes_text{:style => "color: white;"}
+    - if @current_user
+      - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
+
+      = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes.count do
+        %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
+        %span.likes_text{:style => "color: white;"}
+          = report.likes.count
 
   .span6
     .rp_report_options

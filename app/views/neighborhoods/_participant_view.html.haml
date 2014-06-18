@@ -1,15 +1,10 @@
-.span11.offset1
-  %ul#neighborhood_participants_list
-    - @participants.each do |participant|
-      %li.neighborhood_participant_photo_thumb.span3
-        - if participant.profile_photo_file_name.nil?
-          = link_to image_tag("default_images/profile_default_image.png"), user_path(participant)
-        - else
-          = link_to image_tag(participant.profile_photo.url(:large)), user_path(participant)
 
-        = link_to participant.display_name, user_path(participant)
-    - if @participants.count < 9
-      - (12 - @participants.count).times do
-        %li.neighborhood_participant_photo_thumb.span3
-          = image_tag("default_images/profile_default_image.png")
-          Futuro participante
+#neighborhood_participants_list
+  - @participants.each do |participant|
+    .span3{:style => "margin-bottom: 3px;"}
+      - if participant.profile_photo_file_name.nil?
+        = link_to image_tag("default_images/profile_default_image.png", :style => "width: 50px; height: 50px;"), user_path(participant)
+      - else
+        = link_to image_tag(participant.profile_photo.url(:small), :style => "width: 50px; height: 50px;"), user_path(participant)
+
+      = link_to participant.display_name, user_path(participant)

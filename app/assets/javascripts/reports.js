@@ -61,26 +61,6 @@ $(document).ready(function() {
 	});
     // end of methods
 
-  // Loop through like buttons and update count
-  $(".likes_button").each(function(){
-    $(this).find(".likes_text").text($(this).data("likes_count"));
-  });
-
-  $(".likes_button").click(function(event){
-    event.preventDefault();
-
-    // Trim the count of the text
-    $.ajax({
-      url: $(this).data("path"),
-      type: "POST",
-      data: {"count" : $(this).data("likes_count")},
-      success : function(report){
-        $(event.currentTarget).find('.likes_text').text(report.count.toString());
-        $(event.currentTarget).data("likes_count", report.count.toString());
-      }
-    })
-  });
-
 });
 
 

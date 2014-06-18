@@ -66,12 +66,14 @@ class PostsController < ApplicationController
     if existing_like.present?
       existing_like.destroy
       count -= 1
+      liekd  = false
     else
       Like.create(:user_id => @current_user.id, :likeable_id => @post.id, :likeable_type => Post.name)
       count += 1
+      liked  = true
     end
 
-    render :json => {'count' => count.to_s} and return
+    render :json => {'count' => count.to_s, "liked" => liked} and return
   end
 
   #----------------------------------------------------------------------------

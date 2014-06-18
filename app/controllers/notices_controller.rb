@@ -108,12 +108,14 @@ class NoticesController < ApplicationController
     if existing_like.present?
       existing_like.destroy
       count -= 1
+      liked  = false
     else
       Like.create(:user_id => @current_user.id, :likeable_id => @news.id, :likeable_type => Notice.name)
       count += 1
+      liked  = true
     end
 
-    render :json => {'count' => count.to_s} and return
+    render :json => {'count' => count.to_s, "liked" => liked} and return
   end
 
   #----------------------------------------------------------------------------
