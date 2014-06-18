@@ -11,7 +11,7 @@
       .span7
         .row.feed-item-bar
           .span7
-            %b
+            %b{:style => "color: #6655ee;"}
               = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
             .feed-item-timestamp
               %i.fa.fa-clock-o
