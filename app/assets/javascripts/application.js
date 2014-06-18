@@ -198,7 +198,7 @@ $(document).ready(function()
     eventObj.preventDefault();
     parent = $(eventObj.currentTarget).parents(".feed-item")
     parent.children(".feed-item-new-comment").toggle()
-  })
+  });
 
   $(".show-more-content-link").on("click", function(eventObj)
   {
@@ -206,5 +206,26 @@ $(document).ready(function()
       var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
       hiddenContent.css("display", "inline")
       $(eventObj.currentTarget).hide()
-  })
+  });
+
+  $(".likes_button").click(function(event){
+    event.preventDefault();
+
+    // Trim the count of the text
+    $.ajax({
+      url: $(this).data("path"),
+      type: "POST",
+      data: {"count" : $(this).data("likes_count")},
+      success : function(report){
+        $(event.currentTarget).find('.likes_text').text(report.count.toString());
+        $(event.currentTarget).data("likes_count", report.count.toString());
+
+        likeIcon = $(event.currentTarget).find('.like-icon')
+        if (report.liked == true)
+          likeIcon.css("color", "#3498db")
+        else
+          likeIcon.css("color", "#bdc3c7")
+      }
+    })
+  });
 })
