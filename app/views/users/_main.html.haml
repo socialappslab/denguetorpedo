@@ -62,14 +62,3 @@
 
 .row
   = render :partial => "shared/news_feed"
-
-
-:javascript
-  $(".show-more-content-link").on("click", function(eventObj)
-  {
-      eventObj.preventDefault()
-
-      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
-      hiddenContent.css("display", "inline")
-      $(eventObj.currentTarget).hide()
-  })

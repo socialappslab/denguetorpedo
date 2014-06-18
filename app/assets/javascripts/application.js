@@ -189,3 +189,22 @@
   })
 
 }(window.jQuery);
+
+
+$(document).ready(function()
+{
+  $(".comment-button").on("click", function(eventObj)
+  {
+    eventObj.preventDefault();
+    parent = $(eventObj.currentTarget).parents(".feed-item")
+    parent.children(".feed-item-new-comment").toggle()
+  })
+
+  $(".show-more-content-link").on("click", function(eventObj)
+  {
+      eventObj.preventDefault()
+      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+      hiddenContent.css("display", "inline")
+      $(eventObj.currentTarget).hide()
+  })
+})
