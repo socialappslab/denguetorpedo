@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
 
   scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
 
-  # has_and_belongs_to_many :report_likes, :class_name => "Report"
+  has_many :team_memberships
   has_many :teams, :through => :team_memberships
 
   #----------------------------------------------------------------------------
