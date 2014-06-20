@@ -1,0 +1,27 @@
+.row
+  .span10.offset4
+    - @teams.each do |team|
+      .row{:style => "height: 100px;"}
+        .span2
+          = link_to team_path(team) do
+            - if team.profile_photo_file_name.nil?
+              = image_tag("teams/default.png", :class => "img-rounded", :style => "height: 100px; width: 100px;")
+            - else
+              = image_tag(team.profile_photo.url(:small), :class => "img-rounded", :style => "height: 100px; width: 100px;")
+
+        .span6
+          .row
+            .span4
+              %h1
+                = link_to team.name, team_path(team)
+          -# .row
+          -#   .span2{:style => "display: table; height: 75px;"}
+          -#     %span{:style => "display: table-cell; vertical-align: bottom;"}
+          -#       %span{:style => " font-size: 30px;"}
+          -#         = team.users.count
+          -#       = I18n.t("activerecord.models.user", :count => 2)
+        .span2
+          %div{:style => "display: table; height: 100px;"}
+            %div{:style => "display: table-cell; vertical-align: middle;"}
+              = link_to "+ " + I18n.t("common_terms.join"), root_path, :class => "btn btn-info btn-large", :style => "float: right;"
+      %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
