@@ -1,10 +1,9 @@
-#dashboard_bar{:style => "z-index:2;position:relative;"}
 
-  %ul{:style => "margin-left: 250px;"}
-
+.row
+  #dashboard_bar
     /------------------------------------------------------------------------
 
-    %li
+    .span3.offset4
       - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
         - header_styling = "font-weight: bold;"
       - else
@@ -29,7 +28,7 @@
 
     /------------------------------------------------------------------------
 
-    %li
+    .span4
       - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
         - header_styling = "font-weight: bold;"
       - else
@@ -48,7 +47,7 @@
 
     /------------------------------------------------------------------------
 
-    %li
+    .span3
       - if @current_user && @current_user.neighborhood
         - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
       - elsif @current_user.role != User::Types::VISITOR
@@ -61,7 +60,7 @@
 
     /------------------------------------------------------------------------
 
-    %li
+    .span3
       - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
 
       = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
