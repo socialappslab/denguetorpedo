@@ -10,6 +10,13 @@ class TeamsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /teams/1
+
+  def show
+    @team = Team.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
   # POST /teams/1/join
 
   def join

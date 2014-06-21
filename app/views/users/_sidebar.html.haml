@@ -22,15 +22,29 @@
       - house_link_text = I18n.t("common_terms.their_house")
       - community_link_text = I18n.t("common_terms.their_community")
 
-    - if @user.neighborhood && @user.house
-      = link_to neighborhood_house_path(@user.neighborhood, @user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-        %i.fa.fa-home.fa-2
-        = house_link_text
+    -# - if @user.neighborhood && @user.house
+    -#   = link_to team_path(@user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+    -#     %i.fa.fa-home.fa-2
+    -#     = house_link_text
 
     - if @user.neighborhood
       = link_to neighborhood_path(@user.neighborhood), :style => "display: block; font-size: 15px; margin-top: 20px;" do
         %i.fa.fa-users.fa-2
         = community_link_text
+
+  %hr{:style => "border-bottom: 1px solid #ccc;"}
+  %h1{:style => "text-align: center; color: #333;"}
+    = I18n.t("common_terms.my_teams").capitalize
+
+  .row{:style => "margin-top: 20px;"}
+    - @teams.shuffle.each do |team|
+      .span3{:style => "margin-bottom: 3px;"}
+        - if team.profile_photo_file_name.nil?
+          = link_to image_tag("teams/default.png", :style => "width: 50px; height: 50px;", :class => "img-rounded"), team_path(team)
+        - else
+          = link_to image_tag(team.profile_photo.url(:small), :style => "width: 50px; height: 50px;", :class => "img-rounded"), team_path(team)
+        = link_to team.name, team_path(team)
+
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
