@@ -1,7 +1,7 @@
 class CreateTeamMemberships < ActiveRecord::Migration
   def up
     create_table :team_memberships do |t|
-      t.string  :user_id
+      t.integer :user_id
       t.integer :team_id
       t.boolean :verified
 

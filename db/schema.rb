@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(:version => 20140620202612) do
   end
 
   create_table "team_memberships", :force => true do |t|
-    t.string   "user_id"
+    t.integer  "user_id"
     t.integer  "team_id"
     t.boolean  "verified"
     t.datetime "created_at", :null => false
