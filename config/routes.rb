@@ -138,7 +138,9 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Teams
 
-  resources :teams
+  resources :teams do
+    post "join", :on => :member
+  end
 
   #----------------------------------------------------------------------------
   # Miscellaneous routes.
