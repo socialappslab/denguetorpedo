@@ -186,9 +186,10 @@ pt:
     sponsor: Patrocinador
     sponsors: Patrocinadores
     this_community_has_no_activity: Esa comunidade não tem qualquer atividade
-    join: Juntar
-    something_went_wrong: "Algo deu errado. Por favor, tente novamente."
+    join: Juntar 
     my_teams: Minhas equipes
+
+
 
 
 
@@ -221,6 +222,11 @@ pt:
       upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
 
   views:
+    application:
+      error: "Algo deu errado. Por favor, tente novamente."
+    teams:
+      join: "Você se juntou a equipe com success."
+
     password_resets:
       title: Redefinir sua senha
       enter_email: "Digite o seu e-mail cadastrado"
