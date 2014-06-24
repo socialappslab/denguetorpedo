@@ -1,10 +1,9 @@
-#dashboard_bar{:style => "z-index:2;position:relative;"}
 
-  %ul{:style => "margin-left: 250px;"}
-
+.row
+  #dashboard_bar
     /------------------------------------------------------------------------
 
-    %li
+    .span4.offset4
       - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
         - header_styling = "font-weight: bold;"
       - else
@@ -29,26 +28,26 @@
 
     /------------------------------------------------------------------------
 
-    %li
-      - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
-        - header_styling = "font-weight: bold;"
-      - else
-        - header_styling = ""
-
-      - if @current_user && @current_user.neighborhood
-        - relevant_link = neighborhood_path(@current_user.neighborhood)
-      - elsif @current_user.role != User::Types::VISITOR
-        - relevant_link = edit_user_path(@current_user)
-      - else
-        - relevant_link = neighborhood_path(Neighborhood.first)
-      = link_to relevant_link, :style => "#{header_styling}" do
-        %i.fa.fa-users.fa-2
-        = I18n.t("dashboard.my_community")
+    -# .span4
+    -#   - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
+    -#     - header_styling = "font-weight: bold;"
+    -#   - else
+    -#     - header_styling = ""
+    -#
+    -#   - if @current_user && @current_user.neighborhood
+    -#     - relevant_link = neighborhood_path(@current_user.neighborhood)
+    -#   - elsif @current_user.role != User::Types::VISITOR
+    -#     - relevant_link = edit_user_path(@current_user)
+    -#   - else
+    -#     - relevant_link = neighborhood_path(Neighborhood.first)
+    -#   = link_to relevant_link, :style => "#{header_styling}" do
+    -#     %i.fa.fa-users.fa-2
+    -#     = I18n.t("dashboard.my_community")
 
 
     /------------------------------------------------------------------------
 
-    %li
+    .span5
       - if @current_user && @current_user.neighborhood
         - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
       - elsif @current_user.role != User::Types::VISITOR
@@ -61,9 +60,13 @@
 
     /------------------------------------------------------------------------
 
-    %li
-      - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
+    .span4
+      - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
+      = link_to teams_path, :style => "#{bold_header_title}" do
+        %i.fa.fa-search
+        = I18n.t("common_terms.explore_teams")
 
-      = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
-        %i.fa.fa-gear.fa-2
-        = I18n.t("common_terms.configuration")
+      -# - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
+      -# = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
+      -#   %i.fa.fa-gear.fa-2
+      -#   = I18n.t("common_terms.configuration")

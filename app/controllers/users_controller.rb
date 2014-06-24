@@ -47,6 +47,7 @@ class UsersController < ApplicationController
     @user_posts   = @user.posts
     @reports      = @user.reports
     @notices      = @neighborhood.notices.order("updated_at DESC")
+    @teams        = @user.teams
 
     # Avoid displaying coupons that expired and were never redeemed.
     @coupons = @user.prize_codes.reject {|coupon| coupon.expired? }

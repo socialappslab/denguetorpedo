@@ -40,19 +40,6 @@
   box-shadow: inset 0px 1px 2px #8A8A88;
 }
 
-ul#dashboard_bar {
-
-  margin-top: 10px;
-  li {
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
-
-  li.spacer{
-    margin-right: 20px;
-  }
-}
-
 .current_link {
   font-weight:bold;
 }
@@ -82,4 +69,17 @@ a.logout_button:hover {
 
 div {
   word-wrap: break-word;
+}
+
+.boxed-area {
+  min-height: 60px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  border: 1px solid;
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
 }

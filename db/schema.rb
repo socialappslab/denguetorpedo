@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140620201754) do
+ActiveRecord::Schema.define(:version => 20140620202612) do
 
   create_table "comments", :force => true do |t|
     t.integer  "user_id"
@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(:version => 20140620201754) do
   end
 
   create_table "team_memberships", :force => true do |t|
-    t.string   "user_id"
+    t.integer  "user_id"
     t.integer  "team_id"
     t.boolean  "verified"
     t.datetime "created_at", :null => false

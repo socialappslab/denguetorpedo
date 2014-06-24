@@ -136,6 +136,13 @@ Dengue::Application.routes.draw do
   resources :prize_codes, :only => [:new, :create, :destroy, :show, :index], :path => "coupons"
 
   #----------------------------------------------------------------------------
+  # Teams
+
+  resources :teams do
+    post "join", :on => :member
+  end
+
+  #----------------------------------------------------------------------------
   # Miscellaneous routes.
 
   resources :feedbacks

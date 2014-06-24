@@ -13,7 +13,9 @@ pt:
       report:
         one: Foco
         other: Focos
-      user: Usuário
+      user:
+        one: Usuário
+        other: Usuários
       neighborhood: Comunidade
       feedback: Mensagem
       house: Casa
@@ -181,7 +183,10 @@ pt:
     sponsor: Patrocinador
     sponsors: Patrocinadores
     this_community_has_no_activity: Esa comunidade não tem qualquer atividade
-
+    join: Juntar
+    something_went_wrong: "Algo deu errado. Por favor, tente novamente."
+    my_teams: Minhas equipes
+    explore_teams: Explorar equipes
 
 
 
