@@ -28,6 +28,9 @@ pt:
       prize_code:
         one: Cupom
         other: Cupons
+      team:
+        one: Equipe
+        other: Equipes
     attributes:
       user:
         email: "Email"
@@ -186,7 +189,6 @@ pt:
     join: Juntar
     something_went_wrong: "Algo deu errado. Por favor, tente novamente."
     my_teams: Minhas equipes
-    explore_teams: Explorar equipes
 
 
 

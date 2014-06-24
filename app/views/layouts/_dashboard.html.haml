@@ -64,7 +64,7 @@
       - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
       = link_to teams_path, :style => "#{bold_header_title}" do
         %i.fa.fa-search
-        = I18n.t("common_terms.explore_teams")
+        = I18n.t("activerecord.models.team", :count => 3)
 
       -# - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
       -# = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
