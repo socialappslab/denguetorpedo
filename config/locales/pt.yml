@@ -194,6 +194,8 @@ pt:
     activities: Atividades
     male: Masculino
     female: Feminino
+    admin_configurations: Configurações de administrador
+    sponsor_configurations: Configurações de patrocinador
 
 
 
@@ -241,6 +243,17 @@ pt:
     users:
       edit:
         show_name_as: "Mostrar nome como"
+        admin:
+          register: "Registrar patrocinador, verificador e visitante"
+          new_prize: "Registrar novos prêmios"
+          new_news: "Registrar notícias da comunidade"
+          user_edit: "Administrar usuários"
+          prize_edit: "Administrar prêmios"
+          sms_edit: "Administrar DT Torpedos"
+          feedback: "Administrar contatos"
+          report_edit: "Administrar tipos e métodos"
+        sponsor:
+          edit_prizes: "Códigos de controle dos prêmios"
 
     password_resets:
       title: Redefinir sua senha
