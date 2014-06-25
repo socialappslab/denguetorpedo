@@ -104,10 +104,24 @@
 
 
 = render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @user}
 
 .user_form.offset1
-  /%h1 Configurações da conta
-  = render :partial => "shared/form_errors", :locals => {:item => @user}
+
+  .row
+    .span16
+      %h1
+        Criar uma nova equipe ou entrar numa equipe que já existe.
+      .span5
+        = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-success btn-large"
+      .span6
+        = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-success btn-large"
+
+  %br
+  %br
+  %br
+  %br
+
 
   - if @user == @current_user
     - if @current_user.role == "admin" or @current_user.role == "coordenador"
@@ -134,6 +148,7 @@
         %h2 Configurações de patrocinador
         %p.link
           = link_to "Códigos de controle dos prêmios", "/coupons"
+
 
 
   = form_for(@user, :html => {name: "configuration"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:autocomplete => "off", :multipart => true}}) do |f|
@@ -241,91 +256,28 @@
       = f.label :profile_photo,  "Foto do perfil (opcional)", class:"config_form_title"
       = f.file_field :profile_photo
 
+      = f.label "Bairro",class:"config_form_title"
+      / TODO: We're disabling choosing other neighborhoods until we introduce
+      / another neighborhood
+      /= f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
+      - mare = Neighborhood.find_by_name("Maré")
+      = f.select(:neighborhood_id, [ [mare.name, mare.id] ])
       %br
       %br
       = link_to "Alterar minha senha", edit_password_reset_path(@user), :id => "reset_password_link",id:'password_reset'
       %br
       %br
 
-    -# House Settings / Configurações da casa
     %br
-    %br
-    %br
-    - if @user.role != "visitante"
-      - if @user.role == "lojista"
-        %h1 Configurações da estabelecimento
-      - else
-        %h1 Configurações da casa
-
-      .indent
-
-        -# Name of home / Nome da casa
-        %br
-        = f.fields_for :house, (@user.house || House.new) do |house_form|
-          - if @user.role == "lojista"
-            = house_form.label "Nome do estabelecimento"
-            = house_form.text_field :name
-          - elsif @user.role == "verificador"
-            = house_form.label "Nome do organização"
-            = house_form.text_field :name
-          - else
-            = house_form.label "Nome da casa (máximo 16 caracteres)", class:"config_form_title"
-            = house_form.text_field :name, :placeholder => "ex. Maria Santos ou Maria e Paulo", :maxlength => 16
-        %br
-        %br
-
-        -# Neighborhood / Bairro
-        .question_mark_div
-          = f.label "Bairro",class:"config_form_title"
-        / TODO: We're disabling choosing other neighborhoods until we introduce
-        / another neighborhood
-        /= f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
-        - mare = Neighborhood.find_by_name("Maré")
-        = f.select(:neighborhood_id, [ [mare.name, mare.id] ])
-        %br
-        %br
-
-        -#Photo of house / Foto de casa
-        = f.fields_for :house, (@user.house || House.new) do |house_form|
-          - if @user.role == "lojista"
-            = house_form.label "Telefone comercial"
-            = house_form.text_field :phone_number
-            = house_form.label "Logo digital (opcional)"
-          - elsif @user.role == "verificador"
-            = house_form.label "Fodo do organização"
-          - else
-            = house_form.label "Foto da casa (opcional)", class:"config_form_title"
-          = house_form.file_field :profile_photo
-
-          %br
-          %br
-          = house_form.fields_for :location, (@user.house || House.new).location || Location.new do |location_form|
-            = location_form.label "Endereço (opcional)", class:"config_form_title"
-            =#/ # = location_form.text_field :address, value: @user.location.address, placeholder: "Endereço da casa", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze." if @user.location
-
-            = location_form.text_field :street_type,  placeholder: "Rua, Beco etc.", class: "short_field"
-            = location_form.text_field :street_name, placeholder: "Nome", title: "No caso de rua de número, escreva o endereço por extenso. Ex: Rua Dois, Travessa Quatorze."
-            = location_form.text_field :street_number, placeholder: "Número", class: "middle_field"
-
-        %br
-
-
+    - unless @user.is_fully_registered
+      %h1 Alguém o convidou a se cadastrar no DT?
+      %select#recruitment{:name => "recruitment_type"}
+        %option NINGUÉM
+        %option AVS/ACS
+        %option MORADOR/VIZINHO
       %br
-      %br
-      %br
-      - unless @user.is_fully_registered
-        %h1 Alguém o convidou a se cadastrar no DT?
-        %select#recruitment{:name => "recruitment_type"}
-          %option NINGUÉM
-          %option AVS/ACS
-          %option MORADOR/VIZINHO
-        %br
-          %input{:id => "recruiter_name", :name => "recruiter_name"}
-          %input{:type => "hidden", :name => "recruiter_id", :id => "recruiter_id"}
-    - else
-      %h2 Apresentação pessoal
-      .indent#visitor_desc
-        = text_area_tag "bio", nil, rows: 10, placeholder: "Descreva suas informações pessoais e profissionais."
+        %input{:id => "recruiter_name", :name => "recruiter_name"}
+        %input{:type => "hidden", :name => "recruiter_id", :id => "recruiter_id"}
 
     %br
       .edit_house
