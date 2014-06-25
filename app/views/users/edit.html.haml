@@ -214,5 +214,5 @@
           = select_tag :recruiter_name, options_for_select(User.all.map {|u| [u.full_name, u.id]}), :include_blank => true
 
 
-
-      = f.submit I18n.t("views.button.confirm"), {:class => "btn btn-success btn-large btn-block"}
+      #house_configuration
+        = f.submit I18n.t("views.button.confirm"), {:class => "btn btn-success btn-large btn-block"}
