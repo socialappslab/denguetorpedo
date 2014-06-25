@@ -1,5 +1,5 @@
 -# %h3 Compartilhe suas idéias com a turma do Dengue Torpedo!
 .span9
-  = form_for [@neighborhood, wall, @post] do |f|
+  = form_for @post do |f|
     = f.text_area :content, :placeholder => I18n.t("views.post.text_placeholder"), :style => "width: 100%;"
     = f.submit I18n.t("views.button.publish"), :class => "btn btn-success btn-large", :style => "float: right;"

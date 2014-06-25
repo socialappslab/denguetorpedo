@@ -14,17 +14,33 @@ class PostsController < ApplicationController
     @post.user_id = @current_user.id
   end
 
+  #----------------------------------------------------------------------------
+  # POST /create ... and /neighborhood/1/houses/1/posts
+
   def create
-    @wall.posts.create params[:post] do |post|
-      post.user_id = @current_user.id
+    # TODO: Deprecate the @wall behavior...
+    if @wall.nil?
+      p = Post.new(params[:post])
+      p.user_id = @current_user.id
+
+      # TODO: Allow the specific errors to show through.
+      if p.save
+        flash[:notice] = I18n.t("views.posts.succes_create_flash")
+        redirect_to user_path(@current_user) and return
+      else
+        flash[:alert] = I18n.t("views.application.error")
+        redirect_to user_path(@current_user) and return
+      end
+    else
+      @wall.posts.create params[:post] do |post|
+        post.user_id = @current_user.id
+      end
     end
 
-    if params[:post][:content].empty?
-      flash[:alert] = "Descreva a sua idéia."
-    end
-
-    redirect_to :back
+    redirect_to :back and return
   end
+
+  #----------------------------------------------------------------------------
 
   def show
     @post = Post.find params[:id]
@@ -100,6 +116,8 @@ class PostsController < ApplicationController
   def load_wall
     # TODO @dman7: This is not the way of identifying resources...
     resource, id = request.path.split('/')[3,4]
+
+    return if resource.nil?
     @wall = resource.singularize.classify.constantize.find(id)
   end
 

@@ -73,11 +73,21 @@ Dengue::Application.routes.draw do
     end
 
     resources :houses do
+
+      # TODO: Deprecate the posts behavior...?
       resources :posts do
         post "like",    :on => :member
         post "comment", :on => :member
       end
     end
+  end
+
+  #----------------------------------------------------------------------------
+  # Posts
+
+  resources :posts do
+    post "like",    :on => :member
+    post "comment", :on => :member
   end
 
   #----------------------------------------------------------------------------
