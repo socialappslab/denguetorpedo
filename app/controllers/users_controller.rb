@@ -120,6 +120,7 @@ class UsersController < ApplicationController
 
     if @user.save
       cookies[:auth_token] = @user.auth_token
+      flash[:notice] = "Perfil atualizado com sucesso!"
       redirect_to teams_path and return
     else
       render new_user_path(@user)
