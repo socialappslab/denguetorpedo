@@ -25,11 +25,12 @@ class TeamsController < NeighborhoodsBaseController
     team_membership = TeamMembership.new(:user_id => @current_user.id, :team_id => @team.id, :verified => false)
 
     if team_membership.save
+      flash[:notice] = I18n.t("views.teams.join")
       redirect_to teams_path and return
     else
       @teams = Team.all
 
-      flash[:alert] = I18n.t("common_terms.something_went_wrong")
+      flash[:alert] = I18n.t("views.application.error")
       render "teams/index" and return
     end
   end

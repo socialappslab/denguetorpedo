@@ -28,6 +28,9 @@ pt:
       prize_code:
         one: Cupom
         other: Cupons
+      team:
+        one: Equipe
+        other: Equipes
     attributes:
       user:
         email: "Email"
@@ -178,15 +181,15 @@ pt:
     redeemed_prizes: Prêmios Resgatados
     go_to_reports: "Vá para focos marcados"
     eliminate_and_gain_points: Eliminar e ganhar pontos
-    login_to_play_dengue_torpedo: Faça o seu login ou cadastre-se para jogar Dengue Torpedo
     comment: "Comentar"
     sponsor: Patrocinador
     sponsors: Patrocinadores
     this_community_has_no_activity: Esa comunidade não tem qualquer atividade
-    join: Juntar
-    something_went_wrong: "Algo deu errado. Por favor, tente novamente."
+    join: Entrar na equipe
     my_teams: Minhas equipes
-    explore_teams: Explorar equipes
+    activities: Atividades
+
+
 
 
 
@@ -219,6 +222,12 @@ pt:
       upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
 
   views:
+    application:
+      error: "Algo deu errado. Por favor, tente novamente."
+      login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
+    teams:
+      join: "Você se juntou a equipe com success."
+
     password_resets:
       title: Redefinir sua senha
       enter_email: "Digite o seu e-mail cadastrado"

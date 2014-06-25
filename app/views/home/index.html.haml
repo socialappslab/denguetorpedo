@@ -29,12 +29,14 @@
 
 .row
   .span2.offset1
-    -# %h2{style: 'font-size: 18px;'}
-    -#   = I18n.t("landing_page.house.title")
+    %h2{style: 'font-size: 18px; text-align: center;'}
+      = I18n.t("activerecord.models.team", :count => 2)
     = render "home/house_list"
 
 
   .span9{:style => "margin-left: 40px;"}
+    %h2{style: 'font-size: 18px; text-align: center;'}
+      = I18n.t("common_terms.activities")
     = render :partial => "shared/news_feed"
 
     .span9{:style => "text-align: center;"}
@@ -42,10 +44,10 @@
         %i.fa.fa-chevron-down
         = I18n.t("common_terms.more")
 
-  .span4{:style => "margin-left: 30px;"}
-    -# %h2{style: 'font-size: 18px;'}
-    -#   = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
-    -#
+  .span4{:style => "margin-left: 30px; text-align: center;"}
+    %h2{style: 'font-size: 18px;'}
+      = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
+
 
     #sponsors{:style => "margin-top: 22px;"}
       %ul

@@ -29,7 +29,7 @@
     .row
       #neighborhood_sponsors{:style => "margin-top:20px;"}
         - @sponsors.each do |sponsor|
-          .span3{:style => "margin-bottom: 3px;"}
+          .span5{:style => "margin-bottom: 3px;"}
             - if sponsor.house && sponsor.house.profile_photo_file_name.present?
               = link_to image_tag(sponsor.house.profile_photo.url(:small), :width => 50, :height => 50), sponsor_path(sponsor)
             - else

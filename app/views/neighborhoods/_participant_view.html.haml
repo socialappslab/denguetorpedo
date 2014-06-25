@@ -1,7 +1,7 @@
 
 #neighborhood_participants_list
   - @participants.each do |participant|
-    .span3{:style => "margin-bottom: 3px;"}
+    .span5{:style => "margin-bottom: 3px;"}
       - if participant.profile_photo_file_name.nil?
         = link_to image_tag("default_images/profile_default_image.png", :style => "width: 50px; height: 50px;"), user_path(participant)
       - else
