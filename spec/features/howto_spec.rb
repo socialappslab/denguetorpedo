@@ -18,7 +18,7 @@ describe "How To", :type => :feature do
 
   it "doesn't allow editing of sections for visitors" do
     visit edit_documentation_section_path(section)
-    expect(page).to have_content("Faça o seu login para visualizar essa página")
+    expect(page).to have_content("Cadastre-se para")
   end
 
   it "doesn't allow editing of sections for logged-in users" do
