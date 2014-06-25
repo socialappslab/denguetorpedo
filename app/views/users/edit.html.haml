@@ -91,7 +91,20 @@
             = link_to "Códigos de controle dos prêmios", "/coupons"
 
 
+
     = form_for(@user, :html => {name: "configuration", :class => "form-horizontal"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}}) do |f|
+
+      .row
+        .span4
+          = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-info btn-large"
+
+        .span4
+          = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-info btn-large", :style => "float: right;"
+
+      %hr
+
+
+
       %h1{:id => "role_title"}
         = I18n.t("common_terms.configuration")
 
@@ -197,18 +210,5 @@
           = select_tag :recruiter_name, options_for_select(User.all.map {|u| [u.full_name, u.id]}), :include_blank => true
 
 
-      .control-group
-        .controls
-          = f.submit I18n.t("views.button.confirm"), {:style => "margin-bottom: 20px;", :class => "btn btn-success form-control btn-block"}
 
-
-      .row
-        .span12
-          %h1
-            Criar uma nova equipe ou entrar numa equipe que já existe.
-          .row
-            .span4
-              = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-success btn-large"
-
-            .span6
-              = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-success btn-large"
+      = f.submit I18n.t("views.button.confirm"), {:class => "btn btn-success btn-large btn-block"}
