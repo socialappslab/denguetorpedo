@@ -120,7 +120,7 @@ class UsersController < ApplicationController
 
     if @user.save
       cookies[:auth_token] = @user.auth_token
-      redirect_to user_path(@user)
+      redirect_to teams_path and return
     else
       render new_user_path(@user)
     end
