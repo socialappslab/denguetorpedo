@@ -17,12 +17,6 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
-  def is_admin?
-    ["coordenador", "admin"].include? @current_user.role
-  end
-
-  #----------------------------------------------------------------------------
-
   def require_login
     @current_user ||= User.find_by_auth_token(params[:auth_token])
     flash[:alert] = "Faça o seu login para visualizar essa página." if @current_user.nil?
@@ -33,7 +27,8 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   def require_admin
-    unless is_admin?
+    is_admin = [User::TYPES::COORDINATOR, User::TYPES::ADMIN].include?(@current_user.role)
+    unless is_admin
        redirect_to root_url
     end
   end
