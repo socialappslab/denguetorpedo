@@ -8,7 +8,6 @@
     {
       if ($("#recruitment").val() == "AVS/ACS")
       {
-        // $("input#recruitment").show();
         $("input#recruiter_name").autocomplete(
         {
           source: verifiers,
@@ -40,31 +39,14 @@
       }
     });
 
-
-
-
     $(document).ready(function()
     {
       if($("#cellphone").prop("checked"))
       {
-        // $("#user_phone_number").prop("disabled", true)
-        // $("#user_carrier").prop("disabled", true)
-        // $("#pre_paid_radio").prop("disabled", true)
-        // $("#post_paid_radio").prop("disabled", true)
-
         $("#user_phone_number").val("000000000000")
         $("#user_carrier").val("xxx")
       }
-      else
-      {
-        // $("#user_phone_number").prop("disabled", false)
-        // $("#user_carrier").prop("disabled", false)
-        // $("#pre_paid_radio").prop("disabled", false)
-        // $("#post_paid_radio").prop("disabled", false)
 
-        // $("#user_phone_number").val("")
-        // $("#user_carrier").val("")
-      }
 
       if ($("#user_phone_number").val() == "000000000000" && $("#user_carrier").val() == "xxx")
         $("#cellphone").attr("checked", true)
@@ -74,21 +56,11 @@
     {
       if(this.checked)
       {
-        // $("#user_phone_number").prop("disabled", true)
-        // $("#user_carrier").prop("disabled", true)
-        // $("#pre_paid_radio").prop("disabled", true)
-        // $("#post_paid_radio").prop("disabled", true)
-
         $("#user_phone_number").val("000000000000")
         $("#user_carrier").val("xxx")
       }
       else
       {
-        // $("#user_phone_number").prop("disabled", false)
-        // $("#user_carrier").prop("disabled", false)
-        // $("#pre_paid_radio").prop("disabled", false)
-        // $("#post_paid_radio").prop("disabled", false)
-
         $("#user_phone_number").val("")
         $("#user_carrier").val("")
       }
@@ -115,7 +87,7 @@
 
 
   - if @user == @current_user
-    - if @current_user.role == "admin" or @current_user.role == "coordenador"
+    - if @current_user.can_manage_other_users?
       #role_specific.offset9
         %h2 Configurações de coordenador
         %p.link
@@ -134,7 +106,7 @@
           = link_to "Administrar contatos", feedbacks_path
         %p.link
           = link_to "Administrar tipos e métodos", "/reports/types"
-    - elsif @current_user.role == "lojista"
+    - elsif @current_user.role == User::Types::SPONSOR
       #role_specific.offset9
         %h2 Configurações de patrocinador
         %p.link
@@ -273,8 +245,6 @@
     %br
       .edit_house
         = f.submit I18n.t("views.button.confirm"), {:style => "margin-bottom: 20px;", :class => "btn btn-success"}
-
-
 
 
     .row

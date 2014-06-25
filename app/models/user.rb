@@ -77,6 +77,9 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def can_manage_other_users?
+    return [Types::ADMIN, Types::COORDINATOR].include?(self.role)
+  end
 
   def location
     house && house.location
