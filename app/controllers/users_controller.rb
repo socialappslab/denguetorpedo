@@ -253,15 +253,16 @@ class UsersController < ApplicationController
     end
 
     if @user.update_attributes(user_params)
-      if @user.is_fully_registered == false
-        # Identify the recruiter for this user.
-        recruiter = User.find_by_id( params[:recruiter_id] )
-        if recruiter
-          @user.recruiter = recruiter
-          recruiter.points       += 50
-          recruiter.total_points += 50
-          recruiter.save
-        end
+      # Identify the recruiter for this user.
+      recruiter = User.find_by_id( params[:recruiter_id] )
+      if recruiter
+        @user.recruiter = recruiter
+
+        # Only add points to the recruiter if the user isn't fully registered.
+        recruiter.total_points += 50 if @user.is_fully_registered == false
+
+
+        recruiter.save
       end
 
       @user.update_attribute(:is_fully_registered, true)
