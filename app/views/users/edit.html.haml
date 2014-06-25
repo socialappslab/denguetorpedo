@@ -80,18 +80,6 @@
 
 #register{:style => "margin: auto; width: 50%; text-align: center;"}
   .well
-
-    - if @user == @current_user
-      - if @current_user.can_manage_other_users?
-        = render :partial => "users/admin_links"
-      - elsif @current_user.role == User::Types::SPONSOR
-        #role_specific
-          %h2 Configurações de patrocinador
-          %p.link
-            = link_to "Códigos de controle dos prêmios", "/coupons"
-
-
-
     = form_for(@user, :html => {name: "configuration", :class => "form-horizontal"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}}) do |f|
 
       .row
@@ -103,7 +91,12 @@
 
       %hr
 
-
+      - if @user == @current_user
+        - if @current_user.can_manage_other_users?
+          = render :partial => "users/admin_links"
+        - elsif @current_user.role == User::Types::SPONSOR
+          = render :partial => "users/sponsor_links"
+      %hr
 
       %h1{:id => "role_title"}
         = I18n.t("common_terms.configuration")
