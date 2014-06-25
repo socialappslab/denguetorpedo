@@ -11,7 +11,7 @@
             - else
               = image_tag(team.profile_photo.url(:small), :class => "img-rounded", :style => "height: 100px; width: 100px;")
 
-        .span6
+        .span5
           .row
             .span4
               %h1
@@ -22,14 +22,14 @@
           -#       %span{:style => " font-size: 30px;"}
           -#         = team.users.count
           -#       = I18n.t("activerecord.models.user", :count => 2)
-        .span2
-          %div{:style => "display: table; height: 100px;"}
-            %div{:style => "display: table-cell; vertical-align: middle;"}
-              - if team.team_memberships.map(&:user_id).include?(@current_user.id)
-                = link_to nil, :class => "btn btn-success btn-large disabled", :style => "width: 100px;" do
-                  %i{:class => "fa fa-check"}
-              - else
-                = form_tag join_team_path(team), :method => "POST" do
-                  = submit_tag "+ " + I18n.t("common_terms.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 100px;"
+
+        %div{:style => "display: table; height: 100px; width: 185px; float: left;"}
+          %div{:style => "display: table-cell; vertical-align: middle;"}
+            - if team.team_memberships.map(&:user_id).include?(@current_user.id)
+              = link_to nil, :class => "btn btn-success btn-large disabled", :style => " width: 185px;" do
+                %i{:class => "fa fa-check"}
+            - else
+              = form_tag join_team_path(team), :method => "POST" do
+                = submit_tag "+ " + I18n.t("common_terms.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 185px;"
 
       %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
