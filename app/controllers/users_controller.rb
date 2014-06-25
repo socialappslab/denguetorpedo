@@ -187,7 +187,7 @@ class UsersController < ApplicationController
 
     #--------------------------------------------------------------------------
     # Update the user and the house
-    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :carrier, :prepaid)
+    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
 
 
     # TODO add in checks to rename or join existing house?
@@ -227,30 +227,30 @@ class UsersController < ApplicationController
 
     #---------------------------------------------------------------------------
     # Handle carrier and prepaid errors.
-    if params[:cellphone] == "false"
-      # TODO: This is a hack to save the phone information in the case that user
-      # registers with existing house name (the confirmation clears any temporary
-      # variable results of cellphone information).
-
-      # We still need this when the user object will be saved later in this method.
-      # params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
-    else
-      if params[:user][:carrier].blank?
-        flash[:alert] = "Informe a sua operadora."
-
-        @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
-        @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
-
-        render "edit" and return
-      elsif params[:user][:prepaid].blank?
-        flash[:alert] = "Marque pré ou pós-pago."
-
-        @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
-        @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
-
-        render "edit" and return
-      end
-    end
+    # if params[:cellphone] == "false"
+    #   # TODO: This is a hack to save the phone information in the case that user
+    #   # registers with existing house name (the confirmation clears any temporary
+    #   # variable results of cellphone information).
+    #
+    #   # We still need this when the user object will be saved later in this method.
+    #   # params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
+    # else
+    #   if params[:user][:carrier].blank?
+    #     flash[:alert] = "Informe a sua operadora."
+    #
+    #     @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+    #     @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
+    #
+    #     render "edit" and return
+    #   elsif params[:user][:prepaid].blank?
+    #     flash[:alert] = "Marque pré ou pós-pago."
+    #
+    #     @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+    #     @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
+    #
+    #     render "edit" and return
+    #   end
+    # end
 
     if @user.update_attributes(user_params)
       # Identify the recruiter for this user.
