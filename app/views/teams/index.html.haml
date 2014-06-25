@@ -10,7 +10,7 @@
 
     .row
       .span10
-        - should_display_form = (flash[:show_new_team_form] == true || params[:form] == true)
+        - should_display_form = (flash[:show_new_team_form] == true || params[:form] == "true")
         = form_for @team, :html => { :id => "new-team-form", :class => "form-horizontal well", :style => "#{should_display_form == true ? '' : 'display: none;'}; margin-top: 20px;" } do |f|
           .control-group
             = f.label I18n.t("attributes.name"), :class => "control-label"
