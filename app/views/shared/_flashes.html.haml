@@ -1,16 +1,15 @@
-.row{:style => "z-index: 10;"}
-  .span15.offset1
-    - if flash[:notice]
-      .alert.alert-success.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
-        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
-          &times;
-        %span{:style => "font-size: 20px; float: right;"}
-          - if flash[:should_render_social_media_buttons]
-            = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("twitter.created_new_report")}
-        = flash[:notice]
+%div{:style => "margin: auto; width: 75%;"}
+  - if flash[:notice]
+    .alert.alert-success.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
+      %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+        &times;
+      %span{:style => "font-size: 20px; float: right;"}
+        - if flash[:should_render_social_media_buttons]
+          = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("twitter.created_new_report")}
+      = flash[:notice]
 
-    - if flash[:alert]
-      .alert.alert-danger.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
-        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
-          &times;
-        = flash[:alert]
+  - if flash[:alert]
+    .alert.alert-danger.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
+      %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+        &times;
+      = flash[:alert]
