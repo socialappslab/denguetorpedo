@@ -3,7 +3,7 @@
 
 class UsersController < ApplicationController
   before_filter :require_login, :only => [:edit, :update, :index, :show]
-  before_filter :ensure_mare_neighborhood, :only => [:update]
+  # before_filter :ensure_mare_neighborhood, :only => [:update]
   before_filter :identify_student, :only => [:edit, :update]
 
   #----------------------------------------------------------------------------
@@ -154,18 +154,18 @@ class UsersController < ApplicationController
     #--------------------------------------------------------------------------
     # If the user has written down an existing house, then we need to confirm
     # with them that that is the house they want to join.
-    house = House.find_by_name(params[:user][:house_attributes][:name])
-    if params[:house_name_confirmation].blank? && house.present? && @user.house_id != house.id
-      @user.house = house
-
-      @house_name_confirmation = true
-      flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
-
-      @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
-      @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
-
-      render "edit" and return
-    end
+    # house = House.find_by_name(params[:user][:house_attributes][:name])
+    # if params[:house_name_confirmation].blank? && house.present? && @user.house_id != house.id
+    #   @user.house = house
+    #
+    #   @house_name_confirmation = true
+    #   flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
+    #
+    #   @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
+    #   @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
+    #
+    #   render "edit" and return
+    # end
 
 
     # NOTE: This is essentially the old code boiled down. Before
@@ -183,7 +183,7 @@ class UsersController < ApplicationController
     # exists, then we'll update the house_attributes and pass it on to Rails's
     # saver.
     # NOTE: This is necessary in order for all validations to work.
-    params[:user][:house_attributes].merge!(:neighborhood_id => params[:user][:neighborhood_id])
+    # params[:user][:house_attributes].merge!(:neighborhood_id => params[:user][:neighborhood_id])
 
     #--------------------------------------------------------------------------
     # Update the user and the house
@@ -193,30 +193,29 @@ class UsersController < ApplicationController
     # TODO add in checks to rename or join existing house?
     # TODO should we allow users from neighborhood A join houses in neighborhood B
     # if house already exists, join existing house
-    location = Location.find_by_street_type_and_street_name_and_street_number(
-      params[:user][:house_attributes][:location_attributes][:street_type],
-      params[:user][:house_attributes][:location_attributes][:street_name],
-      params[:user][:house_attributes][:location_attributes][:street_number]
-      )
-    if location.nil?
-      location = Location.new(params[:user][:house_attributes][:location_attributes])
-      location.neighborhood_id = user_params[:neighborhood_id]
-      location.save
-    end
-
-    if house.present?
-      house.update_attribute(:location_id, location.id)
-      @user.house = house
-    else
-      params[:user][:house_attributes].delete(:location_attributes)
-      params[:user][:house_attributes].merge!(:location_id => location.id)
-
-      if @user.house.present?
-        @user.house.update_attributes(params[:user][:house_attributes]) #.name = params[:user][:house_attributes][:name]
-      else
-        @user.house = House.new(params[:user][:house_attributes])
-      end
-    end
+    # location = Location.find_by_street_type_and_street_name_and_street_number(
+    #   params[:user][:house_attributes][:location_attributes][:street_type],
+    #   params[:user][:house_attributes][:location_attributes][:street_name],
+    #   params[:user][:house_attributes][:location_attributes][:street_number]
+    #   )
+    # if location.nil?
+    #   location = Location.new(params[:user][:house_attributes][:location_attributes])
+    #   location.neighborhood_id = user_params[:neighborhood_id]
+    #   location.save
+    # end
+    # if house.present?
+    #   house.update_attribute(:location_id, location.id)
+    #   @user.house = house
+    # else
+    #   params[:user][:house_attributes].delete(:location_attributes)
+    #   params[:user][:house_attributes].merge!(:location_id => location.id)
+    #
+    #   if @user.house.present?
+    #     @user.house.update_attributes(params[:user][:house_attributes]) #.name = params[:user][:house_attributes][:name]
+    #   else
+    #     @user.house = House.new(params[:user][:house_attributes])
+    #   end
+    # end
 
 
     # if nickname is blank and display name includes nickname, change to firstlast
@@ -380,10 +379,10 @@ class UsersController < ApplicationController
 
   # TODO: We're disabling choosing other neighborhoods until we introduce
   # another neighborhood. See seeds.rb for more.
-  def ensure_mare_neighborhood
-    neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
-    raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"
-  end
+  # def ensure_mare_neighborhood
+  #   neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
+  #   raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"
+  # end
 
   #----------------------------------------------------------------------------
 
