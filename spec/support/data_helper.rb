@@ -30,6 +30,17 @@ def populate_data
     u.save!
   end
 
+  u = User.find_by_email("sponsor@denguetorpedo.com")
+  if u.nil?
+    u = User.new(:email => "sponsor@denguetorpedo.com")
+    u.password   = "abcdefg"
+    u.first_name = "Sponsor"
+    u.last_name  = "Sponsor"
+    u.role       = User::Types::SPONSOR
+    u.neighborhood_id = mare.id
+    u.save!
+  end
+
   ["a", "b", "c"].each_with_index do |letter, index|
     u = User.find_by_email("#{letter}@denguetorpedo.com")
     Report.create!(:reporter_id => u.id, :status => Report::STATUS[:reported], :elimination_type => EliminationType.first.name, :report => "This is a report by #{u.display_name}", :neighborhood_id => mare.id, :completed_at => Time.now, :before_photo => File.open("./spec/support/foco_marcado.jpg"))
