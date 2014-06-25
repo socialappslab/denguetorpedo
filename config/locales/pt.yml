@@ -229,9 +229,11 @@ pt:
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
     teams:
       success_join_flash: "Você se juntou a equipe com success"
-      success_create_flash: "Você se criou uma equipe com success"
+      success_create_flash: "Você criou uma equipe com success"
       join: Entrar na equipe
       create: Criar uma equipe
+    posts:
+      succes_create_flash: "Você criou um post com sucesso"
 
     password_resets:
       title: Redefinir sua senha
