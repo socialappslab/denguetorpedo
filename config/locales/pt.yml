@@ -57,6 +57,9 @@ pt:
           one: "1 ponto"
           other: "%{count} pontos"
 
+      team:
+        profile_photo: Foto da equipe
+
     errors:
       template:
         header:
@@ -185,7 +188,6 @@ pt:
     sponsor: Patrocinador
     sponsors: Patrocinadores
     this_community_has_no_activity: Esa comunidade não tem qualquer atividade
-    join: Entrar na equipe
     my_teams: Minhas equipes
     activities: Atividades
 
@@ -226,7 +228,10 @@ pt:
       error: "Algo deu errado. Por favor, tente novamente."
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
     teams:
-      join: "Você se juntou a equipe com success."
+      success_join_flash: "Você se juntou a equipe com success"
+      success_create_flash: "Você se criou uma equipe com success"
+      join: Entrar na equipe
+      create: Criar uma equipe
 
     password_resets:
       title: Redefinir sua senha

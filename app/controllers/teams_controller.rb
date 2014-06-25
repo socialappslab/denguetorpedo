@@ -7,6 +7,7 @@ class TeamsController < NeighborhoodsBaseController
 
   def index
     @teams = Team.all
+    @team  = Team.new
   end
 
   #----------------------------------------------------------------------------
@@ -14,6 +15,35 @@ class TeamsController < NeighborhoodsBaseController
 
   def show
     @team = Team.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+  # POST /teams
+
+  def create
+    @team = Team.new(params[:team])
+
+    # TODO: I'm not happy with assigning default neighborhood for a team,
+    # but this is the state of things for the time being. Consider moving
+    # away from neighborhood specific things...?
+    @team.neighborhood_id = Neighborhood.find_by_name("Maré").id
+
+    if @team.save
+      # If the team was successfully created, create the team membership
+      # since any user who creates a team must be interested in joining it,
+      # automatically.
+      TeamMembership.create(:team_id => @team.id, :user_id => @current_user.id, :verified => true)
+      flash[:notice] = I18n.t("views.teams.success_create_flash")
+      redirect_to teams_path and return
+    else
+      @teams = Team.all
+
+      # Let's simplify the user's life by displaying the form in case of failure.
+      # After all, if we've reached this point, then the user's last interaction
+      # was with the new team form.
+      flash[:show_new_team_form] = true
+      render "index" and return
+    end
   end
 
   #----------------------------------------------------------------------------
@@ -25,7 +55,7 @@ class TeamsController < NeighborhoodsBaseController
     team_membership = TeamMembership.new(:user_id => @current_user.id, :team_id => @team.id, :verified => false)
 
     if team_membership.save
-      flash[:notice] = I18n.t("views.teams.join")
+      flash[:notice] = I18n.t("views.teams.success_join_flash")
       redirect_to teams_path and return
     else
       @teams = Team.all
