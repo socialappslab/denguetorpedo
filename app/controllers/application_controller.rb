@@ -18,10 +18,11 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   def require_login
-    @current_user ||= User.find_by_auth_token(params[:auth_token])
-    flash[:alert] = "Faça o seu login para visualizar essa página." if @current_user.nil?
-    redirect_to root_url if @current_user.nil?
-    # head :u and return if @current_user.nil?
+    @current_user ||= User.find_by_auth_token( params[:auth_token] )
+    if @current_user.nil?
+      flash[:alert] = I18n.t("views.application.login_required")
+      redirect_to new_user_path
+    end
   end
 
   #----------------------------------------------------------------------------
