@@ -108,15 +108,6 @@
 
 .user_form.offset1
 
-  .row
-    .span16
-      %h1
-        Criar uma nova equipe ou entrar numa equipe que já existe.
-      .span5
-        = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-success btn-large"
-      .span6
-        = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-success btn-large"
-
   %br
   %br
   %br
@@ -282,3 +273,17 @@
     %br
       .edit_house
         = f.submit I18n.t("views.button.confirm"), {:style => "margin-bottom: 20px;", :class => "btn btn-success"}
+
+
+
+
+    .row
+      .span12
+        %h1
+          Criar uma nova equipe ou entrar numa equipe que já existe.
+        .row
+          .span4
+            = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-success btn-large"
+
+          .span6
+            = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-success btn-large"
