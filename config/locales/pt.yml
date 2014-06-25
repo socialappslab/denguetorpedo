@@ -8,6 +8,7 @@ pt:
     name: Nome
     number: Número
     content: Conteúdo
+    profile_photo: "Foto do perfil"
   activerecord:
     models:
       report:
@@ -43,6 +44,7 @@ pt:
         carrier: "Operadora"
         carrier_confirmation: "Confirmação de operadora"
         prepaid: "Pré/Pós-pago"
+        nickname: Apelido
       feedback:
         name: Nome
         message: Mensagem
@@ -190,6 +192,8 @@ pt:
     this_community_has_no_activity: Esa comunidade não tem qualquer atividade
     my_teams: Minhas equipes
     activities: Atividades
+    male: Masculino
+    female: Feminino
 
 
 
@@ -234,6 +238,9 @@ pt:
       create: Criar uma equipe
     posts:
       succes_create_flash: "Você criou um post com sucesso"
+    users:
+      edit:
+        show_name_as: "Mostrar nome como"
 
     password_resets:
       title: Redefinir sua senha
