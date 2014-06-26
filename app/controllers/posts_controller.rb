@@ -2,7 +2,7 @@
 
 class PostsController < ApplicationController
   before_filter :require_login, :except => [:index]
-  before_filter :load_wall, :except => [:like]
+  before_filter :load_wall, :except => [:like, :comment]
   before_filter :find_by_id, :only => [:like, :comment]
 
   def index
