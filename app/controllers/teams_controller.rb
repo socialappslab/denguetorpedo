@@ -14,11 +14,12 @@ class TeamsController < NeighborhoodsBaseController
   # GET /teams/1
 
   def show
-    @team = Team.find(params[:id])
+    @team  = Team.find(params[:id])
+    @users = @team.users
     @total_points  = @team.total_points
     @total_reports = @team.total_reports
 
-    # raise "total_reports: #{@total_reports.inspect}"
+    @post = Post.new
 
     # Load up posts from team's users.
     @posts = []
