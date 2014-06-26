@@ -15,6 +15,19 @@ class TeamsController < NeighborhoodsBaseController
 
   def show
     @team = Team.find(params[:id])
+    @total_points  = @team.total_points
+    @total_reports = @team.total_reports
+
+    # raise "total_reports: #{@total_reports.inspect}"
+
+    # Load up posts from team's users.
+    @posts = []
+    @team.users.includes(:posts).each do |user|
+      @posts << user.posts
+    end
+    @posts.flatten!
+
+    @news_feed = @posts.to_a.sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------

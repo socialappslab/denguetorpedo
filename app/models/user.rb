@@ -130,6 +130,7 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # TODO @dman7: Optimize this hot mess.
   def reports
     Report.includes(:reporter, :eliminator, :location, :likes).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
   end

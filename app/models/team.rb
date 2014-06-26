@@ -15,4 +15,19 @@ class Team < ActiveRecord::Base
   validates :neighborhood_id, :presence => true
 
   #----------------------------------------------------------------------------
+
+  def total_points
+    self.users.sum(:total_points)
+  end
+
+  #----------------------------------------------------------------------------
+
+  def total_reports
+    sum = 0
+    self.users.includes(:reports).each do |user|
+      sum += user.reports.count
+    end
+
+    return sum
+  end
 end
