@@ -8,6 +8,10 @@ class TeamsController < NeighborhoodsBaseController
   def index
     @teams = Team.all
     @team  = Team.new
+
+    # Calculate ranking for each team.
+    team_rankings  = @teams.map {|t| [t, t.total_points]}
+    @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
   end
 
   #----------------------------------------------------------------------------

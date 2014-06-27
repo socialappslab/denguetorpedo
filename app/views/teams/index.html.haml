@@ -27,8 +27,14 @@
 
 
     %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
-    - @teams.each do |team|
+
+    - @team_rankings.each_with_index do |team_data, index|
+      - team        = team_data[0]
+      - team_points = team_data[1]
       .row{:style => "height: 100px;"}
+        .span2
+          %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
+            = index + 1
         .span2
           = link_to team_path(team) do
             - if team.profile_photo_file_name.nil?
@@ -36,26 +42,26 @@
             - else
               = image_tag(team.profile_photo.url(:small), :class => "img-rounded", :style => "height: 100px; width: 100px;")
 
-        .span5
+        .span4
           .row
             .span4
               %h1
                 = link_to team.name, team_path(team)
-          -# .row
-          -#   .span2{:style => "display: table; height: 75px;"}
-          -#     %span{:style => "display: table-cell; vertical-align: bottom;"}
-          -#       %span{:style => " font-size: 30px;"}
-          -#         = team.users.count
-          -#       = I18n.t("activerecord.models.user", :count => 2)
+          .row
+            .span4{:style => "display: table; height: 65px;"}
+              %span{:style => "display: table-cell; vertical-align: bottom;"}
+                %span{:style => " font-size: 30px; color: #5cb85c; display: inline;"}
+                  = team_points
+                = I18n.t("activerecord.attributes.user.total_points", :count => team_points)
 
-        %div{:style => "display: table; height: 100px; width: 185px; float: left;"}
+        %div{:style => "display: table; height: 100px; width: 120px; float: left;"}
           %div{:style => "display: table-cell; vertical-align: middle;"}
             - if team.team_memberships.map(&:user_id).include?(@current_user.id)
-              = link_to nil, :class => "btn btn-success btn-large disabled", :style => " width: 185px;" do
+              = link_to nil, :class => "btn btn-success btn-large disabled", :style => " width: 120px;" do
                 %i{:class => "fa fa-check"}
             - else
               = form_tag join_team_path(team), :method => "POST" do
-                = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 185px;"
+                = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 120px; white-space: normal;"
 
       %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
 
