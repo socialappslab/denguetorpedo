@@ -24,10 +24,13 @@ class Team < ActiveRecord::Base
 
   def total_reports
     sum = 0
-    self.users.includes(:reports).each do |user|
+    self.users.each do |user|
       sum += user.reports.count
     end
 
     return sum
   end
+
+  #----------------------------------------------------------------------------
+
 end
