@@ -10,7 +10,7 @@
       = @user.total_points
 
     %p{:style => "text-align: left; display: inline; font-size: 15px;"}
-      = I18n.t("common_terms.points")
+      = I18n.t("activerecord.attributes.user.total_points", :count => @user.total_points)
 
     - if @current_user == @user && @redeemable_prizes.count > 0
       = link_to prizes_path, :class => "btn btn-orange btn-large profile-view-points-button" do
@@ -50,7 +50,7 @@
             .points
               %span{:style => "color: #5cb85c; display: inline; font-weight: bold;"}
                 = prize.cost
-              = I18n.t("common_terms.points")
+              = I18n.t("activerecord.attributes.user.total_points", :count => 3)
     - if @redeemable_prizes.any?
       .span1
         = link_to prizes_path do
