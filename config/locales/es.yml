@@ -1,4 +1,4 @@
-# Sample localization file for Spanish (Mexico). Add more files in this directory for other locales.
+# Sample localization file for Portuguese (Brazil). Add more files in this directory for other locales.
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 es:
@@ -7,32 +7,52 @@ es:
     neighborhood_id: "Comunidad"
     name: Nombre
     number: Número
+    content: Contenido
+    profile_photo: "Foto del perfil"
   activerecord:
     models:
-      user: Usuario
-      feedback: Mensage
-      house: Identificación de casa
+      report:
+        one: Foco
+        other: Focos
+      user:
+        one: Usuario
+        other: Usuarios
+      neighborhood: Comunidad
+      feedback: Mensaje
+      house: Casa
       documentation_section: Sección
       elimination_method: Método de eliminación
+      notice: Noticias
       prize:
         one: Premio
         other: Premios
+      prize_code:
+        one: Cupón
+        other: Cupones
+      team:
+        one: Equipo
+        other: Equipos
     attributes:
       user:
+        email: "Correo electrónico"
         password: "Contraseña"
-        phone_number: "# de celular"
+        phone_number: "Celular"
         first_name: "Nombre"
-        last_name: "Apellidos"
+        last_name: "Apellido"
         password_digest: "Contraseña"
         password_confirmation: "Confirmación de contraseña"
-        carrier: "Compañía"
-        carrier_confirmation: "Confirmación de compañía"
+        carrier: "Operadora"
+        carrier_confirmation: "Confirmación de operadora"
         prepaid: "Pre-pago"
+        nickname: "Sobrenombre o apodo"
+        total_points:
+          one: Punto
+          other: Puntos
       feedback:
-        name: "Nombre"
-        message: "Mensage"
+        name: Nombre
+        message: Mensaje
       report:
-        before_photo: "Foto del foco"
+        before_photo: Foto del foco
         elimination_type: Tipo de foco
         report: Descripción
       documentation_section:
@@ -42,39 +62,46 @@ es:
           one: "1 punto"
           other: "%{count} puntos"
 
+      team:
+        profile_photo: Foto da equipe
+
     errors:
       template:
         header:
           one: "1 error impidió que el %{model} fuese salvado."
-          other: "%{count} errores impidieron que el %{model} fuese salvado."
+          other: "%{count} errores impidieron que el %{model}  fuese salvado."
       messages:
         blank: "es obligatorio"
-        confirmation: "no confirmado"
         empty: "es obligatorio"
+        confirmation: "no confirmado"
         exclusion: "está reservado"
         invalid: "no es válido"
         taken: "ya está en uso"
         too_long: "es muy largo. (máximo de %{count} caracteres)"
-        too_short: "es muy corta. (mínimo de %{count} caracteres)"
-        not_a_number: "debe ser un número"
-
+        too_short: "es muy corto. (mínimo de %{count} caracteres)"
+        not_a_number: "no es un número"
+      comments:
+        blank: "es obligatorio"
     success:
       report:
-        create: Foco marcado con éxito
-        eliminate: Usted ha eliminado el foco
-        delete: Foco eliminado correctamente
-        verify: El foco se verificó
+        create: Foco marcado exitosamente
+        eliminate: Ustéd eliminó un foco
+        delete: Foco eliminado exitosamente
+        verify: El foco fué verificado
+      comment:
+        create: Comentario hecho con éxito
+        #create: Comentario hecho con éxito
 
   #----------------------------------------------------------------------------
   # Home Navigation
   #----------------
   home_navigation:
     education:
-      title: INFORMACIÓN
+      title: SEPA MÁS
       description: Sobre el dengue
     howto:
-      title: JUEGO
-      description: ¿Como?
+      title: JUEGUE
+      description: ¿Cómo?
     prizes:
       title: GANE
       description: Premios
@@ -94,7 +121,7 @@ es:
   # Login Form
   #-----------
   login_form:
-    forgot_password: ¿Olvidaste tu contraseña?
+    forgot_password: ¿Olvidó su contraseña?
     greeting: Hola %{name}!
     logout: Salir
 
@@ -104,85 +131,138 @@ es:
   #-------------
   landing_page:
     community:
-      title: Comunidades destacadas en Dengue Torpedo
+      title: Comunidades participantes en Dengue Torpedo
       future_community: Futura comunidad
-      visit: Visite  %{name}
+      visit: Vá para a %{name}
       total_reports: Total de focos marcados
-      search_for_other_communities: ¡Encuentre otras comunidades participantes!
+      search_for_other_communities: Busque otras comunidades
     house:
       title_with_name: Casas %{name}
       title: Casas
     news:
-      title: Notícias de la comunidad
+      title: Noticias de la comunidad
     prize:
-      quantity: "Cantidad: %{quantity}"
-      expiration: "Vencimiento: %{time}"
+      quantity: "Existencia: %{quantity}"
+      expiration: "Plazo: %{time}"
     orange_banner:
-      tagline: Utilice el teléfono celular para eliminar los mosquitos. ¡Participe en Dengue Torpedo y gane premios!
+      tagline: Use su celular para eliminar mosquitos – ¡participe en Dengue Torpedo y gane premios!
 
 
   #----------------------------------------------------------------------------
   # Commonly used words and sentences
   #----------------------------------
   common_terms:
+    houses: Casas
+    participants: Participantes
     register: Regístrese
-    free_sms: SMS Grátis
+    free_sms: SMS Gratis
     more: Más
-    partners: Socios
+    partners: Participantes
+    #partners: Socios participantes
     configuration: Configuración
     all: Todos
-    sms: Mensaje de texto
+    sms: Torpedo
     marked_by: Marcado por
     verified_by: Verificado por
     eliminated_by: Eliminado por
-    confirm_delete: ¿Confirmar la eliminación?
+    confirm_delete: Está seguro?
     open_for: Abierto para
-    submit: Enviar
-    email_or_password_incorrect: "E-mail o contraseña inválido"
-    open_reports: Reportes abiertos
-    eliminated_reports: Reportes eliminados
+    email_or_password_incorrect: "Correo electrónico o contraseña incorrecta"
+    open_reports: Abiertos
+    eliminated_reports: Eliminados
     time_expired: Tiempo expirado
-    uploaded_photo: Foto subida
+    uploaded_photo: Foto cargada
     eliminated: Eliminado
     create_a_report: Marcar un foco
-    complete_report: Completar un reporte
-    comment: Comentar
+    create_reports: Marcar focos
+    complete_report: Complete el marcado del foco
+    exchange_points_for_prizes: "Intercambie puntos por premios"
+    go_to_report: "Ir a un foco"
+    go_to_notices: "Ir a noticias"
+    their_house: Su casa
+    their_community: Su comunidad
+    this_user_has_no_activity: Este usuário não tem qualquer atividade
+    no_activity: ¡No hay actividad aquí!
+    redeem_by: Valide antes de
+    ago: atrás
+    badges: medallas
+    like: Me gusta
+    redeemed_prizes: Premios adquiridos
+    go_to_reports: "Ir a focos marcados"
+    eliminate_and_gain_points: Eliminar y ganar puntos
+    comment: "Comentar"
+    sponsor: Patrocinador
+    sponsors: Patrocinadores
+    this_community_has_no_activity: Esta comunidad no tiene actividad
+    my_teams: Mis equipos
+    activities: Actividades
+    male: Masculino
+    female: Feminino
+    admin_configurations: Configuraciones de administrador
+    sponsor_configurations: Configuraciones de patrocinador
+
 
   facebook:
-    description: "Estoy en la lucha contra el dengue en @DengueTorpedo"
+    description: "Estoy combatiendo al dengue con @DengueTorpedo"
 
   twitter:
-    created_new_report: "Acabo de marcar un foco en @DengueTorpedo."
+    created_new_report: "Acabo de marcar um foco con @DengueTorpedo."
 
   reports_feed:
-    title: "Focos marcados de %{name}"
+    title: "Focos marcados en %{name}"
 
   map:
-    location_not_found: Dirección no encontrada. Captúrela manualmente.
-    loading: Cargando el mapa
+    location_not_found: Dirección no encontrada. Marque manualmente.
+    loading: Cargando un mapa
     go_to_community: "Ir a %{name}"
-    find: Buscar en el mapa
+    find: Encuentre en el mapa
 
   report:
     form:
-      likes: "Personas les gusta esto"
       address: Dirección de foco localizada
-      example_of_street_type: "Calle, callejón, etc."
-      example_of_description: "Describa la ubicación del foco (max 100 caracteres) Ej: Foco en el terreno de un lado; la acera de enfrente, etc"
-      photo_of_report: Cargue la imagen del foco encontrado
-      select_elimination_type: "Selecione el tipo de foco"
-      select_elimination_method: "Selecione el método de eliminación"
-      attention: "ATENCIÓN: Este mapa no puede encontrar su dirección. En ese caso, busque la ubicación correcta y de forma manual, haga clic en para añadir el marcador"
-      fill_in_complete_address: Envíe la dirección completa
-      problem_with_verification: No se pudo marcar el foco.  Pónganse en contacto con nosotros.
-      upload_photo_of_eliminated_report: Cargue una foto del foco eliminado.
+      example_of_street_type: "Avenida, calle, sendero, etc."
+      example_of_description: "Describa la localización de un foco (max 100 caracteres) Ex: Foco en el terreno de un lado o Foco en la banqueta de enfrente"
+      photo_of_report: Cargue una imagen del foco encontrado
+      select_elimination_type: "Seleccione un tipo de foco"
+      select_elimination_method: "Seleccione un método de eliminación"
+      attention: "ATENCION: A veces no se puede encontrar la dirección en el mapa. En tal caso, trate de apuntar en la dirección correcta y haga click manualmente para añadir un marcador."
+      fill_in_complete_address: Usted debe enviar una dirección completa
+      problem_with_verification: ¡Problema! el foco no fue marcado. Póngase en contacto con nosotros.
+      upload_photo_of_eliminated_report: Cargue una foto del foco eliminado
 
   views:
+    application:
+      error: "Algo salió mal. Por favor, intente nuevamente."
+      login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
+    teams:
+      success_join_flash: "Usted se sumó al equipo con éxito"
+      success_create_flash: "Usted creó un equipo con éxito"
+      join: Únase a un equipo
+      create: Cree un equipo
+    posts:
+      succes_create_flash: "Usted creo un post con éxito"
+    users:
+      edit:
+        show_name_as: "Mostrar nombre como"
+        admin:
+          register: "Registrar un patrocinador, verificador o visitante"
+          new_prize: "Registrar nuevos premios"
+          new_news: "Publicar noticias de la comunidade"
+          user_edit: "Administrar usuarios"
+          prize_edit: "Administrar premios"
+          sms_edit: "Administrar mensajes de texto de Dengue Torpedo"
+          feedback: "Administrar contratos"
+          report_edit: "Administrar tipos de foco y métodos"
+        sponsor:
+          edit_prizes: "Códigos de control de los premios"
+
     password_resets:
       title: Redefinir su contraseña
-      enter_email: "Teclee su e-mail registrado"
+      enter_email: "Teclee su correo electrónico registrado"
     button:
       publish: "Publicar"
       confirm: "Confirmar"
-      search: "Busca"
-      submit: "Enviar"
+      search:  "Buscar"
+      submit:  "Enviar"
+    post:
+      text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
