@@ -1,0 +1,49 @@
+
+
+/------------------------------------------------------------------------------
+
+.row{:style => "margin-bottom: 20px;"}
+  .span5
+    - if @total_points == 0
+      - num_of_reports_color = "#d9534f";
+    - else
+      - num_of_reports_color = "#5cb85c";
+
+    %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
+      = @total_points
+    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
+      = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
+
+
+  .span4{:style => "text-align: right;"}
+    - if @total_reports == 0
+      - num_of_reports_color = "#d9534f";
+    - else
+      - num_of_reports_color = "#5cb85c";
+
+    %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
+      = @total_reports
+    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
+      = I18n.t("dashboard.reports")
+
+/------------------------------------------------------------------------------
+
+- if @current_user && @users.include?(@current_user)
+  .row{:style => "margin-top:60px;"}
+    = render :partial => 'posts/new', locals: { wall: @house }
+
+.row
+  //= render :partial => "neighborhoods/news"
+  #user_recent_activity
+    #user_reports.span9
+      - if @news_feed.blank?
+        %p{:style => "font-size: 20px; line-height: 30px; text-align: center;"}
+          = I18n.t("common_terms.no_activity")
+      - else
+        - for item in @news_feed
+          - if item.is_a? Post
+            = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
+
+%br
+
+/------------------------------------------------------------------------------

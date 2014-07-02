@@ -45,6 +45,9 @@ pt:
         carrier_confirmation: "Confirmação de operadora"
         prepaid: "Pré/Pós-pago"
         nickname: Apelido
+        total_points:
+          one: Ponto
+          other: Pontos
       feedback:
         name: Nome
         message: Mensagem
@@ -172,13 +175,13 @@ pt:
     create_a_report: Marcar um foco
     create_reports: Marcar focos
     complete_report: Completar o foco
-    points: Pontos
     exchange_points_for_prizes: "Trocar pontos por prêmios"
     go_to_report: "Vá para o foco"
     go_to_notices: "Vá para a notícias"
     their_house: Sua casa
     their_community: Sua comunidade
     this_user_has_no_activity: Este usuário não tem qualquer atividade
+    no_activity: Não há atividade aqui!
     redeem_by: Resgate até
     ago: atrás
     badges: medalhas
@@ -196,9 +199,6 @@ pt:
     female: Feminino
     admin_configurations: Configurações de administrador
     sponsor_configurations: Configurações de patrocinador
-
-
-
 
 
   facebook:

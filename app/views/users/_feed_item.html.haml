@@ -27,8 +27,8 @@
     - if @current_user
       .row.feed-item-interaction-menu
         .span7
-          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_neighborhood_house_post_path(@neighborhood, owner, post)}
+          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
 
 
 
-  = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_neighborhood_house_post_path(@neighborhood, owner, post)}
+  = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

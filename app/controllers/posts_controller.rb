@@ -2,7 +2,7 @@
 
 class PostsController < ApplicationController
   before_filter :require_login, :except => [:index]
-  before_filter :load_wall, :except => [:like]
+  before_filter :load_wall, :except => [:like, :comment]
   before_filter :find_by_id, :only => [:like, :comment]
 
   def index
@@ -26,10 +26,10 @@ class PostsController < ApplicationController
       # TODO: Allow the specific errors to show through.
       if p.save
         flash[:notice] = I18n.t("views.posts.succes_create_flash")
-        redirect_to user_path(@current_user) and return
+        redirect_to :back and return
       else
         flash[:alert] = I18n.t("views.application.error")
-        redirect_to user_path(@current_user) and return
+        redirect_to :back and return
       end
     else
       @wall.posts.create params[:post] do |post|

@@ -8,13 +8,31 @@ class TeamsController < NeighborhoodsBaseController
   def index
     @teams = Team.all
     @team  = Team.new
+
+    # Calculate ranking for each team.
+    team_rankings  = @teams.map {|t| [t, t.total_points]}
+    @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
   end
 
   #----------------------------------------------------------------------------
   # GET /teams/1
 
   def show
-    @team = Team.find(params[:id])
+    @team  = Team.find(params[:id])
+    @users = @team.users
+    @total_points  = @team.total_points
+    @total_reports = @team.total_reports
+
+    @post = Post.new
+
+    # Load up posts from team's users.
+    @posts = []
+    @team.users.includes(:posts).each do |user|
+      @posts << user.posts
+    end
+    @posts.flatten!
+
+    @news_feed = @posts.to_a.sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------

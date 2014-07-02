@@ -34,7 +34,7 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     #2.
-    @reports += current_user.reports.where(:completed_at => nil).order("created_at DESC").to_a if current_user
+    @reports += current_user.reports.where(:completed_at => nil).to_a if current_user
 
     #3.
     @reports += Report.includes(:likes).where(:neighborhood_id => @neighborhood.id).select(&:completed_at).sort_by(&:completed_at).reverse

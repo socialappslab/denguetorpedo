@@ -46,10 +46,9 @@ class User < ActiveRecord::Base
   #-------------
 
   # TODO: reports should include both eliminator_id and reporter_id.
-  has_many :reports, :foreign_key => "reporter_id", :dependent => :nullify
-  has_many :created_reports, :class_name => "Report", :foreign_key => "reporter_id", :dependent => :nullify
+  has_many :created_reports,    :class_name => "Report", :foreign_key => "reporter_id",   :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
-  has_many :verified_reports, :class_name => "Report", :foreign_key => "verifier_id", :dependent => :nullify
+  has_many :verified_reports,   :class_name => "Report", :foreign_key => "verifier_id",   :dependent => :nullify
 
   has_many :feeds, :dependent => :destroy
   has_many :posts, :dependent => :destroy
@@ -74,6 +73,15 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :house, :allow_destroy => true
   attr_accessible :house_attributes
   attr_accessible :first_name, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+
+  #----------------------------------------------------------------------------
+
+  # TODO: This is still not ideal but Rails doesn't have a clean way to load
+  # an association on multiple foreign_keys. Perhaps calling created_reports
+  # and eliminated_reports separately here would be faster?
+  def reports
+    Report.where("reporter_id = ? OR eliminator_id = ?", self.id, self.id).order("updated_at DESC")
+  end
 
   #----------------------------------------------------------------------------
 
@@ -126,12 +134,6 @@ class User < ActiveRecord::Base
       dist_str = "((locations.latitude - #{lat}) * (locations.latitude - #{lat}) + (locations.longitude - #{lon}) * (locations.longitude - #{lon}))"
       User.joins(:house => :location).where("houses.id != ?", house.id).order(dist_str).limit(n)
     end
-  end
-
-  #----------------------------------------------------------------------------
-
-  def reports
-    Report.includes(:reporter, :eliminator, :location, :likes).where("reporter_id = ? OR eliminator_id = ?", id, id).reorder(:updated_at).reverse_order.uniq
   end
 
   #----------------------------------------------------------------------------
