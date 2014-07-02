@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   def require_admin
-    is_admin = [User::TYPES::COORDINATOR, User::TYPES::ADMIN].include?(@current_user.role)
+    is_admin = [User::Types::COORDINATOR, User::Types::ADMIN].include?(@current_user.role)
     unless is_admin
        redirect_to root_url
     end

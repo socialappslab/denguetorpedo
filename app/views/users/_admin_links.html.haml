@@ -1,0 +1,18 @@
+%h2
+  = I18n.t("common_terms.admin_configurations")
+%p.link
+  = link_to I18n.t("views.users.edit.admin.register"), special_new_users_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.new_prize"), new_prize_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.new_news"), new_notice_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.user_edit"), users_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.prize_edit"), premios_admin_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.sms_edit"), phones_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.feedback"), feedbacks_path, :class => "btn btn-info", :style => "width: 400px;"
+%p.link
+  = link_to I18n.t("views.users.edit.admin.report_edit"), "/reports/types", :class => "btn btn-info", :style => "width: 400px;"

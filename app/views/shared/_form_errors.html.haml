@@ -1,10 +1,9 @@
 - if item && item.errors.any?
-  .row{:style => "z-index: 10;"}
-    .span10
-      .alert.alert-danger.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
-        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
-          &times;
-        %h2= "#{item.errors.full_messages.uniq.count} erros impediram que o usuário fosse salvo."
-        %ul
-          - item.errors.full_messages.each do |msg|
-            %li=msg
+  %div{:style => "margin: auto; width: 75%;"}
+    .alert.alert-danger.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
+      %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+        &times;
+      %h2= "#{item.errors.full_messages.uniq.count} erros impediram que o usuário fosse salvo."
+      %ul
+        - item.errors.full_messages.each do |msg|
+          %li=msg
