@@ -12,17 +12,20 @@
         .span4
           = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-info btn-large", :style => "float: right;"
 
-      %hr
+      %hr{:style => "border-color: #ff6600; border-bottom: none;"}
 
       - if @user == @current_user
         - if @current_user.can_manage_other_users?
           = render :partial => "users/admin_links"
+          %hr{:style => "border-color: #ff6600; border-bottom: none;"}
         - elsif @current_user.role == User::Types::SPONSOR
           = render :partial => "users/sponsor_links"
-      %hr
+          %hr{:style => "border-color: #ff6600; border-bottom: none;"}
+
 
       %h1{:id => "role_title"}
         = I18n.t("common_terms.configuration")
+      %br
 
       .control-group
         = f.label :first_name, :class => "control-label"
@@ -80,7 +83,7 @@
         .controls
           = link_to "Alterar minha senha", edit_password_reset_path(@user), :class => "form-control", :id => "reset_password_link",id:'password_reset'
 
-      %hr
+      %hr{:style => "border-color: #ff6600; border-bottom: none;"}
       .control-group
         = f.label :phone_number, :class => "control-label"
         .controls
@@ -99,7 +102,7 @@
           = f.radio_button :prepaid, "false", id:"post_paid_radio"
           Pós-pago
 
-      %hr
+      %hr{:style => "border-color: #ff6600; border-bottom: none;"}
 
       .control-group
         = f.label nil, I18n.t("views.users.edit.referral_question"), :class => "control-label"
