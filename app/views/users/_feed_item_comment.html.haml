@@ -12,6 +12,9 @@
         .feed-item-timestamp
           %i.fa.fa-clock-o
           = format_timestamp(comment.created_at)
+        .comment-delete-button{:style => "display: inline;"}
+          = link_to comment_path(comment), :method => :delete do
+            %i.fa.fa-trash-o.fa-2
 
     .row.feed-item-content
       .span6
