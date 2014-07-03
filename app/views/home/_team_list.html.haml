@@ -3,7 +3,8 @@
     %li
       #house_photo_thumb
         - if team.profile_photo_file_name.nil?
-          = link_to image_tag("default_images/house_default_image.png"), team_path(team)
+          = link_to image_tag("default_images/house_default_image.png", :class => "img-rounded"), team_path(team)
         - else
-          = link_to image_tag(team.profile_photo.url(:medium)), team_path(team)
+          = link_to image_tag(team.profile_photo.url(:medium), :class => "img-rounded"), team_path(team)
+      %div{:style => "margin-top: 10px;"}
       = link_to team.name, team_path(team)
