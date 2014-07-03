@@ -91,6 +91,11 @@ Dengue::Application.routes.draw do
   end
 
   #----------------------------------------------------------------------------
+  # Comments
+
+  resources :comments, :only => :destroy
+
+  #----------------------------------------------------------------------------
   # Legacy SMS routes.
   # NOTE: Do not change these unless you've also
   # changed the paths in socialappslab/SMSGateway.
