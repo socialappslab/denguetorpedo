@@ -61,9 +61,9 @@ es:
         cost:
           one: "1 punto"
           other: "%{count} puntos"
-
       team:
-        profile_photo: Foto da equipe
+        profile_photo: Foto del equipo
+        name: Nombre del equipo
 
     errors:
       template:

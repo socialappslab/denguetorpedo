@@ -14,7 +14,7 @@
         - should_display_form = (flash[:show_new_team_form] == true || params[:form] == "true")
         = form_for @team, :html => { :id => "new-team-form", :class => "form-horizontal well", :style => "#{should_display_form == true ? '' : 'display: none;'}; margin-top: 20px;" } do |f|
           .control-group
-            = f.label I18n.t("attributes.name"), :class => "control-label"
+            = f.label I18n.t("activerecord.attributes.team.name"), :class => "control-label"
             .controls
               = f.text_field :name, :class => "form-control span4"
           .control-group
