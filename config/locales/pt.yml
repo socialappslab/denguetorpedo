@@ -240,8 +240,6 @@ pt:
       create: Criar uma equipe
     posts:
       succes_create_flash: "Você criou um post com sucesso"
-    comments:
-      success_delete_flash: "Comentário apagado com sucesso"
     users:
       edit:
         show_name_as: "Mostrar nome como"
