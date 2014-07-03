@@ -162,17 +162,7 @@ ul#user_right_panel {
       height: 150px;
       background: #dddddd;
     }
-    .user_profile_picture{
-      margin-top: 10px;
-      display: inline;
-
-      img {
-        z-index: 1;
-        width: 160px;
-        height: 160px;
-    border: 1px solid $gray;
-      }
-    }
+    
     .user_house_picture, .user_neighborhood_picture{
       margin-right: 11;
       display: inline;
