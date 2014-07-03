@@ -33,4 +33,10 @@ class Team < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def descriptive_name
+    return I18n.t("activerecord.models.team", :count => 1) + " " + self.name
+  end
+
+  #----------------------------------------------------------------------------
+
 end

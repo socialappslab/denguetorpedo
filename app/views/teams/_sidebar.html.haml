@@ -7,7 +7,7 @@
       = image_tag(@team.profile_photo.url(:medium), :class => "img-rounded")
 
     .sidebar-entity-name
-      = @team.name
+      = @team.descriptive_name
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
