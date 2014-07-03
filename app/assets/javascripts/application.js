@@ -193,12 +193,16 @@
 
 $(document).ready(function()
 {
+  //---------------------------------------------------------------------------
+
   $(".comment-button").on("click", function(eventObj)
   {
     eventObj.preventDefault();
     parent = $(eventObj.currentTarget).parents(".feed-item")
     parent.children(".feed-item-new-comment").toggle()
   });
+
+  //---------------------------------------------------------------------------
 
   $(".show-more-content-link").on("click", function(eventObj)
   {
@@ -207,6 +211,8 @@ $(document).ready(function()
       hiddenContent.css("display", "inline")
       $(eventObj.currentTarget).hide()
   });
+
+  //---------------------------------------------------------------------------
 
   $(".likes_button").click(function(event){
     event.preventDefault();
@@ -228,4 +234,22 @@ $(document).ready(function()
       }
     })
   });
+
+  //---------------------------------------------------------------------------
+
+  $(".comment-delete-button").click(function(event){
+    event.preventDefault();
+
+    $.ajax({
+      url: $(this).attr("href"),
+      type: "DELETE",
+      success : function(status){
+        $(event.currentTarget).parents().find(".feed-item-comment").first().remove()
+      }
+
+    })
+  });
+
+  //---------------------------------------------------------------------------
+
 })

@@ -6,11 +6,9 @@ class CommentsController < ApplicationController
   def destroy
     @comment = Comment.find(params[:id])
     if @comment.destroy
-      flash[:notice] = I18n.t("views.comments.success_delete_flash")
-      redirect_to :back
+      render :json => {}, :status => 200
     else
-      flash[:alert] = I18n.t("views.application.error")
-      redirect_to :back
+      render :json => {}, :status => 404
     end
   end
 end
