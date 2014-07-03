@@ -44,7 +44,7 @@ es:
         carrier: "Operadora"
         carrier_confirmation: "Confirmación de operadora"
         prepaid: "Pre-pago"
-        nickname: "Sobrenombre o apodo"
+        nickname: "Sobrenombre"
         total_points:
           one: Punto
           other: Puntos
