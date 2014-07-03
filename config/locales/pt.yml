@@ -61,9 +61,9 @@ pt:
         cost:
           one: "1 ponto"
           other: "%{count} pontos"
-
       team:
         profile_photo: Foto da equipe
+        name: Nombre da equipe
 
     errors:
       template:
@@ -238,10 +238,12 @@ pt:
       success_create_flash: "Você criou uma equipe com success"
       join: Entrar na equipe
       create: Criar uma equipe
+      my_team: Minha equipe
     posts:
       succes_create_flash: "Você criou um post com sucesso"
     users:
       edit:
+        referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"
         admin:
           register: "Registrar patrocinador, verificador e visitante"

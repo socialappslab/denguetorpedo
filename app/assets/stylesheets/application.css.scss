@@ -83,3 +83,29 @@ div {
      -moz-border-radius: 3px;
           border-radius: 3px;
 }
+
+
+
+//-----------------------------------------------------------------------------
+// Sidebar Configurations
+
+.sidebar-entity-name {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.sidebar-entity-photo{
+  text-align: center;
+  display: block;
+
+  img {
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    border: 1px solid $gray;
+  }
+}
+
+
+
+//-----------------------------------------------------------------------------

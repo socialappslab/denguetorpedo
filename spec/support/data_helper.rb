@@ -6,7 +6,7 @@ def populate_data
   mare = Neighborhood.find_by_name('Maré')
 
   10.times do |index|
-    h = House.create!(:neighborhood_id => mare.id, :name => "House #{index}!")
+    h = Team.create!(:neighborhood_id => mare.id, :name => "Team #{index}!")
   end
 
   ["a", "b", "c"].each_with_index do |letter, index|
@@ -14,9 +14,10 @@ def populate_data
     u.password   = "abcdefg"
     u.first_name = "#{letter}#{index}"
     u.last_name  = "Tester"
-    u.house_id   = House.all.sample.id
     u.neighborhood_id = mare.id
     u.save!
+
+    TeamMembership.create(:user_id => u.id, :team_id => Team.all.sample.id)
   end
 
   u = User.find_by_email("admin@denguetorpedo.com")
@@ -57,11 +58,30 @@ def populate_data
       :institution_name => "Institution ##{index}")
   end
 
-  # Populate houses and prizes.
+  # Populate teams and prizes.
   10.times do |index|
-    h = House.create!(:neighborhood_id => mare.id, :name => "House Sponsor #{index}!", :house_type => User::Types::SPONSOR)
-    u = User.create!(:email => "sponsor_#{index}@denguetorpedo.com", :house_id => h.id, :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
+    h = Team.create!(:neighborhood_id => mare.id, :name => "Team Sponsor #{index}!")
+    u = User.create!(:email => "sponsor_#{index}@denguetorpedo.com", :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
+    TeamMembership.create(:user_id => u.id, :team_id => h.id)
     Prize.create!(:user_id => u.id, :prize_name => "Prize ##{index}", :description => "This is a prize ##{index}", :cost => index * 100, :stock => index, :neighborhood_id => mare.id, :expire_on => Time.now + 10.years)
+  end
+
+  # Now, let's add random comments
+  10.times do |index|
+    c = Comment.new
+    c.user_id = User.all.sample.id
+
+    if index > 5
+      c.commentable_id = Notice.all.sample.id
+      c.commentable_type = Notice.name
+    else
+      c.commentable_id = Report.all.sample.id
+      c.commentable_type = Report.name
+    end
+
+    phrases = ["Lorem ipsum dolem", "Great job!", "That could be better phrased", "YES!"]
+    c.content = phrases.sample
+    c.save!
   end
 
   # Now, let's add prize codes which allow users to redeem prizes.

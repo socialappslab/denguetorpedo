@@ -13,7 +13,11 @@ class Neighborhood < ActiveRecord::Base
   attr_accessible :name
 
   has_many :locations
+
+  # TODO: Deprecate houses association
   has_many :houses
+  has_many :teams
+
   has_many :members, :class_name => "User"
   has_many :reports
 
@@ -71,5 +75,5 @@ class Neighborhood < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
-  
+
 end
