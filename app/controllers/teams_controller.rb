@@ -56,6 +56,10 @@ class TeamsController < NeighborhoodsBaseController
     else
       @teams = Team.all
 
+      # Calculate ranking for each team.
+      team_rankings  = @teams.map {|t| [t, t.total_points]}
+      @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
+
       # Let's simplify the user's life by displaying the form in case of failure.
       # After all, if we've reached this point, then the user's last interaction
       # was with the new team form.

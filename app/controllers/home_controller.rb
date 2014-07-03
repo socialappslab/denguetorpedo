@@ -14,10 +14,10 @@ class HomeController < ApplicationController
     # Display ordered news.
     @notices  = @selected_neighborhood.notices.order("date DESC").limit(6)
 
-    # Display 5 non-empty houses.
-    @houses = @selected_neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
-    @houses = @houses.find_all {|h| h.members.count > 0}
-    @houses = @houses.shuffle[0..8]
+    # Display teams.
+    @teams = @selected_neighborhood.teams
+    @teams = @teams.find_all {|t| t.users.count > 0}
+    @teams = @teams.shuffle[0..7]
 
     # Display active prizes.
     @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(10)

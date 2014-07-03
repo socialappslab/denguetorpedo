@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 class Team < ActiveRecord::Base
-  attr_accessible :name, :profile_photo
+  attr_accessible :name, :profile_photo, :neighborhood_id
 
   has_attached_file :profile_photo, :styles => {:small => "60x60>", :medium => "150x150>" , :large => "225x225>"}
 
@@ -29,6 +29,12 @@ class Team < ActiveRecord::Base
     end
 
     return sum
+  end
+
+  #----------------------------------------------------------------------------
+
+  def descriptive_name
+    return I18n.t("activerecord.models.team", :count => 1) + " " + self.name
   end
 
   #----------------------------------------------------------------------------
