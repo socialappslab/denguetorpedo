@@ -196,7 +196,7 @@
 
 
       .control-group
-        = f.label "Alguém o convidou a se cadastrar no DT?", :class => "control-label"
+        = f.label nil, I18n.t("views.users.edit.referral_question"), :class => "control-label"
         .controls
           -# %select#recruitment{:name => "recruitment_type"}
           -#   %option NINGUÉM

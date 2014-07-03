@@ -242,6 +242,7 @@ pt:
       succes_create_flash: "Você criou um post com sucesso"
     users:
       edit:
+        referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"
         admin:
           register: "Registrar patrocinador, verificador e visitante"
