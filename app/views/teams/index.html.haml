@@ -3,30 +3,30 @@
 
 
 .row
-  .span10.offset4
+  .span12.offset3
 
     .row
       .span7{:style => "width: 380px;"}
         %h1{:style => "font-size: 40px;"}
           = I18n.t("activerecord.models.team", :count => 2)
 
-      .span4{:style => "text-align: right;"}
+      .span6{:style => "text-align: right;"}
         = link_to "+ " + I18n.t("views.teams.create"), nil, :class => "btn btn-success btn-large", :id => "create-new-team"
 
     .row
-      .span10
+      .span12
         - should_display_form = (flash[:show_new_team_form] == true || params[:form] == "true")
         = form_for @team, :html => { :id => "new-team-form", :class => "form-horizontal well", :style => "#{should_display_form == true ? '' : 'display: none;'}; margin-top: 20px;" } do |f|
           .control-group
-            = f.label I18n.t("activerecord.attributes.team.name"), :class => "control-label"
+            = f.label I18n.t("activerecord.attributes.team.name"), :class => "control-label", :style => "width: 200px; text-align: left;"
             .controls
-              = f.text_field :name, :class => "form-control span4"
+              = f.text_field :name, :class => "form-control span6"
           .control-group
-            = f.label I18n.t("activerecord.attributes.team.profile_photo"), :class => "control-label"
+            = f.label I18n.t("activerecord.attributes.team.profile_photo"), :class => "control-label", :style => "width: 200px; text-align: left;"
             .controls
-              = f.file_field :profile_photo, :class => "span4"
+              = f.file_field :profile_photo, :class => "span6"
           .control-group
-            .controls.span4
+            .controls.span6{:style => "margin-left: 195px;"}
               = f.submit I18n.t("views.button.submit"), :class => "btn btn-success btn-block"
 
 
@@ -46,9 +46,9 @@
             - else
               = image_tag(team.profile_photo.url(:small), :class => "img-rounded", :style => "height: 100px; width: 100px;")
 
-        .span4
+        .span5
           .row
-            .span4
+            .span6
               %h1
                 = link_to team.name, team_path(team)
           .row
@@ -58,14 +58,16 @@
                   = team_points
                 = I18n.t("activerecord.attributes.user.total_points", :count => team_points)
 
-        %div{:style => "display: table; height: 100px; width: 120px; float: left;"}
-          %div{:style => "display: table-cell; vertical-align: middle;"}
-            - if team.team_memberships.map(&:user_id).include?(@current_user.id)
-              = link_to nil, :class => "btn btn-success btn-large disabled", :style => " width: 120px;" do
-                %i{:class => "fa fa-check"}
-            - else
-              = form_tag join_team_path(team), :method => "POST" do
-                = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 120px; white-space: normal;"
+        .span3
+          %div{:style => "display: table; height: 100px; width: 100%; float: left;"}
+            %div{:style => "display: table-cell; vertical-align: middle;"}
+              - if team.team_memberships.map(&:user_id).include?(@current_user.id)
+                = link_to nil, :class => "btn btn-success btn-large disabled", :style => "width: 100%;" do
+                  %i{:class => "fa fa-check"}
+                  = I18n.t("views.teams.my_team")
+              - else
+                = form_tag join_team_path(team), :method => "POST" do
+                  = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 100%; white-space: normal;"
 
       %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
 

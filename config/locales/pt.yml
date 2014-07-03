@@ -238,6 +238,7 @@ pt:
       success_create_flash: "Você criou uma equipe com success"
       join: Entrar na equipe
       create: Criar uma equipe
+      my_team: Minha equipe
     posts:
       succes_create_flash: "Você criou um post com sucesso"
     users:

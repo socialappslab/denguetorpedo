@@ -239,6 +239,7 @@ es:
       success_create_flash: "Usted creó un equipo con éxito"
       join: Únase a un equipo
       create: Cree un equipo
+      my_team: Mi equipe
     posts:
       succes_create_flash: "Usted creo un post con éxito"
     users:
