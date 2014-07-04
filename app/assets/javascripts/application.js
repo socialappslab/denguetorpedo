@@ -246,7 +246,7 @@ $(document).ready(function()
       url: $(this).data("path"),
       type: "DELETE",
       success : function(status){
-        $(event.currentTarget).parents().find(".feed-item-comment").first().remove()
+        $(event.currentTarget).parents(".feed-item-comment").remove()
       }
 
     })
