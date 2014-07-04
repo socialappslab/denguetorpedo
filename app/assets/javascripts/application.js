@@ -240,14 +240,18 @@ $(document).ready(function()
   $(".comment-delete-button").click(function(event){
     event.preventDefault();
 
+    alert($(this).data("confirm"));
+
     $.ajax({
-      url: $(this).attr("href"),
+      url: $(this).data("path"),
       type: "DELETE",
       success : function(status){
         $(event.currentTarget).parents().find(".feed-item-comment").first().remove()
       }
 
     })
+
+    return false;
   });
 
   //---------------------------------------------------------------------------

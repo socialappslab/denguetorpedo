@@ -5,10 +5,16 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment = Comment.find(params[:id])
-    if @comment.destroy
-      render :json => {}, :status => 200
-    else
-      render :json => {}, :status => 404
+
+    respond_to do |format|
+      if @comment.destroy
+        format.json { render :json => {}, :status => 200 }
+      else
+        format.json { render :json => {}, :status => 404 }
+      end
+
+      format.html{ redirect_to :back and return }
     end
+
   end
 end
