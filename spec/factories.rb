@@ -97,4 +97,8 @@ FactoryGirl.define do
     neighborhood_id Neighborhood.first.id
   end
 
+	factory :team do
+		neighborhood_id Neighborhood.first.id
+	end
+
 end

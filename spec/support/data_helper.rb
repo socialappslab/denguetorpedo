@@ -63,7 +63,7 @@ def populate_data
     h = Team.create!(:neighborhood_id => mare.id, :name => "Team Sponsor #{index}!")
     u = User.create!(:email => "sponsor_#{index}@denguetorpedo.com", :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
     TeamMembership.create(:user_id => u.id, :team_id => h.id)
-    Prize.create!(:user_id => u.id, :prize_name => "Prize ##{index}", :description => "This is a prize ##{index}", :cost => index * 100, :stock => index, :neighborhood_id => mare.id, :expire_on => Time.now + 10.years)
+    Prize.create!(:user_id => u.id, :team_id => h.id, :prize_name => "Prize ##{index}", :description => "This is a prize ##{index}", :cost => index * 100, :stock => index, :neighborhood_id => mare.id, :expire_on => Time.now + 10.years)
   end
 
   # Now, let's add random comments

@@ -1,20 +1,22 @@
 require 'spec_helper'
 
 describe PrizesController do
+  let(:team) { FactoryGirl.create(:team, :name => "Test Team")}
+  let(:user) { FactoryGirl.create(:user)}
 
   # This should return the minimal set of attributes required to create a valid
   # Prize. As you add validations to Prize, be sure to
   # update the return value of this method accordingly.
 
   before(:each) do
-
     @location = Location.create(latitude: 0, longitude: 0)
     @house = FactoryGirl.create(:house, location_id: @location.id)
     @user = FactoryGirl.create(:user, house_id: @house.id)
     controller.stub(:require_login).and_return(true)
   end
+
   def valid_attributes
-    { :cost => 30, :description => "Description", :prize_name => "Prize", :stock => 5, :user_id => @user.id }
+    { :cost => 30, :description => "Description", :prize_name => "Prize", :stock => 5, :user_id => @user.id, :team_id => team.id }
   end
 
   # This should return the minimal set of values that should be in the session
@@ -66,6 +68,8 @@ describe PrizesController do
     end
   end
 
+  #----------------------------------------------------------------------------
+
   describe "GET edit" do
     it "assigns the requested prize as @prize" do
       prize = Prize.create! valid_attributes
@@ -74,7 +78,20 @@ describe PrizesController do
     end
   end
 
-  describe "POST create" do
+  #----------------------------------------------------------------------------
+
+  describe "when creating a prize" do
+    let(:params) {
+      {
+        :cost => 30,
+        :description => "Description",
+        :prize_name => "Prize",
+        :stock => 5,
+        :user_id => user.id,
+        :team_id => team.id
+      }
+    }
+
     describe "with valid params" do
       it "creates a new Prize" do
         expect {
@@ -82,6 +99,12 @@ describe PrizesController do
         }.to change(Prize, :count).by(1)
       end
 
+      it "assigns a team id" do
+        post :create, :prize => params
+        puts "Prize.all.count: #{Prize.all.count}"
+        prize = Prize.last
+        expect(prize.team_id).to eq(team.id)
+      end
 
       it "assigns a neighborhood to a prize if one is specified" do
         attrs = valid_attributes.merge(:neighborhood_id => Neighborhood.first.id)
@@ -118,10 +141,13 @@ describe PrizesController do
     end
   end
 
+  #----------------------------------------------------------------------------
+
   describe "PUT update" do
     describe "with valid params" do
       it "updates the requested prize" do
         prize = Prize.create! valid_attributes
+
         # Assuming there are no other prizes in the database, this
         # specifies that the Prize created on the previous line
         # receives the :update_attributes message with whatever params are
