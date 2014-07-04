@@ -10,7 +10,12 @@ class PrizesController < ApplicationController
   def index
     @user = current_user
 
-    @prizes    = Prize.where(:is_badge => false).sort { |a, b| (a.expired? ? 1 : 0) <=> (b.expired? ? 1 : 0) }
+    @prizes = Prize.where(:is_badge => false)
+    if current_user && current_user.neighborhood_id
+      @prizes = @prizes.where(:neighborhood_id => [nil, current_user.neighborhood_id])
+    end
+
+    @prizes    = @prizes.sort { |a, b| (a.expired? ? 1 : 0) <=> (b.expired? ? 1 : 0) }
     @available = Prize.where('stock > 0').where('expire_on >= ?', Time.new).where(:is_badge => false)
     @redeemed  = Prize.where('stock = 0 OR expire_on < ?', Time.new).where(:is_badge => false)
 
