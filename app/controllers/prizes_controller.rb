@@ -76,17 +76,16 @@ class PrizesController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
   # GET /prizes/new
-  # GET /prizes/new.json
+
   def new
     @prize = Prize.new
-    # @user = current_user
-    # @users = User.where(:role => "lojista").map { |user| user.display_name }
-    @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @prize }
-    end
+    @users = User.where(:role => User::Types::SPONSOR).includes(:teams)
+    @teams = @users.map {|u| u.teams}.flatten.uniq
+
+    @select_options_for_user_id = @users.map { |u| [u.full_name, u.id] }
+    @select_options_for_team_id = @teams.map { |t| [t.name, t.id] }
   end
 
   #----------------------------------------------------------------------------
@@ -126,11 +125,14 @@ class PrizesController < ApplicationController
   def create
     @prize = Prize.new(params[:prize])
 
-
     if @prize.save
-      redirect_to @prize, notice: 'Prêmio criado com sucesso!'
+      redirect_to @prize, :notice => I18n.t("views.prizes.create.success_flash") and return
     else
-      @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
+      @users = User.where(:role => User::Types::SPONSOR).includes(:teams)
+      @teams = @users.map {|u| u.teams}.flatten.uniq
+      @select_options_for_user_id = @users.map { |u| [u.full_name, u.id] }
+      @select_options_for_team_id = @teams.map { |t| [t.name, t.id] }
+
       render "new" and return
     end
   end

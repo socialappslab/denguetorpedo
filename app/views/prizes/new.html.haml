@@ -1,5 +1,6 @@
 .row
   .span14.offset2
-    %h1 Novo Prêmio
+    %h1
+      = I18n.t("views.prizes.new.header")
     %br
-    = render :partial => 'form'
+    = render :partial => 'prizes/form'

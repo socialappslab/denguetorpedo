@@ -58,12 +58,15 @@ pt:
       documentation_section:
         content: Conteúdo
       prize:
+        prize_name: Nome do prêmio
+        stock: Estoque
+        description: Descrição
         cost:
           one: "1 ponto"
           other: "%{count} pontos"
       team:
         profile_photo: Foto da equipe
-        name: Nombre da equipe
+        name: Nome da equipe
 
     errors:
       template:
@@ -256,7 +259,12 @@ pt:
           report_edit: "Administrar tipos e métodos"
         sponsor:
           edit_prizes: "Códigos de controle dos prêmios"
-
+    prizes:
+      create:
+        success_flash: 'Prêmio criado com sucesso!'
+      new:
+        header: Novo Prêmio
+        create_button: "Cadastrar prêmio"
     password_resets:
       title: Redefinir sua senha
       enter_email: "Digite o seu e-mail cadastrado"
