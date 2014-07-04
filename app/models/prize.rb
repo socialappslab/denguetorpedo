@@ -37,7 +37,7 @@ class Prize < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def sponsor_name
-    return self.user.house.name
+    return self.team.name
   end
 
   #----------------------------------------------------------------------------
