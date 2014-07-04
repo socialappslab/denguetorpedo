@@ -61,14 +61,6 @@ class PrizesController < ApplicationController
     @prize = Prize.find(params[:id])
     @user = current_user
 
-    if @prize.user.house.location
-      @latitude = @prize.user.house.location.latitude || 0
-      @longitude = @prize.user.house.location.longitude || 0
-    else
-      @latitude  = 0
-      @longitude = 0
-    end
-
     if @current_user.nil?
       @enoughPoints = false
     else
