@@ -4,6 +4,7 @@ namespace :db do
   namespace :development do
     desc "Populate with dummy data"
     task :prepare => [:environment] do
+      ENV["RAILS_ENV"] ||= "development"
       ['db:reset', 'db:create', 'db:schema:load', 'db:seed'].each { |s| Rake::Task[s].invoke }
 
       populate_data()
