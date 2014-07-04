@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140620202612) do
+ActiveRecord::Schema.define(:version => 20140704020500) do
 
   create_table "comments", :force => true do |t|
     t.integer  "user_id"
@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(:version => 20140620202612) do
     t.boolean  "is_badge",                 :default => false, :null => false
     t.boolean  "prazo",                    :default => true
     t.integer  "neighborhood_id"
+    t.integer  "team_id"
   end
 
   create_table "recruitments", :force => true do |t|
