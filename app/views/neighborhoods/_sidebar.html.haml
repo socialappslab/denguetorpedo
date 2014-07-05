@@ -4,14 +4,14 @@
     = image_tag("home_images/neighborhood1.jpg", :class => "img-rounded")
 
     .sidebar-entity-name
-      = @neighborhood.name
+      = "#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id}"
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
-    = I18n.t("common_terms.houses").capitalize
-  .row{:style => "margin-top: 20px; overflow: scroll; height: 280px;"}
-    = render :partial => "neighborhoods/houses_view"
+    = I18n.t("activerecord.models.team", :count => 2).capitalize
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
+    = render :partial => "neighborhoods/teams_view"
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
