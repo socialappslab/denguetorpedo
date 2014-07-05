@@ -44,6 +44,12 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def descriptive_name
+    return I18n.t("attributes.neighborhood_id") + " " + self.name
+  end
+
+  #----------------------------------------------------------------------------
+
   # TODO: Deprecate this.
   def total_reports
     # total_reports = []
