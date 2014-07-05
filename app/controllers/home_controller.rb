@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   before_filter :redirect_if_logged_in, :only => [:index]
+  before_filter :identify_country,      :only => [:index]
 
   #----------------------------------------------------------------------------
   # GET /
@@ -7,7 +8,7 @@ class HomeController < ApplicationController
   def index
     @user = User.new
 
-    @all_neighborhoods     = Neighborhood.order(:id).limit(3)
+    @all_neighborhoods     = Neighborhood.where(:country_string_id => @country.alpha2).order(:id).limit(3)
     @selected_neighborhood = @all_neighborhoods.first
     @neighborhood          = @selected_neighborhood
 
@@ -54,6 +55,17 @@ class HomeController < ApplicationController
 
   def redirect_if_logged_in
     redirect_to user_path(@current_user) if @current_user.present?
+  end
+
+  #----------------------------------------------------------------------------
+
+  # NOTE: The default country is Brazil.
+  def identify_country
+    if I18n.locale == :es
+      @country = Country.find_country_by_name("Mexico")
+    else
+      @country = Country.find_country_by_name("Brazil")
+    end
   end
 
   #----------------------------------------------------------------------------
