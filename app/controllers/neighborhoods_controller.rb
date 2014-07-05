@@ -10,10 +10,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @participants = @neighborhood.members.where('role != ?', User::Types::SPONSOR).where(is_blocked: false).order(:first_name)
     @sponsors     = @neighborhood.members.where(:role => User::Types::SPONSOR).where(is_blocked: false)
 
-    # Fetch all houses that have at least one member.
-    @houses = @neighborhood.houses.where("house_type != ?", User::Types::SPONSOR)
-    @houses = @houses.find_all {|h| h.members.count > 0}
-
     @teams = @neighborhood.teams
     @teams = @teams.find_all { |t| t.users.count > 0 }
 
