@@ -73,6 +73,9 @@ GEM
       execjs
     coffee-script-source (1.6.3)
     connection_pool (1.2.0)
+    countries (0.9.3)
+      currencies (~> 0.4.2)
+    currencies (0.4.2)
     database_cleaner (1.2.0)
     diff-lcs (1.2.4)
     dotenv (0.9.0)
@@ -278,6 +281,7 @@ DEPENDENCIES
   cancan
   capybara
   coffee-rails (~> 3.2.1)
+  countries
   database_cleaner
   dynamic_form
   factory_girl_rails

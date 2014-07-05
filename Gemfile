@@ -47,6 +47,7 @@ gem "prawnto_2", :require => "prawnto"
 # Internationalization
 
 gem 'rails-i18n'
+gem "countries"
 
 #------------------------------------------------------------------------------
 # Front-end tools
