@@ -21,7 +21,8 @@ class HomeController < ApplicationController
     @teams = @teams.shuffle[0..7]
 
     # Display active prizes.
-    @prizes  = Prize.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(10)
+    @prizes = Prize.where(:neighborhood_id => [nil, @neighborhood.id])
+    @prizes = @prizes.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(10)
 
 
     # Load the news feed.
