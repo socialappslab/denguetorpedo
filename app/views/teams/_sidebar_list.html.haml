@@ -1,0 +1,7 @@
+- teams.shuffle.each do |team|
+  .span5{:style => "margin-bottom: 3px;"}
+    - if team.profile_photo_file_name.nil?
+      = link_to image_tag("teams/default.png", :style => "width: 50px; height: 50px;", :class => "img-rounded"), team_path(team)
+    - else
+      = link_to image_tag(team.profile_photo.url(:small), :style => "width: 50px; height: 50px;", :class => "img-rounded"), team_path(team)
+    = link_to team.name, team_path(team)
