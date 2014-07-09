@@ -10,20 +10,24 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.team", :count => 2).capitalize
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
-    = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
+    .span4
+      = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
-    = render :partial => "shared/sidebar_list", :locals => { :items => @participants }
+    .span4
+      = render :partial => "shared/sidebar_list", :locals => { :items => @participants }
 
 
   - if @sponsors.present?
     %hr{:style => "border-bottom: 1px solid #ccc;"}
     %h1{:style => "text-align: center; color: #333; font-size: 20px;"}
       = I18n.t("common_terms.sponsors").capitalize
-    .row
-      #neighborhood_sponsors{:style => "margin-top:20px;"}
+    .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
+      .span4
         = render :partial => "shared/sidebar_list", :locals => { :items => @sponsors }
+
+    %hr{:style => "border-bottom: 1px solid #ccc;"}
