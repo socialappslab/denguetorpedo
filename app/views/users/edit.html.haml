@@ -28,12 +28,20 @@
       %br
 
       .control-group
-        = f.label :first_name, :class => "control-label"
+
+        = f.label :first_name, :class => "control-label", :style => "position: relative" do
+          = I18n.t("activerecord.attributes.user.first_name")
+          %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+            *
+
         .controls
           = f.text_field :first_name, :class => "form-control"
 
       .control-group
-        = f.label :last_name, :class => "control-label"
+        = f.label :last_name, :class => "control-label", :style => "position: relative" do
+          = I18n.t("activerecord.attributes.user.last_name")
+          %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+            *
         .controls
           = f.text_field :last_name, :class => "form-control"
 
@@ -58,7 +66,10 @@
 
 
       .control-group
-        = f.label :email, :class => "control-label"
+        = f.label :email, :class => "control-label", :style => "position: relative;" do
+          = I18n.t("activerecord.attributes.user.email")
+          %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+            *
         .controls
           = f.text_field :email, :class => "form-control"
 
@@ -70,7 +81,10 @@
 
 
       .control-group
-        = f.label "Bairro", :class => "control-label"
+        = f.label nil, :class => "control-label", :style => "position: relative;" do
+          = I18n.t("attributes.neighborhood_id")
+          %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+            *
         .controls
           / TODO: We're disabling choosing other neighborhoods until we introduce
           / another neighborhood
@@ -105,7 +119,10 @@
       %hr{:style => "border-color: #ff6600; border-bottom: none;"}
 
       .control-group
-        = f.label nil, I18n.t("views.users.edit.referral_question"), :class => "control-label"
+        = f.label nil, :class => "control-label", :style => "position: relative;" do
+          = I18n.t("views.users.edit.referral_question")
+          %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+            *
         .controls
           - user_recruiter = ( @user.recruiter.present? ? [ @user.recruiter.full_name, @user.recruiter.id ] : nil )
           = select_tag :recruiter_id, options_for_select(User.all.map {|u| [u.full_name, u.id]}, user_recruiter ), :include_blank => true
