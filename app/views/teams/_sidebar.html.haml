@@ -13,12 +13,11 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
   .row{:style => "margin-top: 20px; height: 280px;"}
-    #neighborhood_participants_list
-      - @team.users.each do |participant|
-        .span5{:style => "margin-bottom: 3px;"}
-          - if participant.profile_photo_file_name.nil?
-            = link_to image_tag("default_images/profile_default_image.png", :style => "width: 50px; height: 50px;"), user_path(participant)
-          - else
-            = link_to image_tag(participant.profile_photo.url(:small), :style => "width: 50px; height: 50px;"), user_path(participant)
+    - @team.users.each do |participant|
+      .span5{:style => "margin-bottom: 3px;"}
+        - if participant.profile_photo_file_name.nil?
+          = link_to image_tag("default_images/profile_default_image.png", :style => "width: 50px; height: 50px;"), user_path(participant)
+        - else
+          = link_to image_tag(participant.profile_photo.url(:small), :style => "width: 50px; height: 50px;"), user_path(participant)
 
-          = link_to participant.display_name, user_path(participant)
+        = link_to participant.display_name, user_path(participant)

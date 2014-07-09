@@ -315,4 +315,11 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def picture
+    return "default_images/profile_default_image.png" if self.profile_photo_file_name.nil?
+    return self.profile_photo.url(:medium)
+  end
+
+  #----------------------------------------------------------------------------
+
 end
