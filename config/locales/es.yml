@@ -151,6 +151,7 @@ es:
   #----------------------------------------------------------------------------
   # Commonly used words and sentences
   #----------------------------------
+  
   common_terms:
     houses: Casas
     participants: Miembros
@@ -230,6 +231,11 @@ es:
       problem_with_verification: ¡Problema! el foco no fue marcado. Póngase en contacto con nosotros.
       upload_photo_of_eliminated_report: Cargue una foto del foco eliminado
 
+
+  #----------------------------------------------------------------------------
+  # Views
+  #------
+
   views:
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
@@ -267,3 +273,11 @@ es:
       submit:  "Enviar"
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
+
+
+  #----------------------------------------------------------------------------
+  # Countries
+  #----------
+  countries:
+    brazil: Brasil
+    mexico: Mexico
