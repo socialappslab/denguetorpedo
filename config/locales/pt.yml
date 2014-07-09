@@ -240,7 +240,7 @@ pt:
     teams:
       success_join_flash: "Você se juntou a equipe com success"
       success_create_flash: "Você criou uma equipe com success"
-      join: Entrar na equipe
+      join: Entrar numa equipe
       create: Criar uma equipe
       my_team: Minha equipe
     posts:
