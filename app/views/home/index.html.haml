@@ -19,6 +19,15 @@
         = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
   %br
   .row
+    .span15.offset1{:style => "width: 975px;"}
+      .offset1
+        .alert.alert-warning{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
+          %h2{:style => "font-weight: normal; line-height: 24px;"}
+            = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
+          %p{:style => "font-size: 10px; margin-top: 20px;"}
+            = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
+  %br
+  .row
     = render "home/neighborhood_list"
 
 %br
