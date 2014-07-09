@@ -1,4 +1,0 @@
-- @participants.each do |participant|
-  .span5{:style => "margin-bottom: 3px;"}
-    = link_to image_tag(participant.picture, :style => "width: 50px; height: 50px;", :class => "img-rounded"), user_path(participant)
-    = link_to participant.display_name, user_path(participant)
