@@ -1,11 +1,7 @@
 
 %div{:style => "margin-left: 30px; margin-right: 30px;"}
   .sidebar-entity-photo
-    - if @team.profile_photo_file_name.nil?
-      = image_tag("teams/default.png", :class => "img-rounded")
-    - else
-      = image_tag(@team.profile_photo.url(:medium), :class => "img-rounded")
-
+    = image_tag(@team.picture, :class => "img-rounded")
     .sidebar-entity-name
       = @team.descriptive_name
 
