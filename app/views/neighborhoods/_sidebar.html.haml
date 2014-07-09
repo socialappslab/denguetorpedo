@@ -17,7 +17,7 @@
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
-  .row{:style => "margin-top: 20px; overflow: scroll; height: 280px;"}
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
     = render :partial => "neighborhoods/participant_view"
 
 
