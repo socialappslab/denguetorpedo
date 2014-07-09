@@ -153,7 +153,7 @@ es:
   #----------------------------------
   common_terms:
     houses: Casas
-    participants: Participantes
+    participants: Miembros
     register: Regístrese
     free_sms: SMS Gratis
     more: Más
@@ -239,7 +239,7 @@ es:
       success_create_flash: "Usted creó un equipo con éxito"
       join: Únase a un equipo
       create: Cree un equipo
-      my_team: Mi equipe
+      my_team: Mi equipo
     posts:
       succes_create_flash: "Usted creo un post con éxito"
     users:
