@@ -5,39 +5,35 @@
 
 /------------------------------------------------------------------------------
 
-/ We only want to display all neighborhood pictures to visitors. If a user
-/ is logged in, they care only about their neighborhood.
-- if @current_user.nil?
+/ Render the header, along with a dropdown to other neighborhoods.
+.row
+  .span10.offset1
+    %h2
+      = I18n.t("landing_page.community.title")
+  .span5{:style => "width: 325px;"}
+    = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
+      - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }
+      - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
+      = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
 
-  / Render the header, along with a dropdown to other neighborhoods.
-  .row
-    .span10.offset1
-      %h2
-        = I18n.t("landing_page.community.title")
-    .span5{:style => "width: 325px;"}
-      = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
-        - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }
-        - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
-        = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
-
-  / Display the Mare evacuation alert content box if the selected neighborhood
-  / is Mare.
-  - if @neighborhood && @neighborhood.name == "Maré"
-    %br
-    .row
-      .span15.offset1{:style => "width: 975px;"}
-        .offset1
-          .alert.alert-warning{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
-            %h2{:style => "font-weight: normal; line-height: 24px;"}
-              = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
-            %p{:style => "font-size: 10px; margin-top: 20px;"}
-              = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
-
-
-  / Render the gallery of neighborhoods.
+/ Display the Mare evacuation alert content box if the selected neighborhood
+/ is Mare.
+- if @neighborhood && @neighborhood.name == "Maré"
   %br
   .row
-    = render "home/neighborhood_list"
+    .span15.offset1{:style => "width: 975px;"}
+      .offset1
+        .alert.alert-warning{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
+          %h2{:style => "font-weight: normal; line-height: 24px;"}
+            = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
+          %p{:style => "font-size: 10px; margin-top: 20px;"}
+            = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
+
+
+/ Render the gallery of neighborhoods.
+%br
+.row
+  = render "home/neighborhood_list"
 
 %br
 %br
@@ -73,56 +69,25 @@
         %i.fa.fa-chevron-down
         = I18n.t("common_terms.more")
 
+  -# Display a list of prizes.
   .span4{:style => "margin-left: 30px; text-align: center;"}
     %h2{style: 'font-size: 18px;'}
       = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
-
 
     #sponsors{:style => "margin-top: 22px;"}
       %ul
         - @prizes.each do |prize|
           = render :partial => "prizes/prize", :object => prize
 
-        -# %li.span3.prizes.possible
-        -#   .status.possible
-        -#     .name{style: "height:20px;"}
-        -#     .points
-        -#   .prize_content
-        -#     .description{:style => "height: 100%;"}
-        -#       %p{:style => "font-size: 30px; text-align: center; line-height: 75px;"}
-        -#         = link_to "+ #{I18n.t("common_terms.more")}", prizes_path
-
 
 /------------------------------------------------------------------------------
 
-/ Display neighborhood news only if a logged-in user is viewing it.
-- if @current_user.present?
-  .row
-    .offset1
-      #neighborhood_news
-        %h2
-          = I18n.t("landing_page.news.title")
-        %ul
-          - @notices.each do |notice|
-            %a{:href => notice_path(notice)}
-              %li.span4.neighborhood_news_title
-                .row
-                  .span5
-                    - if notice.title.size > 28
-                      = notice.title[0..25] + "..."
-                    - else
-                      = notice.title
-
-
-/------------------------------------------------------------------------------
-
-- if @current_user.blank?
-  %br
-  .row
-    %h2.offset1{style: 'font-size: 18px;'}
-      = I18n.t("common_terms.partners")
-    #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
-      <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
+%br
+.row
+  %h2.offset1{style: 'font-size: 18px;'}
+    = I18n.t("common_terms.partners")
+  #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
+    <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
 
 /------------------------------------------------------------------------------
 
