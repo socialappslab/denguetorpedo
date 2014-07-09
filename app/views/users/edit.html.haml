@@ -132,9 +132,9 @@
       = link_to I18n.t("views.teams.join"), teams_path, :class => "btn btn-info btn-large btn-block"
 
     - if @user == @current_user
-        - if @current_user.can_manage_other_users?
-          .well{:style => "border: 1px solid #bdc3c7;"}
-            = render :partial => "users/admin_links"
-        - elsif @current_user.role == User::Types::SPONSOR
-          .well{:style => "border: 1px solid #bdc3c7;"}
-            = render :partial => "users/sponsor_links"
+      - if @current_user.can_manage_other_users?
+        .well{:style => "border: 1px solid #bdc3c7;"}
+          = render :partial => "users/admin_links"
+      - elsif @current_user.role == User::Types::SPONSOR
+        .well{:style => "border: 1px solid #bdc3c7;"}
+          = render :partial => "users/sponsor_links"
