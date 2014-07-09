@@ -2,18 +2,8 @@
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
 #register{:style => "margin: auto; width: 50%; text-align: center;"}
-  .well
+  .well{:style => "border: 1px solid #bdc3c7;"}
     = form_for(@user, :html => {name: "configuration", :class => "form-horizontal"}, :url => {:action => "update", :house_name_confirmation => @house_name_confirmation, :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}}) do |f|
-
-      .row
-        .span4
-          = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-info btn-large"
-
-        .span4
-          = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-info btn-large", :style => "float: right;"
-
-      %hr{:style => "border-color: #ff6600; border-bottom: none;"}
-
       - if @user == @current_user
         - if @current_user.can_manage_other_users?
           = render :partial => "users/admin_links"
@@ -130,3 +120,13 @@
 
       #house_configuration
         = f.submit I18n.t("views.button.confirm"), {:class => "btn btn-success btn-large btn-block"}
+
+
+  -# Create or join a team section.
+  .well{:style => "border: 1px solid #bdc3c7;"}
+    .row
+      .span4
+        = link_to "+ " + I18n.t("views.teams.create"), teams_path(:form => true), :class => "btn btn-info btn-large"
+
+      .span4
+        = link_to "+ " + I18n.t("views.teams.join"), teams_path, :class => "btn btn-info btn-large", :style => "float: right;"
