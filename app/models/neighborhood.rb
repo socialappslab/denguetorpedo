@@ -50,6 +50,16 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def geographical_name
+    if self.country.name == "Mexico"
+      return "#{self.name}, #{I18n.t('countries.mexico')}"
+    else
+      return "#{self.name}, #{I18n.t('countries.brazil')}"
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
   # TODO: Deprecate this.
   def total_reports
     # total_reports = []
