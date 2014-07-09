@@ -11,27 +11,20 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.team", :count => 2).capitalize
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
-    = render :partial => "teams/sidebar_list", :locals => { :teams => @teams }
+    = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
-    = render :partial => "neighborhoods/participant_view"
+    = render :partial => "shared/sidebar_list", :locals => { :items => @participants }
 
 
   - if @sponsors.present?
     %hr{:style => "border-bottom: 1px solid #ccc;"}
     %h1{:style => "text-align: center; color: #333; font-size: 20px;"}
       = I18n.t("common_terms.sponsors").capitalize
-
     .row
       #neighborhood_sponsors{:style => "margin-top:20px;"}
-        - @sponsors.each do |sponsor|
-          .span5{:style => "margin-bottom: 3px;"}
-            - if sponsor.house && sponsor.house.profile_photo_file_name.present?
-              = link_to image_tag(sponsor.house.profile_photo.url(:small), :width => 50, :height => 50), sponsor_path(sponsor)
-            - else
-              = link_to image_tag("default_images/default_sponsor_image.jpg", :width => 50, :height => 50, style: "border:1px solid #cccccc;"), sponsor_path(sponsor)
-            = link_to sponsor.display_name, user_path(sponsor)
+        = render :partial => "shared/sidebar_list", :locals => { :items => @sponsors }

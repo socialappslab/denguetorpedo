@@ -37,7 +37,7 @@
     = I18n.t("common_terms.my_teams").capitalize
 
   .row{:style => "margin-top: 20px;"}
-    = render :partial => "teams/sidebar_list", :locals => {:teams => @teams}
+    = render :partial => "shared/sidebar_list", :locals => {:items => @teams}
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
