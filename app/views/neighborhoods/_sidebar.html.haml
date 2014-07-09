@@ -11,7 +11,7 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.team", :count => 2).capitalize
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
-    = render :partial => "neighborhoods/teams_view"
+    = render :partial => "teams/sidebar_list", :locals => { :teams => @teams }
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
