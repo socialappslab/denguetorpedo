@@ -125,7 +125,7 @@
             *
         .controls
           - user_recruiter = ( @user.recruiter.present? ? [ @user.recruiter.full_name, @user.recruiter.id ] : nil )
-          = select_tag :recruiter_id, options_for_select(User.all.map {|u| [u.full_name, u.id]}, user_recruiter ), :include_blank => true
+          = select_tag :recruiter_id, options_for_select(User.all.map {|u| [u.full_name, u.id]}, user_recruiter ), :prompt => I18n.t("common_terms.no_one")
 
 
       #house_configuration
