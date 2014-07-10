@@ -1,12 +1,84 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
 = render :partial => 'orange_slider'
-%br
 
 /------------------------------------------------------------------------------
 
-/ Render the header, along with a dropdown to other neighborhoods.
+.row.well{:style => "height: 350px;"}
+  %br
+  %br
+  %br
+  .span5{:style => "font-size: 100px; text-align: center;"}
+    %i.fa.fa-mobile
+
+  .span7{:style => "font-size: 100px; text-align: center;"}
+    %i.fa.fa-group
+
+  .span5{:style => "font-size: 100px; text-align: center;"}
+    %i.fa.fa-trophy
+
+  .row
+    .span5{:style => "margin-left: 30px;"}
+      %h2
+        Use your cellphone to find Dengue sites!
+    .span7{:style => "margin-left: 30px;"}
+      %h2
+        Chat with other participants and join teams to fight Dengue together!
+    .span5{:style => "margin-left: 20px;"}
+      %h2
+        Redeem points for prizes
+
+
+
+
+/------------------------------------------------------------------------------
+
 .row
+  %br
+  %br
+  %br
+  .span16.offset1{:style => "text-align: center;"}
+    %iframe{:src => "http://www.youtube.com/embed/o6IY0NjdmZc?theme=light", :frameborder => "0", :width => "600", :height => "400"}
+
+  %br
+  %br
+  %br
+
+  -# #top.row
+  -#   #orange_bg_graphic
+  -#     .row
+  -#       .offset5
+  -#         = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
+  -#         #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
+  -#           %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
+  -#             = I18n.t("common_terms.free_sms")
+  -#           :javascript
+  -#             $("#redetrel_button1").click(function() {
+  -#               location.href = "sponsors/3";
+  -#             });
+  -#             $(".fancybox-media").fancybox({
+  -#               maxWidth  : 800,
+  -#               maxHeight : 600,
+  -#               fitToView : false,
+  -#               width   : '70%',
+  -#               height    : '70%',
+  -#               autoSize  : false,
+  -#               closeClick  : false,
+  -#               openEffect  : 'none',
+  -#               closeEffect : 'none'
+  -#             });
+
+%br
+%br
+%br
+%br
+/------------------------------------------------------------------------------
+
+/ Render the header, along with a dropdown to other neighborhoods.
+.row.well
+  %br
+  %br
+  %br
   .span10.offset1
     %h2
       = I18n.t("landing_page.community.title")
@@ -16,28 +88,30 @@
       - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
       = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
 
-/ Display the Mare evacuation alert content box if the selected neighborhood
-/ is Mare.
-- if @neighborhood && @neighborhood.name == "Maré"
+  / Display the Mare evacuation alert content box if the selected neighborhood
+  / is Mare.
+  - if @neighborhood && @neighborhood.name == "Maré"
+    %br
+    .row
+      .span15.offset1{:style => "width: 975px;"}
+        .offset1
+          .alert.alert-warning{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
+            %h2{:style => "font-weight: normal; line-height: 24px;"}
+              = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
+            %p{:style => "font-size: 10px; margin-top: 20px;"}
+              = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
+
+
+  / Render the gallery of neighborhoods.
   %br
   .row
-    .span15.offset1{:style => "width: 975px;"}
-      .offset1
-        .alert.alert-warning{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
-          %h2{:style => "font-weight: normal; line-height: 24px;"}
-            = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
-          %p{:style => "font-size: 10px; margin-top: 20px;"}
-            = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
+    = render "home/neighborhood_list"
 
 
-/ Render the gallery of neighborhoods.
-%br
-.row
-  = render "home/neighborhood_list"
 
-%br
-%br
-%br
+  %br
+  %br
+  %br
 
 /------------------------------------------------------------------------------
 
@@ -83,7 +157,7 @@
 /------------------------------------------------------------------------------
 
 %br
-.row
+.row.well{:style => "margin-bottom: -20px;"}
   %h2.offset1{style: 'font-size: 18px;'}
     = I18n.t("common_terms.partners")
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
@@ -98,7 +172,6 @@
       window.location.href = $(this).val()
     });
   })
-
 
   $(".show-more-content-link").on("click", function(eventObj)
   {

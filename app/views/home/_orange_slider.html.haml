@@ -1,38 +1,11 @@
 #orange_slider
   .row
-    .span8.offset1
-      %h1{:style => "color: #333; font-style: italic; font-size: 40px; position: absolute; top: 70px; left: 50px; width: 800px; line-height: 40px;"}
+    .span5.offset1
+      %h1{:style => "color: #333; font-style: italic; font-size: 40px; position: absolute; top: 150px; left: 50px; width: 800px; line-height: 40px;"}
         = I18n.t("views.home.header")
-    #top.row
-      #orange_bg_graphic
-        .row
-          .offset5
-            = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
-            #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
-              %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
-                = I18n.t("common_terms.free_sms")
-              :javascript
-                $("#redetrel_button1").click(function() {
-                  location.href = "sponsors/3";
-                });
-                $(".fancybox-media").fancybox({
-                  maxWidth  : 800,
-                  maxHeight : 600,
-                  fitToView : false,
-                  width   : '70%',
-                  height    : '70%',
-                  autoSize  : false,
-                  closeClick  : false,
-                  openEffect  : 'none',
-                  closeEffect : 'none'
-                });
 
-      .span4.offset8{style: "width:235px; margin-right:15px;"}
-        %h2
-          = I18n.t("landing_page.orange_banner.tagline")
-
-      .span5
-        #register_pane
-          %br
-          %br
-          = render "home/register_form"
+    .span5.offset12
+      #register_pane
+        %br
+        %br
+        = render "home/register_form"
