@@ -154,11 +154,31 @@
 /------------------------------------------------------------------------------
 
 %br
-.row.well{:style => "margin-bottom: -20px;"}
+.row
   %h2.offset1{style: 'font-size: 18px;'}
     = I18n.t("common_terms.partners")
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
-    <a href="http://www.gatesfoundation.org"> Bill & Melinda Gates Foundation</a> / <a href="http://citris-uc.org" >CITRIS </a> / <a href="http://www.research.ibm.com/labs/brazil/index.shtml">IBM Research Brazil</a> / <a href="http://www.inria.fr">Inria</a> / <a href="http://www.salud.carlosslim.org/">Instituto Carlos Slim de la Salud</a> / <a href="http://ipprio.rio.rj.gov.br/">Instituto Pereira Passos</a> / <a href="http://redesdamare.org.br/">Redes da Maré</a> / <a href="http://www.rio.rj.gov.br/web/sms">Secretaria Municipal de Saúde do Rio de Janeiro</a> / <a href="http://www.ubs.com/global/en/wealth_management/optimusfoundation.html">UBS Optimus Foundation</a> / <a href="http://www.berkeley.edu/index.html">UC Berkeley</a> / <a href="http://www.ufrj.br">UFRJ</a>
+    = link_to "Bill & Melinda Gates Foundation", "http://www.gatesfoundation.org"
+    &middot;
+    = link_to "CITRIS", "http://citris-uc.org"
+    &middot;
+    = link_to "IBM Research Brazil", "http://www.research.ibm.com/labs/brazil/index.shtml"
+    &middot;
+    = link_to "Inria", "http://www.inria.fr"
+    &middot;
+    = link_to "Instituto Carlos Slim de la Salud", "http://www.salud.carlosslim.org/"
+    &middot;
+    = link_to "Instituto Pereira Passos", "http://ipprio.rio.rj.gov.br/"
+    &middot;
+    = link_to "Redes da Maré", "http://redesdamare.org.br/"
+    &middot;
+    = link_to "Secretaria Municipal de Saúde do Rio de Janeiro", "http://www.rio.rj.gov.br/web/sms"
+    &middot;
+    = link_to "UBS Optimus Foundation", "http://www.ubs.com/global/en/wealth_management/optimusfoundation.html"
+    &middot;
+    = link_to "UC Berkeley", "http://www.berkeley.edu/index.html"
+    &middot;
+    = link_to "UFRJ", "http://www.ufrj.br"
 
 /------------------------------------------------------------------------------
 
