@@ -72,7 +72,7 @@
             / another neighborhood
             /= f.select(:neighborhood_id, Neighborhood.all.map {|n| [n.name, n.id]})
             - mare = Neighborhood.find_by_name("Maré")
-            = f.select :neighborhood_id, [ [mare.name, mare.id] ], :class => "form-control"
+            = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, :class => "form-control"
 
         .control-group
           = f.label :password, :class => "control-label"
