@@ -107,51 +107,48 @@
   .row
     = render "home/neighborhood_list"
 
-
-
   %br
   %br
   %br
 
-/------------------------------------------------------------------------------
 
-.row
-  -# Display a list of teams.
-  .span2.offset1
-    %h2{style: 'font-size: 18px; text-align: center;'}
-      = I18n.t("activerecord.models.team", :count => 2)
-    %ul#house_list{:style => "margin-top: 30px; margin-left: 0px;"}
-      - @teams.shuffle.each do |team|
-        %li
-          #house_photo_thumb
-            - if team.profile_photo_file_name.nil?
-              = link_to image_tag("default_images/house_default_image.png", :class => "img-rounded"), team_path(team)
-            - else
-              = link_to image_tag(team.profile_photo.url(:medium), :class => "img-rounded"), team_path(team)
-          %div{:style => "margin-top: 10px;"}
-          = link_to team.name, team_path(team)
+  .row
+    -# Display a list of teams.
+    .span2.offset1
+      %h2{style: 'font-size: 18px; text-align: center;'}
+        = I18n.t("activerecord.models.team", :count => 2)
+      %ul#house_list{:style => "margin-top: 30px; margin-left: 0px;"}
+        - @teams.shuffle.each do |team|
+          %li
+            #house_photo_thumb
+              - if team.profile_photo_file_name.nil?
+                = link_to image_tag("default_images/house_default_image.png", :class => "img-rounded"), team_path(team)
+              - else
+                = link_to image_tag(team.profile_photo.url(:medium), :class => "img-rounded"), team_path(team)
+            %div{:style => "margin-top: 10px;"}
+            = link_to team.name, team_path(team)
 
 
-  -# Display the news feed.
-  .span9{:style => "margin-left: 40px;"}
-    %h2{style: 'font-size: 18px; text-align: center;'}
-      = I18n.t("common_terms.activities")
-    = render :partial => "shared/news_feed"
+    -# Display the news feed.
+    .span9{:style => "margin-left: 40px;"}
+      %h2{style: 'font-size: 18px; text-align: center;'}
+        = I18n.t("common_terms.activities")
+      = render :partial => "shared/news_feed"
 
-    .span9{:style => "text-align: center;"}
-      = link_to new_user_path, :style => "color: #6655ee; font-size: 20px;" do
-        %i.fa.fa-chevron-down
-        = I18n.t("common_terms.more")
+      .span9{:style => "text-align: center;"}
+        = link_to new_user_path, :style => "color: #6655ee; font-size: 20px;" do
+          %i.fa.fa-chevron-down
+          = I18n.t("common_terms.more")
 
-  -# Display a list of prizes.
-  .span4{:style => "margin-left: 30px; text-align: center;"}
-    %h2{style: 'font-size: 18px;'}
-      = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
+    -# Display a list of prizes.
+    .span4{:style => "margin-left: 30px; text-align: center;"}
+      %h2{style: 'font-size: 18px;'}
+        = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
 
-    #sponsors{:style => "margin-top: 22px;"}
-      %ul
-        - @prizes.each do |prize|
-          = render :partial => "prizes/prize", :object => prize
+      #sponsors{:style => "margin-top: 22px;"}
+        %ul
+          - @prizes.each do |prize|
+            = render :partial => "prizes/prize", :object => prize
 
 
 /------------------------------------------------------------------------------
