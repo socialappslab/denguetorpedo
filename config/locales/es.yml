@@ -275,7 +275,8 @@ es:
       submit:  "Enviar"
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
-
+    home:
+      header: "Ciudadanos en el Combate contra el Dengue"
 
   #----------------------------------------------------------------------------
   # Countries

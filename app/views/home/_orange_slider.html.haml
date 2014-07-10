@@ -1,55 +1,38 @@
-- if @current_user
-  #orange_border
-    %a{:href => 'javascript:$("#orange_toggle").collapse("show");', :data=>{ :toggle=>"collapse", :target=>"#orange_toggle"}, :id => 'orange_pull_down'}
-      = image_tag("pulldown/splash_pulldown_inactive.png", :id => "orange_toggle_pic")
-      = image_tag("pulldown/splash_pulldown_rollover.png", :style => "display:none;", :id => "orange_toggle_pic_active")
-  #orange_toggle.collapse
-    #orange_slider{:style => "background-image:none;background-color:#ff6600;height:500px;"}
-      .row
-        #top.row
-          #orange_bg_graphic
-            .video.span11{:style => "margin-top:30px;margin-left:225px;"}
-              %iframe{:allowscriptaccess => "always", :allowFullScreen => "true", :frameborder => "0", :height => "400", :width => "600", :src => "http://www.youtube.com/embed/o6IY0NjdmZc", :style => "text-align:center;"}
-          .span4
-            #news_pane
+#orange_slider
+  .row
+    .span8.offset1
+      %h1{:style => "color: #333; font-style: italic; font-size: 40px; position: absolute; top: 70px; left: 50px; width: 800px; line-height: 40px;"}
+        = I18n.t("views.home.header")
+    #top.row
+      #orange_bg_graphic
+        .row
+          .offset5
+            = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
+            #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
+              %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
+                = I18n.t("common_terms.free_sms")
+              :javascript
+                $("#redetrel_button1").click(function() {
+                  location.href = "sponsors/3";
+                });
+                $(".fancybox-media").fancybox({
+                  maxWidth  : 800,
+                  maxHeight : 600,
+                  fitToView : false,
+                  width   : '70%',
+                  height    : '70%',
+                  autoSize  : false,
+                  closeClick  : false,
+                  openEffect  : 'none',
+                  closeEffect : 'none'
+                });
 
-    .row{:style => "height:25px;"}
-      #orange_pull_up.span1{:style => "float:right;"}
-        %a{:href => 'javascript:$("#orange_toggle").collapse("hide");', :data=>{:toggle=>"collapse", :target=>"#orange_toggle"}}
-          = image_tag("pulldown/splash_pulldown_active.png")
-- else
-  #orange_slider
-    .row
-      #top.row
-        #orange_bg_graphic
-          .row
-            .offset5
-              = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
-              #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
-                %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
-                  = I18n.t("common_terms.free_sms")
-                :javascript
-                  $("#redetrel_button1").click(function() {
-                    location.href = "sponsors/3";
-                  });
-                  $(".fancybox-media").fancybox({
-                    maxWidth  : 800,
-                    maxHeight : 600,
-                    fitToView : false,
-                    width   : '70%',
-                    height    : '70%',
-                    autoSize  : false,
-                    closeClick  : false,
-                    openEffect  : 'none',
-                    closeEffect : 'none'
-                  });
+      .span4.offset8{style: "width:235px; margin-right:15px;"}
+        %h2
+          = I18n.t("landing_page.orange_banner.tagline")
 
-        .span4.offset8{style: "width:235px; margin-right:15px;"}
-          %h2
-            = I18n.t("landing_page.orange_banner.tagline")
-
-        .span5
-          #register_pane
-            %br
-            %br
-            = render "home/register_form"
+      .span5
+        #register_pane
+          %br
+          %br
+          = render "home/register_form"

@@ -277,6 +277,8 @@ pt:
       submit:  "Enviar"
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
+    home:
+      header: Cidadãos no Combate à Dengue
 
 
 
