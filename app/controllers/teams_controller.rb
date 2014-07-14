@@ -1,7 +1,6 @@
 # encoding: utf-8
 class TeamsController < NeighborhoodsBaseController
   before_filter :require_login
-  skip_before_filter :ensure_team_chosen
 
   #----------------------------------------------------------------------------
   # GET /teams
