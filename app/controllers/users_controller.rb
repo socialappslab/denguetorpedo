@@ -114,7 +114,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     if @user.save
       cookies[:auth_token] = @user.auth_token
-      flash[:notice] = "Perfil atualizado com sucesso!"
+      flash[:notice] = I18n.t("views.users.create_success_flash") + " " + I18n.t("views.teams.call_to_action_flash")
       redirect_to teams_path and return
     else
       render new_user_path(@user)
