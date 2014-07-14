@@ -279,6 +279,8 @@ pt:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
       header: Cidadãos no Combate à Dengue
+      cellphone_description: "Use o seu celular par identificar focos de mosquitos"
+      teams_description: "Entre numa equipe para combater a dengue e ganhe prêmios"
 
 
 

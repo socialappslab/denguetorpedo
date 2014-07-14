@@ -277,6 +277,8 @@ es:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
       header: "Ciudadanos en el Combate contra el Dengue"
+      cellphone_description: "Use su celular para reporter criaderos de mosquito"
+      teams_description: Únase a equipos para combatir el dengue y ganar premios
 
   #----------------------------------------------------------------------------
   # Countries
