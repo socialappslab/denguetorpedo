@@ -2,9 +2,9 @@
 # encoding: utf-8
 
 class UsersController < ApplicationController
-  before_filter :require_login, :only => [:edit, :update, :index, :show]
-  # before_filter :ensure_mare_neighborhood, :only => [:update]
-  before_filter :identify_student, :only => [:edit, :update]
+  before_filter :require_login,      :only => [:edit, :update, :index, :show]
+  before_filter :ensure_team_chosen, :only => [:show]
+  before_filter :identify_student,   :only => [:edit, :update, :show]
 
   #----------------------------------------------------------------------------
   # GET /users/
@@ -35,8 +35,6 @@ class UsersController < ApplicationController
   # GET /users/1/
 
   def show
-    @user = User.find_by_id(params[:id])
-
     head :not_found and return if @user.nil?
     head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
 
@@ -114,7 +112,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     if @user.save
       cookies[:auth_token] = @user.auth_token
-      flash[:notice] = "Perfil atualizado com sucesso!"
+      flash[:notice] = I18n.t("views.users.create_success_flash") + " " + I18n.t("views.teams.call_to_action_flash")
       redirect_to teams_path and return
     else
       render new_user_path(@user)
@@ -370,15 +368,6 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   private
-
-  #----------------------------------------------------------------------------
-
-  # TODO: We're disabling choosing other neighborhoods until we introduce
-  # another neighborhood. See seeds.rb for more.
-  # def ensure_mare_neighborhood
-  #   neighborhood = Neighborhood.find(params[:user][:neighborhood_id])
-  #   raise "This neighborhood is not allowed" unless neighborhood.name == "Maré"
-  # end
 
   #----------------------------------------------------------------------------
 

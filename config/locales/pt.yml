@@ -241,12 +241,14 @@ pt:
     teams:
       success_join_flash: "Você se juntou a equipe com success"
       success_create_flash: "Você criou uma equipe com success"
-      join: Entrar numa equipe
+      join: Entrar nesta equipe
       create: Criar uma equipe
       my_team: Minha equipe
+      call_to_action_flash: "Agora crie uma equipe ou entre numa equipe."
     posts:
       succes_create_flash: "Você criou um post com sucesso"
     users:
+      create_success_flash: "Perfil creado com sucesso!"
       edit:
         referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"

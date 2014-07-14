@@ -2,9 +2,10 @@
 # encoding: utf-8
 
 class ReportsController < NeighborhoodsBaseController
-  before_filter :require_login, :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
-  before_filter :find_by_id,    :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
-  before_filter :require_admin, :only   => [:types]
+  before_filter :require_login,      :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
+  before_filter :find_by_id,         :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
+  before_filter :require_admin,      :only   => [:types]
+  before_filter :ensure_team_chosen, :only => [:index]
 
   #----------------------------------------------------------------------------
 
