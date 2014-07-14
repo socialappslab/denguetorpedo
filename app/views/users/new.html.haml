@@ -18,7 +18,9 @@
         .controls
           = f.text_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width: 100%;"
         .controls
-          = f.text_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
+          = f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
+        .controls
+          = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }, :style => "width: 100%;"
 
         .controls
           = f.submit I18n.t("views.button.submit"), :class => "btn btn-success btn-block btn-large"

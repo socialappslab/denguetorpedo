@@ -112,12 +112,6 @@ class UsersController < ApplicationController
     params[:user].each{|key,val| params[:user][key] = params[:user][key].strip}
 
     @user = User.new(params[:user])
-
-    # TODO: I'm not happy with assigning default neighborhood for a user,
-    # but this is the state of things for the time being. Consider moving
-    # away from neighborhood specific things...?
-    @user.neighborhood_id = Neighborhood.find_by_name("Maré").id
-
     if @user.save
       cookies[:auth_token] = @user.auth_token
       flash[:notice] = "Perfil atualizado com sucesso!"
