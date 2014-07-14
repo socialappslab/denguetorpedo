@@ -151,7 +151,7 @@ es:
   #----------------------------------------------------------------------------
   # Commonly used words and sentences
   #----------------------------------
-  
+
   common_terms:
     houses: Casas
     participants: Miembros
@@ -201,6 +201,8 @@ es:
     female: Feminino
     admin_configurations: Configuraciones de administrador
     sponsor_configurations: Configuraciones de patrocinador
+    no_one: Nadie
+    or: o
 
 
   facebook:

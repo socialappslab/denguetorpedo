@@ -1,18 +1,20 @@
-%h2
+%h2{:style => "text-align: center;"}
   = I18n.t("common_terms.admin_configurations")
-%p.link
-  = link_to I18n.t("views.users.edit.admin.register"), special_new_users_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.new_prize"), new_prize_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.new_news"), new_notice_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.user_edit"), users_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.prize_edit"), premios_admin_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.sms_edit"), phones_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.feedback"), feedbacks_path
-%p.link
-  = link_to I18n.t("views.users.edit.admin.report_edit"), "/reports/types"
+
+%ul
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.register"), special_new_users_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.new_prize"), new_prize_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.new_news"), new_notice_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.user_edit"), users_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.prize_edit"), premios_admin_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.sms_edit"), phones_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.feedback"), feedbacks_path
+  %li.link
+    = link_to I18n.t("views.users.edit.admin.report_edit"), "/reports/types"

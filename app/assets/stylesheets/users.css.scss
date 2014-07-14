@@ -162,7 +162,7 @@ ul#user_right_panel {
       height: 150px;
       background: #dddddd;
     }
-    
+
     .user_house_picture, .user_neighborhood_picture{
       margin-right: 11;
       display: inline;
@@ -654,11 +654,11 @@ ol.users_list {
   width: 100px !important;
 }
 
-p.link {
-  text-align: left;
+.link {
+  list-style-type: disc;
   font-size: 14px;
   margin: 5px;
-  margin-left: 100px;
+  margin-left: 20px;
 }
 
 .header_link {
