@@ -4,74 +4,32 @@
 
 /------------------------------------------------------------------------------
 
-.row.well{:style => "height: 350px;"}
-  %br
-  %br
-  %br
-  .span5{:style => "font-size: 100px; text-align: center;"}
-    %i.fa.fa-mobile
-
-  .span7{:style => "font-size: 100px; text-align: center;"}
-    %i.fa.fa-group
-
-  .span5{:style => "font-size: 100px; text-align: center;"}
-    %i.fa.fa-trophy
-
-  .row
-    .span5{:style => "margin-left: 30px;"}
-      %h2
-        Use your cellphone to find Dengue sites!
-    .span7{:style => "margin-left: 30px;"}
-      %h2
-        Chat with other participants and join teams to fight Dengue together!
-    .span5{:style => "margin-left: 20px;"}
-      %h2
-        Redeem points for prizes
-
-
+-# .row.well{:style => "height: 350px;"}
+-#   %br
+-#   %br
+-#   %br
+-#   .span5{:style => "font-size: 100px; text-align: center;"}
+-#     %i.fa.fa-mobile
+-#
+-#   .span7{:style => "font-size: 100px; text-align: center;"}
+-#     %i.fa.fa-group
+-#
+-#   .span5{:style => "font-size: 100px; text-align: center;"}
+-#     %i.fa.fa-trophy
+-#
+-#   .row
+-#     .span5{:style => "margin-left: 30px;"}
+-#       %h2
+-#         Use your cellphone to find Dengue sites!
+-#     .span7{:style => "margin-left: 30px;"}
+-#       %h2
+-#         Chat with other participants and join teams to fight Dengue together!
+-#     .span5{:style => "margin-left: 20px;"}
+-#       %h2
+-#         Redeem points for prizes
 
 
-/------------------------------------------------------------------------------
 
-.row
-  %br
-  %br
-  %br
-  .span16.offset1{:style => "text-align: center;"}
-    %iframe{:src => "http://www.youtube.com/embed/o6IY0NjdmZc?theme=light", :frameborder => "0", :width => "600", :height => "400"}
-
-  %br
-  %br
-  %br
-
-  -# #top.row
-  -#   #orange_bg_graphic
-  -#     .row
-  -#       .offset5
-  -#         = link_to image_tag('translated/videoplayer_button.png', :id => 'play_button'), "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe"
-  -#         #sms_button{style: "margin-top: 20px;margin-left: 20px;"}
-  -#           %button{style: "width:100px;height:60px;background-color:green;font-size:18px;line-height:22px;", id: "redetrel_button1"}
-  -#             = I18n.t("common_terms.free_sms")
-  -#           :javascript
-  -#             $("#redetrel_button1").click(function() {
-  -#               location.href = "sponsors/3";
-  -#             });
-  -#             $(".fancybox-media").fancybox({
-  -#               maxWidth  : 800,
-  -#               maxHeight : 600,
-  -#               fitToView : false,
-  -#               width   : '70%',
-  -#               height    : '70%',
-  -#               autoSize  : false,
-  -#               closeClick  : false,
-  -#               openEffect  : 'none',
-  -#               closeEffect : 'none'
-  -#             });
-
-%br
-%br
-%br
-%br
 /------------------------------------------------------------------------------
 
 / Render the header, along with a dropdown to other neighborhoods.

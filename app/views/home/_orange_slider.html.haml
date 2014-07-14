@@ -1,11 +1,47 @@
 #orange_slider
   .row
-    .span5.offset1
-      %h1{:style => "color: #333; font-style: italic; font-size: 40px; position: absolute; top: 150px; left: 50px; width: 800px; line-height: 40px;"}
+    .span12
+      %h1{:style => "color: #333; font-style: italic; font-size: 30px; margin-top: 70px; margin-left: 30px; width: 800px; line-height: 40px;"}
         = I18n.t("views.home.header")
 
-    .span5.offset12
-      #register_pane
+      .row{:style => "margin-top: 20px;"}
+        .span2.offset2{:style => "text-align: center;"}
+          %i.fa.fa-mobile{:style => "font-size: 64px;"}
+        .span7
+          %h2{:style => "color: #333;"}
+            Use your cellphone to find Dengue sites!
+
+      .row{:style => "margin-top: 20px;"}
+        .span2.offset2{:style => "text-align: center;"}
+          %i.fa.fa-group{:style => "font-size: 64px;"}
+        .span7
+          %h2{:style => "color: #333;"}
+            Chat with other participants and join teams to fight Dengue together!
+
+      .row{:style => "margin-top: 20px;"}
+        .span2.offset2{:style => "text-align: center;"}
+          = link_to "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe", :id => 'play_button' do
+            %i.fa.fa-play-circle{:style => "font-size: 64px; color: #333;"}
+        .span7
+          %h2{:style => "color: #333;"}
+            Chat with other participants and join teams to fight Dengue together!
+
+    .span5
+      #register_pane{:style => "margin-top: 45px;"}
         %br
         %br
         = render "home/register_form"
+
+
+:javascript
+  $(".fancybox-media").fancybox({
+    maxWidth  : 800,
+    maxHeight : 600,
+    fitToView : false,
+    width   : '70%',
+    height    : '70%',
+    autoSize  : false,
+    closeClick  : false,
+    openEffect  : 'none',
+    closeEffect : 'none'
+  });
