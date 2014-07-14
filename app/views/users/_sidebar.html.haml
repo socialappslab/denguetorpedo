@@ -1,50 +1,36 @@
 
 %div{:style => "margin-left: 30px; margin-right: 30px;"}
   .sidebar-entity-photo
-    - if @user.profile_photo_file_name.nil?
-      = image_tag("default_images/profile_default_image.png", :class => "img-rounded")
-    - else
-      = image_tag(@user.profile_photo.url(:large), :class => "img-rounded")
-
+    = image_tag(@user.picture, :class => "img-rounded")
     .sidebar-entity-name
       = @user.first_name
 
   .row
-    - if @user == @current_user
-      = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-        %i.fa.fa-gear.fa-2
-        = I18n.t("common_terms.configuration")
+    .span4
+      - if @user == @current_user
+        = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+          %i.fa.fa-gear.fa-2
+          = I18n.t("common_terms.configuration")
 
-    - if @user == @current_user
-      - house_link_text = I18n.t("dashboard.my_house")
-      - community_link_text = I18n.t("dashboard.my_community") + " (#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id})"
-    - else
-      - house_link_text = I18n.t("common_terms.their_house")
-      - community_link_text = I18n.t("common_terms.their_community")
+      - if @user == @current_user
+        - house_link_text = I18n.t("dashboard.my_house")
+        - community_link_text = I18n.t("dashboard.my_community") + " (#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id})"
+      - else
+        - house_link_text = I18n.t("common_terms.their_house")
+        - community_link_text = I18n.t("common_terms.their_community")
 
-    -# - if @user.neighborhood && @user.house
-    -#   = link_to team_path(@user.house), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-    -#     %i.fa.fa-home.fa-2
-    -#     = house_link_text
-
-    - if @user.neighborhood
-      = link_to neighborhood_path(@user.neighborhood), :style => "display: block; font-size: 15px; margin-top: 20px;" do
-        %i.fa.fa-users.fa-2
-        = community_link_text
+      - if @user.neighborhood
+        = link_to neighborhood_path(@user.neighborhood), :style => "display: block; font-size: 15px; margin-top: 20px;" do
+          %i.fa.fa-users.fa-2
+          = community_link_text
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.my_teams").capitalize
 
   .row{:style => "margin-top: 20px;"}
-    - @teams.shuffle.each do |team|
-      .span5{:style => "margin-bottom: 3px;"}
-        - if team.profile_photo_file_name.nil?
-          = link_to image_tag("teams/default.png", :style => "width: 50px; height: 50px;", :class => "img-rounded"), team_path(team)
-        - else
-          = link_to image_tag(team.profile_photo.url(:small), :style => "width: 50px; height: 50px;", :class => "img-rounded"), team_path(team)
-        = link_to team.name, team_path(team)
-
+    .span4
+      = render :partial => "shared/sidebar_list", :locals => {:items => @teams}
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
@@ -53,7 +39,8 @@
 
   - if @user.total_points >= 100
     .row{:style => "text-align: center; margin-top: 20px;"}
-      = render :partial => "users/badges"
+      .span4
+        = render :partial => "users/badges"
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
@@ -61,4 +48,5 @@
 
   - if @coupons.present?
     .row{:style => "text-align: center; margin-top: 20px;"}
-      = render :partial => "users/coupons"
+      .span4
+        = render :partial => "users/coupons"

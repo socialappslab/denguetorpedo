@@ -105,4 +105,11 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # TODO: We need to add pictures for each neighborhood.
+  def picture
+    return "neighborhoods/default.png"
+  end
+
+  #----------------------------------------------------------------------------
+
 end

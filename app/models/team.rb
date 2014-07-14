@@ -39,4 +39,11 @@ class Team < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def picture
+    return "teams/default.png" if self.profile_photo_file_name.nil?
+    return self.profile_photo.url(:medium)
+  end
+
+  #----------------------------------------------------------------------------
+
 end

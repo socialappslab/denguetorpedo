@@ -1,11 +1,7 @@
 
 %div{:style => "margin-left: 30px; margin-right: 30px;"}
   .sidebar-entity-photo
-    - if @team.profile_photo_file_name.nil?
-      = image_tag("teams/default.png", :class => "img-rounded")
-    - else
-      = image_tag(@team.profile_photo.url(:medium), :class => "img-rounded")
-
+    = image_tag(@team.picture, :class => "img-rounded")
     .sidebar-entity-name
       = @team.descriptive_name
 
@@ -13,12 +9,5 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
   .row{:style => "margin-top: 20px; height: 280px;"}
-    #neighborhood_participants_list
-      - @team.users.each do |participant|
-        .span5{:style => "margin-bottom: 3px;"}
-          - if participant.profile_photo_file_name.nil?
-            = link_to image_tag("default_images/profile_default_image.png", :style => "width: 50px; height: 50px;"), user_path(participant)
-          - else
-            = link_to image_tag(participant.profile_photo.url(:small), :style => "width: 50px; height: 50px;"), user_path(participant)
-
-          = link_to participant.display_name, user_path(participant)
+    .span4
+      = render :partial => "shared/sidebar_list", :locals => {:items => @team.users}
