@@ -1,28 +1,28 @@
 #orange_slider
   .row
-    .span12
+    .span9.offset2
       %h1{:style => "color: #333; font-style: italic; font-size: 30px; margin-top: 70px; margin-left: 30px; width: 800px; line-height: 40px;"}
         = I18n.t("views.home.header")
 
       .row{:style => "margin-top: 20px;"}
-        .span2.offset2{:style => "text-align: center;"}
+        .span2{:style => "text-align: center;"}
           %i.fa.fa-mobile{:style => "font-size: 64px;"}
         .span7
           %h2{:style => "color: #333;"}
             = I18n.t("views.home.cellphone_description")
 
       .row{:style => "margin-top: 20px;"}
-        .span2.offset2{:style => "text-align: center;"}
+        .span2{:style => "text-align: center;"}
           %i.fa.fa-group{:style => "font-size: 64px;"}
         .span7
           %h2{:style => "color: #333;"}
             = I18n.t("views.home.teams_description")
 
       .row{:style => "margin-top: 20px;"}
-        .span2.offset2{:style => "text-align: center;"}
+        .span2{:style => "text-align: center;"}
           = link_to "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe", :id => 'play_button' do
             %i.fa.fa-play-circle{:style => "font-size: 64px; color: #333;"}
-        .span7
+        .span8
           %h2{:style => "color: #333;"}
             -# = I18n.t("views.home.video_description")
 
