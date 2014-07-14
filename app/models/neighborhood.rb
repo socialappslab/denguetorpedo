@@ -27,9 +27,38 @@ class Neighborhood < ActiveRecord::Base
 
   validates :name, :presence => true
 
-  def rank
-    0
+
+  #----------------------------------------------------------------------------
+  # Geographical data
+  #------------------
+
+  # NOTE: this method returns a Country object.
+  def country
+    return Country[self.country_string_id]
   end
+
+  def state
+    c = self.country
+    return c.states[self.state_string_id]["name"]
+  end
+
+  #----------------------------------------------------------------------------
+
+  def descriptive_name
+    return I18n.t("attributes.neighborhood_id") + " " + self.name
+  end
+
+  #----------------------------------------------------------------------------
+
+  def geographical_name
+    if self.country.name == "Mexico"
+      return "#{self.name}, #{I18n.t('countries.mexico')}"
+    else
+      return "#{self.name}, #{I18n.t('countries.brazil')}"
+    end
+  end
+
+  #----------------------------------------------------------------------------
 
   # TODO: Deprecate this.
   def total_reports

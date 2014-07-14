@@ -4,7 +4,7 @@
     .span4.offset1
       .neighborhood_selection
         .neighborhood_selection_header
-          %h3= link_to "Nº #{index+1} #{neighborhood.name}", neighborhood_path(neighborhood)
+          %h3= link_to neighborhood.geographical_name, neighborhood_path(neighborhood)
         = link_to image_tag("home_images/neighborhood#{index+1}.jpg"), neighborhood_path(neighborhood), :class => 'neighborhood_selection_photo'
 
   - if @all_neighborhoods.count < 3

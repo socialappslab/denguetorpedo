@@ -8,6 +8,8 @@
 / We only want to display all neighborhood pictures to visitors. If a user
 / is logged in, they care only about their neighborhood.
 - if @current_user.nil?
+
+  / Render the header, along with a dropdown to other neighborhoods.
   .row
     .span10.offset1
       %h2
@@ -17,6 +19,22 @@
         - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }
         - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
         = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
+
+  / Display the Mare evacuation alert content box if the selected neighborhood
+  / is Mare.
+  - if @neighborhood && @neighborhood.name == "Maré"
+    %br
+    .row
+      .span15.offset1{:style => "width: 975px;"}
+        .offset1
+          .alert.alert-warning{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
+            %h2{:style => "font-weight: normal; line-height: 24px;"}
+              = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
+            %p{:style => "font-size: 10px; margin-top: 20px;"}
+              = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
+
+
+  / Render the gallery of neighborhoods.
   %br
   .row
     = render "home/neighborhood_list"

@@ -47,13 +47,6 @@
 
   %body{:class => [params[:controller].parameterize, params[:action].parameterize]}
     #container{style: "overflow-y: auto;overflow:hidden;"}
-      .alert.alert-warning.alert-dismissable{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 40px;"}
-        %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
-          &times;
-        %h2{:style => "font-weight: normal;"}
-          = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue"
-
-
       = render "layouts/home_nav"
       -# #white_spacer
       -if !@current_user.nil?

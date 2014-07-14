@@ -17,7 +17,7 @@
 
     - if @user == @current_user
       - house_link_text = I18n.t("dashboard.my_house")
-      - community_link_text = I18n.t("dashboard.my_community")
+      - community_link_text = I18n.t("dashboard.my_community") + " (#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id})"
     - else
       - house_link_text = I18n.t("common_terms.their_house")
       - community_link_text = I18n.t("common_terms.their_community")

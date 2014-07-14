@@ -156,7 +156,7 @@ pt:
   #----------------------------------
   common_terms:
     houses: Casas
-    participants: Participantes
+    participants: Membros
     register: Cadastre-se
     free_sms: SMS Grátis
     more: Mais
@@ -275,3 +275,10 @@ pt:
       submit:  "Enviar"
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
+
+
+
+
+  countries:
+    brazil: Brasil
+    mexico: Mexico

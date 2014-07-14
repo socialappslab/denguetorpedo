@@ -9,6 +9,21 @@ puts "\n" * 3
 
 Neighborhood.find_or_create_by_name("Maré")
 
+# Tepalcingo neighborhood is our first neighborhood in Mexico.
+# It is located in the city of Tepalcingo, in the state of Morelos,
+# in the country of Mexico.
+n = Neighborhood.find_by_name("Tepalcingo")
+if n.nil?
+  c = Country.find_country_by_name("Mexico")
+  n                   = Neighborhood.new
+  n.name              = "Tepalcingo"
+  n.city              = "Tepalcingo"
+  n.state_string_id   = "MOR"
+  n.country_string_id = c.alpha2
+  n.save!
+end
+
+
 puts "\n" * 3
 puts "[ok] Done seeding neighborhoods..."
 puts "-" * 80
