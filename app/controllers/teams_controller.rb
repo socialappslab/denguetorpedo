@@ -1,12 +1,12 @@
 # encoding: utf-8
-class TeamsController < NeighborhoodsBaseController
+class TeamsController < ApplicationController
   before_filter :require_login
 
   #----------------------------------------------------------------------------
   # GET /teams
 
   def index
-    @teams = Team.all
+    @teams = Team.where(:neighborhood_id => @current_user.neighborhood_id)
     @team  = Team.new
 
     # Calculate ranking for each team.
