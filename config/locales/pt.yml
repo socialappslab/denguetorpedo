@@ -155,6 +155,7 @@ pt:
   # Commonly used words and sentences
   #----------------------------------
   common_terms:
+    order_by: Ordenar por
     houses: Casas
     participants: Membros
     register: Cadastre-se

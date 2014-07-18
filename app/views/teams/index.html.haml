@@ -13,6 +13,18 @@
       .span6{:style => "text-align: right;"}
         = link_to "+ " + I18n.t("views.teams.create"), nil, :class => "btn btn-success btn-large", :id => "create-new-team"
 
+    .row{:style => "margin-top: 20px;"}
+      .span3
+        %h2
+          = I18n.t("common_terms.order_by")
+      .span4#order-teams
+        %label.radio.inline
+          %input{:type => "radio", :name => "team-order", :value => "points", :checked => params[:sort] != "name"}
+          = I18n.t("activerecord.attributes.user.total_points", :count => 2)
+        %label.radio.inline
+          %input{:type => "radio", :name => "team-order", :value => "name", :checked => params[:sort] == "name"}
+          = "A-Z"
+
     .row
       .span12
         - should_display_form = (flash[:show_new_team_form] == true || params[:form] == "true")
@@ -76,9 +88,21 @@
 :javascript
   $(document).ready(function()
   {
+    // Listener on new team button.
     $("#create-new-team").on("click", function(e)
     {
       e.preventDefault();
       $("#new-team-form").toggle()
     });
+
+    // Listen for team ordering event.
+    $("#order-teams input[name='team-order']").on("click", function(e)
+    {
+      var uri = window.location.href.split("?")[0]
+
+      window.location.href = uri + "?" + $.param({sort: $(e.currentTarget).val()})
+
+    });
+
+
   })

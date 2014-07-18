@@ -153,6 +153,7 @@ es:
   #----------------------------------
 
   common_terms:
+    order_by: Ordenar por
     houses: Casas
     participants: Miembros
     register: Regístrese

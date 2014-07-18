@@ -10,8 +10,12 @@ class TeamsController < ApplicationController
     @team  = Team.new
 
     # Calculate ranking for each team.
-    team_rankings  = @teams.map {|t| [t, t.total_points]}
-    @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
+    if params[:sort].present? && params[:sort].downcase == "name"
+      @team_rankings = @teams.order("name").map {|t| [t, t.total_points]}
+    else
+      team_rankings  = @teams.map {|t| [t, t.total_points]}
+      @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
+    end
   end
 
   #----------------------------------------------------------------------------
