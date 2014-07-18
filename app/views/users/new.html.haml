@@ -23,4 +23,4 @@
           = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }, :style => "width: 100%;"
 
         .controls
-          = f.submit I18n.t("views.button.submit"), :class => "btn btn-success btn-block btn-large"
+          = f.submit I18n.t("views.buttons.submit"), :class => "btn btn-success btn-block btn-large"

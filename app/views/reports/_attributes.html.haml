@@ -56,7 +56,7 @@
           .row
             .span2
               - should_disable = ( @current_user && (@current_user.role == "verificador" || @current_user.role == "visitante") || report.expired? || report.isVerified == "f" || report.sms_incomplete?)
-              = submit_tag I18n.t("views.button.submit"), :class=>'report_submission btn btn-success', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
+              = submit_tag I18n.t("views.buttons.submit"), :class=>'report_submission btn btn-success', :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);"
 
 
   = render :partial => "reports/users_involved", :locals => {:report => report}

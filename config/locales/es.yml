@@ -271,7 +271,7 @@ es:
     password_resets:
       title: Redefinir su contraseña
       enter_email: "Teclee su correo electrónico registrado"
-    button:
+    buttons:
       publish: "Publicar"
       confirm: "Confirmar"
       search:  "Buscar"

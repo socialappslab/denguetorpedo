@@ -275,11 +275,12 @@ pt:
     password_resets:
       title: Redefinir sua senha
       enter_email: "Digite o seu e-mail cadastrado"
-    button:
+    buttons:
       publish: "Publicar"
       confirm: "Confirmar"
       search:  "Busca"
       submit:  "Enviar"
+      update: "Atualizar"
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
