@@ -91,10 +91,19 @@ class TeamsController < NeighborhoodsBaseController
 
   def leave
     membership = @current_user.team_memberships.find { |tm| tm.team_id.to_s == params[:id].to_s }
-    if membership && membership.destroy
-      render :json => :ok and return
-    else
-      render :json => :bad_request and return
+
+    respond_to do |format|
+      if membership && membership.destroy
+        flash[:notice] = I18n.t("views.teams.success_leave_flash")
+
+        format.html { redirect_to :back and return }
+        format.json { render :json => :ok and return }
+      else
+        flash[:alert] = I18n.t("views.application.error")
+
+        format.html { redirect_to :back and return }
+        format.json { render :json => :bad_request and return }
+      end
     end
   end
 

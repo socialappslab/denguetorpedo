@@ -5,6 +5,17 @@
     .sidebar-entity-name
       = @team.descriptive_name
 
+    %div{:style => "margin-top: 20px;"}
+      - if @users.exclude?(@current_user)
+        = form_tag join_team_path(@team), :method => "POST" do
+          = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-success btn-block btn-large"
+      - else
+        = form_tag leave_team_path(@team), :method => "POST" do
+          = submit_tag I18n.t("views.teams.leave"), :class => "btn btn-danger btn-block btn-large"
+        -# = link_to nil, :class => "btn btn-success btn-large disabled", :style => "width: 100%;" do
+        -#   %i{:class => "fa fa-check"}
+        -#   = I18n.t("views.teams.my_team")
+
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
