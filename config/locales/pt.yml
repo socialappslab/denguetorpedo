@@ -238,6 +238,7 @@ pt:
     application:
       error: "Algo deu errado. Por favor, tente novamente."
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
+      permission_required: Você não tem permissão para acessar esta página!
     teams:
       success_join_flash: "Você se juntou a equipe com success"
       success_create_flash: "Você criou uma equipe com success"
@@ -249,6 +250,8 @@ pt:
       succes_create_flash: "Você criou um post com sucesso"
     users:
       create_success_flash: "Perfil creado com sucesso!"
+      phones:
+        header: Adminstrar DT Torpedos
       edit:
         referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"
