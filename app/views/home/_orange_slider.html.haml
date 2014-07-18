@@ -1,36 +1,35 @@
 #orange_slider
   .row
-    .span12
-      %h1{:style => "color: #333; font-style: italic; font-size: 30px; margin-top: 70px; margin-left: 30px; width: 800px; line-height: 40px;"}
+    .span16.offset2
+      %h1{:style => "color: #333; font-style: italic; font-size: 36px; margin-top: 70px; margin-left: 30px;"}
         = I18n.t("views.home.header")
 
+  .row
+    .span11.offset1
       .row{:style => "margin-top: 20px;"}
         .span2.offset1{:style => "text-align: center;"}
-          %i.fa.fa-mobile{:style => "font-size: 64px;"}
+          %i.fa.fa-mobile{:style => "font-size: 84px;"}
         .span7
-          %h2{:style => "color: #333;"}
+          %h2{:style => "color: #333; font-size: 20px;"}
             = I18n.t("views.home.cellphone_description")
 
       .row{:style => "margin-top: 20px;"}
         .span2.offset1{:style => "text-align: center;"}
           %i.fa.fa-group{:style => "font-size: 64px;"}
         .span7
-          %h2{:style => "color: #333;"}
+          %h2{:style => "color: #333; font-size: 20px;"}
             = I18n.t("views.home.teams_description")
 
       .row{:style => "margin-top: 20px;"}
         .span2.offset1{:style => "text-align: center;"}
           = link_to "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe", :id => 'play_button' do
             %i.fa.fa-play-circle{:style => "font-size: 64px; color: #333;"}
-        .span8
-          %h2{:style => "color: #333;"}
-            -# = I18n.t("views.home.video_description")
+        .span7
+          %h2{:style => "color: #333; font-size: 20px;"}
+            = I18n.t("views.home.video_description_html", :link_url => "http://www.youtube.com/embed/o6IY0NjdmZc").html_safe
 
-    .span5
-      #register_pane{:style => "margin-top: 45px;"}
-        %br
-        %br
-        = render "home/register_form"
+    .span5{:style => "margin-top: 25px;"}
+      = render "home/register_form"
 
 
 :javascript

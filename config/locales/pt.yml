@@ -115,7 +115,7 @@ pt:
   dashboard:
     my_profile: Meu Perfil
     my_house: Minha Casa
-    my_community: Minha Comunidade
+    my_community: Minha comunidade
     reports: Focos Marcados
 
 
@@ -275,17 +275,19 @@ pt:
     password_resets:
       title: Redefinir sua senha
       enter_email: "Digite o seu e-mail cadastrado"
-    button:
+    buttons:
       publish: "Publicar"
       confirm: "Confirmar"
       search:  "Busca"
       submit:  "Enviar"
+      update: "Atualizar"
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
       header: Cidadãos no Combate à Dengue
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
       teams_description: "Entre numa equipe para combater a dengue e ganhe prêmios"
+      video_description_html: "Veja o video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aqui</a>"
 
 
 
