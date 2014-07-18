@@ -13,6 +13,13 @@ class ApplicationController < ActionController::Base
   end
 
   #----------------------------------------------------------------------------
+  # This is used for all ActiveAdmin-related resources.
+
+  def set_active_admin_locale
+    I18n.locale = :en
+  end
+
+  #----------------------------------------------------------------------------
 
   protected
 
@@ -76,5 +83,6 @@ class ApplicationController < ActionController::Base
   end
 
   #----------------------------------------------------------------------------
+
 
 end
