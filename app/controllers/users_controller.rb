@@ -2,9 +2,10 @@
 # encoding: utf-8
 
 class UsersController < ApplicationController
-  before_filter :require_login,      :only => [:edit, :update, :index, :show]
-  before_filter :ensure_team_chosen, :only => [:show]
-  before_filter :identify_student,   :only => [:edit, :update, :show]
+  before_filter :require_login,             :only => [:edit, :update, :index, :show]
+  before_filter :ensure_team_chosen,        :only => [:show]
+  before_filter :identify_student,          :only => [:edit, :update, :show]
+  before_filter :ensure_proper_permissions, :only => [:phones]
 
   #----------------------------------------------------------------------------
   # GET /users/
@@ -29,6 +30,13 @@ class UsersController < ApplicationController
       format.html
       format.json { render json: { users: @users}}
     end
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /users/phones
+
+  def phones
+    @users = User.all
   end
 
   #----------------------------------------------------------------------------
@@ -373,6 +381,16 @@ class UsersController < ApplicationController
 
   def identify_student
     @user = User.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+
+  # Ensure that only coordinators and administrators are allowed access.
+  def ensure_proper_permissions
+    return if current_user && [User::Types::COORDINATOR, User::Types::ADMIN].include?(current_user.role)
+
+    flash[:alert] = I18n.t("views.application.permission_required")
+    redirect_to root_path and return
   end
 
   #----------------------------------------------------------------------------
