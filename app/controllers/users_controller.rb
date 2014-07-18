@@ -103,7 +103,6 @@ class UsersController < ApplicationController
   # hack.
   def special_new
     authorize! :edit, User.new
-
     @user ||= User.new
     render "coordinators/users/edit" and return
   end
