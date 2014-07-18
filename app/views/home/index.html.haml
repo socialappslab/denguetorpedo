@@ -16,72 +16,59 @@
       - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
       = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
 
-  / Display the Mare evacuation alert content box if the selected neighborhood
-  / is Mare.
-  - if @neighborhood && @neighborhood.name == "Maré"
-    %br
-    .row{:style => "width: 100%; margin-top: 40px; margin-bottom: 40px;"}
-      .span18{:style => "margin-left: -1px; margin-right: -25px;"}
-        .alert.alert-danger{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px; padding-left: 20px;"}
-          %h2{:style => "font-weight: bold; line-height: 24px;"}
-            = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
-          %p{:style => "font-size: 10px; margin-top: 20px;"}
-            = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
+
+/------------------------------------------------------------------------------
+/ Display a list of neighborhoods.
+
+.row{:style => "margin-top: 40px;"}
+  = render "home/neighborhood_list"
 
 
-  / Render the gallery of neighborhoods.
-  %br
-  .row
-    = render "home/neighborhood_list"
+/------------------------------------------------------------------------------
+/ Display a list of teams.
 
-  %br
-  %br
-  %br
-
-  .row
-    -# Display a list of teams.
-    .span2.offset1
-      %h2{style: 'font-size: 18px; text-align: center;'}
-        = I18n.t("activerecord.models.team", :count => 2)
-      %ul#house_list{:style => "margin-top: 30px; margin-left: 0px;"}
-        - @teams.shuffle.each do |team|
-          %li
-            #house_photo_thumb
-              - if team.profile_photo_file_name.nil?
-                = link_to image_tag("default_images/house_default_image.png", :class => "img-rounded"), team_path(team)
-              - else
-                = link_to image_tag(team.profile_photo.url(:medium), :class => "img-rounded"), team_path(team)
-            %div{:style => "margin-top: 10px;"}
-            = link_to team.name, team_path(team)
+.row{:style => "margin-top: 40px;"}
+  .span2.offset1
+    %h1{style: 'text-align: center;'}
+      = I18n.t("activerecord.models.team", :count => 2)
+    %ul#house_list{:style => "margin-top: 30px; margin-left: 0px;"}
+      - @teams.shuffle.each do |team|
+        %li
+          #house_photo_thumb
+            - if team.profile_photo_file_name.nil?
+              = link_to image_tag("default_images/house_default_image.png", :class => "img-rounded"), team_path(team)
+            - else
+              = link_to image_tag(team.profile_photo.url(:medium), :class => "img-rounded"), team_path(team)
+          %div{:style => "margin-top: 10px;"}
+          = link_to team.name, team_path(team)
 
 
-    -# Display the news feed.
-    .span9{:style => "margin-left: 40px;"}
-      %h2{style: 'font-size: 18px; text-align: center;'}
-        = I18n.t("common_terms.activities")
-      = render :partial => "shared/news_feed"
+  -# Display the news feed.
+  .span9{:style => "margin-left: 40px;"}
+    %h1{style: 'text-align: center;'}
+      = I18n.t("common_terms.activities")
+    = render :partial => "shared/news_feed"
 
-      .span9{:style => "text-align: center;"}
-        = link_to new_user_path, :style => "color: #6655ee; font-size: 20px;" do
-          %i.fa.fa-chevron-down
-          = I18n.t("common_terms.more")
+    .span9{:style => "text-align: center;"}
+      = link_to new_user_path, :style => "color: #6655ee; font-size: 20px;" do
+        %i.fa.fa-chevron-down
+        = I18n.t("common_terms.more")
 
-    -# Display a list of prizes.
-    .span4{:style => "margin-left: 30px; text-align: center;"}
-      %h2{style: 'font-size: 18px;'}
-        = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
+  -# Display a list of prizes.
+  .span4{:style => "margin-left: 30px; text-align: center;"}
+    %h1
+      = link_to I18n.t("activerecord.models.prize", :count => 3), prizes_path, :style => "color: #65665C;"
 
-      #sponsors{:style => "margin-top: 22px;"}
-        %ul
-          - @prizes.each do |prize|
-            = render :partial => "prizes/prize", :object => prize
+    #sponsors{:style => "margin-top: 22px;"}
+      %ul
+        - @prizes.each do |prize|
+          = render :partial => "prizes/prize", :object => prize
 
 
 /------------------------------------------------------------------------------
 
-%br
-.row
-  %h2.offset1{style: 'font-size: 18px;'}
+.row{:style => "margin-top: 40px;"}
+  %h1.offset1
     = I18n.t("common_terms.partners")
   #partners.offset1{:style => "font-weight:normal;line-height:25px;font-size:14px;"}
     = link_to "Bill & Melinda Gates Foundation", "http://www.gatesfoundation.org"
