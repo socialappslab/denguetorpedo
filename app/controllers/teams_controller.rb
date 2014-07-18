@@ -1,12 +1,12 @@
 # encoding: utf-8
-class TeamsController < NeighborhoodsBaseController
+class TeamsController < ApplicationController
   before_filter :require_login
 
   #----------------------------------------------------------------------------
   # GET /teams
 
   def index
-    @teams = Team.all
+    @teams = Team.where(:neighborhood_id => @current_user.neighborhood_id)
     @team  = Team.new
 
     # Calculate ranking for each team.
@@ -18,7 +18,7 @@ class TeamsController < NeighborhoodsBaseController
   # GET /teams/1
 
   def show
-    @team  = Team.find(params[:id])
+    @team = Team.find(params[:id])
     @users = @team.users
     @total_points  = @team.total_points
     @total_reports = @team.total_reports
@@ -74,16 +74,36 @@ class TeamsController < NeighborhoodsBaseController
   def join
     @team = Team.find(params[:id])
 
-    team_membership = TeamMembership.new(:user_id => @current_user.id, :team_id => @team.id, :verified => false)
-
-    if team_membership.save
+    membership = TeamMembership.find_or_create_by_user_id_and_team_id(@current_user.id, @team.id)
+    if membership.save
       flash[:notice] = I18n.t("views.teams.success_join_flash")
-      redirect_to teams_path and return
+      redirect_to :back and return
     else
       @teams = Team.all
 
       flash[:alert] = I18n.t("views.application.error")
       render "teams/index" and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
+  # POST /teams/1/leave
+
+  def leave
+    membership = @current_user.team_memberships.find { |tm| tm.team_id.to_s == params[:id].to_s }
+
+    respond_to do |format|
+      if membership && membership.destroy
+        flash[:notice] = I18n.t("views.teams.success_leave_flash")
+
+        format.html { redirect_to :back and return }
+        format.json { render :json => :ok and return }
+      else
+        flash[:alert] = I18n.t("views.application.error")
+
+        format.html { redirect_to :back and return }
+        format.json { render :json => :bad_request and return }
+      end
     end
   end
 

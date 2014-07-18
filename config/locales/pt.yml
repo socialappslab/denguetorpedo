@@ -239,10 +239,14 @@ pt:
       error: "Algo deu errado. Por favor, tente novamente."
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
       permission_required: Você não tem permissão para acessar esta página!
+    alerts:
+      confirm_leave_team: Tem certeza que deseja sair da equipe?
     teams:
-      success_join_flash: "Você se juntou a equipe com success"
-      success_create_flash: "Você criou uma equipe com success"
+      success_join_flash: "Você se juntou a equipe com successo"
+      success_create_flash: "Você criou uma equipe com successo"
+      success_leave_flash: "Você deixou a equipe com successo"
       join: Entrar nesta equipe
+      leave: "Sair nesta equipe"
       create: Criar uma equipe
       my_team: Minha equipe
       call_to_action_flash: "Agora crie uma equipe ou entre numa equipe."
