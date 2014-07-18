@@ -155,6 +155,7 @@ Dengue::Application.routes.draw do
 
   resources :teams do
     post "join", :on => :member
+    post "leave", :on => :member
   end
 
   #----------------------------------------------------------------------------

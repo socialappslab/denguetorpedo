@@ -88,4 +88,16 @@ class TeamsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # POST /teams/1/leave
+
+  def leave
+    membership = @current_user.team_memberships.find { |tm| tm.team_id.to_s == params[:id].to_s }
+    if membership && membership.destroy
+      render :json => :ok and return
+    else
+      render :json => :bad_request and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
 end
