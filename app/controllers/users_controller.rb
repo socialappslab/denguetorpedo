@@ -152,72 +152,8 @@ class UsersController < ApplicationController
 
     @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
-    #--------------------------------------------------------------------------
-    # If the user has written down an existing house, then we need to confirm
-    # with them that that is the house they want to join.
-    # house = House.find_by_name(params[:user][:house_attributes][:name])
-    # if params[:house_name_confirmation].blank? && house.present? && @user.house_id != house.id
-    #   @user.house = house
-    #
-    #   @house_name_confirmation = true
-    #   flash[:alert] = "Uma casa com esse nome já existe. Você quer se juntar a essa casa? Se sim, clique confirmar. Se não, clique cancelar e escolha outro nome de casa."
-    #
-    #   @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
-    #   @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
-    #
-    #   render "edit" and return
-    # end
-
-
-    # NOTE: This is essentially the old code boiled down. Before
-    # saving it along with the user attributes, we do a quick query
-    # to identify the house by its name. If it's present, we don't ask the user
-    # to confirm, but instead we update the ID and the name, and save.
-    # TODO: This makes Rails search for the house id in the *association*. As a
-    # result, you get "Couldn't find House with ID = ..."
-    # house = House.find_by_name(params[:user][:house_attributes][:name])
-    # if house.present?
-    #   params[:user][:house_attributes].merge!(:id => house.id, :name => house.name)
-    # end
-
-    # Now, let's find the neighborhood that the user has specified. If it actually
-    # exists, then we'll update the house_attributes and pass it on to Rails's
-    # saver.
-    # NOTE: This is necessary in order for all validations to work.
-    # params[:user][:house_attributes].merge!(:neighborhood_id => params[:user][:neighborhood_id])
-
-    #--------------------------------------------------------------------------
-    # Update the user and the house
+    # TODO: Clean up and clarify the intent of this line.
     user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
-
-
-    # TODO add in checks to rename or join existing house?
-    # TODO should we allow users from neighborhood A join houses in neighborhood B
-    # if house already exists, join existing house
-    # location = Location.find_by_street_type_and_street_name_and_street_number(
-    #   params[:user][:house_attributes][:location_attributes][:street_type],
-    #   params[:user][:house_attributes][:location_attributes][:street_name],
-    #   params[:user][:house_attributes][:location_attributes][:street_number]
-    #   )
-    # if location.nil?
-    #   location = Location.new(params[:user][:house_attributes][:location_attributes])
-    #   location.neighborhood_id = user_params[:neighborhood_id]
-    #   location.save
-    # end
-    # if house.present?
-    #   house.update_attribute(:location_id, location.id)
-    #   @user.house = house
-    # else
-    #   params[:user][:house_attributes].delete(:location_attributes)
-    #   params[:user][:house_attributes].merge!(:location_id => location.id)
-    #
-    #   if @user.house.present?
-    #     @user.house.update_attributes(params[:user][:house_attributes]) #.name = params[:user][:house_attributes][:name]
-    #   else
-    #     @user.house = House.new(params[:user][:house_attributes])
-    #   end
-    # end
-
 
     # if nickname is blank and display name includes nickname, change to firstlast
     if user_params[:nickname].blank?
@@ -225,33 +161,6 @@ class UsersController < ApplicationController
        user_params[:display] = "firstlast"
       end
     end
-
-    #---------------------------------------------------------------------------
-    # Handle carrier and prepaid errors.
-    # if params[:cellphone] == "false"
-    #   # TODO: This is a hack to save the phone information in the case that user
-    #   # registers with existing house name (the confirmation clears any temporary
-    #   # variable results of cellphone information).
-    #
-    #   # We still need this when the user object will be saved later in this method.
-    #   # params[:user].merge!(:phone_number => "000000000000", :carrier => "xxx", :prepaid => true)
-    # else
-    #   if params[:user][:carrier].blank?
-    #     flash[:alert] = "Informe a sua operadora."
-    #
-    #     @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
-    #     @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
-    #
-    #     render "edit" and return
-    #   elsif params[:user][:prepaid].blank?
-    #     flash[:alert] = "Marque pré ou pós-pago."
-    #
-    #     @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
-    #     @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
-    #
-    #     render "edit" and return
-    #   end
-    # end
 
     if @user.update_attributes(user_params)
       # Identify the recruiter for this user.
