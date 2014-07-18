@@ -99,17 +99,13 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-  # TODO: Figure out whether this is needed.
+  # TODO: Move this into CoordinatorController. For now, we'll use this legacy
+  # hack.
   def special_new
     authorize! :edit, User.new
-    @user ||= User.new
-    @user.house ||= House.new
-    @user.house.location ||= Location.new
 
-    if @user.house.location.latitude.nil?
-      @user.house.location.latitude = 0
-      @user.house.location.longitude = 0
-    end
+    @user ||= User.new
+    render "coordinators/users/edit" and return
   end
 
   #----------------------------------------------------------------------------
