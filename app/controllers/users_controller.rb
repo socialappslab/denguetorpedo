@@ -99,17 +99,12 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-  # TODO: Figure out whether this is needed.
+  # TODO: Move this into CoordinatorController. For now, we'll use this legacy
+  # hack.
   def special_new
     authorize! :edit, User.new
     @user ||= User.new
-    @user.house ||= House.new
-    @user.house.location ||= Location.new
-
-    if @user.house.location.latitude.nil?
-      @user.house.location.latitude = 0
-      @user.house.location.longitude = 0
-    end
+    render "coordinators/users/edit" and return
   end
 
   #----------------------------------------------------------------------------
@@ -212,57 +207,14 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-  # TODO: Figure out if this is still needed.
   def special_create
+    authorize! :edit, User
 
     @user = User.new(params[:user])
-    authorize! :edit, @user
-    if params[:user][:house_attributes]
-      @neighborhood = Neighborhood.find(params[:user][:location][:neighborhood_id])
-
-      house_name = params[:user][:house_attributes][:name]
-      street_type = params[:user][:location][:street_type]
-      street_name = params[:user][:location][:street_name]
-      street_number = params[:user] [:location][:street_number]
-      house_address = street_type + " " + street_name + " " + street_number
-      house_neighborhood = @neighborhood.name
-      house_profile_photo = params[:user][:house_attributes][:profile_photo]
-      house_phone_number = params[:user][:house_attributes][:phone_number]
-      @user.house = House.find_or_create(house_name, house_address, house_neighborhood, house_profile_photo)
-
-      if @user.house == nil
-        if params[:user][:role] == "lojista"
-          flash[:alert] = "There was an error creating a sponsor."
-        else
-          flash[:alert] = "There was an error creating a verifier."
-        end
-        render special_new_users_path(@user)
-        return
-      end
-      @user.house.house_type = params[:user][:role]
-      location = @user.house.location
-      @user.house.phone_number = house_phone_number
-      @user.house.save
-      location.street_type = params[:user][:location][:street_type]
-      location.street_name = params[:user][:location][:street_name]
-      location.street_number = params[:user] [:location][:street_number]
-
-      location.latitude     = params[:x]
-      location.longitude    = params[:y]
-      location.neighborhood = @neighborhood
-
-      unless location.save
-        redirect_to :back, :flash => { :notice => "There was an error with your address."}
-        return
-      end
-    end
-
     if @user.save
-      redirect_to "/users/special_new", :flash => { :notice => "Novo usuário criado com sucesso!"}
+      redirect_to coordinator_create_users_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")}
     else
-      @user.house.destroy if @user.house
-      # redirect_to "/users/special_new", :flash => { :notice => "Novo usuário criado com sucesso!"}
-      render special_new_users_path(@user), flash: { alert: @user.errors.full_messages.join(', ')}
+      render "coordinators/users/edit", flash: { alert: @user.errors.full_messages.join(', ')}
     end
   end
 
