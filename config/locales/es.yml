@@ -242,6 +242,7 @@ es:
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
+      permission_required: Usted no tiene permiso para acceder a esta página!
     teams:
       success_join_flash: "Usted se sumó al equipo con éxito"
       success_create_flash: "Usted creó un equipo con éxito"
