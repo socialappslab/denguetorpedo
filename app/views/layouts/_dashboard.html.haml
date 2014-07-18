@@ -3,7 +3,7 @@
   #dashboard_bar
     /------------------------------------------------------------------------
 
-    .span3.offset4
+    .span3.offset4{:style => "text-align: center;"}
       - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
         - header_styling = "font-weight: bold;"
       - else
@@ -21,7 +21,7 @@
 
     /------------------------------------------------------------------------
 
-    .span4
+    .span4{:style => "text-align: center;"}
       - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
         - header_styling = "font-weight: bold;"
       - else
@@ -40,16 +40,11 @@
 
     /------------------------------------------------------------------------
 
-    .span3
+    .span3{:style => "text-align: center;"}
       - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
       = link_to teams_path, :style => "#{bold_header_title}" do
         %i.fa.fa-search
         = I18n.t("activerecord.models.team", :count => 3)
-
-      -# - bold_header_title = ( current_page?(:controller => "users", :action => "edit") ? "font-weight: bold;" : "" )
-      -# = link_to edit_user_path(@current_user), :style => "#{bold_header_title}" do
-      -#   %i.fa.fa-gear.fa-2
-      -#   = I18n.t("common_terms.configuration")
 
     /------------------------------------------------------------------------
 
