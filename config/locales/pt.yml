@@ -239,6 +239,8 @@ pt:
       error: "Algo deu errado. Por favor, tente novamente."
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
       permission_required: Você não tem permissão para acessar esta página!
+    alerts:
+      confirm_leave_team: Tem certeza que deseja sair da equipe?
     teams:
       success_join_flash: "Você se juntou a equipe com success"
       success_create_flash: "Você criou uma equipe com success"

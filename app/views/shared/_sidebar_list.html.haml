@@ -7,6 +7,11 @@
     - item_path = user_path(item)
     - link_name = item.display_name
 
-  .span5{:style => "margin-bottom: 3px;"}
+  .span4.sidebar-list-item
     = link_to image_tag(item.picture, :style => "width: 50px; height: 50px;", :class => "img-rounded"), item_path
     = link_to link_name, item_path
+
+    - if @current_user == @user && item.is_a?(Team)
+      = form_tag leave_team_path(item), :method => "post", :style => "display: inline;", "data-confirm" => I18n.t("views.alerts.confirm_leave_team"), "data-path" => leave_team_path(item), :class => "leave-team-button" do
+        = button_tag(:type => "submit", :style => "background-color: inherit !important; float: right; padding: 0px;") do
+          %i.fa.fa-times{:style => "color: #d9534f; line-height: 50px;"}

@@ -256,4 +256,23 @@ $(document).ready(function()
 
   //---------------------------------------------------------------------------
 
+  $(".leave-team-button").click(function(event){
+    event.preventDefault();
+
+    alert($(this).data("confirm"));
+
+    // Trim the count of the text
+    $.ajax({
+      url: $(this).data("path"),
+      type: "POST",
+      success : function(data){
+        $(event.currentTarget).parents('.sidebar-list-item').remove()
+      }
+    })
+  });
+
+  //---------------------------------------------------------------------------
+
+
+
 })
