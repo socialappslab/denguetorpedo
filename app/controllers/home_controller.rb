@@ -21,8 +21,11 @@ class HomeController < ApplicationController
     @teams = @teams.shuffle[0..7]
 
     # Display active prizes.
-    @prizes = Prize.where(:neighborhood_id => [nil, @neighborhood.id])
-    @prizes = @prizes.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(10)
+    # TODO: Allow for display of expired prizes until we have an inventory of
+    # new prizes.
+    # @prizes = Prize.where(:neighborhood_id => [nil, @neighborhood.id])
+    # @prizes = @prizes.where('stock > 0 AND (expire_on IS NULL OR expire_on > ?)', Time.new).order("RANDOM()").limit(10)
+    @prizes = Prize.order("RANDOM()").limit(10)
 
     # Load the news feed.
     @user_posts = Post.order("created_at DESC").limit(3)
