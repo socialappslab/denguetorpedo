@@ -247,6 +247,7 @@ pt:
         success_create_flash: "Novo usuário criado com sucesso!"
         edit: "Registrar patrocinador, verificador e visitantes"
     teams:
+      empty: Não há equipes aqui!
       success_join_flash: "Você se juntou a equipe com successo"
       success_create_flash: "Você criou uma equipe com successo"
       success_leave_flash: "Você deixou a equipe com successo"
