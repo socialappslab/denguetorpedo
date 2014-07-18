@@ -45,7 +45,7 @@ Dengue::Application.routes.draw do
     resources :posts
 
     collection do
-      get 'special_new'
+      get 'special_new', :as => :coordinator_create
       post 'special_create'
       put 'block'
     end
