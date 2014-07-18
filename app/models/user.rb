@@ -321,7 +321,7 @@ class User < ActiveRecord::Base
       return "default_images/profile_default_image.png"
     end
 
-    return self.profile_photo.url(:medium)
+    return self.profile_photo.url(:large)
   end
 
   #----------------------------------------------------------------------------
