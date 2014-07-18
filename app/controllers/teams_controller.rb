@@ -18,7 +18,7 @@ class TeamsController < NeighborhoodsBaseController
   # GET /teams/1
 
   def show
-    @team  = Team.find(params[:id])
+    @team = Team.find(params[:id])
     @users = @team.users
     @total_points  = @team.total_points
     @total_reports = @team.total_reports
@@ -74,11 +74,10 @@ class TeamsController < NeighborhoodsBaseController
   def join
     @team = Team.find(params[:id])
 
-    team_membership = TeamMembership.new(:user_id => @current_user.id, :team_id => @team.id, :verified => false)
-
-    if team_membership.save
+    membership = TeamMembership.find_or_create_by_user_id_and_team_id(@current_user.id, @team.id)
+    if membership.save
       flash[:notice] = I18n.t("views.teams.success_join_flash")
-      redirect_to teams_path and return
+      redirect_to :back and return
     else
       @teams = Team.all
 
