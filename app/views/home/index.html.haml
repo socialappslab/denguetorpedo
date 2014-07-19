@@ -62,7 +62,7 @@
     #sponsors{:style => "margin-top: 22px;"}
       %ul
         - @prizes.each do |prize|
-          = render :partial => "prizes/prize", :object => prize
+          = render :partial => "prizes/redeemed", :object => prize
 
 
 /------------------------------------------------------------------------------
