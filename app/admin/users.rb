@@ -1,4 +1,4 @@
-ActiveAdmin.register User, :as => "User" do
+ActiveAdmin.register User do
   index do
     column "email"
     column "phone_number"
@@ -31,7 +31,6 @@ ActiveAdmin.register User, :as => "User" do
     f.inputs "Details" do
       f.input "email"
       f.input "phone_number"
-      f.input "points"
       f.input "is_verifier"
       f.input "is_fully_registered"
       f.input "is_health_agent"
