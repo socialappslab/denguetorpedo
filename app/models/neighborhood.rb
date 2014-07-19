@@ -11,6 +11,7 @@
 
 class Neighborhood < ActiveRecord::Base
   attr_accessible :name
+  attr_accessible :name, :city, :state_string_id, :country_string_id, :as => :admin
 
   has_many :locations
 
