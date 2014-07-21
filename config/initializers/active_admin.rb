@@ -99,8 +99,9 @@ ActiveAdmin.setup do |config|
   # Admin comments allow you to add comments to any model for admin use.
   # Admin comments are enabled by default.
   #
-  # Default:
-  # config.allow_comments = true
+  # NOTE: We're turning comments off to avoid this error:
+  # 'superclass mismatch for class CommentsController (TypeError)'
+  config.allow_comments = false
   #
   # You can turn them on and off for any given namespace by using a
   # namespace config block.
