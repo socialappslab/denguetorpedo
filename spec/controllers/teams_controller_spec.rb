@@ -22,5 +22,16 @@ describe TeamsController do
     }.to change(TeamMembership, :count).by(1)
   end
 
+  it "assigns correct neighborhood" do
+    tepalcingo = Neighborhood.find_by_name("Tepalcingo")
+    user.update_attribute(:neighborhood_id, tepalcingo.id)
+    user.reload
+
+    post :create, :team => {:name => "test"}
+
+    t = Team.last
+    expect(t.neighborhood_id).to eq(tepalcingo.id)
+  end
+
   #---------------------------------------------------------------------------
 end
