@@ -43,12 +43,8 @@ class TeamsController < ApplicationController
   # POST /teams
 
   def create
-    @team = Team.new(params[:team])
-
-    # TODO: I'm not happy with assigning default neighborhood for a team,
-    # but this is the state of things for the time being. Consider moving
-    # away from neighborhood specific things...?
-    @team.neighborhood_id = Neighborhood.find_by_name("Maré").id
+    @team                 = Team.new(params[:team])
+    @team.neighborhood_id = @current_user.neighborhood_id
 
     if @team.save
       # If the team was successfully created, create the team membership
