@@ -1,5 +1,19 @@
 Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
+  # Landing Pages routes.
+
+  match "home/:id" => "home#index", :as => "Home"
+  root :to        => 'home#index'
+  get "faq"       => 'home#faq'
+  get "manual"    => "home#manual"
+  get "howto"     => "home#howto"
+  get "contact"   => 'home#contact'
+  get "about"     => 'home#about'
+  get "education" => 'home#education'
+  get "credit"    => 'home#credit'
+  post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
+
+  #----------------------------------------------------------------------------
   # Sidekiq monitoring
 
   require 'sidekiq/web'
@@ -178,18 +192,10 @@ Dengue::Application.routes.draw do
   resources :group_buy_ins, :only => [:new, :create, :destroy]
 
   #----------------------------------------------------------------------------
-  # Landing Pages routes.
+  # Active Admin
 
-  match "home/:id" => "home#index", :as => "Home"
-  root :to        => 'home#index'
-  get "faq"       => 'home#faq'
-  get "manual"    => "home#manual"
-  get "howto"     => "home#howto"
-  get "contact"   => 'home#contact'
-  get "about"     => 'home#about'
-  get "education" => 'home#education'
-  get "credit"    => 'home#credit'
-  post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 
   #----------------------------------------------------------------------------
 

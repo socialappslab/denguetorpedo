@@ -11,6 +11,7 @@
 
 class Neighborhood < ActiveRecord::Base
   attr_accessible :name
+  attr_accessible :name, :city, :state_string_id, :country_string_id, :as => :admin
 
   has_many :locations
 
@@ -25,7 +26,10 @@ class Neighborhood < ActiveRecord::Base
   belongs_to :coordinator, :class_name => "User"
   has_many :health_agents, :through => :houses, :source => "members", :conditions => "is_health_agent = 1"
 
-  validates :name, :presence => true
+  validates :name,              :presence => true
+  validates :city,              :presence => true
+  validates :state_string_id,   :presence => true
+  validates :country_string_id, :presence => true
 
 
   #----------------------------------------------------------------------------
