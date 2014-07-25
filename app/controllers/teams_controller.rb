@@ -52,9 +52,13 @@ class TeamsController < ApplicationController
       # automatically.
       TeamMembership.create(:team_id => @team.id, :user_id => @current_user.id, :verified => true)
       flash[:notice] = I18n.t("views.teams.success_create_flash")
-      redirect_to teams_path and return
+
+      respond_to do |format|
+        format.html { redirect_to teams_path and return }
+        format.json { render :json => {:team => @team, :success => flash[:notice]}, :status => :ok }
+      end
     else
-      @teams = Team.all
+      @teams = Team.where(:neighborhood_id => @current_user.neighborhood_id)
 
       # Calculate ranking for each team.
       team_rankings  = @teams.map {|t| [t, t.total_points]}
@@ -63,8 +67,13 @@ class TeamsController < ApplicationController
       # Let's simplify the user's life by displaying the form in case of failure.
       # After all, if we've reached this point, then the user's last interaction
       # was with the new team form.
-      flash[:show_new_team_form] = true
-      render "index" and return
+      respond_to do |format|
+        format.html {
+          flash[:show_new_team_form] = true
+          render "index" and return
+        }
+        format.json { render :json => {:errors => @team.errors.full_messages} , :status => :ok }
+      end
     end
   end
 
