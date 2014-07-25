@@ -128,7 +128,13 @@ class ReportsController < NeighborhoodsBaseController
       redirect_to neighborhood_reports_path(@neighborhood) and return
 
     else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
+      error_flash = "<ul><li>#{flash[:alert]}</li>"
+
+      @report.errors.full_messages.each do |error_msg|
+        error_flash += "<li>#{error_msg}</li>"
+      end
+      error_flash += "</ul>"
+      flash[:alert] = error_flash
 
       redirect_to neighborhood_reports_path(@neighborhood,
         :params => {:new_report => params[:report].except(:before_photo), :location => location.id}) and return

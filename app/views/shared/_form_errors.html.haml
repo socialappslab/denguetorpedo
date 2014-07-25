@@ -1,7 +1,7 @@
 - if item && item.errors.any?
-  %div{:style => "margin: auto; width: 75%;"}
-    .alert.alert-danger.alert-dismissable{:style => "margin-top: 20px; padding-top: 20px; padding-bottom: 20px; font-size: 20px;"}
-      %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}, :aria => {:hidden => "true"}}
+  .flashes
+    .alert.alert-danger.alert-dismissable
+      %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}}
         &times;
       %h2= "#{item.errors.full_messages.uniq.count} erros impediram que o usuário fosse salvo."
       %ul
