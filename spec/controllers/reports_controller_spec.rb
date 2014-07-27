@@ -3,6 +3,7 @@ require 'spec_helper'
 
 describe ReportsController do
 	let(:user) 						 { FactoryGirl.create(:user) }
+	let(:other_user) 			 { FactoryGirl.create(:user) }
 	let(:elimination_type)  { EliminationType.first }
 	let(:photo_file) 			 { File.open("spec/support/foco_marcado.jpg") }
 	let(:uploaded_photo)    { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
@@ -10,6 +11,12 @@ describe ReportsController do
 		:street_type => "Rua", :street_name => "Darci Vargas",
 		:street_number => "45", :latitude => "50.0", :longitude => "40.0"}
 	}
+
+	before(:each) do
+		team = FactoryGirl.create(:team, :name => "Test Team")
+		FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
+		FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => other_user.id)
+	end
 
 	#-----------------------------------------------------------------------------
 
@@ -37,31 +44,21 @@ describe ReportsController do
 
 			it "does not display report for other users" do
 				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-
-				other_user = FactoryGirl.create(:user)
 				sign_in(other_user)
 
 				visit neighborhood_reports_path(user.neighborhood)
 				expect(page).not_to have_content("Completar o foco")
 			end
 
-			context "when on My House (Minha Casa) page" do
-				let(:other_user) { FactoryGirl.create(:user) }
-
+			context "when on User profile page" do
 				before(:each) do
 					post "gateway", :body => "Not in my house!", :from => user.phone_number
 				end
 
-				it "should not be displayed for owner" do
-					sign_in(user)
-					visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
-					expect(page).not_to have_content("Not in my house!")
-				end
-
 				it "should not be displayed for other house members" do
 					sign_in(other_user)
-					visit neighborhood_house_path({:neighborhood_id => other_user.neighborhood.id, :id => other_user.house.id})
-					expect(page).not_to have_content("Not in my house!")
+					visit user_path(user)
+					expect(page).not_to have_content("Encontrei um foco")
 				end
 
 				it "should display after completing" do
@@ -70,11 +67,11 @@ describe ReportsController do
 					report.completed_at = Time.now
 					report.save!(:validate => false)
 
-					sign_in(user)
-					visit neighborhood_house_path({:neighborhood_id => user.neighborhood.id, :id => user.house.id})
-
+					sign_in(other_user)
+					visit user_path(user)
+					
 					expect(report.reload.status).to eq(Report::STATUS[:reported])
-					expect(page).to have_content("Not in my house!")
+					expect(page).to have_content("Encontrei um foco")
 				end
 			end
 

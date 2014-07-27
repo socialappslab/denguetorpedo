@@ -6,9 +6,16 @@ describe "Reports", :type => :feature do
   let(:other_user)       { FactoryGirl.create(:user) }
   let(:elimination_type) { EliminationType.first }
   let(:photo_filepath)   { File.expand_path("spec/support/foco_marcado.jpg") }
-  let(:photo_file) 			 { File.open("spec/support/foco_marcado.jpg") }
-  let(:uploaded_photo)    { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
+  let(:photo_file) 			{ File.open("spec/support/foco_marcado.jpg") }
+  let(:uploaded_photo)   { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
   let(:location)         { FactoryGirl.create(:location, :neighborhood => Neighborhood.first) }
+  let(:team)             { FactoryGirl.create(:team, :name => "Test Team") }
+
+  before(:each) do
+    FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
+    FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => other_user.id)
+  end
+
 
   #-----------------------------------------------------------------------------
 
@@ -24,8 +31,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
       select(elimination_type.name, :from => "report_elimination_type")
-      click_button "Enviar"
-      #expect(page).to have_content("Você tem que descrever o local e/ou o foco")
+      click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Descrição é obrigatório")
     end
 
@@ -35,8 +41,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       select(elimination_type.name, :from => "report_elimination_type")
-      click_button "Enviar"
-      #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
+      click_button I18n.t("views.buttons.create")
       expect(page).to have_content("A foto do foco é obrigatório")
 
     end
@@ -45,7 +50,7 @@ describe "Reports", :type => :feature do
       fill_in "report_content", :with => "This is a description"
       select(elimination_type.name, :from => "report_elimination_type")
       attach_file("report_before_photo", photo_filepath)
-      click_button "Enviar"
+      click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Você deve enviar o endereço completo")
     end
 
@@ -55,8 +60,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
-      click_button "Enviar"
-      #expect(page).to have_content("Você tem que escolher um tipo de foco")
+      click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Tipo de foco é obrigatório")
 
     end
@@ -69,7 +73,7 @@ describe "Reports", :type => :feature do
         fill_in "report_content", :with => "This is a description"
         attach_file("report_before_photo", photo_filepath)
         select(elimination_type.name, :from => "report_elimination_type")
-        click_button "Enviar"
+        click_button I18n.t("views.buttons.create")
       end
 
       it "sets the before photo" do
@@ -108,11 +112,6 @@ describe "Reports", :type => :feature do
         visit neighborhood_reports_path(other_user.neighborhood)
         expect(page).to have_content(Report.last.report)
       end
-
-      # it "displays remaining time as 46 hours and 59 minutes", :js => true do
-      # 	pending "Setup PhantomJS"
-      # 	# expect(page).to have_content("46:59")
-      # end
     end
   end
 
@@ -134,13 +133,9 @@ describe "Reports", :type => :feature do
 
     it "sets the after photo" do
       visit neighborhood_reports_path(user.neighborhood)
-
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
-
+      click_button( I18n.t("views.buttons.submit") )
       expect( photo_filepath ).to include(report.reload.after_photo_file_name)
     end
 
@@ -149,9 +144,7 @@ describe "Reports", :type => :feature do
 
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
+      click_button I18n.t("views.buttons.submit")
 
       expect(page).to have_content("Eliminado")
       expect(page).to have_content("Eliminado por: #{report.reporter_name}")
@@ -164,9 +157,7 @@ describe "Reports", :type => :feature do
 
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
+      click_button I18n.t("views.buttons.create")
 
       expect(report.reload.reporter_id).to eq(user.id)
       expect(report.reload.reporter_id).not_to eq(other_user.id)
@@ -179,9 +170,7 @@ describe "Reports", :type => :feature do
 
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
+      click_button I18n.t("views.buttons.submit")
 
       expect(report.reload.eliminator_id).to eq(other_user.id)
       expect(report.reload.eliminator_id).not_to eq(user.id)
@@ -191,24 +180,18 @@ describe "Reports", :type => :feature do
       visit neighborhood_reports_path(other_user.neighborhood)
 
       attach_file("report_after_photo", photo_filepath)
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
+      click_button I18n.t("views.buttons.create")
 
-      #expect(page).to have_content("Você tem que escolher um método de eliminação")
-      expect(page).to have_content("Elimination method é obrigatório")
+      expect(page).to have_content("Tipo de foco é obrigatório")
     end
 
     it "notifies user if after photo isn't selected" do
       visit neighborhood_reports_path(other_user.neighborhood)
 
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
+      click_button I18n.t("views.buttons.create")
 
-      #expect(page).to have_content("Você tem que carregar uma foto do foco eliminado")
-      expect(page).to have_content("After photo é obrigatório")
+      expect(page).to have_content("A foto do foco é obrigatório")
     end
   end
 
@@ -244,7 +227,7 @@ describe "Reports", :type => :feature do
 
     it "allows owner to finish report" do
       visit neighborhood_reports_path(user.neighborhood)
-      click_link("Completar o foco")
+      click_link( "Completar o foco" )
       expect(current_path).to eq(edit_neighborhood_report_path(user.neighborhood, @report))
     end
 
@@ -256,9 +239,8 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       fill_in "report_content", :with => "This is a description"
       select(elimination_type.name, :from => "report_elimination_type")
-      click_button "Enviar"
+      click_button I18n.t("views.buttons.create")
 
-      #expect(page).to have_content("Você tem que carregar uma foto do foco encontrado")
       expect(page).to have_content("A foto do foco é obrigatório")
     end
 
@@ -270,7 +252,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number", :with => "45"
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
-      click_button "Enviar"
+      click_button I18n.t("views.buttons.create")
 
       expect(page).to have_content("Tipo de foco é obrigatório")
     end
@@ -286,7 +268,7 @@ describe "Reports", :type => :feature do
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
       select elimination_type.name, :from => "report_elimination_type"
-      click_button "Enviar"
+      click_button I18n.t("views.buttons.create")
 
       expect(page).to have_content("Foco marcado com sucesso")
 
@@ -298,10 +280,7 @@ describe "Reports", :type => :feature do
       select selection_option, :from => "elimination_method"
       find('#method_selection').find(:xpath, 'option[2]').select_option
       attach_file("eliminate_after_photo", photo_filepath)
-
-      within ".eliminate_prompt" do
-        click_button "Enviar"
-      end
+      click_button I18n.t("views.buttons.create")
 
       expect(page).to have_content("Você eliminou o foco")
       expect(page).to have_content("Eliminado")

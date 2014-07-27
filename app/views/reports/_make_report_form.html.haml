@@ -45,4 +45,6 @@
           = I18n.t("report.form.attention")
       %br
 
-      = f.submit I18n.t("views.buttons.submit"), :class => "btn btn-success btn-large", :style => "width: 100%;"
+      = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
+        %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+        = I18n.t("views.buttons.create")

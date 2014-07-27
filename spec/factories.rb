@@ -74,6 +74,9 @@ FactoryGirl.define do
 
 	factory :neighborhood do |n|
 		n.name "Mare"
+		n.city "Rio De Janeiro"
+		n.state_string_id "RJ"
+		n.country_string_id "BR"
 	end
 
 	factory :notice do
@@ -99,6 +102,9 @@ FactoryGirl.define do
 
 	factory :team do
 		neighborhood_id Neighborhood.first.id
+	end
+
+	factory :team_membership do
 	end
 
 end

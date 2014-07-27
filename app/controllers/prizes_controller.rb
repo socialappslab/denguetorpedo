@@ -113,7 +113,11 @@ class PrizesController < ApplicationController
   def edit
     @prize = Prize.find(params[:id])
     @user = @current_user
-    @users = User.where(:role => "lojista").collect{ |user| [user.house.name, user.id]}
+
+    @users = User.where(:role => User::Types::SPONSOR).includes(:teams)
+    @teams = @users.map {|u| u.teams}.flatten.uniq
+    @select_options_for_user_id = @users.map { |u| [u.full_name, u.id] }
+    @select_options_for_team_id = @teams.map { |t| [t.name, t.id] }
   end
 
   #----------------------------------------------------------------------------

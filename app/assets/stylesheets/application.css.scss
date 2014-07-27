@@ -122,3 +122,25 @@ div {
   background-size: contain;
   position: relative;
 }
+
+
+
+//-----------------------------------------------------------------------------
+// Flash configuration
+
+.flashes {
+  margin: auto;
+  width: 75%;
+}
+
+.alert {
+  margin-top: 20px;
+  padding-left: 35px !important;
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+  font-size: 20px;
+
+  ul {
+    list-style: disc;
+  }
+}

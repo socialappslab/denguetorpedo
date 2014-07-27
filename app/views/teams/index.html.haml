@@ -1,7 +1,6 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @team}
 
-
 .row
   .span12.offset3
 
@@ -39,7 +38,10 @@
               = f.file_field :profile_photo, :class => "span6"
           .control-group
             .controls.span6{:style => "margin-left: 195px;"}
-              = f.submit I18n.t("views.buttons.submit"), :class => "btn btn-success btn-block"
+              = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
+                %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+                = I18n.t("views.buttons.create")
+
 
 
     %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
@@ -88,6 +90,14 @@
         %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
 
 
+-# NOTE: See comment below.
+-# #progressBarModal.modal.hide.fade{:tabindex => "-1", :role => "dialog"}
+-#   .modal-header
+-#     %h3#progressBarLabel
+-#       Loading...
+-#   .modal-body
+-#     %i.fa.fa-spinner.fa-spin{:style => "font-size: 64px;"}
+-#
 
 :javascript
   $(document).ready(function()
@@ -100,13 +110,46 @@
     });
 
     // Listen for team ordering event.
+    // TODO: Consider making radio buttons links themselves.
     $("#order-teams input[name='team-order']").on("click", function(e)
     {
       var uri = window.location.href.split("?")[0]
-
       window.location.href = uri + "?" + $.param({sort: $(e.currentTarget).val()})
-
     });
 
+    // NOTE: As cool as this is, its implementation requires adding/rewriting
+    // a lot of the existing functionality. Consider coming back to this.
+    // $(".submit-button").on("click", function(e)
+    // {
+    //   e.preventDefault();
+    //
+    //   $(".messagesFromJSON .alert-danger").hide();
+    //   $(".messagesFromJSON .alert-success").hide();
+    //
+    //   var ajaxRequest = $.ajax({"url": e.currentTarget.form.action, "method": e.currentTarget.form.method, "data": $(e.currentTarget.form).serialize(), "dataType": "json"})
+    //   ajaxRequest.done(function(xhr, data, response)
+    //   {
+    //     $('#progressBarModal').modal("hide")
+    //
+    //     if (xhr.errors)
+    //     {
+    //       for (var prop in xhr.errors)
+    //       {
+    //         $(".messagesFromJSON .alert-danger ul").append("<li>" + xhr.errors[prop] + "</li>")
+    //       }
+    //
+    //       $(".messagesFromJSON .alert-danger").show();
+    //     }
+    //     else
+    //     {
+    //       $(".messagesFromJSON .alert-success p").text(xhr.success)
+    //       $(".messagesFromJSON .alert-success").show();
+    //     }
+    //
+    //
+    //
+    //   })
+    //
+    // });
 
   })

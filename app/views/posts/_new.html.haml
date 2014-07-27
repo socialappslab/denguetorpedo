@@ -2,4 +2,6 @@
 .span9
   = form_for @post do |f|
     = f.text_area :content, :placeholder => I18n.t("views.post.text_placeholder"), :style => "width: 100%;"
-    = f.submit I18n.t("views.buttons.publish"), :class => "btn btn-success btn-large", :style => "float: right;"
+    = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "float: right;" do
+      %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+      = I18n.t("views.buttons.publish")

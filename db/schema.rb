@@ -151,9 +151,9 @@ ActiveRecord::Schema.define(:version => 20140718223730) do
     t.string   "name"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
-    t.string   "city"
     t.string   "country_string_id"
     t.string   "state_string_id"
+    t.string   "city"
   end
 
   create_table "notices", :force => true do |t|

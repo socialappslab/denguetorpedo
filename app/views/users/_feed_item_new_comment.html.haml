@@ -14,4 +14,6 @@
       .span6
         = form_tag path do
           = text_area_tag "comment[content]", nil, :style => "width: 100%; display: block;"
-          = submit_tag I18n.t("views.buttons.publish"), :class => "btn btn-success btn-right", :style => "float: right; display: inline-block;"
+          = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "float: right; display: inline-block;" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.publish")

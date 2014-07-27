@@ -291,6 +291,7 @@ pt:
       search:  "Busca"
       submit:  "Enviar"
       update: "Atualizar"
+      create: "Criar"
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
