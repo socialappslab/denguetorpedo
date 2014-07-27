@@ -11,7 +11,7 @@ n = Neighborhood.find_by_name("Maré")
 if n.nil?
   c = Country.find_country_by_name("Brazil")
   n                   = Neighborhood.new
-  n.name              = "Tepalcingo"
+  n.name              = "Maré"
   n.city              = "Rio de Janeiro"
   n.state_string_id   = "RJ"
   n.country_string_id = c.alpha2

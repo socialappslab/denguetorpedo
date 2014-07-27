@@ -4,6 +4,10 @@ require 'spec_helper'
 require 'rack/test'
 
 describe Report do
+	before(:each) do
+		I18n.locale = I18n.default_locale
+	end
+
 	it "validates status" do
 		report = Report.create(:reporter_id => 1)
 		expect(report.errors.full_messages).to include("Status é obrigatório")
@@ -37,7 +41,7 @@ describe Report do
       @eliminated3 = FactoryGirl.create(:report, eliminated_attributes)
 
     end
-		
+
   	context "identified reports" do
 			it "returns identified results" do
 				Report.identified_reports.should ==  [@identified1, @identified2, @identified3]

@@ -10,7 +10,12 @@ describe "Reports", :type => :feature do
   let(:uploaded_photo)   { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
   let(:location)         { FactoryGirl.create(:location, :neighborhood => Neighborhood.first) }
   let(:team)             { FactoryGirl.create(:team, :name => "Test Team") }
-  let!(:team_membership)  { FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id) }
+
+  before(:each) do
+    FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
+    FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => other_user.id)
+  end
+
 
   #-----------------------------------------------------------------------------
 
@@ -124,13 +129,15 @@ describe "Reports", :type => :feature do
 
     before(:each) do
       sign_in(user)
+
+      puts "report: #{report.inspect}"
     end
 
     it "sets the after photo" do
       visit neighborhood_reports_path(user.neighborhood)
-
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       attach_file("report_after_photo", photo_filepath)
+
       find(".submit-button").click
 
       expect( photo_filepath ).to include(report.reload.after_photo_file_name)
@@ -179,7 +186,7 @@ describe "Reports", :type => :feature do
       attach_file("report_after_photo", photo_filepath)
       find(".submit-button").click
 
-      expect(page).to have_content("Elimination method é obrigatório")
+      expect(page).to have_content("Tipo de foco é obrigatório")
     end
 
     it "notifies user if after photo isn't selected" do
@@ -188,7 +195,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
       find(".submit-button").click
 
-      expect(page).to have_content("After photo é obrigatório")
+      expect(page).to have_content("A foto do foco é obrigatório")
     end
   end
 
@@ -224,7 +231,10 @@ describe "Reports", :type => :feature do
 
     it "allows owner to finish report" do
       visit neighborhood_reports_path(user.neighborhood)
-      click_link("Completar o foco")
+
+      puts "user.teams: #{user.teams.inspect}"
+
+      click_link( I18n.t("views.buttons.submit") )
 
       expect(current_path).to eq(edit_neighborhood_report_path(user.neighborhood, @report))
     end

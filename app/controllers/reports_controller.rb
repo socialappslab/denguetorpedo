@@ -26,13 +26,13 @@ class ReportsController < NeighborhoodsBaseController
     # 3. All created reports (aka, the misleading column completed_at is not nil)
     @reports = []
     #1.
-    error_report = Report.find_by_id(params[:report])
-
-    if error_report
-      # TODO : URL is messy when using params, possibly change to id when EliminationMethod implemented
-      error_report.elimination_method = params[:elimination_method]
-      @reports += [ error_report ]
-    end
+    # error_report = Report.find_by_id(params[:report])
+    #
+    # if error_report
+    #   # TODO : URL is messy when using params, possibly change to id when EliminationMethod implemented
+    #   error_report.elimination_method = params[:elimination_method]
+    #   @reports += [ error_report ]
+    # end
 
     #2.
     @reports += current_user.reports.where(:completed_at => nil).to_a if current_user
@@ -210,6 +210,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Update web report
     if @report.update_attributes(params[:report])
+      submission_points = 50
       @current_user.update_attribute(:points, @current_user.points + submission_points)
       @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
 
