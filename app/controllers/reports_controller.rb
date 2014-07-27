@@ -78,7 +78,6 @@ class ReportsController < NeighborhoodsBaseController
   # POST /neighborhoods/1/reports
 
   def create
-
     # If location was previously created, use that
     # TODO @awdorsett: The new refactoring will make this fail. Let's move away
     # from usage of session.
@@ -165,8 +164,6 @@ class ReportsController < NeighborhoodsBaseController
   # PUT /neighborhoods/1/reports
 
   def update
-    submission_points = 50
-
     address = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
     address.each{ |k,v| address[k] = v.downcase.titleize}
 
