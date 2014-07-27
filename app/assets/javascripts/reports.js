@@ -183,7 +183,6 @@ function selected_tab_css_update(id){
 //@params event - click event for form submission
 // -# TODO @awdorsett - fix magic numbers
 function update_location_coordinates(location,event){
-
   //make sure the form being submitted has long/lat input fields
   //i.e. don't run when selecting elimination type
   if(event.target.form[7].id == "report_location_attributes_latitude" && event.target.form[8].id == "report_location_attributes_longitude"){
