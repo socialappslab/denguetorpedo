@@ -263,6 +263,11 @@ pt:
       phones:
         header: Adminstrar DT Torpedos
       edit:
+        password: "Alterar minha senha"
+        phone:
+          payment: "Pré/Pós-pago"
+          prepaid: Pré-pago
+          postpaid: Pós-pago
         referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"
         admin:

@@ -4,7 +4,7 @@
 es:
   attributes:
     title: "Título"
-    neighborhood_id: "Comunidad"
+    neighborhood_id: "Colonia"
     name: Nombre
     number: Número
     content: Contenido
@@ -256,6 +256,12 @@ es:
     users:
       create_success_flash: "¡Perfil creado con éxito!"
       edit:
+        referral_question: "¿Alguien recomendó que se registrara en DT?"
+        password: "Cambie su contraseña"
+        phone:
+          payment: "Tipo de pago"
+          prepaid: Tarjeta o pre-pago
+          postpaid: Plan fijo
         show_name_as: "Mostrar nombre como"
         admin:
           register: "Registrar un patrocinador, verificador o visitante"
