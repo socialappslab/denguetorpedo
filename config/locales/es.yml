@@ -289,6 +289,11 @@ es:
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       teams_description: Únase a equipos para combatir el dengue y ganar premios
+    footer:
+      code_of_conduct: "Manual de conducta"
+      faq: "Preguntas frecuentes"
+      contact: "Contacto DT"
+      about: "Sobre Dengue Torpedo"
 
   #----------------------------------------------------------------------------
   # Countries
