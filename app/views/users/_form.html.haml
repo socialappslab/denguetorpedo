@@ -72,7 +72,7 @@
     .control-group
       = f.label :password, :class => "control-label"
       .controls
-        = link_to "Alterar minha senha", edit_password_reset_path(@user), :class => "form-control", :id => "reset_password_link",id:'password_reset'
+        = link_to I18n.t("views.users.edit.password"), edit_password_reset_path(@user), :class => "form-control", :id => "reset_password_link",id:'password_reset'
   - else
     .control-group
       = f.label nil, :class => "control-label", :style => "position: relative;" do
@@ -103,12 +103,13 @@
       = f.text_field :carrier, :class => "form-control"
 
   .control-group
-    = f.label :prepaid, :class => "control-label"
+    = f.label :prepaid, I18n.t("views.users.edit.phone.payment"), :class => "control-label"
     .controls
       = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
-      Pré-pago
+      = I18n.t("views.users.edit.phone.prepaid")
       = f.radio_button :prepaid, "false", id:"post_paid_radio"
-      Pós-pago
+      = I18n.t("views.users.edit.phone.postpaid")
+
 
   - if @user == @current_user
     %hr{:style => "border-color: #ff6600; border-bottom: none;"}

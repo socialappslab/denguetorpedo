@@ -61,15 +61,15 @@
 
   #footer
     %span
-      = link_to "Manual de Conduta", manual_path
+      = link_to I18n.t("views.footer.code_of_conduct"), manual_path
       |
-      =link_to "Perguntas frequentes", faq_path
+      = link_to I18n.t("views.footer.faq"), faq_path
       |
-      =link_to "Contato DT", new_feedback_path
+      = link_to I18n.t("views.footer.contact"), new_feedback_path
       |
-      =link_to "Sobre o Dengue Torpedo", about_path
+      = link_to I18n.t("views.footer.about"), about_path
     %span
       2014 © Regents of the University of California
       |
-      =link_to "Criado pelo Social Apps Lab, UC Berkeley", credit_path
+      = link_to "Criado pelo Social Apps Lab, UC Berkeley", credit_path
   = yield :scripts

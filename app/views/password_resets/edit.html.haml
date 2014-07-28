@@ -1,16 +1,17 @@
 .reset_password_form.offset1
-  - if flash[:notice] 
-    %h2.notice{style: "margin: 10px; width: 700px;"}  
+  - if flash[:notice]
+    %h2.notice{style: "margin: 10px; width: 700px;"}
       = flash[:notice]
   - if flash[:alert]
     %h2.alert{style: "margin: 10px; width:700px;background-color:transparent;"}
       = flash[:alert]
-  %h1 Alterar minha senha
+  %h1
+    = I18n.t("views.users.edit.password")
   = form_for @user, :url => password_reset_path(params[:id]) do |f|
     = f.error_messages
     - if @forgot == 0
       = f.label :current_password, "Senha antiga"
-      = f.password_field :current_password    
+      = f.password_field :current_password
 
     = f.label :password, "Nova senha"
     = f.password_field :password

@@ -263,6 +263,11 @@ pt:
       phones:
         header: Adminstrar DT Torpedos
       edit:
+        password: "Alterar minha senha"
+        phone:
+          payment: "Pré/Pós-pago"
+          prepaid: Pré-pago
+          postpaid: Pós-pago
         referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"
         admin:
@@ -299,7 +304,11 @@ pt:
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
       teams_description: "Entre numa equipe para combater a dengue e ganhe prêmios"
       video_description_html: "Veja o video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aqui</a>"
-
+    footer:
+      code_of_conduct: "Manual de Conduta"
+      faq: "Perguntas frequentes"
+      contact: "Contato DT"
+      about: "Sobre o Dengue Torpedo"
 
 
 

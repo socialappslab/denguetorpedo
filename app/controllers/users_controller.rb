@@ -114,6 +114,15 @@ class UsersController < ApplicationController
 
     @user = User.new(params[:user])
     if @user.save
+
+      # Set the default language based on selected neighborhood.
+      tepalcingo = Neighborhood.find_by_name("Tepalcingo")
+      if tepalcingo && @user.neighborhood_id == tepalcingo.id
+        cookies[:locale_preference] = "es"
+      else
+        cookies[:locale_preference] = I18n.default_locale
+      end
+
       cookies[:auth_token] = @user.auth_token
       flash[:notice] = I18n.t("views.users.create_success_flash") + " " + I18n.t("views.teams.call_to_action_flash")
       redirect_to teams_path and return
