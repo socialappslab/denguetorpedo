@@ -77,198 +77,128 @@
   %link{rel: "stylesheet", href: "http://js.arcgis.com/3.6/js/esri/css/esri.css"}
   %script{src: "http://js.arcgis.com/3.6/init.js"}
 
+  = render :partial => "reports/esri_map_js"
+- else
+  = javascript_include_tag "openstreetmap/OpenLayers"
+  = javascript_include_tag "openstreetmap/proj4js-compressed"
+  -# = render :partial => "reports/osm_map_js"
 
-:javascript
-  // Declare different reports and their counts.
-  var open_markers       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
-  var eliminated_markers = #{@eliminated_locations.to_json(:only => [:latitude, :longitude])}
+  :javascript
+    // Declare different reports and their counts.
+    // var open_markers       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
+    // console.log(open_markers)
+    // var eliminated_markers = #{@eliminated_locations.to_json(:only => [:latitude, :longitude])}
 
-  // Load the map.
-  require(["esri/map", "esri/toolbars/draw", "esri/tasks/locator",
-  "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/FeatureLayer",
-  "esri/SpatialReference", "esri/geometry/Point", "esri/config",
-  "esri/graphic", "esri/symbols/SimpleMarkerSymbol",
-  "esri/symbols/SimpleLineSymbol", "esri/symbols/TextSymbol",
-  "dojo/_base/Color", "esri/symbols/PictureMarkerSymbol",
-  "esri/renderers/ClassBreaksRenderer", "esri/dijit/Popup",
-  "esri/dijit/PopupTemplate", "dojo/dom-construct", "dojo/dom",
-  "esri/InfoTemplate", "dojo/domReady!"], function(Map, Draw, Locator,
-  Tiled, FeatureLayer, SpatialReference, Point, Geometry, Graphic,
-  SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol, Color, PictureMarkerSymbol,
-  ClassBreaksRenderer, Popup, PopupTemplate, domConstruct, dom, InfoTemplate)
-  {
-    //-------------------------------------------------------------------------
-    // Variable definitions
-    //---------------------
-    var popup             = new Popup({ highlight: false }, domConstruct.create("div"));
-    var mapMareSpatialRef = new esri.SpatialReference({wkid: 29193});
-    var customExtent      = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, mapMareSpatialRef);
 
-    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
-    var point = new Point(680291.2151545063, 7470751.29586681, mapMareSpatialRef);
-    var map = new Map("map", { center: point, zoom: 4, extent: customExtent, infoWindow:popup });
+    var size         = new OpenLayers.Size(64,64);
+    var offset       = new OpenLayers.Pixel(15,15);
+    var greyMarker   = new OpenLayers.Icon("/assets/markers/grey_marker.png", size, offset);
+    var orangeMarker = new OpenLayers.Icon("/assets/markers/orange_marker.png", size, offset);
+    var map, fromProjection, toProjection, markersLayer; //filled in later in the init method
 
-    var greyMarker   = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 48, 48).setOffset(0, 0);
-    var orangeMarker = new PictureMarkerSymbol("/assets/markers/orange_marker.png", 48, 48).setOffset(0, 0);
+
+    // Declare different reports and their counts.
+    var open_markers       = [{"latitude":680076.589943705,"longitude":7472195.75002062},{"latitude":680266.295950687,"longitude":7471747.54590176},{"latitude":null,"longitude":null},{"latitude":680136.126249498,"longitude":7472180.49977604},{"latitude":680438.592084289,"longitude":7471591.68855667},{"latitude":null,"longitude":null},{"latitude":680108.133417463,"longitude":7471539.19692729},{"latitude":680554.467877344,"longitude":7471694.63723277},{"latitude":680640.030212599,"longitude":7469459.90966016},{"latitude":680615.149921423,"longitude":7471308.69006072},{"latitude":680615.149921423,"longitude":7471308.69006072},{"latitude":649376.44687463,"longitude":7466007.38511691},{"latitude":680640.030212599,"longitude":7469459.90966016},{"latitude":680615.149921423,"longitude":7471308.69006072},{"latitude":649376.44687463,"longitude":7466007.38511691},{"latitude":680187.463811618,"longitude":7471828.27773749},{"latitude":680524.886695228,"longitude":7472123.62055022},{"latitude":680368.454934851,"longitude":7471325.96790595},{"latitude":680381.328488594,"longitude":7471666.84702602},{"latitude":680166.653151724,"longitude":7472173.01372173},{"latitude":680259.700743438,"longitude":7471660.01585756},{"latitude":680263.643753164,"longitude":7471735.49323853},{"latitude":680420.339797968,"longitude":7471697.85655889},{"latitude":680232.956122846,"longitude":7471618.92631448},{"latitude":680381.749919285,"longitude":7471681.89328903},{"latitude":680270.004762472,"longitude":7471540.24875555},{"latitude":680364.119871703,"longitude":7471677.81955198},{"latitude":680409.288615454,"longitude":7471625.89279749},{"latitude":680273.585106924,"longitude":7471682.34711666},{"latitude":680006.721098777,"longitude":7471965.07382638},{"latitude":680311.194879195,"longitude":7469799.22640378},{"latitude":680174.301979961,"longitude":7472178.11379289},{"latitude":680363.325877906,"longitude":7471375.9223351},{"latitude":680214.114281982,"longitude":7471735.62092319},{"latitude":680138.379637579,"longitude":7471676.62240998},{"latitude":680069.318721186,"longitude":7471870.32196603},{"latitude":680554.998524021,"longitude":7471683.78450986},{"latitude":680389.172694819,"longitude":7471620.55595628},{"latitude":680438.592084289,"longitude":7471591.68855667},{"latitude":680528.207053164,"longitude":7471704.09216844},{"latitude":680013.940517328,"longitude":7471958.76164081},{"latitude":680011.160094995,"longitude":7471625.81004978},{"latitude":680364.650251991,"longitude":7471350.82393932},{"latitude":680351.35707284,"longitude":7471290.54942897},{"latitude":680471.684933169,"longitude":7471706.45460576},{"latitude":680188.621394713,"longitude":7471688.57994012},{"latitude":680005.10430685,"longitude":7471651.62758843},{"latitude":680275.838495006,"longitude":7471219.71078641},{"latitude":680117.303428781,"longitude":7471848.30142692},{"latitude":680231.155721273,"longitude":7471327.26017706},{"latitude":680005.10430685,"longitude":7471651.62758843},{"latitude":680580.67481103,"longitude":7471449.58277414},{"latitude":680166.653151724,"longitude":7472173.01372173}]
+    var eliminated_markers = [{"latitude":665362.745024063,"longitude":7474606.48739226},{"latitude":680104.548246328,"longitude":7472050.94648395},{"latitude":680150.14099209,"longitude":7471631.59984186},{"latitude":680218.57489931,"longitude":7471251.92155899}]
 
     var coordinates = [];
-
-    // This top-level variable should be defined here since its existence is
-    // checked in other functions.
-    var blueGraphic;
-
 
     //-------------------------------------------------------------------------
     // Helpers
     //--------
-
-
-    var updateMapWithLocationsAndMarker = function(locationsArray, marker)
+    var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
     {
       for (var i = 0; i < locationsArray.length; i++) {
         loc = locationsArray[i];
-        addLocationToMapWithMarker(loc, map, marker);
+        addLocationToOSMapWithMarker(loc, map, marker);
       }
     };
 
-    var addLocationToMapWithMarker = function(loc, map, marker)
+    var addLocationToOSMapWithMarker = function(loc, map, marker)
     {
       if (loc && loc.latitude > 0 && loc.longitude > 0)
       {
-        var mapPoint   = new Point(loc.latitude, loc.longitude);
-        var mapGraphic = new Graphic(mapPoint, marker);
-        map.graphics.add(mapGraphic);
+        var position = new OpenLayers.LonLat(loc.longitude,loc.latitude) //.transform( fromProjection, toProjection);
+        console.log(position)
+        markersLayer.addMarker(new OpenLayers.Marker(position,marker));
       }
     };
 
-    //-------------------------------------------------------------------------
-    // Create the map
-    //---------------
-    map.on("update-start", showMapLoading );
-    map.on("update-end",   hideMapLoading );
-    map.addLayer(tiled);
+    OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+      defaultHandlerOptions: {
+        'single': true,
+        'double': false,
+        'pixelTolerance': 0,
+        'stopSingle': false,
+        'stopDouble': false
+      },
 
-    map.on("load", function() {
-      map.infoWindow.resize(300, 200);
+      initialize: function(options) {
+        this.handlerOptions = OpenLayers.Util.extend(
+        {}, this.defaultHandlerOptions);
 
-      map.graphics.clear();
-      updateMapWithLocationsAndMarker(open_markers, orangeMarker)
-      updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
-    })
+        OpenLayers.Control.prototype.initialize.apply(
+        this, arguments);
 
-    //-------------------------------------------------------------------------
-    // Listeners
-    //----------
-    $("#go_to_mare").on("click", function() {
-      var mapPoint = new Point(point.x, point.y, mapMareSpatialRef);
-      map.centerAndZoom(mapPoint, 4);
-    });
+        this.handler = new OpenLayers.Handler.Click(
+          this, {
+            'click': this.trigger
+          }, this.handlerOptions
+        );
+      },
 
-    // Report tab listeners
-    //#- TODO @awdorsett - better way to handle new_report_tab?
+      trigger: function(e) {
+        //AppCivist Code
+        var lonlat = map.getLonLatFromPixel(e.xy);
+        console.log("You clicked near " + lonlat.lat + " N, " +
+        + lonlat.lon + " E");
+        if ( $("#make_report_button").hasClass("active") )
+        {
+          markerLayout.clearmarkers();
 
-    $('#make_report_button').on('click', function(){
-      // clear map and enable adding a marker to map by clicking
-      map.graphics.clear();
-    });
+          var latitude  = lonlat.lat;
+          var longitude = lonlat.lon;
+          $("#new_report #report_location_attributes_latitude").val( latitude )
+          $("#new_report #report_location_attributes_longitude").val( longitude )
 
-    $('#all_reports_button').on('click', function(){
-      map.graphics.clear();
-      updateMapWithLocationsAndMarker(open_markers, orangeMarker)
-      updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
-    })
-
-    $('#open_reports_button').on('click', function(){
-      map.graphics.clear();
-      updateMapWithLocationsAndMarker(open_markers, orangeMarker)
-    })
-
-    $('#eliminated_reports_button').on('click', function(){
-      map.graphics.clear();
-      updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
-    })
-
-
-    // Listener for location attribute updates
-    $("#new_report #report_location_attributes_street_number").on("change", function()
-    {
-      showMapLoading();
-
-      var streetType   = $("#report_location_attributes_street_type").val();
-      var streetName   = $("#report_location_attributes_street_name").val();
-      var streetNumber = $("#report_location_attributes_street_number").val();
-
-      $.ajax({
-        url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-        type: "GET",
-        dataType: "jsonp",
-        data: {
-          "f": "pjson",
-          "Street": streetType + " " + streetName + " " + streetNumber
-        },
-        success: function(m) {
-          var candidates = m.candidates;
-
-          // console.log(candidates)
-
-
-          if (candidates.length == 0)
-            $("#map-error-description").show();
-          else
-          {
-            map.graphics.clear();
-
-            latitude     = candidates[0].location.x
-            longitude    = candidates[0].location.y
-            var mapPoint = new Point(latitude, longitude)
-
-            var mapGraphic = new Graphic(mapPoint, orangeMarker);
-            map.graphics.add(mapGraphic);
-            map.centerAndZoom(mapPoint, 4);
-
-            // Update the form so we can pass along the ESRI results.
-            $("#new_report #report_location_attributes_latitude").val(latitude);
-            $("#new_report #report_location_attributes_longitude").val(longitude);
-            $("#new_report #map-error-description").hide();
-          }
-        },
-        error: function() { $("#map-error-description").show(); },
-        complete: function() { hideMapLoading(); }
-      });
-    });
-
-    // Listener for "Ache no Mapa". This allows users to click a button
-    // and see the map update to the location.
-    $(".mapa").on("click", function() {
-      var latitude  = $(this).data("location").latitude;
-      var longitude = $(this).data("location").longitude;
-
-      if (latitude > 0 && longitude > 0)
-      {
-        var mapPoint  = new Point(latitude, longitude, mapMareSpatialRef)
-        map.centerAndZoom(mapPoint, 6);
+          markersLayer.addMarker(new OpenLayers.Marker(lonlat,marker));
+        }
       }
 
-      return false;
     });
 
-    // Listener on the map. This allows users to click on the map, and update
-    // the location attributes with the clicked point.
-    map.on('click', function(e){
-      if ( $("#make_report_button").hasClass("active") ){
-        map.graphics.clear();
 
-        var latitude  = e.mapPoint.x;
-        var longitude = e.mapPoint.y;
-        $("#new_report #report_location_attributes_latitude").val( latitude )
-        $("#new_report #report_location_attributes_longitude").val( longitude )
+    $(document).ready(function() {
+      map = new OpenLayers.Map("OSMap");
+      var mapnik         = new OpenLayers.Layer.OSM();
+      fromProjection = new OpenLayers.Projection("EPSG:4618");   // Transform from wkid 29193
+      toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+      //Maré
+      //680291.2151545063, 7470751.29586681
+      var lon			   = 7470751.29586681;
+      var lat			   = 680291.2151545063;
 
-        var mapPoint = new Point(latitude, longitude);
-        var graphic  = new Graphic(mapPoint, orangeMarker);
-        map.graphics.add(graphic);
-      }
+      var position       = new OpenLayers.LonLat(lon,lat).transform( fromProjection, toProjection);
+      var zoom           = 15;
+
+      map.addLayer(mapnik);
+
+      markersLayer = new OpenLayers.Layer.Markers( "Markers" );
+      map.addLayer(markersLayer);
+
+      map.setCenter(position, zoom );
+      updateOSMapWithLocationsAndMarker(open_markers, orangeMarker)
+      updateOSMapWithLocationsAndMarker(eliminated_markers, greyMarker)
+
+      //setting the click handler, defined above
+      var click = new OpenLayers.Control.Click();
+
+      map.addControl(click);
+      click.activate();
     });
 
-  });
+
+
+
 
 .row{style: "height:600px;"}
