@@ -58,9 +58,9 @@ es:
       documentation_section:
         content: Contenido
       prize:
-        prize_name:
-        stock:
-        description:
+        prize_name: Nombre del premio
+        stock: Existencia
+        description: Descripción
         cost:
           one: "1 punto"
           other: "%{count} puntos"
@@ -246,27 +246,27 @@ es:
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
     alerts:
-      confirm_leave_team:
+      confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
     coordinators:
       users:
-        success_create_flash:
-        edit:
+        success_create_flash:  "Usuario creado con éxito"
+        edit: "Registrar patrocinador, verificador, o visitantes"
     teams:
-      empty:
-      success_join_flash: "Usted se sumó al equipo con éxito"
-      success_create_flash: "Usted creó un equipo con éxito"
-      success_leave_flash:
-      join: Únase a este equipo
-      leave:
-      create: Cree un equipo
-      my_team: Mi equipo
+      empty: "No hay equipos aquí"
+      success_join_flash: "Usted se unió al equipo exitosamente"
+      success_create_flash: "Usted creó un equipo exitosamente"
+      success_leave_flash: "Usted dejó al equipo exitosamente"
+      join: "Únase a este equipo"
+      leave: Salir 
+      create: "Cree un equipo"
+      my_team: "Mi equipo"
       call_to_action_flash: "Ahora cree un equipo o únase a un equipo."
     posts:
       succes_create_flash: "Usted creo un post con éxito"
     users:
       create_success_flash: "¡Perfil creado con éxito!"
       phones:
-        header:
+        header: "Administrar mensajes de texto"
       edit:
         password: "Cambie su contraseña"
         phone:
@@ -288,10 +288,10 @@ es:
           edit_prizes: "Códigos de control de los premios"
     prizes:
       create:
-        success_flash:
+        success_flash: "Premio añadido exitosamente"
       new:
-        header:
-        create_button:
+        header: "Nuevo premio"
+        create_button: "Registrar un premio"
     password_resets:
       title: Redefinir su contraseña
       enter_email: "Teclee su correo electrónico registrado"
@@ -300,15 +300,15 @@ es:
       confirm: "Confirmar"
       search:  "Buscar"
       submit:  "Enviar"
-      update:
-      create:
+      update: "Actualizar"
+      create: "Crear"
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       teams_description: Únase a equipos para combatir el dengue y ganar premios
-      video_description_html:
+      video_description_html: "Vea un video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aquí</a>"
     footer:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"
