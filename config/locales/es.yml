@@ -225,7 +225,7 @@ es:
   report:
     form:
       address: Dirección de foco localizada
-      example_of_street_type: "Avenida, calle, sendero, etc."
+      example_of_street_type: "Calle"
       example_of_description: "Describa la localización de un foco (max 100 caracteres) Ex: Foco en el terreno de un lado o Foco en la banqueta de enfrente"
       photo_of_report: Cargue una imagen del foco encontrado
       select_elimination_type: "Seleccione un tipo de foco"
@@ -318,7 +318,7 @@ es:
   #----------------------------------------------------------------------------
   # Countries
   #----------
-  
+
   countries:
     brazil: Brasil
     mexico: Mexico
