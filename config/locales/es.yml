@@ -58,6 +58,9 @@ es:
       documentation_section:
         content: Contenido
       prize:
+        prize_name:
+        stock:
+        description:
         cost:
           one: "1 punto"
           other: "%{count} puntos"
@@ -90,7 +93,6 @@ es:
         verify: El foco fué verificado
       comment:
         create: Comentario hecho con éxito
-        #create: Comentario hecho con éxito
 
   #----------------------------------------------------------------------------
   # Home Navigation
@@ -160,7 +162,6 @@ es:
     free_sms: SMS Gratis
     more: Más
     partners: Participantes
-    #partners: Socios participantes
     configuration: Configuración
     all: Todos
     sms: Torpedo
@@ -244,10 +245,19 @@ es:
       error: "Algo salió mal. Por favor, intente nuevamente."
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
+    alerts:
+      confirm_leave_team:
+    coordinators:
+      users:
+        success_create_flash:
+        edit:
     teams:
+      empty:
       success_join_flash: "Usted se sumó al equipo con éxito"
       success_create_flash: "Usted creó un equipo con éxito"
+      success_leave_flash:
       join: Únase a este equipo
+      leave:
       create: Cree un equipo
       my_team: Mi equipo
       call_to_action_flash: "Ahora cree un equipo o únase a un equipo."
@@ -255,13 +265,15 @@ es:
       succes_create_flash: "Usted creo un post con éxito"
     users:
       create_success_flash: "¡Perfil creado con éxito!"
+      phones:
+        header:
       edit:
-        referral_question: "¿Alguien recomendó que se registrara en DT?"
         password: "Cambie su contraseña"
         phone:
           payment: "Tipo de pago"
           prepaid: Tarjeta o pre-pago
           postpaid: Plan fijo
+        referral_question: "¿Alguien recomendó que se registrara en DT?"
         show_name_as: "Mostrar nombre como"
         admin:
           register: "Registrar un patrocinador, verificador o visitante"
@@ -274,7 +286,12 @@ es:
           report_edit: "Administrar tipos de foco y métodos"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
-
+    prizes:
+      create:
+        success_flash:
+      new:
+        header:
+        create_button:
     password_resets:
       title: Redefinir su contraseña
       enter_email: "Teclee su correo electrónico registrado"
@@ -283,12 +300,15 @@ es:
       confirm: "Confirmar"
       search:  "Buscar"
       submit:  "Enviar"
+      update:
+      create:
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       teams_description: Únase a equipos para combatir el dengue y ganar premios
+      video_description_html:
     footer:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"
@@ -298,6 +318,7 @@ es:
   #----------------------------------------------------------------------------
   # Countries
   #----------
+  
   countries:
     brazil: Brasil
     mexico: Mexico
