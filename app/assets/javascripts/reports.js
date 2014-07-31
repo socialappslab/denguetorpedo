@@ -1,66 +1,36 @@
 
-// strings correspond to ids of report div
-// used with function display_report_div
-var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_reports_button', 'make_report_button'];
 
 $(document).ready(function() {
 
-    // if error happened on create, display create tab
+  // if error happened on create, display create tab
+  if($('#error').val() == "true"){
+    // update CSS to show it being selected
+    selected_tab_css_update('make_report_button');
 
-    if($('#error').val() == "true"){
-        // update CSS to show it being selected
-        selected_tab_css_update('make_report_button');
-
-        // hide open/elimanted reports
-        $('.report').each(function(){
-            $(this).css('display','none');
-        });
-        // display new report content
-        $('#new_report').css('display','block');
-    }
-    else{
-        // style all reports as selected
-        selected_tab_css_update('all_reports_button');
-
-        //show all reports on start
-        $('#new_report').css('display','none');
-    }
-
-    // keep the map on the page when scrolling
-    $(window).scroll(function() {
-        var scrollAmount = $(window).scrollTop();
-        if (scrollAmount > 200) {
-            $("#map_div").css("margin-top", scrollAmount - 263);
-        } else {
-            $("#map_div").css("margin-top", -63);
-        }
+    // hide open/elimanted reports
+    $('.report').each(function(){
+        $(this).css('display','none');
     });
+    // display new report content
+    $('#new_report').css('display','block');
+  }
+  else{
+    // style all reports as selected
+    selected_tab_css_update('all_reports_button');
 
+    //show all reports on start
+    $('#new_report').css('display','none');
+  }
 
-
-    // TODO @awdorsett - Are these methods still used? If so refactor
-    // start of methods
-	$("select.elimination_type").change(function() {
-		if ($(this).val() == "Outro tipo") {
-			window.location = "/feedbacks/new?title=other_type";
-		}
-	});
-
-	$("select.elimination_methods").each(function() {
-		$(this).find("option").filter(function() {
-			return $(this).text() == "Método de eliminação";
-		}).prop("selected", true);
-	});
-
-	$("select.elimination_methods").change(function() {
-		if ($(this).val() == "Outro método") {
-			window.location.href = "/feedbacks/new?title=other_method";
-		} else {
-			$(this).parent().find("input#selected_elimination_method").val($(this).val());
-		}
-	});
-    // end of methods
-
+  // Scroll code to keep map in view.
+  $(window).scroll(function() {
+      var scrollAmount = $(window).scrollTop();
+      if (scrollAmount > 200) {
+          $("#map_div").css("margin-top", scrollAmount - 263);
+      } else {
+          $("#map_div").css("margin-top", -63);
+      }
+  });
 });
 
 
@@ -119,6 +89,10 @@ function hideMapLoading() {
 
 // pass the id of tab to change the css so that it appears as selected
 // e.g. larger size, different color, etc
+// strings correspond to ids of report div
+// used with function display_report_div
+var report_tabs = ['all_reports_button', 'open_reports_button', 'eliminated_reports_button', 'make_report_button'];
+
 function selected_tab_css_update(id){
 
     // loop through report tabs and add active the the one that whose id is passed
@@ -131,53 +105,24 @@ function selected_tab_css_update(id){
     })
 }
 
+/*
+  GPS-fetching methods.
+*/
 
-// TODO @awdorsett - refactor to reuse update location
-// TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
-// temporary to be used with "Marcar no mapa" button on new report form
-// function update_location_coordinates_new_report(){
-//   showMapLoading();
-//
-//   var streetType   = $("#report_location_attributes_street_type").val();
-//   var streetName   = $("#report_location_attributes_street_name").val();
-//   var streetNumber = $("#report_location_attributes_street_number").val()
-//
-//   $.ajax({
-//     url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
-//     type: "GET",
-//     timeout: 5000, // milliseconds
-//     dataType: "jsonp",
-//     data: {
-//       "f": "pjson",
-//       "Street": streetType + " " + streetName + " " + streetNumber
-//     },
-//     success: function(m) {
-//       var candidates = m.candidates;
-//
-//       //possible location found, update form values
-//       if (candidates.length == 0)
-//         $("#map-error-description").text("O endereço não pode ser encontrado");
-//       else
-//       {
-//         latitude     = candidates[0].location.x
-//         longitude    = candidates[0].location.y
-//
-//         console.log(latitude)
-//         console.log(longitude)
-//
-//         $("#report_location_attributes_latitude").val(latitude);
-//         $("#report_location_attributes_longitude").val(longitude);
-//         $("#map-error-description").text("");
-//       }
-//     },
-//     error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
-//     complete: function() { hideMapLoading(); }
-//   });
-//
-//   // We're forcing a change event here so that we can invoke a listener
-//   // that will then render the map and map marker.
-//   $('.location_field').trigger('change');
-// }
+// Method to retrieve (lat, long) coordinates from OSM.
+function fetchCoordinatesFromOSM(addressString, countryCode){
+  $.ajax({
+    url: "http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode,
+    type: "GET",
+    timeout: 5000,
+    success: function(result) {
+      window.test = result;
+      alert("Data was retrieved! It's saved in window.test");
+    }
+  });
+
+}
+
 
 //@params location - json of location object for report
 //@params event - click event for form submission
@@ -200,22 +145,22 @@ function update_location_coordinates(location,event){
           dataType: "jsonp",
           data: {"f": "pjson", "Street": location.street_type + " " + location.street_name + " " + location.street_number},
           success: function(m) {
-              var candidates = m.candidates;
+            var candidates = m.candidates;
 
-              //possible location found, update form values
-              if (candidates.length > 0) {
-                  event.target.form[7].value = candidates[0].location.x;
-                  event.target.form[8].value = candidates[0].location.y;
-              }
+            //possible location found, update form values
+            if (candidates.length > 0) {
+                event.target.form[7].value = candidates[0].location.x;
+                event.target.form[8].value = candidates[0].location.y;
+            }
 
-             $(event.target.form).submit();
+           $(event.target.form).submit();
 
           },
           error: function(m) {
-              //ajax call unsuccessful, server may be down
-              // TODO @awdorsett how to handle second request for map failure
-              $(".report_submission").attr("disabled",false);
-              $(event.target.form).submit();
+            //ajax call unsuccessful, server may be down
+            // TODO @awdorsett how to handle second request for map failure
+            $(".report_submission").attr("disabled",false);
+            $(event.target.form).submit();
           }
         }
       );
