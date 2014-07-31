@@ -31,14 +31,6 @@
   color: black;
 }
 
-// .confirm_button, input[type='submit'] {
-//   border: 2px solid $light-gray;
-//   color: black;
-//   font-size: 12px;
-//   text-align: center;
-//   padding: 2px 10px;
-//   border-radius: 8px;
-// }
 
 .eliminate_cancel {
   margin-top: 3px;
@@ -231,25 +223,6 @@
   }
 
 
-  /*
-  .bttn  {
-    color: #ffffff;
-    border-radius: 2px;
-    text-align: center;
-
-    padding: 8px 5px;
-
-    &:hover {
-      cursor: pointer;
-      color: #000000;
-    }
-
-    &:mousedown {
-      border-bottom: thick dotted #ff0000;
-    }
-  } */
-
-
   .reports_open_button {
     color: $dark-gray;
     background-color: #ffffff;
@@ -279,27 +252,6 @@
     color: $dark-gray;
   }
 
-  // input{
-  //   height: 30px;
-  //   border: 0px;
-  //   color: gray;
-  //   background-color: #FFFFFF;
-  //   opacity: 1;
-  //   font-size: 13px;
-  //   margin-top: 2px;
-  // }
-
-
-
-  //.active {
-  //  color: #FFFFFF;
-  //  font-weight: bold;
-  //  font-size: 20px;
-  //}
-  //.reports_feed_button.active {
-  //  background-color: $light-gray;
-  //}
-
   // tab button is active
   .active {
     background-color: $orange;
@@ -311,14 +263,6 @@
       color: white;
     }
   }
-
-  //.make_report_button.active {
-  //}
-
-  //.reports_resolved_button.active {
-  //  background-color: gray;
-  //}
-
 
 
 .bttn  {
@@ -448,4 +392,10 @@
     text-decoration: none;
     color: inherit;
   }
+}
+
+
+
+#map_div {
+  margin-top:-63px; position:absolute; right:30px;overflow-y:hidden;overflow-x:hidden;
 }
