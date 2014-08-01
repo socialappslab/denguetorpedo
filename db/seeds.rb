@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require "seeds/breeding_site"
+
 #------------------------------------------------------------------------------
 # Neighborhoods
 
@@ -40,118 +42,9 @@ puts "-" * 80
 #------------------------------------------------------------------------------
 # Elimination types and methods
 
-puts "-" * 80
-puts "[!] Seeding elimination types and methods..."
-puts "\n" * 3
+seed_breeding_sites_and_elimination_methods()
 
-types_and_methods = [
-  {
-    :elimination_type => "Pratinho de planta", :elimination_methods => [
-      {:method => "Elimine fazendo furos no pratinho", :points => 200},
-      {:method => "Prato removido (ou seja, não mais utilizado)", :points => 200},
-      {:method => "Coloque areia", :points => 200},
-      {:method => "Retire a água e esfregue para remover possíveis ovos (uma vez por semana).", :points => 50}
-    ]
-  },
-
-  {
-    :elimination_type => "Pneu", :elimination_methods => [
-      {:method => "Desfaça-se do pneu (entregue ao serviço de limpeza)", :points => 50},
-      {:method => "Arranje um uso alternativo para o pneu: preencha com terra e faça uma horta; preencha com areia, terra e cimento e utilize como degrau.", :points => 450},
-      {:method => "Transferir o pneu sem água para um local coberto e seco.", :points => 100},
-      {:method => "Cubra o pneu com algo que não se transforme em um foco potencial do mosquito.", :points => 100}
-    ]
-  },
-
-  {
-    :elimination_type => "Lixo (recipientes inutilizados)", :elimination_methods => [
-      {:method => "Jogá-los em uma lixeira bem tampada.", :points => 0},
-      {:method => "Organize um mutirão de limpeza na vizinhança (coordenado pelos Agentes de Vigilância Sanitária) OBS: em locais onde não há atuação dos garis comunitários.", :points => 450},
-      {:method => "Participe de um mutirão de limpeza na vizinhança (coordenado pelos Agentes de Vigilância Sanitária) OBS: em locais onde não há atuação dos garis comunitários.", :points => 350}
-    ]
-  },
-
-  {
-    :elimination_type => "Pequenos Recipientes utilizáveis Garrafas de vidro, vasos, baldes, tigela de água de cachorro", :elimination_methods => [
-      {:method => "Remova a água e esfregue uma vez por semana; ou, no caso de bebedouros de animais e aves, trocar a água e limpar diariamente.", :points => 50},
-      {:method => "Elimine fazendo furos no pratinho", :points => 200}
-    ]
-  },
-
-  {
-    :elimination_type => "Grandes Recipientes Utilizáveis Tonéis, outras depósitos de água, pias, galões d’água.", :elimination_methods => [
-      {:method => "Cobrir a caixa d’água", :points => 450},
-      {:method => "Vedar adequadamente com tapa e ou capa apropriada", :points => 200},
-      {:method => "Outros recipientes: esfregue, seque, cubra ou sele.", :points => 350}
-    ]
-  },
-
-  {
-    :elimination_type => "Calha", :elimination_methods => []
-  },
-
-  {
-    :elimination_type => "Registros abertos", :elimination_methods => [
-      {:method => "Sele com cobertura impermeável para prevenir a penetração da água e ainda ter acesso ao registro.", :points => 300},
-      {:method => "Preencha com areia ou terra e mude o acesso à válvula.", :points => 300},
-      {:method => "Vedar.", :points => 300}
-    ]
-  },
-
-  {
-    :elimination_type => "Laje e terraços com água", :elimination_methods => [
-      {:method => "Limpá-las.", :points => 300}
-    ]
-  },
-
-  {
-    :elimination_type => "Piscinas", :elimination_methods => [
-      {:method => "Piscinas em uso: esfregue e limpe uma vez por semana", :points => 350},
-      {:method => "Piscinas que não estão em uso: esfregue, seque e vire ao contrário. Em casos de piscina de plástico desmonte e guarde.", :points => 350}
-    ]
-  },
-
-  {
-    :elimination_type => "Poças d’água na rua", :elimination_methods => [
-      {:method => "Elimine a água com rodo ou vassoura", :points => 50}
-    ]
-  },
-
-  {
-    :elimination_type => "Ralos", :elimination_methods => [
-      {:method => "Jogue água sanitária ou desinfetante semanalmente.", :points => 50},
-      {:method => "Elimine entupimento", :points => 50},
-      {:method => "Vede ralos não utilizados", :points => 50}
-    ]
-  },
-
-  {
-    :elimination_type => "Plantas aquáticas em vaso de água", :elimination_methods => [
-      {:method => "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", :points => 50},
-      {:method => "Retire a água acumulada nas folhas", :points => 50},
-      {:method => "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", :points => 50}
-    ]
-  }
-]
-
-
-types_and_methods.each do |types_hash|
-  elimination_type = types_hash[:elimination_type]
-  methods = types_hash[:elimination_methods]
-  et = EliminationType.find_or_create_by_name(elimination_type)
-
-  methods.each do |m|
-    EliminationMethod.find_or_create_by_elimination_type_id_and_method_and_points(et.id, m[:method], m[:points])
-  end
-end
-
-
-
-puts "\n" * 3
-puts "[ok] Done seeding elimination types and methods"
-puts "-" * 80
-
-
+#------------------------------------------------------------------------------
 
 puts "\n" * 3
 puts "[!] Seeding /howto documentation"
