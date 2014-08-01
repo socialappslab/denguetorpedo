@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require "seeds/breeding_site"
+require "#{Rails.root}/db/seeds/breeding_site"
 
 #------------------------------------------------------------------------------
 # Neighborhoods

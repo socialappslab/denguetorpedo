@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 def seed_breeding_sites_and_elimination_methods
   puts "-" * 80
   puts "[!] Seeding elimination types and methods..."
@@ -164,7 +166,6 @@ def seed_breeding_sites_and_elimination_methods
       :breeding_site_in_pt => "Plantas aquáticas em vaso de água",
       :breeding_site_in_es => "Plantas acuáticas en vasos de agua",
       :elimination_methods_in_pt => [
-        {:method => "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", :points => 50},
         {:method => "Retire a água acumulada nas folhas", :points => 50},
         {:method => "Regar semanalmente com água sanitária na proporção de uma colher de sopa para um litro de água.", :points => 50}
       ],
@@ -185,7 +186,7 @@ def seed_breeding_sites_and_elimination_methods
 
     # Find (or create) each method.
     types_hash[:elimination_methods_in_pt].each_with_index do |m, index|
-      method_in_es = types_hash[:elimination_methods_in_es][index]
+      method_in_es = types_hash[:elimination_methods_in_es][index][:method]
       em = EliminationMethod.find_or_create_by_breeding_site_id_and_description_in_pt_and_points(bs.id, m[:method], m[:points])
       em.description_in_es = method_in_es
       em.save!
