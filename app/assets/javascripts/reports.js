@@ -105,9 +105,9 @@ function selected_tab_css_update(id){
     })
 }
 
-/*
+/*-----------------------------------------------------------------------------
   GPS-fetching methods.
-*/
+  --------------------*/
 
 // Method to retrieve (lat, long) coordinates from OSM.
 function fetchCoordinatesFromOSM(addressString, countryCode){
@@ -117,16 +117,29 @@ function fetchCoordinatesFromOSM(addressString, countryCode){
     timeout: 5000,
     success: function(result) {
       window.test = result;
-      alert("Data was retrieved! It's saved in window.test");
     }
   });
+}
 
+// TODO: Maybe deprecate this.
+function setLocationVariablesUsingOSM(location, event)
+{
+  if(event.target.form[7].id == "report_location_attributes_latitude" && event.target.form[8].id == "report_location_attributes_longitude"){
+
+    //if either value is null then try to get coords again
+    if (location.latitude == null || location.longitude == null){
+      event.preventDefault();
+
+      alert("Event prevented!");
+    }
+  }
 }
 
 
 //@params location - json of location object for report
 //@params event - click event for form submission
 // -# TODO @awdorsett - fix magic numbers
+// TODO: Is this used anywhere? Should we deprecate it?
 function update_location_coordinates(location,event){
   //make sure the form being submitted has long/lat input fields
   //i.e. don't run when selecting elimination type
