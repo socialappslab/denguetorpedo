@@ -13,20 +13,22 @@
       %col{width: "10%"}
     - @types.each do |type|
       %tr
-        %td= type.name
+        %td= type.description
         %td
-        %td 
+        %td
           = link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
         %td
           = link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
           = link_to "Cancelar", "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
       - type.elimination_methods.each do |method|
         %tr
-          %td{style: "padding-left:40px;"}= method.method
-          %td= method.points
+          %td{style: "padding-left:40px;"}
+            = method.description
+          %td
+            = method.points
           %td
             = link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
-          %td 
+          %td
             = link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
             = link_to "Cancelar", "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
       %tr
@@ -34,7 +36,7 @@
           %input{type: "text", style: "width:500px;margin-bottom:0px;", placeholder: "Novo método", id: "new_method_name_#{type.id}"}
         %td
           %input{type: "text", style: "margin-bottom:0px;width:100px;", placeholder: "pontos", id: "new_method_points_#{type.id}"}
-        %td 
+        %td
           = link_to "Salvar", "", class: "new_method type_#{type.id}", id: "new_method_#{type.id}", data: { id: type.id }
         %td
 
@@ -48,7 +50,7 @@
         url: url,
         method: "POST",
         dataType: "script",
-        data: "name=" + name
+        data: "description=" + name
       });
     });
 
@@ -99,9 +101,9 @@
       $.ajax({
         url: "/elimination_types/" + $(this).data("id"),
         method: "GET",
-        dataType: "script"        
+        dataType: "script"
       });
-      return false;   
+      return false;
     });
 
     $(".edit_method").click(function() {
@@ -121,7 +123,7 @@
           method: "PUT",
           dataType: "script",
           data: "name=" + $(name).val() + "&points=" + $(points).val()
-        }); 
+        });
       }
       return false;
     });
@@ -131,9 +133,9 @@
       $.ajax({
         url: "/elimination_methods/" + $(this).data("id"),
         method: "GET",
-        dataType: "script"        
+        dataType: "script"
       });
-      return false;   
+      return false;
     });
 
     $(".delete_method").click(function() {
@@ -145,4 +147,3 @@
       });
       return false;
     });
-

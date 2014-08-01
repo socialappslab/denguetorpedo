@@ -6,5 +6,15 @@ class BreedingSite < ActiveRecord::Base
   has_many :elimination_methods, dependent: :destroy
 
   #----------------------------------------------------------------------------
-  
+
+  def description
+    if I18n.locale == :es
+      return self.description_in_es
+    else
+      return self.description_in_pt
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
 end

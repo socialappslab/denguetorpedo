@@ -42,7 +42,7 @@ def seed_breeding_sites_and_elimination_methods
 
     {
       :breeding_site_in_pt => "Lixo (recipientes inutilizados)",
-      :breeding_site_in_pt => "Basura (recipientes inutilizados)",
+      :breeding_site_in_es => "Basura (recipientes inutilizados)",
       :elimination_methods_in_pt => [
         {:method => "Jogá-los em uma lixeira bem tampada.", :points => 0},
         {:method => "Organize um mutirão de limpeza na vizinhança (coordenado pelos Agentes de Vigilância Sanitária) OBS: em locais onde não há atuação dos garis comunitários.", :points => 450},
