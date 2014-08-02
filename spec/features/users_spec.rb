@@ -3,8 +3,7 @@
 require 'spec_helper'
 describe "Users", :type => :feature do
   context "when editing one's information" do
-    let(:house) { FactoryGirl.create(:house) }
-    let!(:user) { FactoryGirl.create(:user, :phone_number => nil, :carrier => nil, :house_id => house.id, :prepaid => nil, :neighborhood_id => Neighborhood.first.id) }
+    let!(:user) { FactoryGirl.create(:user, :phone_number => nil, :carrier => nil, :prepaid => nil, :neighborhood_id => Neighborhood.first.id) }
 
     before(:each) do
       sign_in(user)

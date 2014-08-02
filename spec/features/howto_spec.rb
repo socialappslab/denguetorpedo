@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe "How To", :type => :feature do
   let(:section) { DocumentationSection.first }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
   it "displays seeded data" do
     visit howto_path
@@ -28,7 +28,7 @@ describe "How To", :type => :feature do
   end
 
   context "as a coordinator" do
-    let(:admin)   { FactoryGirl.create(:user, :role => "coordenador") }
+    let(:admin)   { FactoryGirl.create(:user, :role => User::Types::COORDINATOR, :neighborhood_id => Neighborhood.first.id) }
 
     before(:each) do
       sign_in(admin)
