@@ -2,9 +2,9 @@
 require 'spec_helper'
 
 describe ReportsController do
-	let(:user) 						 { FactoryGirl.create(:user) }
-	let(:other_user) 			 { FactoryGirl.create(:user) }
-	let(:elimination_type)  { EliminationType.first }
+	let(:user) 						 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+	let(:other_user) 			 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+	let(:elimination_type)  { BreedingSite.first }
 	let(:photo_file) 			 { File.open("spec/support/foco_marcado.jpg") }
 	let(:uploaded_photo)    { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
 	let(:location_hash) 		{ {
@@ -13,7 +13,7 @@ describe ReportsController do
 	}
 
 	before(:each) do
-		team = FactoryGirl.create(:team, :name => "Test Team")
+		team = FactoryGirl.create(:team, :name => "Test Team", :neighborhood_id => Neighborhood.first.id)
 		FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
 		FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => other_user.id)
 	end
@@ -64,12 +64,13 @@ describe ReportsController do
 				it "should display after completing" do
 					report 						 = Report.find_by_report("Not in my house!")
 					report.status 			= Report::STATUS[:reported]
+					report.breeding_site_id = elimination_type.id
 					report.completed_at = Time.now
 					report.save!(:validate => false)
 
 					sign_in(other_user)
 					visit user_path(user)
-					
+
 					expect(report.reload.status).to eq(Report::STATUS[:reported])
 					expect(page).to have_content("Encontrei um foco")
 				end
@@ -150,17 +151,6 @@ describe ReportsController do
 				cookies[:auth_token] = user.auth_token
 			end
 
-			# it "finds map coordinates even if user didn't submit them" do
-			# 	location = Location.find_by_street_type_and_street_number(street_hash[:street_type], street_hash[:street_number])
-			# 	expect(location).to  eq(nil)
-			#
-			# 	post :create, street_hash.merge(:report => { :report => "Testing", :before_photo => uploaded_photo })
-			#
-			# 	location = Location.find_by_street_type_and_street_number(street_hash[:street_type], street_hash[:street_number])
-			# 	expect(location.latitude).to  eq(680555.9952487927)
-			# 	expect(location.longitude).to eq(7471957.144050697)
-			# end
-
 			it "creates a report if no map coordinates are present" do
 				location_hash.delete(:latitude)
 				location_hash.delete(:longitude)
@@ -171,7 +161,8 @@ describe ReportsController do
 						:reporter_id => user.id,
 						:before_photo => uploaded_photo,
 						:location_attributes => location_hash,
-						:elimination_type => elimination_type.name
+						:breeding_site_id => elimination_type.id,
+						:neighborhood_id => Neighborhood.first.id
 					}
 				}.to change(Report, :count).by(1)
 			end
@@ -182,7 +173,8 @@ describe ReportsController do
 					:reporter_id => user.id,
 					:before_photo => uploaded_photo,
 					:location_attributes => location_hash,
-					:elimination_type => elimination_type.name
+					:breeding_site_id => elimination_type.id,
+					:neighborhood_id => Neighborhood.first.id
 				}
 
 				expect(Report.last.location.neighborhood_id).to eq(Neighborhood.first.id)
@@ -194,7 +186,8 @@ describe ReportsController do
 					:location_attributes => location_hash,
 					:reporter_id => user.id,
 					:before_photo => uploaded_photo,
-					:elimination_type => elimination_type.name
+					:breeding_site_id => elimination_type.id,
+					:neighborhood_id => Neighborhood.first.id
 				}
 
 				report 	= Report.last
@@ -210,7 +203,8 @@ describe ReportsController do
 					:reporter_id => user.id,
 					:location_attributes => location_hash,
 					:before_photo => uploaded_photo,
-					:elimination_type => elimination_type.name
+					:breeding_site_id => elimination_type.id,
+					:neighborhood_id => Neighborhood.first.id
 				}
 
 				expect(Report.last.location.latitude).to  eq(50.0)
@@ -229,7 +223,8 @@ describe ReportsController do
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
                                         :location => location,
                                         :reporter => user,
-                                        :elimination_type => elimination_type,
+																				:neighborhood_id => Neighborhood.first.id,
+                                        :breeding_site_id => elimination_type.id,
                                         :report => "Description") }
 
 		before(:each) do
@@ -243,7 +238,7 @@ describe ReportsController do
 			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:location_attributes => location_hash,
 				:after_photo => uploaded_photo,
-				:elimination_method => elimination_type.elimination_methods.first.method
+				:elimination_method_id => elimination_type.elimination_methods.first.id
 			}
 		end
 
@@ -251,7 +246,7 @@ describe ReportsController do
 			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:location_attributes => location_hash,
 				:after_photo => uploaded_photo,
-				:elimination_method => elimination_type.elimination_methods.first.method
+				:elimination_method_id => elimination_type.elimination_methods.first.id
 			}
 
 			location = report.location.reload
@@ -264,7 +259,7 @@ describe ReportsController do
 			put :update, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:location_attributes => location_hash,
 				:after_photo => uploaded_photo,
-				:elimination_method => elimination_type.elimination_methods.first.method
+				:elimination_method_id => elimination_type.elimination_methods.first.id
 			}
 
 			expect(location.reload.latitude).to  eq(50.0)
@@ -276,10 +271,11 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying open reports" do
-		let(:admin)   { FactoryGirl.create(:admin)}
+		let(:admin)   { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 																				:reporter => user,
-																				:elimination_type => elimination_type,
+																				:neighborhood_id => Neighborhood.first.id,
+																				:breeding_site_id => elimination_type.id,
 																				:report => "Description") }
 
 
@@ -309,11 +305,12 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying eliminated reports" do
-		let(:admin)   { FactoryGirl.create(:admin)}
+		let(:admin)   { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 																				:status => Report::STATUS[:eliminated],
 																				:reporter => user,
-																				:elimination_type => elimination_type,
+																				:neighborhood_id => Neighborhood.first.id,
+																				:breeding_site_id => elimination_type.id,
 																				:report => "Description") }
 
 
@@ -343,10 +340,11 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying problems with open reports" do
-		let(:admin)  { FactoryGirl.create(:admin)}
+		let(:admin)  { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
 		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 										:reporter => user,
-										:elimination_type => elimination_type,
+										:neighborhood_id => Neighborhood.first.id,
+										:breeding_site_id => elimination_type.id,
 										:report => "Description") }
 
 		before(:each) do
@@ -375,11 +373,12 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying problems with eliminated reports" do
-		let(:admin)  { FactoryGirl.create(:admin)}
+		let(:admin)  { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
 		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 										:status => Report::STATUS[:eliminated],
+										:neighborhood_id => Neighborhood.first.id,
 										:reporter => user,
-										:elimination_type => elimination_type,
+										:breeding_site_id => elimination_type.id,
 										:report => "Description") }
 
 		before(:each) do
@@ -410,7 +409,8 @@ describe ReportsController do
 	context "when liking a report" do
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 																				:reporter => user,
-																				:elimination_type => elimination_type,
+																				:neighborhood_id => Neighborhood.first.id,
+																				:breeding_site_id => elimination_type.id,
 																				:report => "Description") }
 
 		before(:each) do

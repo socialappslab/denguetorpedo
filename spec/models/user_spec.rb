@@ -4,7 +4,7 @@ require 'spec_helper'
 require "cancan/matchers"
 
 describe User do
-	let!(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+	let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 	it "validates presence of neighborhood" do
 		I18n.locale = I18n.default_locale

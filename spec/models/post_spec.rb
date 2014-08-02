@@ -20,7 +20,7 @@ require 'spec_helper'
 
 describe Post do
   it "can create simple posts" do
-    u1 = FactoryGirl.create(:user)
+    u1 = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
     p1 = Post.create!(:content => "testing", :user_id => u1.id, :title => "Title1")
     p2 = Post.create!(:content => "testing1", :user_id => u1.id, :title => "Title2")
     p3 = Post.create!(:content => "testing2", :user_id => u1.id, :title => "Title3")
@@ -38,7 +38,7 @@ describe Post do
   end
 
   it "can have ancestors and descendants" do
-    u1 = FactoryGirl.create(:user)
+    u1 = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
 
     p1 = Post.create!(:content => "testing", :title => "title1", :user_id => u1.id)
     p2 = Post.create!(:content => "testing1",:title => "title2", :user_id => u1.id, :parent_id => p1.id)
@@ -70,7 +70,7 @@ describe Post do
   end
 
   it "should fail validations" do
-    u1 = FactoryGirl.create(:user)
+    u1 = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
 
     p = Post.create :content => "asdfsdf"
     p.valid?.should be_false
@@ -83,10 +83,10 @@ describe Post do
   end
 
   it "can belong to a wall" do
-    u1 = FactoryGirl.create(:user)
-    u2 = FactoryGirl.create(:user)
-    l1 = FactoryGirl.create(:location)
-    l2 = FactoryGirl.create(:location)
+    u1 = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
+    u2 = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
+    l1 = FactoryGirl.create(:location, :neighborhood_id => Neighborhood.first.id)
+    l2 = FactoryGirl.create(:location, :neighborhood_id => Neighborhood.first.id)
     h1 = House.create!(:name => "Tatooine", :location_id => l1.id, :neighborhood_id => u1.neighborhood.id)
     h2 = House.create!(:name => "Dagoba", :location_id => l2.id, :neighborhood_id => u2.neighborhood.id)
     h1.members << u1

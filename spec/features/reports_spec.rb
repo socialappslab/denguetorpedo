@@ -2,14 +2,14 @@
 require 'spec_helper'
 
 describe "Reports", :type => :feature do
-  let(:user) 						{ FactoryGirl.create(:user) }
-  let(:other_user)       { FactoryGirl.create(:user) }
-  let(:elimination_type) { EliminationType.first }
+  let(:user) 						{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:other_user)       { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:elimination_type) { BreedingSite.first }
   let(:photo_filepath)   { File.expand_path("spec/support/foco_marcado.jpg") }
   let(:photo_file) 			{ File.open("spec/support/foco_marcado.jpg") }
   let(:uploaded_photo)   { ActionDispatch::Http::UploadedFile.new(:tempfile => photo_file, :filename => File.basename(photo_file)) }
   let(:location)         { FactoryGirl.create(:location, :neighborhood => Neighborhood.first) }
-  let(:team)             { FactoryGirl.create(:team, :name => "Test Team") }
+  let(:team)             { FactoryGirl.create(:team, :name => "Test Team", :neighborhood_id => Neighborhood.first.id) }
 
   before(:each) do
     FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
@@ -30,7 +30,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
-      select(elimination_type.name, :from => "report_elimination_type")
+      select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Descrição é obrigatório")
     end
@@ -40,7 +40,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_type", :with => "Rua"
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
-      select(elimination_type.name, :from => "report_elimination_type")
+      select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       click_button I18n.t("views.buttons.create")
       expect(page).to have_content("A foto do foco é obrigatório")
 
@@ -48,7 +48,7 @@ describe "Reports", :type => :feature do
 
     it "notifies the user if report location is empty" do
       fill_in "report_content", :with => "This is a description"
-      select(elimination_type.name, :from => "report_elimination_type")
+      select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       attach_file("report_before_photo", photo_filepath)
       click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Você deve enviar o endereço completo")
@@ -72,7 +72,7 @@ describe "Reports", :type => :feature do
         fill_in "report_location_attributes_street_number", :with => "45"
         fill_in "report_content", :with => "This is a description"
         attach_file("report_before_photo", photo_filepath)
-        select(elimination_type.name, :from => "report_elimination_type")
+        select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
         click_button I18n.t("views.buttons.create")
       end
 
@@ -124,7 +124,7 @@ describe "Reports", :type => :feature do
       :status => Report::STATUS[:reported],
       :completed_at => Time.now,
       :reporter_id => user.id,
-      :elimination_type => elimination_type.name,
+      :breeding_site_id => elimination_type.id,
       :neighborhood_id => Neighborhood.first.id) }
 
     before(:each) do
@@ -133,7 +133,7 @@ describe "Reports", :type => :feature do
 
     it "sets the after photo" do
       visit neighborhood_reports_path(user.neighborhood)
-      select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
+      select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       attach_file("report_after_photo", photo_filepath)
       click_button( I18n.t("views.buttons.submit") )
       expect( photo_filepath ).to include(report.reload.after_photo_file_name)
@@ -142,7 +142,7 @@ describe "Reports", :type => :feature do
     it "allows users to eliminate a report" do
       visit neighborhood_reports_path(user.neighborhood)
 
-      select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
+      select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       attach_file("report_after_photo", photo_filepath)
       click_button I18n.t("views.buttons.submit")
 
@@ -155,7 +155,7 @@ describe "Reports", :type => :feature do
       sign_in(other_user)
       visit neighborhood_reports_path(other_user.neighborhood)
 
-      select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
+      select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       attach_file("report_after_photo", photo_filepath)
       click_button I18n.t("views.buttons.create")
 
@@ -168,7 +168,7 @@ describe "Reports", :type => :feature do
       sign_in(other_user)
       visit neighborhood_reports_path(other_user.neighborhood)
 
-      select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
+      select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       attach_file("report_after_photo", photo_filepath)
       click_button I18n.t("views.buttons.submit")
 
@@ -188,7 +188,7 @@ describe "Reports", :type => :feature do
     it "notifies user if after photo isn't selected" do
       visit neighborhood_reports_path(other_user.neighborhood)
 
-      select(elimination_type.elimination_methods.first.method, :from => "report_elimination_method")
+      select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       click_button I18n.t("views.buttons.create")
 
       expect(page).to have_content("A foto do foco é obrigatório")
@@ -238,7 +238,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       fill_in "report_content", :with => "This is a description"
-      select(elimination_type.name, :from => "report_elimination_type")
+      select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       click_button I18n.t("views.buttons.create")
 
       expect(page).to have_content("A foto do foco é obrigatório")
@@ -267,7 +267,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_number",  :with => "500"
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
-      select elimination_type.name, :from => "report_elimination_type"
+      select elimination_type.description_in_pt, :from => "report_breeding_site_id"
       click_button I18n.t("views.buttons.create")
 
       expect(page).to have_content("Foco marcado com sucesso")

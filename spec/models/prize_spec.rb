@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Prize do
-  let(:user)   { FactoryGirl.create(:user)  }
-  let(:prize)  { FactoryGirl.create(:prize) }
+  let(:user)   { FactoryGirl.create(:user,  :neighborhood_id => Neighborhood.first.id)  }
+  let(:prize)  { FactoryGirl.create(:prize, :neighborhood_id => Neighborhood.first.id) }
 
   it "calculates valid expiration" do
     expect(prize.expired?).to eq(false)

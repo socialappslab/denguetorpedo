@@ -7,40 +7,14 @@ describe UsersController do
 	#-----------------------------------------------------------------------------
 
 	context "Deleting a user" do
-		let(:house) 			{ FactoryGirl.create(:house) }
-		let!(:user)  			{ FactoryGirl.create(:user, :house_id => house.id)  }
-		let!(:second_user) { FactoryGirl.create(:user) }
+		let!(:user)  			{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)  }
+		let!(:second_user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 		it "deletes the user from the database" do
 			expect {
 				delete :destroy, :id => user.id
 			}.to change(User, :count).by(-1)
 		end
-
-		it "deletes the house if only the user lives there" do
-			expect {
-				delete :destroy, :id => user.id
-			}.to change(House, :count).by(-1)
-		end
-
-		it "keeps the house if more than 1 person lives there" do
-			second_user.house_id = house.id
-			second_user.save!
-
-			expect {
-				delete :destroy, :id => user.id
-			}.to change(House, :count).by(0)
-		end
-
-		it "deletes the user even if he has no house" do
-			user.house = nil
-			user.save!
-
-			expect {
-				delete :destroy, :id => user.id
-			}.to change(User, :count).by(-1)
-		end
-
 
 	end
 	#-----------------------------------------------------------------------------
@@ -80,7 +54,7 @@ describe UsersController do
 	#-----------------------------------------------------------------------------
 
 	context "Logging a user in" do
-		let(:user) { FactoryGirl.create(:user) }
+		let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 		before(:each) do
 			visit root_path
@@ -107,7 +81,7 @@ describe UsersController do
 	#-----------------------------------------------------------------------------
 
 	context "Logging a user out" do
-		let(:user) { FactoryGirl.create(:user) }
+		let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 		before(:each) do
 			sign_in(user)
@@ -123,7 +97,7 @@ describe UsersController do
 	#-----------------------------------------------------------------------------
 
 	context "Editing a user" do
-		let(:user) { FactoryGirl.create(:user) }
+		let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 		before(:each) do
 			sign_in(user)
@@ -158,7 +132,7 @@ describe UsersController do
 		context "when editing recruiter information" do
 			it "updates the recruiter id when user selects a recruiter" do
 				pending "Until we figure how to test jQuery Autocomplete"
-				recruiter = FactoryGirl.create(:user)
+				recruiter = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
 
 				visit edit_user_path(user)
 				select "MORADOR/VIZINHO", :from => "recruitment"
@@ -173,8 +147,8 @@ describe UsersController do
 	#-----------------------------------------------------------------------------
 
 	context "Buying prizes" do
-		let(:user)  { FactoryGirl.create(:user, :total_points => 1000)  }
-		let(:prize) { FactoryGirl.create(:prize) }
+		let(:user)  { FactoryGirl.create(:user,  :neighborhood_id => Neighborhood.first.id, :total_points => 1000)  }
+		let(:prize) { FactoryGirl.create(:prize, :user => user, :neighborhood_id => Neighborhood.first.id) }
 
 		it "creates a PrizeCode instance" do
 			expect {
@@ -184,7 +158,6 @@ describe UsersController do
 
 		it "updates user's total points" do
 			before_point_count = user.total_points
-			puts "total points: #{before_point_count}"
 			get :buy_prize, :id => user.id, :prize_id => prize.id
 			expect(user.reload.total_points).to eq(before_point_count - prize.cost)
 		end

@@ -54,6 +54,7 @@ pt:
       report:
         before_photo: A foto do foco
         elimination_type: Tipo de foco
+        breeding_site_id: Tipo de foco
         report: Descrição
       documentation_section:
         content: Conteúdo
