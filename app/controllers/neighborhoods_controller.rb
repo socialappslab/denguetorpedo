@@ -1,6 +1,6 @@
 class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen, :only => [:show]
-  
+
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1
 
@@ -24,8 +24,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @total_points = @neighborhood.total_points
 
     @posts = []
-    community_coordinators = @participants.where("role = ? OR role = ?", User::Types::COORDINATOR, User::Types::VERIFIER)
-    community_coordinators.each do |cc|
+    @participants.each do |cc|
       @posts << cc.posts
     end
     @posts.flatten!
