@@ -16,7 +16,7 @@ class AddColumnsToReports < ActiveRecord::Migration
         r.elimination_method_id = em.id
       end
 
-      r.save!
+      r.save(:validate => false)
 
       puts "[ok] Done updating breeding_site_id for report with id = #{r.id}!"
     end
