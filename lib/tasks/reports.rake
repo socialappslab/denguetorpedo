@@ -23,8 +23,14 @@ namespace :reports do
       puts "[ ] Updating breeding_site_id for report with id = #{r.id}"
 
       if r.attributes["elimination_type"].present?
+        etype = r.attributes["elimination_type"]
+
+        if etype == "Pequenos Recipientes utilizáveis"
+          etype = "Pequenos Recipientes utilizáveis Garrafas de vidro, vasos, baldes, tigela de água de cachorro"
+        end
+
         # NOTE: We don't want to confuse elimination_method method with column.
-        bs = BreedingSite.find_by_description_in_pt( r.attributes["elimination_type"] )
+        bs = BreedingSite.find_by_description_in_pt( etype )
         raise "Could not find BreedingSite instance with description = #{r.attributes["elimination_type"]}" if bs.nil?
         r.breeding_site_id = bs.id
       end
