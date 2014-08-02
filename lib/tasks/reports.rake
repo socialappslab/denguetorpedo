@@ -31,7 +31,7 @@ namespace :reports do
 
       if r.attributes["elimination_method"].present?
         # NOTE: We don't want to confuse elimination_method method with column.
-        em = EliminationMethod.find_by_description_in_pt( r.attributes["elimination_method"] )
+        em = EliminationMethod.find_by_method( r.attributes["elimination_method"] )
         raise "Could not find EliminationMethod instance with description = #{r.attributes["elimination_method"]}" if em.nil?
         r.elimination_method_id = em.id
       end
