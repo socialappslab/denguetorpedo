@@ -22,15 +22,17 @@ namespace :reports do
     Report.find_each do |r|
       puts "[ ] Updating breeding_site_id for report with id = #{r.id}"
 
-      if r.elimination_type.present?
+      if r.attributes["elimination_type"].present?
         # NOTE: We don't want to confuse elimination_method method with column.
         bs = BreedingSite.find_by_description_in_pt( r.attributes["elimination_type"] )
+        raise "Could not find BreedingSite instance with description = #{r.attributes["elimination_type"]}" if bs.nil?
         r.breeding_site_id = bs.id
       end
 
-      if r.elimination_method.present?
+      if r.attributes["elimination_method"].present?
         # NOTE: We don't want to confuse elimination_method method with column.
         em = EliminationMethod.find_by_description_in_pt( r.attributes["elimination_method"] )
+        raise "Could not find EliminationMethod instance with description = #{r.attributes["elimination_method"]}" if em.nil?
         r.elimination_method_id = em.id
       end
 
