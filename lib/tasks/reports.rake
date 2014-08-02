@@ -29,6 +29,8 @@ namespace :reports do
           etype = "Pequenos Recipientes utilizáveis Garrafas de vidro, vasos, baldes, tigela de água de cachorro"
         elsif etype == "Grandes Recipientes Utilizáveis"
           etype = "Grandes Recipientes Utilizáveis Tonéis, outras depósitos de água, pias, galões d’água."
+        elsif etype == "Caixa d'água aberta na residência"
+          etype = "Registros abertos"
         end
 
         # NOTE: We don't want to confuse elimination_method method with column.
