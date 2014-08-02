@@ -7,12 +7,14 @@ class AddColumnsToReports < ActiveRecord::Migration
       puts "[ ] Updating breeding_site_id for report with id = #{r.id}"
 
       if r.elimination_type.present?
-        bs = BreedingSite.find_by_description_in_pt( r.elimination_type )
+        # NOTE: We don't want to confuse elimination_method method with column.
+        bs = BreedingSite.find_by_description_in_pt( r.attributes["elimination_type"] )
         r.breeding_site_id = bs.id
       end
 
       if r.elimination_method.present?
-        em = EliminationMethod.find_by_description_in_pt( r.elimination_method )
+        # NOTE: We don't want to confuse elimination_method method with column.
+        em = EliminationMethod.find_by_description_in_pt( r.attributes["elimination_method"] )
         r.elimination_method_id = em.id
       end
 
