@@ -186,9 +186,11 @@ def seed_breeding_sites_and_elimination_methods
 
     # Find (or create) each method.
     types_hash[:elimination_methods_in_pt].each_with_index do |m, index|
-      method_in_es = types_hash[:elimination_methods_in_es][index][:method]
-      em = EliminationMethod.find_or_create_by_breeding_site_id_and_description_in_pt_and_points(bs.id, m[:method], m[:points])
-      em.description_in_es = method_in_es
+      em                   = EliminationMethod.find_or_create_by_method( m[:method] )
+      em.description_in_pt = m[:method]
+      em.description_in_es = types_hash[:elimination_methods_in_es][index][:method]
+      em.points            = em[:points]
+      em.breeding_site_id  = bs.id
       em.save!
     end
   end
