@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class User < ActiveRecord::Base
-  attr_accessible :house_attributes, :first_name, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+  attr_accessible :house_attributes, :first_name, :reporter, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
 
   #----------------------------------------------------------------------------
 
@@ -289,13 +289,8 @@ class User < ActiveRecord::Base
   def build_report_via_sms(params)
     body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
 
-    # location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-    #     "Rua".downcase.titleize,
-    #     "Sargento Silva Nunes".downcase.titleize,
-    #     "1012".downcase.titleize
-    # )
     location = Location.create
-    location.update_attribute(:neighborhood_id, self.neighborhood_id)
+    location.update_column(:neighborhood_id, self.neighborhood_id)
 
     report = Report.new(reporter: self, :sms => true, :status => Report::STATUS[:sms], :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
     return report

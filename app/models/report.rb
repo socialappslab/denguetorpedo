@@ -56,7 +56,10 @@ class Report < ActiveRecord::Base
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
-  validates :neighborhood_id, :report, :reporter_id, :status, :presence => true
+  validates :neighborhood_id, :presence => true
+  validates :report, :presence => true
+  validates :reporter_id, :presence => true
+  validates :status, :presence => true
 
   # SMS creation
   validates :sms, :presence => true, :if => :sms?
@@ -67,9 +70,9 @@ class Report < ActiveRecord::Base
   validates :after_photo, :presence => {:on => :update, :unless => :sms_incomplete?}
 
   # Validation on breeding sites, and elimination types.
-  validates :breeding_site, :presence => true, :unless => :sms?
-  validates :breeding_site, :presence => {:on => :update, :if => :sms_incomplete? }
-  validates :elimination_method, :presence => {:on => :update, :unless => :sms_incomplete?}
+  validates :breeding_site_id, :presence => true, :unless => :sms?
+  validates :breeding_site_id, :presence => {:on => :update, :if => :sms_incomplete? }
+  validates :elimination_method_id, :presence => {:on => :update, :unless => :sms_incomplete?}
 
   #----------------------------------------------------------------------------
 
@@ -198,10 +201,6 @@ class Report < ActiveRecord::Base
     else
       ""
     end
-  end
-
-  def self.identified_reports
-    where(:status => STATUS[:reported])
   end
 
   def self.eliminated_reports
