@@ -37,7 +37,7 @@
   //= render :partial => "neighborhoods/news"
   #user_recent_activity
     #user_reports.span9
-      - if @notices.blank?
+      - if @news_feed.blank?
         %p{:style => "font-size: 20px; line-height: 30px; text-align: center;"}
           = I18n.t("common_terms.no_activity")
       - else
