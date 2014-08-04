@@ -15,4 +15,25 @@ class DocumentationSection < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
+
+  def title
+    if I18n.locale == :es
+      return self[:title_in_es]
+    else
+      return self[:title]
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def content
+    if I18n.locale == :es
+      return self[:content_in_es]
+    else
+      return self[:content]
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
 end
