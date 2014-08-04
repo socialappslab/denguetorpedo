@@ -19,6 +19,13 @@ class DocumentationSectionsController < ApplicationController
   def update
     @section.editor_id = @current_user.id
 
+    # Overwrite the params if the user is editing in Spanish.
+    if I18n.locale == :es
+      params[:documentation_section][:title_in_es] = params[:documentation_section][:title]
+      params[:documentation_section][:content_in_es] = params[:documentation_section][:content]
+      params[:documentation_section].except!(:title, :content)
+    end
+
     if @section.update_attributes(params[:documentation_section])
       flash[:notice] = "A seção foi atualizada com sucesso"
       redirect_to howto_path and return
@@ -34,8 +41,8 @@ class DocumentationSectionsController < ApplicationController
   #-----------------------------------------------------------------------------
 
   def ensure_admin
-    unless ["admin", "coordenador"].include?(@current_user.role)
-      redirect_to howto_path, :alert => "Você não pode acessar esse conteúdo" and return
+    unless [User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
+      redirect_to howto_path, :alert => I18n.t("views.application.permission_required") and return
     end
   end
 
