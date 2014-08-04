@@ -37,7 +37,7 @@
 
             %div
               %i.fa.fa-eye
-              = report.elimination_type
+              = report.breeding_site.description
 
           .span3.offset1
             = link_to neighborhood_reports_path(report.neighborhood) do
@@ -52,9 +52,9 @@
                 = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
 
             %div
-              - if report.is_eliminated? && report.elimination_method
+              - if report.is_eliminated? && report.elimination_method.present?
                 %i.fa.fa-ban
-                = report.elimination_method
+                = report.elimination_method.description
 
     - if @current_user
       .row.feed-item-interaction-menu

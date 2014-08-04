@@ -54,6 +54,7 @@ pt:
       report:
         before_photo: A foto do foco
         elimination_type: Tipo de foco
+        breeding_site_id: Tipo de foco
         report: Descrição
       documentation_section:
         content: Conteúdo
@@ -150,10 +151,10 @@ pt:
       tagline: Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!
 
 
-
   #----------------------------------------------------------------------------
   # Commonly used words and sentences
   #----------------------------------
+
   common_terms:
     order_by: Ordenar por
     houses: Casas
@@ -235,6 +236,11 @@ pt:
       problem_with_verification: Problema no foco marcado. Entre em contato conosco.
       upload_photo_of_eliminated_report: Carregue uma foto do foco eliminado
 
+
+  #----------------------------------------------------------------------------
+  # Views
+  #------
+
   views:
     application:
       error: "Algo deu errado. Por favor, tente novamente."
@@ -310,7 +316,9 @@ pt:
       contact: "Contato DT"
       about: "Sobre o Dengue Torpedo"
 
-
+  #----------------------------------------------------------------------------
+  # Countries
+  #----------
 
   countries:
     brazil: Brasil

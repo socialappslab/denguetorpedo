@@ -1,22 +1,20 @@
 require 'spec_helper'
 
 describe PrizesController do
-  let(:team) { FactoryGirl.create(:team, :name => "Test Team")}
-  let(:user) { FactoryGirl.create(:user)}
+  let(:team) { FactoryGirl.create(:team, :name => "Test Team", :neighborhood_id => Neighborhood.first.id)}
+  let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)}
 
   # This should return the minimal set of attributes required to create a valid
   # Prize. As you add validations to Prize, be sure to
   # update the return value of this method accordingly.
 
   before(:each) do
-    @location = Location.create(latitude: 0, longitude: 0)
-    @house = FactoryGirl.create(:house, location_id: @location.id)
-    @user = FactoryGirl.create(:user, house_id: @house.id)
+    @user     = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
     controller.stub(:require_login).and_return(true)
   end
 
   def valid_attributes
-    { :cost => 30, :description => "Description", :prize_name => "Prize", :stock => 5, :user_id => @user.id, :team_id => team.id }
+    { :cost => 30, :neighborhood_id => Neighborhood.first.id, :description => "Description", :prize_name => "Prize", :stock => 5, :user_id => @user.id, :team_id => team.id }
   end
 
   # This should return the minimal set of values that should be in the session
@@ -31,9 +29,6 @@ describe PrizesController do
       @prize = Prize.create! valid_attributes
     end
     it "should be successful" do
-      @prize.user.house.location.stub(:latitude).and_return(0)
-      @prize.user.house.location.stub(:longitude).and_return(0)
-
       get :index, {}, valid_session
       response.should be_success
     end
@@ -45,10 +40,8 @@ describe PrizesController do
   end
 
   describe "GET show" do
-
     before(:each) do
-      @prize = Prize.create! valid_attributes
-
+      @prize = FactoryGirl.create(:prize, valid_attributes)
     end
 
     it "should be successful" do
@@ -72,7 +65,7 @@ describe PrizesController do
 
   describe "GET edit" do
     it "assigns the requested prize as @prize" do
-      prize = Prize.create! valid_attributes
+      prize = FactoryGirl.create(:prize, valid_attributes)
       get :edit, {:id => prize.id}, valid_session
       assigns(:prize).should eq(prize)
     end
@@ -88,7 +81,8 @@ describe PrizesController do
         :prize_name => "Prize",
         :stock => 5,
         :user_id => user.id,
-        :team_id => team.id
+        :team_id => team.id,
+        :neighborhood_id => Neighborhood.first.id
       }
     }
 
@@ -101,7 +95,6 @@ describe PrizesController do
 
       it "assigns a team id" do
         post :create, :prize => params
-        puts "Prize.all.count: #{Prize.all.count}"
         prize = Prize.last
         expect(prize.team_id).to eq(team.id)
       end
@@ -109,7 +102,7 @@ describe PrizesController do
       it "assigns a neighborhood to a prize if one is specified" do
         attrs = valid_attributes.merge(:neighborhood_id => Neighborhood.first.id)
         post :create, :prize => attrs
-        expect(Prize.last.neighborhood.id).to eq(Neighborhood.first.id)
+        expect(Prize.last.neighborhood_id).to eq(Neighborhood.first.id)
       end
 
       it "assigns a newly created prize as @prize" do
@@ -163,7 +156,7 @@ describe PrizesController do
       end
 
       it "redirects to the prize" do
-        prize = Prize.create! valid_attributes
+        prize = FactoryGirl.create(:prize, valid_attributes)
         put :update, {:id => prize.to_param, :prize => valid_attributes}, valid_session
         response.should redirect_to(prize)
       end
@@ -171,7 +164,7 @@ describe PrizesController do
 
     describe "with invalid params" do
       it "assigns the prize as @prize" do
-        prize = Prize.create! valid_attributes
+        prize = FactoryGirl.create(:prize, valid_attributes)
         # Trigger the behavior that occurs when invalid params are submitted
         Prize.any_instance.stub(:save).and_return(false)
         put :update, {:id => prize.to_param, :prize => {}}, valid_session
@@ -179,7 +172,7 @@ describe PrizesController do
       end
 
       it "re-renders the 'edit' template" do
-        prize = Prize.create! valid_attributes
+        prize = FactoryGirl.create(:prize, valid_attributes)
         # Trigger the behavior that occurs when invalid params are submitted
         Prize.any_instance.stub(:save).and_return(false)
         put :update, {:id => prize.to_param, :prize => {}}, valid_session
@@ -190,7 +183,7 @@ describe PrizesController do
 
   describe "DELETE destroy" do
     before(:each) do
-      @prize = Prize.create! valid_attributes
+      @prize = FactoryGirl.create(:prize, valid_attributes)
     end
 
     it "destroys the requested prize" do

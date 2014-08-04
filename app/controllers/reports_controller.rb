@@ -10,8 +10,7 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def types
-    @types   = EliminationType.all
-    @methods = EliminationMethod.all
+    @types   = BreedingSite.all
   end
 
   #----------------------------------------------------------------------------
@@ -445,9 +444,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def award_points report, user
     if report.elimination_method.present?
-      points = EliminationMethod.find_by_method(report.elimination_method).points
-      user.points += points
-      user.total_points += points
+      user.total_points += report.elimination_method.points
       user.save
     end
   end

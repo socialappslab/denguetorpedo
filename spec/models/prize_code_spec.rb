@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe PrizeCode do
-  let(:user)   { FactoryGirl.create(:user) }
-  let(:prize)  { FactoryGirl.create(:prize) }
+  let(:user)   { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:prize)  { FactoryGirl.create(:prize, :user_id => user.id, :neighborhood_id => Neighborhood.first.id) }
   let(:coupon) { FactoryGirl.create(:prize_code, :user_id => user.id, :prize_id => prize.id) }
 
   it "calculates valid coupons" do

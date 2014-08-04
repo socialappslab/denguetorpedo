@@ -54,10 +54,14 @@ es:
       report:
         before_photo: Foto del foco
         elimination_type: Tipo de foco
+        breeding_site_id: Tipo de foco
         report: Descripción
       documentation_section:
         content: Contenido
       prize:
+        prize_name: Nombre del premio
+        stock: Existencia
+        description: Descripción
         cost:
           one: "1 punto"
           other: "%{count} puntos"
@@ -90,7 +94,6 @@ es:
         verify: El foco fué verificado
       comment:
         create: Comentario hecho con éxito
-        #create: Comentario hecho con éxito
 
   #----------------------------------------------------------------------------
   # Home Navigation
@@ -160,14 +163,13 @@ es:
     free_sms: SMS Gratis
     more: Más
     partners: Participantes
-    #partners: Socios participantes
     configuration: Configuración
     all: Todos
     sms: Torpedo
     marked_by: Marcado por
     verified_by: Verificado por
     eliminated_by: Eliminado por
-    confirm_delete: Está seguro?
+    confirm_delete: ¿Está seguro?
     open_for: Abierto para
     email_or_password_incorrect: "Correo electrónico o contraseña incorrecta"
     open_reports: Abiertos
@@ -224,7 +226,7 @@ es:
   report:
     form:
       address: Dirección de foco localizada
-      example_of_street_type: "Avenida, calle, sendero, etc."
+      example_of_street_type: "Calle"
       example_of_description: "Describa la localización de un foco (max 100 caracteres) Ex: Foco en el terreno de un lado o Foco en la banqueta de enfrente"
       photo_of_report: Cargue una imagen del foco encontrado
       select_elimination_type: "Seleccione un tipo de foco"
@@ -244,24 +246,35 @@ es:
       error: "Algo salió mal. Por favor, intente nuevamente."
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
+    alerts:
+      confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
+    coordinators:
+      users:
+        success_create_flash:  "Usuario creado con éxito"
+        edit: "Registrar patrocinador, verificador, o visitantes"
     teams:
-      success_join_flash: "Usted se sumó al equipo con éxito"
-      success_create_flash: "Usted creó un equipo con éxito"
-      join: Únase a este equipo
-      create: Cree un equipo
-      my_team: Mi equipo
+      empty: "No hay equipos aquí"
+      success_join_flash: "Usted se unió al equipo exitosamente"
+      success_create_flash: "Usted creó un equipo exitosamente"
+      success_leave_flash: "Usted dejó al equipo exitosamente"
+      join: "Únase a este equipo"
+      leave: Salir
+      create: "Cree un equipo"
+      my_team: "Mi equipo"
       call_to_action_flash: "Ahora cree un equipo o únase a un equipo."
     posts:
       succes_create_flash: "Usted creo un post con éxito"
     users:
       create_success_flash: "¡Perfil creado con éxito!"
+      phones:
+        header: "Administrar mensajes de texto"
       edit:
-        referral_question: "¿Alguien recomendó que se registrara en DT?"
         password: "Cambie su contraseña"
         phone:
           payment: "Tipo de pago"
           prepaid: Tarjeta o pre-pago
           postpaid: Plan fijo
+        referral_question: "¿Alguien recomendó que se registrara en DT?"
         show_name_as: "Mostrar nombre como"
         admin:
           register: "Registrar un patrocinador, verificador o visitante"
@@ -274,7 +287,12 @@ es:
           report_edit: "Administrar tipos de foco y métodos"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
-
+    prizes:
+      create:
+        success_flash: "Premio añadido exitosamente"
+      new:
+        header: "Nuevo premio"
+        create_button: "Registrar un premio"
     password_resets:
       title: Redefinir su contraseña
       enter_email: "Teclee su correo electrónico registrado"
@@ -283,12 +301,15 @@ es:
       confirm: "Confirmar"
       search:  "Buscar"
       submit:  "Enviar"
+      update: "Actualizar"
+      create: "Crear"
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       teams_description: Únase a equipos para combatir el dengue y ganar premios
+      video_description_html: "Vea un video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aquí</a>"
     footer:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"
@@ -298,6 +319,7 @@ es:
   #----------------------------------------------------------------------------
   # Countries
   #----------
+
   countries:
     brazil: Brasil
     mexico: Mexico

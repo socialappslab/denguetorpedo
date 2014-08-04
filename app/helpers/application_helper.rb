@@ -10,19 +10,19 @@ module ApplicationHelper
 
   #----------------------------------------------------------------------------
 
-  def elimination_selection(selection)
-    selection_list = []
-    if type = EliminationType.find_by_name(selection)
-
-      type.elimination_methods.each do |method|
-          selection_list << {:name=>method.method, :points=>method.points,:id=>method.id,
-                             :display=>method.method + " (" + method.points.to_s + " pontos)"}
-      end
-
-    end
-
-    return selection_list
-  end
+  # def elimination_selection(selection)
+  #   selection_list = []
+  #   if type = BreedingSite.find_by_description_in_pt(selection) || type = BreedingSite.find_by_description_in_es(selection)
+  #
+  #     type.elimination_methods.each do |method|
+  #       selection_list << {:name=> method.id, :points => method.points,:id => method.id,
+  #                          :display=> method.description + " (" + method.points.to_s + " pontos)"}
+  #     end
+  #
+  #   end
+  #
+  #   return selection_list
+  # end
 
   #----------------------------------------------------------------------------
 

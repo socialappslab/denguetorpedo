@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe TeamsController do
-  let(:user) 						 { FactoryGirl.create(:user) }
+  let(:user) 						 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
   #-----------------------------------------------------------------------------
 

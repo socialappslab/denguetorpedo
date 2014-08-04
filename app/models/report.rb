@@ -1,14 +1,15 @@
 # encoding: utf-8
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :neighborhood_id, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
-    :elimination_type, :elimination_method, :verifier_id, :reporter_name,
+  attr_accessible :report, :neighborhood_id, :breeding_site_id, :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
+    :elimination_type, :breeding_site, :elimination_method, :verifier_id, :reporter_name,
     :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at,
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
 
   # callback to create the feeds
+  # TODO: Do we need this?
   after_save do |report|
     Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
     Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
@@ -25,7 +26,6 @@ class Report < ActiveRecord::Base
   has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
   has_attached_file :after_photo,  :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
 
-
   #----------------------------------------------------------------------------
   # Associations
   #-------------
@@ -40,6 +40,9 @@ class Report < ActiveRecord::Base
   belongs_to :eliminator, :class_name => "User"
   belongs_to :verifier, :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
+  belongs_to :breeding_site
+  belongs_to :elimination_method
+
 
   has_many :likes,    :as => :likeable
   has_many :comments, :as => :commentable
@@ -52,22 +55,24 @@ class Report < ActiveRecord::Base
   # After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
-
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
-  validates :neighborhood_id, :report, :reporter_id, :status, :presence => true
-
+  validates :neighborhood_id, :presence => true
+  validates :report, :presence => true
+  validates :reporter_id, :presence => true
+  validates :status, :presence => true
 
   # SMS creation
   validates :sms, :presence => true, :if => :sms?
 
-  # Web report creation
-  validates :before_photo, :elimination_type, :presence => true, :unless => :sms?
+  # Validation on photos
+  validates :before_photo, :presence => true, :unless => :sms?
+  validates :before_photo, :presence => {:on => :update, :if => :sms_incomplete? }
+  validates :after_photo, :presence => {:on => :update, :unless => :sms_incomplete?}
 
-  # Updating a SMS
-  validates :before_photo, :elimination_type, :presence => {:on => :update, :if => :sms_incomplete? }
-
-  # Eliminating a report
-  validates :after_photo, :elimination_method, :presence => {:on => :update, :unless => :sms_incomplete?}
+  # Validation on breeding sites, and elimination types.
+  validates :breeding_site_id, :presence => true, :unless => :sms?
+  validates :breeding_site_id, :presence => {:on => :update, :if => :sms_incomplete? }
+  validates :elimination_method_id, :presence => {:on => :update, :unless => :sms_incomplete?}
 
   #----------------------------------------------------------------------------
 
@@ -196,10 +201,6 @@ class Report < ActiveRecord::Base
     else
       ""
     end
-  end
-
-  def self.identified_reports
-    where(:status => STATUS[:reported])
   end
 
   def self.eliminated_reports

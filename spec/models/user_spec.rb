@@ -4,10 +4,10 @@ require 'spec_helper'
 require "cancan/matchers"
 
 describe User do
-	let(:user) { FactoryGirl.create(:user) }
+	let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 	it "validates presence of neighborhood" do
-		puts "I18n.locale: #{I18n.locale}"
+		I18n.locale = I18n.default_locale
 		user.neighborhood_id = nil
 		user.save
 		expect(user.errors.full_messages).to include("Comunidade é obrigatório")
@@ -19,7 +19,7 @@ describe User do
     end
 
 		context "when user is an admin" do
-			let(:user) { FactoryGirl.create(:admin) }
+			let(:user) { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id) }
 			it { should be_able_to(:assign_roles, user)}
 			it { should be_able_to(:edit, user)}
 		end

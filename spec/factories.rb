@@ -10,15 +10,16 @@ FactoryGirl.define do
 		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
 		user.password "denguewarrior"
 		user.password_confirmation "denguewarrior"
-		user.neighborhood { Neighborhood.first }
 		user.carrier "XXX"
 		user.prepaid true
-		association :house
 		role 			 User::Types::RESIDENT
+		# neighborhood_id Neighborhood.first.id
+
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
 		profile_photo_file_size 1024
 		profile_photo_updated_at Time.new
+
 
 		factory :admin do
 			role "admin"
@@ -52,12 +53,11 @@ FactoryGirl.define do
 		cost 100
 		stock 100
 		description "Description"
-		association :user
+
 	end
 
 	factory :house do
 		name "Rede Trel"
-		neighborhood { Neighborhood.first }
 		association :location
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
@@ -69,14 +69,6 @@ FactoryGirl.define do
 		street_type 		"Rua"
 		street_name 		"Tatajuba"
 		street_number 	"50"
-		neighborhood { Neighborhood.first }
-	end
-
-	factory :neighborhood do |n|
-		n.name "Mare"
-		n.city "Rio De Janeiro"
-		n.state_string_id "RJ"
-		n.country_string_id "BR"
 	end
 
 	factory :notice do
@@ -93,15 +85,12 @@ FactoryGirl.define do
 
   factory :report do
 		status Report::STATUS[:reported]
-		association :reporter, :factory => :user
     elimination_type "Type"
     report "Description"
     before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
-    neighborhood_id Neighborhood.first.id
   end
 
 	factory :team do
-		neighborhood_id Neighborhood.first.id
 	end
 
 	factory :team_membership do

@@ -1,6 +1,9 @@
-class EliminationMethod < ActiveRecord::Base
-  belongs_to :elimination_type
-  belongs_to :breeding_site
+class BreedingSite < ActiveRecord::Base
+  attr_accessible :description_in_pt, :description_in_es
+
+  #----------------------------------------------------------------------------
+
+  has_many :elimination_methods, dependent: :destroy
 
   #----------------------------------------------------------------------------
 

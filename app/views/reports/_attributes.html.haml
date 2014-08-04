@@ -14,14 +14,14 @@
     = I18n.t("activerecord.attributes.report.report")
   .description #{report.report}
 
-  - if report.elimination_type.present?
+  - if report.breeding_site_id.present?
     .rp_report_people
       %h3{:style => "font-weight:bold;"} Tipo de foco:
-      = report.elimination_type
+      = report.breeding_site.description
 
-      - if report.elimination_method.present?
+      - if report.elimination_method_id.present?
         %h3{:style => "font-weight:bold;"} Método de eliminação:
-        = report.elimination_method
+        = report.elimination_method.description
         %br
 
 
@@ -33,11 +33,11 @@
           = hidden_field_tag 'report_id', report.id
           = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
 
-      - elsif report.elimination_method.blank?
+      - elsif report.elimination_method_id.blank?
         = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
           %h3.report_label
             = "#{I18n.t("activerecord.models.elimination_method")}:"
-          = f.select :elimination_method, options_for_select(elimination_selection(report.elimination_type).collect{|p| [p[:display],p[:name]]}, report.elimination_method), :prompt=> I18n.t("report.form.select_elimination_method"), :id=>"method_selection", :class=>"elimination_methods"
+          = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.description, em.id]}, report.elimination_method_id), :prompt=> I18n.t("report.form.select_elimination_method"), :id=>"method_selection", :class=>"elimination_methods"
 
           = f.fields_for :location, report.location || Location.new do |location_fields|
             = location_fields.hidden_field :latitude

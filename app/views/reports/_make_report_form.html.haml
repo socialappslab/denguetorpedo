@@ -36,7 +36,7 @@
       #elimination_type
         %h3.new_report_label.inline_display
           = I18n.t("activerecord.attributes.report.elimination_type")
-        = f.select :elimination_type, EliminationType.pluck(:name), :prompt => I18n.t("report.form.select_elimination_type")
+        = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , :prompt => I18n.t("report.form.select_elimination_type")
       %br
 
       #attention_div
