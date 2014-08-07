@@ -64,5 +64,7 @@
 
       #new_report
         = render :partial => 'make_report_form'
+
+          
     - if @neighborhood.name == "Maré"
       = render :partial => "reports/map"
