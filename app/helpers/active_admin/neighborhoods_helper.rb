@@ -10,6 +10,7 @@ module ActiveAdmin::NeighborhoodsHelper
     available_countries.each do |name, id|
       c = Country[id]
       states << [name, c.states.map {|key, hash| [hash["name"], key]}]
+
     end
 
     return states
