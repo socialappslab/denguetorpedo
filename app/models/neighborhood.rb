@@ -113,10 +113,14 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # TODO: We need to add pictures for each neighborhood.
   def picture
-    return "neighborhoods/default.png"
+    if self.photo_file_name.nil?
+      return "neighborhoods/default.png"
+    end
+
+    return self.photo.url(:large)
   end
+
 
   #----------------------------------------------------------------------------
 
