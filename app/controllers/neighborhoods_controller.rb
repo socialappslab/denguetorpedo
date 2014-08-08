@@ -7,15 +7,13 @@ class NeighborhoodsController < NeighborhoodsBaseController
   def show
     @neighborhood = Neighborhood.find(params[:id])
 
-    # Identify the different types of users in the community.
-    @participants = @neighborhood.members.where('role != ?', User::Types::SPONSOR).where(is_blocked: false).order(:first_name)
-    @sponsors     = @neighborhood.members.where(:role => User::Types::SPONSOR).where(is_blocked: false)
+    # Identify the users, and reports.
+    @participants = @neighborhood.members.includes(:posts).where(is_blocked: false)
+    @reports      = @neighborhood.reports
+    @notices      = @neighborhood.notices.order("updated_at DESC")
 
     @teams = @neighborhood.teams
     @teams = @teams.find_all { |t| t.users.count > 0 }
-
-    @reports = @neighborhood.reports
-    @notices = @neighborhood.notices.order("updated_at DESC")
 
     @total_reports_in_neighborhood      = @reports.count
     @opened_reports_in_neighborhood     = @reports.where( :status => Report::STATUS[:reported] ).count
@@ -29,7 +27,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     end
     @posts.flatten!
 
-    @news_feed = (@posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @news_feed = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------
