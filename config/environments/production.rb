@@ -34,14 +34,6 @@ Dengue::Application.configure do
   # config.force_ssl = true
 
   # See everything in the log (default is :info)
-  STDOUT.sync = true
-  logger = Logger.new(STDOUT)
-  logger.level = 0
-  Rails.logger = Rails.application.config.logger = logger
-
-
-
-
   config.log_level = :debug
 
   # Use a different logger for distributed setups
