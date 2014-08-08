@@ -9,6 +9,7 @@ ActiveAdmin.register Neighborhood do
     column "country_string_id"
     column "created_at"
     column "updated_at"
+    column "photo"
     default_actions
   end
 
@@ -29,6 +30,7 @@ ActiveAdmin.register Neighborhood do
       f.input "city"
       f.input "state_string_id", :as => :select, :collection => grouped_options_for_select(available_states)
       f.input "country_string_id", :as => :select, :collection => available_countries
+      f.input "photo"
     end
     f.actions
   end
