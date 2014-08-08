@@ -1,18 +1,17 @@
 #neighborhood_list.offset1
-
   - @all_neighborhoods.each_with_index do |neighborhood, index|
-    .span4.offset1
+    .span5{:style => "margin-right: 20px;"}
       .neighborhood_selection
         .neighborhood_selection_header
           %h3= link_to neighborhood.geographical_name, neighborhood_path(neighborhood)
-        = link_to image_tag(neighborhood.photo), neighborhood_path(neighborhood), :class => 'neighborhood_selection_photo'
-          
+        = link_to image_tag(neighborhood.photo, :style => "width: 325px; height: 325px;"), neighborhood_path(neighborhood)
+
 
   - if @all_neighborhoods.count < 3
     - (3 - @all_neighborhoods.count).times do
-      .span4.offset1
+      .span5
         .neighborhood_selection
           .neighborhood_selection_header
             %h3= link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
 
-          = link_to image_tag("neighborhood_default.png", :style => "height: 250px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
+          = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
