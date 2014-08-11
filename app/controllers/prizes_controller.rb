@@ -6,12 +6,13 @@ class PrizesController < ApplicationController
   before_filter :require_login, :except => :index
 
   #-----------------------------------------------------------------------------
-
+  # GET /premios
+  
   def index
     @user = current_user
 
     @prizes = Prize.where(:is_badge => false)
-    if current_user && current_user.neighborhood_id
+    if current_user
       @prizes = @prizes.where(:neighborhood_id => [nil, current_user.neighborhood_id])
     end
 
@@ -55,6 +56,7 @@ class PrizesController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
   # GET /prizes/1
   # GET /prizes/1.json
   def show
