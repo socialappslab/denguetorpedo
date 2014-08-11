@@ -206,6 +206,7 @@ pt:
     sponsor_configurations: Configurações de patrocinador
     no_one: Ninguém
     or: ou
+    click_here: Clique aqui
 
 
   facebook:
@@ -289,6 +290,11 @@ pt:
         sponsor:
           edit_prizes: "Códigos de controle dos prêmios"
     prizes:
+      index:
+        how_to_win_prizes: "Como ganhar pontos?"
+        header_non_logged_in: Puntos y premios
+        badge_explanation: Todos ganan medallas en DT por puntos acumulados.
+        community_explanation: Cada comunidad de Dengue Torpedo determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
       create:
         success_flash: 'Prêmio criado com sucesso!'
       new:
@@ -319,6 +325,12 @@ pt:
     documentation_sections:
       edit:
         no_edit: "Nota: Essa seção ainda não foi editada"
+    badges:
+      eye_of_the_mosquito: "De olho no mosquito"
+      exterminator: "Exterminador de mosquitos"
+      fighter: "Guerreiro DT"
+      health_worker: "Comunidade Saudável"
+      caretaker: "Eu cuido da comunidade"
 
   #----------------------------------------------------------------------------
   # Countries
