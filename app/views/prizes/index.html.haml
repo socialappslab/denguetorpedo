@@ -1,50 +1,71 @@
 .row
-  .span12.offset1
-    %h1 Prêmios
-
-    .button_to#how_to
-      = link_to "Como ganhar pontos?", "/faq"
-
-    %br
-
-    .row#neighborhood_stats
-      .span4
-        .row
-          #available_prizes_button.span1
-          .span3
-            %b= @available.sum(:stock)
-            %br Disponiveis
-
-      .span4
-        .row
-          #neighborhood_resolved_report_button.span1
-          .span3
-            %b= @redeemed_counts
-            %br Resgatados
-
-    %br
-    .row
-      .span8
-        %h2 Categorias
-
-    .row
-      .span12
-        = render :partial => "prizes/filters"
-        %br
-
-    .row
-      .span15.prizes_list
-        - if params[:filter] == nil
-          = render :partial => "prizes/default_list"
-        - else
-          - if params[:filter] == "individual"
-            %h2 Para você
-          - elsif params[:filter] == "community"
-            %br
-            %h2 Para a comunidade
-          - elsif params[:filter] == "badges"
-            %h2 Medalhas
-          = render :partial => "prizes/filtered_list"
+  - if @current_user.blank?
+    .span16.offset1
+      %h1{:style => "margin-bottom: 20px;"}
+        = I18n.t("views.prizes.index.header_non_logged_in")
 
 
-  = render :partial => "prizes/sponsors"
+      %p{:style => "font-size: 18px; line-height: 24px;"}
+        = I18n.t("views.prizes.index.badge_explanation")
+
+      #badges.prizes{style: "margin-top:20px; margin-bottom: 20px;"}
+        = render :partial => "prizes/badges"
+
+      %p{:style => "font-size: 18px; line-height: 24px; margin-bottom: 20px;"}
+        = I18n.t("views.prizes.index.community_explanation")
+
+
+      %h1
+        = link_to I18n.t("views.prizes.index.how_to_win_prizes") + " " + I18n.t("common_terms.click_here"), faq_path
+
+
+  - else
+    .span12.offset1
+      %h1 Prêmios
+
+      .button_to#how_to
+        = link_to "Como ganhar pontos?", faq_path
+
+      %br
+
+      .row#neighborhood_stats
+        .span4
+          .row
+            #available_prizes_button.span1
+            .span3
+              %b= @available.sum(:stock)
+              %br Disponiveis
+
+        .span4
+          .row
+            #neighborhood_resolved_report_button.span1
+            .span3
+              %b= @redeemed_counts
+              %br Resgatados
+
+      %br
+      .row
+        .span8
+          %h2 Categorias
+
+      .row
+        .span12
+          = render :partial => "prizes/filters"
+          %br
+
+      .row
+        .span15.prizes_list
+          - if params[:filter] == nil
+            = render :partial => "prizes/default_list"
+          - else
+            - if params[:filter] == "individual"
+              %h2 Para você
+            - elsif params[:filter] == "community"
+              %br
+              %h2 Para a comunidade
+            - elsif params[:filter] == "badges"
+              %h2 Medalhas
+            = render :partial => "prizes/filtered_list"
+
+
+    = render :partial => "prizes/sponsors"

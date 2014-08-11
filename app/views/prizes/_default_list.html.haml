@@ -26,65 +26,6 @@
 %br
 #badges.prizes{style: "margin-top:20px;"}
   .row
-    %h2 Medalhas
-  .row
-    %li.span4.prizes.possible
-      .status.possible
-        .name
-          = link_to "Dengue Torpedo", about_path
-        .points
-          100 pontos
-      .prize_content
-        = link_to image_tag("badges/de_olho.png", :class => "prizes")
-        .description
-          = link_to "De olho no mosquito", badges_prizes_path
-        .stock
-          100 pontos
-    %li.span4.prizes.possible
-      .status.possible
-        .name
-          = link_to "Dengue Torpedo", about_path
-        .points
-          450 pontos
-      .prize_content
-        = link_to image_tag("badges/exterminador.png", :class => "prizes")
-        .description
-          = link_to "Exterminador de mosquitos", badges_prizes_path
-        .stock
-          450 pontos
-    %li.span4.prizes.possible
-      .status.possible
-        .name
-          = link_to "Dengue Torpedo", about_path
-        .points
-          900 pontos
-      .prize_content
-        = link_to image_tag("badges/guerreiro.png", :class => "prizes")
-        .description
-          = link_to "Guerreiro DT", badges_prizes_path
-        .stock
-          900 pontos
-    %li.span4.prizes.possible
-      .status.possible
-        .name
-          = link_to "Dengue Torpedo", about_path
-        .points
-          1350 pontos
-      .prize_content
-        = link_to image_tag("badges/saudavel.png", :class => "prizes")
-        .description
-          = link_to "Comunidade Saudável", badges_prizes_path
-        .stock
-          1350 pontos
-    %li.span4.prizes.possible
-      .status.possible
-        .name
-          = link_to "Dengue Torpedo", about_path
-        .points
-          1800 pontos
-      .prize_content
-        = link_to image_tag("badges/cuido.png", :class => "prizes")
-        .description
-          = link_to "Eu cuido da comunidade", badges_prizes_path
-        .stock
-          1800 pontos
+    %h2
+      = I18n.t("common_terms.badges").capitalize
+  = render :partial => "prizes/badges"
