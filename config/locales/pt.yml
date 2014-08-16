@@ -327,6 +327,23 @@ pt:
       fighter: "Guerreiro DT"
       health_worker: "Comunidade Saudável"
       caretaker: "Eu cuido da comunidade"
+    education:
+      sections:
+        circle_of_life: "Ciclo de vida"
+        solution: "Alimentação"
+        reproduction: "Reprodução e desova"
+        eggs: Ovos
+        infographic: "Acesse o infográfico"
+        origin: "Qual a origem do mosquito Aedes aegypti?"
+        name: "Por que o nome A. aegypti?"
+        ability: "Quantas pessoas um mosquito é capaz de infectar?"
+        why: "Por que só a fêmea pica?"
+        reintroduction: "É verdade que o mosquito A. aegypti já foi erradicado e depois reintroduzido no Brasil?"
+        where: "A dengue ocorre só no Brasil?"
+
+
+
+
 
   #----------------------------------------------------------------------------
   # Countries

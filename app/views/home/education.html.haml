@@ -5,34 +5,35 @@
 		%h2{style: "margin-left: 15px;"} Sumário
 		%ul{style: "list-style-type:circle; margin-left:35px;"}
 			%li
-				=link_to "Ciclo de vida", '#ciclo'
+				= link_to I18n.t("views.education.sections.circle_of_life"), '#ciclo'
 			%li
-				=link_to "Alimentação", '#alimentacao'
+				= link_to I18n.t("views.education.sections.solution"), '#alimentacao'
 			%li
-				=link_to "Reprodução e desova", '#desova'
+				= link_to I18n.t("views.education.sections.reproduction"), '#desova'
 			%li
-				=link_to "Ovos", '#ovos'
+				= link_to I18n.t("views.education.sections.eggs"), '#ovos'
 			%li
-				=link_to "Acesse o infográfico", '#acesse'
+				= link_to I18n.t("views.education.sections.infographic"), '#acesse'
 			%li
-				=link_to "Qual a origem do mosquito Aedes aegypti?", '#aedes'
+				= link_to I18n.t("views.education.sections.origin"), '#aedes'
 			%li
-				=link_to "Por que o nome A. aegypti?", '#nomeA'
+				= link_to I18n.t("views.education.sections.name"), '#nomeA'
 			%li
-				=link_to "Quantas pessoas um mosquito é capaz de infectar?", '#infectar'
+				= link_to I18n.t("views.education.sections.ability"), '#infectar'
 			%li
-				=link_to "Por que só a fêmea pica?", '#pica'
+				= link_to I18n.t("views.education.sections.why"), '#pica'
 			%li
-				=link_to "É verdade que o mosquito A. aegypti já foi erradicado e depois reintroduzido no Brasil?", '#verdade'
+				= link_to I18n.t("views.education.sections.reintroduction"), '#verdade'
 			%li
-				=link_to "A dengue ocorre só no Brasil?", '#ocorre'
+				= link_to I18n.t("views.education.sections.where"), '#ocorre'
 
 		%br
 		.accordion#accordion1
+
 			.accordion-group
 				#ciclo.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Ciclo de vida
+						= I18n.t("views.education.sections.circle_of_life")
 				#collapse1.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -52,10 +53,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/oportunista.html">http://www.ioc.fiocruz.br/dengue/textos/oportunista.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#alimentacao.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Alimentação
+						= I18n.t("views.education.sections.solution")
 				#collapse2.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -63,10 +65,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/oportunista.html">http://www.ioc.fiocruz.br/dengue/textos/oportunista.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#desova.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Reprodução e desova
+						= I18n.t("views.education.sections.reproduction")
 				#collapse3.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -74,14 +77,15 @@
 						%p
 							O acasalamento do Aedes aegypti se dá dentro ou ao redor das habitações, geralmente nos primeiros dias depois que o mosquito chega à fase adulta. É preciso somente uma cópula para a reprodução ser concretizada, pois a fêmea guarda o esperma na espermateca. Após a cópula, as fêmeas precisam realizar a hematofogia (alimentação com sangue) importante para o desenvolvimento completo dos ovos e sua maturação nos ovários Normalmente, as fêmeas do Aedes aegypti encontram-se aptas para a postura de ovos três dias após a ingestão de sangue, passando então a procurar local para desovar.
 						%p
-							A desova acontece, preferencialmente, em criadouros com água limpa e parada. Os ovos são depositados nas paredes do criadouro, bem próximo à superfície da água, porém não diretamente sobre o líquido. Daí a importância de lavar, com escova ou palha de aço, as paredes dos recipientes que não podem ser eliminados, onde o ovo pode permanecer grudado. 
+							A desova acontece, preferencialmente, em criadouros com água limpa e parada. Os ovos são depositados nas paredes do criadouro, bem próximo à superfície da água, porém não diretamente sobre o líquido. Daí a importância de lavar, com escova ou palha de aço, as paredes dos recipientes que não podem ser eliminados, onde o ovo pode permanecer grudado.
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/oportunista.html">http://www.ioc.fiocruz.br/dengue/textos/oportunista.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#ovos.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Ovos
+						= I18n.t("views.education.sections.eggs")
 				#collapse4.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -102,10 +106,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/oportunista.html">http://www.ioc.fiocruz.br/dengue/textos/oportunista.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#acesse.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Acesse o infográfico 
+						= I18n.t("views.education.sections.infographic")
 				#collapse5.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						= link_to "http://www.ioc.fiocruz.br/dengue/textos/infografico.html", "http://www.ioc.fiocruz.br/dengue/textos/infografico.html"
@@ -116,12 +121,14 @@
 						%br
 						%p
 							Fonte: <a href="http://auladengue.ioc.fiocruz.br">http://auladengue.ioc.fiocruz.br/ </a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 		%h1 O mosquito da Dengue, curiosidades do Aedes aegypti.
 		.accordion#accordion2
+
 			.accordion-group
 				#aedes.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Qual a origem do mosquito Aedes aegypti?
+						= I18n.t("views.education.sections.origin")
 				#collapse6.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -131,10 +138,11 @@
 						%br
 						%p
 							Fonte: <a href="http://auladengue.ioc.fiocruz.br/">http://auladengue.ioc.fiocruz.br/</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#nomeA.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Por que o nome A. aegypti?
+						= I18n.t("views.education.sections.name")
 				#collapse7.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -142,10 +150,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html">http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#infectar.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Quantas pessoas um mosquito é capaz de infectar?
+						= I18n.t("views.education.sections.ability")
 				#collapse8.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -153,10 +162,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html">http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#pica.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						Por que só a fêmea pica?
+						= I18n.t("views.education.sections.why")
 				#collapse9.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -164,10 +174,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html">http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#verdade.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						É verdade que o mosquito A. aegypti já foi erradicado e depois reintroduzido no Brasil?
+						= I18n.t("views.education.sections.reintroduction")
 				#collapse10.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -178,10 +189,11 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html">http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
+
 			.accordion-group
 				#ocorre.accordion-heading{style: "padding:10px;padding-left:30px;"}
 					%a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
-						A dengue ocorre só no Brasil?
+						= I18n.t("views.education.sections.where")
 				#collapse11.collapse.in.accordion-body
 					.accordion-inner{style: "padding: 9px 25px;"}
 						%p
@@ -197,12 +209,3 @@
 						%br
 						%p
 							Fonte: <a href="http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html">http://www.ioc.fiocruz.br/dengue/textos/curiosidades.html</a> - Instituto Oswaldo Cruz (IOC/Fiocruz)
-
-
-
-			
-
-
-
-      
-
