@@ -8,15 +8,39 @@
 
 
     -# Education dropdown
-    .main_nav_button.span4.offset3.dropdown-toggle{ :data => {:toggle=>"dropdown"} }
-      %h1{style: 'color:black;'}
-        = I18n.t("home_navigation.education.title")
-        %span.caret
-      %h3
-        = I18n.t("home_navigation.education.description")
-      %ul.dropdown-menu
+
+    .main_nav_button.span4.offset3
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
+        %h1{style: 'color:black;'}
+          = I18n.t("home_navigation.education.title")
+          %span.caret
+        %h3
+          = I18n.t("home_navigation.education.description")
+
+      %ul.dropdown-menu.span8
         %li
+          = link_to I18n.t("views.education.sections.circle_of_life"), education_path + '#ciclo'
         %li
+          = link_to I18n.t("views.education.sections.solution"), education_path + '#alimentacao'
+        %li
+          = link_to I18n.t("views.education.sections.reproduction"), education_path + '#desova'
+        %li
+          = link_to I18n.t("views.education.sections.eggs"), education_path + '#ovos'
+        %li
+          = link_to I18n.t("views.education.sections.infographic"), education_path + '#acesse'
+        %li
+          = link_to I18n.t("views.education.sections.origin"), education_path + '#aedes'
+        %li
+          = link_to I18n.t("views.education.sections.name"), education_path + '#nomeA'
+        %li
+          = link_to I18n.t("views.education.sections.ability"), education_path + '#infectar'
+        %li
+          = link_to I18n.t("views.education.sections.why"), education_path + '#pica'
+        %li
+          = link_to I18n.t("views.education.sections.reintroduction"), education_path + '#verdade'
+        %li
+          = link_to I18n.t("views.education.sections.where"), education_path + '#ocorre'
+
 
 
     -# How-to dropdown
