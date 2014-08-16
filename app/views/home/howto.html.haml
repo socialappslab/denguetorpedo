@@ -21,7 +21,7 @@
                 %h1{style: "color: black;"}
                   = ds.title
               .span6{style: "text-align: right;"}
-                - if @current_user && ["admin", "coordenador"].include?(@current_user.role)
+                - if @current_user && [User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
                   = link_to "Edit", edit_documentation_section_path(ds)
           #cadastrar.accordion-body
             .accordion-inner{style: "padding: 9px 25px;"}
