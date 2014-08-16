@@ -1,16 +1,25 @@
 #home_nav_bar
   .row
+    -# Logo
     - if @current_user
       = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), user_path(@current_user)
     - else
       = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
 
-    .main_nav_button.span4.offset3
-      = link_to education_path do
-        %h1{style: 'color:black;'}
-          = I18n.t("home_navigation.education.title")
-        %h3
-          = I18n.t("home_navigation.education.description")
+
+    -# Education dropdown
+    .main_nav_button.span4.offset3.dropdown-toggle{ :data => {:toggle=>"dropdown"} }
+      %h1{style: 'color:black;'}
+        = I18n.t("home_navigation.education.title")
+        %span.caret
+      %h3
+        = I18n.t("home_navigation.education.description")
+      %ul.dropdown-menu
+        %li
+        %li
+
+
+    -# How-to dropdown
     .main_nav_button.span2
       = link_to howto_path do
         %h1{style: 'color:black;'}
