@@ -44,12 +44,20 @@
 
 
     -# How-to dropdown
-    .main_nav_button.span2
-      = link_to howto_path do
+    .main_nav_button.span3
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
         %h1{style: 'color:black;'}
           = I18n.t("home_navigation.howto.title")
+          %i.fa.fa-caret-down
         %h3{style: "margin-left:-5px;"}
           = I18n.t("home_navigation.howto.description")
+
+      %ul.dropdown-menu
+        - DocumentationSection.order("order_id ASC").each do |section|
+          %li
+            = link_to section.title, howto_path + "##{section.html_id_tag}"
+
+
     .main_nav_button.span2
       = link_to prizes_path do
         %h1{style: 'color:black;'}
