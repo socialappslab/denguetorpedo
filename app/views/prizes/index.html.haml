@@ -1,21 +1,21 @@
-.row
+.row{:style => "margin-top: 50px;"}
   - if @current_user.blank? || (@neighborhood && @neighborhood.name == Neighborhood::Names::TEPALCINGO)
     .span16.offset1
-      %h1{:style => "margin-bottom: 20px;"}
+      %h1{:style => "font-size: 32px;"}
         = I18n.t("views.prizes.index.header_non_logged_in")
 
 
-      %p{:style => "font-size: 18px; line-height: 24px;"}
+      %p{:style => "font-size: 18px; line-height: 24px; margin-top: 30px;"}
         = I18n.t("views.prizes.index.badge_explanation")
 
-      #badges.prizes{style: "margin-top:20px; margin-bottom: 20px;"}
+      #badges.prizes{style: "margin-top:20px; margin-top: 40px;"}
         = render :partial => "prizes/badges"
 
-      %p{:style => "font-size: 18px; line-height: 24px; margin-bottom: 20px;"}
+      %p{:style => "font-size: 18px; line-height: 24px; margin-top: 50px;"}
         = I18n.t("views.prizes.index.community_explanation")
 
 
-      %h1
+      %h1{:style => "margin-top: 50px;"}
         = link_to I18n.t("views.prizes.index.how_to_win_prizes"), faq_path
 
 
