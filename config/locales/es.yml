@@ -288,6 +288,11 @@ es:
         sponsor:
           edit_prizes: "Códigos de control de los premios"
     prizes:
+      index:
+        how_to_win_prizes: "¿Cómo ganar puntos?  Haga clic aquí."
+        header_non_logged_in: Puntos y Premios
+        badge_explanation: Todos ganan medallas en Dengue Torpedo por puntos acumulados.
+        community_explanation: Cada comunidad de Dengue Torpedo determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
       create:
         success_flash: "Premio añadido exitosamente"
       new:

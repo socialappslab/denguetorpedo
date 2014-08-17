@@ -290,10 +290,10 @@ pt:
           edit_prizes: "Códigos de controle dos prêmios"
     prizes:
       index:
-        how_to_win_prizes: "Como ganhar pontos?"
-        header_non_logged_in: Puntos y premios
-        badge_explanation: Todos ganan medallas en DT por puntos acumulados.
-        community_explanation: Cada comunidad de Dengue Torpedo determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
+        how_to_win_prizes: "Como ganhar pontos? Clique aqui."
+        header_non_logged_in: "Pontos e Prêmios"
+        badge_explanation: Todos ganham medalhas no Dengue Torpedo por pontos acumulados.
+        community_explanation: Cada comunidade de Dengue Torpedo determinará os prêmios apropriados. Esses prêmios podem ser comunitários ou individuais. Todos os prêmios são doações que você pode ganhar ao acumular pontos. Não há pagamento ou remuneração aos participantes.
       create:
         success_flash: 'Prêmio criado com sucesso!'
       new:
