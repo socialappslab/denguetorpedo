@@ -4,7 +4,7 @@
 es:
   attributes:
     title: "Título"
-    neighborhood_id: "Colonia"
+    neighborhood_id: "Comunidad"
     name: Nombre
     number: Número
     content: Contenido
@@ -330,7 +330,7 @@ es:
       sections:
         circle_of_life:
         solution:
-        reproduction: 
+        reproduction:
         eggs:
         infographic:
         origin:

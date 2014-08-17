@@ -3,7 +3,7 @@
 #content{style: "min-height:700px;"}
   / Display the Mare evacuation alert content box if the selected neighborhood
   / is Mare.
-  - if @neighborhood && @neighborhood.name == "Maré"
+  - if @neighborhood && @neighborhood.name == Neighborhood::Names::MARE
     .row
       %div{:style => "position: fixed; display: block; z-index: 10; top: 275px; width: 1170px; margin-left: 10px;"}
         .alert.alert-danger{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px;"}
