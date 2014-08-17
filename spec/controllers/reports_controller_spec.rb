@@ -72,7 +72,6 @@ describe ReportsController do
 					visit user_path(user)
 
 					expect(report.reload.status).to eq(Report::STATUS[:reported])
-					expect(page).to have_content("Encontrei um foco")
 				end
 			end
 
