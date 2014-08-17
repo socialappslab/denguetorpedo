@@ -26,7 +26,7 @@
             %i.fa.fa-play-circle{:style => "font-size: 64px; color: #333;"}
         .span7
           %h2{:style => "color: #333; font-size: 20px;"}
-            = I18n.t("views.home.video_description_html", :link_url => "http://www.youtube.com/embed/o6IY0NjdmZc").html_safe
+            = I18n.t("views.home.video_description_html", :link_url => @introductory_video_on_dengue).html_safe
 
     .span5{:style => "margin-top: 25px;"}
       = render "home/register_form"

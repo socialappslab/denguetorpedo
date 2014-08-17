@@ -32,6 +32,13 @@ class HomeController < ApplicationController
     @reports    = Report.where(:neighborhood_id => @neighborhood.id).order("created_at DESC").limit(10)
     @reports    = @reports.find_all {|r| r.is_public? }[0..3]
     @news_feed  = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
+
+    # Display the appropriate introduction video on homepage.
+    if I18n.locale == :es
+      @introductory_video_on_dengue = "http://www.youtube.com/embed/tp8Ti8-utF8"
+    else
+      @introductory_video_on_dengue = "http://www.youtube.com/embed/o6IY0NjdmZc"
+    end
   end
 
   #----------------------------------------------------------------------------
