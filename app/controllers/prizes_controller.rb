@@ -7,13 +7,14 @@ class PrizesController < ApplicationController
 
   #-----------------------------------------------------------------------------
   # GET /premios
-  
+
   def index
     @user = current_user
 
     @prizes = Prize.where(:is_badge => false)
     if current_user
-      @prizes = @prizes.where(:neighborhood_id => [nil, current_user.neighborhood_id])
+      @prizes       = @prizes.where(:neighborhood_id => [nil, current_user.neighborhood_id])
+      @neighborhood = current_user.neighborhood
     end
 
     @prizes    = @prizes.sort { |a, b| (a.expired? ? 1 : 0) <=> (b.expired? ? 1 : 0) }
