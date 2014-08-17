@@ -1,16 +1,14 @@
-# == Schema Information
-#
-# Table name: neighborhoods
-#
-#  id             :integer          not null, primary key
-#  name           :string(255)
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  coordinator_id :integer
-#
+# encoding: utf-8
 
 class Neighborhood < ActiveRecord::Base
   attr_accessible :name, :photo, :city, :state_string_id, :country_string_id, :as => :admin
+
+  #----------------------------------------------------------------------------
+
+  module Names
+    MARE       = "Maré"
+    TEPALCINGO = "Tepalcingo"
+  end
 
   #----------------------------------------------------------------------------
 

@@ -3,7 +3,8 @@
     .alert.alert-danger.alert-dismissable
       %button{:type => "button", :class => "close", :data => {:dismiss => "alert"}}
         &times;
-      %h2= "#{item.errors.full_messages.uniq.count} erros impediram que o usuário fosse salvo."
+      %h2
+        = I18n.t("views.application.devise_errors", :num_errors => item.errors.full_messages.uniq.count)
       %ul
         - item.errors.full_messages.each do |msg|
           %li=msg
