@@ -1,5 +1,5 @@
 .row
-  - if @current_user.blank?
+  - if @current_user.blank? || (@neighborhood && @neighborhood.name == Neighborhood::Names::TEPALCINGO)
     .span16.offset1
       %h1{:style => "margin-bottom: 20px;"}
         = I18n.t("views.prizes.index.header_non_logged_in")
