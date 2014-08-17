@@ -24,7 +24,7 @@ describe "How To", :type => :feature do
   it "doesn't allow editing of sections for logged-in users" do
     sign_in(user)
     visit edit_documentation_section_path(section)
-    expect(page).to have_content("Você não pode acessar esse conteúdo")
+    expect(page).to have_content( I18n.t("views.application.permission_required") )
   end
 
   context "as a coordinator" do

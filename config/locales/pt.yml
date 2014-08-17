@@ -245,6 +245,7 @@ pt:
   views:
     application:
       error: "Algo deu errado. Por favor, tente novamente."
+      devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
       permission_required: Você não tem permissão para acessar esta página!
     alerts:
@@ -321,6 +322,9 @@ pt:
       faq: "Perguntas frequentes"
       contact: "Contato DT"
       about: "Sobre o Dengue Torpedo"
+    documentation_sections:
+      edit:
+        no_edit: "Nota: Essa seção ainda não foi editada"
     badges:
       eye_of_the_mosquito: "De olho no mosquito"
       exterminator: "Exterminador de mosquitos"

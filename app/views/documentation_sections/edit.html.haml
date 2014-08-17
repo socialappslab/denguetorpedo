@@ -6,13 +6,16 @@
     %h1 Completar o foco
     = form_for @section do |f|
       = f.label :title
-      = f.text_field :title
+      = f.text_field :title, :value => @section.title
       = f.label :content
-      = f.text_area :content
-      = f.submit "Enviar!"
+      = f.text_area :content, :value => @section.content
+      = button_tag :type => "submit", :class => "btn btn-success submit-button" do
+        %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+        = I18n.t("views.buttons.submit")
+
 
     %p
       - if @section.editor.present?
         = "Nota: Última edicação às #{time_ago_in_words(@section.updated_at)} atrás por #{@section.editor.full_name}"
       - else
-        = "Nota: Essa seção ainda não foi editada"
+        = I18n.t("views.documentation_sections.edit.no_edit")
