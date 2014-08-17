@@ -320,6 +320,12 @@ es:
       faq: "Preguntas frecuentes"
       contact: "Contacto DT"
       about: "Sobre Dengue Torpedo"
+    badges:
+      eye_of_the_mosquito: "Vigilante de mosquitos"
+      exterminator: "Exterminador de mosquitos"
+      fighter: "Guerrero DT"
+      health_worker: "Comunidad Saludable"
+      caretaker: "Yo cuido mi comunidad"
 
   #----------------------------------------------------------------------------
   # Countries
