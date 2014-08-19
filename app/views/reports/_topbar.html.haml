@@ -39,13 +39,13 @@
       - if report.sms_incomplete?
         .span{style: "margin-top:3px; margin-right:10px;"}
           = I18n.t("common_terms.sms")
-      - elsif report.expired?
+      - elsif report.is_eliminated?
         .span.time_expired
-          = I18n.t("common_terms.time_expired")
+          = I18n.t("common_terms.eliminated")
       - elsif report.is_open?
         .countdown.countdownHolder.timer
         .span.countdown_label
           = I18n.t("common_terms.open_for")
-      - elsif report.is_eliminated?
+      - elsif report.expired?
         .span.time_expired
-          = I18n.t("common_terms.eliminated")
+          = I18n.t("common_terms.time_expired")
