@@ -1,5 +1,8 @@
 .row
 	.span15.offset1
+		%h2{style: "margin-left: 15px; margin-top: 40px;"}
+			= I18n.t("views.education.summary")
+
 		- if I18n.locale == :es
 			= render :partial => "home/education_content_es"
 		- else
