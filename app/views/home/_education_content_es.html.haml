@@ -1,0 +1,91 @@
+%h1 Como é o ciclo de vida do mosquito da dengue e quais seus principais criadouros?
+%br
+%h2{style: "margin-left: 15px;"}
+  = I18n.t("views.education.summary")
+%ul{style: "list-style-type:circle; margin-left:35px;"}
+  = render :partial => "home/education_dropdown_es"
+
+
+%br
+.accordion#accordion1
+  .accordion-group
+    #information-mexico.accordion-heading{style: "padding:10px;padding-left:30px;"}
+      %a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        = "Informacion del Gobierno de Mexico sobre dengue"
+    #collapse1.collapse.in.accordion-body
+      .accordion-inner{style: "padding: 9px 25px;"}
+
+        %a{:href => "http://www.cenaprece.salud.gob.mx/programas/interior/vectores/dengue.html", :target => "_blank"}
+          http://www.cenaprece.salud.gob.mx/programas/interior/vectores/dengue.html
+
+        %br
+
+        %a{:href => "http://www.facmed.unam.mx/deptos/microbiologia/virologia/dengue.html", :target => "_blank"}
+          http://www.facmed.unam.mx/deptos/microbiologia/virologia/dengue.html
+
+        %br
+
+        %a{:href => "http://www.saludsinaloa.gob.mx/sitio/promocion.html", :target => "_blank"}
+          http://www.saludsinaloa.gob.mx/sitio/promocion.html
+
+
+
+  .accordion-group
+    #who.accordion-heading{style: "padding:10px;padding-left:30px;"}
+      %a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        = "Organizacion Mundial de la Salud"
+    #collapse1.collapse.in.accordion-body
+      .accordion-inner{style: "padding: 9px 25px;"}
+
+        %a{:href => "http://www.who.int/mediacentre/factsheets/fs117/es/", :target => "_blank"}
+          http://www.who.int/mediacentre/factsheets/fs117/es/
+
+        %br
+        %br
+
+        Estrategia global de la OPS contra el dengue:
+
+        %a{:href => "http://www.who.int/denguecontrol/9789241504034/en/", :target => "_blank"}
+          http://www.who.int/denguecontrol/9789241504034/en/
+
+        %br
+        %br
+
+        La estrategia integral de manejo del mosquito  (o vector de dengue) hace enfasis en la mobilizacion comunitaria y capacitacion.
+        An integrated mosquito management approach (also called vector control) emphasizes community mobilization and capacity building.
+
+
+  .accordion-group
+    #unicef.accordion-heading{style: "padding:10px;padding-left:30px;"}
+      %a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        = "Unicef"
+    #collapse1.collapse.in.accordion-body
+      .accordion-inner{style: "padding: 9px 25px;"}
+
+        %a{:href => "http://www.unicef.org/argentina/spanish/media_14426.htm", :target => "_blank"}
+          http://www.unicef.org/argentina/spanish/media_14426.htm
+
+
+
+  .accordion-group
+    #wikipedia.accordion-heading{style: "padding:10px;padding-left:30px;"}
+      %a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        = "Dengue Wikipedia"
+    #collapse1.collapse.in.accordion-body
+      .accordion-inner{style: "padding: 9px 25px;"}
+
+        %a{:href => "http://es.wikipedia.org/wiki/Dengue", :target => "_blank"}
+          http://es.wikipedia.org/wiki/Dengue
+
+
+
+
+  .accordion-group
+    #map.accordion-heading{style: "padding:10px;padding-left:30px;"}
+      %a{style: "font-size:18px;font-weight:bold;", class: "accordion-heading", data: { parent: "#accordion1"}}
+        = "Mapa global dengue"
+    #collapse1.collapse.in.accordion-body
+      .accordion-inner{style: "padding: 9px 25px;"}
+
+        %a{:href => "http://healthmap.org/dengue/en/", :target => "_blank"}
+          http://healthmap.org/dengue/en/
