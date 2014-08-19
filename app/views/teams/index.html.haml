@@ -5,11 +5,11 @@
   .span12.offset3
 
     .row
-      .span7{:style => "width: 380px;"}
+      .span8
         %h1{:style => "font-size: 40px;"}
-          = I18n.t("activerecord.models.team", :count => 2)
+          = I18n.t("activerecord.models.team", :count => 2) + " " + @neighborhood.name
 
-      .span6{:style => "text-align: right;"}
+      .span4{:style => "text-align: right;"}
         = link_to "+ " + I18n.t("views.teams.create"), nil, :class => "btn btn-success btn-large", :id => "create-new-team"
 
     .row{:style => "margin-top: 20px;"}

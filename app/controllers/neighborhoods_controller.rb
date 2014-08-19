@@ -8,11 +8,11 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @neighborhood = Neighborhood.find(params[:id])
 
     # Identify the users, and reports.
-    @participants = @neighborhood.members.includes(:posts).where(is_blocked: false)
+    @participants = @neighborhood.members.includes(:posts).where(is_blocked: false).order("first_name ASC")
     @reports      = @neighborhood.reports
     @notices      = @neighborhood.notices.order("updated_at DESC")
 
-    @teams = @neighborhood.teams
+    @teams = @neighborhood.teams.order("name ASC")
     @teams = @teams.find_all { |t| t.users.count > 0 }
 
     @total_reports_in_neighborhood      = @reports.count

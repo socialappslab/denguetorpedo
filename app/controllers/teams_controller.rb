@@ -1,12 +1,13 @@
 # encoding: utf-8
 class TeamsController < ApplicationController
   before_filter :require_login
+  before_filter :identify_neighborhood
 
   #----------------------------------------------------------------------------
   # GET /teams
 
   def index
-    @teams = Team.where(:neighborhood_id => @current_user.neighborhood_id)
+    @teams = Team.where(:neighborhood_id => @neighborhood.id)
     @team  = Team.new
 
     # Calculate ranking for each team.
@@ -44,7 +45,7 @@ class TeamsController < ApplicationController
 
   def create
     @team                 = Team.new(params[:team])
-    @team.neighborhood_id = @current_user.neighborhood_id
+    @team.neighborhood_id = @neighborhood.id
 
     if @team.save
       # If the team was successfully created, create the team membership
@@ -58,7 +59,7 @@ class TeamsController < ApplicationController
         format.json { render :json => {:team => @team, :success => flash[:notice]}, :status => :ok }
       end
     else
-      @teams = Team.where(:neighborhood_id => @current_user.neighborhood_id)
+      @teams = Team.where(:neighborhood_id => @neighborhood.id)
 
       # Calculate ranking for each team.
       team_rankings  = @teams.map {|t| [t, t.total_points]}
@@ -117,4 +118,13 @@ class TeamsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+
+  private
+
+  def identify_neighborhood
+    @neighborhood = @current_user.neighborhood
+  end
+
+  #----------------------------------------------------------------------------
+
 end

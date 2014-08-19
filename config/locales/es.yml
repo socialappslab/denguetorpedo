@@ -4,7 +4,7 @@
 es:
   attributes:
     title: "Título"
-    neighborhood_id: "Colonia"
+    neighborhood_id: "Comunidad"
     name: Nombre
     number: Número
     content: Contenido
@@ -326,6 +326,20 @@ es:
       fighter: "Guerrero DT"
       health_worker: "Comunidad Saludable"
       caretaker: "Yo cuido mi comunidad"
+    education:
+      summary: Sumario
+      sections:
+        circle_of_life:
+        solution:
+        reproduction:
+        eggs:
+        infographic:
+        origin:
+        name:
+        ability:
+        why:
+        reintroduction:
+        where:
 
   #----------------------------------------------------------------------------
   # Countries

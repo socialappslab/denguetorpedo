@@ -116,7 +116,7 @@ pt:
   dashboard:
     my_profile: Meu Perfil
     my_house: Minha Casa
-    my_community: Minha comunidade
+    my_community: Minha Comunidade
     reports: Focos Marcados
 
 
@@ -248,6 +248,7 @@ pt:
       devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
       permission_required: Você não tem permissão para acessar esta página!
+      user_blocked: "Sua conta está bloqueada temporariamente. Por favor, entre em contato com o Dengue Torpedo."
     alerts:
       confirm_leave_team: Tem certeza que deseja sair da equipe?
     coordinators:
@@ -331,6 +332,24 @@ pt:
       fighter: "Guerreiro DT"
       health_worker: "Comunidade Saudável"
       caretaker: "Eu cuido da comunidade"
+    education:
+      summary: Sumário
+      sections:
+        circle_of_life: "Ciclo de vida do mosquito Aedes aegypti"
+        solution: "Alimentação"
+        reproduction: "Reprodução e desova"
+        eggs: Ovos
+        infographic: "Acesse o infográfico"
+        origin: "Qual a origem do mosquito Aedes aegypti?"
+        name: "Por que o nome A. aegypti?"
+        ability: "Quantas pessoas um mosquito é capaz de infectar?"
+        why: "Por que só a fêmea pica?"
+        reintroduction: "É verdade que o mosquito A. aegypti já foi erradicado e depois reintroduzido no Brasil?"
+        where: "A dengue ocorre só no Brasil?"
+
+
+
+
 
   #----------------------------------------------------------------------------
   # Countries

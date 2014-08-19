@@ -1,22 +1,45 @@
 #home_nav_bar
   .row
+    -# Logo
     - if @current_user
       = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), user_path(@current_user)
     - else
       = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
 
-    .main_nav_button.span4.offset3
-      = link_to education_path do
+
+    -# Education dropdown
+
+    .main_nav_button.span3.offset3
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
         %h1{style: 'color:black;'}
           = I18n.t("home_navigation.education.title")
+          %i.fa.fa-caret-down
         %h3
           = I18n.t("home_navigation.education.description")
-    .main_nav_button.span2
-      = link_to howto_path do
+
+      %ul.dropdown-menu
+        - if I18n.locale.to_s == "es"
+          = render :partial => "home/education_dropdown_es"
+        - else
+          = render :partial => "home/education_dropdown_pt"
+
+
+
+    -# How-to dropdown
+    .main_nav_button.span3
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
         %h1{style: 'color:black;'}
           = I18n.t("home_navigation.howto.title")
+          %i.fa.fa-caret-down
         %h3{style: "margin-left:-5px;"}
           = I18n.t("home_navigation.howto.description")
+
+      %ul.dropdown-menu
+        - DocumentationSection.order("order_id ASC").each do |section|
+          %li
+            = link_to section.title, howto_path + "##{section.html_id_tag}"
+
+
     .main_nav_button.span2
       = link_to prizes_path do
         %h1{style: 'color:black;'}

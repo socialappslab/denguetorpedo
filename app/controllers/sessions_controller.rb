@@ -30,8 +30,9 @@ class SessionsController < ApplicationController
           format.json { render json: {auth_token: user.auth_token}}
         end
       else
-        redirect_to root_url, :alert => "Sua conta está bloqueada temporariamente.  Por favor, entre em contato com o Dengue Torpedo."
+        redirect_to root_url, :alert => I18n.t("views.application.user_blocked")
       end
+
     else
       redirect_to root_url, :alert => I18n.t("common_terms.email_or_password_incorrect")
     end

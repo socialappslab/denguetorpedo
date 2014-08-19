@@ -144,3 +144,15 @@ div {
     list-style: disc;
   }
 }
+
+
+//-----------------------------------------------------------------------------
+// Bootstrap overrides
+.dropdown-menu {
+  width: 700px;
+  left: inherit !important;
+
+  li {
+    text-align: left;
+  }
+}
