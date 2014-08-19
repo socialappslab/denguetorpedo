@@ -333,6 +333,7 @@ pt:
       health_worker: "Comunidade Saudável"
       caretaker: "Eu cuido da comunidade"
     education:
+      summary: Sumário
       sections:
         circle_of_life: "Ciclo de vida"
         solution: "Alimentação"

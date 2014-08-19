@@ -327,6 +327,7 @@ es:
       health_worker: "Comunidad Saludable"
       caretaker: "Yo cuido mi comunidad"
     education:
+      summary: Sumario
       sections:
         circle_of_life:
         solution:
