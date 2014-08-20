@@ -7,35 +7,35 @@
         = f.label :email, :class => "control-label", :style => "font-size: 12px;" do
           = I18n.t("activerecord.attributes.user.email")
         .controls
-          = f.text_field :email, :placeholder => I18n.t("activerecord.attributes.user.email"), :style => "width: 100%;"
+          = f.text_field :email,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
         = f.label :first_name, :class => "control-label", :style => "font-size: 12px;" do
           = I18n.t("activerecord.attributes.user.first_name")
         .controls
-          = f.text_field :first_name, :placeholder => I18n.t("activerecord.attributes.user.first_name"), :style => "width: 100%;"
+          = f.text_field :first_name,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
         = f.label :last_name, :class => "control-label", :style => "font-size: 12px;" do
           = I18n.t("activerecord.attributes.user.last_name")
         .controls
-          = f.text_field :last_name, :placeholder => I18n.t("activerecord.attributes.user.last_name"), :style => "width: 100%;"
+          = f.text_field :last_name,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
         = f.label :password, :class => "control-label", :style => "font-size: 12px;" do
           = I18n.t("activerecord.attributes.user.password")
         .controls
-          = f.password_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width: 100%;"
+          = f.password_field :password,  :style => "width: 100%;"
 
 
-      .control-group{:style => "margin-bottom: 0px;"}
-        = f.label :password_confirmation, :class => "control-label", :style => "font-size: 12px;" do
+      .control-group{:style => "margin-bottom: 5px;"}
+        = f.label :password_confirmation, :class => "control-label", :style => "font-size: 12px; padding-top: 0px; margin-bottom: 0px;" do
           = I18n.t("activerecord.attributes.user.password_confirmation")
         .controls
-          = f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
+          = f.password_field :password_confirmation,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 10px;"}
