@@ -1,60 +1,60 @@
 
-.row
-  #dashboard_bar
-    /------------------------------------------------------------------------
+.row#dashboard_bar
 
-    .span3.offset4{:style => "text-align: center;"}
-      - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
-        - header_styling = "font-weight: bold;"
-      - else
-        - header_styling = ""
+  /------------------------------------------------------------------------
 
-      - if @current_user.role == User::Types::SPONSOR
-        = link_to sponsor_path(@current_user), :style => "#{header_styling}" do
-          %i.fa.fa-user.fa-2
-          = I18n.t("dashboard.my_profile")
-      - else
-        = link_to user_path(@current_user), :style => "#{header_styling}" do
-          %i.fa.fa-user.fa-2
-          = I18n.t("dashboard.my_profile")
+  .span3.offset4{:style => "text-align: center; margin-top: 15px;"}
+    - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
+      - header_styling = "font-weight: bold;"
+    - else
+      - header_styling = ""
 
-
-    /------------------------------------------------------------------------
-
-    .span4{:style => "text-align: center;"}
-      - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
-        - header_styling = "font-weight: bold;"
-      - else
-        - header_styling = ""
-
-      - if @current_user && @current_user.neighborhood
-        - relevant_link = neighborhood_path(@current_user.neighborhood)
-      - elsif @current_user.role != User::Types::VISITOR
-        - relevant_link = edit_user_path(@current_user)
-      - else
-        - relevant_link = neighborhood_path(Neighborhood.first)
-      = link_to relevant_link, :style => "#{header_styling}" do
-        %i.fa.fa-users.fa-2
-        = I18n.t("dashboard.my_community")
+    - if @current_user.role == User::Types::SPONSOR
+      = link_to sponsor_path(@current_user), :style => "#{header_styling}" do
+        %i.fa.fa-user.fa-2
+        = I18n.t("dashboard.my_profile")
+    - else
+      = link_to user_path(@current_user), :style => "#{header_styling}" do
+        %i.fa.fa-user.fa-2
+        = I18n.t("dashboard.my_profile")
 
 
-    /------------------------------------------------------------------------
+  /------------------------------------------------------------------------
 
-    .span3{:style => "text-align: center;"}
-      - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
-      = link_to teams_path, :style => "#{bold_header_title}" do
-        %i.fa.fa-search
-        = I18n.t("activerecord.models.team", :count => 3)
+  .span4{:style => "text-align: center; margin-top: 15px;"}
+    - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
+      - header_styling = "font-weight: bold;"
+    - else
+      - header_styling = ""
 
-    /------------------------------------------------------------------------
+    - if @current_user && @current_user.neighborhood
+      - relevant_link = neighborhood_path(@current_user.neighborhood)
+    - elsif @current_user.role != User::Types::VISITOR
+      - relevant_link = edit_user_path(@current_user)
+    - else
+      - relevant_link = neighborhood_path(Neighborhood.first)
+    = link_to relevant_link, :style => "#{header_styling}" do
+      %i.fa.fa-users.fa-2
+      = I18n.t("dashboard.my_community")
 
-    .span4
-      - if @current_user && @current_user.neighborhood
-        - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
-      - elsif @current_user.role != User::Types::VISITOR
-        - relevant_link = edit_user_path(@current_user)
-      - else
-        - relevant_link = reports_path
-      = link_to relevant_link do
-        %i.fa.fa-plus.fa-2
-        = I18n.t("dashboard.reports")
+
+  /------------------------------------------------------------------------
+
+  .span3{:style => "text-align: center; margin-top: 15px;"}
+    - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
+    = link_to teams_path, :style => "#{bold_header_title}" do
+      %i.fa.fa-search
+      = I18n.t("activerecord.models.team", :count => 3)
+
+  /------------------------------------------------------------------------
+
+  .span4{:style => "margin-top: 15px;"}
+    - if @current_user && @current_user.neighborhood
+      - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
+    - elsif @current_user.role != User::Types::VISITOR
+      - relevant_link = edit_user_path(@current_user)
+    - else
+      - relevant_link = reports_path
+    = link_to relevant_link do
+      %i.fa.fa-plus.fa-2
+      = I18n.t("dashboard.reports")

@@ -2,7 +2,6 @@
 
 #login {
   width: 400px;
-  // height: 90px;
   text-align: left;
   margin-top: 20px;
 
@@ -30,20 +29,18 @@
   }
 }
 
-#logged_in{
-  height: 75px;
-  // width: 400px;
+#logged_in {
   margin-top: 20px;
   margin-right: 10px;
-  // margin-left: 100px;
   text-align: left;
-  h3{
-	color:white;
 
-	font-size: 17px;
-}
-  ul {
+  h3 {
+  	color:white;
+  	font-size: 17px;
+    margin-bottom: 0px;
+    font-color: #333333;
   }
+
   #dashboard_search {
     margin-left: 0px;
     margin-right: 40px;
@@ -55,10 +52,5 @@
 	    margin-top:-5px;
       width: 200px;
     }
-  }
-
-  h3 {
-    margin-bottom: 0px;
-    font-color: #333333;
   }
 }
