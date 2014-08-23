@@ -16,8 +16,10 @@ class Report < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
+  # Constants
 
   STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
+  EXPIRATION_WINDOW = 48 * 3600 # in seconds
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
@@ -87,21 +89,13 @@ class Report < ActiveRecord::Base
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
 
-  def is_eliminated?
+  def eliminated?
     return self.status == Report::STATUS[:eliminated]
   end
 
-  def eliminated?
-    return self.is_eliminated?
-  end
-
   # NOTE: Open does not mean active. An open report can be expired.
-  def is_open?
-    return self.status == Report::STATUS[:reported]
-  end
-
   def open?
-    return self.is_open?
+    return self.status == Report::STATUS[:reported]
   end
 
   def sms_incomplete?
@@ -216,7 +210,7 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def expire_date
-    self.completed_at + 3600 * 50
+    self.completed_at + EXPIRATION_WINDOW
   end
 
   def set_names

@@ -250,7 +250,7 @@ class User < ActiveRecord::Base
   end
 
   def verifier?
-    return (self.role ==  User::Types::COORDINATOR || self.role = User::Types::VERIFIER)
+    return (self.role ==  User::Types::COORDINATOR || self.role == User::Types::VERIFIER)
   end
 
   def sponsor?
