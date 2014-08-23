@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
 
   scope :residents, where("role = 'morador' OR role = 'coordenador'")
 
-  has_many :team_memberships
+  has_many :team_memberships, :dependent => :destroy
   has_many :teams, :through => :team_memberships
 
   #----------------------------------------------------------------------------

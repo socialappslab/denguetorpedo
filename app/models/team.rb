@@ -5,7 +5,7 @@ class Team < ActiveRecord::Base
 
   has_attached_file :profile_photo, :styles => {:small => "60x60>", :medium => "150x150>" , :large => "225x225>"}
 
-  has_many :team_memberships
+  has_many :team_memberships, :dependent => :destroy
   has_many :users, :through => :team_memberships
 
   #----------------------------------------------------------------------------
