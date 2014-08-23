@@ -202,7 +202,7 @@ pt:
     activities: Atividades
     male: Masculino
     female: Feminino
-    admin_configurations: Configurações de administrador
+    coordinator_configurations: Configurações de coordenador
     sponsor_configurations: Configurações de patrocinador
     no_one: Ninguém
     or: ou

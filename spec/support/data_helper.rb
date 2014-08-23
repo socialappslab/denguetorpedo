@@ -26,7 +26,7 @@ def populate_data
     u.password   = "abcdefg"
     u.first_name = "Admin"
     u.last_name  = "Admin"
-    u.role       = "admin"
+    u.role       = User::Types::COORDINATOR
     u.neighborhood_id = mare.id
     u.save!
   end
