@@ -85,8 +85,8 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def can_manage_other_users?
-    return [Types::ADMIN, Types::COORDINATOR].include?(self.role)
+  def can_coordinate?
+    return [Types::COORDINATOR].include?(self.role)
   end
 
   def location
