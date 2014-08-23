@@ -1,5 +1,6 @@
 .offset1
-  %h1 Administrar tipos de focos e métodos de eliminação
+  %h1
+    = I18n.t("views.admin.edit_report")
   %br
 
   %input{type: "text", placeholder: "Novo tipo", id: "type_name"}
@@ -11,15 +12,18 @@
       %col{width: "10%"}
       %col{width: "10%"}
       %col{width: "10%"}
+
     - @types.each do |type|
       %tr
-        %td= type.description
+        %td
+          = type.description
         %td
         %td
-          = link_to "Editar", "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
+          = link_to I18n.t("common_terms.edit"), "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
         %td
-          = link_to "Deletar", "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
-          = link_to "Cancelar", "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
+          = link_to I18n.t("common_terms.delete"), "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
+          = link_to I18n.t("common_terms.cancel"), "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
+
       - type.elimination_methods.each do |method|
         %tr
           %td{style: "padding-left:40px;"}
@@ -27,10 +31,10 @@
           %td
             = method.points
           %td
-            = link_to "Editar", "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
+            = link_to I18n.t("common_terms.edit"), "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
           %td
-            = link_to "Deletar", "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
-            = link_to "Cancelar", "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
+            = link_to I18n.t("common_terms.delete"), "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
+            = link_to I18n.t("common_terms.cancel"), "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
       %tr
         %td{style: "padding-left:40px;"}
           %input{type: "text", style: "width:500px;margin-bottom:0px;", placeholder: "Novo método", id: "new_method_name_#{type.id}"}

@@ -156,6 +156,7 @@ es:
   #----------------------------------
 
   common_terms:
+    codes: Códigos
     order_by: Ordenar por
     houses: Casas
     participants: Miembros
