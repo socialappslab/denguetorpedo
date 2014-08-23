@@ -20,11 +20,11 @@
 						%td
 							= link_to user.full_name, edit_user_path(user)
 						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
 						%td{:style => "color:red"}
 							= link_to user.full_name, edit_user_path(user), :style => "color:red;"
-						%td= link_to I18n.t("views.admin.unblock"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+						%td= link_to I18n.t("views.admin.unblock"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 	%br
 
@@ -45,14 +45,14 @@
 						%td
 							= link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"
 						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
 						%td{:style => "color:red"}
 							= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
 						%td
 							= I18n.t("common_terms.codes")
 						%td
-							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 	%br
 
@@ -71,12 +71,12 @@
 						%td
 							= link_to verifier.full_name, edit_user_path(verifier)
 						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
 						%td{:style => "color:red"}
 							= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
 						%td
-							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 	%br
 
 	-#----------------------------------------------------------------------------
@@ -94,12 +94,12 @@
 						%td
 							= link_to visitor.full_name, edit_user_path(visitor)
 						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
 						%td{:style => "color:red"}
 							= link_to visitor.full_name, edit_user_path(visitor), :style => "color:red;"
 						%td
-							= link_to I18n.("views.admin.unblock"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.application.alerts.confirm_delete")}
+							= link_to I18n.("views.admin.unblock"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 
 

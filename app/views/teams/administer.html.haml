@@ -1,0 +1,26 @@
+= render :partial => "shared/flashes"
+
+.row.offset1
+  %h1.span5{style: "margin-left:0px;"}
+    = I18n.t("views.admin.edit_teams")
+
+%br
+
+.row.offset1
+
+  %table.users_table.span12{:cellpadding => 10, border: 1}
+    %colgroup
+      %col{style: "width:70%;"}
+      %col{style: "width:15%;"}
+      %col{style: "width:15%;"}
+    - @teams.each do |team|
+      %tr
+        %td
+          = team.name
+        %td{:style => "margin-left:10px;"}
+          - link_text = (team.blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block"))
+          = link_to link_text, block_team_path(team), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+
+  %br
+
+  -#----------------------------------------------------------------------------
