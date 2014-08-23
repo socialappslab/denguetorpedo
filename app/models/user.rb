@@ -228,7 +228,7 @@ class User < ActiveRecord::Base
     end
     name = name + " " + self.last_name
 
-    if !(self.nickname.nil? or self.nickname.empty?)
+    if !(self.nickname.blank?)
       name = name + " (" + self.nickname + ")"
     end
     return name
