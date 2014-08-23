@@ -90,12 +90,14 @@ class Report < ActiveRecord::Base
   # is eliminated, open, expired or SMS.
 
   def eliminated?
-    return self.status == Report::STATUS[:eliminated]
+    return self.elimination_method_id.present?
+    # return self.status == Report::STATUS[:eliminated]
   end
 
   # NOTE: Open does not mean active. An open report can be expired.
   def open?
-    return self.status == Report::STATUS[:reported]
+    return self.elimination_method_id.blank?
+    # return self.status == Report::STATUS[:reported]
   end
 
   def sms_incomplete?
