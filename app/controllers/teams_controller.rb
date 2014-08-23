@@ -7,7 +7,7 @@ class TeamsController < ApplicationController
   # GET /teams
 
   def index
-    @teams = Team.where(:neighborhood_id => @neighborhood.id)
+    @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
     @team  = Team.new
 
     # Calculate ranking for each team.
@@ -59,7 +59,7 @@ class TeamsController < ApplicationController
         format.json { render :json => {:team => @team, :success => flash[:notice]}, :status => :ok }
       end
     else
-      @teams = Team.where(:neighborhood_id => @neighborhood.id)
+      @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
 
       # Calculate ranking for each team.
       team_rankings  = @teams.map {|t| [t, t.total_points]}
