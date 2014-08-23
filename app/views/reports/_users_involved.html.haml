@@ -14,7 +14,7 @@
     = link_to report.verifier.display_name + " " + report.strftime_with(:created_at), user_path(report.verifier), :class => "user"
     %br
 
-  - if report.eliminator
+  - if report.eliminated? && report.eliminator
     = "#{I18n.t("common_terms.eliminated_by")}:"
     = link_to report.eliminator.display_name + " " + report.strftime_with(:eliminated_at), user_path(report.eliminator), :class => "user", :style => "width:100%;"
     %br

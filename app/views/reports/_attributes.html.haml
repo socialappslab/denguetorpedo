@@ -19,7 +19,7 @@
       %h3{:style => "font-weight:bold;"} Tipo de foco:
       = report.breeding_site.description
 
-      - if report.elimination_method_id.present?
+      - if report.eliminated?
         %h3{:style => "font-weight:bold;"}
           = I18n.t("activerecord.models.elimination_method") + ": "
         = report.elimination_method.description
