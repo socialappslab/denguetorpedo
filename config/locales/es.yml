@@ -251,13 +251,14 @@ es:
       edit_sms: "Administrar mensajes de texto de Dengue Torpedo"
       edit_feedback: "Administrar contratos"
       edit_report: "Administrar tipos de foco y métodos"
+      edit_teams: Administrar equipos
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
-      confirm_delete: ¿Está seguro?
+      confirm: ¿Está seguro?
     coordinators:
       users:
         success_create_flash:  "Usuario creado con éxito"

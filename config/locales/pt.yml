@@ -260,6 +260,10 @@ pt:
       edit_report: "Administrar tipos e métodos"
       edit_verifiers: Administrar verificadores
       edit_visitors: Administrar visitantes
+      edit_residents: Administrar moradores
+      edit_teams: Administrar equipes
+      team_successfully_blocked: You've successfully blocked the team.
+      team_successfully_unblocked: You've successfully unblocked the team.
     application:
       error: "Algo deu errado. Por favor, tente novamente."
       devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"
@@ -268,7 +272,7 @@ pt:
       user_blocked: "Sua conta está bloqueada temporariamente. Por favor, entre em contato com o Dengue Torpedo."
     alerts:
       confirm_leave_team: Tem certeza que deseja sair da equipe?
-      confirm_delete: Você tem certeza?
+      confirm: Você tem certeza?
     coordinators:
       users:
         success_create_flash: "Novo usuário criado com sucesso!"

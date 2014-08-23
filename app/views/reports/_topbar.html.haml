@@ -13,15 +13,15 @@
       - if @current_user
         - if report.open?
           - if @current_user.coordinator? || report.reporter == @current_user
-            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.application.alerts.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
+            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
               %i.fa.fa-trash-o.fa-2
         - elsif report.eliminated?
           - if @current_user.coordinator?
-            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.application.alerts.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
+            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
               %i.fa.fa-trash-o.fa-2
         - else
           - if @current_user.coordinator? || report.reporter == @current_user
-            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.application.alerts.confirm_delete"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
+            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete, :style => "margin-right:10px; margin-left:10px; float: right; font-size: 20px;" do
               %i.fa.fa-trash-o.fa-2
 
         - if report.is_valid?
