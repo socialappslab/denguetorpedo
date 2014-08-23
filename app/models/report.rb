@@ -114,6 +114,7 @@ class Report < ActiveRecord::Base
   end
 
   def expired?
+    return false if self.eliminated?
     return Time.now > self.created_at + EXPIRATION_WINDOW
   end
 
