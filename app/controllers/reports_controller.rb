@@ -274,7 +274,7 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def destroy
-    if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
+    if @current_user.coordinator? or @current_user.created_reports.find_by_id(params[:id])
       @report = Report.find(params[:id])
       @report.deduct_points
       @report.destroy
