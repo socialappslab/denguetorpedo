@@ -7,9 +7,9 @@
       - for item in @news_feed
         - if item.is_a? Post
           = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
-        - elsif item.is_a?(Report) && item.is_eliminated? && item.is_public? && item.eliminator
+        - elsif item.is_a?(Report) && item.eliminated? && item.is_public? && item.eliminator
           = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.eliminator}
-        - elsif item.is_a?(Report) && item.is_open? && item.is_public? && item.reporter
+        - elsif item.is_a?(Report) && item.open? && item.is_public? && item.reporter
           = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.reporter}
         - elsif item.is_a? Notice
           = render :partial => 'notices/feed_item', :locals => {:notice => item}

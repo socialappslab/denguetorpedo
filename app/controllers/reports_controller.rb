@@ -318,13 +318,13 @@ class ReportsController < NeighborhoodsBaseController
   def problem
     @report = Report.find(params[:id])
 
-    if @report.is_eliminated?
+    if @report.eliminated?
       @report.is_resolved_verified = false
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
       @report.resolved_verifier.points -= 100
       @report.resolved_verifier.save
-    elsif @report.is_open?
+    elsif @report.open?
       @report.isVerified = false
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now

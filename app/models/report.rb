@@ -120,16 +120,16 @@ class Report < ActiveRecord::Base
   end
 
   def expired?
-    self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
+    return self.created_at > Time.now + EXPIRATION_WINDOW
   end
 
   # A valid report is a report that is
   # a) open, and verified to be valid by a 3rd party, OR
   # b) eliminated, and verified to be valid by a 3rd party.
   def is_valid?
-    if self.is_open?
+    if self.open?
       return (self.isVerified == "t")
-    elsif self.is_eliminated?
+    elsif self.eliminated?
       return (self.is_resolved_verified == "t")
     end
   end
@@ -138,9 +138,9 @@ class Report < ActiveRecord::Base
   # a) open, and verified to be problematic by a 3rd party, OR
   # b) eliminated, and verified to be problematic by a 3rd party.
   def is_invalid?
-    if self.is_open?
+    if self.open?
       return (self.isVerified == "f")
-    elsif self.is_eliminated?
+    elsif self.eliminated?
       return (self.is_resolved_verified == "f")
     end
   end
