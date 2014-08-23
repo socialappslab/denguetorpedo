@@ -114,7 +114,7 @@ class Report < ActiveRecord::Base
   end
 
   def expired?
-    return self.created_at + EXPIRATION_WINDOW > Time.now
+    return Time.now > self.created_at + EXPIRATION_WINDOW
   end
 
   # A valid report is a report that is
