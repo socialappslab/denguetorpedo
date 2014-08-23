@@ -44,110 +44,109 @@
           = link_to "Salvar", "", class: "new_method type_#{type.id}", id: "new_method_#{type.id}", data: { id: type.id }
         %td
 
-  -# TODO remove JS from view and put into file'
 
-  :javascript
-    $("#type_submit").click(function() {
-      var name = $("#type_name").val();
-      var url = "/elimination_types";
-      $.ajax({
-        url: url,
-        method: "POST",
-        dataType: "script",
-        data: "description=" + name
-      });
+:javascript
+  $("#type_submit").click(function() {
+    var name = $("#type_name").val();
+    var url = "/elimination_types";
+    $.ajax({
+      url: url,
+      method: "POST",
+      dataType: "script",
+      data: "description=" + name
+    });
+  });
+
+  $(".new_method").click(function() {
+    var name = $($($(this).parent().parent().children()[0]).children()[0]).val();
+    var points = $($($(this).parent().parent().children()[1]).children()[0]).val();
+    var current_id = "#" + $(this).attr("id");
+    $.ajax({
+      url: "/elimination_methods",
+      method: "POST",
+      dataType: "script",
+      data: "name=" + name + "&points=" + points + "&current_id=" + current_id + "&type_id=" + $(this).data("id")
     });
 
-    $(".new_method").click(function() {
-      var name = $($($(this).parent().parent().children()[0]).children()[0]).val();
-      var points = $($($(this).parent().parent().children()[1]).children()[0]).val();
-      var current_id = "#" + $(this).attr("id");
-      $.ajax({
-        url: "/elimination_methods",
-        method: "POST",
-        dataType: "script",
-        data: "name=" + name + "&points=" + points + "&current_id=" + current_id + "&type_id=" + $(this).data("id")
-      });
+    return false;
+  });
 
-      return false;
-    });
-    $(".edit_type").click(function() {
+  $(".edit_type").click(function() {
+    var name = $($(this).parent().parent().children()[0]);
+    if ($(this).html() == I18n.t("common_terms.edit")) {
+      $(this).html("Salvar");
       var name = $($(this).parent().parent().children()[0]);
-      if ($(this).html() == "Editar") {
-        $(this).html("Salvar");
-        var name = $($(this).parent().parent().children()[0]);
-        $(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
-        $("#delete_type_" + $(this).data("id")).hide();
-        $("#cancel_type_" + $(this).data("id")).show();
-      } else {
-        var url = "/elimination_types/" + $(this).data("id");
-        $.ajax({
-          url: url,
-          method: "PUT",
-          dataType: "script",
-          data: "name=" + $(name).val()
-        });
-      }
-      return false;
-    });
-
-    $(".delete_type").click(function() {
+      $(name).replaceWith('<input style="width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
+      $("#delete_type_" + $(this).data("id")).hide();
+      $("#cancel_type_" + $(this).data("id")).show();
+    } else {
       var url = "/elimination_types/" + $(this).data("id");
       $.ajax({
         url: url,
-        method: "DELETE",
-        dataType: "script"
+        method: "PUT",
+        dataType: "script",
+        data: "name=" + $(name).val()
       });
-      return false;
+    }
+    return false;
+  });
+
+  $(".delete_type").click(function() {
+    var url = "/elimination_types/" + $(this).data("id");
+    $.ajax({
+      url: url,
+      method: "DELETE",
+      dataType: "script"
     });
+    return false;
+  });
 
-    $(".cancel_type").click(function() {
-      $.ajax({
-        url: "/elimination_types/" + $(this).data("id"),
-        method: "GET",
-        dataType: "script"
-      });
-      return false;
+  $(".cancel_type").click(function() {
+    $.ajax({
+      url: "/elimination_types/" + $(this).data("id"),
+      method: "GET",
+      dataType: "script"
     });
+    return false;
+  });
 
-    $(".edit_method").click(function() {
-      var name = $($(this).parent().parent().children()[0]);
-      var points = $($($(this).parent().parent().children()[1]).children()[0]);
-      if ($(this).html() == "Editar") {
-        $(this).html("Salvar");
-        $("#delete_method_" + $(this).data("id")).hide();
-        $("#cancel_method_" + $(this).data("id")).show();
-        $(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
-        var pontos = $($(this).parent().parent().children()[1]);
-        $(pontos).replaceWith('<td><input style="width:100px; margin-bottom:0px;" type="text" value="' + $(pontos).html() + '"></td>');
-      } else {
-        var url = "/elimination_methods/" + $(this).data("id");
-        $.ajax({
-          url: url,
-          method: "PUT",
-          dataType: "script",
-          data: "name=" + $(name).val() + "&points=" + $(points).val()
-        });
-      }
-      return false;
-    });
-
-    $(".cancel_method").click(function() {
-
-      $.ajax({
-        url: "/elimination_methods/" + $(this).data("id"),
-        method: "GET",
-        dataType: "script"
-      });
-      return false;
-    });
-
-    $(".delete_method").click(function() {
+  $(".edit_method").click(function() {
+    var name = $($(this).parent().parent().children()[0]);
+    var points = $($($(this).parent().parent().children()[1]).children()[0]);
+    if ($(this).html() == I18n.t("common_terms.edit")) {
+      $(this).html("Salvar");
+      $("#delete_method_" + $(this).data("id")).hide();
+      $("#cancel_method_" + $(this).data("id")).show();
+      $(name).replaceWith('<input style="width:500px;margin-left:40px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');
+      var pontos = $($(this).parent().parent().children()[1]);
+      $(pontos).replaceWith('<td><input style="width:100px; margin-bottom:0px;" type="text" value="' + $(pontos).html() + '"></td>');
+    } else {
       var url = "/elimination_methods/" + $(this).data("id");
       $.ajax({
         url: url,
-        method: "DELETE",
-        dataType: "script"
+        method: "PUT",
+        dataType: "script",
+        data: "name=" + $(name).val() + "&points=" + $(points).val()
       });
-      return false;
+    }
+    return false;
+  });
+
+  $(".cancel_method").click(function() {
+    $.ajax({
+      url: "/elimination_methods/" + $(this).data("id"),
+      method: "GET",
+      dataType: "script"
     });
+    return false;
+  });
+
+  $(".delete_method").click(function() {
+    var url = "/elimination_methods/" + $(this).data("id");
+    $.ajax({
+      url: url,
+      method: "DELETE",
+      dataType: "script"
+    });
+    return false;
+  });
