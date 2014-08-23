@@ -26,7 +26,7 @@
     - if @user == @current_user
       - if @current_user.coordinator?
         .well{:style => "border: 1px solid #bdc3c7;"}
-          = render :partial => "users/admin_links"
+          = render :partial => "users/coordinator_links"
       - elsif @current_user.role == User::Types::SPONSOR
         .well{:style => "border: 1px solid #bdc3c7;"}
           = render :partial => "users/sponsor_links"
