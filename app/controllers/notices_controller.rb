@@ -31,9 +31,6 @@ class NoticesController < ApplicationController
   # GET /notices/new
   # GET /notices/new.json
   def new
-    @notice        = Notice.new
-    @notice.date   = Time.now
-    @neighborhoods = Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]}
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @notice }
