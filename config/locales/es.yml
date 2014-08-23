@@ -170,7 +170,6 @@ es:
     marked_by: Marcado por
     verified_by: Verificado por
     eliminated_by: Eliminado por
-    confirm_delete: ¿Está seguro?
     open_for: Abierto para
     email_or_password_incorrect: "Correo electrónico o contraseña incorrecta"
     open_reports: Abiertos
@@ -243,12 +242,22 @@ es:
   #------
 
   views:
+    admin:
+      register: "Registrar un patrocinador, verificador o visitante"
+      edit_prize: "Registrar nuevos premios"
+      edit_news: "Publicar noticias de la comunidade"
+      edit_user: "Administrar usuarios"
+      edit_prize: "Administrar premios"
+      edit_sms: "Administrar mensajes de texto de Dengue Torpedo"
+      edit_feedback: "Administrar contratos"
+      edit_report: "Administrar tipos de foco y métodos"
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
+      confirm_delete: ¿Está seguro?
     coordinators:
       users:
         success_create_flash:  "Usuario creado con éxito"
@@ -277,15 +286,6 @@ es:
           postpaid: Plan fijo
         referral_question: "¿Alguien recomendó que se registrara en DT?"
         show_name_as: "Mostrar nombre como"
-        admin:
-          register: "Registrar un patrocinador, verificador o visitante"
-          new_prize: "Registrar nuevos premios"
-          new_news: "Publicar noticias de la comunidade"
-          user_edit: "Administrar usuarios"
-          prize_edit: "Administrar premios"
-          sms_edit: "Administrar mensajes de texto de Dengue Torpedo"
-          feedback: "Administrar contratos"
-          report_edit: "Administrar tipos de foco y métodos"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
     prizes:
