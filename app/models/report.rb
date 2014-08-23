@@ -16,8 +16,10 @@ class Report < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
+  # Constants
 
   STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
+  EXPIRATION_WINDOW = 48 * 3600 # in seconds
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
@@ -87,21 +89,13 @@ class Report < ActiveRecord::Base
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
 
-  def is_eliminated?
+  def eliminated?
     return self.status == Report::STATUS[:eliminated]
   end
 
-  def eliminated?
-    return self.is_eliminated?
-  end
-
   # NOTE: Open does not mean active. An open report can be expired.
-  def is_open?
-    return self.status == Report::STATUS[:reported]
-  end
-
   def open?
-    return self.is_open?
+    return self.status == Report::STATUS[:reported]
   end
 
   def sms_incomplete?
@@ -120,16 +114,16 @@ class Report < ActiveRecord::Base
   end
 
   def expired?
-    self.completed_at and self.completed_at + 3600 * 24 * 2 < Time.new
+    return self.created_at + EXPIRATION_WINDOW > Time.now
   end
 
   # A valid report is a report that is
   # a) open, and verified to be valid by a 3rd party, OR
   # b) eliminated, and verified to be valid by a 3rd party.
   def is_valid?
-    if self.is_open?
+    if self.open?
       return (self.isVerified == "t")
-    elsif self.is_eliminated?
+    elsif self.eliminated?
       return (self.is_resolved_verified == "t")
     end
   end
@@ -138,9 +132,9 @@ class Report < ActiveRecord::Base
   # a) open, and verified to be problematic by a 3rd party, OR
   # b) eliminated, and verified to be problematic by a 3rd party.
   def is_invalid?
-    if self.is_open?
+    if self.open?
       return (self.isVerified == "f")
-    elsif self.is_eliminated?
+    elsif self.eliminated?
       return (self.is_resolved_verified == "f")
     end
   end
@@ -216,7 +210,7 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def expire_date
-    self.completed_at + 3600 * 50
+    self.completed_at + EXPIRATION_WINDOW
   end
 
   def set_names

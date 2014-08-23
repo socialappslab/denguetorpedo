@@ -10,7 +10,6 @@ class User < ActiveRecord::Base
   PHONE_NUMBER_PLACEHOLDER = "000000000000"
 
   module Types
-    ADMIN       = "admin"
     COORDINATOR = "coordenador"
     SPONSOR     = "lojista"
     VERIFIER    = "verificador"
@@ -65,7 +64,7 @@ class User < ActiveRecord::Base
   belongs_to :house
   belongs_to :neighborhood
 
-  scope :residents, where("role = 'morador' OR role = 'admin' OR role = 'coordenador'")
+  scope :residents, where("role = 'morador' OR role = 'coordenador'")
 
   has_many :team_memberships
   has_many :teams, :through => :team_memberships
@@ -84,10 +83,6 @@ class User < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
-
-  def can_manage_other_users?
-    return [Types::ADMIN, Types::COORDINATOR].include?(self.role)
-  end
 
   def location
     house && house.location
@@ -233,7 +228,7 @@ class User < ActiveRecord::Base
     end
     name = name + " " + self.last_name
 
-    if !(self.nickname.nil? or self.nickname.empty?)
+    if !(self.nickname.blank?)
       name = name + " (" + self.nickname + ")"
     end
     return name
@@ -247,12 +242,15 @@ class User < ActiveRecord::Base
     return User.where("role = 'morador' OR role = 'verificador' OR role = 'coordenador'")
   end
 
-  def admin?
-    self.role == "admin" or self.role == "coordenador"
+  #----------------------------------------------------------------------------
+  # User roles
+
+  def coordinator?
+    return self.role == User::Types::COORDINATOR
   end
 
   def verifier?
-    self.role == "admin" or self.role == "coordenador" or self.role = "verificador"
+    return (self.role ==  User::Types::COORDINATOR || self.role == User::Types::VERIFIER)
   end
 
   def sponsor?
@@ -281,7 +279,7 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def residents?
-    return self.role == "morador" || self.role == "admin" || self.role == "coordenador"
+    return [User::Types::RESIDENT, User::Types::COORDINATOR].include?(self.role)
   end
 
   #----------------------------------------------------------------------------

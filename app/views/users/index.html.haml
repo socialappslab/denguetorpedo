@@ -1,17 +1,13 @@
+= render :partial => "shared/flashes"
+
 .row.offset1
-	- if flash[:notice] 
-		.row#flash_dat_notice
-			#flashNotice 
-				%p
-					= flash[:notice]
-.row.offset1
-	%h1.span5{style: "margin-left:0px;"} Administrar usuários
-	%form.span4{action: users_path}
-		%input{type: "text", placeholder: "Buscar usuário", style: "width:436px;margin-top:5px;", name: "q"}
+	%h1.span5{style: "margin-left:0px;"}
+		= I18n.t("views.admin.edit_user")
 %br
 
 .row.offset1
-	%h2 Administrar moradores
+	%h2
+		= I18n.t("views.admin.edit_residents")
 	.row
 		%table.users_table.span12{:cellpadding => 10, border: 1}
 			%colgroup
@@ -21,15 +17,21 @@
 			- @users.each do |user|
 				%tr
 					- if user.is_blocked == false
-						%td= link_to user.full_name, edit_user_path(user)
-						%td{:style => "margin-left:10px;"}= link_to 'Bloquear', block_users_path(:id => user.id), method: :put, data: { confirm: "Você tem certeza?"}
+						%td
+							= link_to user.full_name, edit_user_path(user)
+						%td{:style => "margin-left:10px;"}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
-						%td{:style => "color:red"}= link_to user.full_name, edit_user_path(user), :style => "color:red;"
-						%td= link_to 'Desbloquear', block_users_path(:id => user.id), method: :put, data: { confirm: "Você tem certeza?"}
-					%td= link_to 'Deletar', user, method: :delete, data: { confirm: "Você tem certeza?"}
+						%td{:style => "color:red"}
+							= link_to user.full_name, edit_user_path(user), :style => "color:red;"
+						%td= link_to I18n.t("views.admin.unblock"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 	%br
-	%h2 Administrar patrocinadores
+
+	-#----------------------------------------------------------------------------
+
+	%h2
+		= I18n.t("views.admin.edit_sponsors")
 	.row
 		%table.users_table.span12{:cellpadding => 10, border: 1}
 			%colgroup
@@ -40,18 +42,24 @@
 			- @sponsors.each do |sponsor|
 				%tr
 					- if sponsor.is_blocked == false
-						%td= link_to sponsor.house.name, edit_user_path(sponsor)
-						%td= link_to "Códigos", "/cupons/sponsor/#{sponsor.id}"
-						%td{:style => "margin-left:10px;"}= link_to 'Bloquear', block_users_path(:id => sponsor.id), method: :put, data: { confirm: "Você tem certeza?"}
+						%td
+							= link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"
+						%td{:style => "margin-left:10px;"}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
-						%td{:style => "color:red"}= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
-						%td Códigos
-						%td= link_to 'Desbloquear', block_users_path(:id => sponsor.id), method: :put, data: { confirm: "Você tem certeza?"}
-					%td= link_to 'Deletar', sponsor, method: :delete, data: { confirm: "Você tem certeza?"}
+						%td{:style => "color:red"}
+							= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
+						%td
+							= I18n.t("common_terms.codes")
+						%td
+							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 	%br
 
-	%h2 Administrar verificadores
+	-#----------------------------------------------------------------------------
+
+	%h2
+		= I18n.t("views.admin.edit_verifiers")
 	.row
 		%table.users_table.span12{:cellpadding => 10, border: 1}
 			%col{style: "width:70%;"}
@@ -60,14 +68,21 @@
 			- @verifiers.each do | verifier|
 				%tr
 					- if verifier.is_blocked == false
-						%td= link_to verifier.full_name, edit_user_path(verifier)
-						%td{:style => "margin-left:10px;"}= link_to 'Bloquear', block_users_path(:id => verifier.id), method: :put, data: { confirm: "Você tem certeza?"}
+						%td
+							= link_to verifier.full_name, edit_user_path(verifier)
+						%td{:style => "margin-left:10px;"}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
-						%td{:style => "color:red"}= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
-						%td= link_to 'Desbloquear', block_users_path(:id => verifier.id), method: :put, data: { confirm: "Você tem certeza?"}
-					%td= link_to 'Deletar', verifier, method: :delete, data: { confirm: "Você tem certeza?"}
+						%td{:style => "color:red"}
+							= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
+						%td
+							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 	%br
-	%h2 Administrar visitantes
+
+	-#----------------------------------------------------------------------------
+
+	%h2
+		= I18n.t("views.admin.edit_visitors")
 	.row
 		%table.users_table.span12{:cellpadding => 10, border: 1}
 			%col{style: "width:70%;"}
@@ -76,12 +91,15 @@
 			- @visitors.each do |visitor|
 				%tr
 					- if visitor.is_blocked == false
-						%td= link_to visitor.full_name, edit_user_path(visitor)
-						%td{:style => "margin-left:10px;"}= link_to 'Bloquear', block_users_path(:id => visitor.id), method: :put, data: { confirm: "Você tem certeza?"}
+						%td
+							= link_to visitor.full_name, edit_user_path(visitor)
+						%td{:style => "margin-left:10px;"}
+							= link_to I18n.t("views.admin.block"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 					- else
-						%td{:style => "color:red"}= link_to visitor.full_name, edit_user_path(visitor), :style => "color:red;"
-						%td= link_to 'Desbloquear', block_users_path(:id => visitor.id), method: :put, data: { confirm: "Você tem certeza?"}
-					%td= link_to 'Deletar', visitor, method: :delete, data: { confirm: "Você tem certeza?"}
+						%td{:style => "color:red"}
+							= link_to visitor.full_name, edit_user_path(visitor), :style => "color:red;"
+						%td
+							= link_to I18n.("views.admin.unblock"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 
 
@@ -92,5 +110,4 @@
 /				%tr
 /					%td= link_to prize.prize_name, prize_path(prize)
 /					%td= link_to "Editar", edit_prize_path(prize)
-/					%td= link_to 'Deletar', prize, method: :delete, data: { confirm: "Você tem certeza?"}
-
+/					%td= link_to 'Deletar', prize, method: :delete, data: { confirm: I18n.t("views.alerts.confirm")}

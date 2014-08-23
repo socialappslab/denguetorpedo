@@ -1,22 +1,8 @@
 <%= form_for(@notice) do |f| %>
-  <% if @notice.errors.any? %>
-    <div id="error_explanation">
-      <% if @notice.errors.count == 1 %>
-        <h2><%= pluralize(@notice.errors.count, "erro") %> impediu que a notícias da comunidade fosse enviada:</h2>
-      <% else %>
-        <h2><%= pluralize(@notice.errors.count, "erro") %> impediram que a notícias da comunidade fosse enviada:</h2>
-      <% end %>
 
-      <ul>
-      <% @notice.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
   <div class="field">
     <%= f.label :neighborhood_id, "Comunidade" %>
-    <%= f.select :neighborhood_id, @neighborhoods %>
+    <%= f.select :neighborhood_id, Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]} %>
   </div>
   <div class="field">
     <%= f.label :title, "Título da atividade (máx 60 caracteres)" %>
@@ -53,6 +39,9 @@
     <%= f.file_field :photo %>
   </div>
   <div class="actions">
-    <%= f.submit "Cadastrar notícia" %>
+    <%= button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "display: inline-block;" do %>
+      <i class = "fa fa-refresh fa-spin" style = "display:none;"></i>
+      <%= I18n.t("views.buttons.publish") %>
+    <% end %>
   </div>
 <% end %>

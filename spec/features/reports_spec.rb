@@ -30,6 +30,7 @@ describe "Reports", :type => :feature do
       fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
       fill_in "report_location_attributes_street_number", :with => "45"
       attach_file("report_before_photo", photo_filepath)
+
       select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Descrição é obrigatório")
@@ -132,9 +133,12 @@ describe "Reports", :type => :feature do
     end
 
     it "sets the after photo" do
+      puts "user.inspect; #{user.inspect}"
+      puts "@current_user: #{@current_user.inspect}"
       visit neighborhood_reports_path(user.neighborhood)
       select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       attach_file("report_after_photo", photo_filepath)
+
       click_button( I18n.t("views.buttons.submit") )
       expect( photo_filepath ).to include(report.reload.after_photo_file_name)
     end
@@ -278,7 +282,7 @@ describe "Reports", :type => :feature do
       elimination_method = elimination_type.elimination_methods.first
       selection_option = elimination_method.method + " (" + elimination_method.points.to_s + " pontos)"
       select selection_option, :from => "elimination_method"
-      find('#method_selection').find(:xpath, 'option[2]').select_option
+      find('#report_elimination_method_id').find(:xpath, 'option[2]').select_option
       attach_file("eliminate_after_photo", photo_filepath)
       click_button I18n.t("views.buttons.create")
 

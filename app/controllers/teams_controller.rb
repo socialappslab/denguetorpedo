@@ -7,7 +7,7 @@ class TeamsController < ApplicationController
   # GET /teams
 
   def index
-    @teams = Team.where(:neighborhood_id => @neighborhood.id)
+    @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
     @team  = Team.new
 
     # Calculate ranking for each team.
@@ -59,7 +59,7 @@ class TeamsController < ApplicationController
         format.json { render :json => {:team => @team, :success => flash[:notice]}, :status => :ok }
       end
     else
-      @teams = Team.where(:neighborhood_id => @neighborhood.id)
+      @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
 
       # Calculate ranking for each team.
       team_rankings  = @teams.map {|t| [t, t.total_points]}
@@ -76,6 +76,13 @@ class TeamsController < ApplicationController
         format.json { render :json => {:errors => @team.errors.full_messages} , :status => :ok }
       end
     end
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /teams/administer
+
+  def administer
+    @teams = Team.all
   end
 
   #----------------------------------------------------------------------------
@@ -113,6 +120,26 @@ class TeamsController < ApplicationController
 
         format.html { redirect_to :back and return }
         format.json { render :json => :bad_request and return }
+      end
+    end
+  end
+
+  #----------------------------------------------------------------------------
+  # PUT /teams/1/block
+
+  def block
+    @team         = Team.find(params[:id])
+    @team.blocked = !@team.blocked
+
+    respond_to do |format|
+      if @team.save
+        notice = (@team.blocked ? I18n.t("views.teams.team_successfully_blocked") : I18n.t("views.teams.team_successfully_unblocked"))
+
+        flash[:notice] = notice
+        format.html { redirect_to :back and return }
+      else
+        flash[:alert] = I18n.t("views.application.error")
+        format.html { redirect_to :back and return }
       end
     end
   end

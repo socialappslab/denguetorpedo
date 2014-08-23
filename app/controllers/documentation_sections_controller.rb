@@ -4,7 +4,7 @@ class DocumentationSectionsController < ApplicationController
   #-----------------------------------------------------------------------------
 
   before_filter :require_login
-  before_filter :ensure_admin
+  before_filter :ensure_coordinator
   before_filter :identify_section
 
   #-----------------------------------------------------------------------------
@@ -40,8 +40,8 @@ class DocumentationSectionsController < ApplicationController
 
   #-----------------------------------------------------------------------------
 
-  def ensure_admin
-    unless [User::Types::ADMIN, User::Types::COORDINATOR].include?(@current_user.role)
+  def ensure_coordinator
+    unless @current_user.coordinator?
       redirect_to howto_path, :alert => I18n.t("views.application.permission_required") and return
     end
   end

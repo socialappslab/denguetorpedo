@@ -156,6 +156,7 @@ pt:
   #----------------------------------
 
   common_terms:
+    codes: Códigos
     order_by: Ordenar por
     houses: Casas
     participants: Membros
@@ -169,7 +170,6 @@ pt:
     marked_by: Marcado por
     verified_by: Verificado por
     eliminated_by: Eliminado por
-    confirm_delete: Você tem certeza?
     open_for: Em aberto por
     email_or_password_incorrect: "E-mail ou senha inválido"
     open_reports: Em aberto
@@ -202,11 +202,14 @@ pt:
     activities: Atividades
     male: Masculino
     female: Feminino
-    admin_configurations: Configurações de administrador
+    coordinator_configurations: Configurações de coordenador
     sponsor_configurations: Configurações de patrocinador
     no_one: Ninguém
     or: ou
     click_here: Clique aqui
+    edit: Editar
+    delete: Deletar
+    cancel: Cancelar
 
 
   facebook:
@@ -243,6 +246,24 @@ pt:
   #------
 
   views:
+    admin:
+      block: 'Bloquear'
+      unblock: 'Desbloquear'
+      register: "Registrar patrocinador, verificador e visitante"
+      edit_prize: "Registrar novos prêmios"
+      edit_news: "Registrar notícias da comunidade"
+      edit_user: "Administrar usuários"
+      edit_sponsors: Administrar patrocinadores
+      edit_prize: "Administrar prêmios"
+      edit_sms: "Administrar DT Torpedos"
+      edit_feedback: "Administrar contatos"
+      edit_report: "Administrar tipos e métodos"
+      edit_verifiers: Administrar verificadores
+      edit_visitors: Administrar visitantes
+      edit_residents: Administrar moradores
+      edit_teams: Administrar equipes
+      team_successfully_blocked: You've successfully blocked the team.
+      team_successfully_unblocked: You've successfully unblocked the team.
     application:
       error: "Algo deu errado. Por favor, tente novamente."
       devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"
@@ -251,6 +272,7 @@ pt:
       user_blocked: "Sua conta está bloqueada temporariamente. Por favor, entre em contato com o Dengue Torpedo."
     alerts:
       confirm_leave_team: Tem certeza que deseja sair da equipe?
+      confirm: Você tem certeza?
     coordinators:
       users:
         success_create_flash: "Novo usuário criado com sucesso!"
@@ -279,15 +301,6 @@ pt:
           postpaid: Pós-pago
         referral_question: "Alguém o convidou a se cadastrar no DT?"
         show_name_as: "Mostrar nome como"
-        admin:
-          register: "Registrar patrocinador, verificador e visitante"
-          new_prize: "Registrar novos prêmios"
-          new_news: "Registrar notícias da comunidade"
-          user_edit: "Administrar usuários"
-          prize_edit: "Administrar prêmios"
-          sms_edit: "Administrar DT Torpedos"
-          feedback: "Administrar contatos"
-          report_edit: "Administrar tipos e métodos"
         sponsor:
           edit_prizes: "Códigos de controle dos prêmios"
     prizes:

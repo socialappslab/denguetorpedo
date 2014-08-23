@@ -20,45 +20,22 @@
       = report.breeding_site.description
 
       - if report.elimination_method_id.present?
-        %h3{:style => "font-weight:bold;"} Método de eliminação:
+        %h3{:style => "font-weight:bold;"}
+          = I18n.t("activerecord.models.elimination_method") + ": "
         = report.elimination_method.description
         %br
 
+      - elsif @current_user.present?
 
+        - if report.expired?
+          %h3{:style => "font-weight:bold;"}
+            = I18n.t("common_terms.time_expired")
+        - else
+          = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
-  - if @current_user.present?
-    .eliminate_prompt{:style => "margin-top:5px;"}
-      - if report.sms_incomplete?
-        = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
-          = hidden_field_tag 'report_id', report.id
-          = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
-
-      - elsif report.elimination_method_id.blank?
-        = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
-          %h3.report_label
-            = "#{I18n.t("activerecord.models.elimination_method")}:"
-          = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.description, em.id]}, report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :id => "method_selection", :class=>"elimination_methods", :style => "width: 390px;"}
-
-          = f.fields_for :location, report.location || Location.new do |location_fields|
-            = location_fields.hidden_field :latitude
-            = location_fields.hidden_field :longitude
-
-          - if report.after_photo_file_size
-            .rp_report_people
-              = "#{I18n.t("common_terms.uploaded_photo")}:"
-              = link_to "#{report.after_photo_file_name}", report.after_photo.url, :class => "user"
-
-          %h3.report_label
-            = "#{I18n.t("report.form.upload_photo_of_eliminated_report")}:"
-          = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :style => "width: 300px;"
-
-          %br
-          .row
-            .span2
-              - should_disable = ( @current_user && (@current_user.role == "verificador" || @current_user.role == "visitante") || report.expired? || report.isVerified == "f" || report.sms_incomplete?)
-              = button_tag :type => "submit", :class => "report_submission btn btn-success submit-button", :disabled => should_disable, :onclick=>"update_location_coordinates(#{report.location.to_json},event);" do
-                %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-                = I18n.t("views.buttons.submit")
-
+  - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
+    = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
+      = hidden_field_tag 'report_id', report.id
+      = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
 
   = render :partial => "reports/users_involved", :locals => {:report => report}

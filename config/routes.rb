@@ -168,8 +168,11 @@ Dengue::Application.routes.draw do
   # Teams
 
   resources :teams do
-    post "join", :on => :member
+    post "join",  :on => :member
     post "leave", :on => :member
+    put "block", :on => :member
+
+    get "administer", :on => :collection
   end
 
   #----------------------------------------------------------------------------

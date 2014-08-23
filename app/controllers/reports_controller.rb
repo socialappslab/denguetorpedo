@@ -4,7 +4,7 @@
 class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,      :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,         :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
-  before_filter :require_admin,      :only   => [:types]
+  before_filter :require_coordinator,      :only   => [:types]
   before_filter :ensure_team_chosen, :only => [:index]
 
   #----------------------------------------------------------------------------
@@ -274,7 +274,7 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def destroy
-    if @current_user.admin? or @current_user.created_reports.find_by_id(params[:id])
+    if @current_user.coordinator? or @current_user.created_reports.find_by_id(params[:id])
       @report = Report.find(params[:id])
       @report.deduct_points
       @report.destroy
@@ -318,13 +318,13 @@ class ReportsController < NeighborhoodsBaseController
   def problem
     @report = Report.find(params[:id])
 
-    if @report.is_eliminated?
+    if @report.eliminated?
       @report.is_resolved_verified = false
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
       @report.resolved_verifier.points -= 100
       @report.resolved_verifier.save
-    elsif @report.is_open?
+    elsif @report.open?
       @report.isVerified = false
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now

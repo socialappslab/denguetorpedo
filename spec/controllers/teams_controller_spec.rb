@@ -2,12 +2,14 @@
 require 'spec_helper'
 
 describe TeamsController do
-  let(:user) 						 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:team) { FactoryGirl.create(:team, :name => "Test", :neighborhood_id => Neighborhood.first.id) }
 
   #-----------------------------------------------------------------------------
 
   before(:each) do
     cookies[:auth_token] = user.auth_token
+    request.env["HTTP_REFERER"] = administer_teams_path
   end
 
   it "fails to create a team with no name" do
@@ -31,6 +33,20 @@ describe TeamsController do
 
     t = Team.last
     expect(t.neighborhood_id).to eq(tepalcingo.id)
+  end
+
+  describe "Blocking a team" do
+    it "blocks a team" do
+      put :block, :id => team.id
+      expect(team.reload.blocked).to eq(true)
+    end
+
+    it "unblocks a blocked team" do
+      team.update_attribute(:blocked, true)
+
+      put :block, :id => team.id
+      expect(team.reload.blocked).to eq(false)
+    end
   end
 
   #---------------------------------------------------------------------------

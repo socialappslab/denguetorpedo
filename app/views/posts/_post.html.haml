@@ -17,4 +17,4 @@
     .post_time_stamp
       = 'Postado: ' + post.updated_at.strftime("%d/%m/%Y")
       -if @current_user != nil && post.user.id == @current_user.id
-        =link_to (image_tag 'icons/reports icon/delete1.png', :id=>'user_post_delete'), user_post_path(@current_user.id, post.id), :confirm => "Você tem certeza?", :method => :delete
+        =link_to (image_tag 'icons/reports icon/delete1.png', :id=>'user_post_delete'), user_post_path(@current_user.id, post.id), :confirm => I18n.t("views.alerts.confirm"), :method => :delete

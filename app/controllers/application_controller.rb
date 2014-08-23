@@ -35,10 +35,9 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
-  def require_admin
-    is_admin = [User::Types::COORDINATOR, User::Types::ADMIN].include?(@current_user.role)
-    unless is_admin
-       redirect_to root_url
+  def require_coordinator
+    unless [User::Types::COORDINATOR].include?(@current_user.role)
+      redirect_to root_url
     end
   end
 

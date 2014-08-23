@@ -270,7 +270,7 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying open reports" do
-		let(:admin)   { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
+		let(:admin)   { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 																				:reporter => user,
 																				:neighborhood_id => Neighborhood.first.id,
@@ -304,7 +304,7 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying eliminated reports" do
-		let(:admin)   { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
+		let(:admin)   { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 																				:status => Report::STATUS[:eliminated],
 																				:reporter => user,
@@ -339,7 +339,7 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying problems with open reports" do
-		let(:admin)  { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
+		let(:admin)  { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id)}
 		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 										:reporter => user,
 										:neighborhood_id => Neighborhood.first.id,
@@ -372,7 +372,7 @@ describe ReportsController do
 	#---------------------------------------------------------------------------
 
 	context "when verifying problems with eliminated reports" do
-		let(:admin)  { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id)}
+		let(:admin)  { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id)}
 		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
 										:status => Report::STATUS[:eliminated],
 										:neighborhood_id => Neighborhood.first.id,

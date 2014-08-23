@@ -13,9 +13,9 @@
 
         .row.feed-item-content{:style => "margin-bottom: 20px;"}
           .span7
-            - if report.is_open?
+            - if report.open?
               - report_feed_content = "Encontrei um foco"
-            - elsif report.is_eliminated?
+            - elsif report.eliminated?
               - report_feed_content = "Eliminei um foco"
 
             - if report_feed_content && report.complete_address.present?
@@ -41,9 +41,9 @@
 
           .span3.offset1
             = link_to neighborhood_reports_path(report.neighborhood) do
-              - if report.is_eliminated? && report.after_photo_file_name.present?
+              - if report.eliminated? && report.after_photo_file_name.present?
                 = image_tag(report.after_photo.url(:thumb), :class => "img-rounded")
-              - elsif report.is_open?
+              - elsif report.open?
                 .feed-item-elimination-incentive
                   %p
                     = I18n.t("common_terms.eliminate_and_gain_points")
@@ -52,7 +52,7 @@
                 = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
 
             %div
-              - if report.is_eliminated? && report.elimination_method.present?
+              - if report.eliminated? && report.elimination_method.present?
                 %i.fa.fa-ban
                 = report.elimination_method.description
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe DocumentationSectionsController do
-  let(:user) { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id) }
+  let(:user) { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id) }
 
   describe "editing in Spanish" do
     before(:each) do

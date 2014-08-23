@@ -25,13 +25,6 @@ describe NoticesController do
     end
   end
 
-  describe "GET new" do
-    it "assigns a new notice as @notice" do
-      get :new, {}, valid_session
-      assigns(:notice).should be_a_new(Notice)
-    end
-  end
-
   describe "GET edit" do
     it "assigns the requested notice as @notice" do
       notice = Notice.create! valid_attributes

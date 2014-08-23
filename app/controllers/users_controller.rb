@@ -257,7 +257,7 @@ class UsersController < ApplicationController
 
   # Ensure that only coordinators and administrators are allowed access.
   def ensure_proper_permissions
-    return if current_user && [User::Types::COORDINATOR, User::Types::ADMIN].include?(current_user.role)
+    return if current_user && current_user.coordinator?
 
     flash[:alert] = I18n.t("views.application.permission_required")
     redirect_to root_path and return
