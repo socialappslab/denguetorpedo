@@ -18,8 +18,8 @@ describe User do
       pending "Fix CanCan roles"
     end
 
-		context "when user is an admin" do
-			let(:user) { FactoryGirl.create(:admin, :neighborhood_id => Neighborhood.first.id) }
+		context "when user is a coordinator" do
+			let(:user) { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id) }
 			it { should be_able_to(:assign_roles, user)}
 			it { should be_able_to(:edit, user)}
 		end

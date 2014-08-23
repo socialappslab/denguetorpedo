@@ -20,11 +20,6 @@ FactoryGirl.define do
 		profile_photo_file_size 1024
 		profile_photo_updated_at Time.new
 
-
-		factory :admin do
-			role "admin"
-		end
-
 		factory :coordinator do
 			role "coordenador"
 		end
