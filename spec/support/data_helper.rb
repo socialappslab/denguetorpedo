@@ -24,8 +24,8 @@ def populate_data
   if u.nil?
     u = User.new(:email => "c@denguetorpedo.com")
     u.password   = "abcdefg"
-    u.first_name = "C"
-    u.last_name  = "Oordinator"
+    u.first_name = "Coord"
+    u.last_name  = "Inator"
     u.role       = User::Types::COORDINATOR
     u.neighborhood_id = mare.id
     u.save!
