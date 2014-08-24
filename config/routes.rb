@@ -11,6 +11,7 @@ Dengue::Application.routes.draw do
   get "about"     => 'home#about'
   get "education" => 'home#education'
   get "credit"    => 'home#credit'
+  get "free-sms"  => "home#free_sms", :as => :free_sms
   post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
 
   #----------------------------------------------------------------------------
@@ -185,6 +186,7 @@ Dengue::Application.routes.draw do
     post "comment", :on => :member
   end
 
+  # TODO: Deprecate sponsors route.
   resources :sponsors
   get "dashboard/index"
   resources :dashboard
