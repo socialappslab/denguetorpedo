@@ -2,7 +2,7 @@
 .row{:style => "margin-bottom:20px;"}
   .span12.offset1
     .image_and_name
-      - if @sponsor.house.profile_photo.file?
+      - if @sponsor.house && @sponsor.house.profile_photo.file?
         = image_tag(@sponsor.house.profile_photo.url(:large), :width => 300, :height => 300)
       - else
         = image_tag("default_images/default_sponsor_image.jpg", :width => 150, :height => 150, style: "border:1px solid #cccccc;")
@@ -11,37 +11,21 @@
 
 
 .row.span14.offset1
-  - if @sponsor.house.name == "Rede Trel"
-    %h2 No Dengue Torpedo você marca o foco grátis por SMS!
-    %br
-    %h2 Mande um torpedo (SMS) para o número do Dengue Torpedo (21)98186-5344. Para mais informações, veja o Manual Dengue Torpedo no "Jogue como?".
-    %br
-    %h3 *** Oferecimento da Rede Trel ***
-    %br
-    %p A cada foco completo enviado por SMS você ganha um DT Torpedo. Para isso, além de enviar o SMS com a localização e descrição do foco, você deve acessar a sua conta e completar o foco, localizando ele no mapa e incluindo a imagem.
-    %br
-    %p Cada operadora tem um requisito mínimo de DT Torpedos completos. Assim como cada operadora dá direito a um valor diferente de recarga.
-    %br
-    %p A recarga é automática e ocorre um pouco depois de você atingir o número de DT Torpedos requisitados por sua operadora.
-    %br
-    %p Saiba mais acessando o "Jogue como" que explica as condições para a restituição de créditos.
-    %br
-  - else
-    - if @sponsor.house && @sponsor.house.location
-      %h2 Endereço: #{@sponsor.house.location.complete_address}
-    %h2 Telefone comercial: #{telephone_format(@sponsor.house.phone_number)}
-    %h2 Mapa
-    #map{:style => "width:400px; height:400px; border:1px solid #aaaaaa;"}
+  - if @sponsor.house && @sponsor.house.location
+    %h2 Endereço: #{@sponsor.house.location.complete_address}
+  %h2 Telefone comercial: #{telephone_format(@sponsor.house.phone_number)}
+  %h2 Mapa
+  #map{:style => "width:400px; height:400px; border:1px solid #aaaaaa;"}
 
-    %br
-    %h2 Prêmios
-    %ul.prizes_list{:style => "margin-bottom:20px;overflow:auto;"}
-      - if @prizes
-        - @prizes.each do |prize|
-          - if prize.stock == 0 or (prize.expire_on and prize.expire_on < Time.new)
-            = render :partial => "prizes/redeemed", :object => prize
-          - else
-            = render :partial => "prizes/prize", :object => prize
+  %br
+  %h2 Prêmios
+  %ul.prizes_list{:style => "margin-bottom:20px;overflow:auto;"}
+    - if @prizes
+      - @prizes.each do |prize|
+        - if prize.stock == 0 or (prize.expire_on and prize.expire_on < Time.new)
+          = render :partial => "prizes/redeemed", :object => prize
+        - else
+          = render :partial => "prizes/prize", :object => prize
 
 
 
