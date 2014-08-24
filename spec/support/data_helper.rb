@@ -9,7 +9,7 @@ def populate_data
     h = Team.create!(:neighborhood_id => mare.id, :name => "Team #{index}!")
   end
 
-  ["a", "b", "c"].each_with_index do |letter, index|
+  ["a", "b"].each_with_index do |letter, index|
     u = User.new(:email => "#{letter}@denguetorpedo.com")
     u.password   = "abcdefg"
     u.first_name = "#{letter}#{index}"
@@ -20,12 +20,12 @@ def populate_data
     TeamMembership.create(:user_id => u.id, :team_id => Team.all.sample.id)
   end
 
-  u = User.find_by_email("admin@denguetorpedo.com")
+  u = User.find_by_email("c@denguetorpedo.com")
   if u.nil?
-    u = User.new(:email => "admin@denguetorpedo.com")
+    u = User.new(:email => "c@denguetorpedo.com")
     u.password   = "abcdefg"
-    u.first_name = "Admin"
-    u.last_name  = "Admin"
+    u.first_name = "C"
+    u.last_name  = "Oordinator"
     u.role       = User::Types::COORDINATOR
     u.neighborhood_id = mare.id
     u.save!
