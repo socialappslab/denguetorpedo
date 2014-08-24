@@ -206,6 +206,10 @@ es:
     sponsor_configurations: Configuraciones de patrocinador
     no_one: Nadie
     or: o
+    click_here: Clic aquí
+    edit: Editar
+    delete: Eliminar
+    cancel: Cancelar
 
 
   facebook:
@@ -243,19 +247,29 @@ es:
 
   views:
     admin:
-      register: "Registrar un patrocinador, verificador o visitante"
-      edit_prize: "Registrar nuevos premios"
-      edit_news: "Publicar noticias de la comunidade"
-      edit_user: "Administrar usuarios"
-      edit_prize: "Administrar premios"
-      edit_sms: "Administrar mensajes de texto de Dengue Torpedo"
-      edit_feedback: "Administrar contratos"
-      edit_report: "Administrar tipos de foco y métodos"
+      block: 'Bloquear'
+      unblock: 'Desbloquear'
+      register: "Registrar patrocinador, verificador e visitante"
+      edit_prize: Editar premio
+      edit_news: Editar noticias de la comunidad
+      edit_user: Editar usuario
+      edit_sponsors: Editar patrocinadores
+      edit_prize: Editar premios
+      edit_sms: Editar DT Torpedos
+      edit_feedback: Editar mensajes
+      edit_report: Editar tipos y métodos
+      edit_verifiers: Editar verificadores
+      edit_visitors: Editar visitantes
+      edit_residents: Editar residentes
       edit_teams: Administrar equipos
+      team_successfully_blocked: Equipo bloqueado exitosamente
+      team_successfully_unblocked: Equipo desbloqueado exitosamente
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
+      devise_errors: "%{num_errors} errores impidieron que el usuario fuera salvado:"
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
+      user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con Dengue Torpedo."
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
       confirm: ¿Está seguro?
