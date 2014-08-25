@@ -1,41 +1,42 @@
 <%= form_for(@notice) do |f| %>
 
   <div class="field">
-    <%= f.label :neighborhood_id, "Comunidade" %>
+    <%= f.label :neighborhood_id %>
     <%= f.select :neighborhood_id, Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]} %>
   </div>
   <div class="field">
-    <%= f.label :title, "Título da atividade (máx 60 caracteres)" %>
+    <%= f.label :title, I18n.t("views.notices.new.activity_title") %>
     <%= f.text_field :title, :style => "width:400px;", :maxlength => 60 %>
   </div>
   <div class="field">
-    <%= f.label :institution_name, "Instituição (máx 60 caracteres)"%>
+    <%= f.label :institution_name, I18n.t("views.notices.new.institution_name") %>
     <%= f.text_field :institution_name, :style => "width:400px;", :maxlength => 60 %>
   </div>
   <div class="field">
-    <%= f.label :summary, "Descrição resumida (máx 150 caracteres)" %>
+    <%= f.label :summary, I18n.t("views.notices.new.summary") %>
     <%= f.text_area :summary, :maxlength => 150, :rows => 3 %>
   </div>
   <div class="field">
-    <%= f.label :description, "Descrição da atividade (máx 900 caracteres)" %>
+    <%= f.label :description, I18n.t("views.notices.new.description") %>
     <%= f.text_area :description, :maxlength => 900 %>
   </div>
   <div class="field">
-    <%= f.label :location, "Endereço da atividade (máx 60 caracteres)" %>
+    <%= f.label :location, I18n.t("views.notices.new.location") %>
     <%= f.text_field :location, :style => "width:600px;", :maxlength => 60 %>
   </div>
   <div class="field">
-    <%= f.label :date, "Data da atividade" %>
-    <%= f.date_select :date, :order => [:day, :month, :year], :use_month_names => ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"] %>
+    <%= f.label :date, I18n.t("views.notices.new.date") %>
+    <%= f.date_select :date, :order => [:day, :month, :year],
+    :use_month_names => [I18n.t("common_terms.january"), I18n.t("common_terms.february"), I18n.t("common_terms.march"), I18n.t("common_terms.april"), I18n.t("common_terms.may"), I18n.t("common_terms.june"), I18n.t("common_terms.july"), I18n.t("common_terms.august"), I18n.t("common_terms.september"), I18n.t("common_terms.october"), I18n.t("common_terms.november"), I18n.t("common_terms.december")] %>
   </div>
 
   <div class="field">
-    <%= f.label :date, "Hora da atividade" %>
+    <%= f.label :date, I18n.t("views.notices.new.time") %>
     <%= f.time_select :date, :ignore_date => true %>
   </div>
 
   <div class="field">
-    <%= f.label :photo, "Foto" %>
+    <%= f.label :photo %>
     <%= f.file_field :photo %>
   </div>
   <div class="actions">

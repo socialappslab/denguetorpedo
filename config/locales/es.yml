@@ -9,6 +9,7 @@ es:
     number: Número
     content: Contenido
     profile_photo: "Foto del perfil"
+    photo: "Foto"
   activerecord:
     models:
       report:
@@ -263,17 +264,17 @@ es:
       block: 'Bloquear'
       unblock: 'Desbloquear'
       register: "Registrar patrocinador, verificador e visitante"
-      edit_prize: Editar premio
-      edit_news: Editar noticias de la comunidad
-      edit_user: Editar usuario
-      edit_sponsors: Editar patrocinadores
-      edit_prize: Editar premios
-      edit_sms: Editar DT Torpedos
-      edit_feedback: Editar mensajes
-      edit_report: Editar tipos y métodos
-      edit_verifiers: Editar verificadores
-      edit_visitors: Editar visitantes
-      edit_residents: Editar residentes
+      register_prize: Registrar premios
+      edit_news: Administrar noticias de la comunidad
+      edit_user: Administrar usuario
+      edit_sponsors: Administrar patrocinadores
+      edit_prize: Administrar premios
+      edit_sms: Administrar DT Torpedos
+      edit_feedback: Administrar Contato DT
+      edit_report: Administrar tipos y métodos
+      edit_verifiers: Administrar verificadores
+      edit_visitors: Administrar visitantes
+      edit_residents: Administrar residentes
       edit_teams: Administrar equipos
       team_successfully_blocked: Equipo bloqueado exitosamente
       team_successfully_unblocked: Equipo desbloqueado exitosamente
@@ -357,18 +358,10 @@ es:
       caretaker: "Yo cuido mi comunidad"
     education:
       summary: Sumario
-      sections:
-        circle_of_life:
-        solution:
-        reproduction:
-        eggs:
-        infographic:
-        origin:
-        name:
-        ability:
-        why:
-        reintroduction:
-        where:
+    feedback:
+      new:
+        header: Enviar un mensaje al Dengue Torpedo
+        max_message_length: "Max 3500 caracteres"
 
   #----------------------------------------------------------------------------
   # Countries

@@ -263,13 +263,13 @@ pt:
       block: 'Bloquear'
       unblock: 'Desbloquear'
       register: "Registrar patrocinador, verificador e visitante"
-      edit_prize: "Registrar novos prêmios"
+      register_prize: "Registrar prêmios"
       edit_news: "Registrar notícias da comunidade"
       edit_user: "Administrar usuários"
       edit_sponsors: Administrar patrocinadores
       edit_prize: "Administrar prêmios"
       edit_sms: "Administrar DT Torpedos"
-      edit_feedback: "Administrar contatos"
+      edit_feedback: "Administrar Contato DT"
       edit_report: "Administrar tipos e métodos"
       edit_verifiers: Administrar verificadores
       edit_visitors: Administrar visitantes
