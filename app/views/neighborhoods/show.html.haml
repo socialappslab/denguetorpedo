@@ -1,3 +1,7 @@
+- if @neighborhood && @neighborhood.name == Neighborhood::Names::MARE
+  #sms_button{style: "position: absolute; right: 0; z-index: 1000; margin-top: -59px; margin-right: 1px"}
+    = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success", :style => "height: 40px; line-height: 30px; font-size: 16px; border-radius: 0px;"
+
 = render :partial => "shared/flashes"
 
 #content{style: "min-height:700px;"}
