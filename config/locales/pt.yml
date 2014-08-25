@@ -353,6 +353,9 @@ pt:
       contact: "Contato DT"
       about: "Sobre o Dengue Torpedo"
     documentation_sections:
+      new:
+        title: Registrar seção
+      success_create_flash: "Novo seção criado com sucesso!"
       edit:
         no_edit: "Nota: Essa seção ainda não foi editada"
     badges:
@@ -362,6 +365,7 @@ pt:
       health_worker: "Comunidade Saudável"
       caretaker: "Eu cuido da comunidade"
     education:
+      title: Manual Dengue Torpedo
       summary: Sumário
       sections:
         circle_of_life: "Ciclo de vida do mosquito Aedes aegypti"
