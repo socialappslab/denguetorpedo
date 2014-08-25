@@ -42,6 +42,13 @@ def populate_data
     u.save!
   end
 
+  u = AdminUser.find_by_email("admin@denguetorpedo.com")
+  if u.nil?
+    u = AdminUser.new(:email => "admin@denguetorpedo.com")
+    u.password   = "abcdefgh"
+    u.save!
+  end
+
   ["a", "b", "c"].each_with_index do |letter, index|
     u = User.find_by_email("#{letter}@denguetorpedo.com")
     Report.create!(:reporter_id => u.id, :status => Report::STATUS[:reported], :breeding_site_id => BreedingSite.first.id, :report => "This is a report by #{u.display_name}", :neighborhood_id => mare.id, :completed_at => Time.now, :before_photo => File.open("./spec/support/foco_marcado.jpg"))
