@@ -189,7 +189,7 @@ def seed_breeding_sites_and_elimination_methods
       em                   = EliminationMethod.find_or_create_by_method( m[:method] )
       em.description_in_pt = m[:method]
       em.description_in_es = types_hash[:elimination_methods_in_es][index][:method]
-      em.points            = em[:points]
+      em.points            = m[:points]
       em.breeding_site_id  = bs.id
       em.save!
     end

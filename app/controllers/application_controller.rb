@@ -34,16 +34,15 @@ class ApplicationController < ActionController::Base
   end
 
   #----------------------------------------------------------------------------
+  # Ensure that only coordinators are allowed access.
 
-  def require_coordinator
-    unless [User::Types::COORDINATOR].include?(@current_user.role)
-      redirect_to root_url
-    end
+  def ensure_proper_permissions
+    puts "@current_user && @current_user.coordinator?: #{@current_user && @current_user.coordinator?}"
+    return if @current_user && @current_user.coordinator?
+
+    flash[:alert] = I18n.t("views.application.permission_required")
+    redirect_to root_path and return
   end
-
-  #----------------------------------------------------------------------------
-
-  private
 
   #----------------------------------------------------------------------------
 
@@ -53,6 +52,9 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
+  private
+
+
   def ensure_team_chosen
     return if @current_user.nil?
 
@@ -61,8 +63,6 @@ class ApplicationController < ActionController::Base
       redirect_to teams_path and return
     end
   end
-
-  #----------------------------------------------------------------------------
 
   def set_locale
     if cookies[:locale_preference].nil?

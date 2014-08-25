@@ -374,10 +374,10 @@ describe ReportsController do
 	context "when verifying problems with eliminated reports" do
 		let(:admin)  { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id)}
 		let(:report) { FactoryGirl.create(:report, :before_photo => uploaded_photo,
-										:status => Report::STATUS[:eliminated],
 										:neighborhood_id => Neighborhood.first.id,
 										:reporter => user,
 										:breeding_site_id => elimination_type.id,
+										:elimination_method_id => elimination_type.elimination_methods.first.id,
 										:report => "Description") }
 
 		before(:each) do

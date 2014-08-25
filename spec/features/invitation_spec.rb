@@ -13,7 +13,7 @@ describe "Contact Form for Future Communities", :type => :feature do
     fill_in "feedback_email", :with => "test@denguetorpedo.com"
     fill_in "feedback_name", :with => "Test"
     fill_in "feedback_message", :with => "Test again"
-    click_button "Enviar mensagem"
+    click_button I18n.t("views.buttons.submit")
 
     expect(ActionMailer::Base.deliveries.count).to eq(1)
 

@@ -4,8 +4,8 @@
 class UsersController < ApplicationController
   before_filter :require_login,             :only => [:edit, :update, :index, :show]
   before_filter :ensure_team_chosen,        :only => [:show]
-  before_filter :identify_student,          :only => [:edit, :update, :show]
-  before_filter :ensure_proper_permissions, :only => [:phones]
+  before_filter :identify_user,             :only => [:edit, :update, :show]
+  before_filter :ensure_proper_permissions, :only => [:index, :phones]
 
   #----------------------------------------------------------------------------
   # GET /users/
@@ -249,18 +249,8 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-  def identify_student
+  def identify_user
     @user = User.find(params[:id])
-  end
-
-  #----------------------------------------------------------------------------
-
-  # Ensure that only coordinators and administrators are allowed access.
-  def ensure_proper_permissions
-    return if current_user && current_user.coordinator?
-
-    flash[:alert] = I18n.t("views.application.permission_required")
-    redirect_to root_path and return
   end
 
   #----------------------------------------------------------------------------
