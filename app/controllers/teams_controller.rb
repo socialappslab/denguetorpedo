@@ -2,6 +2,7 @@
 class TeamsController < ApplicationController
   before_filter :require_login
   before_filter :identify_neighborhood
+  before_filter :ensure_proper_permissions, :only => [:administer, :block]
 
   #----------------------------------------------------------------------------
   # GET /teams
