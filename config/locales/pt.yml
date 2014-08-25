@@ -387,16 +387,10 @@ pt:
         time: "Hora da atividade"
     free_sms:
       header: No Dengue Torpedo você marca o foco grátis por SMS!
-      description: "Mande um torpedo (SMS) para o número do Dengue Torpedo (21)98186-5344. Para mais informações, veja o Manual Dengue Torpedo no 'Jogue como?'"
+      description: "Mande um torpedo (SMS) para o número do Dengue Torpedo (21)xxxxx-xxxx. Para mais informações, veja o Manual Dengue Torpedo no 'Jogue como?'"
       offer_from_sponsor:
         header: Oferecimento da Rede Trel
-        description_html: "A cada foco completo enviado por SMS você ganha um DT Torpedo. Para isso, além de enviar o SMS com a localização e descrição do foco, você deve acessar a sua conta e completar o foco, localizando ele no mapa e incluindo a imagem.
-        <br><br>
-        Cada operadora tem um requisito mínimo de DT Torpedos completos. Assim como cada operadora dá direito a um valor diferente de recarga.
-        <br><br>
-        A recarga é automática e ocorre um pouco depois de você atingir o número de DT Torpedos requisitados por sua operadora.
-        <br><br>
-        Saiba mais acessando o 'Jogue como' que explica as condições para a restituição de créditos."
+
 
 
 
