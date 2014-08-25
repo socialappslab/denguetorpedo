@@ -75,14 +75,14 @@ describe "How To", :type => :feature do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_title", :with => ""
       click_button "Enviar"
-      expect(page).to have_content("Título é obrigatório")
+      expect(page).to have_content("Título em Português")
     end
 
     it "requires content" do
       visit edit_documentation_section_path(section)
       fill_in "documentation_section_content", :with => ""
       click_button "Enviar"
-      expect(page).to have_content("Conteúdo é obrigatório")
+      expect(page).to have_content("Conteúdo em Português é obrigatório")
     end
   end
 
