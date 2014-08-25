@@ -1,17 +1,10 @@
 = render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @section}
 
 .row
   .span12.offset1
-    = render :partial => "shared/form_errors", :locals => {:item => @section}
     %h1 Completar o foco
-    = form_for @section do |f|
-      = f.label :title
-      = f.text_field :title, :value => @section.title
-      = f.label :content
-      = f.text_area :content, :value => @section.content
-      = button_tag :type => "submit", :class => "btn btn-success submit-button" do
-        %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-        = I18n.t("views.buttons.submit")
+    = render :partial => "documentation_sections/form"
 
 
     %p

@@ -58,7 +58,10 @@ pt:
         breeding_site_id: Tipo de foco
         report: Descrição
       documentation_section:
-        content: Conteúdo
+        title: Título em Português
+        title_in_es: Título em espanhol
+        content: Conteúdo em Português
+        content_in_es: Conteúdo em espanhol
       prize:
         prize_name: Nome do prêmio
         stock: Estoque

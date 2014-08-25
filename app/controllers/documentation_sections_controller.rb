@@ -48,13 +48,6 @@ class DocumentationSectionsController < ApplicationController
   def update
     @section.editor_id = @current_user.id
 
-    # Overwrite the params if the user is editing in Spanish.
-    if I18n.locale == :es
-      params[:documentation_section][:title_in_es] = params[:documentation_section][:title]
-      params[:documentation_section][:content_in_es] = params[:documentation_section][:content]
-      params[:documentation_section].except!(:title, :content)
-    end
-
     if @section.update_attributes(params[:documentation_section])
       flash[:notice] = "A seção foi atualizada com sucesso"
       redirect_to howto_path and return
