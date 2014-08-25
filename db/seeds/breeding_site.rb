@@ -89,8 +89,12 @@ def seed_breeding_sites_and_elimination_methods
     {
       :breeding_site_in_pt => "Calha",
       :breeding_site_in_es => "Quebrada o charco",
-      :elimination_methods_in_pt => [],
-      :elimination_methods_in_es => []
+      :elimination_methods_in_pt => [
+        {:method => "Desentupir e limpar", :points => 150}
+      ],
+      :elimination_methods_in_es => [
+        {:method => "Destapar y limpiar", :points => 150}
+      ]
     },
 
     {
