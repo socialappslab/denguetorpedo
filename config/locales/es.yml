@@ -265,7 +265,7 @@ es:
       unblock: 'Desbloquear'
       register: "Registrar patrocinador, verificador e visitante"
       register_prize: Registrar premios
-      edit_news: Administrar noticias de la comunidad
+      edit_news: Registrar noticias de la comunidad
       edit_user: Administrar usuario
       edit_sponsors: Administrar patrocinadores
       edit_prize: Administrar premios
