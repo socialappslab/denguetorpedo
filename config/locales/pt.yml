@@ -9,6 +9,7 @@ pt:
     number: Número
     content: Conteúdo
     profile_photo: "Foto do perfil"
+    photo: "Foto"
   activerecord:
     models:
       report:
@@ -210,6 +211,18 @@ pt:
     edit: Editar
     delete: Deletar
     cancel: Cancelar
+    january: "janeiro"
+    february: "fevereiro"
+    march: "março"
+    april: "abril"
+    may: "maio"
+    june: "junho"
+    july: "julho"
+    august: "agosto"
+    september: "setembro"
+    october: "outubro"
+    november: "novembro"
+    december: "dezembro"
 
 
   facebook:
@@ -359,6 +372,19 @@ pt:
         why: "Por que só a fêmea pica?"
         reintroduction: "É verdade que o mosquito A. aegypti já foi erradicado e depois reintroduzido no Brasil?"
         where: "A dengue ocorre só no Brasil?"
+    feedback:
+      new:
+        header: Enviar uma mensagem ao Dengue Torpedo
+        max_message_length: "Max 3500 caracteres"
+    notices:
+      new:
+        activity_title: "Título da atividade (máx 60 caracteres)"
+        institution_name: "Instituição (máx 60 caracteres)"
+        summary: "Descrição resumida (máx 150 caracteres)"
+        description: "Descrição da atividade (máx 900 caracteres)"
+        location: "Endereço da atividade (máx 60 caracteres)"
+        date: "Data da atividade"
+        time: "Hora da atividade"
     free_sms:
       header: No Dengue Torpedo você marca o foco grátis por SMS!
       description: "Mande um torpedo (SMS) para o número do Dengue Torpedo (21)98186-5344. Para mais informações, veja o Manual Dengue Torpedo no 'Jogue como?'"

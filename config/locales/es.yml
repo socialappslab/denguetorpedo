@@ -210,6 +210,19 @@ es:
     edit: Editar
     delete: Eliminar
     cancel: Cancelar
+    january: "enero"
+    february: "febrero"
+    march: "marzo"
+    april: "abril"
+    may: "mayo"
+    june: "junio"
+    july: "julio"
+    august: "agosto"
+    september: "septiembre"
+    october: "octubre"
+    november: "noviembre"
+    december: "diciembre"
+
 
 
   facebook:

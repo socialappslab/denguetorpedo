@@ -1,21 +1,11 @@
+<%= render :partial => "shared/flashes" %>
+<%= render :partial => "shared/form_errors", :locals => {:item => @feedback} %>
+
 <%= form_for(@feedback) do |f| %>
-  <% if @feedback.errors.any? %>
-    <div id="error_explanation">
-      <% if @feedback.errors.count == 1 %>
-        <h2><%= pluralize(@feedback.errors.count, "erro") %> impediu que a mensagem fosse enviada:</h2>
-      <% else %>
-        <h2><%= pluralize(@feedback.errors.count, "erro") %> impediram que a mensagem fosse enviada:</h2>
-      <% end %>
-      <ul>
-      <% @feedback.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+
 
   <div class="field">
-    <%= f.label :title, "Título" %>
+    <%= f.label :title %>
     <% if @title == "other_type" %>
       <%= f.text_field :title, value: "Outro tipo" %>
     <% elsif @title == "other_method" %>
@@ -33,7 +23,7 @@
     <% end %>
   </div>
   <div class="field">
-    <%= f.label :name, "Nome" %>
+    <%= f.label :name %>
     <% if @current_user %>
       <%= f.text_field :name, :value => @current_user.display_name %>
     <% else %>
@@ -41,17 +31,20 @@
     <% end %>
   </div>
   <div class="field">
-    <%= f.label :message, "Mensagem" %>
+    <%= f.label :message %>
     <% if @title == "other_type" %>
       <%= f.text_area :message, placeholder: "Conte para nós o seu tipo de foco. (Max 3500 caracteres)", maxlength: 3500 %>
     <% elsif @title == "other_method" %>
       <%= f.text_area :message, placeholder: "Conte para nós o seu método de eliminação. (Max 3500 caracteres)", maxlength: 3500 %>
     <% else %>
-      <%= f.text_area :message, placeholder: "Max 3500 caracteres", maxlength: 3500 %>
+      <%= f.text_area :message, placeholder: I18n.t("views.feedback.new.max_message_length"), maxlength: 3500 %>
     <% end %>
 
   </div>
   <div class="actions">
-    <%= f.submit "Enviar mensagem" %>
+    <%= button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "display: inline-block;" do %>
+      <i class = "fa fa-refresh fa-spin" style = "display:none;"></i>
+      <%= I18n.t("views.buttons.submit") %>
+    <% end %>
   </div>
 <% end %>
