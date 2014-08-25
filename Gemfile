@@ -48,6 +48,7 @@ gem "prawnto_2", :require => "prawnto"
 
 gem 'rails-i18n'
 gem "countries"
+gem "devise-i18n"
 
 #------------------------------------------------------------------------------
 # Front-end tools
@@ -111,7 +112,6 @@ end
 
 gem "activeadmin"
 
-
 #------------------------------------------------------------------------------
 # TODO
 
@@ -120,5 +120,10 @@ gem 'awesome_nested_set'
 
 # TODO: Deprecate after refactoring Feed model.
 gem 'simple_enum'
+
+#------------------------------------------------------------------------------
+# Heroku-specific gems
+
+gem "rails_12factor"
 
 #------------------------------------------------------------------------------
