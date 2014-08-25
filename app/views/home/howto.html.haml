@@ -2,15 +2,24 @@
 
 .row
   .span15.offset1
-    %h1{style: "margin-left:10px;"}
-      MANUAL DENGUE TORPEDO
+    %h1
+      = I18n.t("views.education.title")
     %br
-    %h2 Sumário
+    %h2
+      = I18n.t("views.education.summary")
     %ul{style: "list-style-type:circle; margin-left:30px;"}
       - @sections.each do |ds|
         %li
           = link_to ds.title, "##{ds.html_id_tag}"
 
+    %br
+    %br
+    = link_to new_documentation_section_path, :style => "font-size: 20px;" do
+      %i.fa.fa-plus
+      = I18n.t("views.documentation_sections.new.title")
+
+    %br
+    %br
     %br
     .accordion#accordion1
       - @sections.each do |ds|

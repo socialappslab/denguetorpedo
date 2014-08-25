@@ -1,0 +1,15 @@
+= form_for @section do |f|
+  = f.label :title
+  = f.text_field :title
+  = f.label :title_in_es
+  = f.text_field :title_in_es
+
+  = f.label :content
+  = f.text_area :content
+  = f.label :content_in_es
+  = f.text_area :content_in_es
+
+
+  = button_tag :type => "submit", :class => "btn btn-success submit-button" do
+    %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+    = I18n.t("views.buttons.submit")

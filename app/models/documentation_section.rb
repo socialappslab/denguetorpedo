@@ -2,7 +2,9 @@ class DocumentationSection < ActiveRecord::Base
   attr_accessible :title, :content, :title_in_es, :content_in_es
 
   validates :title, :presence => true
+  validates :title_in_es, :presence => true
   validates :content, :presence => true
+  validates :content_in_es, :presence => true
 
   #----------------------------------------------------------------------------
 

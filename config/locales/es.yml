@@ -58,7 +58,10 @@ es:
         breeding_site_id: Tipo de foco
         report: Descripción
       documentation_section:
-        content: Contenido
+        title: Contenido en portugués
+        title_in_es: Contenido en Español
+        content: Contenido en portugués
+        content_in_es: Contenido en Español
       prize:
         prize_name: Nombre del premio
         stock: Existencia
@@ -350,6 +353,12 @@ es:
       faq: "Preguntas frecuentes"
       contact: "Contacto DT"
       about: "Sobre Dengue Torpedo"
+    documentation_sections:
+      new:
+        title: Registrar sección
+      success_create_flash: "Novo sección criado com sucesso!"
+      edit:
+        no_edit: "Nota: esta sección no es editable"
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"
@@ -357,6 +366,7 @@ es:
       health_worker: "Comunidad Saludable"
       caretaker: "Yo cuido mi comunidad"
     education:
+      title: Manual Dengue Torpedo
       summary: Sumario
     feedback:
       new:
