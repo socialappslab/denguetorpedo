@@ -4,6 +4,7 @@ require 'spec_helper'
 describe TeamsController do
   let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
   let(:team) { FactoryGirl.create(:team, :name => "Test", :neighborhood_id => Neighborhood.first.id) }
+  let(:coordinator) { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id) }
 
   #-----------------------------------------------------------------------------
 
@@ -36,6 +37,11 @@ describe TeamsController do
   end
 
   describe "Blocking a team" do
+    before(:each) do
+      cookies[:auth_token] = coordinator.auth_token
+      request.env["HTTP_REFERER"] = administer_teams_path
+    end
+
     it "blocks a team" do
       put :block, :id => team.id
       expect(team.reload.blocked).to eq(true)
