@@ -14,6 +14,32 @@ class DocumentationSectionsController < ApplicationController
   end
 
   #-----------------------------------------------------------------------------
+  # GET /documentation_sections/1/new
+
+  def new
+    @section = DocumentationSection.new
+  end
+
+  #-----------------------------------------------------------------------------
+  # POST /documentation_sections/1
+
+  def create
+    @section = DocumentationSection.new(params[:documentation_section])
+
+    # Now, let's calculate the order id of the new section.
+    last_order_id     = DocumentationSection.order("order_id DESC").select(:order_id).first.order_id
+    @section.order_id = last_order_id + 1
+
+    if @section.save
+      flash[:notice] = I18n.t("views.documentation_sections.success_create_flash")
+      redirect_to howto_path and return
+    else
+      render "new" and return
+    end
+
+  end
+
+  #-----------------------------------------------------------------------------
   # PUT /documentation_sections/1
 
   def update
