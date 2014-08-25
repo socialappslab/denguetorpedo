@@ -28,15 +28,20 @@ class NoticesController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
   # GET /notices/new
-  # GET /notices/new.json
+
   def new
+    @notice = Notice.new
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @notice }
     end
   end
 
+  #----------------------------------------------------------------------------
+  
   # GET /notices/1/edit
   def edit
     @neighborhoods = Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]}
