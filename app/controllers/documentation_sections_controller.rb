@@ -5,7 +5,7 @@ class DocumentationSectionsController < ApplicationController
 
   before_filter :require_login
   before_filter :ensure_coordinator
-  before_filter :identify_section
+  before_filter :identify_section, :only => [:edit, :update]
 
   #-----------------------------------------------------------------------------
   # GET /documentation_sections/1/edit
@@ -26,9 +26,12 @@ class DocumentationSectionsController < ApplicationController
   def create
     @section = DocumentationSection.new(params[:documentation_section])
 
-    # Now, let's calculate the order id of the new section.
+    # Let's calculate the order id of the new section.
     last_order_id     = DocumentationSection.order("order_id DESC").select(:order_id).first.order_id
     @section.order_id = last_order_id + 1
+
+    # Let's set the editor to be the current user.
+    @section.editor_id = @current_user.id
 
     if @section.save
       flash[:notice] = I18n.t("views.documentation_sections.success_create_flash")
