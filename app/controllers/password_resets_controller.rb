@@ -27,7 +27,8 @@ class PasswordResetsController < ApplicationController
   # GET /password_resets/:id/edit
 
   def edit
-    @user = User.find_by_password_reset_token(params[:id])
+    @user   = User.find_by_password_reset_token(params[:id])
+    @user ||= User.find_by_id(params[:id])
 
     if @user.blank?
       flash[:alert] = I18n.t("views.password_resets.does_not_exist")
@@ -36,37 +37,19 @@ class PasswordResetsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # PUT /password_resets
+  # PUT /password_resets/:id
 
   def update
-    if params[:user][:current_password]
-      if @current_user.authenticate(params[:user][:current_password])
-        if params[:user][:password] != params[:user][:password_confirmation]
-          flash[:alert] = "Password and password confirmation do not match."
-          redirect_to :back
-          return
-        end
-        if @current_user.update_attributes(params[:user])
-          flash[:notice] = "A senha foi alterada! "
-          redirect_to edit_user_path(@current_user)
-        else
-          flash[:alert] = "There was an error updating your password."
-          redirect_to edit_user_path(@current_user)
-        end
-      else
-        flash[:alert] = "You have entered a wrong password."
-        redirect_to :back
-      end
+    @user   = User.find_by_password_reset_token(params[:id])
+    @user ||= User.find_by_id(params[:id])
+
+    if @user.update_attributes(params[:user])
+      flash[:notice] = I18n.t("views.password_resets.update.success")
+      redirect_to root_path and return
     else
-      @user = User.find_by_password_reset_token!(params[:id])
-      if @user.update_attributes(params[:user])
-        flash[:notice] = "A senha foi alterada!"
-        redirect_to root_url
-      else
-        flash[:alert] = "There was an error updating your password."
-        redirect_to root_url
-      end
+      render "edit" and return
     end
+
   end
 
   #----------------------------------------------------------------------------
