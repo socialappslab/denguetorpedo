@@ -1,10 +1,16 @@
-.reset_password_form.offset1{:style => "margin-top:20px;"}
+= render :partial => "shared/flashes"
 
-  %h1
-    = I18n.t("views.password_resets.title")
+.offset5.span8.well
+  %h1{:style => "text-align: center; margin-bottom: 20px;"}
+    = I18n.t("views.password_resets.new.title")
 
-  %ul
-    = form_tag password_resets_path, :method => :post do
-      %li= label_tag :email, I18n.t("views.password_resets.enter_email"), style: "margin-top:20px;"
-      %li= text_field_tag :email
-      %li= submit_tag I18n.t("views.buttons.submit"), :class => "btn btn-success"
+  = form_tag password_resets_path, :method => :post, :class => "form-horizontal" do
+    .control-group
+      = label_tag :email, :class => "control-label", :style => "font-size: 12px;" do
+        = I18n.t("activerecord.attributes.user.email")
+      .controls
+        = text_field_tag :email
+
+    .control-group
+      .controls
+        = render :partial => "shared/submit_button"

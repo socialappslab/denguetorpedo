@@ -1,21 +1,23 @@
-.reset_password_form.offset1
-  - if flash[:notice]
-    %h2.notice{style: "margin: 10px; width: 700px;"}
-      = flash[:notice]
-  - if flash[:alert]
-    %h2.alert{style: "margin: 10px; width:700px;background-color:transparent;"}
-      = flash[:alert]
-  %h1
-    = I18n.t("views.users.edit.password")
-  = form_for @user, :url => password_reset_path(params[:id]) do |f|
-    = f.error_messages
-    - if @forgot == 0
-      = f.label :current_password, "Senha antiga"
-      = f.password_field :current_password
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @user}
 
-    = f.label :password, "Nova senha"
-    = f.password_field :password
-    = f.label :password_confirmation, "Confirmar nova senha"
-    = f.password_field :password_confirmation
-    %br
-    = f.submit "Confirmar nova senha"
+.offset5.span8.well
+  %h1{:style => "text-align: center; margin-bottom: 20px;"}
+    = I18n.t("views.users.edit.password")
+
+  = form_for @user, :url => password_reset_path(params[:id]), :html => { :class => "form-horizontal" } do |f|
+
+    .control-group
+      = f.label :password, :class => "control-label", :style => "font-size: 12px;" do
+        = I18n.t("views.password_resets.edit.password")
+      .controls
+        = f.password_field :password
+
+    .control-group
+      = f.label :password_confirmation, :class => "control-label", :style => "font-size: 12px;"
+      .controls
+        = f.password_field :password_confirmation
+
+    .control-group
+      .controls
+        = render :partial => "shared/submit_button"

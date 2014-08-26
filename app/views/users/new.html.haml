@@ -1,26 +1,42 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-#register{:style => "margin: auto; width: 25%; text-align: center;"}
-  .well
-    %h1
-      = I18n.t("common_terms.register")
-    %br
-    = form_for(@user, :class => "form-horizontal") do |f|
+.offset5.span8.well
+  %h1{:style => "text-align: center;"}
+    = I18n.t("common_terms.register")
+  %br
+  = form_for(@user, :html => {:class => "form-horizontal"}) do |f|
 
-      .control-group
-        .controls
-          = f.text_field :email, :placeholder => I18n.t("activerecord.attributes.user.email"), :style => "width: 100%;"
-        .controls
-          = f.text_field :first_name, :placeholder => I18n.t("activerecord.attributes.user.first_name"), :style => "width: 100%;"
-        .controls
-          = f.text_field :last_name, :placeholder => I18n.t("activerecord.attributes.user.last_name"), :style => "width: 100%;"
-        .controls
-          = f.password_field :password, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width: 100%;"
-        .controls
-          = f.password_field :password_confirmation, :placeholder => I18n.t("activerecord.attributes.user.password_confirmation"), :style => "width: 100%;"
-        .controls
-          = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }, :style => "width: 100%;"
+    .control-group
+      = f.label :email, :class => "control-label"
+      .controls
+        = f.text_field :email
 
-        .controls
-          = f.submit I18n.t("views.buttons.submit"), :class => "btn btn-success btn-block btn-large"
+    .control-group
+      = f.label :first_name, :class => "control-label"
+      .controls
+        = f.text_field :first_name
+
+    .control-group
+      = f.label :last_name, :class => "control-label"
+      .controls
+        = f.text_field :last_name
+
+    .control-group
+      = f.label :password, :class => "control-label"
+      .controls
+        = f.password_field :password
+
+    .control-group
+      = f.label :password_confirmation, :class => "control-label"
+      .controls
+        = f.password_field :password_confirmation
+
+    .control-group
+      = f.label :neighborhood_id, :class => "control-label"
+      .controls
+        = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }
+
+    .control-group
+      .controls
+        = render :partial => "shared/submit_button"
