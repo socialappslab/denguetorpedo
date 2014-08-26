@@ -3,7 +3,7 @@
 
   /------------------------------------------------------------------------
 
-  .span3.offset4{:style => "text-align: center; margin-top: 15px;"}
+  .dashboard-item{:style => "margin-left: 160px;"}
     - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
       - header_styling = "font-weight: bold;"
     - else
@@ -21,7 +21,7 @@
 
   /------------------------------------------------------------------------
 
-  .span4{:style => "text-align: center; margin-top: 15px;"}
+  .dashboard-item
     - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
       - header_styling = "font-weight: bold;"
     - else
@@ -40,7 +40,7 @@
 
   /------------------------------------------------------------------------
 
-  .span3{:style => "text-align: center; margin-top: 15px;"}
+  .dashboard-item
     - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
     = link_to teams_path, :style => "#{bold_header_title}" do
       %i.fa.fa-search
@@ -48,7 +48,7 @@
 
   /------------------------------------------------------------------------
 
-  .span4{:style => "margin-top: 15px;"}
+  .dashboard-item
     - if @current_user && @current_user.neighborhood
       - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
     - elsif @current_user.role != User::Types::VISITOR
