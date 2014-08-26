@@ -399,6 +399,9 @@ pt:
       description: "Mande um torpedo (SMS) para o número do Dengue Torpedo (21)xxxxx-xxxx. Para mais informações, veja o Manual Dengue Torpedo no 'Jogue como?'"
       offer_from_sponsor:
         header: Oferecimento da Rede Trel
+    reports:
+      types:
+        delete: Deletar
 
 
 

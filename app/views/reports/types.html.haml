@@ -21,7 +21,7 @@
         %td
           = link_to I18n.t("common_terms.edit"), "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
         %td
-          = link_to I18n.t("common_terms.delete"), "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
+          = link_to I18n.t("views.reports.types.delete"), "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
           = link_to I18n.t("common_terms.cancel"), "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
 
       - type.elimination_methods.each do |method|
@@ -33,7 +33,7 @@
           %td
             = link_to I18n.t("common_terms.edit"), "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
           %td
-            = link_to I18n.t("common_terms.delete"), "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
+            = link_to I18n.t("views.reports.types.delete"), "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
             = link_to I18n.t("common_terms.cancel"), "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
       %tr
         %td{style: "padding-left:40px;"}

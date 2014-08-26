@@ -374,6 +374,9 @@ es:
       new:
         header: Enviar un mensaje al Dengue Torpedo
         max_message_length: "Max 3500 caracteres"
+    reports:
+      types:
+        delete: Borrar
 
   #----------------------------------------------------------------------------
   # Countries
