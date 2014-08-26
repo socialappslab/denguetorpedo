@@ -288,6 +288,7 @@ es:
       login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
       user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con Dengue Torpedo."
+      email_invalid: "Correo electrónico incorrecta"
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
       confirm: ¿Está seguro?
@@ -335,8 +336,11 @@ es:
       admin:
         delete: Borrar
     password_resets:
-      title: Redefinir su contraseña
-      enter_email: "Teclee su correo electrónico registrado"
+      new:
+        title: Redefinir su contraseña
+        email: "Teclee su correo electrónico registrado"
+      edit:
+        password: Nueva contraseña
     buttons:
       publish: "Publicar"
       confirm: "Confirmar"
