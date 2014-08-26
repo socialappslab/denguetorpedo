@@ -378,6 +378,10 @@ es:
     reports:
       types:
         delete: Borrar
+    about:
+      title: Dengue Torpedo
+      university: "Universidad de California, Berkeley"
+
 
   #----------------------------------------------------------------------------
   # Countries

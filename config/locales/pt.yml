@@ -403,6 +403,10 @@ pt:
     reports:
       types:
         delete: Deletar
+    about:
+      title: Dengue Torpedo
+      description: Um aplicativo interativo de celular e web para o controle da dengue
+      university: "Universidade da Califórnia, Berkeley"
 
 
 
