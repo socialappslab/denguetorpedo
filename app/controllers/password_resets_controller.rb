@@ -1,32 +1,44 @@
 # encoding: utf-8
+
 class PasswordResetsController < ApplicationController
+
+  #----------------------------------------------------------------------------
+  # GET /password_resets/new
+
   def new
   end
 
+  #----------------------------------------------------------------------------
+  # POST /password_resets
+
   def create
-    user = User.find_by_email(params[:email])
-    user.send_password_reset if user
-    redirect_to root_url, :alert => "E-mail enviado com as instruções para redefinir sua senha."
+    @user = User.find_by_email(params[:email])
+
+    if @user
+      @user.send_password_reset
+      redirect_to root_url, :alert => I18n.t("views.password_resets.create.reset_email_sent")
+    else
+      flash[:alert] = I18n.t("views.application.email_invalid")
+      redirect_to new_password_reset_path
+    end
   end
+
+  #----------------------------------------------------------------------------
+  # GET /password_resets/:id/edit
 
   def edit
     @user = User.find_by_password_reset_token(params[:id])
 
-    if @user.nil?
-      @user = User.find(params[:id])
-      @forgot = 0
-    else
-      @forgot = 1
+    if @user.blank?
+      flash[:alert] = I18n.t("views.password_resets.does_not_exist")
+      redirect_to root_path and return
     end
-
-    # if params[:id] != @current_user.id
-    #   head :not_found and return
-    # end
   end
 
-  def update
-    
+  #----------------------------------------------------------------------------
+  # PUT /password_resets
 
+  def update
     if params[:user][:current_password]
       if @current_user.authenticate(params[:user][:current_password])
         if params[:user][:password] != params[:user][:password_confirmation]
@@ -55,15 +67,8 @@ class PasswordResetsController < ApplicationController
         redirect_to root_url
       end
     end
-    
-    
-    #if @user.password_reset_sent_at < 2.hours.ago
-    #  redirect_to new_password_reset_path, :alert => "Password reset has expired."
-    #elsif @user.update_attributes(params[:user])
-    #  redirect_to root_url, :notice => "Password has been reset!"
-    #else
-    #  render :edit
-    #end
-  
   end
+
+  #----------------------------------------------------------------------------
+
 end
