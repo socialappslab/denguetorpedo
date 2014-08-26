@@ -280,6 +280,7 @@ pt:
       edit_teams: Administrar equipes
       team_successfully_blocked: You've successfully blocked the team.
       team_successfully_unblocked: You've successfully unblocked the team.
+      edit_team_members: Administrar membros de equipes
     application:
       error: "Algo deu errado. Por favor, tente novamente."
       devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"

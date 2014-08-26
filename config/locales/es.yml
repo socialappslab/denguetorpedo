@@ -206,8 +206,8 @@ es:
     activities: Actividades
     male: Masculino
     female: Feminino
-    coordinator_configurations: Configuraciones de coordinador
-    sponsor_configurations: Configuraciones de patrocinador
+    coordinator_configurations: Configuraciónes de coordinador
+    sponsor_configurations: Configuraciónes de patrocinador
     no_one: Nadie
     or: o
     click_here: Clic aquí
@@ -281,6 +281,7 @@ es:
       edit_teams: Administrar equipos
       team_successfully_blocked: Equipo bloqueado exitosamente
       team_successfully_unblocked: Equipo desbloqueado exitosamente
+      edit_team_members: Administrar miembros de equipos
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
       devise_errors: "%{num_errors} errores impidieron que el usuario fuera salvado:"

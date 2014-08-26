@@ -1,13 +1,8 @@
 = render :partial => "shared/flashes"
 
 .row.offset1
-	%h1.span5{style: "margin-left:0px;"}
-		= I18n.t("views.admin.edit_user")
-%br
-
-.row.offset1
 	%h2
-		= I18n.t("views.admin.edit_residents")
+		= I18n.t("views.admin.edit_team_members")
 	.row
 		%table.users_table.span12{:cellpadding => 10, border: 1}
 			%colgroup
@@ -16,15 +11,10 @@
 				%col{style: "width:15%;"}
 			- @users.each do |user|
 				%tr
-					- if user.is_blocked == false
-						%td
-							= link_to user.full_name, edit_user_path(user)
-						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-					- else
-						%td{:style => "color:red"}
-							= link_to user.full_name, edit_user_path(user), :style => "color:red;"
-						%td= link_to I18n.t("views.admin.unblock"), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+					%td
+						= link_to user.full_name, edit_user_path(user)
+					%td{:style => "margin-left:10px;"}
+						= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 	%br
 
