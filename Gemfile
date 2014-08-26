@@ -124,7 +124,7 @@ gem 'simple_enum'
 #------------------------------------------------------------------------------
 # Heroku-specific gems
 
-group :production do
+group :production, :staging do
   gem "rails_12factor"
 end
 
