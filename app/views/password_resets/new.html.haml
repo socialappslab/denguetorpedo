@@ -1,7 +1,7 @@
 = render :partial => "shared/flashes"
-  
+
 .offset5.span8.well
-  %h1{:style => "text-align: center;"}
+  %h1{:style => "text-align: center; margin-bottom: 20px;"}
     = I18n.t("views.password_resets.new.title")
 
   = form_tag password_resets_path, :method => :post, :class => "form-horizontal" do
