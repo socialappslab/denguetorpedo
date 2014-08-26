@@ -304,6 +304,8 @@ pt:
       create: Criar uma equipe
       my_team: Minha equipe
       call_to_action_flash: "Agora crie uma equipe ou entre numa equipe."
+      show:
+        blocked: You are blocked!
     posts:
       succes_create_flash: "Você criou um post com sucesso"
     users:
