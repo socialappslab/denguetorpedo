@@ -331,6 +331,8 @@ es:
       new:
         header: "Nuevo premio"
         create_button: "Registrar un premio"
+      admin:
+        delete: Borrar
     password_resets:
       title: Redefinir su contraseña
       enter_email: "Teclee su correo electrónico registrado"
