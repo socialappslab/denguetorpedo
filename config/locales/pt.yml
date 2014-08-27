@@ -340,11 +340,11 @@ pt:
       new:
         title: Redefinir sua senha
         email: "Digite o seu e-mail cadastrado"
-      does_not_exist: "Password reset token does not exist."
+      does_not_exist: "A mudança de senha 'símbolo' não existe."
       edit:
         password: "Nova senha"
       create:
-        reset_email_sent: "Sent!"
+        reset_email_sent: "Alterar senha de mensagem enviada."
       update:
         success: "A senha foi alterada!"
     buttons:

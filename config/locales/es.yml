@@ -339,8 +339,13 @@ es:
       new:
         title: Redefinir su contraseña
         email: "Teclee su correo electrónico registrado"
+      does_not_exist: "El 'token' de cambio de contraseña no existe."
       edit:
         password: Nueva contraseña
+      create:
+        reset_email_sent: "Mensaje de cambio de contraseña enviado"
+      update:
+        success: "La contraseña fue cambiada"
     buttons:
       publish: "Publicar"
       confirm: "Confirmar"
@@ -395,6 +400,11 @@ es:
       title: Dengue Torpedo
       description: Um aplicativo interativo de celular e web para o controle da dengue
       university: "Universidad de California, Berkeley"
+    user_mailer:
+      password_reset:
+        subject: "Cambio de contraseña"
+        click_link: "Para cambiar su contraseña, haga clic en la dirección de abajo"
+        ignore_email: "Si usted no ha solicitado un cambio de contraseña, ignore este mensaje y su contraseña no cambiará."
 
 
   #----------------------------------------------------------------------------
