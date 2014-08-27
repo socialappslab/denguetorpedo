@@ -379,6 +379,15 @@ es:
       new:
         header: Enviar un mensaje al Dengue Torpedo
         max_message_length: "Max 3500 caracteres"
+    notices:
+      new:
+        activity_title: "Título de la actividad (máx 60 caracteres)"
+        institution_name: "Institución (máx 60 caracteres)"
+        summary: "Descripción resumida (máx 150 caracteres)"
+        description: "Descripción de la actividad (máx 900 caracteres)"
+        location: "Dirección de la actividad (máx 60 caracteres)"
+        date: "Data de la actividad"
+        time: "Hora de la actividad"
     reports:
       types:
         delete: Borrar
