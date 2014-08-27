@@ -384,6 +384,7 @@ es:
         delete: Borrar
     about:
       title: Dengue Torpedo
+      description: Um aplicativo interativo de celular e web para o controle da dengue
       university: "Universidad de California, Berkeley"
 
 
