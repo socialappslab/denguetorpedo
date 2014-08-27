@@ -11,75 +11,105 @@
 				= I18n.t("views.about.university")
 			%h4 denguetorpedo@gmail.com
 
-		%p
-			A dengue é um grande problema de saúde pública do Brasil. Não há vacina.
-			O número de casos de dengue registrados aumentou 190% entre janeiro 2012
-			e janeiro 2013 (Fonte: SMSDC). A maneira mais eficaz de controlar a dengue
-			é a eliminação dos locais de reprodução em água parada do mosquito
-			transmissor Aedes aegypti, tarefa geralmente atribuída ao governo.
-			Os focos de agua em sua maioria são pequenos e residenciais, escapando
-			ao controle governamental de vetores. Estudos demonstraram que esse
-			controle pode ser mais eficaz através da ação comunitária dos moradores
-			com o governo. O desafio é motivar os moradores, que sabem onde estão
-			os focos.
-		%br
+		- if I18n.locale == :es
+			%p
+				El dengue es un gran problema de salúd pública. No hay vacuna, y el número de casos de dengue registrados aumentó 190% entre enero del 2012 y enero del 2013 (Fuente: SMSDC). Una manera más eficaz de controlar el dengue es la eliminación de los lugares de agua estancada donde se reproduce el mosquito transmisor Aedes Aegypti; una tarea generalmente atribuida al gobierno. Los focos de agua son en su mayoría pequeños y están en residencias, por lo cual escapan al control gubernamental de vectores.  Estudios demuestran que ese control puede ser más eficaz a travéz de acciones comunitarias de los vecinos con el gobierno. El desafío es motivar a los moradores, que saben donde están los focos.
+			%br
 
-		%p
-			O Dengue Torpedo (DT) é um aplicativo social e gratuito para telefones
-			celulares basicos com câmeras, ligado a um site na web, que promove
-			iniciativas comunitárias para a prevenção da dengue. Criado e desenvolvido
-			pelo Social Apps Lab da Universidade de Califórnia, Berkeley, coordenado
-			pelo Prof. James Holston, ele combina tecnologia de comunicação, elementos
-			de jogos digitais e saber local para motivar moradores a identificar e
-			eliminar locais de reprodução do Aedes em colaboração com agentes de
-			saude locais. O DT é um projeto de engajamento comunitário que associa
-			duas tecnologias já presentes e integradas no cotidiano das comunidades
-			brasileiras, o uso de telefones celulares e de computadores, em especial
-			das redes sociais. Os participantes utilizarão seus próprios celulares e
-			acessarão o site do DT na web, seja de seus próprios computadores, seja
-			de computadores em lan houses locais.
+			%p
+				Dengue Torpedo (DT) es una aplicación social gratiuta para teléfonos celulares sencillos con cámara, ligado a un sitio de red, que promueve iniciativas comunitarias para la prevención del dengue. Creado y desarrollado por el Laboratorio de Aplicaciones Sociales de la Universidad de California en Berkeley, dirigido  por el Prof. James Holston, la aplicación combina tecnología de comunicación, elementos de juegos digitales y conocimiento local para motivar a los miembros de una comunidad a identificar y eliminar lugares de reproducción de Aedes en colaboración con agentes locales de salud. El DT es un proyecto de colaboración comunitaria que asocia dos tecnologías ya presentes e integradas cotidianamente en comunidades mexicanas, el uso de teléfonos celulares y computadoras, en especial de las redes sociales. Los participantes utilizarán sus propios celulares y accesarán al sitio de internet de DT, sea en sus propias computadoras, o en alguna computadora dentro de la comunidad.
+			%br
 
-		%br
+			%p
+				El DT usa elementos de juegos y redes sociales para aumentar la motivación de los participantes en tres niveles de involucramiento, el de la vigilancia, a nivel de casa e individual. DT reconoce y recompensa acciones específicas de intervención contra el dengue y otorga puntos, medallas, títulos, y otras distinciones en el sitio de internet. Los individuos y grupos pueden cambiar sus puntos por premios destinados a proyectos comunitarios específicos, dados por patrocinadores locales, como un banco para la plaza o un contenedor de basura. Con esos ejemplos, los participantes contribuirán al mejoramiento de la sociabilidad, y al saneamiento del medio ambiente en sus comunidades.
+			%br
 
-		%p
-			O DT usa elementos dos jogos e redes sociais para aumentar a motivação
-			dos participantes em três níveis de engajamento, os da vizinhança, da
-			casa e individual: ele reconhece e recompensa atos específicos de
-			intervenção contra a dengue ao conferir pontos, medalhas, títulos e
-			outras distinções no site. Os indivíduos e grupos podem trocar seus
-			pontos por prêmios destinados a projetos comunitários específicos, doados
-			por patrocinadores locais, como um banco de praça e um contêiner de lixo.
-			Nesses exemplos, os usuários contribuiriam na melhora da sociabilidade, do
-			saneamento e do meio ambiente de suas comunidades.
-
-		%br
-
-		%p
-			O projeto DT propõe um estudo piloto de 24 meses na comunidade da Maré no
-			Rio de Janeiro para testar e desenvolver o aplicativo, com os seguintes
-			objetivos:
+			%p El proyecto DT propone un estudio piloto de 24 meses en la comunidad de Tepalcingo, Morelos, para probar y desarrollar la aplicación, con los siguientes objetivos:
 
 			%ol{:style => "margin-left: 25px; list-style: decimal; color: #65665C;"}
-				%li Motivar moradores a identificar e eliminar locais de reprodução do Aedes;
-				%li combater a dengue por meio do envolvimento comunitário no uso de tecnologia de comunicação;
-				%li produzir um aplicativo robusto com colaboração comunitária que envolve a comunidade local (moradores e agentes de saúde) na pesquisa e design do DT;
-				%li medir a adesão entre os residentes;
-				%li avaliar seu impacto entomológico;
-				%li envolver os residentes na educação para a saúde pública e cidadania ativa;
-				%li avaliar o potencial do DT para distribuição em escala.
+				%li Motivar a los vecions a identificar y eliminar lugares de reproducción de Aedes;
+				%li Combatir el dengue por medio del involucramiento comunitario y el uso de la tecnologías de comunicación;
+				%li Producir una aplicación robusta con colaboración comunitaria que involucre a la comunidad local (moradores y agentes de salud) en el desarrollo y diseño de DT;
+				%li Medir la adeción de los residantes;
+				%li Validar el impacto epidemiológico;
+				%li Involucrar a los residentes en la educación para la salud pública y ciudadanía activa;
+				%li Validad el potencial de DT para distribución a larga escala.
+			%br
 
-		%br
+			%p
+				El proyecto DT en Maré, Rio de Janeiro, actualmente está bajo la coordinación del Prof. James Holston, se estructura sobre cuatro apoyos: las comunidades locales y sus organizaciones no gubernamentales (Redes de Desenvolvimiento de Maré), el gobierno municipal de Río (Instituto Pereira Passos de Salúd Regional AP 3.1), universidades (UC Berkeley y UFRJ) y el sector privado (IBM-Brazil, Rede Trel, UBS Optimus Foundation, Suiza).
+				El proyecto pretede involucrar a otros socios de  comercios locales, e.g. Tiendas de lozas y material de construcción. Después de 24 meses de estudio piloto, los socios están aptos para aumentar la escala de DT a toda la ciudad de Rio. La colaboración entre organizaciones comunitarias, gobierno local, iniciativa privada, e universidades de Brasil y el exterior configuran una articulación inovadora para la utilización de nuevas tecnologías de comunicación y construcción de una ciudadanía participativa.
 
-		%p
-			O Projeto DT atualmente em andamento sob a coordenação do Prof. James Holston
-			se estrutura sobre quatro apoios: a comunidade local e suas ONGs
-			(Redes de Desenvolvimento da Maré), o governo municipal do Rio
-			(Instituto Pereira Passos e Saúde Regional AP 3.1), a universidade
-			(UC Berkeley e UFRJ) e o setor privado (IBM-Brazil, Rede Trel, UBS Optimus Foundation, Suíça).
-			O projeto pretende envolver outros parceiros no comércio local, e.g.,
-			lojas de material de construção. Após os 24 meses do estudo piloto, os
-			parceiros estão aptos a aumentar a escala do DT para a cidade do Rio. A
-			parceria entre as organizações comunitárias, governo local, iniciativa
-			privada, e universidades do Brasil e do exterior configuram uma articulação
-			inovadora para a utilização de novas tecnologias de comunição na construção
-			de uma cidadania participativa.
+		- else
+			%p
+				A dengue é um grande problema de saúde pública do Brasil. Não há vacina.
+				O número de casos de dengue registrados aumentou 190% entre janeiro 2012
+				e janeiro 2013 (Fonte: SMSDC). A maneira mais eficaz de controlar a dengue
+				é a eliminação dos locais de reprodução em água parada do mosquito
+				transmissor Aedes aegypti, tarefa geralmente atribuída ao governo.
+				Os focos de agua em sua maioria são pequenos e residenciais, escapando
+				ao controle governamental de vetores. Estudos demonstraram que esse
+				controle pode ser mais eficaz através da ação comunitária dos moradores
+				com o governo. O desafio é motivar os moradores, que sabem onde estão
+				os focos.
+			%br
+
+			%p
+				O Dengue Torpedo (DT) é um aplicativo social e gratuito para telefones
+				celulares basicos com câmeras, ligado a um site na web, que promove
+				iniciativas comunitárias para a prevenção da dengue. Criado e desenvolvido
+				pelo Social Apps Lab da Universidade de Califórnia, Berkeley, coordenado
+				pelo Prof. James Holston, ele combina tecnologia de comunicação, elementos
+				de jogos digitais e saber local para motivar moradores a identificar e
+				eliminar locais de reprodução do Aedes em colaboração com agentes de
+				saude locais. O DT é um projeto de engajamento comunitário que associa
+				duas tecnologias já presentes e integradas no cotidiano das comunidades
+				brasileiras, o uso de telefones celulares e de computadores, em especial
+				das redes sociais. Os participantes utilizarão seus próprios celulares e
+				acessarão o site do DT na web, seja de seus próprios computadores, seja
+				de computadores em lan houses locais.
+
+			%br
+
+			%p
+				O DT usa elementos dos jogos e redes sociais para aumentar a motivação
+				dos participantes em três níveis de engajamento, os da vizinhança, da
+				casa e individual: ele reconhece e recompensa atos específicos de
+				intervenção contra a dengue ao conferir pontos, medalhas, títulos e
+				outras distinções no site. Os indivíduos e grupos podem trocar seus
+				pontos por prêmios destinados a projetos comunitários específicos, doados
+				por patrocinadores locais, como um banco de praça e um contêiner de lixo.
+				Nesses exemplos, os usuários contribuiriam na melhora da sociabilidade, do
+				saneamento e do meio ambiente de suas comunidades.
+
+			%br
+
+			%p
+				O projeto DT propõe um estudo piloto de 24 meses na comunidade da Maré no
+				Rio de Janeiro para testar e desenvolver o aplicativo, com os seguintes
+				objetivos:
+
+				%ol{:style => "margin-left: 25px; list-style: decimal; color: #65665C;"}
+					%li Motivar moradores a identificar e eliminar locais de reprodução do Aedes;
+					%li combater a dengue por meio do envolvimento comunitário no uso de tecnologia de comunicação;
+					%li produzir um aplicativo robusto com colaboração comunitária que envolve a comunidade local (moradores e agentes de saúde) na pesquisa e design do DT;
+					%li medir a adesão entre os residentes;
+					%li avaliar seu impacto entomológico;
+					%li envolver os residentes na educação para a saúde pública e cidadania ativa;
+					%li avaliar o potencial do DT para distribuição em escala.
+
+			%br
+
+			%p
+				O Projeto DT atualmente em andamento sob a coordenação do Prof. James Holston
+				se estrutura sobre quatro apoios: a comunidade local e suas ONGs
+				(Redes de Desenvolvimento da Maré), o governo municipal do Rio
+				(Instituto Pereira Passos e Saúde Regional AP 3.1), a universidade
+				(UC Berkeley e UFRJ) e o setor privado (IBM-Brazil, Rede Trel, UBS Optimus Foundation, Suíça).
+				O projeto pretende envolver outros parceiros no comércio local, e.g.,
+				lojas de material de construção. Após os 24 meses do estudo piloto, os
+				parceiros estão aptos a aumentar a escala do DT para a cidade do Rio. A
+				parceria entre as organizações comunitárias, governo local, iniciativa
+				privada, e universidades do Brasil e do exterior configuram uma articulação
+				inovadora para a utilização de novas tecnologias de comunição na construção
+				de uma cidadania participativa.
