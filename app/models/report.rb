@@ -213,7 +213,7 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def expire_date
-    self.completed_at + EXPIRATION_WINDOW
+    self.created_at + EXPIRATION_WINDOW
   end
 
   def set_names
