@@ -278,8 +278,8 @@ pt:
       edit_visitors: Administrar visitantes
       edit_residents: Administrar moradores
       edit_teams: Administrar equipes
-      team_successfully_blocked: You've successfully blocked the team.
-      team_successfully_unblocked: You've successfully unblocked the team.
+      team_successfully_blocked: Equipe bloqueado com sucesso
+      team_successfully_unblocked: Equipe desbloqueado com sucesso
       edit_team_members: Administrar membros de equipes
     application:
       error: "Algo deu errado. Por favor, tente novamente."
