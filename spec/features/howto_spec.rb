@@ -60,7 +60,7 @@ describe "How To", :type => :feature do
       fill_in "documentation_section_title", :with => "TEST"
       click_button "Enviar"
       expect(page).to have_content("TEST")
-      expect(page).to have_content("A seção foi atualizada com sucesso")
+      expect(page).to have_content("Seção foi atualizada com sucesso")
     end
 
     it "allows content change" do
@@ -68,7 +68,7 @@ describe "How To", :type => :feature do
       fill_in "documentation_section_content", :with => "TEST"
       click_button "Enviar"
       expect(page).to have_content("TEST")
-      expect(page).to have_content("A seção foi atualizada com sucesso")
+      expect(page).to have_content("Seção foi atualizada com sucesso")
     end
 
     it "requires title" do
