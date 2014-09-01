@@ -7,7 +7,7 @@ describe DocumentationSectionsController do
 
   describe "Editing a Section" do
     before(:each) do
-      cookies[:auth_token]        = user.auth_token
+      cookies[:auth_token] = user.auth_token
     end
 
     it "changes title and content" do
@@ -27,7 +27,7 @@ describe DocumentationSectionsController do
 
   describe "Creating a Section" do
     before(:each) do
-      cookies[:auth_token]        = user.auth_token
+      cookies[:auth_token] = user.auth_token
     end
 
     it "avoids creating a section if fields are empty" do
@@ -60,6 +60,28 @@ describe DocumentationSectionsController do
 
       ds = DocumentationSection.last
       expect(ds.order_id).to eq(last_order_id + 1)
+    end
+  end
+
+
+  #----------------------------------------------------------------------------
+
+  describe "Deleting a Section" do
+    let!(:section) { FactoryGirl.create(:documentation_section, :title => "Title in PT", :title_in_es => "Title in ES", :content => "Content in PT", :content_in_es => "Content in ES")}
+
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+    end
+
+    it "deletes a section" do
+      expect {
+        delete :destroy, :id => section.id
+      }.to change(DocumentationSection, :count).by(-1)
+    end
+
+    it "deletes the right section" do
+      delete :destroy, :id => section.id
+      expect(DocumentationSection.find_by_id(section.id)).to eq(nil)
     end
   end
 
