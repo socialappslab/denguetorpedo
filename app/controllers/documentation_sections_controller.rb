@@ -5,7 +5,7 @@ class DocumentationSectionsController < ApplicationController
 
   before_filter :require_login
   before_filter :ensure_coordinator
-  before_filter :identify_section, :only => [:edit, :update]
+  before_filter :identify_section, :only => [:edit, :update, :destroy]
 
   #-----------------------------------------------------------------------------
   # GET /documentation_sections/1/edit
@@ -34,7 +34,7 @@ class DocumentationSectionsController < ApplicationController
     @section.editor_id = @current_user.id
 
     if @section.save
-      flash[:notice] = I18n.t("views.documentation_sections.success_create_flash")
+      flash[:notice] = I18n.t("views.documentation_sections.create.success")
       redirect_to howto_path and return
     else
       render "new" and return
@@ -49,11 +49,24 @@ class DocumentationSectionsController < ApplicationController
     @section.editor_id = @current_user.id
 
     if @section.update_attributes(params[:documentation_section])
-      flash[:notice] = "A seção foi atualizada com sucesso"
+      flash[:notice] = I18n.t("views.documentation_sections.update.success")
       redirect_to howto_path and return
     else
       render "edit" and return
     end
+  end
+
+  #-----------------------------------------------------------------------------
+  # DELETE /documentation_sections/1
+
+  def destroy
+    if @section.destroy
+      flash[:notice] = I18n.t("views.documentation_sections.delete.success")
+    else
+      flash[:notice] = I18n.t("views.application.error")
+    end
+
+    redirect_to howto_path and return
   end
 
   #-----------------------------------------------------------------------------

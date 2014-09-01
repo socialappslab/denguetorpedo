@@ -351,9 +351,10 @@ es:
       confirm: "Confirmar"
       search:  "Buscar"
       submit:  "Enviar"
-      update: "Actualizar"
-      create: "Crear"
-      edit: "Editar"
+      update:  "Actualizar"
+      create:  "Crear"
+      edit:    "Editar"
+      delete:  Borrar
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
@@ -368,10 +369,15 @@ es:
       about: "Sobre Dengue Torpedo"
     documentation_sections:
       new:
-        title: Agregar sección
-      success_create_flash: "Novo sección criado com sucesso!"
+        title: Añadir sección
       edit:
         no_edit: "Nota: esta sección no es editable"
+      create:
+        success: "Novo sección criado com sucesso!"
+      update:
+        success: "La sección actualizado com sucesso!"
+      delete:
+        success: "La sección eliminado exitosamente!"
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"
