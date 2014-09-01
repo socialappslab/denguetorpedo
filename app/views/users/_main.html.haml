@@ -27,9 +27,10 @@
     %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("dashboard.reports")
 
-    - if @current_user == @user
-      = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-orange btn-large profile-view-reports-button", :style => "display: inline-block;" do
-        = I18n.t("common_terms.create_reports")
+    %div{:style => "height: 20px;"}
+      - if @current_user == @user
+        = link_to neighborhood_reports_path(@neighborhood), :class => "btn btn-orange btn-large profile-view-reports-button", :style => "display: inline-block;" do
+          = I18n.t("common_terms.create_reports")
 
 .row
   - if @current_user == @user

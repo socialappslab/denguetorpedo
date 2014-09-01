@@ -1,10 +1,6 @@
-- if @neighborhood && @neighborhood.name == Neighborhood::Names::MARE
-  #sms_button{style: "position: absolute; right: 0; z-index: 1000; margin-top: -59px; margin-right: 1px"}
-    = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success", :style => "height: 40px; line-height: 30px; font-size: 16px; border-radius: 0px;"
-
 = render :partial => "shared/flashes"
 
-#content{style: "min-height:700px;"}
+%div{style: "min-height:700px;"}
   / Display the Mare evacuation alert content box if the selected neighborhood
   / is Mare.
   - if @neighborhood && @neighborhood.name == Neighborhood::Names::MARE
@@ -17,9 +13,13 @@
             = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
 
 
-  .row{:style => "margin-top: 40px;"}
+  .row
     .span5{:style => "border-right: 1px solid #ccc;"}
       = render :partial => "neighborhoods/sidebar"
 
-    .span11.offset1
+    .span9.offset1
       = render :partial => "neighborhoods/main"
+
+    .span3{:style => "text-align: center;"}
+      - if @neighborhood.name  == Neighborhood::Names::MARE
+        = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success btn-large", :style => "margin-top: 120px;"
