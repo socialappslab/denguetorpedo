@@ -5,7 +5,7 @@ class DocumentationSectionsController < ApplicationController
 
   before_filter :require_login
   before_filter :ensure_coordinator
-  before_filter :identify_section, :only => [:edit, :update]
+  before_filter :identify_section, :only => [:edit, :update, :destroy]
 
   #-----------------------------------------------------------------------------
   # GET /documentation_sections/1/edit
@@ -54,6 +54,19 @@ class DocumentationSectionsController < ApplicationController
     else
       render "edit" and return
     end
+  end
+
+  #-----------------------------------------------------------------------------
+  # DELETE /documentation_sections/1
+
+  def destroy
+    if @section.destroy
+      flash[:notice] = I18n.t("views.documentation_sections.delete.success")
+    else
+      flash[:notice] = I18n.t("views.application.error")
+    end
+
+    redirect_to howto_path and return
   end
 
   #-----------------------------------------------------------------------------
