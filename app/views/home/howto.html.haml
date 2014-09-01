@@ -32,6 +32,10 @@
               .span6{style: "text-align: right;"}
                 - if @current_user && @current_user.coordinator?
                   = link_to I18n.t("views.buttons.edit"), edit_documentation_section_path(ds)
+                  = link_to I18n.t("views.buttons.delete"), documentation_section_path(ds), :style => "margin-left: 40px;", :method => "delete", "data-confirm" => I18n.t("views.alerts.confirm")
+
+
+
           #cadastrar.accordion-body
             .accordion-inner{style: "padding: 9px 25px;"}
               = ds.content.gsub(" ", "&nbsp;").gsub("\n",'<br />').html_safe
