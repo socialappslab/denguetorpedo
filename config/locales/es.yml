@@ -273,7 +273,7 @@ es:
       edit_sponsors: Administrar patrocinadores
       edit_prize: Administrar premios
       edit_sms: Administrar DT Torpedos
-      edit_feedback: Administrar Contato DT
+      edit_feedback: "Administrar Contacto DT"
       edit_report: Administrar tipos y métodos
       edit_verifiers: Administrar verificadores
       edit_visitors: Administrar visitantes
@@ -353,6 +353,7 @@ es:
       submit:  "Enviar"
       update: "Actualizar"
       create: "Crear"
+      edit: "Editar"
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
@@ -367,7 +368,7 @@ es:
       about: "Sobre Dengue Torpedo"
     documentation_sections:
       new:
-        title: Registrar sección
+        title: Agregar sección
       success_create_flash: "Novo sección criado com sucesso!"
       edit:
         no_edit: "Nota: esta sección no es editable"

@@ -354,6 +354,7 @@ pt:
       submit:  "Enviar"
       update: "Atualizar"
       create: "Criar"
+      edit: "Editar"
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
@@ -368,7 +369,7 @@ pt:
       about: "Sobre o Dengue Torpedo"
     documentation_sections:
       new:
-        title: Registrar seção
+        title: Adicionar secção
       success_create_flash: "Novo seção criado com sucesso!"
       edit:
         no_edit: "Nota: Essa seção ainda não foi editada"
