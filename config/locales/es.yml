@@ -368,7 +368,7 @@ es:
       about: "Sobre Dengue Torpedo"
     documentation_sections:
       new:
-        title: Agregar sección
+        title: Añadir sección
       success_create_flash: "Novo sección criado com sucesso!"
       edit:
         no_edit: "Nota: esta sección no es editable"
