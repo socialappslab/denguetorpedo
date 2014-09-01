@@ -352,9 +352,10 @@ pt:
       confirm: "Confirmar"
       search:  "Busca"
       submit:  "Enviar"
-      update: "Atualizar"
-      create: "Criar"
-      edit: "Editar"
+      update:  "Atualizar"
+      create:  "Criar"
+      edit:    "Editar"
+      delete:  Deletar
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
@@ -370,9 +371,14 @@ pt:
     documentation_sections:
       new:
         title: Adicionar secção
-      success_create_flash: "Novo seção criado com sucesso!"
       edit:
         no_edit: "Nota: Essa seção ainda não foi editada"
+      create:
+        success: "Novo seção criado com sucesso!"
+      update:
+        success: "Seção foi atualizada com sucesso!"
+      delete:
+        success: "Seção foi eliminada com sucesso!"
     badges:
       eye_of_the_mosquito: "De olho no mosquito"
       exterminator: "Exterminador de mosquitos"

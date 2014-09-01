@@ -34,7 +34,7 @@ class DocumentationSectionsController < ApplicationController
     @section.editor_id = @current_user.id
 
     if @section.save
-      flash[:notice] = I18n.t("views.documentation_sections.success_create_flash")
+      flash[:notice] = I18n.t("views.documentation_sections.success.create")
       redirect_to howto_path and return
     else
       render "new" and return
@@ -49,7 +49,7 @@ class DocumentationSectionsController < ApplicationController
     @section.editor_id = @current_user.id
 
     if @section.update_attributes(params[:documentation_section])
-      flash[:notice] = "A seção foi atualizada com sucesso"
+      flash[:notice] = I18n.t("views.documentation_sections.create.success")
       redirect_to howto_path and return
     else
       render "edit" and return
