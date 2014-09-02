@@ -69,7 +69,8 @@ def populate_data
         :eliminator_id => eliminator.id)
     end
 
-    u.build_report_via_sms({ :body => "SMS report" })
+    report = u.build_report_via_sms({ :body => "SMS report" })
+    report.save!
   end
 
   # Populate news
