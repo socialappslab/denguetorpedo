@@ -16,9 +16,9 @@
         %a.user
           = link_to resolved_report.reporter.display_name + " - " + resolved_report.strftime_with(:created_at), user_path(resolved_report.reporter)
         %br
-      %a Eliminado: 
+      %a Eliminado:
       %a.user
         - if resolved_report.eliminator_id
           = link_to resolved_report.eliminator.display_name + " - " + resolved_report.strftime_with(:eliminated_at), user_path(resolved_report.eliminator)
         - else
-          = resolved_report.eliminator_name
+          = resolved_report.eliminator.display_name
