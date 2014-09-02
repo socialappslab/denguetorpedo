@@ -7,15 +7,6 @@ class Report < ActiveRecord::Base
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
-
-  # callback to create the feeds
-  # TODO: Do we need this?
-  after_save do |report|
-    Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
-    Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
-  end
-
-  #----------------------------------------------------------------------------
   # Constants
 
   EXPIRATION_WINDOW = 48 * 3600 # in seconds
