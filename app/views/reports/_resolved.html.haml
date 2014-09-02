@@ -1,4 +1,6 @@
 .report.eliminated
+  = render :partial => "reports/metadata", :locals => {:report => report}
+    
   .row
     .span6{:style => "margin-top:10px;"}
       %h4= report.complete_address
