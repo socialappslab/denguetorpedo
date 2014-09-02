@@ -74,9 +74,9 @@
 }
 
 .rp_report_status {
-  margin-top: -10px;
+  // margin-top: -10px;
   margin-right: -5px;
-  padding-top: 2px;
+  // padding-top: 2px;
   padding-left: 5px;
   height: 24px;
   color: #FFFFFF;
@@ -442,5 +442,18 @@
   &:hover {
     text-decoration: none;
     color: inherit;
+  }
+}
+
+
+// Action bar for each report
+.action-bar {
+  color: #8899a6;
+  display: inline-block;
+
+  i, a {
+    color: #8899a6;
+    // margin-right:10px;
+    margin-left:10px;
   }
 }
