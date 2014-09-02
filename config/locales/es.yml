@@ -184,6 +184,8 @@ es:
     time_expired: Tiempo expirado
     uploaded_photo: Foto cargada
     eliminated: Eliminado
+    verified: Verificado
+    reported: Marcado
     create_a_report: Marcar un foco
     create_reports: Marcar focos
     complete_report: Complete el marcado del foco

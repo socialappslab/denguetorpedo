@@ -5,11 +5,32 @@
         = link_to report.reporter.first_name, user_path(report.reporter), :style => "font-weight: bold;"
         .feed-item-timestamp
           %i.fa.fa-clock-o
+          = I18n.t("common_terms.reported")
           = format_timestamp(report.created_at)
 
         - if @current_user && (@current_user == report.reporter || @current_user.coordinator?)
           = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
             %i.fa.fa-trash-o
+
+
+        - if report.eliminated? && report.eliminator
+          %div{:style => "display: block;"}
+            = link_to report.eliminator.first_name, user_path(report.eliminator), :style => "font-weight: bold;"
+            .feed-item-timestamp
+              %i.fa.fa-clock-o
+              = I18n.t("common_terms.eliminated")
+              = format_timestamp(report.created_at)
+
+
+        - if report.verifier
+          %div{:style => "display: block;"}
+            = link_to report.verifier.first_name, user_path(report.verifier), :style => "font-weight: bold;"
+            .feed-item-timestamp
+              %i.fa.fa-clock-o
+              = I18n.t("common_terms.verified")
+              = format_timestamp(report.created_at)
+
+
 
       .span3{:style => "text-align: right;"}
         - if report.sms_incomplete?
