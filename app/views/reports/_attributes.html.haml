@@ -20,8 +20,7 @@
         %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
           = I18n.t("report.form.problem_with_verification")
 
-
-  %h3.report_label
+  %h3{:style => "font-weight: bold;"}
     = I18n.t("activerecord.attributes.report.report")
   .description #{report.report}
 

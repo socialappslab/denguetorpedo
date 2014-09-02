@@ -1,16 +1,4 @@
-.countdownHolder{
 
-	font: 20px 'Open Sans Condensed',sans-serif;
-	text-align:center;
-	letter-spacing:0px;
-    width:100px;
-    height: 20px;
-    background-color:transparent;
-    border: none;
-    float:right;
-    margin-top:1px;
-    margin-right:0px;
-}
 
 .position{
 	display: inline-block;

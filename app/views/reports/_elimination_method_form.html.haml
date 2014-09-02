@@ -1,5 +1,5 @@
 = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
-  %h3.report_label
+  %h3{:style => "font-weight: bold;"}
     = "#{I18n.t("activerecord.models.elimination_method")}:"
   = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.description, em.id]}, report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods", :style => "width: 390px;"}
 
@@ -12,7 +12,7 @@
       = "#{I18n.t("common_terms.uploaded_photo")}:"
       = link_to "#{report.after_photo_file_name}", report.after_photo.url, :class => "user"
 
-  %h3.report_label
+  %h3{:style => "font-weight: bold;"}
     = "#{I18n.t("report.form.upload_photo_of_eliminated_report")}:"
   = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :style => "width: 300px;"
 
