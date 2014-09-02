@@ -432,3 +432,46 @@ a.mapa{
   font-weight: 200;
 
 }
+
+
+
+#map_div {
+  position:absolute;
+  right:30px;
+  overflow-y:hidden;
+  overflow-x:hidden;
+
+  #loading {
+    z-index:100;
+    // width: 50%;
+    // margin: auto;
+    position:absolute;
+    right:120;
+    top: 200;
+    text-align: center;
+
+    img {
+      width:50px;
+      height:50px;
+    }
+
+  }
+
+
+  #map-action-bar {
+    margin-bottom: 10px;
+
+    #map-error-description {
+      color: red;
+      font-weight: bold;
+      font-size: 10px;
+    }
+  }
+
+  #map {
+    height: 500px;
+    position:relative;
+    overflow-y:hidden;
+    text-align: center;
+  }
+}

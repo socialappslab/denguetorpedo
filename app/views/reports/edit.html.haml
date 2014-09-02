@@ -4,6 +4,9 @@
 
 .row
   .span9.offset1
+    %h1
+      = I18n.t("views.reports.edit.title")
+
     = render :partial => "reports/make_report_form"
 
   .span4
