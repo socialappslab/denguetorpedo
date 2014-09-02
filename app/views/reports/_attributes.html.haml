@@ -55,8 +55,6 @@
           = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
   - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
-    = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
-      = hidden_field_tag 'report_id', report.id
-      = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
+    = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%; margin-top: 20px;"
 
   = render :partial => "reports/users_involved", :locals => {:report => report}
