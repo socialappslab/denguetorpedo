@@ -68,6 +68,8 @@ def populate_data
         :after_photo => File.open("./spec/support/foco_marcado.jpg"),
         :eliminator_id => eliminator.id)
     end
+
+    u.build_report_via_sms({ :body => "SMS report" })
   end
 
   # Populate news

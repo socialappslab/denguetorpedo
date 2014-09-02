@@ -33,6 +33,7 @@ pt:
       team:
         one: Equipe
         other: Equipes
+      location: Endereço
     attributes:
       user:
         email: "Email"

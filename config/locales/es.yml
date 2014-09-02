@@ -33,6 +33,7 @@ es:
       team:
         one: Equipo
         other: Equipos
+      location: Dirección
     attributes:
       user:
         email: "Correo electrónico"
