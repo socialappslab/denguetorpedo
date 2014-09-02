@@ -10,7 +10,8 @@
     - if report.elimination_method_picture.present?
       = image_tag(report.elimination_method_picture, :class => "img-rounded")
     - else
-      .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
+      = link_to edit_neighborhood_report_path(@neighborhood, report) do
+        .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
 
 
 .span5{style: "margin-top:9px;"}

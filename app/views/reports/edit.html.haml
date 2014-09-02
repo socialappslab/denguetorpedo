@@ -1,22 +1,12 @@
-.row
-  .span4.offset1
-    - if flash[:notice]
-      .row#flash_dat_notice
-        #flashNotice
-          %p
-            = flash[:notice]
-    - if flash[:alert]
-      .row#flash_dat_alert
-        #flashAlert
-          %p
-            = flash[:alert]
-    %h1 Completar o foco
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @report}
 
 
 .row
-  .row
-    .span9.offset1
-      = render :partial => "reports/make_report_form"
+  .span9.offset1
+    = render :partial => "reports/make_report_form"
+
+  .span4
     - if @neighborhood.name == "Maré"
       = render :partial => "reports/map"
 
