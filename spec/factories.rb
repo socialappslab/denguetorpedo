@@ -79,7 +79,6 @@ FactoryGirl.define do
 	end
 
   factory :report do
-    elimination_type "Type"
     report "Description"
     before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
   end

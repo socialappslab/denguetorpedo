@@ -3,11 +3,18 @@ class EliminationMethodsController < ApplicationController
   # TODO - This doesn't seem like the best way to handle updating types and methods
   # TODO - Check security for ajax calls to update methods
 
+  #----------------------------------------------------------------------------
+
+  # TODO: We need to refactor this to use the proper association between
+  # elimination methods and breeding sites.
 	def create
-		@method = EliminationMethod.new(method: params[:name], points: params[:points])
-		@type = EliminationType.find(params[:type_id])
-		@current_id = params[:current_id]
-		@method.elimination_type = @type
+    @current_id = params[:current_id]
+
+		@method        = EliminationMethod.new(method: params[:name], points: params[:points])
+		@breeding_site = BreedingSite.find(params[:type_id])
+
+		@method.breeding_site_id = @breeding_site.id
+
 		respond_to do |format|
 			if @method.save
 				format.js
@@ -15,6 +22,8 @@ class EliminationMethodsController < ApplicationController
 			end
 		end
 	end
+
+  #----------------------------------------------------------------------------
 
 	def show
 		@method = EliminationMethod.find(params[:id])
