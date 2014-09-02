@@ -296,8 +296,6 @@ class ReportsController < NeighborhoodsBaseController
       @report.verified_at = DateTime.now
     end
 
-    @report.verifier_name = @current_user.display_name
-
     if @report.save(:validate => false)
       @current_user.points       += 50
       @current_user.total_points += 50

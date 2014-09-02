@@ -29,9 +29,8 @@ class Report < ActiveRecord::Base
   has_many :likes,    :as => :likeable
   has_many :comments, :as => :commentable
 
-  # The following belongs_to define all the types of users that a report
-  # can have.
-  # TODO: Deprecate these useless associations.
+  # The following associations define all stakeholders in the reporting
+  # process.
   belongs_to :reporter,          :class_name => "User"
   belongs_to :eliminator,        :class_name => "User"
   belongs_to :verifier,          :class_name => "User"
