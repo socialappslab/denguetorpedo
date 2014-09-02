@@ -35,7 +35,6 @@
             = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post, :style => "margin-right:10px; margin-left:10px; float:right; font-size: 20px;" do
               %i.fa.fa-check.fa-2
 
-
       - if report.sms_incomplete?
         .span{style: "margin-top:3px; margin-right:10px;"}
           = I18n.t("common_terms.sms")

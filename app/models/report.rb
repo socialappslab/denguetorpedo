@@ -1,11 +1,11 @@
 # encoding: utf-8
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :neighborhood_id, :breeding_site_id, :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
-    :elimination_type, :breeding_site, :elimination_method, :verifier_id, :location_id, :reporter, :sms, :is_credited, :credited_at,
-    :completed_at, :verifier, :resolved_verifier, :eliminator
-
-  accepts_nested_attributes_for :location
+  attr_accessible :report, :neighborhood_id, :breeding_site_id,
+  :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
+  :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
+  :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
+  :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
   # Constants
@@ -65,6 +65,8 @@ class Report < ActiveRecord::Base
   validates :elimination_method_id, :presence => {:on => :update, :unless => :sms_incomplete?}
 
   #----------------------------------------------------------------------------
+
+  accepts_nested_attributes_for :location
 
   scope :sms, where(sms: true).order(:created_at)
 
@@ -205,6 +207,26 @@ class Report < ActiveRecord::Base
     else
       self.reporter.update_attributes(points: self.reporter.points - 100)
     end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def breeding_site_picture
+    if self.before_photo_file_name.nil?
+      return "reports/default.jpg"
+    end
+
+    return self.before_photo.url(:medium)
+  end
+
+  #----------------------------------------------------------------------------
+
+  def elimination_method_picture
+    if self.after_photo_file_name.nil?
+      return nil
+    end
+
+    return self.after_photo.url(:medium)
   end
 
   #----------------------------------------------------------------------------

@@ -7,7 +7,7 @@
     .span6{:style => "margin-top:10px;"}
       %h4= report.complete_address
     .span2
-      - if report.location.latitude and report.location.longitude
+      - if report.location && report.location.latitude && report.location.longitude
         = link_to I18n.t("map.find"), "#", id: "mapa_#{report.id}", class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }, style: "margin-top:5px;float:right;border:1px solid gray;margin-right:-6px;padding:2px;"
 
   .row

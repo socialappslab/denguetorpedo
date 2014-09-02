@@ -1,41 +1,47 @@
-.span8
-  - if report.is_invalid?
-    %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
-      = I18n.t("report.form.problem_with_verification")
+.row
+  .span8
+    - if report.is_invalid?
+      %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
+        = I18n.t("report.form.problem_with_verification")
 
-.span2.rp_before_photo{:style => "margin: 10px 0px 0px 10px;"}
-  = image_tag report.before_photo(:medium), :style => "width: 100px; height: 100px;"
+.row
+  .span3{:style => "margin-left: 5px;"}
+    - if report.breeding_site_picture.present?
+      .sidebar-entity-photo{:style => "margin-bottom: 10px;"}
+        = image_tag(report.breeding_site_picture, :class => "img-rounded")
 
-  - if report.eliminated? && report.after_photo.present?
-    = image_tag report.after_photo(:medium), :style => "width: 100px; height: 100px; margin-top: 5px;"
+    - if report.elimination_method_picture.present?
+      .sidebar-entity-photo
+        = image_tag(report.elimination_method_picture, :class => "img-rounded")
 
-.span6{style: "margin-top:9px;"}
-  %h3.report_label
-    = I18n.t("activerecord.attributes.report.report")
-  .description #{report.report}
 
-  - if report.breeding_site_id.present?
-    .rp_report_people
-      %h3{:style => "font-weight:bold;"} Tipo de foco:
-      = report.breeding_site.description
+  .span5{style: "margin-top:9px;"}
+    %h3.report_label
+      = I18n.t("activerecord.attributes.report.report")
+    .description #{report.report}
 
-      - if report.eliminated?
-        %h3{:style => "font-weight:bold;"}
-          = I18n.t("activerecord.models.elimination_method") + ": "
-        = report.elimination_method.description
-        %br
+    - if report.breeding_site_id.present?
+      .rp_report_people
+        %h3{:style => "font-weight:bold;"} Tipo de foco:
+        = report.breeding_site.description
 
-      - elsif @current_user.present?
-
-        - if report.expired?
+        - if report.eliminated?
           %h3{:style => "font-weight:bold;"}
-            = I18n.t("common_terms.time_expired")
-        - else
-          = render :partial => "reports/elimination_method_form", :locals => {:report => report}
+            = I18n.t("activerecord.models.elimination_method") + ": "
+          = report.elimination_method.description
+          %br
 
-  - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
-    = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
-      = hidden_field_tag 'report_id', report.id
-      = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
+        - elsif @current_user.present?
 
-  = render :partial => "reports/users_involved", :locals => {:report => report}
+          - if report.expired?
+            %h3{:style => "font-weight:bold;"}
+              = I18n.t("common_terms.time_expired")
+          - else
+            = render :partial => "reports/elimination_method_form", :locals => {:report => report}
+
+    - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
+      = form_for(:eliminate, :url => {:controller => "reports", :neighborhood_id => @neighborhood.id, :action => "update", :html => {:autocomplete => "off", :multipart => false}}, :method=>:put) do |f|
+        = hidden_field_tag 'report_id', report.id
+        = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%;"
+
+    = render :partial => "reports/users_involved", :locals => {:report => report}

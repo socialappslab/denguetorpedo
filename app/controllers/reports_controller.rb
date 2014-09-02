@@ -282,6 +282,7 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # POST /neighborhoods/:neighborhood_id/reports/verify
 
   def verify
     @report = Report.find(params[:id])
@@ -308,6 +309,7 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # POST /neighborhoods/:neighborhood_id/reports/problem
 
   def problem
     @report = Report.find(params[:id])
