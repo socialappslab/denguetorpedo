@@ -218,10 +218,9 @@ class ReportsController < NeighborhoodsBaseController
 
     # Error occurred updating attributes
     else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
+      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
 
-      redirect_to neighborhood_reports_path(@neighborhood,
-        :params=>{:report => @report.id, :elimination_method => params[:report][:elimination_method]}) and return
+      redirect_to :back and return
     end
   end
 
