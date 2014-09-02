@@ -1,13 +1,8 @@
-
--# TODO @awdorsett - what is this used for? Possibly countdown
-:javascript
-  $(".selectpicker").selectpicker();
-
 .row.rp_report_people{style: "width:430px;"}
-  - if report.reporter
-    = "#{I18n.t("common_terms.marked_by")}:"
-    =link_to report.reporter.display_name + " " + report.strftime_with(:created_at), user_path(report.reporter), :class => "user"
-    %br
+  -# - if report.reporter
+  -#   = "#{I18n.t("common_terms.marked_by")}:"
+  -#   =link_to report.reporter.display_name + " " + report.strftime_with(:created_at), user_path(report.reporter), :class => "user"
+  -#   %br
 
   - if report.verifier
     = "#{I18n.t("common_terms.verified_by")}:"
