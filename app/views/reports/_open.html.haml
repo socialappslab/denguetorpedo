@@ -7,11 +7,6 @@
   });
 
 .report.open
-  .row
-    = render :partial => "reports/topbar", :locals => {:report => report}
-
-
-
   .row.address_row
     .span6.address
       - if report.sms_incomplete?
@@ -25,3 +20,7 @@
 
   .row{style: "margin-top:7px;"}
     = render :partial => "reports/attributes", :locals => {:report => report}
+
+  .row{:style => "margin-top: 20px;"}
+    .span9
+      = render :partial => "reports/topbar", :locals => {:report => report}
