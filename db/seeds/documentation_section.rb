@@ -1,7 +1,5 @@
 # encoding: UTF-8
 
-require "rake"
-load "#{Rails.root}/lib/tasks/documentation_sections.rake"
 
 def seed_manual
   puts "\n" * 3
@@ -29,7 +27,7 @@ def seed_manual
 
     Apenas moradores da Maré convidados por um usuário ou membro da equipe Dengue Torpedo podem participar! Atualmente estamos na fase inicial aperfeiçoando o aplicativo com os moradores da Maré. Em nossa próxima fase, o Dengue Torpedo será aberto a moradores de outros bairros da cidade. "
 
-    ds.save!
+    ds.save(:validate => false)
   end
 
   ds = DocumentationSection.find_by_title("Como completar sua conta")
@@ -68,7 +66,7 @@ def seed_manual
 
      Se você se cadastrou no site porque um amigo ou vizinho convidou você, não se esqueça de indicar o nome dele no campo Alguém o convidou a se cadastrar no DT?. Nesse campo selecione se a pessoa que o convidou é um morador/vizinho ou um ACS/AVS e digite o nome dele no campo abaixo.
     "
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
@@ -91,7 +89,7 @@ def seed_manual
 
        Acesse essa página quando quiser inserir ou alterar seus dados pessoais, imagens de perfil e da casa.
     "
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
@@ -108,7 +106,7 @@ def seed_manual
 
        Dengue Torpedo não distingue entre ativos e potenciais. Quando encontrado, os dois tipos são chamados focos marcados e ganham a mesma pontuação.
     "
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
@@ -250,7 +248,7 @@ def seed_manual
 
     O microblog é o seu espaço de comunicação dentro do Dengue Torpedo.
     "
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
@@ -406,7 +404,7 @@ def seed_manual
 
 
     "
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
@@ -438,7 +436,7 @@ def seed_manual
      Saiba mais sobre essas atividades dos verificadores acessando 'Minha comunidade'.
     "
 
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
@@ -448,25 +446,13 @@ def seed_manual
     ds.order_id = 8
     ds.title    = "Minha comunidade"
     ds.content  = "A página 'Minha Comunidade' é onde você encontra as casas participantes e outros destaques da sua comunidade. É nessa página que você encontra notícias, oficinas e outras atividades."
-    ds.save!
+    ds.save(:validate => false)
   end
 
 
 
   puts "\n" * 3
   puts "[ok] Done seeding /howto documentation"
-  puts "-" * 80
-
-
-  puts "\n" * 3
-  puts "[...] Seeding /howto documentation in Spanish"
-  puts "-" * 80
-
-  Dengue::Application.load_tasks
-  Rake::Task["documentation_sections:add_spanish_translation"].invoke
-
-  puts "\n" * 3
-  puts "[ok] Done seeding /howto documentation in Spanish"
   puts "-" * 80
 
 end

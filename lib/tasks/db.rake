@@ -6,7 +6,7 @@ namespace :db do
     task :prepare => [:environment] do
       ENV["RAILS_ENV"] ||= "development"
 
-      ['db:reset', 'db:create', 'db:schema:load', 'db:seed', "documentation_sections:add_spanish_translation"].each do |s|
+      ['db:reset', 'db:create', 'db:schema:load', 'db:seed'].each do |s|
         Rake::Task[s].invoke
       end
 

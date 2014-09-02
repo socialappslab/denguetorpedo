@@ -51,7 +51,23 @@ def populate_data
 
   ["a", "b", "c"].each_with_index do |letter, index|
     u = User.find_by_email("#{letter}@denguetorpedo.com")
-    Report.create!(:reporter_id => u.id, :breeding_site_id => BreedingSite.first.id, :report => "This is a report by #{u.display_name}", :neighborhood_id => mare.id, :completed_at => Time.now, :before_photo => File.open("./spec/support/foco_marcado.jpg"))
+    Report.create!(:reporter_id => u.id,
+      :breeding_site_id => BreedingSite.first.id,
+      :report => "This is a report by #{u.display_name}",
+      :neighborhood_id => mare.id, :completed_at => Time.now,
+      :before_photo => File.open("./spec/support/foco_marcado.jpg"))
+
+    if letter == "c"
+      eliminator = User.find_by_email("a@denguetorpedo.com")
+      Report.create!(:reporter_id => u.id,
+        :breeding_site_id => BreedingSite.first.id,
+        :elimination_method_id => BreedingSite.first.elimination_methods.first.id,
+        :report => "This is an eliminated report by #{u.display_name}",
+        :neighborhood_id => mare.id, :completed_at => Time.now,
+        :before_photo => File.open("./spec/support/foco_marcado.jpg"),
+        :after_photo => File.open("./spec/support/foco_marcado.jpg"),
+        :eliminator_id => eliminator.id)
+    end
   end
 
   # Populate news
