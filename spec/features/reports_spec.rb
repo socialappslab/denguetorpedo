@@ -99,7 +99,7 @@ describe "Reports", :type => :feature do
       end
 
       it "displays user's name as the creator" do
-        expect(page).to have_content("Marcado por: #{Report.last.reporter_name}")
+        expect(page).to have_content("Marcado por: #{Report.last.reporter.display_name}")
       end
 
       it "displays report as open" do
@@ -150,7 +150,7 @@ describe "Reports", :type => :feature do
       click_button I18n.t("views.buttons.submit")
 
       expect(page).to have_content("Eliminado")
-      expect(page).to have_content("Eliminado por: #{report.reporter_name}")
+      expect(page).to have_content("Eliminado por: #{report.reporter.display_name}")
     end
 
     it "does not overwrite the reporter id when a different user eliminates report" do
@@ -287,7 +287,7 @@ describe "Reports", :type => :feature do
 
       expect(page).to have_content("Você eliminou o foco")
       expect(page).to have_content("Eliminado")
-      expect(page).to have_content("Eliminado por: #{@report.reporter_name}")
+      expect(page).to have_content("Eliminado por: #{@report.reporter.display_name}")
     end
   end
 
