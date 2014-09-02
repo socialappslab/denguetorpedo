@@ -4,7 +4,8 @@
     - if report.breeding_site_picture.present?
       = image_tag(report.breeding_site_picture, :class => "img-rounded")
     - else
-      .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
+      = link_to edit_neighborhood_report_path(@neighborhood, report) do
+        .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
 
   .sidebar-entity-photo{:style => "margin-bottom: 10px;"}
     - if report.elimination_method_picture.present?

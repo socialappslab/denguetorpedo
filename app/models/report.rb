@@ -213,7 +213,7 @@ class Report < ActiveRecord::Base
 
   def breeding_site_picture
     if self.before_photo_file_name.nil?
-      return "reports/default.jpg"
+      return nil
     end
 
     return self.before_photo.url(:medium)
