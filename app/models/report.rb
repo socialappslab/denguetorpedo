@@ -2,8 +2,7 @@
 
 class Report < ActiveRecord::Base
   attr_accessible :report, :neighborhood_id, :breeding_site_id, :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
-    :elimination_type, :breeding_site, :elimination_method, :verifier_id, :reporter_name,
-    :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at,
+    :elimination_type, :breeding_site, :elimination_method, :verifier_id, :location_id, :reporter, :sms, :is_credited, :credited_at,
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
@@ -69,8 +68,6 @@ class Report < ActiveRecord::Base
 
   scope :sms, where(sms: true).order(:created_at)
   scope :type_selected, where("elimination_type IS NOT NULL")
-
-  before_save :set_names
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
@@ -199,24 +196,6 @@ class Report < ActiveRecord::Base
 
   def expire_date
     self.created_at + EXPIRATION_WINDOW
-  end
-
-  def set_names
-    if self.reporter
-      self.reporter_name = self.reporter.display_name
-    end
-
-    if self.eliminator
-      self.eliminator_name = self.eliminator.display_name
-    end
-
-    if self.verifier
-      self.verifier_name = self.verifier.display_name
-    end
-
-    if self.resolved_verifier
-      self.verifier_name = self.resolved_verifier.display_name
-    end
   end
 
   def deduct_points
