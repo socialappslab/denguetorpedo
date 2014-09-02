@@ -51,7 +51,6 @@ class User < ActiveRecord::Base
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
   has_many :verified_reports,   :class_name => "Report", :foreign_key => "verifier_id",   :dependent => :nullify
 
-  has_many :feeds, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :prize_codes, :dependent => :destroy
   has_many :badges

@@ -22,7 +22,6 @@ class Report < ActiveRecord::Base
   # Associations
   #-------------
 
-  has_many :feeds, :as => :target
   belongs_to :location
   belongs_to :neighborhood
 
