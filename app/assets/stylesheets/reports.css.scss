@@ -434,6 +434,8 @@ a.mapa{
 }
 
 
+//-----------------------------------------------------------------------------
+// ESRI map-related customization
 
 #map_div {
   position:absolute;
@@ -446,7 +448,7 @@ a.mapa{
     // width: 50%;
     // margin: auto;
     position:absolute;
-    right:120;
+    right:150;
     top: 200;
     text-align: center;
 
@@ -472,6 +474,5 @@ a.mapa{
     height: 500px;
     position:relative;
     overflow-y:hidden;
-    text-align: center;
   }
 }
