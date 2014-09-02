@@ -24,33 +24,32 @@ class Report < ActiveRecord::Base
 
   belongs_to :location
   belongs_to :neighborhood
+  belongs_to :breeding_site
+  belongs_to :elimination_method
+  has_many :likes,    :as => :likeable
+  has_many :comments, :as => :commentable
 
   # The following belongs_to define all the types of users that a report
   # can have.
-  belongs_to :reporter, :class_name => "User"
-  belongs_to :eliminator, :class_name => "User"
-  belongs_to :verifier, :class_name => "User"
+  # TODO: Deprecate these useless associations.
+  belongs_to :reporter,          :class_name => "User"
+  belongs_to :eliminator,        :class_name => "User"
+  belongs_to :verifier,          :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
-  belongs_to :breeding_site
-  belongs_to :elimination_method
 
-
-  has_many :likes,    :as => :likeable
-  has_many :comments, :as => :commentable
 
   #----------------------------------------------------------------------------
   # Validations
   #-------------
-  # TODO :report validation fails unexpectedly
-  # When creating a new report and a user doesn't submit a picture, he'll get an error to add a picture
-  # After adding a picture if the user tries to submit again they'll get an error about having to provide
+  # TODO :report validation fails unexpectedly:
+  # * When creating a new report and a user doesn't submit a picture, he'll get an error to add a picture
+  # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
   validates :neighborhood_id, :presence => true
-  validates :report, :presence => true
-  validates :reporter_id, :presence => true
-  # validates :status, :presence => true
+  validates :report,          :presence => true
+  validates :reporter_id,     :presence => true
 
   # SMS creation
   validates :sms, :presence => true, :if => :sms?
