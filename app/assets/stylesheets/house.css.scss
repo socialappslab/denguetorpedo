@@ -108,7 +108,7 @@
   background-color: $dark-gray;
   width: 100px;
 }
- 
+
 #house_resolved_report_button {
   background-color: $dark-gray;
   width: 100px;
@@ -167,7 +167,7 @@
 #houses_in_neighborhood {
   width: auto;
   margin-top:5px;
-  
+
   li {
     display: inline-block;
     margin-bottom: 5px;
@@ -184,7 +184,7 @@
   color: #000000;
   font-size: 12px;
   padding: 5px;
-  
+
   .hr_address {
     width: 280px;
     background: #dfdfdf;
@@ -214,16 +214,16 @@
     width: auto;
     height: 50px;
   }
-  
-  .status {
-     padding-top: 5px;
-     margin-top: 20px;
-     width: 70px;
-     height: 25px;
-     float: right;
-     color: #FFFFFF;
-     text-align: center;
-   }
+
+  // .status {
+  //    padding-top: 5px;
+  //    margin-top: 20px;
+  //    width: 70px;
+  //    height: 25px;
+  //    float: right;
+  //    color: #FFFFFF;
+  //    text-align: center;
+  //  }
 }
 
 .hr_open {
@@ -238,6 +238,3 @@
   border: 3px solid $light-gray;
   border-radius: 2px;
 }
-
-
-
