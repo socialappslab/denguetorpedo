@@ -5,6 +5,8 @@ class Report < ActiveRecord::Base
     :elimination_type, :breeding_site, :elimination_method, :verifier_id, :location_id, :reporter, :sms, :is_credited, :credited_at,
     :completed_at, :verifier, :resolved_verifier, :eliminator
 
+  accepts_nested_attributes_for :location
+
   #----------------------------------------------------------------------------
   # Constants
 
@@ -64,10 +66,7 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  accepts_nested_attributes_for :location
-
   scope :sms, where(sms: true).order(:created_at)
-  scope :type_selected, where("elimination_type IS NOT NULL")
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report

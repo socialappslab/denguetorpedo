@@ -15,7 +15,7 @@ describe Report do
 	end
 
 	it "validates reporter" do
-		report = Report.create(:status => :reported)
+		report = Report.create
 		expect(report.errors.full_messages).to include("Reporter é obrigatório")
 	end
 

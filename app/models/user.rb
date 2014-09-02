@@ -289,7 +289,7 @@ class User < ActiveRecord::Base
     location = Location.create
     location.update_column(:neighborhood_id, self.neighborhood_id)
 
-    report = Report.new(reporter: self, :sms => true, :status => Report::STATUS[:sms], :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
+    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
     return report
   end
 
