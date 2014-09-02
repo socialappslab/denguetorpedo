@@ -42,7 +42,7 @@
   @extend .clearfix;
   width: auto;
   position: relative;
-  
+
   // rows directly inside a page don't need the negative margin
   @if $page {
     margin: 0 0;
@@ -55,7 +55,7 @@
   margin: 0 ($gutter-width / 2);
   float: left;
   .ie6 & { display: inline; }
-  
+
   @if $i {
     @include grid($i);
   }
@@ -75,7 +75,7 @@
 
 @mixin grid-column-empty($i: 1, $position: after) {
   $margin: $column-width * $i + $gutter-width * $i + ($gutter-width / 2);
-  
+
   @if $position == after {
     margin-right: $margin;
   } @else {
@@ -87,11 +87,11 @@
   @include grid-page;
 }
 
-.row {
-  @include grid-row;
-  clear:both;
-  position: relative;
-}
+// .row {
+//   @include grid-row;
+//   clear:both;
+//   position: relative;
+// }
 
 .page > .row {
   margin: 0;
