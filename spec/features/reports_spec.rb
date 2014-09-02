@@ -122,7 +122,6 @@ describe "Reports", :type => :feature do
       :location_id => location.id,
       :before_photo => uploaded_photo,
       :report => "Description",
-      :status => Report::STATUS[:reported],
       :completed_at => Time.now,
       :reporter_id => user.id,
       :breeding_site_id => elimination_type.id,

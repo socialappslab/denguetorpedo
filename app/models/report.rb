@@ -18,7 +18,6 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
   # Constants
 
-  STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
   EXPIRATION_WINDOW = 48 * 3600 # in seconds
 
   #----------------------------------------------------------------------------
@@ -61,7 +60,7 @@ class Report < ActiveRecord::Base
   validates :neighborhood_id, :presence => true
   validates :report, :presence => true
   validates :reporter_id, :presence => true
-  validates :status, :presence => true
+  # validates :status, :presence => true
 
   # SMS creation
   validates :sms, :presence => true, :if => :sms?
@@ -91,13 +90,11 @@ class Report < ActiveRecord::Base
 
   def eliminated?
     return self.elimination_method_id.present?
-    # return self.status == Report::STATUS[:eliminated]
   end
 
   # NOTE: Open does not mean active. An open report can be expired.
   def open?
     return self.elimination_method_id.blank?
-    # return self.status == Report::STATUS[:reported]
   end
 
   def sms_incomplete?
@@ -152,7 +149,6 @@ class Report < ActiveRecord::Base
     create(:report => report_content) do |r|
       r.reporter_id = params[:reporter] && params[:reporter].id
       r.location_id = params[:location] && params[:location].id
-      r.status = params[:status]
 
       # optional parameters
       r.eliminator_id = params[:eliminator] && params[:eliminator].id
@@ -200,8 +196,9 @@ class Report < ActiveRecord::Base
     end
   end
 
+  # TODO: Deprecate this
   def self.eliminated_reports
-    where(:status => STATUS[:eliminated])
+    return Report.all.find_all { |r| r.eliminated? }
   end
 
   #----------------------------------------------------------------------------

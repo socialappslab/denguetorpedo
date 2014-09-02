@@ -16,8 +16,8 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @teams = @teams.find_all { |t| t.users.count > 0 }
 
     @total_reports_in_neighborhood      = @reports.count
-    @opened_reports_in_neighborhood     = @reports.where( :status => Report::STATUS[:reported] ).count
-    @eliminated_reports_in_neighborhood = @reports.where( :status => Report::STATUS[:eliminated] ).count
+    @opened_reports_in_neighborhood     = @reports.find_all {|r| r.open? }.count
+    @eliminated_reports_in_neighborhood = @reports.find_all {|r| r.eliminated? }.count
 
     @total_points = @neighborhood.total_points
 

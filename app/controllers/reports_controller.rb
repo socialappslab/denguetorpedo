@@ -54,9 +54,9 @@ class ReportsController < NeighborhoodsBaseController
 
       # TODO: Why the !!! are we using two types of columns to encode
       # the same information (open versus eliminated). Get rid of one or the other.
-      if report.status == Report::STATUS[:reported]
+      if report.open?
         @open_locations << report.location
-      elsif report.status == Report::STATUS[:eliminated]
+      elsif report.eliminated?
         @eliminated_locations << report.location
       else
         @open_locations << report.location
@@ -110,7 +110,6 @@ class ReportsController < NeighborhoodsBaseController
     @report              = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
-    @report.status       = Report::STATUS[:reported]
     @report.location_id  = location.id
     @report.completed_at = Time.now
 
@@ -189,7 +188,6 @@ class ReportsController < NeighborhoodsBaseController
       if @report.update_attributes(params[:report])
         flash[:notice] = I18n.t("activerecord.success.report.create")
 
-        @report.status          = Report::STATUS[:reported]
         @report.neighborhood_id = @neighborhood.id
         @report.completed_at    = Time.now
         @report.save
@@ -212,7 +210,6 @@ class ReportsController < NeighborhoodsBaseController
 
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
       @report.touch(:eliminated_at)
-      @report.update_attribute(:status, Report::STATUS[:eliminated])
       @report.update_attribute(:neighborhood_id, @neighborhood.id)
       @report.update_attribute(:eliminator_id, @current_user.id)
       award_points @report, @current_user
@@ -289,12 +286,11 @@ class ReportsController < NeighborhoodsBaseController
   def verify
     @report = Report.find(params[:id])
 
-    if @report.status == Report::STATUS[:eliminated]
+    if @report.eliminated?
       @report.is_resolved_verified = true
       @report.resolved_verifier_id = @current_user.id
       @report.resolved_verified_at = DateTime.now
-
-    elsif @report.status == Report::STATUS[:reported]
+    else
       @report.isVerified = true
       @report.verifier_id = @current_user.id
       @report.verified_at = DateTime.now
@@ -303,7 +299,7 @@ class ReportsController < NeighborhoodsBaseController
     @report.verifier_name = @current_user.display_name
 
     if @report.save(:validate => false)
-      @current_user.points += 50
+      @current_user.points       += 50
       @current_user.total_points += 50
       @current_user.save
       flash[:notice] = I18n.t("activerecord.success.report.verify")

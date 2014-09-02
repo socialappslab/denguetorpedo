@@ -1,4 +1,5 @@
 # encoding: utf-8
+# TODO: Deprecate and remove this controller
 class HousesController < NeighborhoodsBaseController
   before_filter :require_login
 
@@ -15,8 +16,8 @@ class HousesController < NeighborhoodsBaseController
 
     # TODO: Make this specific to each neighborhood.
     @reports                  = @house.reports.find_all { |r| r.neighborhood_id == @neighborhood.id }
-    @open_house_reports       = @reports.find_all { |r| r.status == Report::STATUS[:reported] }
-    @eliminated_house_reports = @reports.find_all { |r| r.status == Report::STATUS[:eliminated] }
+    @open_house_reports       = @reports.find_all { |r| r.open? }
+    @eliminated_house_reports = @reports.find_all { |r| r.eliminated? }
 
     @open_markers       = @open_house_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}
     @eliminated_markers = @eliminated_house_reports.map { |report| report.location && report.location.as_json(:only => [:latitude, :longitude])}

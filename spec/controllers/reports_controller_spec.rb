@@ -63,7 +63,6 @@ describe ReportsController do
 
 				it "should display after completing" do
 					report 						 = Report.find_by_report("Not in my house!")
-					report.status 			= Report::STATUS[:reported]
 					report.breeding_site_id = elimination_type.id
 					report.completed_at = Time.now
 					report.save!(:validate => false)
@@ -306,10 +305,10 @@ describe ReportsController do
 	context "when verifying eliminated reports" do
 		let(:admin)   { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id)}
 		let(:report)   { FactoryGirl.create(:report, :before_photo => uploaded_photo,
-																				:status => Report::STATUS[:eliminated],
 																				:reporter => user,
 																				:neighborhood_id => Neighborhood.first.id,
 																				:breeding_site_id => elimination_type.id,
+																				:elimination_method_id => elimination_type.elimination_methods.first.id,
 																				:report => "Description") }
 
 

@@ -72,39 +72,15 @@ class Neighborhood < ActiveRecord::Base
 
   # TODO: Deprecate this.
   def total_reports
-    # total_reports = []
-    # self.members.each do |member|
-    #   member.reports.each do |report|
-    #     total_report = total_reports.append(report)
-    #   end
-    # end
-    # total_reports
-
     return self.reports.to_a
   end
 
   def open_reports
-    # open_reports = []
-    # self.members.each do |member|
-    #   member.reports.each do |report|
-    #     open_report = open_reports.append(report) if report.status == Report::STATUS[:reported]
-    #   end
-    # end
-    # open_reports
-
-    return self.reports.where(:status => Report::STATUS[:reported]).to_a
+    return self.reports.find_all{ |r| r.open? }
   end
 
   def eliminated_reports
-    # eliminated_reports = []
-    # self.members.each do |member|
-    #   member.reports.each do |report|
-    #     eliminated_report = eliminated_reports.append(report) if report.status == Report::STATUS[:eliminated]
-    #   end
-    # end
-    # eliminated_reports
-
-    return self.reports.where(:status => Report::STATUS[:eliminated]).to_a
+    return self.reports.find_all{ |r| r.eliminated? }
   end
 
   #----------------------------------------------------------------------------

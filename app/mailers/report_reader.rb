@@ -11,7 +11,7 @@ class ReportReader < ActionMailer::Base
     @url = "http://denguetorpedo.herokuapp.com/"
     mail(:to => email_addrs, :subject => "Welcome to Dengue Torpedo")
   end
-  
+
   def user_failed_to_create_notification(email_addrs)
     mail(:to => email_addrs, :subject => "Dengue Torpedo is unable to create an account for you")
   end
@@ -27,7 +27,7 @@ class ReportReader < ActionMailer::Base
   def incomplete_information_notification(email_addrs)
     mail(:to => email_addrs, :subject => "Your report has incorrect format")
   end
-  
+
   def send_notification(phone_number, message)
     nexmo = Nexmo::Client.new('3ded145b', '4ca9d186')
     response = nexmo.send_message!({:to => phone_number, :from => '15109003058', :text => 'I am sorry, but you have previously registered'})
@@ -36,7 +36,7 @@ class ReportReader < ActionMailer::Base
       logger.info "something went wrong, notification was not delivered"
     end
   end
-    
+
   def receive(email)
     STDOUT.sync = true unless ENV['RAILS_ENV'] == 'production' # flush all log messages to STDOUT
     logger = Logger.new(STDOUT)
@@ -44,24 +44,24 @@ class ReportReader < ActionMailer::Base
 
     logger.info "process email via MMS2R"
     parsed_email = MMS2R::Media.new(email)
-    
+
     subject = parsed_email.subject
-    
+
     if subject.include? "Register"
       logger.info "User Registration"
-      
+
       text_body = parsed_email.body
       logger.info "text body is: " + text_body
-      
+
       split_text_body = text_body.split(" ")
       phone_number = split_text_body[0].delete("+")
       email = split_text_body[1]
       logger.info "the login/phone number is: " + phone_number
       logger.info "the email is: " + email
-      
+
       logger.info "try to find user by phone number, still check in case of duplicate registration"
       user = User.find_by_phone_number(phone_number)
-      
+
       if user
         logger.info "this user has already registered. send out notification"
         ReportReader.send_notification(phone_number, "I am sorry, but you have previously registered")
@@ -71,15 +71,15 @@ class ReportReader < ActionMailer::Base
       end
     else
       logger.info "Report Submission"
-      
+
       text_body = parsed_email.body
       logger.info "text body is: " + text_body
       phone_number = subject.delete("+")
       logger.info "the login/phone number is: " + phone_number
-      
+
       logger.info "identifying the user"
       user = User.find_by_phone_number(phone_number)
-      
+
       if user
         parsed_result = text_body.scan(/^(.+)@(.+)$/)
         if parsed_result.count == 0
@@ -97,9 +97,9 @@ class ReportReader < ActionMailer::Base
           logger.info "location: #{location}"
 
           before_photo = parsed_email.default_media
-          report_obj = Report.create_from_user(report, :status => Report::STATUS[:reported], :reporter => user, :location => location, :before_photo => before_photo)
+          report_obj = Report.create_from_user(report, :reporter => user, :location => location, :before_photo => before_photo)
 
-          if report_obj.save 
+          if report_obj.save
             logger.info "new report sucessfully added"
             ReportReader.report_added_notification(email_addrs).deliver
             ReportReader.send_notification(phone_number, "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
@@ -109,12 +109,12 @@ class ReportReader < ActionMailer::Base
             ReportReader.send_notification(phone_number, "Something went wrong in our system. We were unable to add your report")
           end
         end
-    
+
       else
         logger.info "this user does not have an account, need to register"
         ReportReader.send_notification(phone_number, "I am sorry, but you do not have an account. Please register")
-      end  
-      
+      end
+
     end
 
     #if parsed_result.count == 0
@@ -131,17 +131,17 @@ class ReportReader < ActionMailer::Base
     #    @prize = PrizeCode.find_by_code("?", prizecode).first
     #    @prize.nil? ? PrizeCode.send_no(phone_number) : @prize.send_yes(phone_number)
     #  end
-  end 
-    
+  end
+
   private
-    
+
   def create_user!(phone_number, email)
     STDOUT.sync = true unless ENV['RAILS_ENV'] == 'production'# flush all log messages to STDOUT
     logger = Logger.new(STDOUT)
-    
+
     password = ApplicationHelper.temp_password_generator
     new_user = User.new(:username => phone_number.to_s, :password => password, :password_confirmation => password, :phone_number => phone_number)
-    
+
     if new_user.save
       logger.info "new user created and send welcome report"
       ReportReader.welcome_new_user_notification(phone_number, password, email).deliver
@@ -152,6 +152,6 @@ class ReportReader < ActionMailer::Base
       ReportReader.send_notification(phone_number, "Something went wrong in our system. We were unable to create an account for you.")
     end
     new_user
-  end 
-    
+  end
+
 end
