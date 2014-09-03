@@ -49,6 +49,7 @@
     var updateMapWithLocationsAndMarker = function(locationsArray, marker)
     {
       for (var i = 0; i < locationsArray.length; i++) {
+
         loc = locationsArray[i];
         addLocationToMapWithMarker(loc, map, marker);
       }
@@ -75,6 +76,7 @@
       map.infoWindow.resize(300, 200);
 
       map.graphics.clear();
+
       updateMapWithLocationsAndMarker(open_markers, orangeMarker)
       updateMapWithLocationsAndMarker(eliminated_markers, greyMarker)
     })
@@ -113,7 +115,7 @@
 
 
     // Listener for location attribute updates
-    $("#new_report #report_location_attributes_street_number").on("change", function()
+    $("#new_report_form #report_location_attributes_street_number").on("change", function()
     {
       showMapLoading();
 
@@ -131,10 +133,6 @@
         },
         success: function(m) {
           var candidates = m.candidates;
-
-          // console.log(candidates)
-
-
           if (candidates.length == 0)
             $("#map-error-description").show();
           else
@@ -150,9 +148,9 @@
             map.centerAndZoom(mapPoint, 4);
 
             // Update the form so we can pass along the ESRI results.
-            $("#new_report #report_location_attributes_latitude").val(latitude);
-            $("#new_report #report_location_attributes_longitude").val(longitude);
-            $("#new_report #map-error-description").hide();
+            $("#new_report_form #report_location_attributes_latitude").val(latitude);
+            $("#new_report_form #report_location_attributes_longitude").val(longitude);
+            $("#new_report_form #map-error-description").hide();
           }
         },
         error: function() { $("#map-error-description").show(); },
@@ -178,13 +176,13 @@
     // Listener on the map. This allows users to click on the map, and update
     // the location attributes with the clicked point.
     map.on('click', function(e){
-      if ( $("#make_report_button").hasClass("active") ){
+      if ( $("#new_report_form").is(":visible") ){
         map.graphics.clear();
 
         var latitude  = e.mapPoint.x;
         var longitude = e.mapPoint.y;
-        $("#new_report #report_location_attributes_latitude").val( latitude )
-        $("#new_report #report_location_attributes_longitude").val( longitude )
+        $("#new_report_form #report_location_attributes_latitude").val( latitude )
+        $("#new_report_form #report_location_attributes_longitude").val( longitude )
 
         var mapPoint = new Point(latitude, longitude);
         var graphic  = new Graphic(mapPoint, orangeMarker);
