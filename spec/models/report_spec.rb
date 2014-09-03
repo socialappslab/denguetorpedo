@@ -8,12 +8,7 @@ describe Report do
 	before(:each) do
 		I18n.locale = I18n.default_locale
 	end
-
-	it "validates status" do
-		report = Report.create(:reporter_id => 1, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
-		expect(report.errors.full_messages).to include("Status é obrigatório")
-	end
-
+	
 	it "validates reporter" do
 		report = Report.create
 		expect(report.errors.full_messages).to include("Reporter é obrigatório")

@@ -209,8 +209,8 @@ class ReportsController < NeighborhoodsBaseController
 
 
     if @report.update_attributes(params[:report])
-      @current_user.update_columns(:points => @current_user.points + User::Points::REPORT_SUBMITTED, :total_points => @current_user.total_points + User::Points::REPORT_SUBMITTED)
-      @report.update_columns(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
+      @current_user.update_attributes(:points => @current_user.points + User::Points::REPORT_SUBMITTED, :total_points => @current_user.total_points + User::Points::REPORT_SUBMITTED)
+      @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
       award_points(@report, @current_user)
 
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
