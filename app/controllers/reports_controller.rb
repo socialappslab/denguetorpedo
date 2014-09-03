@@ -301,7 +301,7 @@ class ReportsController < NeighborhoodsBaseController
       @current_user.total_points += 50
       @current_user.save
       flash[:notice] = I18n.t("activerecord.success.report.verify")
-      redirect_to neighborhood_reports_path(@neighborhood)
+      redirect_to neighborhood_reports_path(@neighborhood) and return
     else
       redirect_to :back
     end

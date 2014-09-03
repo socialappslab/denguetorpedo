@@ -10,12 +10,12 @@
                 = report.likes.count
 
           .action-bar
-            - if report.is_valid?
-              %i.fa.fa-check.fa-2
-            - elsif report.is_invalid?
-              %i.fa.fa-times.fa-2
-            - else
-              - if @current_user.verifier?
+            - if @current_user.verifier?
+              - if report.is_valid?
+                %i.fa.fa-check.fa-2
+              - elsif report.is_invalid?
+                %i.fa.fa-times.fa-2
+              - else
                 = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
                   %i.fa.fa-check.fa-2
                 = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do

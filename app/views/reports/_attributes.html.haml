@@ -33,26 +33,24 @@
       = report.complete_address
       = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
 
-  %br
 
   - if report.breeding_site_id.present?
-    .rp_report_people
-      %h3{:style => "font-weight:bold;"} Tipo de foco:
-      = report.breeding_site.description
+    %h3{:style => "font-weight:bold;"}
+      = I18n.t("activerecord.attributes.report.breeding_site_id")
+    = report.breeding_site.description
 
-      - if report.eliminated?
+    - if report.eliminated?
+      %h3{:style => "font-weight:bold;"}
+        = I18n.t("activerecord.models.elimination_method")
+      = report.elimination_method.description
+      %br
+
+    - elsif @current_user.present?
+      - if report.expired?
         %h3{:style => "font-weight:bold;"}
-          = I18n.t("activerecord.models.elimination_method") + ": "
-        = report.elimination_method.description
-        %br
-
-      - elsif @current_user.present?
-
-        - if report.expired?
-          %h3{:style => "font-weight:bold;"}
-            = I18n.t("common_terms.time_expired")
-        - else
-          = render :partial => "reports/elimination_method_form", :locals => {:report => report}
+          = I18n.t("common_terms.time_expired")
+      - else
+        = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
   - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
     = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%; margin-top: 20px;"

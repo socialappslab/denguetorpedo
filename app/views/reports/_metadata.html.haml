@@ -21,7 +21,6 @@
               = I18n.t("common_terms.eliminated")
               = format_timestamp(report.created_at)
 
-
         - if report.verifier
           %div{:style => "display: block;"}
             = link_to report.verifier.first_name, user_path(report.verifier), :style => "font-weight: bold;"
