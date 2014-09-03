@@ -106,23 +106,33 @@ class Report < ActiveRecord::Base
   # A valid report is a report that is
   # a) open, and verified to be valid by a 3rd party, OR
   # b) eliminated, and verified to be valid by a 3rd party.
+  # TODO: For now, we define a valid report to be a report
+  # that was verified (no matter what state)
   def is_valid?
-    if self.open?
-      return (self.isVerified == "t")
-    elsif self.eliminated?
-      return (self.is_resolved_verified == "t")
-    end
+    # if self.open?
+    #   return (self.isVerified == "t")
+    # elsif self.eliminated?
+    #   return (self.is_resolved_verified == "t")
+    # end
+
+    return nil if self.verifier_id.blank?
+    return self.isVerified == "t"
   end
 
   # A valid report is a report that is
   # a) open, and verified to be problematic by a 3rd party, OR
   # b) eliminated, and verified to be problematic by a 3rd party.
+  # TODO: For now, we define a valid report to be a report
+  # that was verified (no matter what state)
   def is_invalid?
-    if self.open?
-      return (self.isVerified == "f")
-    elsif self.eliminated?
-      return (self.is_resolved_verified == "f")
-    end
+    # if self.open?
+    #   return (self.isVerified == "f")
+    # elsif self.eliminated?
+    #   return (self.is_resolved_verified == "f")
+    # end
+
+    return nil if self.verifier_id.blank?
+    return self.isVerified == "f"
   end
 
   def invalid?
