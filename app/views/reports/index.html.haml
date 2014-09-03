@@ -15,13 +15,14 @@
 /------------------------------------------------------------------------------
 
 .row
-  .span5.offset1
-    %h1
+  .span12.offset1
+    %h1{:style => "font-size: 36px;"}
       = I18n.t("reports_feed.title", :name => @neighborhood.name)
-  .span4
-    %div{:style => "margin-top: 7px;"}
+  .span4{:style => "float: right;"}
+    %div{:style => "margin-top: 10px;"}
       = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
 
+.row
   .span#report_buttons{:style => "font-size:20px;"}
 
 /------------------------------------------------------------------------------
