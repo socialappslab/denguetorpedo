@@ -62,6 +62,13 @@
     .span7#map_div
       = render :partial => "reports/map"
     = render :partial => "reports/arcgis_map"
+  - else
+    .span7#map_div
+      = render :partial => "reports/osm_map"
+
+    = javascript_include_tag "openstreetmap/OpenLayers"
+    = javascript_include_tag "openstreetmap/proj4js-compressed"
+    = javascript_include_tag "openstreetmap/map"
 
 
 /------------------------------------------------------------------------------
