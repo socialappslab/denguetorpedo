@@ -286,54 +286,51 @@ class ReportsController < NeighborhoodsBaseController
   def verify
     @report = Report.find(params[:id])
 
-    if @report.eliminated?
-      @report.is_resolved_verified = true
-      @report.resolved_verifier_id = @current_user.id
-      @report.resolved_verified_at = DateTime.now
-    else
-      @report.isVerified = true
-      @report.verifier_id = @current_user.id
-      @report.verified_at = DateTime.now
-    end
+    @report.isVerified  = "t"
+    @report.verifier_id = @current_user.id
+    @report.verified_at = DateTime.now
 
     if @report.save(:validate => false)
-      @current_user.points       += 50
-      @current_user.total_points += 50
+      @current_user.points       += User::Points::REPORT_VERIFICATION
+      @current_user.total_points += User::Points::REPORT_VERIFICATION
       @current_user.save
       flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-      redirect_to :back
+      redirect_to :back and return
     end
   end
 
   #----------------------------------------------------------------------------
   # POST /neighborhoods/:neighborhood_id/reports/problem
-
+  # TODO: Right now, we're using isVerified column to define *validity*
+  # The correct solution would be to deprecate both is_resolved_verified
+  # and isVerified.
   def problem
     @report = Report.find(params[:id])
 
-    if @report.eliminated?
-      @report.is_resolved_verified = false
-      @report.resolved_verifier_id = @current_user.id
-      @report.resolved_verified_at = DateTime.now
-      @report.resolved_verifier.points -= 100
-      @report.resolved_verifier.save
-    elsif @report.open?
-      @report.isVerified = false
-      @report.verifier_id = @current_user.id
-      @report.verified_at = DateTime.now
-      @report.verifier.points -= 100
+    # First, subtract the points from the past verifier.
+    if @report.verifier.present?
+      @report.verifier.points       -= User::Points::REPORT_VERIFICATION
+      @report.verifier.total_points -= User::Points::REPORT_VERIFICATION
       @report.verifier.save
     end
+
+    # Now update the report.
+    @report.isVerified  = "f"
+    @report.verifier_id = @current_user.id
+    @report.verified_at = DateTime.now
 
     if @report.save(:validate => false)
       flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood)
     else
-      redirect_to :back
+      redirect_to :back and return
     end
   end
+
+  #----------------------------------------------------------------------------
+  #
 
   def torpedos
     @user = User.find(params[:id])

@@ -17,6 +17,10 @@ class User < ActiveRecord::Base
     VISITOR     = "visitante"
   end
 
+  module Points
+    REPORT_VERIFICATION = 50
+  end
+
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
