@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
 
   module Points
     REPORT_VERIFICATION = 50
+    REPORT_SUBMITTED    = 50
   end
 
   has_secure_password

@@ -180,6 +180,7 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # TODO: Deprecate this.
   def strftime_with(type)
     if type == :created_at
       self.created_at.strftime("%d/%m/%Y")

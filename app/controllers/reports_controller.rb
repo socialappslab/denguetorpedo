@@ -208,24 +208,15 @@ class ReportsController < NeighborhoodsBaseController
     end
 
 
-    # Update web report
     if @report.update_attributes(params[:report])
-      submission_points = 50
-      @current_user.update_attribute(:points, @current_user.points + submission_points)
-      @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
+      @current_user.update_columns(:points => @current_user.points + User::Points::REPORT_SUBMITTED, :total_points => @current_user.total_points + User::Points::REPORT_SUBMITTED)
+      @report.update_columns(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
+      award_points(@report, @current_user)
 
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
-      @report.touch(:eliminated_at)
-      @report.update_attribute(:neighborhood_id, @neighborhood.id)
-      @report.update_attribute(:eliminator_id, @current_user.id)
-      award_points @report, @current_user
-
       redirect_to neighborhood_reports_path(@neighborhood) and return
-
-    # Error occurred updating attributes
     else
       flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
-
       redirect_to :back and return
     end
   end
@@ -294,7 +285,7 @@ class ReportsController < NeighborhoodsBaseController
 
     @report.isVerified  = "t"
     @report.verifier_id = @current_user.id
-    @report.verified_at = DateTime.now
+    @report.verified_at = Time.now
 
     if @report.save(:validate => false)
       @current_user.points       += User::Points::REPORT_VERIFICATION
@@ -325,7 +316,7 @@ class ReportsController < NeighborhoodsBaseController
     # Now update the report.
     @report.isVerified  = "f"
     @report.verifier_id = @current_user.id
-    @report.verified_at = DateTime.now
+    @report.verified_at = Time.now
 
     if @report.save(:validate => false)
       flash[:notice] = I18n.t("activerecord.success.report.verify")
