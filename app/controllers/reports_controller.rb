@@ -41,6 +41,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Remove report that incurred an error, it should be at the top already
     @reports.reject!{|r| r == params[:report]}
+    @reports.reject!{ |r| r.neighborhood_id != @neighborhood.id }
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
