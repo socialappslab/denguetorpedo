@@ -131,6 +131,37 @@ function selected_tab_css_update(id){
     })
 }
 
+/*-----------------------------------------------------------------------------
+  GPS-fetching methods.
+  --------------------*/
+
+// Method to retrieve (lat, long) coordinates from OSM.
+function fetchCoordinatesFromOSM(addressString, countryCode){
+  $.ajax({
+    url: "http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode,
+    type: "GET",
+    timeout: 5000,
+    success: function(result) {
+      window.test = result;
+    }
+  });
+}
+
+// TODO: Maybe deprecate this.
+function setLocationVariablesUsingOSM(location, event)
+{
+  if(event.target.form[7].id == "report_location_attributes_latitude" && event.target.form[8].id == "report_location_attributes_longitude"){
+
+    //if either value is null then try to get coords again
+    if (location.latitude == null || location.longitude == null){
+      event.preventDefault();
+
+      alert("Event prevented!");
+    }
+  }
+}
+
+
 
 // TODO @awdorsett - refactor to reuse update location
 // TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
