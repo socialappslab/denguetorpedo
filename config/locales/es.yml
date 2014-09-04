@@ -343,7 +343,7 @@ es:
         header: "Nuevo premio"
         create_button: "Registrar un premio"
       admin:
-        delete: Borrar
+        delete: Eliminar
     password_resets:
       new:
         title: Redefinir su contraseña
@@ -363,7 +363,7 @@ es:
       update:  "Actualizar"
       create:  "Crear"
       edit:    "Editar"
-      delete:  Borrar
+      delete:  Eliminar
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
@@ -411,7 +411,7 @@ es:
         time: "Hora de la actividad"
     reports:
       types:
-        delete: Borrar
+        delete: Eliminar
       edit:
         title: Complete el marcado del foco
     about:
