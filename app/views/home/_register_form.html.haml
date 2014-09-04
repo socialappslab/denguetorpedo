@@ -2,45 +2,38 @@
   %ul
     = form_for(@user, html: {name: "registration_form", :class => "form-horizontal" }) do |f|
 
-
       .control-group{:style => "margin-bottom: 5px;"}
-        = f.label :email, :class => "control-label", :style => "font-size: 12px; width: 160px;" do
-          = I18n.t("activerecord.attributes.user.email")
+        = f.label :username, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
-          = f.text_field :email,  :style => "width: 100%;"
+          = f.text_field :username,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
-        = f.label :first_name, :class => "control-label", :style => "font-size: 12px; width: 160px;" do
-          = I18n.t("activerecord.attributes.user.first_name")
+        = f.label :first_name, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
           = f.text_field :first_name,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
-        = f.label :last_name, :class => "control-label", :style => "font-size: 12px; width: 160px;" do
-          = I18n.t("activerecord.attributes.user.last_name")
+        = f.label :last_name, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
           = f.text_field :last_name,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
-        = f.label :password, :class => "control-label", :style => "font-size: 12px; width: 160px;" do
-          = I18n.t("activerecord.attributes.user.password")
+        = f.label :password, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
           = f.password_field :password,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 5px;"}
-        = f.label :password_confirmation, :class => "control-label", :style => "font-size: 12px; padding-top: 0px; margin-bottom: 0px; width: 160px;" do
-          = I18n.t("activerecord.attributes.user.password_confirmation")
+        = f.label :password_confirmation, :class => "control-label", :style => "font-size: 12px; padding-top: 0px; margin-bottom: 0px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
           = f.password_field :password_confirmation,  :style => "width: 100%;"
 
 
       .control-group{:style => "margin-bottom: 10px;"}
-        = f.label :neighborhood_id, :class => "control-label", :style => "font-size: 12px; width: 160px;" do
-          = I18n.t("attributes.neighborhood_id")
+        = f.label :neighborhood_id, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
           = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => "" }, :style => "width: 100%;"
 

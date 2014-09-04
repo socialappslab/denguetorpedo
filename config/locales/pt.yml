@@ -37,6 +37,7 @@ pt:
     attributes:
       user:
         email: "Email"
+        username: "Nome de usuário"
         password: "Senha"
         phone_number: "Celular"
         first_name: "Nome"
