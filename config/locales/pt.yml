@@ -297,6 +297,9 @@ pt:
     alerts:
       confirm_leave_team: Tem certeza que deseja sair da equipe?
       confirm: Você tem certeza?
+    flashes:
+      login:
+        error: Nome de usuário ou senha inválido
     coordinators:
       users:
         success_create_flash: "Novo usuário criado com sucesso!"

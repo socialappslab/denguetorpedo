@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
       end
 
     else
-      redirect_to root_url, :alert => I18n.t("common_terms.email_or_password_incorrect")
+      redirect_to root_url, :alert => I18n.t("views.flashes.login.error")
     end
   end
 
