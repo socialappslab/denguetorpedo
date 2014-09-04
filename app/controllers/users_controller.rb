@@ -157,7 +157,7 @@ class UsersController < ApplicationController
     @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
     # TODO: Clean up and clarify the intent of this line.
-    user_params = params[:user].slice(:profile_photo, :gender, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
+    user_params = params[:user].slice(:profile_photo, :gender, :username, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
 
     # if nickname is blank and display name includes nickname, change to firstlast
     if user_params[:nickname].blank?

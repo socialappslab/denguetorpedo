@@ -24,7 +24,7 @@ describe UsersController do
 			it "redirects them to their edit page" do
 				visit root_path
 
-				fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+				fill_in "user_username", 		 				:with => "test"
 				fill_in "user_first_name", 					 :with => "Test"
 				fill_in "user_last_name",  					 :with => "Tester"
 				fill_in "user_password", 						 :with => "abcdefg"
@@ -39,7 +39,7 @@ describe UsersController do
 		it "allows them to fully register seamlessly" do
 			visit root_path
 
-			fill_in "user_email", 		 					 :with => "test@denguetorpedo.com"
+			fill_in "user_username", 		 			  :with => "test"
 			fill_in "user_first_name", 					 :with => "Test"
 			fill_in "user_last_name",  					 :with => "Tester"
 			fill_in "user_password", 						 :with => "abcdefg"
@@ -48,6 +48,21 @@ describe UsersController do
 			click_button "Cadastre-se"
 
 			expect(page).to have_content( I18n.t("views.users.create_success_flash") )
+		end
+
+		it "notifies them of existing username" do
+			FactoryGirl.create(:user, :username => "test", :neighborhood_id => Neighborhood.first.id)
+			visit root_path
+
+			fill_in "user_username", 		 			  :with => "test"
+			fill_in "user_first_name", 					 :with => "Test"
+			fill_in "user_last_name",  					 :with => "Tester"
+			fill_in "user_password", 						 :with => "abcdefg"
+			fill_in "user_password_confirmation", :with => "abcdefg"
+			select(Neighborhood.first.name, :from => "user_neighborhood_id")
+			click_button "Cadastre-se"
+
+			expect(page).to have_content( I18n.t("activerecord.errors.messages.taken") )
 		end
 	end
 
@@ -61,16 +76,16 @@ describe UsersController do
 		end
 
 		it "displays appropriate error message for invalid input" do
-			fill_in "email", :with => user.email
+			fill_in "username", :with => user.username
 			fill_in "password", :with => ""
 			click_button "Entrar"
 
-			expect(page).to have_content("E-mail ou senha inválido")
+			expect(page).to have_content( I18n.t("views.flashes.login.error") )
 			expect(page).not_to have_content("Invalid email")
 		end
 
 		it "doesn't display Signed in message" do
-			fill_in "email", :with => user.email
+			fill_in "username", :with => user.username
 			fill_in "password", :with => user.password
 			click_button "Entrar"
 

@@ -7,9 +7,15 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
-//= require_tree .
 //= require leaflet
 //= require bootstrap
+//= require active_admin
+//= require_self
+//= require bootstrap-2-3-2
+//= require bootstrap-select.min
+//= require jquery.countdown.min
+//= require jquery.fancybox.pack
+//= require reports
 
 
 // TRANSITION

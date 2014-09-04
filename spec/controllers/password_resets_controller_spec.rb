@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PasswordResetsController do
-  let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:user) { FactoryGirl.create(:user, :email => "test@mailinator.com", :neighborhood_id => Neighborhood.first.id) }
 
   it "sends a password reset email" do
     expect {

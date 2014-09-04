@@ -18,6 +18,11 @@
   zoom:1;
 }
 
+.row {
+  clear: both;
+  position: relative;
+}
+
 // Column Widths
 @mixin grid($i) {
 	width: $column-width * $i + $gutter-width * ($i - 1);

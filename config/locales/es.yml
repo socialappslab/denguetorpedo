@@ -36,6 +36,7 @@ es:
       location: Dirección
     attributes:
       user:
+        username: "Nombre de usuario"
         email: "Correo electrónico"
         password: "Contraseña"
         phone_number: "Celular"
@@ -297,6 +298,9 @@ es:
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
       confirm: ¿Está seguro?
+    flashes:
+      login:
+        error: Nombre de usuario o contraseña incorrecta
     coordinators:
       users:
         success_create_flash:  "Usuario creado con éxito"

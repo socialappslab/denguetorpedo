@@ -2,18 +2,13 @@ require 'rack/test'
 
 FactoryGirl.define do
 	factory :user do |user|
-		user.first_name { Faker::Name.first_name }
-		user.last_name { Faker::Name.last_name }
-		user.email { Faker::Internet.email }
-		user.nickname { Faker::Name.first_name }
-		user.middle_name { Faker::Name.first_name }
-		user.phone_number { Faker::PhoneNumber.phone_number[0..19] }
-		user.password "denguewarrior"
-		user.password_confirmation "denguewarrior"
-		user.carrier "XXX"
-		user.prepaid true
-		role 			 User::Types::RESIDENT
-		# neighborhood_id Neighborhood.first.id
+		first_name 	{ Faker::Name.first_name }
+		last_name 	 { Faker::Name.last_name }
+		username		 { Faker::Internet.user_name }
+		phone_number { Faker::PhoneNumber.phone_number[0..19] }
+		password 						 "denguewarrior"
+		password_confirmation "denguewarrior"
+		role 			 							 User::Types::RESIDENT
 
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
@@ -21,19 +16,19 @@ FactoryGirl.define do
 		profile_photo_updated_at Time.new
 
 		factory :coordinator do
-			role "coordenador"
+			role User::Types::COORDINATOR
 		end
 
 		factory :sponsor do
-			role "lojista"
+			role User::Types::SPONSOR
 		end
 
 		factory :verifier do
-			role "verificador"
+			role User::Types::VERIFIER
 		end
 
 		factory :visitor do
-			role "visitante"
+			role User::Types::VISITOR
 		end
 	end
 

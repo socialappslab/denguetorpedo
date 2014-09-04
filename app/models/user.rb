@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class User < ActiveRecord::Base
-  attr_accessible :house_attributes, :first_name, :reporter, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+  attr_accessible :house_attributes, :first_name, :reporter, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
 
   #----------------------------------------------------------------------------
 
@@ -29,16 +29,20 @@ class User < ActiveRecord::Base
   # Validators
   #-----------
 
+  validates :username, :presence => true
+  validates :username, :uniqueness => true
+  validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
   validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
-  validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
+  validates :neighborhood_id, :presence => true
+
+  validates :email, :format => { :with => EMAIL_REGEX }, :allow_blank => true
+
   validates :points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :total_points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0}
-  validates :email, :format => { :with => EMAIL_REGEX }, :allow_nil => true
-  validates :email, :uniqueness => true, :unless => "email.nil?"
-  validates :house_id, presence: { on: :special_create, if: :not_visitor }
-  # validates_length_of :phone_number, :minimum => 12, :message => "Número de celular invalido.  O formato correto é 0219xxxxxxxx", :unless => Proc.new { |u| u.new_record? }
-  validates :neighborhood_id, :presence => true
+
+
+
   #----------------------------------------------------------------------------
 
 

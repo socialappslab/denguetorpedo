@@ -7,6 +7,22 @@
       = I18n.t("views.coordinators.users.edit")
   %br
 
+
+  .control-group
+    = f.label :username, :class => "control-label", :style => "position: relative;" do
+      = I18n.t("activerecord.attributes.user.username")
+      %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+        *
+    .controls
+      = f.text_field :username, :class => "form-control"
+
+
+  .control-group
+    = f.label :email, :class => "control-label", :style => "position: relative;"
+    .controls
+      = f.text_field :email, :class => "form-control"
+
+
   .control-group
     = f.label :first_name, :class => "control-label", :style => "position: relative" do
       = I18n.t("activerecord.attributes.user.first_name")
@@ -42,16 +58,6 @@
       = I18n.t("common_terms.male")
       = f.radio_button :gender, "false", :checked => (@user.gender == false), :class => "inline"
       = I18n.t("common_terms.female")
-
-
-  .control-group
-    = f.label :email, :class => "control-label", :style => "position: relative;" do
-      = I18n.t("activerecord.attributes.user.email")
-      %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
-        *
-    .controls
-      = f.text_field :email, :class => "form-control"
-
 
   .control-group
     = f.label :profile_photo, :class => "control-label"
