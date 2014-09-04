@@ -14,9 +14,10 @@
 
     %br
     %br
-    = link_to new_documentation_section_path, :style => "font-size: 20px;" do
-      %i.fa.fa-plus
-      = I18n.t("views.documentation_sections.new.title")
+    - if @current_user && @current_user.coordinator?
+      = link_to new_documentation_section_path, :style => "font-size: 20px;" do
+        %i.fa.fa-plus
+        = I18n.t("views.documentation_sections.new.title")
 
     %br
     %br

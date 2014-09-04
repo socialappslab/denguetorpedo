@@ -54,9 +54,9 @@ class ReportsController < NeighborhoodsBaseController
 
       # TODO: Why the !!! are we using two types of columns to encode
       # the same information (open versus eliminated). Get rid of one or the other.
-      if report.status == Report::STATUS[:reported]
+      if report.open?
         @open_locations << report.location
-      elsif report.status == Report::STATUS[:eliminated]
+      elsif report.eliminated?
         @eliminated_locations << report.location
       else
         @open_locations << report.location
@@ -110,7 +110,6 @@ class ReportsController < NeighborhoodsBaseController
     @report              = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
-    @report.status       = Report::STATUS[:reported]
     @report.location_id  = location.id
     @report.completed_at = Time.now
 
@@ -144,14 +143,20 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/edit
 
   def edit
-    @new_report = @current_user.created_reports.find(params[:id])
+    @new_report = Report.find(params[:id])
 
-    if @new_report.location
-      @new_report.location.latitude  ||= 0
-      @new_report.location.longitude ||= 0
+    if @new_report.location.blank?
+      @new_report.location = Location.new
     end
 
+    @new_report.location.latitude  ||= 0
+    @new_report.location.longitude ||= 0
+
+    @open_locations       = [@new_report.location]
+    @eliminated_locations = []
+
     # saved_params will exist if an error occurred and the user was redirect to the edit page
+    # TODO: Deprecate this.
     if params[:report].present?
       @new_report.elimination_type = params[:report][:elimination_type]
       @new_report.report =  params[:report][:report]
@@ -189,7 +194,6 @@ class ReportsController < NeighborhoodsBaseController
       if @report.update_attributes(params[:report])
         flash[:notice] = I18n.t("activerecord.success.report.create")
 
-        @report.status          = Report::STATUS[:reported]
         @report.neighborhood_id = @neighborhood.id
         @report.completed_at    = Time.now
         @report.save
@@ -204,27 +208,16 @@ class ReportsController < NeighborhoodsBaseController
     end
 
 
-    # Update web report
     if @report.update_attributes(params[:report])
-      submission_points = 50
-      @current_user.update_attribute(:points, @current_user.points + submission_points)
-      @current_user.update_attribute(:total_points, @current_user.total_points + submission_points)
+      @current_user.update_attributes(:points => @current_user.points + User::Points::REPORT_SUBMITTED, :total_points => @current_user.total_points + User::Points::REPORT_SUBMITTED)
+      @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
+      award_points(@report, @current_user)
 
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
-      @report.touch(:eliminated_at)
-      @report.update_attribute(:status, Report::STATUS[:eliminated])
-      @report.update_attribute(:neighborhood_id, @neighborhood.id)
-      @report.update_attribute(:eliminator_id, @current_user.id)
-      award_points @report, @current_user
-
       redirect_to neighborhood_reports_path(@neighborhood) and return
-
-    # Error occurred updating attributes
     else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
-
-      redirect_to neighborhood_reports_path(@neighborhood,
-        :params=>{:report => @report.id, :elimination_method => params[:report][:elimination_method]}) and return
+      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
+      redirect_to :back and return
     end
   end
 
@@ -285,60 +278,56 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # POST /neighborhoods/:neighborhood_id/reports/verify
 
   def verify
     @report = Report.find(params[:id])
 
-    if @report.status == Report::STATUS[:eliminated]
-      @report.is_resolved_verified = true
-      @report.resolved_verifier_id = @current_user.id
-      @report.resolved_verified_at = DateTime.now
-
-    elsif @report.status == Report::STATUS[:reported]
-      @report.isVerified = true
-      @report.verifier_id = @current_user.id
-      @report.verified_at = DateTime.now
-    end
-
-    @report.verifier_name = @current_user.display_name
+    @report.isVerified  = "t"
+    @report.verifier_id = @current_user.id
+    @report.verified_at = Time.now
 
     if @report.save(:validate => false)
-      @current_user.points += 50
-      @current_user.total_points += 50
+      @current_user.points       += User::Points::REPORT_VERIFICATION
+      @current_user.total_points += User::Points::REPORT_VERIFICATION
       @current_user.save
       flash[:notice] = I18n.t("activerecord.success.report.verify")
-      redirect_to neighborhood_reports_path(@neighborhood)
+      redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-      redirect_to :back
+      redirect_to :back and return
     end
   end
 
   #----------------------------------------------------------------------------
-
+  # POST /neighborhoods/:neighborhood_id/reports/problem
+  # TODO: Right now, we're using isVerified column to define *validity*
+  # The correct solution would be to deprecate both is_resolved_verified
+  # and isVerified.
   def problem
     @report = Report.find(params[:id])
 
-    if @report.eliminated?
-      @report.is_resolved_verified = false
-      @report.resolved_verifier_id = @current_user.id
-      @report.resolved_verified_at = DateTime.now
-      @report.resolved_verifier.points -= 100
-      @report.resolved_verifier.save
-    elsif @report.open?
-      @report.isVerified = false
-      @report.verifier_id = @current_user.id
-      @report.verified_at = DateTime.now
-      @report.verifier.points -= 100
+    # First, subtract the points from the past verifier.
+    if @report.verifier.present?
+      @report.verifier.points       -= User::Points::REPORT_VERIFICATION
+      @report.verifier.total_points -= User::Points::REPORT_VERIFICATION
       @report.verifier.save
     end
+
+    # Now update the report.
+    @report.isVerified  = "f"
+    @report.verifier_id = @current_user.id
+    @report.verified_at = Time.now
 
     if @report.save(:validate => false)
       flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood)
     else
-      redirect_to :back
+      redirect_to :back and return
     end
   end
+
+  #----------------------------------------------------------------------------
+  #
 
   def torpedos
     @user = User.find(params[:id])

@@ -3,48 +3,48 @@
 -# such as when you're returned to a page during after an error
 -# TODO @awdorsett - refactor CSS for new_report_form
 
-.row
-  #new_report_form
-    = form_for [@neighborhood, @new_report], :html => {:autocomplete => "off", :multipart => true} do |f|
-      = hidden_field_tag 'error', params[:new_report].present?
-      - if @new_report.reporter_id.blank?
-        = f.hidden_field :reporter_id, :value => @current_user && @current_user.id
 
-      #address
-        %h3.new_report_label
-          = I18n.t("report.form.address")
+#new_report_form
+  = form_for [@neighborhood, @new_report], :html => {:autocomplete => "off", :multipart => true} do |f|
+    = hidden_field_tag 'error', params[:new_report].present?
+    - if @new_report.reporter_id.blank?
+      = f.hidden_field :reporter_id, :value => @current_user && @current_user.id
 
-        = f.fields_for :location, @new_report.location || Location.new do |location_fields|
-          = location_fields.text_field :street_type, :placeholder => I18n.t("report.form.example_of_street_type"), :class => "middle_field address_field"
-          = location_fields.text_field :street_name, :placeholder => I18n.t("attributes.name"), style: "width:200px;", class: 'address_field'
-          = location_fields.text_field :street_number, :placeholder => I18n.t("attributes.number"), class: "middle_field address_field"
-          = location_fields.hidden_field :latitude
-          = location_fields.hidden_field :longitude
+    #address
+      %h3.new_report_label
+        = I18n.t("report.form.address")
 
-      #description
-        %h3.new_report_label
-        = f.label :report
-        = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"),
-          :id => 'report_content', :maxlength => 100, :rows => 3
+      = f.fields_for :location, @new_report.location || Location.new do |location_fields|
+        = location_fields.text_field :street_type, :placeholder => I18n.t("report.form.example_of_street_type"), :class => "middle_field address_field"
+        = location_fields.text_field :street_name, :placeholder => I18n.t("attributes.name"), style: "width:200px;", class: 'address_field'
+        = location_fields.text_field :street_number, :placeholder => I18n.t("attributes.number"), class: "middle_field address_field"
+        = location_fields.hidden_field :latitude
+        = location_fields.hidden_field :longitude
 
-      #photo
-        %h3.new_report_label
-          = I18n.t("report.form.photo_of_report")
-        = f.file_field :before_photo
-      %br
+    #description
+      %h3.new_report_label
+      = f.label :report
+      = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"),
+        :id => 'report_content', :maxlength => 100, :rows => 3
 
-      #elimination_type
-        %h3.new_report_label.inline_display
-          = I18n.t("activerecord.attributes.report.elimination_type")
-        = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , :prompt => I18n.t("report.form.select_elimination_type")
-      %br
+    #photo
+      %h3.new_report_label
+        = I18n.t("report.form.photo_of_report")
+      = f.file_field :before_photo
+    %br
 
-      #attention_div
-      %p{style: "font-weight: bold;"}
-        %b{style: "color:red;"}
-          = I18n.t("report.form.attention")
-      %br
+    #elimination_type
+      %h3.new_report_label.inline_display
+        = I18n.t("activerecord.attributes.report.elimination_type")
+      = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , :prompt => I18n.t("report.form.select_elimination_type")
+    %br
 
-      = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
-        %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-        = I18n.t("views.buttons.create")
+    #attention_div
+    %p{style: "font-weight: bold;"}
+      %b{style: "color:red;"}
+        = I18n.t("report.form.attention")
+    %br
+
+    = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
+      %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+      = I18n.t("views.buttons.create")

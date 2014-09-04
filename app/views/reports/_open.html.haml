@@ -7,21 +7,9 @@
   });
 
 .report.open
-  .row
-    = render :partial => "reports/topbar", :locals => {:report => report}
-
-
-
-  .row.address_row
-    .span6.address
-      - if report.sms_incomplete?
-        %h4= report.report
-      - else
-        %h4= report.complete_address
-
-    .span2
-      - if report.location && report.location.latitude.present? && report.location.longitude.present?
-        = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
+  = render :partial => "reports/metadata", :locals => {:report => report}
 
   .row{style: "margin-top:7px;"}
     = render :partial => "reports/attributes", :locals => {:report => report}
+
+  = render :partial => "reports/topbar", :locals => {:report => report}

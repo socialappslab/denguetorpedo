@@ -25,7 +25,7 @@ namespace :documentation_sections do
     ATENCIÓN: Usted debe escribir su nombre como consta en un documento
     válido (ej. credencial de elector) que será validado para
     intercambiar sus puntos por premios."
-    ds.save!
+    ds.save(:validate => false)
 
 
     ds = DocumentationSection.find_by_title("Como completar sua conta")
@@ -39,7 +39,7 @@ namespace :documentation_sections do
     Si usted se registró en el sitio porque un amigo o vecino lo invitó,
     no olvide mencionar a esa persona seleccionandola en el campo junto
     a la frase '¿Alguien lo invitó a registrarse en DT?'"
-    ds.save!
+    ds.save(:validate => false)
 
 
 
@@ -61,7 +61,7 @@ namespace :documentation_sections do
     la página inicial). Una vez conectado en su cuenta, usted puede hacer
     cambios en sus datos personales, unirse o dejar equipos, etc.
     Para ello, haga clic en Configuraciones."
-    ds.save!
+    ds.save(:validate => false)
 
 
     ds = DocumentationSection.find_by_title("O que é um foco?")
@@ -77,7 +77,7 @@ namespace :documentation_sections do
     Una vez encontrados y reportados, los dos tipos de focos son llamados
     'Focos marcados' y les corresponde la misma puntuación. Es decir, en
     DT no hay distinción entre focos activos y potenciales."
-    ds.save!
+    ds.save(:validate => false)
 
 
     ds = DocumentationSection.find_by_title("Como jogar")
@@ -456,7 +456,7 @@ namespace :documentation_sections do
     teclear un título y
 
     escribir su idea."
-    ds.save!
+    ds.save(:validate => false)
 
 
 
@@ -780,7 +780,7 @@ namespace :documentation_sections do
     Mas detalles del sistema de intercambio de puntos pueden ser
 
     esclarecidos en la sección de preguntas frecuentes.)
-    ds.save!
+    ds.save(:validate => false)
 
 
     ds = DocumentationSection.find_by_title("Como participar")
@@ -857,7 +857,7 @@ namespace :documentation_sections do
 
     Sepa más sobre esas actividades de los verificadores accesando "Mi
     comunidad")
-    ds.save!
+    ds.save(:validate => false)
 
     ds = DocumentationSection.find_by_title("Minha comunidade")
     ds.title_in_es = "Mi comunidad"
@@ -866,7 +866,7 @@ namespace :documentation_sections do
     participantes y otros asuntos de su comunidad (noticias, y otras
 
     actividades).)
-    ds.save!
+    ds.save(:validate => false)
 
 
 

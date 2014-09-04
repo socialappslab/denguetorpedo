@@ -74,9 +74,9 @@
 }
 
 .rp_report_status {
-  margin-top: -10px;
+  // margin-top: -10px;
   margin-right: -5px;
-  padding-top: 2px;
+  // padding-top: 2px;
   padding-left: 5px;
   height: 24px;
   color: #FFFFFF;
@@ -84,14 +84,6 @@
   font-size: 14px;
 }
 
-.rp_report_people {
-  margin-left: 0px;
-  margin-top: 10px;
-  font-size: 14px;
-  .user {
-    color: blue;
-  }
-}
 
 #user_report_favorite {
 
@@ -101,37 +93,11 @@
 
 }
 
-.rp_report_options {
-  float: right;
-  margin-top:-3px;
-
-  .time_expired{
-    margin-top:3px;
-    margin-right:10px;
-  }
-
-  .countdown_label{
-    margin-top:3px;
-  }
-
+a.mapa{
+  border:1px solid #8899a6;
+  padding:2px;
 }
 
-
-.address_row{
-  margin-top:5px;
-
-  .address{
-    margin-top:10px;
-  }
-
-  a.mapa{
-    margin-top:5px;
-    float:right;
-    border:1px solid gray;
-    margin-right:-6px;
-    padding:2px;
-  }
-}
 
 .rp_claimed_report {
   border-color: $blue;
@@ -143,14 +109,6 @@
 
 .open{
   border-color: $orange;
-
-  .description{
-  margin-bottom:12px;
-  }
-
-  .report_label{
-    font-weight:bold;
-  }
 
   .report_submission{
     margin-top: 0px;
@@ -208,7 +166,6 @@
   background: white;
   border: 1px solid $light-gray;
   padding: 10px 20px;
-  margin-left: 20px;
 
   input[type = "text"] {
     width: 520px;
@@ -442,5 +399,73 @@
   &:hover {
     text-decoration: none;
     color: inherit;
+  }
+}
+
+
+// Action bar for each report
+.action-bar {
+  color: #8899a6;
+  display: inline-block;
+
+  i, a {
+    color: #8899a6;
+    // margin-right:10px;
+    margin-left:10px;
+  }
+}
+
+.report-metadata {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #8899a6;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+
+}
+
+
+//-----------------------------------------------------------------------------
+// ESRI map-related customization
+
+#map_div {
+  position:absolute;
+  right:30px;
+  overflow-y:hidden;
+  overflow-x:hidden;
+
+  #loading {
+    z-index:100;
+    // width: 50%;
+    // margin: auto;
+    position:absolute;
+    right:150;
+    top: 200;
+    text-align: center;
+
+    img {
+      width:50px;
+      height:50px;
+    }
+
+  }
+
+
+  #map-action-bar {
+    margin-bottom: 10px;
+
+    #map-error-description {
+      color: red;
+      font-weight: bold;
+      font-size: 10px;
+      display: none;
+    }
+  }
+
+  #map {
+    height: 500px;
+    position:relative;
+    overflow-y:hidden;
   }
 }

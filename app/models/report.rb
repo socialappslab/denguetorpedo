@@ -1,24 +1,15 @@
 # encoding: utf-8
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :neighborhood_id, :breeding_site_id, :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id, :location, :location_attributes,
-    :elimination_type, :breeding_site, :elimination_method, :verifier_id, :reporter_name,
-    :eliminator_name, :location_id, :reporter, :sms, :is_credited, :credited_at,
-    :completed_at, :verifier, :resolved_verifier, :eliminator
-
-  #----------------------------------------------------------------------------
-
-  # callback to create the feeds
-  # TODO: Do we need this?
-  after_save do |report|
-    Feed.create_from_object(report, report.reporter_id, STATUS[:reported]) if report.reporter_id_changed?
-    Feed.create_from_object(report, report.eliminator_id, STATUS[:eliminated]) if report.eliminator_id_changed?
-  end
+  attr_accessible :report, :neighborhood_id, :breeding_site_id,
+  :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
+  :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
+  :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
+  :verifier, :resolved_verifier, :eliminator
 
   #----------------------------------------------------------------------------
   # Constants
 
-  STATUS = {:eliminated => 'eliminated', :reported => 'reported', :sms => 'sms'}
   EXPIRATION_WINDOW = 48 * 3600 # in seconds
 
   #----------------------------------------------------------------------------
@@ -32,36 +23,33 @@ class Report < ActiveRecord::Base
   # Associations
   #-------------
 
-  has_many :feeds, :as => :target
   belongs_to :location
   belongs_to :neighborhood
-
-  # The following belongs_to define all the types of users that a report
-  # can have.
-  belongs_to :reporter, :class_name => "User"
-  belongs_to :eliminator, :class_name => "User"
-  belongs_to :verifier, :class_name => "User"
-  belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :breeding_site
   belongs_to :elimination_method
-
-
   has_many :likes,    :as => :likeable
   has_many :comments, :as => :commentable
+
+  # The following associations define all stakeholders in the reporting
+  # process.
+  belongs_to :reporter,          :class_name => "User"
+  belongs_to :eliminator,        :class_name => "User"
+  belongs_to :verifier,          :class_name => "User"
+  belongs_to :resolved_verifier, :class_name => "User"
+
 
   #----------------------------------------------------------------------------
   # Validations
   #-------------
-  # TODO :report validation fails unexpectedly
-  # When creating a new report and a user doesn't submit a picture, he'll get an error to add a picture
-  # After adding a picture if the user tries to submit again they'll get an error about having to provide
+  # TODO :report validation fails unexpectedly:
+  # * When creating a new report and a user doesn't submit a picture, he'll get an error to add a picture
+  # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
   # TODO refactor this code to be cleaner and find a better solution for all the scenarios
   validates :neighborhood_id, :presence => true
-  validates :report, :presence => true
-  validates :reporter_id, :presence => true
-  validates :status, :presence => true
+  validates :report,          :presence => true
+  validates :reporter_id,     :presence => true
 
   # SMS creation
   validates :sms, :presence => true, :if => :sms?
@@ -81,9 +69,6 @@ class Report < ActiveRecord::Base
   accepts_nested_attributes_for :location
 
   scope :sms, where(sms: true).order(:created_at)
-  scope :type_selected, where("elimination_type IS NOT NULL")
-
-  before_save :set_names
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
@@ -91,13 +76,11 @@ class Report < ActiveRecord::Base
 
   def eliminated?
     return self.elimination_method_id.present?
-    # return self.status == Report::STATUS[:eliminated]
   end
 
   # NOTE: Open does not mean active. An open report can be expired.
   def open?
     return self.elimination_method_id.blank?
-    # return self.status == Report::STATUS[:reported]
   end
 
   def sms_incomplete?
@@ -123,23 +106,33 @@ class Report < ActiveRecord::Base
   # A valid report is a report that is
   # a) open, and verified to be valid by a 3rd party, OR
   # b) eliminated, and verified to be valid by a 3rd party.
+  # TODO: For now, we define a valid report to be a report
+  # that was verified (no matter what state)
   def is_valid?
-    if self.open?
-      return (self.isVerified == "t")
-    elsif self.eliminated?
-      return (self.is_resolved_verified == "t")
-    end
+    # if self.open?
+    #   return (self.isVerified == "t")
+    # elsif self.eliminated?
+    #   return (self.is_resolved_verified == "t")
+    # end
+
+    return nil if self.verifier_id.blank?
+    return self.isVerified == "t"
   end
 
   # A valid report is a report that is
   # a) open, and verified to be problematic by a 3rd party, OR
   # b) eliminated, and verified to be problematic by a 3rd party.
+  # TODO: For now, we define a valid report to be a report
+  # that was verified (no matter what state)
   def is_invalid?
-    if self.open?
-      return (self.isVerified == "f")
-    elsif self.eliminated?
-      return (self.is_resolved_verified == "f")
-    end
+    # if self.open?
+    #   return (self.isVerified == "f")
+    # elsif self.eliminated?
+    #   return (self.is_resolved_verified == "f")
+    # end
+
+    return nil if self.verifier_id.blank?
+    return self.isVerified == "f"
   end
 
   def invalid?
@@ -152,7 +145,6 @@ class Report < ActiveRecord::Base
     create(:report => report_content) do |r|
       r.reporter_id = params[:reporter] && params[:reporter].id
       r.location_id = params[:location] && params[:location].id
-      r.status = params[:status]
 
       # optional parameters
       r.eliminator_id = params[:eliminator] && params[:eliminator].id
@@ -188,6 +180,7 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # TODO: Deprecate this.
   def strftime_with(type)
     if type == :created_at
       self.created_at.strftime("%d/%m/%Y")
@@ -200,8 +193,9 @@ class Report < ActiveRecord::Base
     end
   end
 
+  # TODO: Deprecate this
   def self.eliminated_reports
-    where(:status => STATUS[:eliminated])
+    return Report.all.find_all { |r| r.eliminated? }
   end
 
   #----------------------------------------------------------------------------
@@ -216,24 +210,6 @@ class Report < ActiveRecord::Base
     self.created_at + EXPIRATION_WINDOW
   end
 
-  def set_names
-    if self.reporter
-      self.reporter_name = self.reporter.display_name
-    end
-
-    if self.eliminator
-      self.eliminator_name = self.eliminator.display_name
-    end
-
-    if self.verifier
-      self.verifier_name = self.verifier.display_name
-    end
-
-    if self.resolved_verifier
-      self.verifier_name = self.resolved_verifier.display_name
-    end
-  end
-
   def deduct_points
     if self.eliminator
       if self.is_resolved_verified == false
@@ -242,6 +218,26 @@ class Report < ActiveRecord::Base
     else
       self.reporter.update_attributes(points: self.reporter.points - 100)
     end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def breeding_site_picture
+    if self.before_photo_file_name.nil?
+      return nil
+    end
+
+    return self.before_photo.url(:medium)
+  end
+
+  #----------------------------------------------------------------------------
+
+  def elimination_method_picture
+    if self.after_photo_file_name.nil?
+      return nil
+    end
+
+    return self.after_photo.url(:medium)
   end
 
   #----------------------------------------------------------------------------

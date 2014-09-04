@@ -99,7 +99,7 @@ describe "Reports", :type => :feature do
       end
 
       it "displays user's name as the creator" do
-        expect(page).to have_content("Marcado por: #{Report.last.reporter_name}")
+        expect(page).to have_content(Report.last.reporter.first_name)
       end
 
       it "displays report as open" do
@@ -122,7 +122,6 @@ describe "Reports", :type => :feature do
       :location_id => location.id,
       :before_photo => uploaded_photo,
       :report => "Description",
-      :status => Report::STATUS[:reported],
       :completed_at => Time.now,
       :reporter_id => user.id,
       :breeding_site_id => elimination_type.id,
@@ -133,8 +132,6 @@ describe "Reports", :type => :feature do
     end
 
     it "sets the after photo" do
-      puts "user.inspect; #{user.inspect}"
-      puts "@current_user: #{@current_user.inspect}"
       visit neighborhood_reports_path(user.neighborhood)
       select(elimination_type.elimination_methods.first.description_in_pt, :from => "report_elimination_method_id")
       attach_file("report_after_photo", photo_filepath)
@@ -151,7 +148,7 @@ describe "Reports", :type => :feature do
       click_button I18n.t("views.buttons.submit")
 
       expect(page).to have_content("Eliminado")
-      expect(page).to have_content("Eliminado por: #{report.reporter_name}")
+      expect(page).to have_content(report.reporter.first_name)
     end
 
     it "does not overwrite the reporter id when a different user eliminates report" do
@@ -288,7 +285,7 @@ describe "Reports", :type => :feature do
 
       expect(page).to have_content("Você eliminou o foco")
       expect(page).to have_content("Eliminado")
-      expect(page).to have_content("Eliminado por: #{@report.reporter_name}")
+      expect(page).to have_content(@report.reporter.first_name)
     end
   end
 

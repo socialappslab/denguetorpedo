@@ -32,7 +32,7 @@ $(document).ready(function() {
         if (scrollAmount > 200) {
             $("#map_div").css("margin-top", scrollAmount - 263);
         } else {
-            $("#map_div").css("margin-top", -63);
+            $("#map_div").css("margin-top", 0);
         }
     });
 

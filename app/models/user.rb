@@ -17,6 +17,11 @@ class User < ActiveRecord::Base
     VISITOR     = "visitante"
   end
 
+  module Points
+    REPORT_VERIFICATION = 50
+    REPORT_SUBMITTED    = 50
+  end
+
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 
@@ -51,7 +56,6 @@ class User < ActiveRecord::Base
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
   has_many :verified_reports,   :class_name => "Report", :foreign_key => "verifier_id",   :dependent => :nullify
 
-  has_many :feeds, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :prize_codes, :dependent => :destroy
   has_many :badges
@@ -290,7 +294,7 @@ class User < ActiveRecord::Base
     location = Location.create
     location.update_column(:neighborhood_id, self.neighborhood_id)
 
-    report = Report.new(reporter: self, :sms => true, :status => Report::STATUS[:sms], :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
+    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
     return report
   end
 

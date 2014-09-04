@@ -33,6 +33,7 @@ pt:
       team:
         one: Equipe
         other: Equipes
+      location: Endereço
     attributes:
       user:
         email: "Email"
@@ -57,6 +58,8 @@ pt:
         elimination_type: Tipo de foco
         breeding_site_id: Tipo de foco
         report: Descrição
+        after_photo: A foto do foco
+        elimination_method_id: Método de eliminação
       documentation_section:
         title: Título em Português
         title_in_es: Título em espanhol
@@ -181,6 +184,8 @@ pt:
     time_expired: Tempo expirado
     uploaded_photo: Foto carregada
     eliminated: Eliminado
+    verified: Verificado
+    reported: Marcado
     create_a_report: Marcar um foco
     create_reports: Marcar focos
     complete_report: Completar o foco
@@ -421,6 +426,8 @@ pt:
     reports:
       types:
         delete: Deletar
+      edit:
+        title: Completar o foco
     about:
       title: Dengue Torpedo
       description: Um aplicativo interativo de celular e web para o controle da dengue
