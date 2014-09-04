@@ -13,4 +13,11 @@ namespace :users do
       user.update_attribute(:neighborhood_id, mare_neighborhood.id)
     end
   end
+
+  desc "[One-off backfill task] Copy all emails to usernames"
+  task :set_email_as_username => :environment do
+    User.find_each do |user|
+      user.update_column(:username, user.email)
+    end
+  end
 end
