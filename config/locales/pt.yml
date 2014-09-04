@@ -51,6 +51,7 @@ pt:
         total_points:
           one: Ponto
           other: Pontos
+        gender: Gênero
       feedback:
         name: Nome
         message: Mensagem
