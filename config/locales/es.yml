@@ -328,7 +328,7 @@ es:
           payment: "Tipo de pago"
           prepaid: Tarjeta o pre-pago
           postpaid: Plan fijo
-        referral_question: "¿Alguien recomendó que se registrara en DT?"
+        referral_question: "¿Alguien recomendó?"
         show_name_as: "Mostrar nombre como"
         sponsor:
           edit_prizes: "Códigos de control de los premios"

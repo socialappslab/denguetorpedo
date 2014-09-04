@@ -329,7 +329,7 @@ pt:
           payment: "Pré/Pós-pago"
           prepaid: Pré-pago
           postpaid: Pós-pago
-        referral_question: "Alguém o convidou a se cadastrar no DT?"
+        referral_question: "Alguém o convidou?"
         show_name_as: "Mostrar nome como"
         sponsor:
           edit_prizes: "Códigos de controle dos prêmios"
