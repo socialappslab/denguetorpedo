@@ -57,19 +57,6 @@ class DocumentationSectionsController < ApplicationController
   end
 
   #-----------------------------------------------------------------------------
-  # DELETE /documentation_sections/1
-
-  def destroy
-    if @section.destroy
-      flash[:notice] = I18n.t("views.documentation_sections.delete.success")
-    else
-      flash[:notice] = I18n.t("views.application.error")
-    end
-
-    redirect_to howto_path and return
-  end
-
-  #-----------------------------------------------------------------------------
 
   private
 

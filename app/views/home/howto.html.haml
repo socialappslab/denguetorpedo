@@ -33,7 +33,6 @@
               .span6{style: "text-align: right;"}
                 - if @current_user && @current_user.coordinator?
                   = link_to I18n.t("views.buttons.edit"), edit_documentation_section_path(ds)
-                  = link_to I18n.t("views.buttons.delete"), documentation_section_path(ds), :style => "margin-left: 40px;", :method => "delete", "data-confirm" => I18n.t("views.alerts.confirm")
 
 
 

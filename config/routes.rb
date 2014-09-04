@@ -158,7 +158,7 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # Documentation Sections
-  resources :documentation_sections
+  resources :documentation_sections, :only => [:new, :edit, :create, :update]
 
   #----------------------------------------------------------------------------
   # Prize Codes
