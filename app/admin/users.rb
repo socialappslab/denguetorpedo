@@ -1,5 +1,6 @@
 ActiveAdmin.register User do
   index do
+    column "username"
     column "email"
     column "phone_number"
     column "points"
@@ -10,8 +11,6 @@ ActiveAdmin.register User do
     column "middle_name"
     column "last_name"
     column "nickname"
-    column "display"
-    column "username"
     column "role"
     column "total_points"
     column "gender"
@@ -29,6 +28,7 @@ ActiveAdmin.register User do
 
   form do |f|
     f.inputs "Details" do
+      f.input "username"
       f.input "email"
       f.input "phone_number"
       f.input "is_verifier"
@@ -38,8 +38,6 @@ ActiveAdmin.register User do
       f.input "middle_name"
       f.input "last_name"
       f.input "nickname"
-      f.input "display"
-      f.input "username"
       f.input "role"
       f.input "total_points"
       f.input "gender"
