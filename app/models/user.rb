@@ -149,74 +149,9 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def display_name_options
-    options = [
-      [self.first_name + " " + self.last_name,"firstlast"],
-      [self.first_name,"first"]
-    ]
-
-    if self.nickname.present?
-      options += [
-        [self.nickname, "nickname"],
-        [self.first_name + " " + self.last_name + " (" + self.nickname + ")","firstlastnickname"]
-      ]
-    end
-
-    return options
-  end
-
-  #----------------------------------------------------------------------------
-
   def display_name
-    if self.display == "firstmiddlelast"
-      if self.middle_name
-        display_name = self.first_name + " " + self.middle_name + " " + self.last_name
-      else
-        display_name = self.first_name + " " + self.last_name
-      end
-
-    elsif self.display == "firstlast"
-      display_name = self.first_name + " " + self.last_name
-    elsif self.display == "first"
-      display_name = self.first_name
-    elsif self.display == "nickname"
-      display_name = self.nickname
-    else
-      if nickname
-        display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
-      else
-        display_name = self.first_name + " " + self.last_name
-      end
-
-    end
-
-    return display_name
-  end
-
-  #----------------------------------------------------------------------------
-
-  def shorter_display_name
-    if self.display == "firstmiddlelast"
-      display_name = self.first_name + " " + self.middle_name + " " + self.last_name
-    elsif self.display == "firstlast"
-      display_name = self.first_name + " " + self.last_name
-    elsif self.display == "first"
-      display_name = self.first_name
-    elsif self.display == "nicname"
-      display_name = self.nickname
-    else
-      display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
-      if display_name.size > 27
-        return display_name[0..27] + "...)"
-      else
-        return display_name
-      end
-    end
-    if display_name.size > 30
-      return display_name[0..30] + "..."
-    else
-      return display_name
-    end
+    return self.nickname if self.nickname.present?
+    return self.first_name
   end
 
   def full_name

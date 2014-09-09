@@ -3,7 +3,7 @@
   .sidebar-entity-photo
     = image_tag(@user.picture, :class => "img-rounded")
     .sidebar-entity-name
-      = @user.first_name
+      = @user.display_name
 
   .row
     .span4

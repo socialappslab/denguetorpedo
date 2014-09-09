@@ -43,12 +43,7 @@
   .control-group
     = f.label :nickname, :class => "control-label"
     .controls
-      = f.text_field :nickname, :class => "form-control"
-
-  .control-group
-    = f.label I18n.t("views.users.edit.show_name_as"), :class => "control-label"
-    .controls
-      = f.select :display, options_for_select(@user.display_name_options, @user.display),{:name => "display", :id => "display_select"}
+      = f.text_field :nickname, :value => @user.display_name , :class => "form-control"
 
   .control-group
     = f.label :gender, :class => "control-label"
