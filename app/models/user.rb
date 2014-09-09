@@ -96,14 +96,6 @@ class User < ActiveRecord::Base
     house && house.location
   end
 
-
-  def check_house(house_attributes)
-    if house = House.find_by_name(house_attributes[:name])
-      return true
-    end
-    return false
-  end
-
   def generate_token(column)
     begin
       self[column] = SecureRandom.urlsafe_base64
@@ -227,8 +219,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  #----------------------------------------------------------------------------
-
   def full_name
     name = self.first_name
     if self.middle_name
@@ -240,14 +230,6 @@ class User < ActiveRecord::Base
       name = name + " (" + self.nickname + ")"
     end
     return name
-  end
-
-  def not_visitor
-    return self.role != "visitante"
-  end
-
-  def self.ordinary_users
-    return User.where("role = 'morador' OR role = 'verificador' OR role = 'coordenador'")
   end
 
   #----------------------------------------------------------------------------
@@ -263,6 +245,10 @@ class User < ActiveRecord::Base
 
   def sponsor?
     self.role == "lojista"
+  end
+
+  def residents?
+    return [User::Types::RESIDENT, User::Types::COORDINATOR].include?(self.role)
   end
 
   #----------------------------------------------------------------------------
@@ -284,11 +270,7 @@ class User < ActiveRecord::Base
     req
   end
 
-  #----------------------------------------------------------------------------
 
-  def residents?
-    return [User::Types::RESIDENT, User::Types::COORDINATOR].include?(self.role)
-  end
 
   #----------------------------------------------------------------------------
 
