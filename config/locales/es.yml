@@ -172,7 +172,7 @@ es:
     register: Regístrese
     free_sms: SMS Gratis
     more: Más
-    partners: Participantes
+    partners: Socios
     configuration: Configuración
     all: Todos
     sms: Torpedo
@@ -328,7 +328,7 @@ es:
           payment: "Tipo de pago"
           prepaid: Tarjeta o pre-pago
           postpaid: Plan fijo
-        referral_question: "¿Alguien recomendó?"
+        referral_question: "¿Alguien lo invitó?"
         show_name_as: "Mostrar nombre como"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
@@ -377,6 +377,7 @@ es:
       faq: "Preguntas frecuentes"
       contact: "Contacto DT"
       about: "Sobre Dengue Torpedo"
+      creator: "Creado por el Laboratorio de Aplicaciones Sociales, UC Berkeley"
     documentation_sections:
       new:
         title: Añadir sección

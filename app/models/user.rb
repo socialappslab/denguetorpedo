@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class User < ActiveRecord::Base
-  attr_accessible :house_attributes, :first_name, :reporter, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :display, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+  attr_accessible :house_attributes, :first_name, :reporter, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
 
   #----------------------------------------------------------------------------
 
@@ -96,14 +96,6 @@ class User < ActiveRecord::Base
     house && house.location
   end
 
-
-  def check_house(house_attributes)
-    if house = House.find_by_name(house_attributes[:name])
-      return true
-    end
-    return false
-  end
-
   def generate_token(column)
     begin
       self[column] = SecureRandom.urlsafe_base64
@@ -157,77 +149,10 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def display_name_options
-    options = [
-      [self.first_name + " " + self.last_name,"firstlast"],
-      [self.first_name,"first"]
-    ]
-
-    if self.nickname.present?
-      options += [
-        [self.nickname, "nickname"],
-        [self.first_name + " " + self.last_name + " (" + self.nickname + ")","firstlastnickname"]
-      ]
-    end
-
-    return options
-  end
-
-  #----------------------------------------------------------------------------
-
   def display_name
-    if self.display == "firstmiddlelast"
-      if self.middle_name
-        display_name = self.first_name + " " + self.middle_name + " " + self.last_name
-      else
-        display_name = self.first_name + " " + self.last_name
-      end
-
-    elsif self.display == "firstlast"
-      display_name = self.first_name + " " + self.last_name
-    elsif self.display == "first"
-      display_name = self.first_name
-    elsif self.display == "nickname"
-      display_name = self.nickname
-    else
-      if nickname
-        display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
-      else
-        display_name = self.first_name + " " + self.last_name
-      end
-
-    end
-
-    return display_name
+    return self.nickname if self.nickname.present?
+    return self.first_name
   end
-
-  #----------------------------------------------------------------------------
-
-  def shorter_display_name
-    if self.display == "firstmiddlelast"
-      display_name = self.first_name + " " + self.middle_name + " " + self.last_name
-    elsif self.display == "firstlast"
-      display_name = self.first_name + " " + self.last_name
-    elsif self.display == "first"
-      display_name = self.first_name
-    elsif self.display == "nicname"
-      display_name = self.nickname
-    else
-      display_name = self.first_name + " " + self.last_name + " (" + self.nickname + ")"
-      if display_name.size > 27
-        return display_name[0..27] + "...)"
-      else
-        return display_name
-      end
-    end
-    if display_name.size > 30
-      return display_name[0..30] + "..."
-    else
-      return display_name
-    end
-  end
-
-  #----------------------------------------------------------------------------
 
   def full_name
     name = self.first_name
@@ -240,14 +165,6 @@ class User < ActiveRecord::Base
       name = name + " (" + self.nickname + ")"
     end
     return name
-  end
-
-  def not_visitor
-    return self.role != "visitante"
-  end
-
-  def self.ordinary_users
-    return User.where("role = 'morador' OR role = 'verificador' OR role = 'coordenador'")
   end
 
   #----------------------------------------------------------------------------
@@ -263,6 +180,10 @@ class User < ActiveRecord::Base
 
   def sponsor?
     self.role == "lojista"
+  end
+
+  def residents?
+    return [User::Types::RESIDENT, User::Types::COORDINATOR].include?(self.role)
   end
 
   #----------------------------------------------------------------------------
@@ -284,11 +205,7 @@ class User < ActiveRecord::Base
     req
   end
 
-  #----------------------------------------------------------------------------
 
-  def residents?
-    return [User::Types::RESIDENT, User::Types::COORDINATOR].include?(self.role)
-  end
 
   #----------------------------------------------------------------------------
 

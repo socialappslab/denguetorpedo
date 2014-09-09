@@ -378,6 +378,7 @@ pt:
       faq: "Perguntas frequentes"
       contact: "Contato DT"
       about: "Sobre o Dengue Torpedo"
+      creator: "Criado pelo Social Apps Lab, UC Berkeley"
     documentation_sections:
       new:
         title: Adicionar secção

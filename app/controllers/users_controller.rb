@@ -152,19 +152,11 @@ class UsersController < ApplicationController
     @user.update_attribute(:first_name, params[:user][:first_name])
     @user.update_attribute(:last_name, params[:user][:last_name])
     @user.update_attribute(:nickname, params[:user][:nickname])
-    @user.update_attribute(:display, params[:user][:display])
 
     @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
     # TODO: Clean up and clarify the intent of this line.
-    user_params = params[:user].slice(:profile_photo, :gender, :username, :email, :display, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
-
-    # if nickname is blank and display name includes nickname, change to firstlast
-    if user_params[:nickname].blank?
-      if user_params[:display].include? "nickname"
-       user_params[:display] = "firstlast"
-      end
-    end
+    user_params = params[:user].slice(:profile_photo, :gender, :username, :email, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
 
     if @user.update_attributes(user_params)
       # Identify the recruiter for this user.
