@@ -44,15 +44,6 @@ describe "Users", :type => :feature do
         click_button I18n.t("views.buttons.update")
         expect(find_field("user_nickname").value).to eq("I AM TESTER")
       end
-
-      it "keeps nickname information" do
-        selected_name = user.display_name_options[1]
-        expect(find_field("user_display").value).not_to eq(selected_name[1])
-
-        select selected_name[0], :from => "user_display"
-        click_button I18n.t("views.buttons.update")
-        expect(find_field("user_display").value).to eq(selected_name[1])
-      end
     end
   end
 
