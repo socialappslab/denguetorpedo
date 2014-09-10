@@ -152,6 +152,7 @@ class UsersController < ApplicationController
     @user.update_attribute(:first_name, params[:user][:first_name])
     @user.update_attribute(:last_name, params[:user][:last_name])
     @user.update_attribute(:nickname, params[:user][:nickname])
+    @user.update_column(:locale, params[:user][:locale].to_s)
 
     @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
