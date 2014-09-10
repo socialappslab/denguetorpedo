@@ -70,12 +70,12 @@ class ApplicationController < ActionController::Base
     # are present, then let's update I18n locale to what the user has.
     # In the case that the user is not signed in, or does not have a locale,
     # we should fallback to
-    if @current_user && @current_user.locale.present?
+    if @current_user
       if params[:locale]
         @current_user.update_column(:locale, params[:locale].to_s) if @current_user.locale != params[:locale].to_s
         I18n.locale = params[:locale].to_s
       else
-        I18n.locale = @current_user.locale
+        I18n.locale = (@current_user.locale || I18n.default_locale).to_s
       end
     else
       I18n.locale = (params[:locale] || I18n.default_locale).to_s
