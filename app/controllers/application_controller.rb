@@ -54,7 +54,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-
   def ensure_team_chosen
     return if @current_user.nil?
 
@@ -65,19 +64,19 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    if cookies[:locale_preference].nil?
-      cookies[:locale_preference] = params[:locale] || I18n.default_locale
-    else
-      cookies[:locale_preference] = params[:locale] if params[:locale].present?
-    end
-    I18n.locale = cookies[:locale_preference]
+    locale = (params[:locale] || I18n.default_locale).to_s
+    return unless ["es", "pt"].include?(locale)
 
-    if I18n.locale == :pt
-      @facebook_locale = "pt_BR"
-    elsif I18n.locale == :es
+    # Set the locale, and update the user's locale, if applicable.
+    I18n.locale = locale
+    if @current_user && @current_user.locale != locale
+      @current_user.update_column(:locale, locale)
+    end
+
+    if I18n.locale == "es"
       @facebook_locale = "es_LA"
     else
-      @facebook_locale = "en_US"
+      @facebook_locale = "pt_BR"
     end
   end
 
