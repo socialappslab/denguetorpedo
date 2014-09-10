@@ -78,7 +78,9 @@ class ApplicationController < ActionController::Base
         I18n.locale = (@current_user.locale || I18n.default_locale).to_s
       end
     else
-      I18n.locale = (params[:locale] || I18n.default_locale).to_s
+      # NOTE: We should keep the cookies around for visitors.
+      cookies[:locale_preference] = params[:locale] if params[:locale].present?
+      I18n.locale                 = (cookies[:locale_preference] || I18n.default_locale).to_s
     end
 
     if I18n.locale == User::Locales::SPANISH
