@@ -25,7 +25,7 @@ class PostsController < ApplicationController
 
       # TODO: Allow the specific errors to show through.
       if p.save
-        flash[:notice] = I18n.t("views.posts.succes_create_flash")
+        flash[:notice] = I18n.t("views.posts.success_create_flash")
         redirect_to :back and return
       else
         flash[:alert] = I18n.t("views.application.error")

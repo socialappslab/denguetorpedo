@@ -233,6 +233,8 @@ es:
     october: "octubre"
     november: "noviembre"
     december: "diciembre"
+    spanish: Español
+    portuguese: Portugués
 
 
 
@@ -317,12 +319,13 @@ es:
       my_team: "Mi equipo"
       call_to_action_flash: "Ahora cree un equipo o únase a un equipo."
     posts:
-      succes_create_flash: "Usted creo un post con éxito"
+      success_create_flash: "Usted creo un post con éxito"
     users:
       create_success_flash: "¡Perfil creado con éxito!"
       phones:
         header: "Administrar mensajes de texto"
       edit:
+        success_flash: '¡Perfil actualizado con éxito!'
         password: "Cambie su contraseña"
         phone:
           payment: "Tipo de pago"

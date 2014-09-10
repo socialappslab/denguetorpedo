@@ -176,7 +176,7 @@ class UsersController < ApplicationController
       render "edit" and return
     end
 
-    redirect_to edit_user_path(@user), :flash => { :notice => 'Perfil atualizado com sucesso!' }
+    redirect_to edit_user_path(@user), :flash => { :notice => I18n.t("views.users.edit.success_flash") }
   end
 
 
