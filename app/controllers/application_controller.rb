@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
       I18n.locale = (params[:locale] || I18n.default_locale).to_s
     end
 
-    if I18n.locale == "es"
+    if I18n.locale == User::Locales::SPANISH
       @facebook_locale = "es_LA"
     else
       @facebook_locale = "pt_BR"

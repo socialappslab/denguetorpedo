@@ -22,6 +22,11 @@ class User < ActiveRecord::Base
     REPORT_SUBMITTED    = 50
   end
 
+  module Locales
+    SPANISH = "es"
+    PORTUGUESE = "pt"
+  end
+
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
 

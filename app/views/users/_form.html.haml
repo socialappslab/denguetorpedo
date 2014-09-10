@@ -72,7 +72,7 @@
   .control-group
     = f.label :locale, :class => "control-label"
     .controls
-      = f.select :locale, [[I18n.t("common_terms.portuguese"), "pt"], [I18n.t("common_terms.spanish"), "es"]], :class => "form-control"
+      = f.select :locale, [[I18n.t("common_terms.portuguese"), User::Locales::PORTUGUESE], [I18n.t("common_terms.spanish"), User::Locales::SPANISH]], :class => "form-control"
 
 
   - if @user == @current_user

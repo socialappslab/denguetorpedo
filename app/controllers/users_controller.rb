@@ -118,9 +118,9 @@ class UsersController < ApplicationController
       # Set the default language based on selected neighborhood.
       tepalcingo = Neighborhood.find_by_name("Tepalcingo")
       if tepalcingo && @user.neighborhood_id == tepalcingo.id
-        cookies[:locale_preference] = "es"
+        @user.update_column(:locale, User::Locales::SPANISH)
       else
-        cookies[:locale_preference] = I18n.default_locale
+        @user.update_column(:locale, User::Locales::PORTUGUESE)
       end
 
       cookies[:auth_token] = @user.auth_token
