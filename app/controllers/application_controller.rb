@@ -64,13 +64,21 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    locale = (params[:locale] || I18n.default_locale).to_s
-    return unless ["es", "pt"].include?(locale)
-
-    # Set the locale, and update the user's locale, if applicable.
-    I18n.locale = locale
-    if @current_user && @current_user.locale != locale
-      @current_user.update_column(:locale, locale)
+    # If the user is present, then let's check if there is
+    # an explicit params[:locale]. If there is, then let's
+    # update the user's locale as long as they differ. If no params
+    # are present, then let's update I18n locale to what the user has.
+    # In the case that the user is not signed in, or does not have a locale,
+    # we should fallback to
+    if @current_user && @current_user.locale.present?
+      if params[:locale]
+        @current_user.update_column(:locale, params[:locale].to_s) if @current_user.locale != params[:locale].to_s
+        I18n.locale = params[:locale].to_s
+      else
+        I18n.locale = @current_user.locale
+      end
+    else
+      I18n.locale = (params[:locale] || I18n.default_locale).to_s
     end
 
     if I18n.locale == "es"
