@@ -69,6 +69,12 @@
       = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, :class => "form-control"
 
 
+  .control-group
+    = f.label :locale, :class => "control-label"
+    .controls
+      = f.select :locale, [[I18n.t("common_terms.portuguese"), "pt"], [I18n.t("common_terms.spanish"), "es"]], :class => "form-control"
+
+
   - if @user == @current_user
     .control-group
       = f.label :password, :class => "control-label"

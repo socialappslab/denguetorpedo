@@ -233,6 +233,8 @@ pt:
     october: "outubro"
     november: "novembro"
     december: "dezembro"
+    spanish: Espanhol
+    portuguese: Português
 
 
   facebook:
@@ -318,12 +320,13 @@ pt:
       show:
         blocked: You are blocked!
     posts:
-      succes_create_flash: "Você criou um post com sucesso"
+      success_create_flash: "Você criou um post com sucesso"
     users:
       create_success_flash: "Perfil creado com sucesso!"
       phones:
         header: Adminstrar DT Torpedos
       edit:
+        success_flash: 'Perfil atualizado com sucesso!'
         password: "Alterar minha senha"
         phone:
           payment: "Pré/Pós-pago"

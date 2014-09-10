@@ -54,7 +54,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-
   def ensure_team_chosen
     return if @current_user.nil?
 
@@ -65,19 +64,27 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    if cookies[:locale_preference].nil?
-      cookies[:locale_preference] = params[:locale] || I18n.default_locale
+    # If the user is present, then let's check if there is
+    # an explicit params[:locale]. If there is, then let's
+    # update the user's locale as long as they differ. If no params
+    # are present, then let's update I18n locale to what the user has.
+    # In the case that the user is not signed in, or does not have a locale,
+    # we should fallback to
+    if @current_user
+      if params[:locale]
+        @current_user.update_column(:locale, params[:locale].to_s) if @current_user.locale != params[:locale].to_s
+        I18n.locale = params[:locale].to_s
+      else
+        I18n.locale = (@current_user.locale || I18n.default_locale).to_s
+      end
     else
-      cookies[:locale_preference] = params[:locale] if params[:locale].present?
+      I18n.locale = (params[:locale] || I18n.default_locale).to_s
     end
-    I18n.locale = cookies[:locale_preference]
 
-    if I18n.locale == :pt
-      @facebook_locale = "pt_BR"
-    elsif I18n.locale == :es
+    if I18n.locale == "es"
       @facebook_locale = "es_LA"
     else
-      @facebook_locale = "en_US"
+      @facebook_locale = "pt_BR"
     end
   end
 
