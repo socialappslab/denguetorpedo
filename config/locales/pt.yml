@@ -52,6 +52,7 @@ pt:
           one: Ponto
           other: Pontos
         gender: Gênero
+        locale: Idioma
       feedback:
         name: Nome
         message: Mensagem

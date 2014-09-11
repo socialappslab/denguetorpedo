@@ -52,6 +52,7 @@ es:
           one: Punto
           other: Puntos
         gender: Género
+        locale: Idioma
       feedback:
         name: Nombre
         message: Mensaje
