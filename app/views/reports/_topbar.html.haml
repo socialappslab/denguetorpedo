@@ -1,9 +1,12 @@
-.span9
-  .row.action-bar
-    .span4
-      - if @current_user
-        - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
-        = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes.count do
-          %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
-            %span.likes_text
-              = report.likes.count
+.row.bottom-bar
+  .span9
+    - if @current_user && report.is_valid?
+      - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
+      = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes.count do
+        %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
+          %span.likes_text
+            = report.likes.count
+
+    - if report.is_invalid?
+      %p.invalid-report
+        = I18n.t("report.form.problem_with_verification")

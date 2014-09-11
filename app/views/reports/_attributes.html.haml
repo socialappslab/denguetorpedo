@@ -1,38 +1,36 @@
-.span3
-  = render :partial => "reports/photos", :locals => {:report => report}
+.row.report-content-area
+  .span3
+    = render :partial => "reports/photos", :locals => {:report => report}
 
-.span5
-  - if report.is_invalid?
-    .row
-      .span5
-        %p{:style => "color:red;font-weight:bold;margin-top:10px; font-size: 15px;"}
-          = I18n.t("report.form.problem_with_verification")
+  .span5
+    %h1
+      = I18n.t("activerecord.attributes.report.report")
+    %p
+      = report.report
 
-  %h3{:style => "font-weight: bold;"}
-    = I18n.t("activerecord.attributes.report.report")
-  = report.report
+    - if !report.sms_incomplete?
+      - if report.location && report.location.latitude.present? && report.location.longitude.present?
+        %h1{:style => "margin-top: 40px;"}
+          = I18n.t("activerecord.models.location")
+        %p
+          = report.complete_address
+          = link_to I18n.t("map.find"), nil, class: "mapa btn btn-success", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
 
-  - if !report.sms_incomplete?
-    - if report.location && report.location.latitude.present? && report.location.longitude.present?
-      %h3{:style => "font-weight: bold;"}
-        = I18n.t("activerecord.models.location")
-      = report.complete_address
-      = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
+    - if report.breeding_site_id.present?
+      %h1{:style => "margin-top: 40px;"}
+        = I18n.t("activerecord.attributes.report.breeding_site_id")
+      %p
+        = report.breeding_site.description
 
+      - if report.eliminated?
+        %h1{:style => "margin-top: 40px;"}
+          = I18n.t("activerecord.models.elimination_method")
+        %p
+          = report.elimination_method.description
+        %br
 
-  - if report.breeding_site_id.present?
-    %h3{:style => "font-weight:bold;"}
-      = I18n.t("activerecord.attributes.report.breeding_site_id")
-    = report.breeding_site.description
+      - elsif report.open? && @current_user.present? && !report.expired?
+        = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
-    - if report.eliminated?
-      %h3{:style => "font-weight:bold;"}
-        = I18n.t("activerecord.models.elimination_method")
-      = report.elimination_method.description
-      %br
-
-    - elsif report.open? && @current_user.present? && !report.expired?
-      = render :partial => "reports/elimination_method_form", :locals => {:report => report}
-
-  - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
-    = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%; margin-top: 20px;"
+    - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
+      = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%; margin-top: 20px;"
