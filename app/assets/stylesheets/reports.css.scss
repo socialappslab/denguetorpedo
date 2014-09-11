@@ -108,6 +108,7 @@ a.mapa{
 }
 
 .open{
+  border-width: 2px;
   border-color: $orange;
 
   .report_submission{
@@ -122,6 +123,8 @@ a.mapa{
 
 .eliminated{
   border-color: $dark-gray;
+  border-width: 2px;
+
   min-height: 265px;
 
   .status {
