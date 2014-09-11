@@ -1,16 +1,29 @@
 .row
   .span9
     .row.report-metadata
-      .span5
+      .span6
         = link_to report.reporter.first_name, user_path(report.reporter), :style => "font-weight: bold;"
         .feed-item-timestamp
           %i.fa.fa-clock-o
           = I18n.t("common_terms.reported")
           = format_timestamp(report.created_at)
 
-        - if @current_user && (@current_user == report.reporter || @current_user.coordinator?)
-          = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
-            %i.fa.fa-trash-o
+        .action-bar
+          - if @current_user && (@current_user == report.reporter || @current_user.coordinator?)
+            = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
+              %i.fa.fa-trash-o
+
+          - if @current_user && @current_user.verifier?
+            - if report.is_valid?
+              %i.fa.fa-check.fa-2
+            - elsif report.is_invalid?
+              %i.fa.fa-times.fa-2
+            - else
+              = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+                %i.fa.fa-check.fa-2
+              = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+                %i.fa.fa-times.fa-2
+
 
 
         - if report.eliminated? && report.eliminator
@@ -31,7 +44,7 @@
 
 
 
-      .span3{:style => "text-align: right;"}
+      .span2{:style => "text-align: right;"}
         - if report.sms_incomplete?
           %div{style: "margin-top:3px; margin-right:10px;"}
             = I18n.t("common_terms.sms")
