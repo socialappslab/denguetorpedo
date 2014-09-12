@@ -8,44 +8,6 @@
   margin-top: 10px;
 }
 
-// OPEN/RESOLVED/CLAIMED PARTIALS
-.rp_report_time {
-  text-align: right;
-  float: right;
-}
-
-.expand_button {
-  line-height: 30px;
-  font-size: 14px;
-}
-
-.confirm_prompt {
-  margin-top: 5px;
-  color: $red;
-  height: 25px;
-}
-
-.eliminate_prompt {
-  height: auto;
-    margin-top: 5px;
-  color: black;
-}
-
-// .confirm_button, input[type='submit'] {
-//   border: 2px solid $light-gray;
-//   color: black;
-//   font-size: 12px;
-//   text-align: center;
-//   padding: 2px 10px;
-//   border-radius: 8px;
-// }
-
-.eliminate_cancel {
-  margin-top: 3px;
-  padding: 2p 10px;
-  font-size: 12px;
-}
-
 .report {
   background-color: white;
   border-style: solid;
@@ -61,53 +23,8 @@
   }
 }
 
-.rp_after_photo {
-  margin: 10px 0px 0px 10px;
-  width: 100px;
-  height: 100px;
-}
-
-.rp_report_content {
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight:bold;
-}
-
-.rp_report_status {
-  // margin-top: -10px;
-  margin-right: -5px;
-  // padding-top: 2px;
-  padding-left: 5px;
-  height: 24px;
-  color: #FFFFFF;
-  text-align: left;
-  font-size: 14px;
-}
-
-
-#user_report_favorite {
-
-}
-
-#user_report_delete {
-
-}
-
-a.mapa{
-  border:1px solid #8899a6;
-  padding:2px;
-}
-
-
-.rp_claimed_report {
-  border-color: $blue;
-
-  .status {
-    background: $blue;
-  }
-}
-
-.open{
+.open {
+  border-width: 2px;
   border-color: $orange;
 
   .report_submission{
@@ -116,49 +33,17 @@ a.mapa{
   .status {
     background: $orange;
   }
-
-
 }
 
 .eliminated{
   border-color: $dark-gray;
+  border-width: 2px;
+
   min-height: 265px;
 
   .status {
     background: $dark-gray;
   }
-}
-
-
-// MAIN REPORTS CSS
-.report_map_search {
-  background: $light-gray;
-  margin-top: 10px;
-  margin-left: 10px;
-  width: 440px;
-  h2 {
-    font-size: 20px;
-  }
-}
-#report_map, #report_sponsors {
-  margin-top: 5px;
-  margin-bottom: 0px;
-  background: $light-gray;
-  height: 395px;
-  margin-left: 20px;
-  border: 2px solid gray;
-  border-radius: 2px;
-  ul {
-    padding: 20px 0px 0px 10px;
-    li.sponsor {
-    display: inline-block;
-    width: 100px;
-    height: 100px;
-    border: 2px solid gray;
-    margin: 5px;
-  }
-  }
-
 }
 
 #new_report_form {
@@ -182,100 +67,46 @@ a.mapa{
   font-size: 12px;
 }
 
-  .reports_feed_button {
-    color: $light-gray;
-    background-color: #ffffff;
-  }
 
+.reports_open_button {
+  color: $dark-gray;
+  background-color: #ffffff;
+}
 
-  /*
-  .bttn  {
-    color: #ffffff;
-    border-radius: 2px;
-    text-align: center;
+#make_report_button {
+  color: $dark-gray;
+  background-color: #60BB50;
+  color:white;
 
-    padding: 8px 5px;
-
-    &:hover {
-      cursor: pointer;
-      color: #000000;
-    }
-
-    &:mousedown {
-      border-bottom: thick dotted #ff0000;
-    }
-  } */
-
-
-  .reports_open_button {
-    color: $dark-gray;
-    background-color: #ffffff;
-  }
-
-  #make_report_button {
-    color: $dark-gray;
-    background-color: #60BB50;
-    color:white;
-
-    .active {
-      background-color: $light-gray;
-      font-weight:bold
-      &:h{
-        color: white;
-      }
-    }
-
-  }
-
-  .reports_resolved_button {
-    color: $dark-gray;
-    background-color: #ffffff;
-  }
-
-  .reports_feed_button {
-    color: $dark-gray;
-  }
-
-  // input{
-  //   height: 30px;
-  //   border: 0px;
-  //   color: gray;
-  //   background-color: #FFFFFF;
-  //   opacity: 1;
-  //   font-size: 13px;
-  //   margin-top: 2px;
-  // }
-
-
-
-  //.active {
-  //  color: #FFFFFF;
-  //  font-weight: bold;
-  //  font-size: 20px;
-  //}
-  //.reports_feed_button.active {
-  //  background-color: $light-gray;
-  //}
-
-  // tab button is active
   .active {
-    background-color: $orange;
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-
-    &:hover{
+    background-color: $light-gray;
+    font-weight:bold
+    &:h{
       color: white;
     }
   }
+}
 
-  //.make_report_button.active {
-  //}
+.reports_feed_button {
+  color: $dark-gray;
+  background-color: #ffffff;
+}
 
-  //.reports_resolved_button.active {
-  //  background-color: gray;
-  //}
+.reports_resolved_button {
+  color: $dark-gray;
+  background-color: #ffffff;
+}
 
+.active {
+  background-color: $orange;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+
+  &:hover{
+    color: white;
+  }
+}
 
 
 .bttn  {
@@ -290,21 +121,8 @@ a.mapa{
 
 }
 
-#report_stats {
-  font-size: 14px;
-  margin-top: 10px;
-
-  #rank_box {
-    background-color:$light-gray;
-    text-align: center;
-    padding: 10px 5px 10px 5px;
-    width: 80px;
-  }
-
-}
-
 .esriPopup .actionsPane .zoomTo {
-    display: none;
+  display: none;
 }
 
 .elimination_type{
@@ -321,20 +139,10 @@ a.mapa{
   width:200px;
 }
 
-#report_display{
-
-
+#report_display {
   #reports{
     display: block;
   }
-
-  //#open_reports{
-  //  display: block;
-  //}
-  //
-  //#eliminated_reports{
-  //  display: block;
-  //}
 
   #new_report{
     display: block;
@@ -356,9 +164,7 @@ a.mapa{
       &:hover{
         color:blue;
       }
-
     }
-
   }
 }
 
@@ -369,7 +175,7 @@ a.mapa{
 }
 
 
-#mark_map_btn{
+#mark_map_btn {
   border-style: solid;
   border-width: 1px;
 
@@ -390,7 +196,7 @@ a.mapa{
 }
 
 
-.likes_button{
+.likes_button {
 
   .likes_text{
     display:inline;
@@ -407,6 +213,8 @@ a.mapa{
 .action-bar {
   color: #8899a6;
   display: inline-block;
+  font-size: 20px;
+  margin-top: 20px;
 
   i, a {
     color: #8899a6;
@@ -415,15 +223,59 @@ a.mapa{
   }
 }
 
+
 .report-metadata {
-  margin-left: 10px;
-  font-size: 14px;
+  margin-left:   10px;
+  margin-bottom: 20px;
+
+  font-size: 16px;
+  i {
+    font-size: 16px;
+  }
+
   color: #8899a6;
 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;
+}
+
+.report-content-area {
+  margin-top: 10px;
+  font-size: 18px;
+
+  h1 {
+    color: #8899a6;
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #000;
+  }
+
+  .invalid-report {
+    color:red;
+    display: inline-block;
+    margin-top: 30px;
+    font-size: 20px;
+  }
 
 }
+
+
+.countdown {
+  color: $orange;
+}
+
+.report-open {
+  display: inline-block;
+  color: $orange;
+}
+
+.report-eliminated {
+  color: $dark-gray;
+}
+
 
 
 //-----------------------------------------------------------------------------
@@ -448,7 +300,6 @@ a.mapa{
       width:50px;
       height:50px;
     }
-
   }
 
 

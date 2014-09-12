@@ -1,4 +1,0 @@
-#user_reports
-  - for report in @reports
-    - if report.reporter == @current_user or report.elimination_type
-      = render :partial => '/reports/open', :object => report
