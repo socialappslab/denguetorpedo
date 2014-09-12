@@ -34,3 +34,8 @@
 
     - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
       = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%; margin-top: 20px;"
+
+
+    - if report.is_invalid?
+      %p.invalid-report
+        = I18n.t("report.form.problem_with_verification")
