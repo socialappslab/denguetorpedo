@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   # GET /users/
 
   def index
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] ) if params[:neighborhood_id]
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
 
     @users = User.residents.order(:first_name)
     @sponsors = User.where(:role => User::Types::SPONSOR).order(:first_name)
@@ -34,10 +34,16 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /users/phones
+  # GET /phones
 
   def phones
-    @users = User.all
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+
+    if @neighborhood.present?
+      @users = User.where(:neighborhood_id => @neighborhood.id)
+    else
+      @users = User.all
+    end
   end
 
   #----------------------------------------------------------------------------
