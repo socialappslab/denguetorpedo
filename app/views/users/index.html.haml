@@ -36,18 +36,10 @@
 					%col{style: "width:15%;"}
 				- @sponsors.each do |sponsor|
 					%tr
-						- if sponsor.is_blocked == false
-							%td
-								= link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"
-							%td{:style => "margin-left:10px;"}
-								= link_to I18n.t("views.admin.block"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-						- else
-							%td{:style => "color:red"}
-								= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
-							%td
-								= I18n.t("common_terms.codes")
-							%td
-								= link_to I18n.t("views.admin.unblock"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+						%td
+							= link_to "#{sponsor.full_name} (#{link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"})".html_safe, edit_user_path(sponsor)
+						%td
+							= link_to ( sponsor.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 	%br
 
