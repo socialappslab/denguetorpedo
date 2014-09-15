@@ -13,16 +13,14 @@ class UsersController < ApplicationController
   def index
     @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
 
-    @users = User.residents.order(:first_name)
-    @sponsors = User.where(:role => User::Types::SPONSOR).order(:first_name)
-    @verifiers = User.where(:role => User::Types::VERIFIER).order(:first_name)
-    @prizes = Prize.where(:is_badge => false)
+    @users     = User.residents.order("created_at DESC")
+    @sponsors  = User.where(:role => User::Types::SPONSOR).order("created_at DESC")
+    @verifiers = User.where(:role => User::Types::VERIFIER).order("created_at DESC")
 
     if @neighborhood.present?
       @users     = @users.where(:neighborhood_id => @neighborhood.id)
       @sponsors  = @sponsors.where(:neighborhood_id => @neighborhood.id)
       @verifiers = @verifiers.where(:neighborhood_id => @neighborhood.id)
-      @prizes    = @prizes.where(:neighborhood_id => @neighborhood.id)
     end
 
     authorize! :assign_roles, User
