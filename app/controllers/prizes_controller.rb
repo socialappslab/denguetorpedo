@@ -93,6 +93,7 @@ class PrizesController < ApplicationController
 
   # TODO: The conditionals create an ugly nesting with too many special cases.
   # Furthermore, do we need the phone number???
+  # TODO: Do we need this action at all?
   def new_prize_code
     @prize = Prize.find(params[:id])
 
@@ -170,12 +171,27 @@ class PrizesController < ApplicationController
     end
   end
 
+  #----------------------------------------------------------------------------
+  # GET /prizes/admin
+
   def admin
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+
     @prizes = Prize.where(:is_badge => false)
     @badges = Prize.where(:is_badge => true).order(:cost)
+
+    if @neighborhood.present?
+      @prizes = @prizes.where(:neighborhood_id => @neighborhood.id)
+      @badges = @badges.where(:neighborhood_id => @neighborhood.id)
+    end
   end
+
+  #----------------------------------------------------------------------------
 
   def badges
     @badges = ["de_olho", "exterminador", "guerreiro", "saudavel", "cuido"]
   end
+
+  #----------------------------------------------------------------------------
+  
 end

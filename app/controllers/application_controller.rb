@@ -37,7 +37,6 @@ class ApplicationController < ActionController::Base
   # Ensure that only coordinators are allowed access.
 
   def ensure_proper_permissions
-    puts "@current_user && @current_user.coordinator?: #{@current_user && @current_user.coordinator?}"
     return if @current_user && @current_user.coordinator?
 
     flash[:alert] = I18n.t("views.application.permission_required")

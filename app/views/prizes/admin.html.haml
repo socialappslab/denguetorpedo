@@ -1,19 +1,21 @@
 = render :partial => "shared/flashes"
+= render :partial => "shared/filter_by_community"
 
 .row.offset1
-	%h1
-		= I18n.t("activerecord.models.prize", :count => 2)
+	.span12
+		%h1
+			= I18n.t("activerecord.models.prize", :count => 2)
 
-	%table.users_table.span12{:cellpadding => 10, border: 1}
-		%colgroup
-			%col{style: "width:70%;"}
-			%col{style: "width:15%;"}
-			%col{style: "width:15%;"}
-		- @prizes.each do |prize|
-			%tr
-				%td
-					= link_to prize.prize_name, prize_path(prize)
-				%td
-					= link_to I18n.t("common_terms.edit"), edit_prize_path(prize)
-				%td
-					= link_to I18n.t("views.prizes.admin.delete"), prize, method: :delete, data: { confirm: I18n.t("views.alerts.confirm")}
+		%table.users_table.span12{:cellpadding => 10, border: 1}
+			%colgroup
+				%col{style: "width:70%;"}
+				%col{style: "width:15%;"}
+				%col{style: "width:15%;"}
+			- @prizes.each do |prize|
+				%tr
+					%td
+						= link_to prize.prize_name, prize_path(prize)
+					%td
+						= link_to I18n.t("common_terms.edit"), edit_prize_path(prize)
+					%td
+						= link_to I18n.t("views.prizes.admin.delete"), prize, method: :delete, data: { confirm: I18n.t("views.alerts.confirm")}

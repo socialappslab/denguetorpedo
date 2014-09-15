@@ -1,37 +1,38 @@
-.offset1
-	%h1
-		= I18n.t("views.users.phones.header")
-	%br
-	%table{cellpadding: 10, border: 1, style: "text-align:center;"}
-		%colgroup
-			%col
-			%col
-			%col
-			%col
-			%col
-			%col
-			%col
-		%tr
-			%th Usuário
-			%th Celular
-			%th Operadora
-			%th Pré/Pós
-			%th DT Torpedos total
-			%th DT Torpedos a creditar
-			%th
-				%i SMS req.
-		- @users.each do |user|
+= render :partial => "shared/filter_by_community"
+
+.row.offset1
+	.span12
+		%h1
+			= I18n.t("views.users.phones.header")
+
+.row.offset1
+	.span16
+		%table{border: 1, style: "text-align:center;"}
 			%tr
-				%td{style: "text-align:left"}= link_to user.display_name, "torpedos/#{user.id}"
-				%td= user.phone_number.sub(/^0/, "") if user.phone_number
-				%td= user.carrier
-				- if user.prepaid == true
-					%td Pré
-				- elsif user.prepaid == false
-					%td Pós
-				- else
-					%td Pós
-				%td= user.reports.sms.where('elimination_type IS NOT NULL').count
-				%td= user.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil).count
-				%td
-					%i= user.carrier_requirements
+				%th Usuário
+				%th Celular
+				%th Operadora
+				%th Pré/Pós
+				%th DT Torpedos total
+				%th DT Torpedos a creditar
+				%th
+					%i SMS req.
+			- @users.each do |user|
+				%tr
+					%td{style: "text-align:left"}
+						= link_to user.display_name, "torpedos/#{user.id}"
+					%td
+						= user.phone_number.sub(/^0/, "") if user.phone_number
+					%td
+						= user.carrier
+					- if user.prepaid == true
+						%td Pré
+					- else
+						%td Pós
+					%td
+						= user.reports.sms.where('breeding_site_id IS NOT NULL').count
+					%td
+						= user.reports.sms.where('breeding_site_id IS NOT NULL').where(is_credited: nil).count
+					%td
+						%i
+							= user.carrier_requirements

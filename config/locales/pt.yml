@@ -10,6 +10,7 @@ pt:
     content: Conteúdo
     profile_photo: "Foto do perfil"
     photo: "Foto"
+    created_at: Data de inscrição
   activerecord:
     models:
       report:
@@ -236,6 +237,7 @@ pt:
     december: "dezembro"
     spanish: Espanhol
     portuguese: Português
+    filter_by: Filtrar por
 
 
   facebook:
@@ -291,6 +293,7 @@ pt:
       team_successfully_blocked: Equipe bloqueado com sucesso
       team_successfully_unblocked: Equipe desbloqueado com sucesso
       edit_team_members: Administrar membros de equipes
+      all_communities: Todas as comunidades
     application:
       error: "Algo deu errado. Por favor, tente novamente."
       devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"

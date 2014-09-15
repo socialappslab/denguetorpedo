@@ -1,48 +1,20 @@
-<!-- <h1>Listing feedbacks</h1>
-
-<table>
-  <tr>
-    <th>Title</th>
-    <th>Email</th>
-    <th>Name</th>
-    <th>Message</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @feedbacks.each do |feedback| %>
-  <tr>
-    <td><%= feedback.title %></td>
-    <td><%= feedback.email %></td>
-    <td><%= feedback.name %></td>
-    <td><%= feedback.message %></td>
-    <td><%= link_to 'Show', feedback %></td>
-    <td><%= link_to 'Edit', edit_feedback_path(feedback) %></td>
-    <td><%= link_to 'Destroy', feedback, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Feedback', new_feedback_path %> -->
 <div class="row offset1">
-  <h1>Administrar contatos</h1>
-  <table class="users_table span12" cellpadding="12" border="1">
-    <tr>
-    
-    <th>Email</th>
-    <th>Name</th>
-    <th>Title</th>
+  <h1>
+    <%= I18n.t("views.admin.edit_feedback") %>
+  </h1>
+  <table class="users_table span12" border="1">
+    <th><%= I18n.t("activerecord.attributes.user.email") %></th>
+    <th><%= I18n.t("attributes.name") %></th>
+    <th><%= I18n.t("attributes.title") %></th>
   </tr>
+
   <% @feedbacks.each do |feedback| %>
     <tr>
-      
       <td><%= feedback.email %></td>
       <td><%= feedback.name %></td>
       <td><%= feedback.title %></td>
     </tr>
   <% end %>
+
 </table>
 </div>

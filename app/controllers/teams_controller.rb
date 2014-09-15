@@ -1,7 +1,7 @@
 # encoding: utf-8
 class TeamsController < ApplicationController
   before_filter :require_login
-  before_filter :identify_neighborhood
+  before_filter :identify_neighborhood, :except => [:administer]
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
 
   #----------------------------------------------------------------------------
@@ -83,7 +83,13 @@ class TeamsController < ApplicationController
   # GET /teams/administer
 
   def administer
-    @teams = Team.all
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+
+    if @neighborhood.present?
+      @teams = Team.where(:neighborhood_id => @neighborhood.id)
+    else
+      @teams = Team.all
+    end
   end
 
   #----------------------------------------------------------------------------

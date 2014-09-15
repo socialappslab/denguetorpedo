@@ -1,0 +1,20 @@
+.row.offset1
+  .span2
+    %h2
+      = I18n.t("common_terms.filter_by")
+  .span6
+    = form_tag request.path, :style => "margin-top: 5px;" do
+      - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, n.id ] }
+      = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods, @neighborhood ? @neighborhood.id : ""), :prompt => I18n.t("views.admin.all_communities"), :id => "search-neighborhoods")
+
+
+:javascript
+  $(document).ready(function()
+  {
+    $("#search-neighborhoods").change(function() {
+      if ($(this).val())
+        window.location.href = "#{request.path}?neighborhood_id=" + $(this).val()
+      else
+        window.location.href = "#{request.path}"
+    });
+  })
