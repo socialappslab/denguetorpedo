@@ -1,95 +1,81 @@
 = render :partial => "shared/flashes"
 
+
+= render :partial => "shared/filter_by_community"
+
 .row.offset1
-	%h2
-		= I18n.t("views.admin.edit_user")
-	.row
-		%table.users_table.span12{:cellpadding => 10, border: 1}
-			%colgroup
+	.span12
+		%h2
+			= I18n.t("views.admin.edit_user")
+		.row
+			%table.users_table.span12{:cellpadding => 10, border: 1}
+				%colgroup
+					%col{style: "width:70%;"}
+					%col{style: "width:15%;"}
+					%col{style: "width:15%;"}
+				- @users.each do |user|
+					%tr
+						%td
+							= link_to user.full_name, edit_user_path(user)
+						%td{:style => "margin-left:10px;"}
+							= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+
+	%br
+
+	-#----------------------------------------------------------------------------
+.row.offset1
+	.span12
+		%h2
+			= I18n.t("views.admin.edit_sponsors")
+		.row
+			%table.users_table.span12{:cellpadding => 10, border: 1}
+				%colgroup
+					%col{style: "width:55%;"}
+					%col{style: "width:15%;"}
+					%col{style: "width:15%;"}
+					%col{style: "width:15%;"}
+				- @sponsors.each do |sponsor|
+					%tr
+						- if sponsor.is_blocked == false
+							%td
+								= link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"
+							%td{:style => "margin-left:10px;"}
+								= link_to I18n.t("views.admin.block"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+						- else
+							%td{:style => "color:red"}
+								= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
+							%td
+								= I18n.t("common_terms.codes")
+							%td
+								= link_to I18n.t("views.admin.unblock"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+
+	%br
+
+	-#----------------------------------------------------------------------------
+.row.offset1
+	.span12
+		%h2
+			= I18n.t("views.admin.edit_verifiers")
+		.row
+			%table.users_table.span12{:cellpadding => 10, border: 1}
 				%col{style: "width:70%;"}
 				%col{style: "width:15%;"}
 				%col{style: "width:15%;"}
-			- @users.each do |user|
-				%tr
-					%td
-						= link_to user.full_name, edit_user_path(user)
-					%td{:style => "margin-left:10px;"}
-						= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-
+				- @verifiers.each do | verifier|
+					%tr
+						- if verifier.is_blocked == false
+							%td
+								= link_to verifier.full_name, edit_user_path(verifier)
+							%td{:style => "margin-left:10px;"}
+								= link_to I18n.t("views.admin.block"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+						- else
+							%td{:style => "color:red"}
+								= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
+							%td
+								= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 	%br
 
 	-#----------------------------------------------------------------------------
-
-	%h2
-		= I18n.t("views.admin.edit_sponsors")
-	.row
-		%table.users_table.span12{:cellpadding => 10, border: 1}
-			%colgroup
-				%col{style: "width:55%;"}
-				%col{style: "width:15%;"}
-				%col{style: "width:15%;"}
-				%col{style: "width:15%;"}
-			- @sponsors.each do |sponsor|
-				%tr
-					- if sponsor.is_blocked == false
-						%td
-							= link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"
-						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-					- else
-						%td{:style => "color:red"}
-							= link_to sponsor.full_name, edit_user_path(sponsor), :style => "color:red;"
-						%td
-							= I18n.t("common_terms.codes")
-						%td
-							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-
-	%br
-
-	-#----------------------------------------------------------------------------
-
-	%h2
-		= I18n.t("views.admin.edit_verifiers")
-	.row
-		%table.users_table.span12{:cellpadding => 10, border: 1}
-			%col{style: "width:70%;"}
-			%col{style: "width:15%;"}
-			%col{style: "width:15%;"}
-			- @verifiers.each do | verifier|
-				%tr
-					- if verifier.is_blocked == false
-						%td
-							= link_to verifier.full_name, edit_user_path(verifier)
-						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-					- else
-						%td{:style => "color:red"}
-							= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
-						%td
-							= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-	%br
-
-	-#----------------------------------------------------------------------------
-
-	%h2
-		= I18n.t("views.admin.edit_visitors")
-	.row
-		%table.users_table.span12{:cellpadding => 10, border: 1}
-			%col{style: "width:70%;"}
-			%col{style: "width:15%;"}
-			%col{style: "width:15%;"}
-			- @visitors.each do |visitor|
-				%tr
-					- if visitor.is_blocked == false
-						%td
-							= link_to visitor.full_name, edit_user_path(visitor)
-						%td{:style => "margin-left:10px;"}
-							= link_to I18n.t("views.admin.block"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-					- else
-						%td{:style => "color:red"}
-							= link_to visitor.full_name, edit_user_path(visitor), :style => "color:red;"
-						%td
-							= link_to I18n.("views.admin.unblock"), block_users_path(:id => visitor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 
 
 
