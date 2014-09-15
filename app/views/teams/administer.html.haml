@@ -1,10 +1,11 @@
 = render :partial => "shared/flashes"
+= render :partial => "shared/filter_by_community"
 
 .row.offset1
-  %h1.span5{style: "margin-left:0px;"}
-    = I18n.t("views.admin.edit_teams")
+  .span5
+    %h1
+      = I18n.t("views.admin.edit_teams")
 
-%br
 
 .row.offset1
 
