@@ -10,6 +10,7 @@ pt:
     content: Conteúdo
     profile_photo: "Foto do perfil"
     photo: "Foto"
+    created_at: Data de inscrição
   activerecord:
     models:
       report:

@@ -8,18 +8,22 @@
 		%h2
 			= I18n.t("views.admin.edit_user")
 		.row
-			%table.users_table.span12{:cellpadding => 10, border: 1}
-				%colgroup
-					%col{style: "width:70%;"}
-					%col{style: "width:15%;"}
-					%col{style: "width:15%;"}
+			%table.users_table.span12{border: 1}
+				%thead
+					%th
+						= I18n.t("activerecord.attributes.user.first_name")
+					%th
+						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
+					%th
+						= I18n.t("attributes.created_at")
 				- @users.each do |user|
 					%tr
 						%td
 							= link_to user.full_name, edit_user_path(user)
-						%td{:style => "margin-left:10px;"}
+						%td
 							= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-
+						%td
+							= user.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
 	%br
 
 	-#----------------------------------------------------------------------------
@@ -28,19 +32,23 @@
 		%h2
 			= I18n.t("views.admin.edit_sponsors")
 		.row
-			%table.users_table.span12{:cellpadding => 10, border: 1}
-				%colgroup
-					%col{style: "width:55%;"}
-					%col{style: "width:15%;"}
-					%col{style: "width:15%;"}
-					%col{style: "width:15%;"}
+			%table.users_table.span12{border: 1}
+				%thead
+					%th
+						= I18n.t("activerecord.attributes.user.first_name")
+					%th
+						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
+					%th
+						= I18n.t("attributes.created_at")
+
 				- @sponsors.each do |sponsor|
 					%tr
 						%td
 							= link_to "#{sponsor.full_name} (#{link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"})".html_safe, edit_user_path(sponsor)
 						%td
 							= link_to ( sponsor.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-
+						%td
+							= sponsor.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
 	%br
 
 	-#----------------------------------------------------------------------------
@@ -49,10 +57,15 @@
 		%h2
 			= I18n.t("views.admin.edit_verifiers")
 		.row
-			%table.users_table.span12{:cellpadding => 10, border: 1}
-				%col{style: "width:70%;"}
-				%col{style: "width:15%;"}
-				%col{style: "width:15%;"}
+			%table.users_table.span12{border: 1}
+				%thead
+					%th
+						= I18n.t("activerecord.attributes.user.first_name")
+					%th
+						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
+					%th
+						= I18n.t("attributes.created_at")
+
 				- @verifiers.each do | verifier|
 					%tr
 						- if verifier.is_blocked == false
@@ -65,17 +78,8 @@
 								= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
 							%td
 								= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+						%td
+							= verifier.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
 	%br
 
 	-#----------------------------------------------------------------------------
-
-
-
-/	%h2 Administrar prêmios
-/	%ol.users_list.offset1
-/			%table{:cellpadding => 20}
-/			- @prizes.each do |prize|
-/				%tr
-/					%td= link_to prize.prize_name, prize_path(prize)
-/					%td= link_to "Editar", edit_prize_path(prize)
-/					%td= link_to 'Deletar', prize, method: :delete, data: { confirm: I18n.t("views.alerts.confirm")}
