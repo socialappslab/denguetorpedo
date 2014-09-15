@@ -11,19 +11,20 @@ class UsersController < ApplicationController
   # GET /users/
 
   def index
-    if params[:q].nil? or params[:q] == ""
-      @users = User.residents.order(:first_name)
-      @sponsors = User.where(:role => "lojista").order(:first_name)
-      @verifiers = User.where(:role => "verificador").order(:first_name)
-      @visitors = User.where(:role => "visitante").order(:first_name)
-    else
-      @users = User.where(:role => "morador").where('lower(first_name) LIKE lower(?)', params[:q] + "%").order(:first_name)
-      @sponsors = User.where(:role => "lojista").where('lower(first_name) LIKE lower(?)', params[:q] + "%").order(:first_name)
-      @sponsors = House.where('lower(name) LIKE lower(?)', params[:q] + "%").map { |house| house.user }.compact
-      @verifiers = User.where(:role => "verificador").where('lower(first_name) LIKE lower(?)', params[:q] + "%").order(:first_name)
-      @visitors = User.where(:role => "visitante").where('lower(first_name) LIKE lower(?)', params[:q] + "%").order(:first_name)
-    end
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] ) if params[:neighborhood_id]
+
+    @users = User.residents.order(:first_name)
+    @sponsors = User.where(:role => User::Types::SPONSOR).order(:first_name)
+    @verifiers = User.where(:role => User::Types::VERIFIER).order(:first_name)
     @prizes = Prize.where(:is_badge => false)
+
+    if @neighborhood.present?
+      @users     = @users.where(:neighborhood_id => @neighborhood.id)
+      @sponsors  = @sponsors.where(:neighborhood_id => @neighborhood.id)
+      @verifiers = @verifiers.where(:neighborhood_id => @neighborhood.id)
+      @prizes    = @prizes.where(:neighborhood_id => @neighborhood.id)
+    end
+
     authorize! :assign_roles, User
 
     respond_to do |format|
