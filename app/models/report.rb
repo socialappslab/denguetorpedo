@@ -5,7 +5,7 @@ class Report < ActiveRecord::Base
   :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
-  :verifier, :resolved_verifier, :eliminator
+  :verifier, :resolved_verifier, :eliminator, :eliminated_at
 
   #----------------------------------------------------------------------------
   # Constants

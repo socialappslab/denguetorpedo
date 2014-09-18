@@ -1,7 +1,12 @@
 # encoding: utf-8
 
 class User < ActiveRecord::Base
-  attr_accessible :locale, :house_attributes, :first_name, :reporter, :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username, :password, :password_confirmation, :auth_token, :phone_number, :phone_number_confirmation, :profile_photo, :is_verifier, :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked, :house_id, :carrier, :prepaid
+  attr_accessible :locale, :house_attributes, :first_name, :reporter,
+  :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username,
+  :password, :password_confirmation, :auth_token, :phone_number,
+  :phone_number_confirmation, :profile_photo, :is_verifier,
+  :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked,
+  :house_id, :carrier, :prepaid, :points, :total_points
 
   #----------------------------------------------------------------------------
 
