@@ -1,20 +1,12 @@
 ActiveAdmin.register Team do
   index do
     column "name"
-    column "neighborhood_id" do
-      mare = Neighborhood.find_by_name(Neighborhood::Names::MARE)
-      tepa = Neighborhood.find_by_name(Neighborhood::Names::TEPALCINGO)
-      if mare.id
-        mare.name
-      elsif tepa.id
-        tepalcingo.name
-      end
+    column "neighborhood" do |team|
+      Neighborhood.find(team.neighborhood_id).name
     end
 
     column "blocked"
-
     column "created_at"
-    column "updated_at"
 
     default_actions
   end
