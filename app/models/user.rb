@@ -17,15 +17,21 @@ class User < ActiveRecord::Base
     VISITOR     = "visitante"
   end
 
+  # A user gets points for the following:
+  # * verifying a report,
+  # * submitting a report (via SMS or web),
+  # * eliminating a report.
   module Points
-    REPORT_VERIFICATION = 50
-    REPORT_SUBMITTED    = 50
+    REPORT_VERIFIED  = 50
+    REPORT_SUBMITTED = 50
   end
 
   module Locales
     SPANISH = "es"
     PORTUGUESE = "pt"
   end
+
+  EMAIL_REGEX = /[a-z0-9!$#%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!$#%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
@@ -100,6 +106,25 @@ class User < ActiveRecord::Base
   def location
     house && house.location
   end
+
+  #----------------------------------------------------------------------------
+
+  def award_points_for_submitting(report)
+    points = self.total_points || 0
+    self.update_column(:total_points, points + Points::REPORT_SUBMITTED)
+  end
+
+  def award_points_for_verifying(report)
+    points = self.total_points || 0
+    self.update_column(:total_points, points + Points::REPORT_VERIFIED)
+  end
+
+  def award_points_for_eliminating(report)
+    points = self.total_points || 0
+    self.update_column(:total_points, points + report.elimination_method.points)
+  end
+
+  #----------------------------------------------------------------------------
 
   def generate_token(column)
     begin

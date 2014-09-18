@@ -123,8 +123,10 @@ class ReportsController < NeighborhoodsBaseController
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
-      redirect_to neighborhood_reports_path(@neighborhood) and return
+      # Finally, let's award the user for submitting a report.
+      @current_user.award_points_for_submitting(@report)
 
+      redirect_to neighborhood_reports_path(@neighborhood) and return
     else
       error_flash = "<ul><li>#{flash[:alert]}</li>"
 
@@ -199,6 +201,9 @@ class ReportsController < NeighborhoodsBaseController
         @report.completed_at    = Time.now
         @report.save
 
+        # Let's award the user for submitting a report.
+        @current_user.award_points_for_submitting(@report)
+
         redirect_to neighborhood_reports_path(@neighborhood) and return
 
       # Error occurred when completing SMS report
@@ -210,9 +215,11 @@ class ReportsController < NeighborhoodsBaseController
 
 
     if @report.update_attributes(params[:report])
-      @current_user.update_attributes(:points => @current_user.points + User::Points::REPORT_SUBMITTED, :total_points => @current_user.total_points + User::Points::REPORT_SUBMITTED)
       @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
-      award_points(@report, @current_user)
+
+      # Let's award the user for submitting a report.
+      @current_user.award_points_for_eliminating(@report)
+
 
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
       redirect_to neighborhood_reports_path(@neighborhood) and return
@@ -270,7 +277,6 @@ class ReportsController < NeighborhoodsBaseController
   def destroy
     if @current_user.coordinator? or @current_user.created_reports.find_by_id(params[:id])
       @report = Report.find(params[:id])
-      @report.deduct_points
       @report.destroy
       flash[:notice] = I18n.t("activerecord.success.report.delete")
     end
@@ -289,9 +295,8 @@ class ReportsController < NeighborhoodsBaseController
     @report.verified_at = Time.now
 
     if @report.save(:validate => false)
-      @current_user.points       += User::Points::REPORT_VERIFICATION
-      @current_user.total_points += User::Points::REPORT_VERIFICATION
-      @current_user.save
+      @current_user.award_points_for_verifying(@report)
+
       flash[:notice] = I18n.t("activerecord.success.report.verify")
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
@@ -306,13 +311,6 @@ class ReportsController < NeighborhoodsBaseController
   # and isVerified.
   def problem
     @report = Report.find(params[:id])
-
-    # First, subtract the points from the past verifier.
-    if @report.verifier.present?
-      @report.verifier.points       -= User::Points::REPORT_VERIFICATION
-      @report.verifier.total_points -= User::Points::REPORT_VERIFICATION
-      @report.verifier.save
-    end
 
     # Now update the report.
     @report.isVerified  = "f"
@@ -359,6 +357,8 @@ class ReportsController < NeighborhoodsBaseController
     # then they're setup for SMS. Otherwise, they're not.
     if user.residents?
       @report = user.build_report_via_sms(params)
+
+      # NOTE: We will not award points here because we do this in ReportsController#update.
       if @report.save!
         Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
         render :json => { message: "success", report: @report}
@@ -428,15 +428,6 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
-  end
-
-  #----------------------------------------------------------------------------
-
-  def award_points report, user
-    if report.elimination_method.present?
-      user.total_points += report.elimination_method.points
-      user.save
-    end
   end
 
   #----------------------------------------------------------------------------
