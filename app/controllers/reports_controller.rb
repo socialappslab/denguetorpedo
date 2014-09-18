@@ -19,28 +19,9 @@ class ReportsController < NeighborhoodsBaseController
     @new_report          = Report.new(params[:new_report])
     @new_report_location = Location.find_by_id(params[:location]) || Location.new
 
-    # We display the reports in the following order:
-    # 1. Reports that incurred an error when attempting to be eliminated
-    # 2. Incomplete SMS reports
-    # 3. All created reports (aka, the misleading column completed_at is not nil)
-    @reports = []
-    #1.
-    # error_report = Report.find_by_id(params[:report])
-    #
-    # if error_report
-    #   # TODO : URL is messy when using params, possibly change to id when EliminationMethod implemented
-    #   error_report.elimination_method = params[:elimination_method]
-    #   @reports += [ error_report ]
-    # end
-
-    #2.
-    @reports += current_user.reports.where(:completed_at => nil).to_a if current_user
-
-    #3.
-    @reports += Report.includes(:likes).where(:neighborhood_id => @neighborhood.id).select(&:completed_at).sort_by(&:completed_at).reverse
-
     # Remove report that incurred an error, it should be at the top already
-    @reports.reject!{|r| r == params[:report]}
+    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
+    @reports.reject!{ |r| r == params[:report]}
     @reports.reject!{ |r| r.neighborhood_id != @neighborhood.id }
 
     # Generate the different types of locations based on report.
