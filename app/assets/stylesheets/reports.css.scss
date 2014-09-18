@@ -139,31 +139,29 @@
   width:200px;
 }
 
-#report_display {
-  #reports{
-    display: block;
+#reports{
+  display: block;
+}
+
+#new_report{
+  display: block;
+
+  .new_report_label{
+    font-weight: bold;
   }
 
-  #new_report{
-    display: block;
+  .inline_display{
+    display:inline;
+  }
 
-    .new_report_label{
-      font-weight: bold;
-    }
+  #mark_map_bttn{
+    border:1px;
+    border-style:solid;
+    border-color: black;
+    color:black;
 
-    .inline_display{
-      display:inline;
-    }
-
-    #mark_map_bttn{
-      border:1px;
-      border-style:solid;
-      border-color: black;
-      color:black;
-
-      &:hover{
-        color:blue;
-      }
+    &:hover{
+      color:blue;
     }
   }
 }
