@@ -17,9 +17,9 @@
     .span5{:style => "border-right: 1px solid #ccc;"}
       = render :partial => "neighborhoods/sidebar"
 
-    .span9.offset1
+    .span10.offset1
       = render :partial => "neighborhoods/main"
 
-    .span3{:style => "text-align: center; margin-top: -40px;"}
+    .span2{:style => "text-align: center; margin-top: -40px; margin-left: -40px;"}
       - if @neighborhood.name  == Neighborhood::Names::MARE
         = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success btn-large", :style => "margin-top: 120px;"

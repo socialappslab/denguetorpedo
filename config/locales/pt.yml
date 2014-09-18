@@ -450,7 +450,10 @@ pt:
         subject: "Resetar a senha"
         click_link: "Para alterar a sua senha, clique no URL abaixo"
         ignore_email: "Se você não solicitou a alteração da sua senha, ignore esse e-mail que a sua senha permanecerá a mesma."
-
+    feed:
+      report:
+        reported: "Encontrei um foco"
+        eliminated: "Eliminei um foco"
 
 
   #----------------------------------------------------------------------------

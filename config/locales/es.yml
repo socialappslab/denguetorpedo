@@ -432,7 +432,10 @@ es:
         subject: "Cambio de contraseña"
         click_link: "Para cambiar su contraseña, haga clic en la dirección de abajo"
         ignore_email: "Si usted no ha solicitado un cambio de contraseña, ignore este mensaje y su contraseña no cambiará."
-
+    feed:
+      report:
+        reported:   "Encontré un foco"
+        eliminated: "Eliminé un foco"
 
   #----------------------------------------------------------------------------
   # Countries
