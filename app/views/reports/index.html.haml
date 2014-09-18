@@ -44,19 +44,9 @@
 /------------------------------------------------------------------------------
 
 .row
-  #report_display.span9.offset1
-    -# TODO @awdorsett - all reports sorted by most recent?
-    -# all reports
+  .span9.offset1
     #reports
       - @reports.each do |report|
-        - if report.open?
-          :javascript
-            $(document).ready(function()
-            {
-              var newYear = new Date(#{report.expire_date.strftime("%s").to_i * 1000});
-              $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
-            });
-
         .report{ :class => (report.eliminated? ? "eliminated" : "open") }
           = render :partial => "reports/metadata",   :locals => {:report => report}
           = render :partial => "reports/attributes", :locals => {:report => report}
