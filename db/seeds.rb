@@ -10,29 +10,23 @@ puts "-" * 80
 puts "[!] Seeding neighborhoods..."
 puts "\n" * 3
 
-n = Neighborhood.find_by_name("Maré")
-if n.nil?
-  c = Country.find_country_by_name("Brazil")
-  n                   = Neighborhood.new
-  n.name              = "Maré"
-  n.city              = "Rio de Janeiro"
-  n.state_string_id   = "RJ"
-  n.country_string_id = c.alpha2
-  n.save!
-end
+communities = [
+  {:name => "Maré",         :city => "Rio de Janeiro", :state_string_id => "RJ",  :country => "Brazil"},
+  {:name => "Tepalcingo",   :city => "Tepalcingo",     :state_string_id => "MOR", :country => "Mexico"},
+  {:name => "Ocachicualli", :city => "Cuernavaca",     :state_string_id => "MOR", :country => "Mexico"}
+]
 
-# Tepalcingo neighborhood is our first neighborhood in Mexico.
-# It is located in the city of Tepalcingo, in the state of Morelos,
-# in the country of Mexico.
-n = Neighborhood.find_by_name("Tepalcingo")
-if n.nil?
-  c = Country.find_country_by_name("Mexico")
-  n                   = Neighborhood.new
-  n.name              = "Tepalcingo"
-  n.city              = "Tepalcingo"
-  n.state_string_id   = "MOR"
-  n.country_string_id = c.alpha2
-  n.save!
+communities.each do |c|
+  n = Neighborhood.find_by_name( c[:name] )
+  if n.nil?
+    country = Country.find_country_by_name( c[:country] )
+    n                   = Neighborhood.new
+    n.name              = c[:name]
+    n.city              = c[:city]
+    n.state_string_id   = c[:state_string_id]
+    n.country_string_id = country.alpha2
+    n.save!
+  end
 end
 
 
