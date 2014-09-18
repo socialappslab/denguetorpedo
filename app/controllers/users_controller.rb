@@ -121,8 +121,7 @@ class UsersController < ApplicationController
     if @user.save
 
       # Set the default language based on selected neighborhood.
-      tepalcingo = Neighborhood.find_by_name("Tepalcingo")
-      if tepalcingo && @user.neighborhood_id == tepalcingo.id
+      if @user.neighborhood && @user.neighborhood.spanish?
         @user.update_column(:locale, User::Locales::SPANISH)
       else
         @user.update_column(:locale, User::Locales::PORTUGUESE)

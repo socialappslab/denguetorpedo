@@ -6,8 +6,9 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   module Names
-    MARE       = "Maré"
-    TEPALCINGO = "Tepalcingo"
+    MARE         = "Maré"
+    TEPALCINGO   = "Tepalcingo"
+    OCACHICUALLI = "Ocachicualli"
   end
 
   #----------------------------------------------------------------------------
@@ -37,6 +38,10 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
   # Geographical data
   #------------------
+
+  def spanish?
+    return [Names::TEPALCINGO, Names::OCACHICUALLI].include?(self.name)
+  end
 
   # NOTE: this method returns a Country object.
   def country
