@@ -121,9 +121,10 @@
 
 }
 
-.esriPopup .actionsPane .zoomTo {
-  display: none;
-}
+
+/*
+  Reports feed
+*/
 
 .elimination_type{
   height:auto;
@@ -132,6 +133,12 @@
 
 #report_elimination_type{
   height:auto;
+  width: 100%;
+}
+
+#report_elimination_method_id {
+  font-size: 16px;
+  height: 50px;
   width: 100%;
 }
 
@@ -282,6 +289,12 @@
 
 //-----------------------------------------------------------------------------
 // ESRI map-related customization
+
+
+.esriPopup .actionsPane .zoomTo {
+  display: none;
+}
+
 
 #map_div {
   position:absolute;
