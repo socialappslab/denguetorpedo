@@ -11,6 +11,7 @@ pt:
     profile_photo: "Foto do perfil"
     photo: "Foto"
     created_at: Data de inscrição
+    points: Pontos
   activerecord:
     models:
       report:

@@ -118,11 +118,9 @@
   &:mousedown {
     border-bottom: thick dotted #ff0000;
   }
-
 }
 
-
-/*
+/*-----------------------------------------------------------------------------
   Reports feed
 */
 
@@ -137,8 +135,8 @@
 }
 
 #report_elimination_method_id {
+  height: auto;
   font-size: 16px;
-  height: 50px;
   width: 100%;
 }
 
@@ -173,6 +171,8 @@
   }
 }
 
+/*-----------------------------------------------------------------------------
+*/
 #attention_div p{
   font-weight:bold;
   font-size:13px;
@@ -202,7 +202,6 @@
 
 
 .likes_button {
-
   .likes_text{
     display:inline;
   }
@@ -266,7 +265,6 @@
   }
 
 }
-
 
 .countdown {
   color: $orange;
