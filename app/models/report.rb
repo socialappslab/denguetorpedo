@@ -5,7 +5,7 @@ class Report < ActiveRecord::Base
   :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
-  :verifier, :resolved_verifier, :eliminator
+  :verifier, :resolved_verifier, :eliminator, :eliminated_at
 
   #----------------------------------------------------------------------------
   # Constants
@@ -208,16 +208,6 @@ class Report < ActiveRecord::Base
 
   def expire_date
     self.created_at + EXPIRATION_WINDOW
-  end
-
-  def deduct_points
-    if self.eliminator
-      if self.is_resolved_verified == false
-        self.eliminator.update_attributes(points: self.eliminator.points - 400)
-      end
-    else
-      self.reporter.update_attributes(points: self.reporter.points - 100)
-    end
   end
 
   #----------------------------------------------------------------------------

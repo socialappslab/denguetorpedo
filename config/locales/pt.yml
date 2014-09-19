@@ -11,6 +11,7 @@ pt:
     profile_photo: "Foto do perfil"
     photo: "Foto"
     created_at: Data de inscrição
+    points: Pontos
   activerecord:
     models:
       report:
@@ -385,7 +386,7 @@ pt:
       faq: "Perguntas frequentes"
       contact: "Contato DT"
       about: "Sobre o Dengue Torpedo"
-      creator: "Criado pelo Social Apps Lab, UC Berkeley"
+      creator: "Criado pelo Social Apps Lab at CITRIS, UC Berkeley"
     documentation_sections:
       new:
         title: Adicionar secção
@@ -462,4 +463,4 @@ pt:
 
   countries:
     brazil: Brasil
-    mexico: Mexico
+    mexico: México

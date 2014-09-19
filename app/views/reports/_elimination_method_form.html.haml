@@ -1,7 +1,7 @@
 = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
   %h1{:style => "margin-top: 15px;"}
     = I18n.t("activerecord.models.elimination_method")
-  = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.description, em.id]}, report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods", :style => "width: 100%;"}
+  = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.description + " (#{em.points} #{I18n.t("attributes.points").downcase})", em.id]}, report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods"}
 
   = f.fields_for :location, report.location || Location.new do |location_fields|
     = location_fields.hidden_field :latitude
