@@ -48,6 +48,14 @@ class Neighborhood < ActiveRecord::Base
     return Country[self.country_string_id]
   end
 
+  def country_name
+    if self.country.name == "Mexico"
+      return I18n.t('countries.mexico')
+    else
+      return I18n.t('countries.brazil')
+    end
+  end
+
   def state
     c = self.country
     return c.states[self.state_string_id]["name"]
@@ -66,11 +74,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def geographical_name
-    if self.country.name == "Mexico"
-      return "#{self.name}, #{I18n.t('countries.mexico')}"
-    else
-      return "#{self.name}, #{I18n.t('countries.brazil')}"
-    end
+    return "#{self.name}, #{self.country_name}"
   end
 
   #----------------------------------------------------------------------------
