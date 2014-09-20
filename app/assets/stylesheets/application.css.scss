@@ -151,6 +151,10 @@ div {
 
 #neighborhood_list {
 
+  .carousel-indicators .active {
+    background-color: none;
+  }
+
   .carousel-inner {
     overflow: visible;
   }
