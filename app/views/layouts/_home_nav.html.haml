@@ -10,7 +10,7 @@
   -# Education dropdown
   .span3.offset3
     .main_nav_button
-      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
+      .dropdown-toggle{ :style => "margin-top: 10px;", :data => {:toggle=>"dropdown"} }
         %a{:href => "#"}
           %h1{style: 'color:black;'}
             = I18n.t("home_navigation.education.title")
@@ -29,7 +29,7 @@
   -# How-to dropdown
   .span3
     .main_nav_button
-      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
+      .dropdown-toggle{ :style => "margin-top: 10px;", :data => {:toggle=>"dropdown"} }
         %a{:href => "#"}
           %h1{style: 'color:black;'}
             = I18n.t("home_navigation.howto.title")
@@ -44,11 +44,12 @@
 
   .span2
     .main_nav_button
-      = link_to prizes_path do
-        %h1{style: 'color:black;'}
-          = I18n.t("home_navigation.prizes.title")
-        %h3
-          = I18n.t("home_navigation.prizes.description")
+      %div{:style => "margin-top: 10px;"}
+        = link_to prizes_path do
+          %h1{style: 'color:black;'}
+            = I18n.t("home_navigation.prizes.title")
+          %h3
+            = I18n.t("home_navigation.prizes.description")
 
   - if @current_user.nil?
     -# .span1
