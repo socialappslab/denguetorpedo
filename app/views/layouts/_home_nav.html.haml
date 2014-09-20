@@ -10,12 +10,12 @@
   -# Education dropdown
   .span3.offset3
     .main_nav_button
-      .dropdown-toggle{ :style => "margin-top: 10px;", :data => {:toggle=>"dropdown"} }
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
         %a{:href => "#"}
           %h1{style: 'color:black;'}
             = I18n.t("home_navigation.education.title")
             %i.fa.fa-caret-down
-          %h3
+          %p{:style => "font-size: 16px; color: white;"}
             = I18n.t("home_navigation.education.description")
 
       %ul.dropdown-menu
@@ -29,12 +29,12 @@
   -# How-to dropdown
   .span3
     .main_nav_button
-      .dropdown-toggle{ :style => "margin-top: 10px;", :data => {:toggle=>"dropdown"} }
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
         %a{:href => "#"}
           %h1{style: 'color:black;'}
             = I18n.t("home_navigation.howto.title")
             %i.fa.fa-caret-down
-          %h3{style: "margin-left:-5px;"}
+          %p{:style => "font-size: 16px; margin-left: -5px; color: white;"}
             = I18n.t("home_navigation.howto.description")
 
       %ul.dropdown-menu
@@ -44,12 +44,11 @@
 
   .span2
     .main_nav_button
-      %div{:style => "margin-top: 10px;"}
-        = link_to prizes_path do
-          %h1{style: 'color:black;'}
-            = I18n.t("home_navigation.prizes.title")
-          %h3
-            = I18n.t("home_navigation.prizes.description")
+      = link_to prizes_path do
+        %h1{style: 'color:black;'}
+          = I18n.t("home_navigation.prizes.title")
+        %p{:style => "font-size: 16px; color: white;"}
+          = I18n.t("home_navigation.prizes.description")
 
   - if @current_user.nil?
     -# .span1
