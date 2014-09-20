@@ -47,6 +47,8 @@
   .span9.offset1
     #reports
       - @reports.each do |report|
+        - next if report.sms_incomplete? && @current_user && @current_user != report.reporter
+
         .report{ :class => (report.eliminated? ? "eliminated" : "open") }
           = render :partial => "reports/metadata",   :locals => {:report => report}
           = render :partial => "reports/attributes", :locals => {:report => report}

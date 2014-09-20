@@ -221,7 +221,6 @@ describe "Reports", :type => :feature do
     it "hides SMS report from the public" do
       sign_out(user)
       sign_in(other_user)
-
       visit neighborhood_reports_path(user.neighborhood)
       expect(page).not_to have_content(sms_body)
     end
