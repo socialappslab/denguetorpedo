@@ -64,7 +64,8 @@ GEM
       uuidtools (~> 2.1)
     bcrypt (3.1.7)
     bcrypt-ruby (3.0.1)
-    bootstrap-sass (2.0.4.2)
+    bootstrap-sass (2.3.2.2)
+      sass (~> 3.2)
     bourbon (3.2.3)
       sass (~> 3.2)
       thor
@@ -334,7 +335,7 @@ DEPENDENCIES
   awesome_nested_set
   aws-sdk
   bcrypt-ruby (~> 3.0.0)
-  bootstrap-sass (~> 2.0.3)
+  bootstrap-sass (~> 2.3.2)
   cancan
   capybara
   coffee-rails (~> 3.2.1)
