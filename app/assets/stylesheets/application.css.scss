@@ -148,3 +148,34 @@ div {
     text-align: left;
   }
 }
+
+#neighborhood_list {
+
+  .carousel-inner {
+    overflow: visible;
+  }
+
+  .dt-carousel-control {
+    position: absolute;
+    // top: 150px;
+    left: 15px;
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+    font-size: 40px;
+    border-radius: 0px;
+    top: 50%;
+
+    &.left {
+      top: 200px;
+      left: -50px;
+    }
+
+    &.right {
+      top: 200px;
+      left: auto;
+      right: 0px;
+    }
+  }
+
+}

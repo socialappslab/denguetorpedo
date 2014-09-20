@@ -1,17 +1,27 @@
 #neighborhood_list.offset1
-  - @all_neighborhoods.each_with_index do |neighborhood, index|
-    .span5{:style => "margin-right: 20px;"}
-      .neighborhood_selection
-        .neighborhood_selection_header
-          %h3= link_to neighborhood.geographical_name, neighborhood_path(neighborhood)
-        = link_to image_tag(neighborhood.photo, :style => "width: 325px; height: 325px;"), neighborhood_path(neighborhood)
+  #myCarousel.carousel.slide
+    %ol.carousel-indicators
+      %li.active{"data-slide-to" => "0", "data-target" => "#myCarousel"}
+      %li{"data-slide-to" => "1", "data-target" => "#myCarousel"}
+
+    .carousel-inner
+      .active.item
+        - @all_neighborhoods.each_with_index do |neighborhood, index|
+          .span5{:style => "margin-right: 30px;"}
+            .neighborhood_selection
+              .neighborhood_selection_header
+                %h3= link_to neighborhood.geographical_name, neighborhood_path(neighborhood)
+              = link_to image_tag(neighborhood.photo, :style => "width: 325px; height: 325px;"), neighborhood_path(neighborhood)
+
+      .item
+        .span5
+          .neighborhood_selection
+            .neighborhood_selection_header
+              %h3= link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
+            = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
 
 
-  - if @all_neighborhoods.count < 3
-    - (3 - @all_neighborhoods.count).times do
-      .span5
-        .neighborhood_selection
-          .neighborhood_selection_header
-            %h3= link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
-
-          = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
+    %a.dt-carousel-control.left{"data-slide" => "prev", :href => "#myCarousel"}
+      %i.fa.fa-chevron-left
+    %a.dt-carousel-control.right{"data-slide" => "next", :href => "#myCarousel"}
+      %i.fa.fa-chevron-right
