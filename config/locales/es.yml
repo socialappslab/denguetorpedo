@@ -150,7 +150,7 @@ es:
       future_community: Futura comunidad
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
-      search_for_other_communities: Busque otras comunidades
+      search_for_other_communities: Busque comunidades
     house:
       title_with_name: Casas %{name}
       title: Casas
