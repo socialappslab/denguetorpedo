@@ -93,6 +93,8 @@ class User < ActiveRecord::Base
   has_many :team_memberships, :dependent => :destroy
   has_many :teams, :through => :team_memberships
 
+  has_and_belongs_to_many :conversations
+
   #----------------------------------------------------------------------------
 
   accepts_nested_attributes_for :house, :allow_destroy => true
