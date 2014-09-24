@@ -34,8 +34,6 @@ class MessagesController < ApplicationController
         known_users << user if user.present?
       end
 
-      puts "users: #{users}"
-      puts "known_users: #{known_users.map(&:username)}"
       unknown_users = users - known_users.map(&:username)
       if unknown_users.present?
         flash[:show_new_message_form] = true
@@ -60,11 +58,16 @@ class MessagesController < ApplicationController
     @message.user_id         = @current_user.id
 
     if @message.save
+      # Let's touch the conversation to update that a new message has been
+      # attached.
+      @conversation.touch
+
       flash[:notice] = "Message created successfully!"
       redirect_to user_conversation_path(@current_user, @conversation) and return
     else
       flash[:show_new_message_form] = true
-      render "conversations/index" and return
+      flash[:alert] = "Message body can't be empty."
+      redirect_to :back and return
     end
   end
 
