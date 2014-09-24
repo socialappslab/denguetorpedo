@@ -1,0 +1,24 @@
+.row
+  .span10.offset4
+    - @conversations.each do |c|
+      .user_activity_item
+        .row
+          .span1.feed-item-profile-photo
+            = link_to user_path(c.user) do
+              = image_tag(c.user.picture)
+
+          .span5
+            .row.feed-item-bar
+              .span7
+                = link_to "Conversation between #{c.users.map(&:display_name).join(', ')}", user_conversation_path(@current_user, c), :style => "font-weight: bold;"
+                .feed-item-timestamp
+                  %i.fa.fa-clock-o
+                  = format_timestamp(c.created_at)
+            .row.feed-item-content
+              .span7
+                = link_to c.name, user_conversation_path(@current_user, c)
+
+          .span3.pull-right{:style => "margin-top: 15px;"}
+            = link_to user_conversation_path(@current_user, c) do
+              Go to conversation
+              %i.fa.fa-chevron-right
