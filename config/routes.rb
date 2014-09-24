@@ -57,6 +57,9 @@ Dengue::Application.routes.draw do
   resources :users do
     resources :reports, :except => [:show]
 
+    resources :conversations, :only => [:index, :show, :create]
+    resources :messages, :only => [:new, :create]
+
     resources :posts
 
     collection do
