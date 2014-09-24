@@ -42,7 +42,7 @@
 
                     .feed-item-timestamp
                       %i.fa.fa-clock-o
-                      = format_timestamp(c.created_at)
+                      = format_timestamp(c.updated_at)
                 .row.feed-item-content
                   .span7
                     = link_to "Conversation between #{c.users.map(&:display_name).join(', ')}", user_conversation_path(@current_user, c)
