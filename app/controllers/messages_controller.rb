@@ -48,7 +48,7 @@ class MessagesController < ApplicationController
       @conversation.users << @current_user if known_users.exclude?(@current_user)
       @conversation.save
     else
-      @conversation = Conversation.find_by_id(params[:message][:conversation_id])
+      @conversation = @current_user.conversations.find_by_id( params[:message][:conversation_id] )
     end
 
     # At this point, the conversation is identified, the users are known. Let's

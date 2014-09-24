@@ -89,6 +89,9 @@ describe MessagesController do
   describe "Creating a message from conversations view" do
     before(:each) do
       request.env["HTTP_REFERER"] = user_conversation_path(user, conversation)
+
+      conversation.users += [user, other_user]
+      conversation.save
     end
 
     let(:params) { { :users => "#{user.username}, #{other_user.username}", :message => {:body => "Hello", :conversation_id => conversation.id} } }
