@@ -4,7 +4,7 @@ class ConversationsController < ApplicationController
   before_filter :require_login
 
   def index
-    @conversations  = @current_user.conversations
+    @conversations  = @current_user.conversations.order("updated_at DESC")
     @conversation   = Conversation.new
     @message        = Message.new
   end

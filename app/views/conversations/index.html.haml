@@ -38,16 +38,16 @@
             .row
               .span6
                 .row.feed-item-bar
-                  .span7
+                  .span6
 
                     .feed-item-timestamp
                       %i.fa.fa-clock-o
                       = format_timestamp(c.updated_at)
                 .row.feed-item-content
-                  .span7
-                    = link_to "Conversation between #{c.users.map(&:display_name).join(', ')}", user_conversation_path(@current_user, c)
+                  .span6
+                    = "Conversation between #{c.users.map(&:display_name).join(', ')}"
 
-              .span3.pull-right{:style => "margin-top: 15px;"}
+              .span3.pull-right{:style => "line-height: 60px; height: 60px;"}
                 = link_to user_conversation_path(@current_user, c) do
                   Go to conversation
                   %i.fa.fa-chevron-right
