@@ -1,4 +1,9 @@
-//TODO @animeshpathak Replace this completely with google Maps calls
+// TODO @animeshpathak Replace this completely with google Maps calls
+
+var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
+var GMAPS_VERSION = 3.17; //latest stable version
+var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
+var STREET_ZOOM = 18; // the zoom level at which we see street details
 
 /*
 var size         = new OpenLayers.Size(64,64);
@@ -83,18 +88,19 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 });
 */
 
+  var map; //this is a shared variable used by all methods.
+
   function initialize() {
     //TODO change this Tepalciongo-specific info to be more generic
     var lon	= -98.8460549;
     var lat	= 18.5957189;
-    var zoom    = 14;
 
     var mapOptions = {
-      zoom: zoom,
+      zoom: REGION_ZOOM,
       center: new google.maps.LatLng(lat, lon)
       };
     // Initialize the map, and add the geographical layer to it.
-    var map = new google.maps.Map(document.getElementById('gmap'),
+    map = new google.maps.Map(document.getElementById('gmap'),
         mapOptions);
    hideMapLoading();
   }
@@ -103,7 +109,7 @@ $(document).ready(function() {
   console.log("Ready to display map using Google Maps!!")
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&sensor=false&' +
       'callback=initialize';
   document.body.appendChild(script);
 
@@ -120,13 +126,13 @@ $(document).ready(function() {
   map.addControl(click);
   click.activate();
 
-
+*/
 
 
   // Listener for location attribute updates
-  $("#new_report #report_location_attributes_street_number").on("change", function()
+  $("#new_report #report_location_attributes_address").on("change", function()
   {
-    console.log("Starting check!")
+    console.log("Starting geocoding!")
     showMapLoading();
 
     // There already is a custom listener on an ESRI map. This is only for
@@ -134,54 +140,51 @@ $(document).ready(function() {
     if(typeof esri !== "undefined")
       return
 
-    console.log("It's not ESRI!");
-    var streetType   = $("#report_location_attributes_street_type").val();
-    var streetName   = $("#report_location_attributes_street_name").val();
-    var streetNumber = $("#report_location_attributes_street_number").val();
+    console.log("It's not ESRI! Trying Google Maps now...");
+    var addressString   = $("#report_location_attributes_address").val() + ", Mexico";
 
-    var addressString = streetName + " " + streetNumber;
-    var countryCode   = "MX";
+    var geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="+ escape(addressString) +"&key=" + GMAP_API_KEY;
 
-    console.log("http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode)
+    console.log(geocodingUrl);
 
     $.ajax({
-      url: "http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode,
+      url: geocodingUrl,
       type: "GET",
       timeout: 5000,
-      success: function(m) {
-        var candidates = m;
+      success: function(response) {
+        //response is a PlainObject, i.e., key-value pairs
+        var results = response.results;//this is an array
 
-        if (candidates === undefined || candidates.length == 0)
+        if (results === undefined || results.length == 0)
           $("#map-error-description").show();
         else
         {
           console.log("Starting to plot...");
-          var latitude  = candidates[0].lat;
-          var longitude = candidates[0].lon;
+          var latitude  = results[0].geometry.location.lat;
+          var longitude = results[0].geometry.location.lng;
 
           // Update the form so we can pass along the ESRI results.
           $("#new_report #report_location_attributes_latitude").val(latitude);
           $("#new_report #report_location_attributes_longitude").val(longitude);
           $("#new_report #map-error-description").hide();
 
-          console.log(markersLayer)
-
-          markersLayer = new OpenLayers.Layer.Markers( "Markers" );
-          map.addLayer(markersLayer);
-
-          fromProjection = new OpenLayers.Projection("EPSG:4326");
-          toProjection   = new OpenLayers.Projection("EPSG:900913");
-          var position = new OpenLayers.LonLat(longitude, latitude).transform( fromProjection, toProjection);
-          markersLayer.addMarker(new OpenLayers.Marker(position, orangeMarker));
+          console.log("("+latitude+","+longitude+")");
+          var markerLoc = new google.maps.LatLng(latitude, longitude);
+          var marker = new google.maps.Marker({
+            position: markerLoc,
+            map: map,
+            animation: google.maps.Animation.DROP,
+          });
 
           console.log("Added marker to page!")
-          map.setCenter(position, 2);
+          map.panTo(markerLoc);
+          map.setZoom(STREET_ZOOM);
         }
       },
       error: function() { $("#map-error-description").show(); },
       complete: function() { hideMapLoading(); }
     });
   });
-*/
+
 
 });

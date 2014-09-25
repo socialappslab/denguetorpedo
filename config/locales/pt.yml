@@ -7,6 +7,7 @@ pt:
     neighborhood_id: "Comunidade"
     name: Nome
     number: Número
+    address: endereço
     content: Conteúdo
     profile_photo: "Foto do perfil"
     photo: "Foto"
