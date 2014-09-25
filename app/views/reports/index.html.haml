@@ -71,6 +71,10 @@
     .span7#map_div
       = render :partial => "reports/map"
     = render :partial => "reports/arcgis_map"
+  - elsif @neighborhood.name == Neighborhood::Names::TEPALCINGO
+    .span7#map_div
+      = render :partial => "reports/google_map"
+    = javascript_include_tag "googlemap/map"
   - else
     .span7#map_div
       = render :partial => "reports/osm_map"
