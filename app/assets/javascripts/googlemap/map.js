@@ -103,7 +103,6 @@ $(document).ready(function() {
   console.log("Ready to display map using Google Maps!!")
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  // Note from AP, trying explicit version number to avoid the overflow of the map div
   script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
       'callback=initialize';
   document.body.appendChild(script);
