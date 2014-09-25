@@ -324,6 +324,15 @@
     overflow-y:hidden;
   }
 
+  #gmap{
+    height: 500px;
+    position:relative;
+    overflow-y:hidden;
+
+    /* to undo the above img hack */
+    img { max-width: none; }
+  }
+
   #OSMap {
     height: 500px;
   }

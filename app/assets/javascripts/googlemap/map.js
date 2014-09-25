@@ -94,7 +94,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
       center: new google.maps.LatLng(lat, lon)
       };
     // Initialize the map, and add the geographical layer to it.
-    var map = new google.maps.Map(document.getElementById('OSMap'),
+    var map = new google.maps.Map(document.getElementById('gmap'),
         mapOptions);
    hideMapLoading();
   }
@@ -103,7 +103,8 @@ $(document).ready(function() {
   console.log("Ready to display map using Google Maps!!")
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
+  // Note from AP, trying explicit version number to avoid the overflow of the map div
+  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
       'callback=initialize';
   document.body.appendChild(script);
 
