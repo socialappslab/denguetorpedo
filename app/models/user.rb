@@ -92,6 +92,7 @@ class User < ActiveRecord::Base
 
   has_many :team_memberships, :dependent => :destroy
   has_many :teams, :through => :team_memberships
+  has_many :user_notifications, :dependent => :destroy
 
   has_and_belongs_to_many :conversations
 
