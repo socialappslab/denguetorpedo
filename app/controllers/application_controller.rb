@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
       I18n.locale = http_accept_language.compatible_language_from(available) || I18n.default_locale
     end
 
-    if I18n.locale == User::Locales::SPANISH
+    if I18n.locale.to_s == User::Locales::SPANISH
       @facebook_locale = "es_LA"
     else
       @facebook_locale = "pt_BR"
