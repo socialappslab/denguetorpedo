@@ -125,9 +125,7 @@ class ReportsController < NeighborhoodsBaseController
 
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-      # TODO: Simplify this...
-      error_flash = "<ul><li>#{flash[:alert]}</li>"
-
+      error_flash = "<h2>#{I18n.t("views.application.devise_errors", :num_errors => @report.errors.count)}</h2><ul>"
       @report.errors.full_messages.each do |error_msg|
         error_flash += "<li>#{error_msg}</li>"
       end
