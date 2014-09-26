@@ -318,7 +318,7 @@ es:
       success_join_flash: "Usted se unió al equipo exitosamente"
       success_create_flash: "Usted creó un equipo exitosamente"
       success_leave_flash: "Usted dejó al equipo exitosamente"
-      join: "Únase a este equipo"
+      join: "Únase a un equipo"
       leave: Salir
       create: "Cree un equipo"
       my_team: "Mi equipo"
