@@ -7,7 +7,7 @@ es:
     neighborhood_id: "Comunidad"
     name: Nombre
     number: Número
-    address: Galeana 1, El Santuario, 62920 Tepalcingo, Morelos, Mexico
+    address: Dirección
     content: Contenido
     profile_photo: "Foto del perfil"
     photo: "Foto"
@@ -81,6 +81,8 @@ es:
       team:
         profile_photo: Foto del equipo
         name: Nombre del equipo
+      locations:
+        neighborhood: Barrio
 
     errors:
       template:
@@ -421,6 +423,8 @@ es:
         date: "Data de la actividad"
         time: "Hora de la actividad"
     reports:
+      new:
+        neighborhood_address: Nombre el barrio donde encontró el foco
       types:
         delete: Eliminar
       edit:
