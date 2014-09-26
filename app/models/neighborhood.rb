@@ -43,6 +43,18 @@ class Neighborhood < ActiveRecord::Base
     return [Names::TEPALCINGO, Names::OCACHICUALLI].include?(self.name)
   end
 
+  def mexican?
+    return self.country.name == "Mexico"
+  end
+
+  def brazilian?
+    return self.country.name == "Brazil"
+  end
+
+  def nicaraguan?
+    return self.country.name == "Nicaragua"
+  end
+
   # NOTE: this method returns a Country object.
   def country
     return Country[self.country_string_id]
