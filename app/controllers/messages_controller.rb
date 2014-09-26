@@ -62,6 +62,13 @@ class MessagesController < ApplicationController
       # attached.
       @conversation.touch
 
+      # Create a new notification for each user in the conversation, except
+      # the creator.
+      @conversation.users.each do |u|
+        next if @current_user == u
+        UserNotification.create(:user_id => u.id, :notification_type => UserNotification::Types::MESSAGE, :viewed => false)
+      end
+
       flash[:notice] = "Message created successfully!"
       redirect_to user_conversation_path(@current_user, @conversation) and return
     else
