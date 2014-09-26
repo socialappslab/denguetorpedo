@@ -14,6 +14,12 @@ describe "Conversations", :type => :feature do
   end
 
   context "when visiting /conversations" do
+    it "clears all notifications" do
+      un = FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)
+      visit "/"
+      expect(page).not_to have_css(".badge")
+    end
+
     it "displays existing conversations for each user involved" do
       visit user_conversations_path(user)
       expect(page).to have_content("Conversation between #{conversation.users.map(&:display_name).join(", ")}")

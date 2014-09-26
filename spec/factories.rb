@@ -87,4 +87,7 @@ FactoryGirl.define do
 	factory :conversation do
 	end
 
+	factory :user_notification do
+	end
+
 end
