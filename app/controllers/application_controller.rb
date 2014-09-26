@@ -63,23 +63,17 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    # If the user is present, then let's check if there is
-    # an explicit params[:locale]. If there is, then let's
-    # update the user's locale as long as they differ. If no params
-    # are present, then let's update I18n locale to what the user has.
-    # In the case that the user is not signed in, or does not have a locale,
-    # we should fallback to
-    if @current_user
-      if params[:locale]
-        @current_user.update_column(:locale, params[:locale].to_s) if @current_user.locale != params[:locale].to_s
-        I18n.locale = params[:locale].to_s
-      else
-        I18n.locale = (@current_user.locale || I18n.default_locale).to_s
-      end
+    # The choice to set a language is given by the following rules, in order
+    # of importance:
+    # 1. If user is logged in, and has locale set, use that locale (if compatible),
+    # 2. If no locale is set, then extract browser's default language
+    #    and use it (if compatible),
+    # 3. Default to I18n.default_locale if all else fails.
+    available = [User::Locales::PORTUGUESE, User::Locales::SPANISH]
+    if @current_user.present? && available.include?(@current_user.locale)
+      I18n.locale = @current_user.locale
     else
-      # NOTE: We should keep the cookies around for visitors.
-      cookies[:locale_preference] = params[:locale] if params[:locale].present?
-      I18n.locale                 = (cookies[:locale_preference] || I18n.default_locale).to_s
+      I18n.locale = http_accept_language.compatible_language_from(available) || I18n.default_locale
     end
 
     if I18n.locale == User::Locales::SPANISH

@@ -1,6 +1,5 @@
 class HomeController < ApplicationController
   before_filter :redirect_if_logged_in, :only => [:index]
-  before_filter :identify_country,      :only => [:index]
 
   #----------------------------------------------------------------------------
   # GET /
@@ -72,17 +71,6 @@ class HomeController < ApplicationController
     flash.keep(:notice)
     flash.keep(:alert)
     redirect_to user_path(@current_user) if @current_user.present?
-  end
-
-  #----------------------------------------------------------------------------
-
-  # NOTE: The default country is Brazil.
-  def identify_country
-    if I18n.locale == :es
-      @country = Country.find_country_by_name("Mexico")
-    else
-      @country = Country.find_country_by_name("Brazil")
-    end
   end
 
   #----------------------------------------------------------------------------

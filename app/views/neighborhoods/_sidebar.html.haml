@@ -4,6 +4,8 @@
     = image_tag(@neighborhood.picture, :class => "img-rounded")
     .sidebar-entity-name
       = "#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id}"
+    .sidebar-entity-name
+      = "#{@neighborhood.country_name}"
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}

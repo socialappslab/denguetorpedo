@@ -118,12 +118,11 @@
   &:mousedown {
     border-bottom: thick dotted #ff0000;
   }
-
 }
 
-.esriPopup .actionsPane .zoomTo {
-  display: none;
-}
+/*-----------------------------------------------------------------------------
+  Reports feed
+*/
 
 .elimination_type{
   height:auto;
@@ -135,39 +134,51 @@
   width: 100%;
 }
 
+#report_elimination_method_id {
+  height: auto;
+  font-size: 16px;
+  width: 100%;
+}
+
+#report_breeding_site_id {
+  height: auto;
+  font-size: 16px;
+  width: 100%;
+}
+
 #address .street_type{
   width:200px;
 }
 
-#report_display {
-  #reports{
-    display: block;
+#reports{
+  display: block;
+}
+
+#new_report{
+  display: block;
+
+  .new_report_label{
+    font-weight: bold;
   }
 
-  #new_report{
-    display: block;
+  .inline_display{
+    display:inline;
+  }
 
-    .new_report_label{
-      font-weight: bold;
-    }
+  #mark_map_bttn{
+    border:1px;
+    border-style:solid;
+    border-color: black;
+    color:black;
 
-    .inline_display{
-      display:inline;
-    }
-
-    #mark_map_bttn{
-      border:1px;
-      border-style:solid;
-      border-color: black;
-      color:black;
-
-      &:hover{
-        color:blue;
-      }
+    &:hover{
+      color:blue;
     }
   }
 }
 
+/*-----------------------------------------------------------------------------
+*/
 #attention_div p{
   font-weight:bold;
   font-size:13px;
@@ -197,7 +208,6 @@
 
 
 .likes_button {
-
   .likes_text{
     display:inline;
   }
@@ -262,7 +272,6 @@
 
 }
 
-
 .countdown {
   color: $orange;
 }
@@ -284,6 +293,12 @@
 
 //-----------------------------------------------------------------------------
 // ESRI map-related customization
+
+
+.esriPopup .actionsPane .zoomTo {
+  display: none;
+}
+
 
 #map_div {
   position:absolute;

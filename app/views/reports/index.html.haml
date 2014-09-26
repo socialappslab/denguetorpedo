@@ -44,18 +44,10 @@
 /------------------------------------------------------------------------------
 
 .row
-  #report_display.span9.offset1
-    -# TODO @awdorsett - all reports sorted by most recent?
-    -# all reports
+  .span9.offset1
     #reports
       - @reports.each do |report|
-        - if report.open?
-          :javascript
-            $(document).ready(function()
-            {
-              var newYear = new Date(#{report.expire_date.strftime("%s").to_i * 1000});
-              $(".countdown").countdown({until: newYear, format: 'HMS', compact: 'true'});
-            });
+        - next if report.sms_incomplete? && @current_user && @current_user != report.reporter
 
         .report{ :class => (report.eliminated? ? "eliminated" : "open") }
           = render :partial => "reports/metadata",   :locals => {:report => report}
@@ -71,17 +63,10 @@
     .span7#map_div
       = render :partial => "reports/map"
     = render :partial => "reports/arcgis_map"
-  - elsif @neighborhood.name == Neighborhood::Names::TEPALCINGO
+  - elsif @neighborhood.spanish?
     .span7#map_div
       = render :partial => "reports/google_map"
     = javascript_include_tag "googlemap/map"
-  - else
-    .span7#map_div
-      = render :partial => "reports/osm_map"
-
-    = javascript_include_tag "openstreetmap/OpenLayers"
-    = javascript_include_tag "openstreetmap/proj4js-compressed"
-    = javascript_include_tag "openstreetmap/map"
 
 
 /------------------------------------------------------------------------------

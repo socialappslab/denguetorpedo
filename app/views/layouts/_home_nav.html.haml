@@ -11,11 +11,12 @@
   .span3.offset3
     .main_nav_button
       .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
-        %h1{style: 'color:black;'}
-          = I18n.t("home_navigation.education.title")
-          %i.fa.fa-caret-down
-        %h3
-          = I18n.t("home_navigation.education.description")
+        %a{:href => "#"}
+          %h1{style: 'color:black;'}
+            = I18n.t("home_navigation.education.title")
+            %i.fa.fa-caret-down
+          %p{:style => "font-size: 16px; color: white;"}
+            = I18n.t("home_navigation.education.description")
 
       %ul.dropdown-menu
         - if I18n.locale.to_s == "es"
@@ -29,11 +30,12 @@
   .span3
     .main_nav_button
       .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
-        %h1{style: 'color:black;'}
-          = I18n.t("home_navigation.howto.title")
-          %i.fa.fa-caret-down
-        %h3{style: "margin-left:-5px;"}
-          = I18n.t("home_navigation.howto.description")
+        %a{:href => "#"}
+          %h1{style: 'color:black;'}
+            = I18n.t("home_navigation.howto.title")
+            %i.fa.fa-caret-down
+          %p{:style => "font-size: 16px; margin-left: -5px; color: white;"}
+            = I18n.t("home_navigation.howto.description")
 
       %ul.dropdown-menu
         - DocumentationSection.order("order_id ASC").each do |section|
@@ -45,13 +47,13 @@
       = link_to prizes_path do
         %h1{style: 'color:black;'}
           = I18n.t("home_navigation.prizes.title")
-        %h3
+        %p{:style => "font-size: 16px; color: white;"}
           = I18n.t("home_navigation.prizes.description")
 
   - if @current_user.nil?
-    .span1
-      = render :partial => "home/flags"
-    .span5
+    -# .span1
+    -#   = render :partial => "home/flags"
+    .span6.pull-right
       #login
 
         = form_tag(session_path, :style => "margin-bottom: 0px;") do
@@ -63,9 +65,9 @@
 
 
   - else
-    .span2
-      = render :partial => "home/flags"
-    .span5
+    -# .span2
+    -#   = render :partial => "home/flags"
+    .span7.pull-right
       #logged_in{:style => "float:right;"}
         %h3{:style => "display: inline-block;"}
           = I18n.t("login_form.greeting", :name => @current_user.display_name )

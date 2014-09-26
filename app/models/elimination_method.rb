@@ -2,6 +2,9 @@ class EliminationMethod < ActiveRecord::Base
   belongs_to :elimination_type
   belongs_to :breeding_site
 
+  validates :points, :presence => true
+  validates_numericality_of :points
+
   #----------------------------------------------------------------------------
 
   def description

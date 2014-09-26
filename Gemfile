@@ -49,6 +49,7 @@ gem "prawnto_2", :require => "prawnto"
 gem 'rails-i18n'
 gem "countries"
 gem "devise-i18n"
+gem "http_accept_language"
 
 #------------------------------------------------------------------------------
 # Front-end tools
@@ -65,7 +66,7 @@ gem 'rails_autolink'
 gem 'yui-compressor'
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
-  gem 'bootstrap-sass', '~> 2.0.3'
+  gem 'bootstrap-sass', '~> 2.3.2'
   gem 'coffee-rails', "~> 3.2.1"
   gem 'uglifier', '>= 1.0.3'
 end
