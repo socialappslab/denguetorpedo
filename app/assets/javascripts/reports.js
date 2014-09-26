@@ -136,16 +136,16 @@ function selected_tab_css_update(id){
   --------------------*/
 
 // Method to retrieve (lat, long) coordinates from OSM.
-function fetchCoordinatesFromOSM(addressString, countryCode){
-  $.ajax({
-    url: "http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode,
-    type: "GET",
-    timeout: 5000,
-    success: function(result) {
-      window.test = result;
-    }
-  });
-}
+// function fetchCoordinatesFromOSM(addressString, countryCode){
+//   $.ajax({
+//     url: "http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode,
+//     type: "GET",
+//     timeout: 5000,
+//     success: function(result) {
+//       window.test = result;
+//     }
+//   });
+// }
 
 // TODO: Maybe deprecate this.
 function setLocationVariablesUsingOSM(location, event)
