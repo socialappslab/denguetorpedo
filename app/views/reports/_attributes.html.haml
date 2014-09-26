@@ -26,7 +26,7 @@
         %h1{:style => "margin-top: 15px;"}
           = I18n.t("activerecord.models.elimination_method")
         %p
-          = report.elimination_method.description
+          = report.elimination_method.description + " (#{report.elimination_method.points} #{I18n.t("attributes.points").downcase})"
         %br
 
       - elsif report.open? && @current_user.present? && !report.expired?
