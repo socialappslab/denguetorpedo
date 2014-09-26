@@ -1,18 +1,6 @@
 = render :partial => "shared/flashes"
 
 %div{style: "min-height:700px;"}
-  / Display the Mare evacuation alert content box if the selected neighborhood
-  / is Mare.
-  - if @neighborhood && @neighborhood.name == Neighborhood::Names::MARE
-    .row
-      %div{:style => "position: fixed; display: block; z-index: 10; top: 275px; width: 1170px; margin-left: 10px;"}
-        .alert.alert-danger{:style => "margin-bottom: 0px !important; padding-top: 20px; padding-bottom: 20px;"}
-          %h2{:style => "font-weight: bold; line-height: 24px;"}
-            = "Dengue Torpedo está suspenso na Maré por causa da ocupação militar e da violência que geram condicões desfavoráveis ao trabalho comunitário de controle da dengue."
-          %p{:style => "font-size: 16px; margin-top: 20px;"}
-            = "Dengue Torpedo is suspended in Maré due to the military occupation of the neighborhood and the violence which generate unfavorable conditions for the community work of dengue control."
-
-
   .row
     .span5{:style => "border-right: 1px solid #ccc;"}
       = render :partial => "neighborhoods/sidebar"
