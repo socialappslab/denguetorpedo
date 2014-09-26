@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :current_user
   before_filter :set_locale
+  before_filter :get_new_notifications
 
   #----------------------------------------------------------------------------
 
@@ -51,6 +52,14 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
+  def get_new_notifications
+    return if @current_user.blank?
+    notifications = @current_user.user_notifications.where(:viewed => [nil, false])
+    @message_notifications = notifications.where(:notification_type => UserNotification::Types::MESSAGE)
+  end
+
+  #----------------------------------------------------------------------------
+
   private
 
   def ensure_team_chosen
@@ -84,6 +93,5 @@ class ApplicationController < ActionController::Base
   end
 
   #----------------------------------------------------------------------------
-
 
 end
