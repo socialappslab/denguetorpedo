@@ -29,7 +29,8 @@ describe UsersController do
 				fill_in "user_last_name",  					 :with => "Tester"
 				fill_in "user_password", 						 :with => "abcdefg"
 				fill_in "user_password_confirmation", :with => "abcdefg"
-				select(Neighborhood.first.name, :from => "user_neighborhood_id")
+
+				select(Neighborhood.first.geographical_name, :from => "user_neighborhood_id")
 				click_button "Cadastre-se"
 
 				expect(current_path).to eq( teams_path )
