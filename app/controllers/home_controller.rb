@@ -11,6 +11,12 @@ class HomeController < ApplicationController
     @all_neighborhoods = Neighborhood.order(:id).limit(3)
     @neighborhood      = @all_neighborhoods.first
 
+
+    @searchable_neighborhoods = []
+    City.order(:name).includes(:neighborhoods).each do |c|
+      @searchable_neighborhoods += c.neighborhoods.map {|n| [n.geographical_name, neighborhood_path(n)] }
+    end
+
     # We're manually ordering this to display the diversity of
     # our cities.
     @cities = [ City.find_by_name("Rio de Janeiro"), City.find_by_name("Tepalcingo"), City.find_by_name("Managua"), City.find_by_name("Cuernavaca") ]
