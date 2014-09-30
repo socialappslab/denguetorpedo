@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class Neighborhood < ActiveRecord::Base
-  attr_accessible :name, :photo, :city, :state_string_id, :country_string_id, :as => :admin
+  attr_accessible :name, :photo, :city, :state_id, :state_string_id, :country_string_id, :as => :admin
 
   #----------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   has_many :locations
+  belongs_to :city
 
   # TODO: Deprecate houses association
   has_many :houses
@@ -26,10 +27,8 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  validates :name,              :presence => true
-  validates :city,              :presence => true
-  validates :state_string_id,   :presence => true
-  validates :country_string_id, :presence => true
+  validates :name,    :presence => true
+  validates :city_id, :presence => true
 
   #----------------------------------------------------------------------------
 
