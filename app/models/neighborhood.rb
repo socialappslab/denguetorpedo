@@ -6,9 +6,12 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   module Names
-    MARE         = "Maré"
-    TEPALCINGO   = "Tepalcingo"
-    OCACHICUALLI = "Ocachicualli"
+    MARE           = "Maré"
+    TEPALCINGO     = "Tepalcingo"
+    OCACHICUALLI   = "Ocachicualli"
+    FRANCISCA_MEZA = "Francisco Meza"
+    HIALEAH        = "Hialeah"
+    ARIEL_DARCE    = "Ariel Darce"
   end
 
   #----------------------------------------------------------------------------
