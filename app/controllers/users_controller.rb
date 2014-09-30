@@ -85,7 +85,7 @@ class UsersController < ApplicationController
 
       @news_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @user_reports = @user_reports.reports
+      @user_reports = @user.reports
       @user_posts   = @user.posts
       @news_feed    = (@user_reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
