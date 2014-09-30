@@ -32,9 +32,10 @@ var newmarker = null; // this is a global var for the new marker, to be updated 
 // Helpers
 //--------
 
+//updates the form elements for latitude and longitude
 function updateHTMLFormLocation(lat, long){
-          $("#new_report #report_location_attributes_latitude").val(lat);
-          $("#new_report #report_location_attributes_longitude").val(long);
+  $("#new_report #report_location_attributes_latitude").val(lat);
+  $("#new_report #report_location_attributes_longitude").val(long);
 }
 
 // Creates a new marker at markerLoc and stores it in newMarker.
@@ -73,6 +74,8 @@ function createOrUpdateNewMarker(markerLoc){
   }
 }
 
+
+//deprecated?
 var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
 {
   for (var i = 0; i < locationsArray.length; i++) {
@@ -81,6 +84,7 @@ var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
   }
 };
 
+//deprecated?
 var addLocationToOSMapWithMarker = function(loc, map, marker)
 {
   if (loc && loc.latitude > 0 && loc.longitude > 0)
@@ -108,6 +112,15 @@ var addLocationToOSMapWithMarker = function(loc, map, marker)
     //see if lat and long are set, if so, this is an error page, and we should set
     //the marker
     //if(lat and long not zero)
+    var oldlat = $("#new_report #report_location_attributes_latitude").val();
+    var oldlong = $("#new_report #report_location_attributes_longitude").val();
+    if (oldlat != "" && oldlong != ""){
+      //we want none of them to be blank
+      var markerLoc = new google.maps.LatLng(oldlat, oldlong);
+      console.log("setting up stored marker at "+ markerLoc);
+      createOrUpdateNewMarker(markerLoc);
+    }
+
 
     //add handler to map click() event, so as to add or move markers when it is clicked
     google.maps.event.addListener(map, 'click', function(clickEvent) {
