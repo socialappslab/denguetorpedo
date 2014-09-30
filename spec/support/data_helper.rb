@@ -11,6 +11,7 @@ def populate_data
 
   ["a", "b"].each_with_index do |letter, index|
     u = User.new(:email => "#{letter}@denguetorpedo.com")
+    u.username   = "#{letter}@denguetorpedo.com"
     u.password   = "abcdefg"
     u.first_name = "#{letter}#{index}"
     u.last_name  = "Tester"
@@ -23,6 +24,7 @@ def populate_data
   u = User.find_by_email("c@denguetorpedo.com")
   if u.nil?
     u = User.new(:email => "c@denguetorpedo.com")
+    u.username   = "c@denguetorpedo.com"
     u.password   = "abcdefg"
     u.first_name = "Coord"
     u.last_name  = "Inator"
@@ -34,6 +36,7 @@ def populate_data
   u = User.find_by_email("sponsor@denguetorpedo.com")
   if u.nil?
     u = User.new(:email => "sponsor@denguetorpedo.com")
+    u.username   = "sponsor@denguetorpedo.com"
     u.password   = "abcdefg"
     u.first_name = "Sponsor"
     u.last_name  = "Sponsor"
@@ -87,7 +90,7 @@ def populate_data
   # Populate teams and prizes.
   10.times do |index|
     h = Team.create!(:neighborhood_id => mare.id, :name => "Team Sponsor #{index}!")
-    u = User.create!(:email => "sponsor_#{index}@denguetorpedo.com", :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
+    u = User.create!(:username => "sponsor_#{index}@denguetorpedo.com", :neighborhood_id => mare.id, :role => User::Types::SPONSOR, :password => "abcdefg", :first_name => "Senor", :last_name => "Sponsor ##{index}")
     TeamMembership.create(:user_id => u.id, :team_id => h.id)
     Prize.create!(:user_id => u.id, :team_id => h.id, :prize_name => "Prize ##{index}", :description => "This is a prize ##{index}", :cost => index * 100, :stock => index, :neighborhood_id => mare.id, :expire_on => Time.now + 10.years)
   end

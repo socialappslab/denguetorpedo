@@ -2,7 +2,7 @@
   .span9
     .row.report-metadata
       .span5
-        = link_to report.reporter.first_name, user_path(report.reporter), :style => "font-weight: bold;"
+        = link_to report.reporter.display_name, user_path(report.reporter), :style => "font-weight: bold;"
         .feed-item-timestamp
           %i.fa.fa-clock-o
           = I18n.t("common_terms.reported")
@@ -12,7 +12,7 @@
 
         - if report.eliminated? && report.eliminator
           %div{:style => "display: block;"}
-            = link_to report.eliminator.first_name, user_path(report.eliminator), :style => "font-weight: bold;"
+            = link_to report.eliminator.display_name, user_path(report.eliminator), :style => "font-weight: bold;"
             .feed-item-timestamp
               %i.fa.fa-clock-o
               = I18n.t("common_terms.eliminated")
@@ -20,7 +20,7 @@
 
         - if report.verifier
           %div{:style => "display: block;"}
-            = link_to report.verifier.first_name, user_path(report.verifier), :style => "font-weight: bold;"
+            = link_to report.verifier.display_name, user_path(report.verifier), :style => "font-weight: bold;"
             .feed-item-timestamp
               %i.fa.fa-clock-o
               = I18n.t("common_terms.verified")
