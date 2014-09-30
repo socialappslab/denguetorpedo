@@ -13,7 +13,7 @@
         %h1{:style => "margin-top: 15px;"}
           = I18n.t("activerecord.models.location")
         %p
-          = report.complete_address
+          = report.descriptive_address
           = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
 
     - if report.breeding_site_id.present?

@@ -60,32 +60,52 @@ class ReportsController < NeighborhoodsBaseController
 
   def create
     # If location was previously created, use that
+
     # TODO @awdorsett: The new refactoring will make this fail. Let's move away
     # from usage of session.
-
+    # TODO: I don't think we're using saved_location anymore so we should clean up
+    # this method.
     saved_location = Location.find_by_id(session[:location_id])
     location_attributes = params[:report][:location_attributes]
 
     if saved_location
       location = saved_location
     else
-      # Find the location based on user's input (street type, name, number) and
-      # ESRI's geolocation (latitude, longitude).
-      # When the user inputs an address into the textfields, we trigger an ESRI
-      # map search on the associated map that updates the x and y hidden fields
-      # in the form. In the case that the map is unavailable (or JS is disabled),
-      # an after_commit hook into the Location model will trigger a background
-      # worker to fetch the map coordinates.
+      if location_attributes.blank?
+        flash[:alert] = I18n.t("report.form.fill_in_complete_address")
+        redirect_to neighborhood_reports_path(@neighborhood, :params => {:new_report => params[:report].except(:before_photo)}) and return
+      end
 
-      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(
-        location_attributes[:street_type].downcase.titleize,
-        location_attributes[:street_name].downcase.titleize,
-        location_attributes[:street_number].downcase.titleize
-      )
+      # At this point, we know that at least one of three types of locations
+      # exists.
+      # There are three different types of locations we may get:
+      # 1. Full street type, name and number coming from Brazilian communities (to be deprecated),
+      # 2. Single address field coming from Mexican communities,
+      # 3. Vague neighborhood/district from Nicaraguan communities.
+      # NOTE: We should NOT make any assumptions about pre-existing location
+      # instances with same user input. For instance, if we already have a location
+      # record with same :neighborhood string, then we should use the existing
+      # location record. We should always choose the conservative option.
+      location = Location.new
+
+      if location_attributes[:address].present?
+        location.address = location_attributes[:address]
+      end
+
+      if location_attributes[:street_type].present? && location_attributes[:street_name].present? && location_attributes[:street_number].present?
+
+        location.street_type   = location_attributes[:street_type].downcase.titleize
+        location.street_name   = location_attributes[:street_name].downcase.titleize
+        location.street_number = location_attributes[:street_number].downcase.titleize
+      end
+
+      if location_attributes[:neighborhood].present?
+        location.neighborhood = location_attributes[:neighborhood]
+      end
 
       location.latitude     = location_attributes[:latitude]
       location.longitude    = location_attributes[:longitude]
-      location.neighborhood = @neighborhood
+      location.neighborhood_id = @neighborhood.id
       location.save
     end
 
@@ -95,12 +115,8 @@ class ReportsController < NeighborhoodsBaseController
     @report.location_id  = location.id
     @report.completed_at = Time.now
 
-
-    # TODO seperated this from if statement in order to add all errors to flash[:alert], better way?
-    valid_address = validate_address(location_attributes,@report)
-
     # Now let's save the report.
-    if @report.save && valid_address
+    if @report.save
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
@@ -109,8 +125,7 @@ class ReportsController < NeighborhoodsBaseController
 
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-      error_flash = "<ul><li>#{flash[:alert]}</li>"
-
+      error_flash = "<h2>#{I18n.t("views.application.devise_errors", :num_errors => @report.errors.count)}</h2><ul>"
       @report.errors.full_messages.each do |error_msg|
         error_flash += "<li>#{error_msg}</li>"
       end
@@ -166,7 +181,7 @@ class ReportsController < NeighborhoodsBaseController
 
     location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
     location.longitude    = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
-    location.neighborhood = @neighborhood
+    location.neighborhood_id = @neighborhood.id
     location.save
 
     @report.location_id  = location.id
@@ -409,20 +424,6 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
-  end
-
-  #----------------------------------------------------------------------------
-
-  def validate_address(location_params, report)
-    if (location_params[:street_name].blank? && report.location.street_name.blank?) ||
-       (location_params[:street_type].blank? && report.location.street_type.blank?) ||
-       (location_params[:street_number].blank? && report.location.street_number.blank?)
-
-        flash[:alert] = flash[:alert].to_s + " " + I18n.t("report.form.fill_in_complete_address")
-        return false
-    end
-
-    return true
   end
 
   #----------------------------------------------------------------------------

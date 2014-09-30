@@ -47,13 +47,13 @@ describe "Reports", :type => :feature do
 
     end
 
-    it "notifies the user if report location is empty" do
-      fill_in "report_content", :with => "This is a description"
-      select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
-      attach_file("report_before_photo", photo_filepath)
-      click_button I18n.t("views.buttons.create")
-      expect(page).to have_content("Você deve enviar o endereço completo")
-    end
+    # it "notifies the user if report location is empty" do
+    #   fill_in "report_content", :with => "This is a description"
+    #   select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
+    #   attach_file("report_before_photo", photo_filepath)
+    #   click_button I18n.t("views.buttons.create")
+    #   expect(page).to have_content("Você deve enviar o endereço completo")
+    # end
 
     it "notifies the user if identification type is empty" do
       fill_in "report_content", :with => "This is a description"

@@ -46,6 +46,18 @@ class Neighborhood < ActiveRecord::Base
     return [Country::Names::MEXICO, Country::Names::NICARAGUA].include?(self.country.name)
   end
 
+  def mexican?
+    return self.country.name == "Mexico"
+  end
+
+  def brazilian?
+    return self.country.name == "Brazil"
+  end
+
+  def nicaraguan?
+    return self.country.name == "Nicaragua"
+  end
+
   def country
     return self.city.country
   end

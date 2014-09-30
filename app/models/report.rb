@@ -204,6 +204,11 @@ class Report < ActiveRecord::Base
     return self.location.complete_address if self.location.present?
   end
 
+  def descriptive_address
+    return "" if self.location.nil?
+    return self.location.descriptive_address
+  end
+
   #----------------------------------------------------------------------------
 
   def expire_date

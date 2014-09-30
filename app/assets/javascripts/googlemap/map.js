@@ -1,4 +1,13 @@
-//TODO @animeshpathak Replace this completely with google Maps calls
+// TODO @animeshpathak Replace this completely with google Maps calls
+
+var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
+var GMAPS_VERSION = 3.17; //latest stable version
+var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
+var STREET_ZOOM = 18; // the zoom level at which we see street details
+//TODO change this Tepalciongo-specific info to be more generic
+var COMMUNITY_LON = -98.8460549;
+var COMMUNITY_LAT = 18.5957189;
+
 
 /*
 var size         = new OpenLayers.Size(64,64);
@@ -17,10 +26,60 @@ var map, fromProjection, toProjection, markersLayer; //filled in later in the in
 
 
 var coordinates = [];
+var map; //this is a shared variable used by all methods.
+var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
+
+
+// Do not declare shared variables after this line ------
 
 //-------------------------------------------------------------------------
 // Helpers
 //--------
+
+//updates the form elements for latitude and longitude
+function updateHTMLFormLocation(lat, long){
+  $("#new_report #report_location_attributes_latitude").val(lat);
+  $("#new_report #report_location_attributes_longitude").val(long);
+}
+
+// Creates a new marker at markerLoc and stores it in newMarker.
+// pans and zooms map as needed
+// does NOT update the HTML form elements
+function createOrUpdateNewMarker(markerLoc){
+  map.panTo(markerLoc);
+  map.setZoom(STREET_ZOOM);
+  if (newmarker == null) {
+    newmarker = new google.maps.Marker({
+      position: markerLoc,
+      map: map,
+      draggable:true,
+      animation: google.maps.Animation.DROP,
+    });
+    console.log("Added marker to page at " + markerLoc);
+    // Add dragging event listeners.
+
+    google.maps.event.addListener(newmarker, 'dragstart', function() {
+      console.log('Dragging start.');
+    });
+
+    google.maps.event.addListener(newmarker, 'drag', function() {
+      console.log('Dragging... now at ' + newmarker.getPosition());
+    });
+
+    google.maps.event.addListener(newmarker, 'dragend', function() {
+      var position = newmarker.getPosition();
+      console.log('Drag ended. now at ' + position);
+      //change the values of the HTML form vars also
+      updateHTMLFormLocation(position.lat(), position.lng());
+    });
+  } else {
+    newmarker.setPosition(markerLoc)
+    console.log("Updated marker location to " + markerLoc);
+  }
+}
+
+
+//deprecated?
 var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
 {
   for (var i = 0; i < locationsArray.length; i++) {
@@ -29,6 +88,7 @@ var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
   }
 };
 
+//deprecated?
 var addLocationToOSMapWithMarker = function(loc, map, marker)
 {
   if (loc && loc.latitude > 0 && loc.longitude > 0)
@@ -38,73 +98,48 @@ var addLocationToOSMapWithMarker = function(loc, map, marker)
   }
 };
 
-/*
-OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
-  defaultHandlerOptions: {
-    'single': true,
-    'double': false,
-    'pixelTolerance': 0,
-    'stopSingle': false,
-    'stopDouble': false
-  },
-
-  initialize: function(options) {
-    this.handlerOptions = OpenLayers.Util.extend(
-    {}, this.defaultHandlerOptions);
-
-    OpenLayers.Control.prototype.initialize.apply(
-    this, arguments);
-
-    this.handler = new OpenLayers.Handler.Click(
-      this, {
-        'click': this.trigger
-      }, this.handlerOptions
-    );
-  },
-
-  trigger: function(e) {
-    //AppCivist Code
-    var lonlat = map.getLonLatFromPixel(e.xy);
-    console.log("You clicked near " + lonlat.lat + " N, " +
-    + lonlat.lon + " E");
-    if ( $("#make_report_button").hasClass("active") )
-    {
-      markerLayout.clearmarkers();
-
-      var latitude  = lonlat.lat;
-      var longitude = lonlat.lon;
-      $("#new_report #report_location_attributes_latitude").val( latitude )
-      $("#new_report #report_location_attributes_longitude").val( longitude )
-
-      markersLayer.addMarker(new OpenLayers.Marker(lonlat,marker));
-    }
-  }
-
-});
-*/
 
   function initialize() {
-    //TODO change this Tepalciongo-specific info to be more generic
-    var lon	= -98.8460549;
-    var lat	= 18.5957189;
-    var zoom    = 14;
-
     var mapOptions = {
-      zoom: zoom,
-      center: new google.maps.LatLng(lat, lon)
+      zoom: REGION_ZOOM,
+      center: new google.maps.LatLng(COMMUNITY_LAT, COMMUNITY_LON)
       };
     // Initialize the map, and add the geographical layer to it.
-    var map = new google.maps.Map(document.getElementById('gmap'),
+    map = new google.maps.Map(document.getElementById('gmap'),
         mapOptions);
-   hideMapLoading();
+    hideMapLoading();
+
+    //see if lat and long are set, if so, this is an error page, and we should set
+    //the marker
+    //if(lat and long not zero)
+    var oldlat = $("#new_report #report_location_attributes_latitude").val();
+    var oldlong = $("#new_report #report_location_attributes_longitude").val();
+    if (oldlat != "" && oldlong != ""){
+      //we want none of them to be blank
+      var markerLoc = new google.maps.LatLng(oldlat, oldlong);
+      console.log("setting up stored marker at "+ markerLoc);
+      createOrUpdateNewMarker(markerLoc);
+    }
+
+
+    //add handler to map click() event, so as to add or move markers when it is clicked
+    google.maps.event.addListener(map, 'click', function(clickEvent) {
+	  console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+          var latitude = clickEvent.latLng.lat();
+          var longitude = clickEvent.latLng.lng();
+
+          // Update the form so we can pass along the Google Maps results.
+	  updateHTMLFormLocation(latitude, longitude);
+	  createOrUpdateNewMarker(clickEvent.latLng);
+     });
   }
 
 $(document).ready(function() {
   console.log("Ready to display map using Google Maps!!")
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
-      'callback=initialize';
+  //sensor parameter no longer needed
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=initialize';
   document.body.appendChild(script);
 
 /*
@@ -120,13 +155,13 @@ $(document).ready(function() {
   map.addControl(click);
   click.activate();
 
-
+*/
 
 
   // Listener for location attribute updates
-  $("#new_report #report_location_attributes_street_number").on("change", function()
+  $("#new_report #report_location_attributes_address").on("change", function()
   {
-    console.log("Starting check!")
+    console.log("Starting geocoding!")
     showMapLoading();
 
     // There already is a custom listener on an ESRI map. This is only for
@@ -134,54 +169,42 @@ $(document).ready(function() {
     if(typeof esri !== "undefined")
       return
 
-    console.log("It's not ESRI!");
-    var streetType   = $("#report_location_attributes_street_type").val();
-    var streetName   = $("#report_location_attributes_street_name").val();
-    var streetNumber = $("#report_location_attributes_street_number").val();
+    console.log("It's not ESRI! Trying Google Maps now...");
+    var addressString   = $("#report_location_attributes_address").val() + ", Mexico";
 
-    var addressString = streetName + " " + streetNumber;
-    var countryCode   = "MX";
+    var geocodingUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="+ escape(addressString) +"&key=" + GMAP_API_KEY;
 
-    console.log("http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode)
+    console.log(geocodingUrl);
 
     $.ajax({
-      url: "http://nominatim.openstreetmap.org/search?q=" + escape(addressString) + "&format=json&polygon=0&limit=3&countrycodes=" + countryCode,
+      url: geocodingUrl,
       type: "GET",
       timeout: 5000,
-      success: function(m) {
-        var candidates = m;
+      success: function(response) {
+        //response is a PlainObject, i.e., key-value pairs
+        var results = response.results;//this is an array
 
-        if (candidates === undefined || candidates.length == 0)
+        if (results === undefined || results.length == 0)
           $("#map-error-description").show();
         else
         {
           console.log("Starting to plot...");
-          var latitude  = candidates[0].lat;
-          var longitude = candidates[0].lon;
+          var latitude  = results[0].geometry.location.lat;
+          var longitude = results[0].geometry.location.lng;
 
-          // Update the form so we can pass along the ESRI results.
-          $("#new_report #report_location_attributes_latitude").val(latitude);
-          $("#new_report #report_location_attributes_longitude").val(longitude);
+          // Update the form so we can pass along the Google Maps results.
+	  updateHTMLFormLocation(latitude, longitude);
           $("#new_report #map-error-description").hide();
 
-          console.log(markersLayer)
-
-          markersLayer = new OpenLayers.Layer.Markers( "Markers" );
-          map.addLayer(markersLayer);
-
-          fromProjection = new OpenLayers.Projection("EPSG:4326");
-          toProjection   = new OpenLayers.Projection("EPSG:900913");
-          var position = new OpenLayers.LonLat(longitude, latitude).transform( fromProjection, toProjection);
-          markersLayer.addMarker(new OpenLayers.Marker(position, orangeMarker));
-
-          console.log("Added marker to page!")
-          map.setCenter(position, 2);
+          console.log("("+latitude+","+longitude+")");
+          var markerLoc = new google.maps.LatLng(latitude, longitude);
+	  createOrUpdateNewMarker(markerLoc);
         }
       },
       error: function() { $("#map-error-description").show(); },
       complete: function() { hideMapLoading(); }
     });
   });
-*/
+
 
 });

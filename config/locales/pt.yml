@@ -7,6 +7,7 @@ pt:
     neighborhood_id: "Comunidade"
     name: Nome
     number: Número
+    address: Endereço
     content: Conteúdo
     profile_photo: "Foto do perfil"
     photo: "Foto"
@@ -88,6 +89,8 @@ pt:
       team:
         profile_photo: Foto da equipe
         name: Nome da equipe
+      locations:
+        neighborhood: Vizinhança
 
     errors:
       template:
@@ -448,6 +451,8 @@ pt:
       offer_from_sponsor:
         header: Oferecimento da Rede Trel
     reports:
+      new:
+        neighborhood_address: ""
       types:
         delete: Deletar
       edit:
