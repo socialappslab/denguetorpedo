@@ -12,7 +12,7 @@
       = I18n.t("views.home.cities.title")
   .span5{:style => "width: 325px;"}
     = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
-      - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }
+      - searchable_neighborhoods = Neighborhood.all.map{|n| [n.geographical_name, neighborhood_path(n)] }
       - searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
       = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
 

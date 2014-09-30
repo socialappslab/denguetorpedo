@@ -63,7 +63,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def geographical_name
-    return "#{self.name}, #{self.city.localized_country_name}"
+    return "#{self.name}, #{self.city.name}"
   end
 
   #----------------------------------------------------------------------------
