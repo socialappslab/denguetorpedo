@@ -7,31 +7,63 @@ require "#{Rails.root}/db/seeds/documentation_section"
 # Neighborhoods
 
 puts "-" * 80
+puts "[!] Seeding countries..."
+puts "\n" * 3
+
+countries = ["Brazil", "Mexico"]
+countries.each do |c_name|
+  c = Country.find_by_name(c_name)
+  if c.nil?
+    c = Country.new
+    c.name = c_name
+    c.save!
+  end
+end
+
+puts "-" * 80
+puts "[!] Seeding cities..."
+puts "\n" * 3
+
+cities = [
+  { :name => "Rio de Janeiro", :state => "Rio de Janeiro", :state_code => "RJ", :country_name => "Brazil" },
+  { :name => "Tepalcingo", :state => "Morelos", :state_code => "MOR", :country_name => "Mexico" },
+  { :name => "Cuernavaca", :state => "Morelos", :state_code => "MOR", :country_name => "Mexico" }
+]
+cities.each do |c_hash|
+  c = City.find_by_name( c_hash[:name] )
+  if c.nil?
+    c = City.new
+    c.name = c_hash[:name]
+    c.state = c_hash[:state]
+    c.state_code = c_hash[:state_code]
+    c.country_id = Country.find_by_name( c_hash[:country_name] ).id
+    c.save!
+  end
+end
+
+
+puts "-" * 80
 puts "[!] Seeding neighborhoods..."
 puts "\n" * 3
 
 communities = [
-  {:name => "Maré",         :city => "Rio de Janeiro", :state_string_id => "RJ",  :country => "Brazil"},
-  {:name => "Tepalcingo",   :city => "Tepalcingo",     :state_string_id => "MOR", :country => "Mexico"},
-  {:name => "Ocachicualli", :city => "Cuernavaca",     :state_string_id => "MOR", :country => "Mexico"}
+  {:name => "Maré",         :city_name => "Rio de Janeiro"},
+  {:name => "Tepalcingo",   :city_name => "Tepalcingo"},
+  {:name => "Ocachicualli", :city_name => "Cuernavaca"}
 ]
-
-communities.each do |c|
-  n = Neighborhood.find_by_name( c[:name] )
+communities.each do |c_hash|
+  n = Neighborhood.find_by_name( c_hash[:name] )
   if n.nil?
-    country = Country.find_country_by_name( c[:country] )
     n                   = Neighborhood.new
-    n.name              = c[:name]
-    n.city              = c[:city]
-    n.state_string_id   = c[:state_string_id]
-    n.country_string_id = country.alpha2
+    n.name              = c_hash[:name]
+    n.city_id           = City.find_by_name( c_hash[:city_name] ).id
     n.save!
   end
 end
 
 
 puts "\n" * 3
-puts "[ok] Done seeding neighborhoods..."
+puts "[ok] Done seeding countries, cities, and neighborhoods..."
 puts "-" * 80
 
 #------------------------------------------------------------------------------
