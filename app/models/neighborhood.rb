@@ -23,6 +23,7 @@ class Neighborhood < ActiveRecord::Base
   has_many :houses
   has_many :teams
   has_many :members, :class_name => "User"
+  has_many :users
   has_many :reports
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
