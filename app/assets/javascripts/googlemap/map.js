@@ -22,6 +22,11 @@ var map, fromProjection, toProjection, markersLayer; //filled in later in the in
 
 
 var coordinates = [];
+var map; //this is a shared variable used by all methods.
+var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
+
+
+// Do not declare shared variables after this line ------
 
 //-------------------------------------------------------------------------
 // Helpers
@@ -30,6 +35,33 @@ var coordinates = [];
 function updateHTMLFormLocation(lat, long){
           $("#new_report #report_location_attributes_latitude").val(lat);
           $("#new_report #report_location_attributes_longitude").val(long);
+}
+
+//Creates a new marker at markerLoc and stores it in newMarker
+function createNewMarker(markerLoc){
+	newmarker = new google.maps.Marker({
+		position: markerLoc,
+		map: map,
+		draggable:true,
+		animation: google.maps.Animation.DROP,
+		});
+		console.log("Added marker to page!")
+		// Add dragging event listeners.
+		
+          google.maps.event.addListener(newmarker, 'dragstart', function() {
+	    console.log('Dragging start.');
+	  });
+	  
+	  google.maps.event.addListener(newmarker, 'drag', function() {
+	    console.log('Dragging... now at ' + newmarker.getPosition());
+	  });
+	  
+	  google.maps.event.addListener(newmarker, 'dragend', function() {
+	    var position = newmarker.getPosition();
+	    console.log('Drag ended. now at ' + position);
+	    //TODO change the values of the HTML form vars also
+	    updateHTMLFormLocation(position.lat(), position.lng());
+	  });
 }
 
 var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
@@ -94,8 +126,6 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 });
 */
 
-  var map; //this is a shared variable used by all methods.
-  var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
 
   function initialize() {
     //TODO change this Tepalciongo-specific info to be more generic
@@ -110,6 +140,25 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
     map = new google.maps.Map(document.getElementById('gmap'),
         mapOptions);
     hideMapLoading();
+
+    //add handler to map click() event, so as to add or move markers when it is clicked
+    google.maps.event.addListener(map, 'click', function(clickEvent) {
+	  console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+          var latitude = clickEvent.latLng.lat();
+          var longitude = clickEvent.latLng.lng();
+
+          // Update the form so we can pass along the Google Maps results.
+	  updateHTMLFormLocation(latitude, longitude);
+	  //pan and zoom before adding marker, looks 
+          map.panTo(clickEvent.latLng);
+          map.setZoom(STREET_ZOOM);
+	  if (newmarker == null) {
+	    createNewMarker(clickEvent.latLng);
+	  } else {
+	    newmarker.setPosition(clickEvent.latLng)
+  	    console.log("Updated marker location!")
+	  }
+     });
   }
 
 $(document).ready(function() {
@@ -180,29 +229,7 @@ $(document).ready(function() {
           map.panTo(markerLoc);
           map.setZoom(STREET_ZOOM);
 	  if (newmarker == null) {
-		newmarker = new google.maps.Marker({
-		position: markerLoc,
-		map: map,
-		draggable:true,
-		animation: google.maps.Animation.DROP,
-		});
-		console.log("Added marker to page!")
-		// Add dragging event listeners.
-		
-                  google.maps.event.addListener(newmarker, 'dragstart', function() {
-		    console.log('Dragging start.');
-		  });
-		  
-		  google.maps.event.addListener(newmarker, 'drag', function() {
-		    console.log('Dragging... now at ' + newmarker.getPosition());
-		  });
-		  
-		  google.maps.event.addListener(newmarker, 'dragend', function() {
-		    var position = newmarker.getPosition();
-		    console.log('Drag ended. now at ' + position);
-		    //TODO change the values of the HTML form vars also
-  		    updateHTMLFormLocation(position.lat(), position.lng());
-		  });
+	    createNewMarker(markerLoc);
 	  } else {
 	    newmarker.setPosition(markerLoc)
   	    console.log("Updated marker location!")
