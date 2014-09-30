@@ -89,6 +89,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 */
 
   var map; //this is a shared variable used by all methods.
+  var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
 
   function initialize() {
     //TODO change this Tepalciongo-specific info to be more generic
@@ -102,15 +103,15 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
     // Initialize the map, and add the geographical layer to it.
     map = new google.maps.Map(document.getElementById('gmap'),
         mapOptions);
-   hideMapLoading();
+    hideMapLoading();
   }
 
 $(document).ready(function() {
   console.log("Ready to display map using Google Maps!!")
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&sensor=false&' +
-      'callback=initialize';
+  //sensor parameter no longer needed
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=initialize';
   document.body.appendChild(script);
 
 /*
@@ -170,15 +171,21 @@ $(document).ready(function() {
 
           console.log("("+latitude+","+longitude+")");
           var markerLoc = new google.maps.LatLng(latitude, longitude);
-          var marker = new google.maps.Marker({
-            position: markerLoc,
-            map: map,
-            animation: google.maps.Animation.DROP,
-          });
-
-          console.log("Added marker to page!")
+	  //pan and zoom before adding marker, looks 
           map.panTo(markerLoc);
           map.setZoom(STREET_ZOOM);
+	  if (newmarker == null) {
+		newmarker = new google.maps.Marker({
+		position: markerLoc,
+		map: map,
+	//	draggable:true,
+		animation: google.maps.Animation.DROP,
+		});
+		  console.log("Added marker to page!")
+	  } else {
+	    newmarker.setPosition(markerLoc)
+  	    console.log("Updated marker location!")
+	  }
         }
       },
       error: function() { $("#map-error-description").show(); },
