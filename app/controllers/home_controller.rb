@@ -11,6 +11,10 @@ class HomeController < ApplicationController
     @all_neighborhoods = Neighborhood.order(:id).limit(3)
     @neighborhood      = @all_neighborhoods.first
 
+    # We're manually ordering this to display the diversity of
+    # our cities.
+    @cities = [ City.find_by_name("Rio de Janeiro"), City.find_by_name("Tepalcingo"), City.find_by_name("Managua"), City.find_by_name("Cuernavaca") ]
+
     # Display ordered news.
     @notices  = @neighborhood.notices.order("date DESC").limit(6)
 
