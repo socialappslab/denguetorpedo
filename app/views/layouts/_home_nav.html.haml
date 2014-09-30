@@ -19,7 +19,7 @@
             = I18n.t("home_navigation.education.description")
 
       %ul.dropdown-menu
-        - if I18n.locale.to_s == "es"
+        - if I18n.locale.to_s == User::Locales::SPANISH
           = render :partial => "home/education_dropdown_es"
         - else
           = render :partial => "home/education_dropdown_pt"
