@@ -9,7 +9,7 @@
 .row{:style => "margin-top: 40px;"}
   .span10.offset1
     %h1
-      = I18n.t("landing_page.community.title")
+      = I18n.t("views.home.cities.title")
   .span5{:style => "width: 325px;"}
     = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
       - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, neighborhood_path(n)] }

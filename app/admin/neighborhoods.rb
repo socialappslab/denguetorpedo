@@ -4,9 +4,7 @@ ActiveAdmin.register Neighborhood do
   #-----------------
   index do
     column "name"
-    column "city" do |c|
-      City.find(c).name
-    end
+    column "city_id"
     column "created_at"
     column "updated_at"
     column "photo"

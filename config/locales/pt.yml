@@ -149,7 +149,6 @@ pt:
   #-------------
   landing_page:
     community:
-      title: Comunidades em destaque no Dengue Torpedo
       future_community: Futura comunidade
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
@@ -381,6 +380,8 @@ pt:
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
+      cities:
+        title: Cidades em destaque no Dengue Torpedo
       header: Cidadãos no Combate à Dengue
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
       teams_description: "Entre numa equipe para combater a dengue e ganhe prêmios"
