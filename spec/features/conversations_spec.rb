@@ -2,8 +2,9 @@
 require 'spec_helper'
 
 describe "Conversations", :type => :feature do
+  let(:team)         { FactoryGirl.create(:team, :neighborhood_id => Neighborhood.first.id, :name => "Test Team") }
   let(:user)         { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
-  let(:other_user)   { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.last.id) }
+  let(:other_user)   { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.last.id)  }
   let(:third_user)   { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
   let(:conversation) { FactoryGirl.create(:conversation) }
 
@@ -11,9 +12,17 @@ describe "Conversations", :type => :feature do
     sign_in(user)
     conversation.users += [user, other_user]
     conversation.save
+
+    FactoryGirl.create(:team_membership, :user_id => user.id, :team_id => team.id)
   end
 
   context "when visiting /conversations" do
+    it "clears all notifications" do
+      un = FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)
+      visit user_conversations_path(user)
+      expect(page).not_to have_css(".badge")
+    end
+
     it "displays existing conversations for each user involved" do
       visit user_conversations_path(user)
       expect(page).to have_content("Conversation between #{conversation.users.map(&:display_name).join(", ")}")

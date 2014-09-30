@@ -51,6 +51,16 @@ describe User do
 		it "reports should have right description" do
 			@report.report.should == "Rua Tatajuba 50"
 		end
+	end
+
+	describe "when destroying a user" do
+		let!(:notification) { FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)}
+
+		it "destroys all associated notifications" do
+			expect {
+				user.destroy
+			}.to change(UserNotification, :count).by(-1)
+		end
 
 	end
 end

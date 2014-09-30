@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
       # 1. Ensure that there are users addressed in the email.
       if params[:users].blank?
         flash[:show_new_message_form] = true
-        flash[:alert] = "You need to include recipients for this message."
+        flash[:alert] = I18n.t("views.conversations.flashes.errors.empty_recipients")
         render "conversations/index" and return
       end
 
@@ -37,7 +37,7 @@ class MessagesController < ApplicationController
       unknown_users = users - known_users.map(&:username)
       if unknown_users.present?
         flash[:show_new_message_form] = true
-        flash[:alert] = "The message was not created because the following users could not be found: #{unknown_users.join(', ')}"
+        flash[:alert] =  I18n.t("views.conversations.flashes.errors.unknown_recipients", :recipients => unknown_users.join(', '))
         render "conversations/index" and return
       end
 
@@ -62,11 +62,18 @@ class MessagesController < ApplicationController
       # attached.
       @conversation.touch
 
-      flash[:notice] = "Message created successfully!"
+      # Create a new notification for each user in the conversation, except
+      # the creator.
+      @conversation.users.each do |u|
+        next if @current_user == u
+        UserNotification.create(:user_id => u.id, :notification_type => UserNotification::Types::MESSAGE, :viewed => false)
+      end
+
+      flash[:notice] = I18n.t("views.conversations.flashes.success")
       redirect_to user_conversation_path(@current_user, @conversation) and return
     else
       flash[:show_new_message_form] = true
-      flash[:alert] = "Message body can't be empty."
+      flash[:alert] = I18n.t("views.conversations.flashes.errors.empty_body")
       redirect_to :back and return
     end
   end

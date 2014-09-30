@@ -26,6 +26,9 @@ pt:
       documentation_section: Seção
       elimination_method: Método de eliminação
       notice: Notícias
+      conversation:
+        one: Mensagen
+        other: Mensagens
       prize:
         one: Prêmio
         other: Prêmios
@@ -239,6 +242,7 @@ pt:
     spanish: Espanhol
     portuguese: Português
     filter_by: Filtrar por
+    to: A
 
 
   facebook:
@@ -455,6 +459,19 @@ pt:
       report:
         reported: "Encontrei um foco"
         eliminated: "Eliminei um foco"
+    conversations:
+      index:
+        new_message: Nova mensagem
+        messages_between: Mensagens entre
+        visit_messages: Vá para mensagens
+        to: Destinatários (Digite o nome)
+      flashes:
+        success: Mensagem criada com sucesso!
+        errors:
+          empty_recipients: "Você precisa incluir destinatários para essa mensagem."
+          unknown_recipients: "A mensagem não foi criado porque os seguintes usuários não pôde ser encontrado: %{recipients}"
+          empty_body: "Conteúdo é obrigatória."
+
 
 
   #----------------------------------------------------------------------------

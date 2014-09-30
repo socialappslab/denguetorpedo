@@ -48,6 +48,20 @@ describe MessagesController do
           }.not_to change(Conversation, :count)
         end
       end
+
+      describe "a UserNotification instance is not created" do
+        it "if no users are specified" do
+          expect {
+            post "create", :message => {:body => "Hello"}
+          }.not_to change(UserNotification, :count)
+        end
+
+        it "if some users are not found" do
+          expect {
+            post "create", :message => {:body => "Hello"}, :users => "#{user.username}, test@mailinator.com"
+          }.not_to change(UserNotification, :count)
+        end
+      end
     end
 
     #--------------------------------------------------------------------------
@@ -59,6 +73,20 @@ describe MessagesController do
         expect {
           post "create", params
         }.to change(Message, :count).by(1)
+      end
+
+      it "creates a new notification only for non-current user" do
+        expect {
+          post "create", params
+        }.to change(UserNotification, :count).by(1)
+      end
+
+      it "creates a new notification with correct attributes" do
+        post "create", params
+        n = UserNotification.last
+        expect(n.user_id).to eq(other_user.id)
+        expect(n.notification_type).to eq(UserNotification::Types::MESSAGE)
+        expect(n.viewed).to eq(false)
       end
 
       it "creates a message with correct attributes" do

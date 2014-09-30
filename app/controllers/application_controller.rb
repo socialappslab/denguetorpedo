@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :current_user
   before_filter :set_locale
+  before_filter :get_new_notifications
 
   #----------------------------------------------------------------------------
 
@@ -51,6 +52,14 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
+  def get_new_notifications
+    return if @current_user.blank?
+    notifications = @current_user.user_notifications.where(:viewed => [nil, false])
+    @message_notifications = notifications.where(:notification_type => UserNotification::Types::MESSAGE)
+  end
+
+  #----------------------------------------------------------------------------
+
   private
 
   def ensure_team_chosen
@@ -63,6 +72,12 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
+    # We use this to test the functionality of languages.
+    if params[:locale].present?
+      I18n.locale = params[:locale]
+      return
+    end
+
     # The choice to set a language is given by the following rules, in order
     # of importance:
     # 1. If user is logged in, and has locale set, use that locale (if compatible),
@@ -84,6 +99,5 @@ class ApplicationController < ActionController::Base
   end
 
   #----------------------------------------------------------------------------
-
 
 end
