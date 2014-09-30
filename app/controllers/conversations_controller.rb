@@ -22,5 +22,9 @@ class ConversationsController < ApplicationController
     @message_notifications.each do |mn|
       mn.update_column(:viewed, true)
     end
+
+    # Now, set message_notifications to [] to not display 0 in
+    # nagging-badge.
+    @message_notifications = []
   end
 end
