@@ -30,16 +30,17 @@ var map; //this is a shared variable used by all methods.
 var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
 
 
-// Do not declare shared variables after this line ------
-
+// Do not declare shared variables after this line
 //-------------------------------------------------------------------------
 // Helpers
 //--------
 
-//updates the form elements for latitude and longitude
-function updateHTMLFormLocation(lat, long){
-  $("#new_report #report_location_attributes_latitude").val(lat);
-  $("#new_report #report_location_attributes_longitude").val(long);
+// NOTE: DO NOT use lat, long as parameters to the function.
+// This causes an error in the YUI compressor:
+// [ERROR] in /tmp/yui_compress20140930-1167-32nwix 39:48:missing formal parameter
+function updateHTMLFormLocation(latitude, longitude){
+  $("#new_report #report_location_attributes_latitude").val(latitude);
+  $("#new_report #report_location_attributes_longitude").val(longitude);
 }
 
 // Creates a new marker at markerLoc and stores it in newMarker.
