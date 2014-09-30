@@ -7,7 +7,7 @@
             .span5{:style => "margin-right: 30px;"}
               .neighborhood_selection
                 .neighborhood_selection_header
-                  %h3= link_to city.name, city_path(city)
+                  %h3= link_to city.geographical_name, city_path(city)
                 = link_to image_tag(city.photo, :style => "width: 325px; height: 325px;"), city_path(city)
 
             // Add the invitation city if this is the last index and city_index

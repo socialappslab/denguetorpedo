@@ -49,16 +49,6 @@ class Neighborhood < ActiveRecord::Base
     return self.city.country
   end
 
-  def localized_country_name
-    if self.country.name == Country::Names::MEXICO
-      return I18n.t('countries.mexico')
-    elsif self.country.name == Country::Names::NICARAGUA
-      return I18n.t('countries.nicaragua')
-    else
-      return I18n.t('countries.brazil')
-    end
-  end
-
   #----------------------------------------------------------------------------
 
   def descriptive_name
@@ -72,7 +62,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def geographical_name
-    return "#{self.name}, #{self.localized_country_name}"
+    return "#{self.name}, #{self.city.localized_country_name}"
   end
 
   #----------------------------------------------------------------------------
