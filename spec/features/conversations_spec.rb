@@ -25,15 +25,15 @@ describe "Conversations", :type => :feature do
 
     it "displays existing conversations for each user involved" do
       visit user_conversations_path(user)
-      expect(page).to have_content("Conversation between #{conversation.users.map(&:display_name).join(", ")}")
-      expect(page).to have_content("Go to conversation")
+      expect(page).to have_content(I18n.t("views.conversations.index.messages_between") + " #{conversation.users.map(&:display_name).join(", ")}")
+      expect(page).to have_content( I18n.t("views.conversations.index.visit_messages") )
 
       sign_out(user)
       sign_in(other_user)
 
       visit user_conversations_path(other_user)
-      expect(page).to have_content("Conversation between #{conversation.users.map(&:display_name).join(", ")}")
-      expect(page).to have_content("Go to conversation")
+      expect(page).to have_content(I18n.t("views.conversations.index.messages_between")+ " #{conversation.users.map(&:display_name).join(", ")}")
+      expect(page).to have_content( I18n.t("views.conversations.index.visit_messages") )
     end
 
     it "doesn't display conversations which users don't belong to" do
@@ -41,7 +41,7 @@ describe "Conversations", :type => :feature do
       sign_in(third_user)
 
       visit user_conversations_path(third_user)
-      expect(page).not_to have_content("Conversation between")
+      expect(page).not_to have_content( I18n.t("views.conversations.index.messages_between") )
       expect(third_user.conversations.count).to eq(0)
     end
   end
@@ -52,14 +52,14 @@ describe "Conversations", :type => :feature do
     it "notifies if user forgot body" do
       visit user_conversation_path(user, conversation)
       click_button("Criar")
-      expect(page).to have_content("Message body can't be empty.")
+      expect(page).to have_content( I18n.t("views.conversations.flashes.errors.empty_body") )
     end
 
     it "notifies the user of successful message" do
       visit user_conversation_path(user, conversation)
       fill_in "message[body]", :with => "Hello world!"
       click_button("Criar")
-      expect(page).to have_content("Message created successfully!")
+      expect(page).to have_content( I18n.t("views.conversations.flashes.success") )
     end
   end
 
