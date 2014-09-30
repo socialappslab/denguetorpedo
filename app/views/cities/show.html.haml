@@ -25,6 +25,12 @@
             .span6
               %h1
                 = link_to neighborhood.name, neighborhood_path(neighborhood)
+          .row
+            .span4{:style => "display: table; height: 65px;"}
+              %span{:style => "display: table-cell; vertical-align: bottom;"}
+                %span{:style => " font-size: 30px; color: #5cb85c; display: inline;"}
+                  = neighborhood.total_points
+                = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
 
         .span3
           %div{:style => "display: table; height: 100px; width: 100%; float: left;"}
