@@ -39,7 +39,7 @@ class Neighborhood < ActiveRecord::Base
   #------------------
 
   def spanish?
-    return [Names::TEPALCINGO, Names::OCACHICUALLI].include?(self.name)
+    return [Country::Names::MEXICO, Country::Names::NICARAGUA].include?(self.country.name)
   end
 
   def country
@@ -47,8 +47,10 @@ class Neighborhood < ActiveRecord::Base
   end
 
   def localized_country_name
-    if self.country.name == "Mexico"
+    if self.country.name == Country::Names::MEXICO
       return I18n.t('countries.mexico')
+    elsif self.country.name == Country::Names::NICARAGUA
+      return I18n.t('countries.nicaragua')
     else
       return I18n.t('countries.brazil')
     end
