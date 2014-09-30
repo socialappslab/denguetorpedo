@@ -6,7 +6,11 @@
     .row
       .span12
         %h1{:style => "font-size: 40px;"}
-          = I18n.t("activerecord.models.neighborhood", :count => 2) + " " + @city.name
+          - if I18n.locale.to_s == User::Locales::PORTUGUESE
+            - preposition = ( @city.name == "Rio de Janeiro" ? "no" : "em")
+          - else
+            - preposition = "en"
+          = I18n.t("activerecord.models.neighborhood", :count => 2) + " #{preposition} " + @city.name
 
 
     %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}

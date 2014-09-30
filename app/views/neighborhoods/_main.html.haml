@@ -5,7 +5,7 @@
 .row{:style => "margin-bottom: 20px;"}
   .span12
     %h1{:style => "font-size: 40px; margin-bottom: 20px;"}
-      = @neighborhood.descriptive_name
+      = I18n.t("attributes.neighborhood_id") + " de " + @neighborhood.name
 
 .row{:style => "margin-bottom: 20px;"}
   .span5
@@ -35,5 +35,5 @@
 
 .row
   = render :partial => "shared/news_feed"
-    
+
 /------------------------------------------------------------------------------

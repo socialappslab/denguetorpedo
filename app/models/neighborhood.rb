@@ -52,16 +52,6 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def descriptive_name
-    if I18n.locale == :es
-      return I18n.t("attributes.neighborhood_id") + " de " + self.name
-    else
-      return I18n.t("attributes.neighborhood_id") + " " + self.name
-    end
-  end
-
-  #----------------------------------------------------------------------------
-
   def geographical_name
     return "#{self.name}, #{self.city.name}"
   end
