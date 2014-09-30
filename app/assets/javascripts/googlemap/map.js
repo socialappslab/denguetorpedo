@@ -37,31 +37,40 @@ function updateHTMLFormLocation(lat, long){
           $("#new_report #report_location_attributes_longitude").val(long);
 }
 
-//Creates a new marker at markerLoc and stores it in newMarker
-function createNewMarker(markerLoc){
-	newmarker = new google.maps.Marker({
-		position: markerLoc,
-		map: map,
-		draggable:true,
-		animation: google.maps.Animation.DROP,
-		});
-		console.log("Added marker to page!")
-		// Add dragging event listeners.
-		
-          google.maps.event.addListener(newmarker, 'dragstart', function() {
-	    console.log('Dragging start.');
-	  });
-	  
-	  google.maps.event.addListener(newmarker, 'drag', function() {
-	    console.log('Dragging... now at ' + newmarker.getPosition());
-	  });
-	  
-	  google.maps.event.addListener(newmarker, 'dragend', function() {
-	    var position = newmarker.getPosition();
-	    console.log('Drag ended. now at ' + position);
-	    //TODO change the values of the HTML form vars also
-	    updateHTMLFormLocation(position.lat(), position.lng());
-	  });
+// Creates a new marker at markerLoc and stores it in newMarker.
+// pans and zooms map as needed
+// does NOT update the HTML form elements
+function createOrUpdateNewMarker(markerLoc){
+  map.panTo(markerLoc);
+  map.setZoom(STREET_ZOOM);
+  if (newmarker == null) {
+    newmarker = new google.maps.Marker({
+      position: markerLoc,
+      map: map,
+      draggable:true,
+      animation: google.maps.Animation.DROP,
+    });
+    console.log("Added marker to page at " + markerLoc);
+    // Add dragging event listeners.
+
+    google.maps.event.addListener(newmarker, 'dragstart', function() {
+      console.log('Dragging start.');
+    });
+
+    google.maps.event.addListener(newmarker, 'drag', function() {
+      console.log('Dragging... now at ' + newmarker.getPosition());
+    });
+
+    google.maps.event.addListener(newmarker, 'dragend', function() {
+      var position = newmarker.getPosition();
+      console.log('Drag ended. now at ' + position);
+      //change the values of the HTML form vars also
+      updateHTMLFormLocation(position.lat(), position.lng());
+    });
+  } else {
+    newmarker.setPosition(markerLoc)
+    console.log("Updated marker location to " + markerLoc);
+  }
 }
 
 var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
@@ -81,51 +90,6 @@ var addLocationToOSMapWithMarker = function(loc, map, marker)
   }
 };
 
-/*
-OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
-  defaultHandlerOptions: {
-    'single': true,
-    'double': false,
-    'pixelTolerance': 0,
-    'stopSingle': false,
-    'stopDouble': false
-  },
-
-  initialize: function(options) {
-    this.handlerOptions = OpenLayers.Util.extend(
-    {}, this.defaultHandlerOptions);
-
-    OpenLayers.Control.prototype.initialize.apply(
-    this, arguments);
-
-    this.handler = new OpenLayers.Handler.Click(
-      this, {
-        'click': this.trigger
-      }, this.handlerOptions
-    );
-  },
-
-  trigger: function(e) {
-    //AppCivist Code
-    var lonlat = map.getLonLatFromPixel(e.xy);
-    console.log("You clicked near " + lonlat.lat + " N, " +
-    + lonlat.lon + " E");
-    if ( $("#make_report_button").hasClass("active") )
-    {
-      markerLayout.clearmarkers();
-
-      var latitude  = lonlat.lat;
-      var longitude = lonlat.lon;
-      $("#new_report #report_location_attributes_latitude").val( latitude )
-      $("#new_report #report_location_attributes_longitude").val( longitude )
-
-      markersLayer.addMarker(new OpenLayers.Marker(lonlat,marker));
-    }
-  }
-
-});
-*/
-
 
   function initialize() {
     //TODO change this Tepalciongo-specific info to be more generic
@@ -141,6 +105,10 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
         mapOptions);
     hideMapLoading();
 
+    //see if lat and long are set, if so, this is an error page, and we should set
+    //the marker
+    //if(lat and long not zero)
+
     //add handler to map click() event, so as to add or move markers when it is clicked
     google.maps.event.addListener(map, 'click', function(clickEvent) {
 	  console.log('Mouse clicked at ' + clickEvent.latLng.lat());
@@ -149,15 +117,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 
           // Update the form so we can pass along the Google Maps results.
 	  updateHTMLFormLocation(latitude, longitude);
-	  //pan and zoom before adding marker, looks 
-          map.panTo(clickEvent.latLng);
-          map.setZoom(STREET_ZOOM);
-	  if (newmarker == null) {
-	    createNewMarker(clickEvent.latLng);
-	  } else {
-	    newmarker.setPosition(clickEvent.latLng)
-  	    console.log("Updated marker location!")
-	  }
+	  createOrUpdateNewMarker(clickEvent.latLng);
      });
   }
 
@@ -225,15 +185,7 @@ $(document).ready(function() {
 
           console.log("("+latitude+","+longitude+")");
           var markerLoc = new google.maps.LatLng(latitude, longitude);
-	  //pan and zoom before adding marker, looks 
-          map.panTo(markerLoc);
-          map.setZoom(STREET_ZOOM);
-	  if (newmarker == null) {
-	    createNewMarker(markerLoc);
-	  } else {
-	    newmarker.setPosition(markerLoc)
-  	    console.log("Updated marker location!")
-	  }
+	  createOrUpdateNewMarker(markerLoc);
         }
       },
       error: function() { $("#map-error-description").show(); },
