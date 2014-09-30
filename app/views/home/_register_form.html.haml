@@ -35,7 +35,10 @@
       .control-group{:style => "margin-bottom: 10px;"}
         = f.label :neighborhood_id, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
-          = f.select :neighborhood_id, @searchable_neighborhoods, { :prompt => "" }, :style => "width: 100%;"
+          // TODO: CLEANUP.
+          - neighborhoods = []
+          - City.order(:name).includes(:neighborhoods).each{ |c| neighborhoods += c.neighborhoods.map {|n| [n.geographical_name, n.id] } }
+          = f.select :neighborhood_id, neighborhoods, { :prompt => "" }, :style => "width: 100%;"
 
       .control-group{:style => "margin-bottom: 10px;"}
         .controls{:style => "margin-left: 180px;"}
