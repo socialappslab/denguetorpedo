@@ -4,6 +4,10 @@ var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
 var GMAPS_VERSION = 3.17; //latest stable version
 var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
 var STREET_ZOOM = 18; // the zoom level at which we see street details
+//TODO change this Tepalciongo-specific info to be more generic
+var COMMUNITY_LON = -98.8460549;
+var COMMUNITY_LAT = 18.5957189;
+
 
 /*
 var size         = new OpenLayers.Size(64,64);
@@ -96,13 +100,9 @@ var addLocationToOSMapWithMarker = function(loc, map, marker)
 
 
   function initialize() {
-    //TODO change this Tepalciongo-specific info to be more generic
-    var lon	= -98.8460549;
-    var lat	= 18.5957189;
-
     var mapOptions = {
       zoom: REGION_ZOOM,
-      center: new google.maps.LatLng(lat, lon)
+      center: new google.maps.LatLng(COMMUNITY_LAT, COMMUNITY_LON)
       };
     // Initialize the map, and add the geographical layer to it.
     map = new google.maps.Map(document.getElementById('gmap'),
