@@ -452,7 +452,7 @@ es:
         new_message: Nuevo mensaje
         messages_between: Mensajes entre
         visit_messages: Ir a mensajes
-        to: Destinatarios (introducir nombre)
+        to: Destinatarios (introducir nombre de usuario)
       flashes:
         success: Mensaje creado con éxito!
         errors:

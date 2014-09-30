@@ -470,7 +470,7 @@ pt:
         new_message: Nova mensagem
         messages_between: Mensagens entre
         visit_messages: Vá para mensagens
-        to: Destinatários (Digite o nome)
+        to: Destinatários (Digite o nome de usuário)
       flashes:
         success: Mensagem criada com sucesso!
         errors:
