@@ -75,9 +75,6 @@
                 - else
                   = link_to image_tag(neighbor.profile_photo.url(:small), :width => 70, :height => 70), neighborhood_house_path(@neighborhood, neighbor), title: "#{neighbor.name}"
 
-    /.row
-    /  .span8
-    /    = render :partial => "posts/new", locals: { wall: @house }
     %br
     .row{:style => "margin-top:13px;"}
       %h2.span15

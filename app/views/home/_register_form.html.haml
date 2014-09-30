@@ -35,7 +35,7 @@
       .control-group{:style => "margin-bottom: 10px;"}
         = f.label :neighborhood_id, :class => "control-label", :style => "font-size: 12px; width: 160px;"
         .controls{:style => "margin-left: 180px;"}
-          = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => "" }, :style => "width: 100%;"
+          = f.select :neighborhood_id, @searchable_neighborhoods, { :prompt => "" }, :style => "width: 100%;"
 
       .control-group{:style => "margin-bottom: 10px;"}
         .controls{:style => "margin-left: 180px;"}

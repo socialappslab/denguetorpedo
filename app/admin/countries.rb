@@ -1,13 +1,9 @@
-ActiveAdmin.register Neighborhood do
+ActiveAdmin.register Country do
   #----------------------------------------------------------------------------
   # Model attributes
   #-----------------
   index do
     column "name"
-    column "city_id"
-    column "created_at"
-    column "updated_at"
-    column "photo"
     default_actions
   end
 
@@ -16,7 +12,6 @@ ActiveAdmin.register Neighborhood do
   #--------------------------
   controller do
     with_role :admin
-    helper "active_admin/neighborhoods"
   end
 
   #----------------------------------------------------------------------------
@@ -25,11 +20,8 @@ ActiveAdmin.register Neighborhood do
   form do |f|
     f.inputs "Details" do
       f.input "name"
-      f.input "city_id", :as => :select, :collection => City.all.map {|c| [c.name, c.id]}
-      f.input "photo"
     end
     f.actions
   end
-
 
 end

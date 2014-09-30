@@ -17,13 +17,13 @@
         = I18n.t("common_terms.exchange_points_for_prizes")
 
   .span4{:style => "text-align: right;"}
-    - if @reports.count == 0
+    - if @user_reports.blank?
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = @reports.count
+      = @user_reports.present? ? @user_reports.count : 0
     %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("dashboard.reports")
 
@@ -59,7 +59,7 @@
 
 - if (@user == @current_user)
   .row{:style => "margin-top:60px;"}
-    = render :partial => 'posts/new', locals: { wall: @house }
+    = render :partial => 'posts/new'
 
 .row
   = render :partial => "shared/news_feed"

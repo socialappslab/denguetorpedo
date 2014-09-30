@@ -4,21 +4,15 @@ require 'spec_helper'
 describe "Landing Page", :type => :feature do
   let!(:user) 	 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
-  before(:each) do
-    sign_in(user)
-  end
+  context "when visiting logged-in" do
+    before(:each) do
+      sign_in(user)
+    end
 
-  # context "when choosing locale" do
-  #   it "updates the user's locale to Spanish" do
-  #     expect(user.locale).to eq(nil)
-  #     visit "?locale=es"
-  #     expect(user.reload.locale).to eq("es")
-  #   end
-  #
-  #   it "updates the user's locale to Portuguese" do
-  #     expect(user.locale).to eq(nil)
-  #     visit "?locale=pt"
-  #     expect(user.reload.locale).to eq("pt")
-  #   end
-  # end
+    it "displays notifications if user has any" do
+      FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)
+      visit "/"
+      expect(page).to have_css(".badge")
+    end
+  end
 end

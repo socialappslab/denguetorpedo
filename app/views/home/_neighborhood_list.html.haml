@@ -1,20 +1,23 @@
 #neighborhood_list.offset1
   #myCarousel.carousel.slide
     .carousel-inner
-      .active.item
-        - @all_neighborhoods.each_with_index do |neighborhood, index|
-          .span5{:style => "margin-right: 30px;"}
-            .neighborhood_selection
-              .neighborhood_selection_header
-                %h3= link_to neighborhood.geographical_name, neighborhood_path(neighborhood)
-              = link_to image_tag(neighborhood.photo, :style => "width: 325px; height: 325px;"), neighborhood_path(neighborhood)
+      - @cities.each_slice(3).with_index do |cities, index|
+        .item{:class => (index == 0 ? "active" : "")}
+          - cities.each_with_index do |city, city_index|
+            .span5{:style => "margin-right: 30px;"}
+              .neighborhood_selection
+                .neighborhood_selection_header
+                  %h3= link_to city.geographical_name, city_path(city)
+                = link_to image_tag(city.photo, :style => "width: 325px; height: 325px;"), city_path(city)
 
-      .item
-        .span5
-          .neighborhood_selection
-            .neighborhood_selection_header
-              %h3= link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
-            = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
+            // Add the invitation city if this is the last index and city_index
+            - if (index == @cities.each_slice(3).count - 1) && city_index == cities.count - 1
+
+              .span5
+                .neighborhood_selection
+                  .neighborhood_selection_header
+                    %h3= link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
+                  = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
 
 
     %a.dt-carousel-control.left{"data-slide" => "prev", :href => "#myCarousel"}

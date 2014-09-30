@@ -1,0 +1,65 @@
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @message}
+
+.row
+  .span12.offset4
+    .row
+      .span6
+        %h1{:style => "font-size: 40px;"}
+          = I18n.t("activerecord.models.conversation", :count => 2)
+
+      .span4{:style => "text-align: right;"}
+        = link_to "+ #{I18n.t('views.conversations.index.new_message')}", nil, :class => "btn btn-success btn-large", :id => "create-new-message"
+
+
+    .row
+      .span10
+        - should_display_form = (flash[:show_new_message_form] == true || params[:form] == "true")
+        = form_for [@current_user, @message], :html => { :id => "new-message-form", :class => "form-horizontal well", :style => "#{should_display_form == true ? '' : 'display: none;'}; margin-top: 20px;" } do |f|
+          .control-group
+            = label_tag I18n.t("views.conversations.index.to"), nil, :class => "control-label", :style => "width: 200px; text-align: left;"
+            .controls
+              = text_area_tag :users, params[:users], :class => "form-control span6", :style => "height: 50px;"
+          .control-group
+            = f.label :body, I18n.t("attributes.content"), :class => "control-label", :style => "width: 200px; text-align: left;"
+            .controls
+              = f.text_area :body, :class => "form-control span6", :style => "height: 50px;"
+          .control-group
+            .controls.span6{:style => "margin-left: 195px;"}
+              = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
+                %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+                = I18n.t("views.buttons.create")
+
+
+    .row{:style => "margin-top: 20px;"}
+      .span10
+        - @conversations.each do |c|
+          .user_activity_item
+            .row
+              .span6
+                .row.feed-item-bar
+                  .span6
+
+                    .feed-item-timestamp
+                      %i.fa.fa-clock-o
+                      = format_timestamp(c.updated_at)
+                .row.feed-item-content
+                  .span6
+                    = I18n.t("views.conversations.index.messages_between") + " #{c.users.map(&:display_name).join(', ')}"
+
+              .span3.pull-right{:style => "line-height: 60px; height: 60px;"}
+                = link_to user_conversation_path(@current_user, c) do
+                  = I18n.t("views.conversations.index.visit_messages")
+                  %i.fa.fa-chevron-right
+
+
+
+:javascript
+  $(document).ready(function()
+  {
+    $("#create-new-message").on("click", function(e)
+    {
+      e.preventDefault();
+      $("#new-message-form").toggle()
+    });
+  })

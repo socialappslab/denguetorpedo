@@ -12,7 +12,6 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20140926034639) do
-
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
     t.string   "resource_type", :null => false
@@ -52,6 +51,17 @@ ActiveRecord::Schema.define(:version => 20140926034639) do
     t.integer "points"
   end
 
+  create_table "cities", :force => true do |t|
+    t.string   "name"
+    t.string   "state"
+    t.string   "state_code"
+    t.integer  "country_id"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
+  end
+
   create_table "comments", :force => true do |t|
     t.integer  "user_id"
     t.integer  "commentable_id"
@@ -68,6 +78,21 @@ ActiveRecord::Schema.define(:version => 20140926034639) do
     t.text     "message"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "conversations", :force => true do |t|
+    t.text     "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "conversations_users", :force => true do |t|
+    t.integer "conversation_id"
+    t.integer "user_id"
+  end
+
+  create_table "countries", :force => true do |t|
+    t.string "name"
   end
 
   create_table "documentation_sections", :force => true do |t|
@@ -159,17 +184,23 @@ ActiveRecord::Schema.define(:version => 20140926034639) do
     t.string   "neighborhood"
   end
 
+  create_table "messages", :force => true do |t|
+    t.text     "body"
+    t.integer  "user_id"
+    t.integer  "conversation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
   create_table "neighborhoods", :force => true do |t|
     t.string   "name"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
-    t.string   "country_string_id"
-    t.string   "state_string_id"
-    t.string   "city"
     t.string   "photo_file_name"
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
+    t.integer  "city_id"
   end
 
   create_table "notices", :force => true do |t|
@@ -322,6 +353,14 @@ ActiveRecord::Schema.define(:version => 20140926034639) do
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
     t.boolean  "blocked"
+  end
+
+  create_table "user_notifications", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "notification_type"
+    t.boolean  "viewed"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "users", :force => true do |t|

@@ -19,7 +19,7 @@
             = I18n.t("home_navigation.education.description")
 
       %ul.dropdown-menu
-        - if I18n.locale.to_s == "es"
+        - if I18n.locale.to_s == User::Locales::SPANISH
           = render :partial => "home/education_dropdown_es"
         - else
           = render :partial => "home/education_dropdown_pt"
@@ -65,9 +65,21 @@
 
 
   - else
+    .span1.offset2
+      - if @message_notifications.blank?
+        .main_nav_button
+          = link_to user_conversations_path(@current_user), :style => "font-size: 36px; color: white; display: block; margin-top: 15px;" do
+            %i.fa.fa-envelope
+      - else
+        .main_nav_button{:style => "margin-top: 0px;"}
+          %div.badge.badge-important{:style => "width: 25px; position: relative; top: 10; left: 25"}
+            = @message_notifications.count
+          = link_to  user_conversations_path(@current_user), :style => "font-size: 36px; color: white; display: block; margin-top: 0px;" do
+            %i.fa.fa-envelope
+
     -# .span2
     -#   = render :partial => "home/flags"
-    .span7.pull-right
+    .span4.pull-right
       #logged_in{:style => "float:right;"}
         %h3{:style => "display: inline-block;"}
           = I18n.t("login_form.greeting", :name => @current_user.display_name )

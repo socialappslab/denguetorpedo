@@ -1,24 +1,29 @@
 # encoding: utf-8
 
 class Neighborhood < ActiveRecord::Base
-  attr_accessible :name, :photo, :city, :state_string_id, :country_string_id, :as => :admin
+  attr_accessible :name, :photo, :city_id, :as => :admin
 
   #----------------------------------------------------------------------------
 
   module Names
-    MARE         = "Maré"
-    TEPALCINGO   = "Tepalcingo"
-    OCACHICUALLI = "Ocachicualli"
+    MARE           = "Maré"
+    TEPALCINGO     = "Tepalcingo"
+    OCACHICUALLI   = "Ocachicualli"
+    FRANCISCA_MEZA = "Francisco Meza"
+    HIALEAH        = "Hialeah"
+    ARIEL_DARCE    = "Ariel Darce"
   end
 
   #----------------------------------------------------------------------------
 
   has_many :locations
+  belongs_to :city
 
   # TODO: Deprecate houses association
   has_many :houses
   has_many :teams
   has_many :members, :class_name => "User"
+  has_many :users
   has_many :reports
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
@@ -26,10 +31,8 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  validates :name,              :presence => true
-  validates :city,              :presence => true
-  validates :state_string_id,   :presence => true
-  validates :country_string_id, :presence => true
+  validates :name,    :presence => true
+  validates :city_id, :presence => true
 
   #----------------------------------------------------------------------------
 
@@ -40,7 +43,7 @@ class Neighborhood < ActiveRecord::Base
   #------------------
 
   def spanish?
-    return [Names::TEPALCINGO, Names::OCACHICUALLI].include?(self.name)
+    return [Country::Names::MEXICO, Country::Names::NICARAGUA].include?(self.country.name)
   end
 
   def mexican?
@@ -55,38 +58,14 @@ class Neighborhood < ActiveRecord::Base
     return self.country.name == "Nicaragua"
   end
 
-  # NOTE: this method returns a Country object.
   def country
-    return Country[self.country_string_id]
-  end
-
-  def country_name
-    if self.country.name == "Mexico"
-      return I18n.t('countries.mexico')
-    else
-      return I18n.t('countries.brazil')
-    end
-  end
-
-  def state
-    c = self.country
-    return c.states[self.state_string_id]["name"]
-  end
-
-  #----------------------------------------------------------------------------
-
-  def descriptive_name
-    if I18n.locale == :es
-      return I18n.t("attributes.neighborhood_id") + " de " + self.name
-    else
-      return I18n.t("attributes.neighborhood_id") + " " + self.name
-    end
+    return self.city.country
   end
 
   #----------------------------------------------------------------------------
 
   def geographical_name
-    return "#{self.name}, #{self.country_name}"
+    return "#{self.name}, #{self.city.name}"
   end
 
   #----------------------------------------------------------------------------

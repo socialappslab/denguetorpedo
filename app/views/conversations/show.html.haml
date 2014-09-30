@@ -1,0 +1,65 @@
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @message}
+
+.row
+  .span12.offset4
+    .row
+      .span12
+        %h1{:style => "font-size: 20px;"}
+          = I18n.t("views.conversations.index.messages_between") + " #{@conversation.users.map(&:display_name).join(', ')}"
+
+    .row{:style => "margin-top: 20px;"}
+      .span10
+        - @messages.each do |m|
+          .user_activity_item
+            .row
+              .span1.feed-item-profile-photo
+                = link_to user_path(m.user) do
+                  = image_tag(m.user.picture)
+
+              .span6
+                .row.feed-item-bar
+                  .span7
+                    = link_to m.user.display_name, user_path(m.user), :style => "font-weight: bold;"
+                    .feed-item-timestamp
+                      %i.fa.fa-clock-o
+                      = format_timestamp(m.created_at)
+                .row.feed-item-content
+                  .span7
+                    = m.body
+
+        .user_activity_item
+          .row
+            .span1.feed-item-profile-photo
+              = image_tag(@current_user.picture)
+            .span6
+              .row.feed-item-bar
+                .span6
+                  %span{:style => "font-weight: bold;"}
+                    = @current_user.display_name
+
+              .row
+                .span8
+                  = form_for [@current_user, @message], :html => { :style => "margin-top: 20px;" } do |f|
+                    = f.hidden_field :conversation_id, :value => @conversation.id
+                    = f.text_area :body, :style => "height: 60px; width: 100%;"
+                    = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
+                      %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+                      = I18n.t("views.buttons.create")
+
+
+
+
+
+
+
+:javascript
+  $(document).ready(function()
+  {
+    // Listener on new team button.
+    $("#create-new-message").on("click", function(e)
+    {
+      e.preventDefault();
+      $("#new-message-form").toggle()
+    });
+  })

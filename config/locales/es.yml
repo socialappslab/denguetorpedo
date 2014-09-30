@@ -21,12 +21,17 @@ es:
       user:
         one: Usuario
         other: Usuarios
-      neighborhood: Comunidad
+      neighborhood:
+        one: Comunidad
+        other: Comunidades
       feedback: Mensaje
       house: Casa
       documentation_section: Sección
       elimination_method: Método de eliminación
       notice: Noticias
+      conversation:
+        one: Mensaje
+        other: Mensajes
       prize:
         one: Premio
         other: Premios
@@ -37,6 +42,9 @@ es:
         one: Equipo
         other: Equipos
       location: Dirección
+      city:
+        one: Ciudad
+        other: Ciudades
     attributes:
       user:
         username: "Nombre de usuario"
@@ -149,7 +157,6 @@ es:
   #-------------
   landing_page:
     community:
-      title: Comunidades participantes en Dengue Torpedo
       future_community: Futura comunidad
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
@@ -242,6 +249,7 @@ es:
     spanish: Español
     portuguese: Portugués
     filter_by: Filtrar por
+    to: A
 
 
 
@@ -321,7 +329,7 @@ es:
       success_join_flash: "Usted se unió al equipo exitosamente"
       success_create_flash: "Usted creó un equipo exitosamente"
       success_leave_flash: "Usted dejó al equipo exitosamente"
-      join: "Únase a este equipo"
+      join: "Únase a un equipo"
       leave: Salir
       create: "Cree un equipo"
       my_team: "Mi equipo"
@@ -379,6 +387,8 @@ es:
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
+      cities:
+        title: Ciudades em destaque no Dengue Torpedo
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       teams_description: Únase a equipos para combatir el dengue y ganar premios
@@ -442,6 +452,22 @@ es:
       report:
         reported:   "Encontré un foco"
         eliminated: "Eliminé un foco"
+    conversations:
+      index:
+        new_message: Nuevo mensaje
+        messages_between: Mensajes entre
+        visit_messages: Ir a mensajes
+        to: Destinatarios (introducir nombre de usuario)
+      flashes:
+        success: Mensaje creado con éxito!
+        errors:
+          empty_recipients: "Es necesario incluir los destinatarios de este mensaje."
+          unknown_recipients: "El mensaje no fue creada porque los siguientes usuarios no se pudo encontrar: %{recipients}"
+          empty_body: "Contenido es obligatorio."
+    cities:
+      show:
+        visit: Visitar
+
 
   #----------------------------------------------------------------------------
   # Countries
@@ -450,3 +476,4 @@ es:
   countries:
     brazil: Brasil
     mexico: México
+    nicaragua: Nicaragua

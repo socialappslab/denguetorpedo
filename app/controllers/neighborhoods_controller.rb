@@ -1,5 +1,5 @@
 class NeighborhoodsController < NeighborhoodsBaseController
-  before_filter :ensure_team_chosen, :only => [:show]
+  before_filter :ensure_team_chosen,    :only => [:show]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1

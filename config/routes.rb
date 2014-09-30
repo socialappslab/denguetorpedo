@@ -57,6 +57,9 @@ Dengue::Application.routes.draw do
   resources :users do
     resources :reports, :except => [:show]
 
+    resources :conversations, :only => [:index, :show]
+    resources :messages,      :only => [:create]
+
     resources :posts
 
     collection do
@@ -65,6 +68,10 @@ Dengue::Application.routes.draw do
       put 'block'
     end
   end
+
+  #----------------------------------------------------------------------------
+  # Cities
+  resources :cities, :only => [:show]
 
   #----------------------------------------------------------------------------
   # Neighborhoods
