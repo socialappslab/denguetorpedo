@@ -13,7 +13,7 @@
           = I18n.t("common_terms.configuration")
 
       - if @user == @current_user
-        - community_link_text = I18n.t("dashboard.my_community") + " (#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id})"
+        - community_link_text = I18n.t("dashboard.my_community") + " (#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code})"
       - else
         - community_link_text = I18n.t("common_terms.their_community")
 

@@ -47,7 +47,6 @@ gem "prawnto_2", :require => "prawnto"
 # Internationalization
 
 gem 'rails-i18n'
-gem "countries"
 gem "devise-i18n"
 gem "http_accept_language"
 

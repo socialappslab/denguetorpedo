@@ -3,9 +3,9 @@
   .sidebar-entity-photo
     = image_tag(@neighborhood.picture, :class => "img-rounded")
     .sidebar-entity-name
-      = "#{@neighborhood.name}, #{@neighborhood.city}, #{@neighborhood.state_string_id}"
+      = "#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code}"
     .sidebar-entity-name
-      = "#{@neighborhood.country_name}"
+      = "#{@neighborhood.localized_country_name}"
 
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
