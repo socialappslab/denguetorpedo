@@ -26,6 +26,12 @@ var coordinates = [];
 //-------------------------------------------------------------------------
 // Helpers
 //--------
+
+function updateHTMLFormLocation(lat, long){
+          $("#new_report #report_location_attributes_latitude").val(lat);
+          $("#new_report #report_location_attributes_longitude").val(long);
+}
+
 var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
 {
   for (var i = 0; i < locationsArray.length; i++) {
@@ -164,9 +170,8 @@ $(document).ready(function() {
           var latitude  = results[0].geometry.location.lat;
           var longitude = results[0].geometry.location.lng;
 
-          // Update the form so we can pass along the ESRI results.
-          $("#new_report #report_location_attributes_latitude").val(latitude);
-          $("#new_report #report_location_attributes_longitude").val(longitude);
+          // Update the form so we can pass along the Google Maps results.
+	  updateHTMLFormLocation(latitude, longitude);
           $("#new_report #map-error-description").hide();
 
           console.log("("+latitude+","+longitude+")");
@@ -178,10 +183,26 @@ $(document).ready(function() {
 		newmarker = new google.maps.Marker({
 		position: markerLoc,
 		map: map,
-	//	draggable:true,
+		draggable:true,
 		animation: google.maps.Animation.DROP,
 		});
-		  console.log("Added marker to page!")
+		console.log("Added marker to page!")
+		// Add dragging event listeners.
+		
+                  google.maps.event.addListener(newmarker, 'dragstart', function() {
+		    console.log('Dragging start.');
+		  });
+		  
+		  google.maps.event.addListener(newmarker, 'drag', function() {
+		    console.log('Dragging... now at ' + newmarker.getPosition());
+		  });
+		  
+		  google.maps.event.addListener(newmarker, 'dragend', function() {
+		    var position = newmarker.getPosition();
+		    console.log('Drag ended. now at ' + position);
+		    //TODO change the values of the HTML form vars also
+  		    updateHTMLFormLocation(position.lat(), position.lng());
+		  });
 	  } else {
 	    newmarker.setPosition(markerLoc)
   	    console.log("Updated marker location!")
