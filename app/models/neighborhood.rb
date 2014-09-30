@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class Neighborhood < ActiveRecord::Base
-  attr_accessible :name, :photo, :city, :country_string_id, :as => :admin
+  attr_accessible :name, :photo, :city_id, :as => :admin
 
   #----------------------------------------------------------------------------
 
@@ -42,22 +42,16 @@ class Neighborhood < ActiveRecord::Base
     return [Names::TEPALCINGO, Names::OCACHICUALLI].include?(self.name)
   end
 
-  # NOTE: this method returns a Country object.
   def country
-    return Country[self.country_string_id]
+    return self.city.country
   end
 
-  def country_name
+  def localized_country_name
     if self.country.name == "Mexico"
       return I18n.t('countries.mexico')
     else
       return I18n.t('countries.brazil')
     end
-  end
-
-  def state
-    c = self.country
-    return c.states[self.state_string_id]["name"]
   end
 
   #----------------------------------------------------------------------------
@@ -73,7 +67,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def geographical_name
-    return "#{self.name}, #{self.country_name}"
+    return "#{self.name}, #{self.localized_country_name}"
   end
 
   #----------------------------------------------------------------------------

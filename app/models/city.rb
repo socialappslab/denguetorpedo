@@ -1,5 +1,5 @@
 class City < ActiveRecord::Base
-  attr_accessible :name, :state, :state_code, :country_id
+  attr_accessible :name, :photo, :state, :state_code, :country_id, :as => :admin
 
   belongs_to :country
   has_many   :neighborhoods
@@ -12,5 +12,10 @@ class City < ActiveRecord::Base
   validates :country_id, :presence => true
 
   #----------------------------------------------------------------------------
-  
+
+  has_attached_file :photo
+
+  #----------------------------------------------------------------------------
+
+
 end
