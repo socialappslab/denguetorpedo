@@ -11,4 +11,10 @@ class Country < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  module Names
+    MEXICO    = "Mexico"
+    BRAZIL    = "Brazil"
+    NICARAGUA = "Nicaragua"
+  end
+
 end

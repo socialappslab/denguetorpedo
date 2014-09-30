@@ -10,7 +10,7 @@ puts "-" * 80
 puts "[!] Seeding countries..."
 puts "\n" * 3
 
-countries = ["Brazil", "Mexico"]
+countries = ["Brazil", "Mexico", "Nicaragua"]
 countries.each do |c_name|
   c = Country.find_by_name(c_name)
   if c.nil?
@@ -26,8 +26,11 @@ puts "\n" * 3
 
 cities = [
   { :name => "Rio de Janeiro", :state => "Rio de Janeiro", :state_code => "RJ", :country_name => "Brazil" },
+
   { :name => "Tepalcingo", :state => "Morelos", :state_code => "MOR", :country_name => "Mexico" },
-  { :name => "Cuernavaca", :state => "Morelos", :state_code => "MOR", :country_name => "Mexico" }
+  { :name => "Cuernavaca", :state => "Morelos", :state_code => "MOR", :country_name => "Mexico" },
+
+  { :name => "Managua", :state => "Managua", :state_code => "MN", :country_name => "Nicaragua" }
 ]
 cities.each do |c_hash|
   c = City.find_by_name( c_hash[:name] )
@@ -48,8 +51,13 @@ puts "\n" * 3
 
 communities = [
   {:name => "Maré",         :city_name => "Rio de Janeiro"},
+
   {:name => "Tepalcingo",   :city_name => "Tepalcingo"},
-  {:name => "Ocachicualli", :city_name => "Cuernavaca"}
+  {:name => "Ocachicualli", :city_name => "Cuernavaca"},
+
+  {:name => "Francisco Meza", :city_name => "Managua"},
+  {:name => "Hialeah",        :city_name => "Managua"},
+  {:name => "Ariel Darce",    :city_name => "Managua"}
 ]
 communities.each do |c_hash|
   n = Neighborhood.find_by_name( c_hash[:name] )
