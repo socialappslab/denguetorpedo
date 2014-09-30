@@ -72,6 +72,12 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
+    # We use this to test the functionality of languages.
+    if params[:locale].present?
+      I18n.locale = params[:locale]
+      return
+    end
+
     # The choice to set a language is given by the following rules, in order
     # of importance:
     # 1. If user is logged in, and has locale set, use that locale (if compatible),
