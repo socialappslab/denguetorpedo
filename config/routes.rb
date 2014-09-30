@@ -71,7 +71,7 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # Cities
-  resources :cities, :only => [:index, :show]
+  resources :cities, :only => [:show]
 
   #----------------------------------------------------------------------------
   # Neighborhoods

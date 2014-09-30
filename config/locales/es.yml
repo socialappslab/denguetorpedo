@@ -20,7 +20,9 @@ es:
       user:
         one: Usuario
         other: Usuarios
-      neighborhood: Comunidad
+      neighborhood:
+        one: Comunidad
+        other: Comunidades
       feedback: Mensaje
       house: Casa
       documentation_section: Sección
@@ -39,6 +41,9 @@ es:
         one: Equipo
         other: Equipos
       location: Dirección
+      city:
+        one: Ciudad
+        other: Ciudades
     attributes:
       user:
         username: "Nombre de usuario"
@@ -454,7 +459,9 @@ es:
           empty_recipients: "Es necesario incluir los destinatarios de este mensaje."
           unknown_recipients: "El mensaje no fue creada porque los siguientes usuarios no se pudo encontrar: %{recipients}"
           empty_body: "Contenido es obligatorio."
-
+    cities:
+      show:
+        visit: Visitar
 
 
   #----------------------------------------------------------------------------
