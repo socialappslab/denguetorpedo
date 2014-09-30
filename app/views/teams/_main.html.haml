@@ -34,7 +34,7 @@
 
 - if @current_user && @users.include?(@current_user)
   .row{:style => "margin-top:60px;"}
-    = render :partial => 'posts/new', locals: { wall: @house }
+    = render :partial => 'posts/new'
 
 .row
   //= render :partial => "neighborhoods/news"

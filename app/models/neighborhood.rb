@@ -23,6 +23,7 @@ class Neighborhood < ActiveRecord::Base
   has_many :houses
   has_many :teams
   has_many :members, :class_name => "User"
+  has_many :users
   has_many :reports
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
@@ -49,30 +50,10 @@ class Neighborhood < ActiveRecord::Base
     return self.city.country
   end
 
-  def localized_country_name
-    if self.country.name == Country::Names::MEXICO
-      return I18n.t('countries.mexico')
-    elsif self.country.name == Country::Names::NICARAGUA
-      return I18n.t('countries.nicaragua')
-    else
-      return I18n.t('countries.brazil')
-    end
-  end
-
-  #----------------------------------------------------------------------------
-
-  def descriptive_name
-    if I18n.locale == :es
-      return I18n.t("attributes.neighborhood_id") + " de " + self.name
-    else
-      return I18n.t("attributes.neighborhood_id") + " " + self.name
-    end
-  end
-
   #----------------------------------------------------------------------------
 
   def geographical_name
-    return "#{self.name}, #{self.localized_country_name}"
+    return "#{self.name}, #{self.city.name}"
   end
 
   #----------------------------------------------------------------------------

@@ -48,16 +48,13 @@ class UsersController < ApplicationController
   # GET /users/1/
 
   def show
-    head :not_found and return if @user.nil?
-    head :not_found and return if ( @user != @current_user && @user.role == User::Types::SPONSOR )
+    redirect_to user_path(@current_user) and return if @user.nil?
 
     @post         = Post.new
     @neighborhood = @user.neighborhood || Neighborhood.first
-    @house        = @user.house
+    @city         = @neighborhood.city
     @badges       = @user.badges
-    @user_posts   = @user.posts
-    @reports      = @user.reports
-    @notices      = @neighborhood.notices.order("updated_at DESC")
+    @notices      = @city.neighborhoods.map {|n| n.notices.order("updated_at DESC") }.flatten
     @teams        = @user.teams
 
     # Avoid displaying coupons that expired and were never redeemed.
@@ -73,25 +70,29 @@ class UsersController < ApplicationController
     # query.
     # TODO: Move the magic number '4.weeks.ago'
     if @current_user == @user
-      neighborhood_reports = @neighborhood.reports.where("created_at > ?", 4.weeks.ago)
-      neighborhood_reports = neighborhood_reports.find_all {|r| r.is_public? }
+      city_reports = @city.neighborhoods.map {|n| n.reports.where("created_at > ?", 4.weeks.ago) }.flatten
+      city_reports = city_reports.find_all {|r| r.is_public? }
 
       # Now, let's load all the users, and their posts.
-      neighborhood_posts = []
-      @neighborhood.members.each do |m|
-        user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
-        neighborhood_posts << user_posts
+      city_posts = []
+      @city.neighborhoods.each do |n|
+        n.users.each do |m|
+          user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
+          city_posts << user_posts
+        end
       end
-      neighborhood_posts.flatten!
+      city_posts.flatten!
 
-      @news_feed = (neighborhood_reports + neighborhood_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @news_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @news_feed = (@reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @user_reports = @user_reports.reports
+      @user_posts   = @user.posts
+      @news_feed    = (@user_reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
 
     respond_to do |format|
       format.html
-      format.json { render json: {user: @user, house: @house, badges: @badges}}
+      format.json { render json: {user: @user, badges: @badges}}
     end
   end
 

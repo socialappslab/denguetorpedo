@@ -20,7 +20,9 @@ pt:
       user:
         one: Usuário
         other: Usuários
-      neighborhood: Comunidade
+      neighborhood:
+        one: Comunidade
+        other: Comunidades
       feedback: Mensagem
       house: Casa
       documentation_section: Seção
@@ -39,6 +41,9 @@ pt:
         one: Equipe
         other: Equipes
       location: Endereço
+      city:
+        one: Cidade
+        other: Cidades
     attributes:
       user:
         email: "Email"
@@ -149,7 +154,6 @@ pt:
   #-------------
   landing_page:
     community:
-      title: Comunidades em destaque no Dengue Torpedo
       future_community: Futura comunidade
       visit: Vá para a %{name}
       total_reports: Total de focos marcados
@@ -381,6 +385,8 @@ pt:
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
+      cities:
+        title: Cidades em destaque no Dengue Torpedo
       header: Cidadãos no Combate à Dengue
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
       teams_description: "Entre numa equipe para combater a dengue e ganhe prêmios"
@@ -471,7 +477,9 @@ pt:
           empty_recipients: "Você precisa incluir destinatários para essa mensagem."
           unknown_recipients: "A mensagem não foi criado porque os seguintes usuários não pôde ser encontrado: %{recipients}"
           empty_body: "Conteúdo é obrigatória."
-
+    cities:
+      show:
+        visit: Visitar
 
 
   #----------------------------------------------------------------------------
