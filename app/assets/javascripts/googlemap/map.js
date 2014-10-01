@@ -3,12 +3,10 @@
 var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
 var GMAPS_VERSION = 3.17; //latest stable version
 var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
-var STREET_ZOOM = 18; // the zoom level at which we see street details
+var STREET_ZOOM = 16; // the zoom level at which we see street details
 
-var coordinates = [];
 var map; //this is a shared variable used by all methods.
 var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
-
 
 // Do not declare shared variables after this line
 //-------------------------------------------------------------------------
