@@ -37,7 +37,6 @@ function positionToAddress(pos) {
 // pans and zooms map as needed
 // does NOT update the HTML form elements
 function createOrUpdateNewMarker(markerLoc){
-  map.panTo(markerLoc);
   map.setZoom(STREET_ZOOM);
   if (newmarker == null) {
     newmarker = new google.maps.Marker({
