@@ -97,6 +97,9 @@ window.maps.initializeGoogleMaps = function(){
     createOrUpdateNewMarker(markerLoc);
   }
 
-  window.maps.populateGoogleMaps(openLocations, map, "open");
-  window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
+  if ( !$("#new_report").is(":visible") )
+  {
+    window.maps.populateGoogleMaps(openLocations, map, "open");
+    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
+  }
 }
