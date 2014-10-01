@@ -1,7 +1,3 @@
-//TODO change this Tepalciongo-specific info to be more generic
-var COMMUNITY_LON = -98.8460549;
-var COMMUNITY_LAT = 18.5957189;
-
 window.maps = {};
 window.maps.markers = [];
 
@@ -79,7 +75,7 @@ window.maps.updateHTMLFormLocation = function(latitude, longitude){
 window.maps.initializeGoogleMaps = function(){
   var mapOptions = {
     zoom: REGION_ZOOM,
-    center: new google.maps.LatLng(COMMUNITY_LAT, COMMUNITY_LON)
+    center: new google.maps.LatLng(communityLatitude, communityLongitude)
     };
   // Initialize the map, and add the geographical layer to it.
   map = new google.maps.Map(document.getElementById('gmap'),
