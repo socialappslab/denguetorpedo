@@ -16,6 +16,7 @@
 //= require jquery.countdown.min
 //= require jquery.fancybox.pack
 //= require reports
+//= require map
 
 
 // TRANSITION
