@@ -92,11 +92,6 @@
     // Report tab listeners
     //#- TODO @awdorsett - better way to handle new_report_tab?
 
-    $('#make_report_button').on('click', function(){
-      // clear map and enable adding a marker to map by clicking
-      map.graphics.clear();
-    });
-
     $('#all_reports_button').on('click', function(){
       map.graphics.clear();
       updateMapWithLocationsAndMarker(open_markers, orangeMarker)
