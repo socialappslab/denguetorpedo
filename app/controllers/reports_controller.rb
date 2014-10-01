@@ -42,8 +42,6 @@ class ReportsController < NeighborhoodsBaseController
     @open_locations       = []
     @eliminated_locations = []
     @reports.each do |report|
-      next unless (report.reporter == current_user || report.elimination_type)
-
       # In the case that the location is missing, then let's skip it.
       next if report.location.nil?
 
