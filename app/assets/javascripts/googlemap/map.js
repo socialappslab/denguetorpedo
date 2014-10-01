@@ -18,7 +18,6 @@ var geocoder = null; // the GeoCoder object we will use to make geocoding/revers
 // pans and zooms map as needed
 // does NOT update the HTML form elements
 function createOrUpdateNewMarker(markerLoc){
-  map.setZoom(STREET_ZOOM);
   if (newmarker == null) {
     newmarker = new google.maps.Marker({
       position: markerLoc,
@@ -127,6 +126,8 @@ $(document).ready(function() {
 
     // We only want to add handlers to map clicks to allow moving the marker when clicked.
     google.maps.event.addListener(map, 'click', function(clickEvent) {
+      map.setZoom(STREET_ZOOM);
+      map.panTo(clickEvent.latLng);
       console.log('Mouse clicked at ' + clickEvent.latLng.lat());
       var latitude = clickEvent.latLng.lat();
       var longitude = clickEvent.latLng.lng();
