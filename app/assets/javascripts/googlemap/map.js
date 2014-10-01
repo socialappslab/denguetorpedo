@@ -7,6 +7,7 @@ var STREET_ZOOM = 16; // the zoom level at which we see street details
 
 var map; //this is a shared variable used by all methods.
 var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
+var geocoder = null; // the GeoCoder object we will use to make geocoding/reverse-geocoding requests
 
 // Do not declare shared variables after this line
 //-------------------------------------------------------------------------
@@ -17,8 +18,6 @@ var newmarker = null; // this is a global var for the new marker, to be updated 
 // pans and zooms map as needed
 // does NOT update the HTML form elements
 function createOrUpdateNewMarker(markerLoc){
-  map.panTo(markerLoc);
-  map.setZoom(STREET_ZOOM);
   if (newmarker == null) {
     newmarker = new google.maps.Marker({
       position: markerLoc,
@@ -36,9 +35,13 @@ function createOrUpdateNewMarker(markerLoc){
       // We only want to add handlers to map clicks to allow moving the marker when clicked.
       google.maps.event.addListener(map, 'click', function(clickEvent) {
         console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+        window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
+
         var latitude = clickEvent.latLng.lat();
         var longitude = clickEvent.latLng.lng();
         window.maps.updateHTMLFormLocation(latitude, longitude);
+
+        // NOTE: This creates a recursive call.
         createOrUpdateNewMarker(clickEvent.latLng);
       });
 
@@ -52,6 +55,7 @@ function createOrUpdateNewMarker(markerLoc){
         var position = newmarker.getPosition();
         console.log('Drag ended. now at ' + position);
         window.maps.updateHTMLFormLocation(position.lat(), position.lng());
+        window.maps.updateHTMLFormAddressFromPosition(position);
       });
     }
   } else {
@@ -122,10 +126,13 @@ $(document).ready(function() {
 
     // We only want to add handlers to map clicks to allow moving the marker when clicked.
     google.maps.event.addListener(map, 'click', function(clickEvent) {
+      map.setZoom(STREET_ZOOM);
+      map.panTo(clickEvent.latLng);
       console.log('Mouse clicked at ' + clickEvent.latLng.lat());
       var latitude = clickEvent.latLng.lat();
       var longitude = clickEvent.latLng.lng();
       window.maps.updateHTMLFormLocation(latitude, longitude);
+      window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
       createOrUpdateNewMarker(clickEvent.latLng);
     });
   });

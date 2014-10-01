@@ -72,6 +72,15 @@ window.maps.updateHTMLFormLocation = function(latitude, longitude){
   $("#new_report #report_location_attributes_longitude").val(longitude);
 }
 
+// calls the Google (reverse) geocoding API and updates the address field
+window.maps.updateHTMLFormAddressFromPosition = function(pos) {
+  geocoder.geocode({ latLng: pos }, function(responses) {
+    if (responses && responses.length > 0)
+      $("#new_report #report_location_attributes_address").val(responses[0].formatted_address);
+  });
+}
+
+
 window.maps.initializeGoogleMaps = function(){
   var mapOptions = {
     zoom: REGION_ZOOM,
@@ -98,4 +107,7 @@ window.maps.initializeGoogleMaps = function(){
     window.maps.populateGoogleMaps(openLocations, map, "open");
     window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
   }
+
+   //initialize the geocoder
+   geocoder = new google.maps.Geocoder();
 }
