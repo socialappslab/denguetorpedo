@@ -9,3 +9,10 @@
     %p
       = I18n.t("map.loading")
   #gmap
+
+
+:javascript
+  var openLocations       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
+  var eliminatedLocations = #{@eliminated_locations.to_json(:only => [:latitude, :longitude])}
+  var communityLatitude  = #{@neighborhood_lat}
+  var communityLongitude = #{@neighborhood_long}

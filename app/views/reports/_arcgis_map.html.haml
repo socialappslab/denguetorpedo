@@ -68,8 +68,8 @@
     //-------------------------------------------------------------------------
     // Create the map
     //---------------
-    map.on("update-start", showMapLoading );
-    map.on("update-end",   hideMapLoading );
+    map.on("update-start", window.maps.showLoading );
+    map.on("update-end",   window.maps.hideLoading );
     map.addLayer(tiled);
 
     map.on("load", function() {
@@ -92,11 +92,6 @@
     // Report tab listeners
     //#- TODO @awdorsett - better way to handle new_report_tab?
 
-    $('#make_report_button').on('click', function(){
-      // clear map and enable adding a marker to map by clicking
-      map.graphics.clear();
-    });
-
     $('#all_reports_button').on('click', function(){
       map.graphics.clear();
       updateMapWithLocationsAndMarker(open_markers, orangeMarker)
@@ -117,7 +112,7 @@
     // Listener for location attribute updates
     $("#new_report_form #report_location_attributes_street_number").on("change", function()
     {
-      showMapLoading();
+      window.maps.showLoading();
 
       var streetType   = $("#report_location_attributes_street_type").val();
       var streetName   = $("#report_location_attributes_street_name").val();
@@ -134,7 +129,7 @@
         success: function(m) {
           var candidates = m.candidates;
           if (candidates.length == 0)
-            $("#map-error-description").show();
+            window.maps.showError();
           else
           {
             map.graphics.clear();
@@ -148,13 +143,12 @@
             map.centerAndZoom(mapPoint, 4);
 
             // Update the form so we can pass along the ESRI results.
-            $("#new_report_form #report_location_attributes_latitude").val(latitude);
-            $("#new_report_form #report_location_attributes_longitude").val(longitude);
-            $("#new_report_form #map-error-description").hide();
+            window.maps.updateHTMLFormLocation(latitude, longitude);
+            window.maps.hideError();
           }
         },
-        error: function() { $("#map-error-description").show(); },
-        complete: function() { hideMapLoading(); }
+        error: function()    { window.maps.showError(); },
+        complete: function() { window.maps.hideLoading(); }
       });
     });
 
@@ -181,8 +175,7 @@
 
         var latitude  = e.mapPoint.x;
         var longitude = e.mapPoint.y;
-        $("#new_report_form #report_location_attributes_latitude").val( latitude )
-        $("#new_report_form #report_location_attributes_longitude").val( longitude )
+        window.maps.updateHTMLFormLocation(latitude, longitude);
 
         var mapPoint = new Point(latitude, longitude);
         var graphic  = new Graphic(mapPoint, orangeMarker);
