@@ -108,15 +108,6 @@ function display_new_report(e){
 
 }
 
-function showMapLoading() {
-  $("#loading").show();
-}
-
-function hideMapLoading() {
-  $("#loading").hide();
-}
-
-
 // pass the id of tab to change the css so that it appears as selected
 // e.g. larger size, different color, etc
 function selected_tab_css_update(id){
@@ -167,7 +158,7 @@ function setLocationVariablesUsingOSM(location, event)
 // TODO @awdorsett - need to implement visual queues for marcar no mapa (drop a marker)
 // temporary to be used with "Marcar no mapa" button on new report form
 // function update_location_coordinates_new_report(){
-//   showMapLoading();
+//   window.maps.showLoading();
 //
 //   var streetType   = $("#report_location_attributes_street_type").val();
 //   var streetName   = $("#report_location_attributes_street_name").val();
@@ -202,7 +193,7 @@ function setLocationVariablesUsingOSM(location, event)
 //       }
 //     },
 //     error: function() { $("#map-error-description").text("O endereço não pode ser encontrado"); },
-//     complete: function() { hideMapLoading(); }
+//     complete: function() { window.maps.hideLoading(); }
 //   });
 //
 //   // We're forcing a change event here so that we can invoke a listener

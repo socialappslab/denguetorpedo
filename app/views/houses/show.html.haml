@@ -190,8 +190,8 @@
     // Create a map
     //-------------
     map.addLayer(tiled);
-    map.on("update-start", showMapLoading);
-    map.on("update-end", hideMapLoading);
+    map.on("update-start", window.maps.showLoading);
+    map.on("update-end", window.maps.hideLoading);
     map.on("load", function() {
       map.infoWindow.resize(300, 200);
 

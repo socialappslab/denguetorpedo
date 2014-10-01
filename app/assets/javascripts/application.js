@@ -17,7 +17,6 @@
 //= require jquery.fancybox.pack
 //= require reports
 
-
 // TRANSITION
 !function( $ ) {
 
