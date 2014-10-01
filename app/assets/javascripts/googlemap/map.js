@@ -197,6 +197,8 @@ $(document).ready(function() {
     console.log('I will now zoom and pan the map to this marker at ' + reportLatLng);
     map.panTo(reportLatLng);
     map.setZoom(STREET_ZOOM);
+    event.preventDefault();
+    event.stopPropagation();
   });
 
 
