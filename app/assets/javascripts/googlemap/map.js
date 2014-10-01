@@ -8,6 +8,9 @@ var STREET_ZOOM = 18; // the zoom level at which we see street details
 var COMMUNITY_LON = -98.8460549;
 var COMMUNITY_LAT = 18.5957189;
 
+//TODO change these to localized strings
+var GEOCODE_ERROR_STR = "Error in getting address...";
+var GEOCODE_LOADING_STR = "...";
 
 /*
 var size         = new OpenLayers.Size(64,64);
@@ -28,6 +31,7 @@ var map, fromProjection, toProjection, markersLayer; //filled in later in the in
 var coordinates = [];
 var map; //this is a shared variable used by all methods.
 var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
+var geocoder = null; // the GeoCoder object we will use to make geocoding/reverse-geocoding requests
 
 
 // Do not declare shared variables after this line
@@ -41,6 +45,26 @@ var newmarker = null; // this is a global var for the new marker, to be updated 
 function updateHTMLFormLocation(latitude, longitude){
   $("#new_report #report_location_attributes_latitude").val(latitude);
   $("#new_report #report_location_attributes_longitude").val(longitude);
+}
+
+//updates address field
+function updateAddressField(newAddress){
+  $("#new_report #report_location_attributes_address").val(newAddress);
+}
+
+// calls the Google (reverse) geocoding API and updates the address field
+function positionToAddress(pos) {
+  updateAddressField(GEOCODE_LOADING_STR);
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0) {
+      updateAddressField(responses[0].formatted_address);
+    } else {
+      console.log("error in reverse Geocoder response for "+ pos);
+      updateAddressField(GEOCODE_ERROR_STR);
+    }
+  });
 }
 
 // Creates a new marker at markerLoc and stores it in newMarker.
@@ -72,6 +96,7 @@ function createOrUpdateNewMarker(markerLoc){
       console.log('Drag ended. now at ' + position);
       //change the values of the HTML form vars also
       updateHTMLFormLocation(position.lat(), position.lng());
+      positionToAddress(position);
     });
   } else {
     newmarker.setPosition(markerLoc)
@@ -120,6 +145,7 @@ var addLocationToOSMapWithMarker = function(loc, map, marker)
       var markerLoc = new google.maps.LatLng(oldlat, oldlong);
       console.log("setting up stored marker at "+ markerLoc);
       createOrUpdateNewMarker(markerLoc);
+      //no need to update address field, it was taken from the form data
     }
 
 
@@ -132,7 +158,10 @@ var addLocationToOSMapWithMarker = function(loc, map, marker)
           // Update the form so we can pass along the Google Maps results.
 	  updateHTMLFormLocation(latitude, longitude);
 	  createOrUpdateNewMarker(clickEvent.latLng);
+          positionToAddress(clickEvent.latLng);
      });
+    //initialize the geocoder
+    geocoder = new google.maps.Geocoder();
   }
 
 $(document).ready(function() {
