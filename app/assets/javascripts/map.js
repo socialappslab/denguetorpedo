@@ -97,15 +97,6 @@ window.maps.initializeGoogleMaps = function(){
     createOrUpdateNewMarker(markerLoc);
   }
 
-  //add handler to map click() event, so as to add or move markers when it is clicked
-  google.maps.event.addListener(map, 'click', function(clickEvent) {
-    console.log('Mouse clicked at ' + clickEvent.latLng.lat());
-    var latitude = clickEvent.latLng.lat();
-    var longitude = clickEvent.latLng.lng();
-    window.maps.updateHTMLFormLocation(latitude, longitude);
-    createOrUpdateNewMarker(clickEvent.latLng);
-  });
-
   window.maps.populateGoogleMaps(openLocations, map, "open");
   window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
 }
