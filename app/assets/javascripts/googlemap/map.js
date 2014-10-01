@@ -79,61 +79,39 @@ function createOrUpdateNewMarker(markerLoc){
   }
 }
 
+function initialize() {
+  var mapOptions = {
+    zoom: REGION_ZOOM,
+    center: new google.maps.LatLng(COMMUNITY_LAT, COMMUNITY_LON)
+    };
+  // Initialize the map, and add the geographical layer to it.
+  map = new google.maps.Map(document.getElementById('gmap'),
+      mapOptions);
+  hideMapLoading();
 
-//deprecated?
-var updateOSMapWithLocationsAndMarker = function(locationsArray, marker)
-{
-  for (var i = 0; i < locationsArray.length; i++) {
-    loc = locationsArray[i];
-    addLocationToOSMapWithMarker(loc, map, marker);
+  //see if lat and long are set, if so, this is an error page, and we should set
+  //the marker
+  //if(lat and long not zero)
+  var oldlat = $("#new_report #report_location_attributes_latitude").val();
+  var oldlong = $("#new_report #report_location_attributes_longitude").val();
+  if (oldlat != "" && oldlong != ""){
+    //we want none of them to be blank
+    var markerLoc = new google.maps.LatLng(oldlat, oldlong);
+    console.log("setting up stored marker at "+ markerLoc);
+    createOrUpdateNewMarker(markerLoc);
   }
-};
 
-//deprecated?
-var addLocationToOSMapWithMarker = function(loc, map, marker)
-{
-  if (loc && loc.latitude > 0 && loc.longitude > 0)
-  {
-    var position = new OpenLayers.LonLat(loc.longitude, loc.latitude) //.transform( fromProjection, toProjection);
-    markersLayer.addMarker(new OpenLayers.Marker(position, marker));
-  }
-};
+  //add handler to map click() event, so as to add or move markers when it is clicked
+  google.maps.event.addListener(map, 'click', function(clickEvent) {
+    console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+    var latitude = clickEvent.latLng.lat();
+    var longitude = clickEvent.latLng.lng();
 
-
-  function initialize() {
-    var mapOptions = {
-      zoom: REGION_ZOOM,
-      center: new google.maps.LatLng(COMMUNITY_LAT, COMMUNITY_LON)
-      };
-    // Initialize the map, and add the geographical layer to it.
-    map = new google.maps.Map(document.getElementById('gmap'),
-        mapOptions);
-    hideMapLoading();
-
-    //see if lat and long are set, if so, this is an error page, and we should set
-    //the marker
-    //if(lat and long not zero)
-    var oldlat = $("#new_report #report_location_attributes_latitude").val();
-    var oldlong = $("#new_report #report_location_attributes_longitude").val();
-    if (oldlat != "" && oldlong != ""){
-      //we want none of them to be blank
-      var markerLoc = new google.maps.LatLng(oldlat, oldlong);
-      console.log("setting up stored marker at "+ markerLoc);
-      createOrUpdateNewMarker(markerLoc);
-    }
-
-
-    //add handler to map click() event, so as to add or move markers when it is clicked
-    google.maps.event.addListener(map, 'click', function(clickEvent) {
-	  console.log('Mouse clicked at ' + clickEvent.latLng.lat());
-          var latitude = clickEvent.latLng.lat();
-          var longitude = clickEvent.latLng.lng();
-
-          // Update the form so we can pass along the Google Maps results.
-	  updateHTMLFormLocation(latitude, longitude);
-	  createOrUpdateNewMarker(clickEvent.latLng);
-     });
-  }
+    // Update the form so we can pass along the Google Maps results.
+    updateHTMLFormLocation(latitude, longitude);
+    createOrUpdateNewMarker(clickEvent.latLng);
+  });
+}
 
 $(document).ready(function() {
   console.log("Ready to display map using Google Maps!!")
@@ -142,21 +120,6 @@ $(document).ready(function() {
   //sensor parameter no longer needed
   script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=initialize';
   document.body.appendChild(script);
-
-/*
-
-  // Initialize, and add the markers layer to the map.
-  markersLayer = new OpenLayers.Layer.Markers( "Markers" );
-  map.addLayer(markersLayer);
-  // markersLayer.addMarker(new OpenLayers.Marker(position, orangeMarker));
-
-
-  //setting the click handler, defined above
-  var click = new OpenLayers.Control.Click();
-  map.addControl(click);
-  click.activate();
-
-*/
 
 
   // Listener for location attribute updates
@@ -183,8 +146,7 @@ $(document).ready(function() {
       timeout: 5000,
       success: function(response) {
         //response is a PlainObject, i.e., key-value pairs
-        var results = response.results;//this is an array
-
+        var results = response.results;
         if (results === undefined || results.length == 0)
           $("#map-error-description").show();
         else
@@ -194,12 +156,12 @@ $(document).ready(function() {
           var longitude = results[0].geometry.location.lng;
 
           // Update the form so we can pass along the Google Maps results.
-	  updateHTMLFormLocation(latitude, longitude);
+	        updateHTMLFormLocation(latitude, longitude);
           $("#new_report #map-error-description").hide();
 
           console.log("("+latitude+","+longitude+")");
           var markerLoc = new google.maps.LatLng(latitude, longitude);
-	  createOrUpdateNewMarker(markerLoc);
+	        createOrUpdateNewMarker(markerLoc);
         }
       },
       error: function() { $("#map-error-description").show(); },
