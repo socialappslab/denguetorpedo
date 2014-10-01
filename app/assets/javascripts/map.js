@@ -7,16 +7,16 @@ window.maps.markers = [];
 
 window.maps.populateGoogleMaps = function(locations, map, locationType) {
   // Populate the map with existing open locations.
-  var lat, long;
+  var latitude, longitude, icon;
   if (locationType == "open")
-    icon = "/assets/markers/orange_marker.png"
+    var icon = "/assets/markers/orange_marker.png"
   else
-    icon = "/assets/markers/grey_marker.png"
+    var icon = "/assets/markers/grey_marker.png"
 
   for(var i = 0; i < locations.length; i++) {
-    lat  = locations[i].latitude;
-    long = locations[i].longitude;
-    var markerLoc = new google.maps.LatLng(lat, long);
+    var latitude  = locations[i].latitude;
+    var longitude = locations[i].longitude;
+    var markerLoc = new google.maps.LatLng(latitude, longitude);
     marker = new google.maps.Marker({
       position: markerLoc,
       map: map,
