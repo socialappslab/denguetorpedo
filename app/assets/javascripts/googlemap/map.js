@@ -25,23 +25,26 @@ function createOrUpdateNewMarker(markerLoc){
       map: map,
       draggable:true,
       animation: google.maps.Animation.DROP,
+      icon: "/assets/markers/orange_marker.png"
     });
     console.log("Added marker to page at " + markerLoc);
-    // Add dragging event listeners.
 
-    google.maps.event.addListener(newmarker, 'dragstart', function() {
-      console.log('Dragging start.');
-    });
-
-    google.maps.event.addListener(newmarker, 'drag', function() {
-      console.log('Dragging... now at ' + newmarker.getPosition());
-    });
-
-    google.maps.event.addListener(newmarker, 'dragend', function() {
-      var position = newmarker.getPosition();
-      console.log('Drag ended. now at ' + position);
-      window.maps.updateHTMLFormLocation(position.lat(), position.lng());
-    });
+    // We only want to add dragging event listeners if the New Report
+    // form is visible.
+    if ( $("#new_report").is(":visible") )
+    {
+      google.maps.event.addListener(newmarker, 'dragstart', function() {
+        console.log('Dragging start.');
+      });
+      google.maps.event.addListener(newmarker, 'drag', function() {
+        console.log('Dragging... now at ' + newmarker.getPosition());
+      });
+      google.maps.event.addListener(newmarker, 'dragend', function() {
+        var position = newmarker.getPosition();
+        console.log('Drag ended. now at ' + position);
+        window.maps.updateHTMLFormLocation(position.lat(), position.lng());
+      });
+    }
   } else {
     newmarker.setPosition(markerLoc)
     console.log("Updated marker location to " + markerLoc);
