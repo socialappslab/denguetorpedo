@@ -100,6 +100,7 @@ $(document).ready(function() {
 
           // This is a bit overkill, but for now it assures us that the new marker
           // persists across tabbing.
+          window.maps.hideMarker(newmarker);
           newmarker = null
           window.maps.hideMarkers()
           window.maps.markers = []
