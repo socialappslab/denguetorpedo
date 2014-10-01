@@ -5,10 +5,6 @@ var GMAPS_VERSION = 3.17; //latest stable version
 var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
 var STREET_ZOOM = 16; // the zoom level at which we see street details
 
-//TODO change these to localized strings
-var GEOCODE_ERROR_STR = "Error in getting address...";
-var GEOCODE_LOADING_STR = "...";
-
 var map; //this is a shared variable used by all methods.
 var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
 var geocoder = null; // the GeoCoder object we will use to make geocoding/reverse-geocoding requests
@@ -17,21 +13,6 @@ var geocoder = null; // the GeoCoder object we will use to make geocoding/revers
 //-------------------------------------------------------------------------
 // Helpers
 //--------
-
-// calls the Google (reverse) geocoding API and updates the address field
-function positionToAddress(pos) {
-  window.maps.updateAddressField(GEOCODE_LOADING_STR);
-  geocoder.geocode({
-    latLng: pos
-  }, function(responses) {
-    if (responses && responses.length > 0) {
-      window.maps.updateAddressField(responses[0].formatted_address);
-    } else {
-      console.log("error in reverse Geocoder response for "+ pos);
-      window.maps.updateAddressField(GEOCODE_ERROR_STR);
-    }
-  });
-}
 
 // Creates a new marker at markerLoc and stores it in newMarker.
 // pans and zooms map as needed
@@ -55,11 +36,14 @@ function createOrUpdateNewMarker(markerLoc){
       // We only want to add handlers to map clicks to allow moving the marker when clicked.
       google.maps.event.addListener(map, 'click', function(clickEvent) {
         console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+        window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
+
         var latitude = clickEvent.latLng.lat();
         var longitude = clickEvent.latLng.lng();
         window.maps.updateHTMLFormLocation(latitude, longitude);
+
+        // NOTE: This creates a recursive call.
         createOrUpdateNewMarker(clickEvent.latLng);
-        positionToAddress(clickEvent.latLng);
       });
 
       google.maps.event.addListener(newmarker, 'dragstart', function() {
@@ -72,7 +56,7 @@ function createOrUpdateNewMarker(markerLoc){
         var position = newmarker.getPosition();
         console.log('Drag ended. now at ' + position);
         window.maps.updateHTMLFormLocation(position.lat(), position.lng());
-        positionToAddress(position);
+        window.maps.updateHTMLFormAddressFromPosition(position);
       });
     }
   } else {
@@ -147,6 +131,7 @@ $(document).ready(function() {
       var latitude = clickEvent.latLng.lat();
       var longitude = clickEvent.latLng.lng();
       window.maps.updateHTMLFormLocation(latitude, longitude);
+      window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
       createOrUpdateNewMarker(clickEvent.latLng);
     });
   });
