@@ -88,11 +88,76 @@ $(document).ready(function() {
 
           console.log("("+latitude+","+longitude+")");
           var markerLoc = new google.maps.LatLng(latitude, longitude);
+
+          // This is a bit overkill, but for now it assures us that the new marker
+          // persists across tabbing.
+          newmarker = null
+          window.maps.hideMarkers()
+          window.maps.markers = []
 	        createOrUpdateNewMarker(markerLoc);
         }
       },
-      error: function()    { window.maps.showError() },
+      error:    function() { window.maps.showError();   },
       complete: function() { window.maps.hideLoading(); }
     });
   });
+
+
+  // NOTE: Ideally, these listeners will be refactored out into assets/map.js
+  // so that we can reuse them for both ArcGis and GoogleMaps. That will
+  // require checking for (typeof esri) and then making a decision how to
+  // deal with the specific API.
+  $('#make_report_button').on('click', function(){
+    window.maps.hideMarkers()
+
+    // We only want to add handlers to map clicks to allow moving the marker when clicked.
+    google.maps.event.addListener(map, 'click', function(clickEvent) {
+      console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+      var latitude = clickEvent.latLng.lat();
+      var longitude = clickEvent.latLng.lng();
+      window.maps.updateHTMLFormLocation(latitude, longitude);
+      createOrUpdateNewMarker(clickEvent.latLng);
+    });
+  });
+
+
+  // A more efficient way is to keep the markers in memory, and simply
+  // display them. For now, we're using this quick hack that doesn't add much
+  // overhead to development efforts.
+  $('#all_reports_button').on('click', function(){
+    window.maps.hideMarker(newmarker);
+    newmarker = null;
+
+    map.setZoom(REGION_ZOOM);
+    google.maps.event.clearInstanceListeners(map);
+    window.maps.hideMarkers()
+    window.maps.markers = []
+    window.maps.populateGoogleMaps(openLocations, map, "open");
+    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
+  })
+
+  $('#open_reports_button').on('click', function(){
+    window.maps.hideMarker(newmarker);
+    newmarker = null;
+
+    map.setZoom(REGION_ZOOM);
+    google.maps.event.clearInstanceListeners(map);
+    window.maps.hideMarkers()
+    window.maps.markers = []
+    window.maps.populateGoogleMaps(openLocations, map, "open");
+  })
+
+  $('#eliminated_reports_button').on('click', function(){
+    window.maps.hideMarker(newmarker);
+    newmarker = null;
+
+    map.setZoom(REGION_ZOOM);
+    google.maps.event.clearInstanceListeners(map);
+    window.maps.hideMarkers()
+    window.maps.markers = []
+    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
+  })
+
+
+
 });

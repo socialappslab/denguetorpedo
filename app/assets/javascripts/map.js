@@ -3,6 +3,7 @@ var COMMUNITY_LON = -98.8460549;
 var COMMUNITY_LAT = 18.5957189;
 
 window.maps = {};
+window.maps.markers = [];
 
 window.maps.populateGoogleMaps = function(locations, map, locationType) {
   // Populate the map with existing open locations.
@@ -16,13 +17,14 @@ window.maps.populateGoogleMaps = function(locations, map, locationType) {
     lat  = locations[i].latitude;
     long = locations[i].longitude;
     var markerLoc = new google.maps.LatLng(lat, long);
-    newmarker = new google.maps.Marker({
+    marker = new google.maps.Marker({
       position: markerLoc,
       map: map,
       draggable:false,
       animation: google.maps.Animation.DROP,
       icon: icon
     });
+    window.maps.markers.push(marker);
   }
 }
 
@@ -41,6 +43,29 @@ window.maps.showError = function(){
 
 window.maps.hideError = function(){
   $("#map-error-description").hide();
+}
+
+window.maps.showMarkers = function(map){
+  for (var i = 0; i < window.maps.markers.length; i++) {
+    window.maps.markers[i].setMap(map);
+  }
+}
+
+window.maps.hideMarkers = function(){
+  if(typeof esri !== "undefined") {
+    map.graphics.clear();
+  }
+  else {
+    for (var i = 0; i < window.maps.markers.length; i++) {
+      window.maps.markers[i].setMap(null);
+    }
+  }
+}
+
+window.maps.hideMarker = function(marker){
+  // Remove the newmarker from view.
+  if (marker)
+    marker.setMap(null);
 }
 
 // NOTE: DO NOT use lat, long as parameters to the function.
