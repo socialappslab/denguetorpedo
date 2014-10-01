@@ -166,7 +166,7 @@ $(document).ready(function() {
     window.maps.markers = []
     window.maps.populateGoogleMaps(openLocations, map, "open");
     window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
-  })
+  });
 
   $('#open_reports_button').on('click', function(){
     window.maps.hideMarker(newmarker);
@@ -177,7 +177,7 @@ $(document).ready(function() {
     window.maps.hideMarkers()
     window.maps.markers = []
     window.maps.populateGoogleMaps(openLocations, map, "open");
-  })
+  });
 
   $('#eliminated_reports_button').on('click', function(){
     window.maps.hideMarker(newmarker);
@@ -188,7 +188,16 @@ $(document).ready(function() {
     window.maps.hideMarkers()
     window.maps.markers = []
     window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
-  })
+  });
+
+  //zoom and center map on the location of this marker
+  $('a.mapa').on('click', function(event){
+    var reportLoc = $(this).data('location');
+    var reportLatLng = new google.maps.LatLng(reportLoc.latitude, reportLoc.longitude);
+    console.log('I will now zoom and pan the map to this marker at ' + reportLatLng);
+    map.panTo(reportLatLng);
+    map.setZoom(STREET_ZOOM);
+  });
 
 
 
