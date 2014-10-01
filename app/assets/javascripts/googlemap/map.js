@@ -82,12 +82,6 @@ $(document).ready(function() {
   {
     console.log("Starting geocoding!")
     window.maps.showLoading();
-
-    // There already is a custom listener on an ESRI map. This is only for
-    // OSM maps.
-    if(typeof esri !== "undefined")
-      return
-
     console.log("It's not ESRI! Trying Google Maps now...");
     var addressString   = $("#report_location_attributes_address").val() + ", Mexico";
 
