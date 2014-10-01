@@ -148,8 +148,7 @@
             map.centerAndZoom(mapPoint, 4);
 
             // Update the form so we can pass along the ESRI results.
-            $("#new_report_form #report_location_attributes_latitude").val(latitude);
-            $("#new_report_form #report_location_attributes_longitude").val(longitude);
+            window.maps.updateHTMLFormLocation(latitude, longitude);
             window.maps.hideError();
           }
         },
@@ -181,8 +180,7 @@
 
         var latitude  = e.mapPoint.x;
         var longitude = e.mapPoint.y;
-        $("#new_report_form #report_location_attributes_latitude").val( latitude )
-        $("#new_report_form #report_location_attributes_longitude").val( longitude )
+        window.maps.updateHTMLFormLocation(latitude, longitude);
 
         var mapPoint = new Point(latitude, longitude);
         var graphic  = new Graphic(mapPoint, orangeMarker);
