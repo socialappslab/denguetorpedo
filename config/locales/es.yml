@@ -13,6 +13,7 @@ es:
     photo: "Foto"
     created_at: Fecha de registro
     points: Puntos
+    body: Conteúdo
   activerecord:
     models:
       report:

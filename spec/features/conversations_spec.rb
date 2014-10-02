@@ -44,6 +44,16 @@ describe "Conversations", :type => :feature do
       expect(page).not_to have_content( I18n.t("views.conversations.index.messages_between") )
       expect(third_user.conversations.count).to eq(0)
     end
+
+    # NOTE: This requires us to install a JS driver.
+    # it "renders conversation/show if user forgets body" do
+    #   visit user_conversations_path(user)
+    #   save_and_open_page
+    #   fill_in "users", :with => other_user.username
+    #   click_button("Criar")
+    #   c = Conversation.last
+    #   expect(current_path).to eq( user_conversation_path(user, c) )
+    # end
   end
 
   #---------------------------------------------------------------------------
@@ -52,7 +62,7 @@ describe "Conversations", :type => :feature do
     it "notifies if user forgot body" do
       visit user_conversation_path(user, conversation)
       click_button("Criar")
-      expect(page).to have_content( I18n.t("views.conversations.flashes.errors.empty_body") )
+      expect(page).to have_content( I18n.t("attributes.body") + " é obrigatório" )
     end
 
     it "notifies the user of successful message" do

@@ -10,6 +10,7 @@ class MessagesController < ApplicationController
     @conversations  = @current_user.conversations
     @conversation   = Conversation.new
     @message        = Message.new(params[:message])
+    @users          = User.pluck(:username).to_json
 
     # Let's see if we need to create a new conversation depending on if the
     # conversation_id is not present. If not, then that means we're creating
@@ -40,6 +41,9 @@ class MessagesController < ApplicationController
         flash[:alert] =  I18n.t("views.conversations.flashes.errors.unknown_recipients", :recipients => unknown_users.join(', '))
         render "conversations/index" and return
       end
+
+      # Make sure that each recipient is listed only once.
+      known_users.uniq!
 
       # 3. At this point, we have users. Let's create the conversation and
       # the associations.
@@ -73,8 +77,8 @@ class MessagesController < ApplicationController
       redirect_to user_conversation_path(@current_user, @conversation) and return
     else
       flash[:show_new_message_form] = true
-      flash[:alert] = I18n.t("views.conversations.flashes.errors.empty_body")
-      redirect_to :back and return
+      @messages = @conversation.messages.order("created_at ASC")
+      render "conversations/show" and return
     end
   end
 

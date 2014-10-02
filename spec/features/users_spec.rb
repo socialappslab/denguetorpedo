@@ -38,12 +38,6 @@ describe "Users", :type => :feature do
         click_button I18n.t("views.buttons.update")
         expect(find_field("user_last_name").value).to eq("I AM TESTER")
       end
-
-      it "keeps nickname information" do
-        fill_in :user_nickname, :with => "I AM TESTER"
-        click_button I18n.t("views.buttons.update")
-        expect(find_field("user_nickname").value).to eq("I AM TESTER")
-      end
     end
   end
 

@@ -19,7 +19,7 @@
           .control-group
             = label_tag I18n.t("views.conversations.index.to"), nil, :class => "control-label", :style => "width: 200px; text-align: left;"
             .controls
-              = text_area_tag :users, params[:users], :class => "form-control span6", :style => "height: 50px;"
+              = text_area_tag :users, params[:users], :class => "form-control span6 typeahead", :style => "height: 50px;"
           .control-group
             = f.label :body, I18n.t("attributes.content"), :class => "control-label", :style => "width: 200px; text-align: left;"
             .controls
@@ -53,6 +53,7 @@
                   %i.fa.fa-chevron-right
 
 
+= javascript_include_tag "bootstrap/typeahead"
 
 :javascript
   $(document).ready(function()
@@ -62,4 +63,35 @@
       e.preventDefault();
       $("#new-message-form").toggle()
     });
+
+    // Bootstrap typeahead. See
+    // http://stackoverflow.com/questions/12662824/twitter-bootstrap-typeahead-multiple-values
+    // for more.
+    !function(source) {
+      function extractor(query) {
+        var result = /([^,]+)$/.exec(query);
+        if(result && result[1])
+          return result[1].trim();
+        return '';
+      }
+
+      $('.typeahead').typeahead({
+        source: source,
+        updater: function(item) {
+            return this.$element.val().replace(/[^,]*$/,'')+item+',';
+        },
+        matcher: function (item) {
+          var tquery = extractor(this.query);
+          if(!tquery) return false;
+          return ~item.toLowerCase().indexOf(tquery.toLowerCase())
+        },
+        highlighter: function (item) {
+
+          var query = extractor(this.query).replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
+          return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
+            return '<strong>' + match + '</strong>'
+          })
+        }
+      });
+    }(#{@users});
   })
