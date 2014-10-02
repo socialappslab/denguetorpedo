@@ -42,6 +42,9 @@ class MessagesController < ApplicationController
         render "conversations/index" and return
       end
 
+      # Make sure that each recipient is listed only once.
+      known_users.uniq!
+
       # 3. At this point, we have users. Let's create the conversation and
       # the associations.
       @conversation = Conversation.create
