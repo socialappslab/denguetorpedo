@@ -13,6 +13,7 @@ pt:
     photo: "Foto"
     created_at: Data de inscrição
     points: Pontos
+    body: Conteúdo
   activerecord:
     models:
       report:
