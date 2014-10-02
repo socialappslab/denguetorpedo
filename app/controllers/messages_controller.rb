@@ -77,8 +77,8 @@ class MessagesController < ApplicationController
       redirect_to user_conversation_path(@current_user, @conversation) and return
     else
       flash[:show_new_message_form] = true
-      flash[:alert] = I18n.t("views.conversations.flashes.errors.empty_body")
-      redirect_to :back and return
+      @messages = @conversation.messages.order("created_at ASC")
+      render "conversations/show" and return
     end
   end
 
