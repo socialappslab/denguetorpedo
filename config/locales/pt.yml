@@ -388,6 +388,8 @@ pt:
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
+      login:
+        username: Nome de usuário ou email
       cities:
         title: Cidades em destaque no Dengue Torpedo
       header: Cidadãos no Combate à Dengue

@@ -48,7 +48,7 @@ es:
     attributes:
       user:
         username: "Nombre de usuario"
-        email: "Correo electrónico"
+        email: "email"
         password: "Contraseña"
         phone_number: "Celular"
         first_name: "Nombre"
@@ -387,6 +387,8 @@ es:
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
+      login:
+        username: Nombre de usuario o email
       cities:
         title: Ciudades em destaque no Dengue Torpedo
       header: "Ciudadanos en el Combate contra el Dengue"
