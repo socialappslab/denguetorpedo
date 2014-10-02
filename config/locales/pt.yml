@@ -353,7 +353,7 @@ pt:
         show_name_as: "Mostrar nome como"
         sponsor:
           edit_prizes: "Códigos de controle dos prêmios"
-        username_notice: "Su nombre de usuario será usado públicamente cuando publique información en el sitio. Otros podrán ver y usar su nombre de usuario para mandarle mensajes privados. Ni su correo electrónico ni su primer nombre y apellidos serán públicos. Usted puede cambiar su nombre de usuario cuando usted lo desee."
+        username_notice: "O seu nome de usuário aparecerá nos seus posts no site. Outros pessoas poderão usá-lo para mandar mensagens para você através do sistema de mensagens interno ao site Dengue Torpedo. No entanto, nem o seu email, nem o seu nome ou sobrenome serão revelados publicamente.  Você pode mudar o seu nome de usuário a qualquer hora."
     prizes:
       index:
         how_to_win_prizes: "Como ganhar pontos? Clique aqui."
