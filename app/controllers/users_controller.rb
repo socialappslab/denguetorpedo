@@ -56,6 +56,7 @@ class UsersController < ApplicationController
     @badges       = @user.badges
     @notices      = @city.neighborhoods.map {|n| n.notices.order("updated_at DESC") }.flatten
     @teams        = @user.teams
+    @user_reports = @user.reports
 
     # Avoid displaying coupons that expired and were never redeemed.
     @coupons = @user.prize_codes.reject {|coupon| coupon.expired? }
@@ -85,9 +86,7 @@ class UsersController < ApplicationController
 
       @news_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @user_reports = @user.reports
-      @user_posts   = @user.posts
-      @news_feed    = (@user_reports.to_a + @user_posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @news_feed    = (@user_reports.to_a + @user.posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
 
     respond_to do |format|
