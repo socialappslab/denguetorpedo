@@ -13,7 +13,6 @@
     .span3
       = link_to link_name, item_path, :style => "line-height: 50px;"
 
-    .span1
       - if @current_user == @user && item.is_a?(Team)
         = form_tag leave_team_path(item), :method => "post", :style => "display: inline;", "data-confirm" => I18n.t("views.alerts.confirm_leave_team"), "data-path" => leave_team_path(item), :class => "leave-team-button" do
           = button_tag(:type => "submit", :style => "background-color: inherit !important; float: right; padding: 0px;") do
