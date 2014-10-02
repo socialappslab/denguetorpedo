@@ -352,6 +352,7 @@ pt:
         show_name_as: "Mostrar nome como"
         sponsor:
           edit_prizes: "Códigos de controle dos prêmios"
+        username_notice: "Su nombre de usuario será usado públicamente cuando publique información en el sitio. Otros podrán ver y usar su nombre de usuario para mandarle mensajes privados. Ni su correo electrónico ni su primer nombre y apellidos serán públicos. Usted puede cambiar su nombre de usuario cuando usted lo desee."
     prizes:
       index:
         how_to_win_prizes: "Como ganhar pontos? Clique aqui."
@@ -388,6 +389,8 @@ pt:
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
+      login:
+        username: Nome de usuário ou email
       cities:
         title: Cidades em destaque no Dengue Torpedo
       header: Cidadãos no Combate à Dengue

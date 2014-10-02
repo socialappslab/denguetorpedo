@@ -53,19 +53,21 @@
   - if @current_user.nil?
     -# .span1
     -#   = render :partial => "home/flags"
-    .span6.pull-right
+    .span7.pull-right
       #login
-
         = form_tag(session_path, :style => "margin-bottom: 0px;") do
           %ul
-            %li= text_field_tag :username, nil, :placeholder => I18n.t("activerecord.attributes.user.username")
-            %li= password_field_tag :password, nil, :placeholder => I18n.t("activerecord.attributes.user.password")
-            %li= submit_tag "Entrar", :class => "btn btn-success"
+            %li
+              = text_field_tag :username, nil, :placeholder => I18n.t("views.home.login.username"), :style => "width:210px;"
+            %li
+              = password_field_tag :password, nil, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width:150px;"
+            %li
+              = submit_tag "Entrar", :class => "btn btn-success"
           = link_to I18n.t("login_form.forgot_password"), new_password_reset_path, :id => "forgot_password", :class => "logout_button"
 
 
   - else
-    .span1.offset2
+    .span3{:style => "text-align: center;"}
       - if @message_notifications.blank?
         .main_nav_button
           = link_to user_conversations_path(@current_user), :style => "font-size: 36px; color: white; display: block; margin-top: 15px;" do
@@ -81,9 +83,9 @@
     -#   = render :partial => "home/flags"
     .span4.pull-right
       #logged_in{:style => "float:right;"}
-        %h3{:style => "display: inline-block;"}
+        %p{:style => "display: inline-block; color: white;"}
           = I18n.t("login_form.greeting", :name => @current_user.display_name )
 
-        = link_to logout_path, :class => "logout_button", :style => "font-size: 17px; line-height: 30px;" do
+        = link_to logout_path, :class => "logout_button", :style => "line-height: 30px;" do
           %i.fa.fa-2.fa-sign-out
           = I18n.t("login_form.logout")

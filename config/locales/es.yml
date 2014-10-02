@@ -48,7 +48,7 @@ es:
     attributes:
       user:
         username: "Nombre de usuario"
-        email: "Correo electrónico"
+        email: "email"
         password: "Contraseña"
         phone_number: "Celular"
         first_name: "Nombre"
@@ -351,6 +351,7 @@ es:
         show_name_as: "Mostrar nombre como"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
+        username_notice: "Su nombre de usuario será usado públicamente cuando publique información en el sitio. Otros podrán ver y usar su nombre de usuario para mandarle mensajes privados. Ni su correo electrónico ni su primer nombre y apellidos serán públicos. Usted puede cambiar su nombre de usuario cuando usted lo desee."
     prizes:
       index:
         how_to_win_prizes: "¿Cómo ganar puntos?  Haga clic aquí."
@@ -387,6 +388,8 @@ es:
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
+      login:
+        username: Nombre de usuario o email
       cities:
         title: Ciudades em destaque no Dengue Torpedo
       header: "Ciudadanos en el Combate contra el Dengue"

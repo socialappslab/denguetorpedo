@@ -40,10 +40,8 @@
     .controls
       = f.text_field :last_name, :class => "form-control"
 
-  .control-group
-    = f.label :nickname, :class => "control-label"
-    .controls
-      = f.text_field :nickname, :value => @user.display_name , :class => "form-control"
+  .control-group{:style => "text-align: left;"}
+    = I18n.t("views.users.edit.username_notice")
 
   .control-group
     = f.label :gender, :class => "control-label"
