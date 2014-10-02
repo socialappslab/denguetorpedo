@@ -8,6 +8,7 @@ class ConversationsController < ApplicationController
     @conversations  = @current_user.conversations.order("updated_at DESC")
     @conversation   = Conversation.new
     @message        = Message.new
+    @users          = User.pluck(:username).to_json
   end
 
   def show

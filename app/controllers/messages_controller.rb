@@ -10,6 +10,7 @@ class MessagesController < ApplicationController
     @conversations  = @current_user.conversations
     @conversation   = Conversation.new
     @message        = Message.new(params[:message])
+    @users          = User.pluck(:username).to_json
 
     # Let's see if we need to create a new conversation depending on if the
     # conversation_id is not present. If not, then that means we're creating
