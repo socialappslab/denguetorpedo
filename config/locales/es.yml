@@ -49,7 +49,7 @@ es:
     attributes:
       user:
         username: "Nombre de usuario"
-        email: "email"
+        email: "Correo electrónico"
         password: "Contraseña"
         phone_number: "Celular"
         first_name: "Nombre"
