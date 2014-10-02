@@ -188,8 +188,7 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def display_name
-    return self.nickname if self.nickname.present?
-    return self.first_name
+    return self.username
   end
 
   def full_name
