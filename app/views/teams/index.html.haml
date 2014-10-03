@@ -66,8 +66,8 @@
 
           .span5
             .row
-              .span6
-                %h1
+              .span5
+                %h1{:style => "overflow: hidden; white-space:nowrap;"}
                   = link_to team.name, team_path(team)
             .row
               .span4{:style => "display: table; height: 65px;"}
