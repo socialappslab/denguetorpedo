@@ -79,7 +79,7 @@ class Location < ActiveRecord::Base
       return self.street_type + " " + self.street_name + " " + self.street_number
     end
 
-    return self.neighborhood if self.neighborhood.present?
+    return self.attributes["neighborhood"] if self.attributes["neighborhood"].present?
     return ""
   end
 
