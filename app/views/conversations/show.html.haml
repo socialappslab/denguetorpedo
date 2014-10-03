@@ -43,9 +43,10 @@
                   = form_for [@current_user, @message], :html => { :style => "margin-top: 20px;" } do |f|
                     = f.hidden_field :conversation_id, :value => @conversation.id
                     = f.text_area :body, :style => "height: 60px; width: 100%;"
-                    = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
+                    = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%" do
                       %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-                      = I18n.t("views.buttons.create")
+                      = I18n.t("views.buttons.submit")
+
 
 
 
