@@ -22,7 +22,7 @@ function createOrUpdateNewMarker(markerLoc){
     newmarker = new google.maps.Marker({
       position: markerLoc,
       map: map,
-      draggable:true,
+      draggable: true,
       animation: google.maps.Animation.DROP,
       icon: "/assets/markers/orange_marker.png"
     });
@@ -58,7 +58,8 @@ function createOrUpdateNewMarker(markerLoc){
         window.maps.updateHTMLFormAddressFromPosition(position);
       });
     }
-  } else {
+  }
+  else {
     newmarker.setPosition(markerLoc)
     console.log("Updated marker location to " + markerLoc);
   }
@@ -89,10 +90,15 @@ $(document).ready(function() {
       success: function(response) {
         //response is a PlainObject, i.e., key-value pairs
         var results = response.results;
-        if (results === undefined || results.length == 0)
+        if (results === undefined || results.length == 0) {
           window.maps.showError()
+          window.maps.updateHTMLFormLocation("", "")
+          window.maps.hideMarker(newmarker);
+          newmarker = null
+        }
         else
         {
+          window.maps.hideError()
           console.log("Starting to plot...");
           var latitude  = results[0].geometry.location.lat;
           var longitude = results[0].geometry.location.lng;
@@ -111,7 +117,12 @@ $(document).ready(function() {
 	        createOrUpdateNewMarker(markerLoc);
         }
       },
-      error:    function() { window.maps.showError();   },
+      error:    function() {
+        window.maps.showError();
+        window.maps.updateHTMLFormLocation("", "")
+        window.maps.hideMarker(newmarker);
+        newmarker = null
+      },
       complete: function() { window.maps.hideLoading(); }
     });
   });
