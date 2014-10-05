@@ -2,13 +2,16 @@
 require 'active_support/core_ext'
 
 class Location < ActiveRecord::Base
-  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude
+  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude, :neighborhood
   # validates :latitude, :uniqueness => { :scope => :longitude }
   # validates :neighborhood_id, :presence => true
 
   has_one :house, dependent: :destroy
-  belongs_to :neighborhood
   has_many :reports, dependent: :destroy
+
+  # NOTE: We already have a 'neighborhood' column in locations, so
+  # we'll use community as the association on neighborhood_id.
+  belongs_to :community, :foreign_key => :neighborhood_id
 
   # before_save :save_address
 

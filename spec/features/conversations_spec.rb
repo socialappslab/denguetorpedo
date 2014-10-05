@@ -61,14 +61,14 @@ describe "Conversations", :type => :feature do
   context "when creating a new message from existing conversations" do
     it "notifies if user forgot body" do
       visit user_conversation_path(user, conversation)
-      click_button("Criar")
+      click_button("Enviar")
       expect(page).to have_content( I18n.t("attributes.body") + " é obrigatório" )
     end
 
     it "notifies the user of successful message" do
       visit user_conversation_path(user, conversation)
       fill_in "message[body]", :with => "Hello world!"
-      click_button("Criar")
+      click_button("Enviar")
       expect(page).to have_content( I18n.t("views.conversations.flashes.success") )
     end
   end

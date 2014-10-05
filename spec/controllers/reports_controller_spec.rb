@@ -136,6 +136,32 @@ describe ReportsController do
 				cookies[:auth_token] = user.auth_token
 			end
 
+
+			context "when in Managua" do
+				let(:city) { City.find_by_name("Managua") }
+				let(:neighborhood) { Neighborhood.find_by_city_id(city.id) }
+
+				it "saves the 'neighborhood' attribute of Location" do
+					post :create, :neighborhood_id => neighborhood.id, :report => {
+						:report => "This is a description",
+						:reporter_id => user.id,
+						:before_photo => uploaded_photo,
+						:location_attributes => location_hash,
+						:breeding_site_id => elimination_type.id,
+						:neighborhood_id => neighborhood.id,
+						:location_attributes => {
+							:neighborhood => "The Barrio"
+						}
+					}
+
+					l = Location.last
+					expect(l.neighborhood).to eq("The Barrio")
+				end
+
+
+			end
+
+
 			it "awards submission points" do
 				before_points = user.total_points
 				post :create, :neighborhood_id => Neighborhood.first.id, :report => {
