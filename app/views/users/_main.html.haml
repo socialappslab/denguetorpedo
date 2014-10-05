@@ -12,7 +12,7 @@
     %p{:style => "text-align: left; display: inline; font-size: 15px;"}
       = I18n.t("activerecord.attributes.user.total_points", :count => @user.total_points)
 
-    - if @current_user == @user && @redeemable_prizes.count > 0
+    - if @current_user && @current_user == @user && @redeemable_prizes.count > 0
       = link_to prizes_path, :class => "btn btn-orange btn-large profile-view-points-button" do
         = I18n.t("common_terms.exchange_points_for_prizes")
 
@@ -33,7 +33,7 @@
           = I18n.t("common_terms.create_reports")
 
 .row
-  - if @current_user == @user
+  - if @current_user && @current_user == @user
     - @redeemable_prizes[0..2].each do |prize|
       .span3.prizes.possible{:style => "height: 100px;"}
         .status.possible
@@ -57,7 +57,7 @@
         = link_to prizes_path do
           %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
 
-- if (@user == @current_user)
+- if (@current_user && @user == @current_user)
   .row{:style => "margin-top:60px;"}
     = render :partial => 'posts/new'
 

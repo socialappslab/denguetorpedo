@@ -9,6 +9,6 @@
     %div
       = coupon.prize.prize_name
 
-    - if @current_user == coupon.user
+    - if @current_user && @current_user == coupon.user
       %div
         = I18n.t("common_terms.redeem_by") + ": " + coupon.expire_date.strftime("%d/%m/%Y")

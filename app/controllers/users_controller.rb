@@ -70,7 +70,7 @@ class UsersController < ApplicationController
     # TODO: As activity on the site picks up, come back to rethink this inefficient
     # query.
     # TODO: Move the magic number '4.weeks.ago'
-    if @current_user == @user
+    if @current_user && @current_user == @user
       city_reports = @city.neighborhoods.map {|n| n.reports.where("created_at > ?", 4.weeks.ago) }.flatten
       city_reports = city_reports.find_all {|r| r.is_public? }
 
