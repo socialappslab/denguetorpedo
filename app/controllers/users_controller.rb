@@ -84,9 +84,9 @@ class UsersController < ApplicationController
       end
       city_posts.flatten!
 
-      @news_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @activity_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     else
-      @news_feed    = (@user_reports.to_a + @user.posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @activity_feed    = (@user_reports.to_a + @user.posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     end
 
     respond_to do |format|

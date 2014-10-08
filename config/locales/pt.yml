@@ -179,6 +179,7 @@ pt:
   #----------------------------------
 
   common_terms:
+    back: Atrás
     codes: Códigos
     order_by: Ordenar por
     houses: Casas

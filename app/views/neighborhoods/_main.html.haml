@@ -21,19 +21,29 @@
 
 
   .span4{:style => "text-align: right;"}
-    - if @total_reports_in_neighborhood == 0
+    - if @total_reports == 0
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = @total_reports_in_neighborhood
+      = @total_reports
     %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("dashboard.reports")
 
 /------------------------------------------------------------------------------
 
+- if @current_user
+  .row{:style => "margin-top:60px;"}
+    = render :partial => 'posts/new'
+
 .row
   = render :partial => "shared/news_feed"
 
 /------------------------------------------------------------------------------
+
+.row
+  .span9{:style => "text-align: center;"}
+    = link_to neighborhood_feed_path(@neighborhood), :style => "color: #6655ee; font-size: 32px;" do
+      %i.fa.fa-chevron-down
+      = I18n.t("common_terms.more")

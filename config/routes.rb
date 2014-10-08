@@ -78,6 +78,8 @@ Dengue::Application.routes.draw do
 
   get "neighborhoods/invitation" => "neighborhoods#invitation", :as => :neighborhood_invitation
   resources :neighborhoods, :only => [:show] do
+    get "feed", :to => "neighborhoods#feed", :as => :feed
+
     resources :reports do
       collection do
         put 'update'

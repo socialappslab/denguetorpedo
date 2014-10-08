@@ -38,7 +38,7 @@ class TeamsController < ApplicationController
     end
     @posts.flatten!
 
-    @news_feed = @posts.to_a.sort{|a,b| b.created_at <=> a.created_at }
+    @activity_feed = @posts.to_a.sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------
