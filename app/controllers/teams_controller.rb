@@ -38,7 +38,10 @@ class TeamsController < ApplicationController
     end
     @posts.flatten!
 
-    @activity_feed = @posts.to_a.sort{|a,b| b.created_at <=> a.created_at }
+  def feed
+    @post    = Post.new
+    @posts   = @users.map {|u| u.posts}.flatten
+    @activity_feed = (@reports.to_a + @posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------
