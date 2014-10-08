@@ -6,7 +6,7 @@
 
     %hr{:style => "border-bottom: 1px solid #ccc;"}
 
-    - if @current_user
+    - if @current_user && @users.include?(@current_user)
       .row{:style => "margin-top:60px;"}
         = render :partial => 'posts/new'
 
