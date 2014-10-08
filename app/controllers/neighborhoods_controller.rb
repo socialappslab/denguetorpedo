@@ -9,15 +9,14 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @post = Post.new
 
     # Limit the amount of records we show.
-    @reports = @reports.limit(5)
-    @notices = @notices.limit(5)
-    @posts   = @users.includes(:posts).map {|u| u.posts.limit(1)}.flatten
+    @total_reports = @reports.count
+    @total_points  = @users.sum(:total_points)
+    @reports       = @reports.limit(5)
+    @notices       = @notices.limit(5)
+    @posts         = @users.includes(:posts).map {|u| u.posts.limit(3)}.flatten
 
     # Create the news feed.
     @activity_feed = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
-
-    @total_reports = @reports.count
-    @total_points  = @neighborhood.total_points
   end
 
   #----------------------------------------------------------------------------
