@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   end
 
   module Locales
-    SPANISH = "es"
+    SPANISH    = "es"
     PORTUGUESE = "pt"
   end
 
