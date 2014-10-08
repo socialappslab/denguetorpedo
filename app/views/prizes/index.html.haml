@@ -11,10 +11,6 @@
       #badges.prizes{style: "margin-top:20px; margin-top: 40px;"}
         = render :partial => "prizes/badges"
 
-      %p{:style => "font-size: 18px; line-height: 24px; margin-top: 50px;"}
-        = I18n.t("views.prizes.index.community_explanation")
-
-
       %h1{:style => "margin-top: 50px;"}
         = link_to I18n.t("views.prizes.index.how_to_win_prizes"), faq_path
 
