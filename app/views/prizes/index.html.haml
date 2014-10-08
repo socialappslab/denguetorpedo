@@ -1,5 +1,5 @@
 .row{:style => "margin-top: 50px;"}
-  - if @current_user.blank? || (@neighborhood && @neighborhood.name == Neighborhood::Names::TEPALCINGO)
+  - if @current_user.blank? || @neighborhood.spanish?
     .span16.offset1
       %h1{:style => "font-size: 32px;"}
         = I18n.t("views.prizes.index.header_non_logged_in")

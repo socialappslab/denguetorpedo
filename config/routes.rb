@@ -148,7 +148,7 @@ Dengue::Application.routes.draw do
 
   post 'premios/:id' => "prizes#new_prize_code"
   get '/premios/admin' => "prizes#admin"
-  resources :prizes, :path => "premios" do
+  resources :prizes, :path => "points" do
     collection do
       get 'badges'
     end
