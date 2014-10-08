@@ -62,7 +62,7 @@ class UsersController < ApplicationController
     # Build a simplified activity feed.
     @reports        = @neighborhoods.map {|n| n.reports.limit(5) }.flatten
     @notices        = @neighborhoods.map {|n| n.notices.limit(5) }.flatten
-    @posts          = @user.posts.limit(5)
+    @posts          = @user.posts.limit(3)
     @activity_feed  = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
 
     @reports_by_user = @user.reports
