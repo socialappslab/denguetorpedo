@@ -4,8 +4,9 @@
 class UsersController < ApplicationController
   before_filter :require_login,             :only => [:edit, :update, :index, :show]
   before_filter :ensure_team_chosen,        :only => [:show]
-  before_filter :identify_user,             :only => [:edit, :update, :show]
+  before_filter :identify_user,             :only => [:edit, :update, :show, :feed]
   before_filter :ensure_proper_permissions, :only => [:index, :phones]
+  before_filter :load_associations,         :only => [:show, :feed]
 
   #----------------------------------------------------------------------------
   # GET /users/
@@ -84,15 +85,13 @@ class UsersController < ApplicationController
       end
       city_posts.flatten!
 
-      @activity_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
-    else
-      @activity_feed    = (@user_reports.to_a + @user.posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
-    end
+  def feed
+    @post = Post.new
 
-    respond_to do |format|
-      format.html
-      format.json { render json: {user: @user, badges: @badges}}
-    end
+    @reports        = @neighborhoods.map {|n| n.reports }.flatten
+    @notices        = @neighborhoods.map {|n| n.notices }.flatten
+    @posts          = @user.posts
+    @activity_feed  = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------
@@ -247,9 +246,16 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   def identify_user
-    @user = User.find(params[:id])
+    @user = User.find_by_id( params[:user_id] )
+    @user = User.find( params[:id] ) if @user.blank?
   end
 
   #----------------------------------------------------------------------------
 
+  def load_associations
+    @city          = @user.city
+    @neighborhoods = @city.neighborhoods.includes(:city, :notices, :users)
+  end
+
+  #----------------------------------------------------------------------------
 end

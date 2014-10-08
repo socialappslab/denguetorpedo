@@ -21,6 +21,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /neighborhoods/1/feed
 
   def feed
     @post          = Post.new
@@ -40,6 +41,8 @@ class NeighborhoodsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   private
+
+  #----------------------------------------------------------------------------
 
   def load_associations
     @neighborhood = Neighborhood.find(params[:id]) if @neighborhood.nil?

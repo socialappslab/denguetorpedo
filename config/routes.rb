@@ -55,11 +55,11 @@ Dengue::Application.routes.draw do
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
   resources :users do
-    resources :reports, :except => [:show]
+    get "feed", :to => "users#feed", :as => :feed
 
+    resources :reports, :except => [:show]
     resources :conversations, :only => [:index, :show]
     resources :messages,      :only => [:create]
-
     resources :posts
 
     collection do
