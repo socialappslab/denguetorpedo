@@ -33,17 +33,18 @@
 
 /------------------------------------------------------------------------------
 
-- if @current_user
+- if @current_user && @users.include?(@current_user)
   .row{:style => "margin-top:60px;"}
     = render :partial => 'posts/new'
 
 .row
   = render :partial => "shared/news_feed"
 
-/------------------------------------------------------------------------------
+- if @activity_feed.present?
+  .row
+    .span9{:style => "text-align: center;"}
+      = link_to neighborhood_feed_path(@neighborhood), :style => "color: #6655ee; font-size: 32px;" do
+        %i.fa.fa-chevron-down
+        = I18n.t("common_terms.more")
 
-.row
-  .span9{:style => "text-align: center;"}
-    = link_to neighborhood_feed_path(@neighborhood), :style => "color: #6655ee; font-size: 32px;" do
-      %i.fa.fa-chevron-down
-      = I18n.t("common_terms.more")
+/------------------------------------------------------------------------------

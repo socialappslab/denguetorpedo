@@ -57,21 +57,22 @@
         = link_to prizes_path do
           %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
 
+-# ----------------------------------------------------------------------------
+
 - if (@current_user && @user == @current_user)
   .row{:style => "margin-top:60px;"}
     = render :partial => 'posts/new'
-
--# ----------------------------------------------------------------------------
 
 .row
   = render :partial => "shared/news_feed"
 
 -# ----------------------------------------------------------------------------
 
-.row
-  .span9{:style => "text-align: center;"}
-    = link_to user_feed_path(@user), :style => "color: #6655ee; font-size: 32px;" do
-      %i.fa.fa-chevron-down
-      = I18n.t("common_terms.more")
+- if @activity_feed.present?
+  .row
+    .span9{:style => "text-align: center;"}
+      = link_to user_feed_path(@user), :style => "color: #6655ee; font-size: 32px;" do
+        %i.fa.fa-chevron-down
+        = I18n.t("common_terms.more")
 
 -# ----------------------------------------------------------------------------
