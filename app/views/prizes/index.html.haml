@@ -21,7 +21,8 @@
 
   - else
     .span12.offset1
-      %h1 Prêmios
+      %h1
+        = I18n.t("attributes.points")
 
       .button_to#how_to
         = link_to "Como ganhar pontos?", faq_path

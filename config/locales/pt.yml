@@ -131,7 +131,7 @@ pt:
       description: Como?
     prizes:
       title: GANHE
-      description: Prêmios
+      description: Pontos
 
 
   #----------------------------------------------------------------------------
@@ -357,7 +357,7 @@ pt:
     prizes:
       index:
         how_to_win_prizes: "Como ganhar pontos? Clique aqui."
-        header_non_logged_in: "Pontos e Prêmios"
+        header_non_logged_in: "Pontos e Medalhas"
         badge_explanation: Todos ganham medalhas no Dengue Torpedo por pontos acumulados.
         community_explanation: Cada comunidade de Dengue Torpedo determinará os prêmios apropriados. Esses prêmios podem ser comunitários ou individuais. Todos os prêmios são doações que você pode ganhar ao acumular pontos. Não há pagamento ou remuneração aos participantes.
       create:
