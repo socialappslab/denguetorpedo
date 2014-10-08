@@ -17,13 +17,13 @@
         = I18n.t("common_terms.exchange_points_for_prizes")
 
   .span4{:style => "text-align: right;"}
-    - if @user_reports.blank?
+    - if @reports_by_user.blank?
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
     %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
-      = @user_reports.present? ? @user_reports.count : 0
+      = @reports_by_user.present? ? @reports_by_user.count : 0
     %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
       = I18n.t("dashboard.reports")
 
@@ -61,5 +61,17 @@
   .row{:style => "margin-top:60px;"}
     = render :partial => 'posts/new'
 
+-# ----------------------------------------------------------------------------
+
 .row
   = render :partial => "shared/news_feed"
+
+-# ----------------------------------------------------------------------------
+
+.row
+  .span9{:style => "text-align: center;"}
+    = link_to user_feed_path(@user), :style => "color: #6655ee; font-size: 32px;" do
+      %i.fa.fa-chevron-down
+      = I18n.t("common_terms.more")
+
+-# ----------------------------------------------------------------------------
