@@ -56,10 +56,14 @@
     %h1
       = link_to I18n.t("common_terms.badges").capitalize, prizes_path, :style => "color: #65665C;"
 
-    #sponsors{:style => "margin-top: 22px;"}
-      %ul
-        - @prizes.each do |prize|
-          = render :partial => "prizes/redeemed", :object => prize
+    #badges.prizes{style: "margin-top:20px; margin-top: 30px;"}
+      = render :partial => "prizes/badges_in_column"
+
+
+
+
+
+
 
 
 /------------------------------------------------------------------------------

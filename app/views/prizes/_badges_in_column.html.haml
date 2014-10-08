@@ -1,0 +1,72 @@
+:css
+  .span4 {
+    margin-bottom: 143px !important;
+    text-align: left;
+  }
+
+.span4.prizes.possible
+  .status.possible
+    .name
+      = link_to "Dengue Torpedo", about_path
+    .points
+      = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
+  .prize_content
+    = link_to image_tag("badges/de_olho.png", :class => "prizes")
+    .description
+      = link_to I18n.t("views.badges.eye_of_the_mosquito"), badges_prizes_path
+    .stock
+      = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
+
+.span4.prizes.possible
+  .status.possible
+    .name
+      = link_to "Dengue Torpedo", about_path
+    .points
+      = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
+  .prize_content
+    = link_to image_tag("badges/exterminador.png", :class => "prizes")
+    .description
+      = link_to I18n.t("views.badges.exterminator"), badges_prizes_path
+    .stock
+      = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
+
+.span4.prizes.possible
+  .status.possible
+    .name
+      = link_to "Dengue Torpedo", about_path
+    .points
+      = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
+  .prize_content
+    = link_to image_tag("badges/guerreiro.png", :class => "prizes")
+    .description
+      = link_to I18n.t("views.badges.fighter"), badges_prizes_path
+    .stock
+      = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
+
+
+.span4.prizes.possible{:style => "margin-right: 20px; margin-bottom: 20px;"}
+  .status.possible
+    .name
+      = link_to "Dengue Torpedo", about_path
+    .points
+      = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
+  .prize_content
+    = link_to image_tag("badges/saudavel.png", :class => "prizes")
+    .description
+      = link_to I18n.t("views.badges.health_worker"), badges_prizes_path
+    .stock
+      = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
+
+
+.span4.prizes.possible
+  .status.possible
+    .name
+      = link_to "Dengue Torpedo", about_path
+    .points
+      = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase
+  .prize_content
+    = link_to image_tag("badges/cuido.png", :class => "prizes")
+    .description
+      = link_to I18n.t("views.badges.caretaker"), badges_prizes_path
+    .stock
+      = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase

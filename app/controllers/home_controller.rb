@@ -27,7 +27,7 @@ class HomeController < ApplicationController
     # Display teams.
     @teams = @neighborhood.teams
     @teams = @teams.find_all {|t| t.users.count > 0}
-    @teams = @teams.shuffle[0..7]
+    @teams = @teams.shuffle[0..6]
 
     # Display active prizes.
     # TODO: Allow for display of expired prizes until we have an inventory of
