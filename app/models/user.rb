@@ -29,6 +29,13 @@ class User < ActiveRecord::Base
   module Points
     REPORT_VERIFIED  = 50
     REPORT_SUBMITTED = 50
+
+    # Points for certain badges
+    WATCHER      = 10
+    EXTERMINATOR = 45
+    WARRIOR      = 90
+    HEALTHWORKER = 135
+    PROTECTOR    = 180
   end
 
   module Locales

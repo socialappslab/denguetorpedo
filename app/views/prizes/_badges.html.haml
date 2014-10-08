@@ -1,71 +1,72 @@
 .row
   .span6
-    %li.span4.prizes.possible
+    .span4.prizes.possible
       .status.possible
         .name
           = link_to "Dengue Torpedo", about_path
         .points
-          = "100 " + I18n.t("activerecord.attributes.user.total_points", :count => 100).downcase
+          = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
       .prize_content
         = link_to image_tag("badges/de_olho.png", :class => "prizes")
         .description
           = link_to I18n.t("views.badges.eye_of_the_mosquito"), badges_prizes_path
         .stock
-          = "100 " + I18n.t("activerecord.attributes.user.total_points", :count => 100).downcase
+          = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
 
   .span6
-    %li.span4.prizes.possible
+    .span4.prizes.possible
       .status.possible
         .name
           = link_to "Dengue Torpedo", about_path
         .points
-          = "450 " + I18n.t("activerecord.attributes.user.total_points", :count => 450).downcase
+          = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
       .prize_content
         = link_to image_tag("badges/exterminador.png", :class => "prizes")
         .description
           = link_to I18n.t("views.badges.exterminator"), badges_prizes_path
         .stock
-          = "450 " + I18n.t("activerecord.attributes.user.total_points", :count => 450).downcase
+          = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
 
   .span4
-    %li.span4.prizes.possible
+    .span4.prizes.possible
       .status.possible
         .name
           = link_to "Dengue Torpedo", about_path
         .points
-          = "900 " + I18n.t("activerecord.attributes.user.total_points", :count => 900).downcase
+          = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
       .prize_content
         = link_to image_tag("badges/guerreiro.png", :class => "prizes")
         .description
           = link_to I18n.t("views.badges.fighter"), badges_prizes_path
         .stock
-          = "900 " + I18n.t("activerecord.attributes.user.total_points", :count => 900).downcase
+          = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
+
 
 .row{:style => "margin-top: 20px;"}
   .span6.offset3
-    %li.span4.prizes.possible{:style => "margin-right: 20px;"}
+    .span4.prizes.possible{:style => "margin-right: 20px;"}
       .status.possible
         .name
           = link_to "Dengue Torpedo", about_path
         .points
-          = "1350 " + I18n.t("activerecord.attributes.user.total_points", :count => 1350).downcase
+          = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
       .prize_content
         = link_to image_tag("badges/saudavel.png", :class => "prizes")
         .description
           = link_to I18n.t("views.badges.health_worker"), badges_prizes_path
         .stock
-          = "1350 " + I18n.t("activerecord.attributes.user.total_points", :count => 1350).downcase
+          = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
 
   .span6
-    %li.span4.prizes.possible
+    .span4.prizes.possible
       .status.possible
         .name
           = link_to "Dengue Torpedo", about_path
         .points
-          = "1800 " + I18n.t("activerecord.attributes.user.total_points", :count => 1800).downcase
+          = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase
       .prize_content
         = link_to image_tag("badges/cuido.png", :class => "prizes")
         .description
           = link_to I18n.t("views.badges.caretaker"), badges_prizes_path
         .stock
-          = "1800 " + I18n.t("activerecord.attributes.user.total_points", :count => 1800).downcase
+          = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase
