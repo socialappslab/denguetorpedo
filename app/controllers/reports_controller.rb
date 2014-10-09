@@ -16,19 +16,6 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def index
-    # TODO: Refactor this into columns.
-    if @neighborhood.name == Neighborhood::Names::TEPALCINGO
-      @neighborhood_lat  = 18.5957189
-      @neighborhood_long = -98.8460549
-    elsif @neighborhood.name == Neighborhood::Names::OCACHICUALLI
-      @neighborhood_lat  = 18.924799
-      @neighborhood_long = -99.221359
-    elsif @neighborhood.nicaraguan?
-      @neighborhood_lat  = 12.136341
-      @neighborhood_long = -86.250942
-    end
-
-
     @new_report          = Report.new(params[:new_report])
     @new_report_location = Location.find_by_id(params[:location]) || Location.new
 
