@@ -1,0 +1,6 @@
+.span16.offset1
+  .pagination.pagination-large
+    %ul
+      - (0..(@report_count / @report_limit).to_i).each do |offset|
+        %li{:class => (offset.to_s == params[:page] || (offset == 0 && params[:page].blank?) ) ? "disabled" : ""}
+          = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)

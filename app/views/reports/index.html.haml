@@ -28,6 +28,12 @@
 
 /------------------------------------------------------------------------------
 
+- if @report_count > @report_limit
+  .row
+    = render :partial => "reports/pagination"
+
+/------------------------------------------------------------------------------
+
 .row
   .span10.offset1
     #report_buttons
@@ -68,7 +74,6 @@
     .span7#map_div
       = render :partial => "reports/google_map"
     = javascript_include_tag "googlemap/map"
-
 
 /------------------------------------------------------------------------------
 / Social media
