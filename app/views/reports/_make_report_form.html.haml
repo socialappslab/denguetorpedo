@@ -12,7 +12,9 @@
 
     #address
       %h3.new_report_label
-        - unless @neighborhood.nicaraguan?
+        - if @neighborhood.nicaraguan?
+          Haga click y mueva el marcador donde encontró el foco
+        - else
           = I18n.t("report.form.address")
 
       = f.fields_for :location, @new_report.location || Location.new do |location_fields|
