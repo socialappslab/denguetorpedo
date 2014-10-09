@@ -23,11 +23,16 @@ class ReportsController < NeighborhoodsBaseController
     elsif @neighborhood.name == Neighborhood::Names::OCACHICUALLI
       @neighborhood_lat  = 18.924799
       @neighborhood_long = -99.221359
-    elsif @neighborhood.nicaraguan?
-      @neighborhood_lat  = 12.136341
-      @neighborhood_long = -86.250942
+    elsif @neighborhood.name == Neighborhood::Names::FRANCISCA_MEZA
+      @neighborhood_lat  = 12.138632
+      @neighborhood_long = -86.260808
+    elsif @neighborhood.name == Neighborhood::Names::HIALEAH
+      @neighborhood_lat  = 12.119987
+      @neighborhood_long = -86.278676
+    elsif @neighborhood.name == Neighborhood::Names::ARIEL_DARCE
+      @neighborhood_lat  = 12.118762
+      @neighborhood_long = -86.237639
     end
-
 
     @new_report          = Report.new(params[:new_report])
     @new_report_location = Location.find_by_id(params[:location]) || Location.new
