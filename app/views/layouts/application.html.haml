@@ -1,47 +1,25 @@
 %html
+
   /-----------------------------------------------------------------------------
 
   %head
-    /--------------------------------------------------------------------------
     / SEO-related optimizations
-    /--------------------------
     %meta{ :charset => "utf-8" }
     %meta{ "http-equiv" => "Content-Type",    :content => "text/html" }
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "IE=edge" }
     %meta{ :name => "description", :content => "Use o seu celular para eliminar mosquitos – participe do Dengue Torpedo e ganhe prêmios!"}
     %title Dengue Torpedo
 
+    // Load the stylesheets.
     = stylesheet_link_tag    "application"
-    = javascript_include_tag "application"
 
-    /--------------------------------------------------------------------------
-    / Google Analytics
-    /-----------------
-    - if Rails.env.production?
-      :javascript
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-48761911-1', 'denguetorpedo.com');
-        ga('send', 'pageview');
-
-    /--------------------------------------------------------------------------
     / Custom head definitions
-    /------------------------
     = yield :head if content_for(:head)
 
-    /--------------------------------------------------------------------------
     / OpenGraph metadata
-    /-------------------
-    %meta{:property => "og:image", :content => "https://fbcdn-photos-e-a.akamaihd.net/hphotos-ak-ash3/t39.2081-0/851537_1423643271237394_463588204_n.png"}
+    %meta{:property => "og:image",     :content => "https://fbcdn-photos-e-a.akamaihd.net/hphotos-ak-ash3/t39.2081-0/851537_1423643271237394_463588204_n.png"}
     %meta{:property => "og:site_name", :content => "DengueTorpedo"}
-    %meta{:property => "og:type", :content => "website"}
-
-    /--------------------------------------------------------------------------
-    / FontAwesome fonts
-    /------------------
-    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", :rel => "stylesheet"}
+    %meta{:property => "og:type",      :content => "website"}
 
     = csrf_meta_tags
 
@@ -50,13 +28,10 @@
   %body{:class => [params[:controller].parameterize, params[:action].parameterize]}
     #container{style: "overflow-y: auto;overflow:hidden;"}
       = render "layouts/home_nav"
-      -# #white_spacer
-      -if !@current_user.nil?
+      - if @current_user.present?
         = render "layouts/dashboard"
-
       - if !current_page?(root_url)
         .push_down
-
       = yield
 
   /-----------------------------------------------------------------------------
@@ -74,4 +49,20 @@
       2014 © Regents of the University of California
       |
       = link_to I18n.t("views.footer.creator"), credit_path
-  = yield :scripts
+
+    / FontAwesome fonts
+    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css", :rel => "stylesheet"}
+
+    / Load JavaScript assets.
+    = yield :scripts
+    = javascript_include_tag "application"
+
+    / Google Analytics
+    - if Rails.env.production?
+      :javascript
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48761911-1', 'denguetorpedo.com');
+        ga('send', 'pageview');
