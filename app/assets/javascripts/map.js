@@ -74,10 +74,13 @@ window.maps.updateHTMLFormLocation = function(latitude, longitude){
 
 // calls the Google (reverse) geocoding API and updates the address field
 window.maps.updateHTMLFormAddressFromPosition = function(pos) {
-  geocoder.geocode({ latLng: pos }, function(responses) {
-    if (responses && responses.length > 0)
-      $("#new_report #report_location_attributes_address").val(responses[0].formatted_address);
-  });
+  if(! no_address_lookup){
+    console.log("Reverse-Geocoding now...");
+    geocoder.geocode({ latLng: pos }, function(responses) {
+      if (responses && responses.length > 0)
+        $("#new_report #report_location_attributes_address").val(responses[0].formatted_address);
+    });
+  }
 }
 
 

@@ -46,7 +46,7 @@ Dengue::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( jquery/* googlemap/* map.js bootstrap/typeahead.js)
+  config.assets.precompile += %w( googlemap/* map.js bootstrap/typeahead.js)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -63,7 +63,7 @@ Dengue::Application.configure do
 
   # ActionMailer settings
   config.action_mailer.delivery_method     = :smtp
-  config.action_mailer.default_url_options = { host: "www.denguetorpedo.com", protocol: "http" }
+  config.action_mailer.default_url_options = { host: "www.denguetorpedo.com", protocol: "https" }
 
   # Gmail SMTP server setup
   config.action_mailer.smtp_settings = {
@@ -82,6 +82,7 @@ Dengue::Application.configure do
   # S3 Credential
   config.paperclip_defaults = {
     :storage => :s3,
+    :s3_protocol => :https,
     :s3_credentials => {
       :bucket => ENV['S3_BUCKET_NAME'],
       :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
