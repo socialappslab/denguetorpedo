@@ -20,7 +20,7 @@ class Location < ActiveRecord::Base
   # TODO: Re-enable this when we actually purchase a Heroku worker dyno.
   # after_commit :update_map_coordinates, :on => :create
 
-  BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
+  BASE_URI = "https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"
 
   #----------------------------------------------------------------------------
 

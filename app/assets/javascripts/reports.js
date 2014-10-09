@@ -165,7 +165,7 @@ function setLocationVariablesUsingOSM(location, event)
 //   var streetNumber = $("#report_location_attributes_street_number").val()
 //
 //   $.ajax({
-//     url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+//     url: "https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
 //     type: "GET",
 //     timeout: 5000, // milliseconds
 //     dataType: "jsonp",
@@ -216,7 +216,7 @@ function update_location_coordinates(location,event){
       //disable submit button so user cant submit multiple times
       $(".report_submission").attr("disabled",true);
         $.ajax({
-          url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+          url: "https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
           type: "GET",
           timeout: 5000, // milliseconds
           dataType: "jsonp",
