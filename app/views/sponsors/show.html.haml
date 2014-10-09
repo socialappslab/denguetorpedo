@@ -56,7 +56,7 @@
       zoom: 5,
       extent: customExtent
     });
-    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+    var tiled = new Tiled("https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
     map.addLayer(tiled);
     map.on("load", function() {
       map.graphics.add(new Graphic(new Point(0, 0), red));
