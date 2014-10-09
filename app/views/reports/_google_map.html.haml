@@ -16,3 +16,4 @@
   var eliminatedLocations = #{@eliminated_locations.to_json(:only => [:latitude, :longitude])}
   var communityLatitude  = #{@neighborhood_lat}
   var communityLongitude = #{@neighborhood_long}
+  #{if @neighborhood.nicaraguan? then 'var no_address_lookup = true;' else 'var no_address_lookup = false;' end}
