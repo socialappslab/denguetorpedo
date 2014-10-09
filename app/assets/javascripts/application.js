@@ -14,7 +14,7 @@
 //= require bootstrap-2-3-2
 //= require bootstrap-select.min
 //= require jquery.countdown.min
-//= require jquery.fancybox.pack
+//= require jquery.fancybox.pack.js
 //= require reports
 
 // TRANSITION
