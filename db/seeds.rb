@@ -52,12 +52,12 @@ puts "\n" * 3
 communities = [
   {:name => "Maré",         :city_name => "Rio de Janeiro"},
 
-  {:name => "Tepalcingo",   :city_name => "Tepalcingo"},
-  {:name => "Ocachicualli", :city_name => "Cuernavaca"},
+  {:name => "Tepalcingo",   :city_name => "Tepalcingo", :lat => 18.5957189, :long => -98.8460549 },
+  {:name => "Ocachicualli", :city_name => "Cuernavaca", :lat => 18.924799, :long => -99.221359   },
 
-  {:name => "Francisco Meza", :city_name => "Managua"},
-  {:name => "Hialeah",        :city_name => "Managua"},
-  {:name => "Ariel Darce",    :city_name => "Managua"}
+  {:name => "Francisco Meza", :city_name => "Managua", :lat => 12.138632, :long => -86.260808 },
+  {:name => "Hialeah",        :city_name => "Managua", :lat => 12.119987, :long => -86.278676 },
+  {:name => "Ariel Darce",    :city_name => "Managua", :lat => 12.118762, :long => -86.237639 }
 ]
 communities.each do |c_hash|
   n = Neighborhood.find_by_name( c_hash[:name] )
