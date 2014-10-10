@@ -48,51 +48,32 @@ class UsersController < ApplicationController
   # GET /users/1/
 
   def show
-    redirect_to user_path(@current_user) and return if @user.nil?
+    redirect_to user_path(@current_user) and return if @user.blank?
 
-    @post         = Post.new
-    @neighborhood = @user.neighborhood || Neighborhood.first
-    @city         = @neighborhood.city
-    @badges       = @user.badges
-    @notices      = @city.neighborhoods.map {|n| n.notices.order("updated_at DESC") }.flatten
-    @teams        = @user.teams
-    @user_reports = @user.reports
+    @city              = @user.city
+    @neighborhoods     = @city.neighborhoods.includes(:city, :notices, :users)
 
-    # Avoid displaying coupons that expired and were never redeemed.
-    @coupons = @user.prize_codes.reject {|coupon| coupon.expired? }
-
-    # Find if user can redeem prizes.
-    @prizes            = Prize.where('stock > 0').where('expire_on >= ? OR expire_on is NULL', Time.new).where(:is_badge => false)
+    @post              = Post.new
+    @badges            = @user.badges
+    @teams             = @user.teams
+    @neighborhood      = @user.neighborhood
+    @coupons           = @user.prize_codes.reject {|c| c.expired? }
+    @prizes            = Prize.where('stock > 0').where(:is_badge => false).where('expire_on >= ? OR expire_on is NULL', Time.now)
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
-    # Load the community news feed. We explicitly limit activity to this month
-    # so that we don't inadvertedly create a humongous array.
-    # TODO: As activity on the site picks up, come back to rethink this inefficient
-    # query.
-    # TODO: Move the magic number '4.weeks.ago'
-    if @current_user && @current_user == @user
-      city_reports = @city.neighborhoods.map {|n| n.reports.where("created_at > ?", 4.weeks.ago) }.flatten
-      city_reports = city_reports.find_all {|r| r.is_public? }
-
-      # Now, let's load all the users, and their posts.
-      city_posts = []
-      @city.neighborhoods.each do |n|
-        n.users.each do |m|
-          user_posts = m.posts.where("created_at > ?", 4.weeks.ago)
-          city_posts << user_posts
-        end
-      end
-      city_posts.flatten!
-
-      @news_feed = (city_reports + city_posts + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    # Build a feed depending on params.
+    @posts  = @user.posts.order("updated_at DESC")
+    if params[:feed].to_s == "1"
+      @reports = @neighborhoods.map {|n| n.reports.order("updated_at DESC") }.flatten
+      @notices = @neighborhoods.map {|n| n.notices.order("updated_at DESC") }.flatten
     else
-      @news_feed    = (@user_reports.to_a + @user.posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+      @posts   = @posts.limit(3)
+      @reports = @neighborhoods.map {|n| n.reports.order("updated_at DESC").limit(5) }.flatten
+      @notices = @neighborhoods.map {|n| n.notices.order("updated_at DESC").limit(5) }.flatten
     end
 
-    respond_to do |format|
-      format.html
-      format.json { render json: {user: @user, badges: @badges}}
-    end
+    @activity_feed  = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @reports_by_user = @user.reports
   end
 
   #----------------------------------------------------------------------------
@@ -247,9 +228,9 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   def identify_user
-    @user = User.find(params[:id])
+    @user = User.find_by_id( params[:user_id] )
+    @user = User.find( params[:id] ) if @user.blank?
   end
 
   #----------------------------------------------------------------------------
-
 end

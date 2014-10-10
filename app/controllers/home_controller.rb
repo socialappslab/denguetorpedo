@@ -40,7 +40,7 @@ class HomeController < ApplicationController
     @user_posts = Post.order("created_at DESC").limit(3)
     @reports    = Report.where(:neighborhood_id => @neighborhood.id).order("created_at DESC").limit(10)
     @reports    = @reports.find_all {|r| r.is_public? }[0..3]
-    @news_feed  = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @activity_feed  = (@reports.to_a + @user_posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
 
     # Display the appropriate introduction video on homepage.
     if I18n.locale == :es

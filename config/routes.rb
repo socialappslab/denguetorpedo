@@ -56,10 +56,8 @@ Dengue::Application.routes.draw do
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
   resources :users do
     resources :reports, :except => [:show]
-
     resources :conversations, :only => [:index, :show]
     resources :messages,      :only => [:create]
-
     resources :posts
 
     collection do

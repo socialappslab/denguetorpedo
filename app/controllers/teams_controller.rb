@@ -1,7 +1,7 @@
 # encoding: utf-8
 class TeamsController < ApplicationController
   before_filter :require_login
-  before_filter :identify_neighborhood, :except => [:administer]
+  before_filter :identify_neighborhood,            :except => [:administer]
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
 
   #----------------------------------------------------------------------------
@@ -24,22 +24,26 @@ class TeamsController < ApplicationController
   # GET /teams/1
 
   def show
-    @team = Team.find(params[:id])
-    @users = @team.users
-    @total_points  = @team.total_points
-    @total_reports = @team.total_reports
+    @post    = Post.new
 
-    @post = Post.new
+    # Load associations.
+    @team    = Team.find(params[:id])
+    @users   = @team.users.includes(:posts)
+    @reports = @users.map {|u| u.reports.order("updated_at DESC")}.flatten
 
-    # Load up posts from team's users.
-    @posts = []
-    @team.users.includes(:posts).each do |user|
-      @posts << user.posts
+    @total_reports = @reports.count
+    @total_points  = @users.sum(:total_points)
+
+    if params[:feed].to_s == "1"
+      @posts = @users.map {|u| u.posts}.flatten
+    else
+      @posts   = @users.map {|u| u.posts.order("updated_at DESC").limit(3)}.flatten
+      @reports = @reports[0..5]
     end
-    @posts.flatten!
 
-    @news_feed = @posts.to_a.sort{|a,b| b.created_at <=> a.created_at }
+    @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
+
 
   #----------------------------------------------------------------------------
   # POST /teams
@@ -96,8 +100,7 @@ class TeamsController < ApplicationController
   # POST /teams/1/join
 
   def join
-    @team = Team.find(params[:id])
-
+    @team         = Team.find( params[:id] )
     membership = TeamMembership.find_or_create_by_user_id_and_team_id(@current_user.id, @team.id)
     if membership.save
       flash[:notice] = I18n.t("views.teams.success_join_flash")

@@ -113,8 +113,17 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # TODO: Deprecate this method...
   def location
     house && house.location
+  end
+
+  def city
+    return self.neighborhood.city
+  end
+
+  def country
+    return self.city.country
   end
 
   #----------------------------------------------------------------------------

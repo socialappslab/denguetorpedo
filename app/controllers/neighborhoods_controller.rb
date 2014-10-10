@@ -1,34 +1,34 @@
 class NeighborhoodsController < NeighborhoodsBaseController
-  before_filter :ensure_team_chosen,    :only => [:show]
+  before_filter :ensure_team_chosen, :only => [:show]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1
 
   def show
-    @neighborhood = Neighborhood.find(params[:id])
+    @post = Post.new
 
-    # Identify the users, and reports.
-    @participants = @neighborhood.members.includes(:posts).where(is_blocked: false).order("first_name ASC")
-    @reports      = @neighborhood.reports
-    @notices      = @neighborhood.notices.order("updated_at DESC")
+    # Load associations.
+    @neighborhood = Neighborhood.find(params[:id]) if @neighborhood.nil?
+    @users   = @neighborhood.members.where(:is_blocked => false).order("first_name ASC")
+    @teams   = @neighborhood.teams.order("name ASC")
+    @reports = @neighborhood.reports
+    @notices = @neighborhood.notices
 
-    @teams = @neighborhood.teams.order("name ASC")
-    @teams = @teams.find_all { |t| t.users.count > 0 }
+    # Limit the amount of records we show.
+    @total_reports = @reports.count
+    @total_points  = @users.sum(:total_points)
 
-    @total_reports_in_neighborhood      = @reports.count
-    @opened_reports_in_neighborhood     = @reports.find_all {|r| r.open? }.count
-    @eliminated_reports_in_neighborhood = @reports.find_all {|r| r.eliminated? }.count
-
-    @total_points = @neighborhood.total_points
-
-    @posts = []
-    @participants.each do |cc|
-      @posts << cc.posts
+    if params[:feed].to_s == "1"
+      @posts = @users.includes(:posts).map {|u| u.posts }.flatten
+    else
+      @posts   = @users.includes(:posts).map {|u| u.posts.order("updated_at DESC").limit(3)}.flatten
+      @reports = @reports.order("updated_at DESC").limit(5)
+      @notices = @notices.order("updated_at DESC").limit(5)
     end
-    @posts.flatten!
 
-    @news_feed = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @activity_feed = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
+
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/invitation
@@ -40,4 +40,9 @@ class NeighborhoodsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
 end

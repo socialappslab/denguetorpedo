@@ -21,7 +21,7 @@
     = I18n.t("common_terms.participants").capitalize
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
     .span4
-      = render :partial => "shared/sidebar_list", :locals => { :items => @participants }
+      = render :partial => "shared/sidebar_list", :locals => { :items => @users }
 
 
   - if @sponsors.present?

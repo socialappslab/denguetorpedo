@@ -16,11 +16,16 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def index
+    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
+    @report_count  = @reports.count
+    @report_limit  = 10
+    @report_offset = (params[:page] || 0).to_i * @report_limit
+
     @new_report          = Report.new(params[:new_report])
     @new_report_location = Location.find_by_id(params[:location]) || Location.new
 
     # Remove report that incurred an error, it should be at the top already
-    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
+    @reports = @reports.limit(@report_limit).offset(@report_offset)
     @reports.reject!{ |r| r == params[:report]}
     @reports.reject!{ |r| r.neighborhood_id != @neighborhood.id }
 
