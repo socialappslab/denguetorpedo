@@ -1,4 +1,4 @@
-- if @activity_feed.present?
+- if @activity_feed.present? && params[:feed].blank?
   .row
     .span9{:style => "text-align: center;"}
       = link_to url_for(:only_path => true, :feed => 1), :style => "color: #6655ee; font-size: 32px;" do
