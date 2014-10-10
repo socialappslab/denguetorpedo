@@ -29,7 +29,7 @@ class TeamsController < ApplicationController
     # Load associations.
     @team    = Team.find(params[:id])
     @users   = @team.users.includes(:posts)
-    @reports = @users.map {|u| u.reports.order("created_at DESC")}.flatten
+    @reports = @users.map {|u| u.reports.order("updated_at DESC")}.flatten
 
     @total_reports = @reports.count
     @total_points  = @users.sum(:total_points)
@@ -37,7 +37,7 @@ class TeamsController < ApplicationController
     if params[:feed].to_s == "1"
       @posts = @users.map {|u| u.posts}.flatten
     else
-      @posts   = @users.map {|u| u.posts.order("created_at DESC").limit(3)}.flatten
+      @posts   = @users.map {|u| u.posts.order("updated_at DESC").limit(3)}.flatten
       @reports = @reports[0..5]
     end
 

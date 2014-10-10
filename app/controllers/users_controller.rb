@@ -62,14 +62,14 @@ class UsersController < ApplicationController
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
     # Build a feed depending on params.
-    @posts  = @user.posts.order("created_at DESC")
+    @posts  = @user.posts.order("updated_at DESC")
     if params[:feed].to_s == "1"
-      @reports = @neighborhoods.map {|n| n.reports.order("created_at DESC") }.flatten
-      @notices = @neighborhoods.map {|n| n.notices.order("created_at DESC") }.flatten
+      @reports = @neighborhoods.map {|n| n.reports.order("updated_at DESC") }.flatten
+      @notices = @neighborhoods.map {|n| n.notices.order("updated_at DESC") }.flatten
     else
       @posts   = @posts.limit(3)
-      @reports = @neighborhoods.map {|n| n.reports.order("created_at DESC").limit(5) }.flatten
-      @notices = @neighborhoods.map {|n| n.notices.order("created_at DESC").limit(5) }.flatten
+      @reports = @neighborhoods.map {|n| n.reports.order("updated_at DESC").limit(5) }.flatten
+      @notices = @neighborhoods.map {|n| n.notices.order("updated_at DESC").limit(5) }.flatten
     end
 
     @activity_feed  = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }

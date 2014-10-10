@@ -21,9 +21,9 @@ class NeighborhoodsController < NeighborhoodsBaseController
     if params[:feed].to_s == "1"
       @posts = @users.includes(:posts).map {|u| u.posts }.flatten
     else
-      @posts   = @users.includes(:posts).map {|u| u.posts.order("created_at DESC").limit(3)}.flatten
-      @reports = @reports.order("created_at DESC").limit(5)
-      @notices = @notices.order("created_at DESC").limit(5)
+      @posts   = @users.includes(:posts).map {|u| u.posts.order("updated_at DESC").limit(3)}.flatten
+      @reports = @reports.order("updated_at DESC").limit(5)
+      @notices = @notices.order("updated_at DESC").limit(5)
     end
 
     @activity_feed = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
