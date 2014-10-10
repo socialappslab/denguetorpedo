@@ -3,7 +3,6 @@ class TeamsController < ApplicationController
   before_filter :require_login
   before_filter :identify_neighborhood,            :except => [:administer]
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
-  before_filter :load_associations,         :only => [:show, :feed]
 
   #----------------------------------------------------------------------------
   # GET /teams
@@ -27,21 +26,24 @@ class TeamsController < ApplicationController
   def show
     @post    = Post.new
 
+    # Load associations.
+    @team    = Team.find(params[:id])
+    @users   = @team.users.includes(:posts)
+    @reports = @users.map {|u| u.reports.order("created_at DESC")}.flatten
+
     @total_reports = @reports.count
     @total_points  = @users.sum(:total_points)
-    @reports       = @reports[0..5]
-    @posts         = @users.map {|u| u.posts.limit(3)}.flatten
-    @activity_feed = (@reports.to_a + @posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
+
+    if params[:feed].to_s == "1"
+      @posts = @users.map {|u| u.posts}.flatten
+    else
+      @posts   = @users.map {|u| u.posts.order("created_at DESC").limit(3)}.flatten
+      @reports = @reports[0..5]
+    end
+
+    @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
 
-  #----------------------------------------------------------------------------
-  # GET /teams/1/feed
-
-  def feed
-    @post    = Post.new
-    @posts   = @users.map {|u| u.posts}.flatten
-    @activity_feed = (@reports.to_a + @posts.to_a).sort{|a,b| b.created_at <=> a.created_at }
-  end
 
   #----------------------------------------------------------------------------
   # POST /teams
@@ -158,16 +160,6 @@ class TeamsController < ApplicationController
 
   def identify_neighborhood
     @neighborhood = @current_user.neighborhood
-  end
-
-  #----------------------------------------------------------------------------
-
-  def load_associations
-    @team         = Team.find_by_id( params[:team_id] )
-    @team         = Team.find(params[:id]) if @team.blank?
-
-    @users   = @team.users.includes(:posts)
-    @reports = @users.map {|u| u.reports}.flatten
   end
 
   #----------------------------------------------------------------------------

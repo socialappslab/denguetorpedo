@@ -174,7 +174,6 @@ Dengue::Application.routes.draw do
   # Teams
 
   resources :teams do
-    get "feed", :to => "teams#feed", :as => :feed
     post "join",  :on => :member
     post "leave", :on => :member
     put "block", :on => :member
