@@ -50,7 +50,7 @@ puts "[!] Seeding neighborhoods..."
 puts "\n" * 3
 
 communities = [
-  {:name => "Maré",         :city_name => "Rio de Janeiro"},
+  {:name => "Maré",         :city_name => "Rio de Janeiro", :lat => -22.857432, :long => -43.242963},
 
   {:name => "Tepalcingo",   :city_name => "Tepalcingo", :lat => 18.5957189, :long => -98.8460549 },
   {:name => "Ocachicualli", :city_name => "Cuernavaca", :lat => 18.924799, :long => -99.221359   },
