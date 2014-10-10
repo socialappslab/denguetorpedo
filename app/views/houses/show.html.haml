@@ -155,7 +155,7 @@
 
     var point = new Point(680291.2151545063, 7471001.29586681, mapMareSpatialRef);
     var popup = new Popup({ highlight: false }, domConstruct.create("div"));
-    var tiled = new Tiled("https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
     var map   = new Map("map", { center: point, zoom: 4, extent: customExtent, infoWindow:popup });
 
     var greyMarker   = new PictureMarkerSymbol("/assets/markers/grey_marker.png", 64, 64).setOffset(15, 15);

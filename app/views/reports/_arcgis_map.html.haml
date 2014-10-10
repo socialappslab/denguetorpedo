@@ -27,7 +27,7 @@
     var mapMareSpatialRef = new esri.SpatialReference({wkid: 29193});
     var customExtent      = new esri.geometry.Extent(667070.412263838,7456962.88258577,688175.480935968,7475960.60361382, mapMareSpatialRef);
 
-    var tiled = new Tiled("https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
+    var tiled = new Tiled("http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Basico/mapa_basico_utm/MapServer");
     var point = new Point(680291.2151545063, 7470751.29586681, mapMareSpatialRef);
     var map = new Map("map", { center: point, zoom: 4, extent: customExtent, infoWindow:popup });
 
@@ -119,7 +119,7 @@
       var streetNumber = $("#report_location_attributes_street_number").val();
 
       $.ajax({
-        url: "https://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
+        url: "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates",
         type: "GET",
         dataType: "jsonp",
         data: {
