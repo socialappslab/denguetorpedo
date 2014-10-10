@@ -39,11 +39,6 @@
 .row
   = render :partial => "shared/news_feed"
 
-- if @activity_feed.present?
-  .row
-    .span9{:style => "text-align: center;"}
-      = link_to team_feed_path(@team), :style => "color: #6655ee; font-size: 32px;" do
-        %i.fa.fa-chevron-down
-        = I18n.t("common_terms.more")
+= render :partial => "shared/full_feed_button"
 
 /------------------------------------------------------------------------------

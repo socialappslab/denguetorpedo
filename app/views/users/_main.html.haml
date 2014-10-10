@@ -68,11 +68,6 @@
 
 -# ----------------------------------------------------------------------------
 
-- if @activity_feed.present?
-  .row
-    .span9{:style => "text-align: center;"}
-      = link_to user_feed_path(@user), :style => "color: #6655ee; font-size: 32px;" do
-        %i.fa.fa-chevron-down
-        = I18n.t("common_terms.more")
+= render :partial => "shared/full_feed_button"
 
 -# ----------------------------------------------------------------------------
