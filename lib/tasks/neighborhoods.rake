@@ -22,12 +22,13 @@ namespace :neighborhoods do
   desc "Add latitude/longitude to neighborhoods"
   task :add_coordinates => :environment do
     communities = [
-      {:name => "Tepalcingo", :lat => 18.5957189, :long => -98.8460549 },
+      {:name => "Maré",         :lat => -22.857432, :long => -43.242963  },
+      {:name => "Tepalcingo",   :lat => 18.5957189, :long => -98.8460549 },
       {:name => "Ocachicualli", :lat => 18.924799, :long => -99.221359   },
 
       {:name => "Francisco Meza", :lat => 12.138632, :long => -86.260808 },
-      {:name => "Hialeah",  :lat => 12.119987, :long => -86.278676 },
-      {:name => "Ariel Darce",  :lat => 12.118762, :long => -86.237639 }
+      {:name => "Hialeah",        :lat => 12.119987, :long => -86.278676 },
+      {:name => "Ariel Darce",    :lat => 12.118762, :long => -86.237639 }
     ]
     communities.each do |c|
       n = Neighborhood.find_by_name(c[:name])

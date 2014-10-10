@@ -18,12 +18,12 @@
           = I18n.t("report.form.address")
 
       = f.fields_for :location, @new_report.location || Location.new do |location_fields|
-        - if @neighborhood.mexican?
+        - if @neighborhood.mexican? || @neighborhood.brazilian?
           = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
-        - elsif @neighborhood.brazilian?
-          = location_fields.text_field :street_type, :placeholder => I18n.t("report.form.example_of_street_type"), :class => "middle_field address_field"
-          = location_fields.text_field :street_name, :placeholder => I18n.t("attributes.name"), style: "width:200px;", class: 'address_field'
-          = location_fields.text_field :street_number, :placeholder => I18n.t("attributes.number"), class: "middle_field address_field"
+        -# - elsif @neighborhood.brazilian?
+        -#   = location_fields.text_field :street_type, :placeholder => I18n.t("report.form.example_of_street_type"), :class => "middle_field address_field"
+        -#   = location_fields.text_field :street_name, :placeholder => I18n.t("attributes.name"), style: "width:200px;", class: 'address_field'
+        -#   = location_fields.text_field :street_number, :placeholder => I18n.t("attributes.number"), class: "middle_field address_field"
 
         = location_fields.hidden_field :latitude
         = location_fields.hidden_field :longitude
