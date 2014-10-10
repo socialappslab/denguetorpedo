@@ -66,14 +66,13 @@
     #new_report
       = render :partial => 'make_report_form'
 
-  - if @neighborhood.name == Neighborhood::Names::MARE
-    .span7#map_div
-      = render :partial => "reports/map"
-    = render :partial => "reports/arcgis_map"
-  - elsif @neighborhood.spanish?
-    .span7#map_div
-      = render :partial => "reports/google_map"
-    = javascript_include_tag "googlemap/map"
+  -# - if @neighborhood.name == Neighborhood::Names::MARE
+  -#   .span7#map_div
+  -#     = render :partial => "reports/map"
+  -#   = render :partial => "reports/arcgis_map"
+  .span7#map_div
+    = render :partial => "reports/google_map"
+  = javascript_include_tag "googlemap/map"
 
 /------------------------------------------------------------------------------
 / Social media
