@@ -4,9 +4,8 @@
 class UsersController < ApplicationController
   before_filter :require_login,             :only => [:edit, :update, :index, :show]
   before_filter :ensure_team_chosen,        :only => [:show]
-  before_filter :identify_user,             :only => [:edit, :update, :show, :feed]
+  before_filter :identify_user,             :only => [:edit, :update, :show]
   before_filter :ensure_proper_permissions, :only => [:index, :phones]
-  before_filter :load_associations,         :only => [:show, :feed]
 
   #----------------------------------------------------------------------------
   # GET /users/
@@ -51,6 +50,9 @@ class UsersController < ApplicationController
   def show
     redirect_to user_path(@current_user) and return if @user.blank?
 
+    @city              = @user.city
+    @neighborhoods     = @city.neighborhoods.includes(:city, :notices, :users)
+
     @post              = Post.new
     @badges            = @user.badges
     @teams             = @user.teams
@@ -59,25 +61,19 @@ class UsersController < ApplicationController
     @prizes            = Prize.where('stock > 0').where(:is_badge => false).where('expire_on >= ? OR expire_on is NULL', Time.now)
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
-    # Build a simplified activity feed.
-    @reports        = @neighborhoods.map {|n| n.reports.limit(5) }.flatten
-    @notices        = @neighborhoods.map {|n| n.notices.limit(5) }.flatten
-    @posts          = @user.posts.limit(3)
-    @activity_feed  = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    # Build a feed depending on params.
+    @posts  = @user.posts.order("created_at DESC")
+    if params[:feed].to_s == "1"
+      @reports = @neighborhoods.map {|n| n.reports.order("created_at DESC") }.flatten
+      @notices = @neighborhoods.map {|n| n.notices.order("created_at DESC") }.flatten
+    else
+      @posts   = @posts.limit(3)
+      @reports = @neighborhoods.map {|n| n.reports.order("created_at DESC").limit(5) }.flatten
+      @notices = @neighborhoods.map {|n| n.notices.order("created_at DESC").limit(5) }.flatten
+    end
 
+    @activity_feed  = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     @reports_by_user = @user.reports
-  end
-
-  #----------------------------------------------------------------------------
-  # GET /users/1/feed
-
-  def feed
-    @post = Post.new
-
-    @reports        = @neighborhoods.map {|n| n.reports }.flatten
-    @notices        = @neighborhoods.map {|n| n.notices }.flatten
-    @posts          = @user.posts
-    @activity_feed  = (@reports.to_a + @posts.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
   end
 
   #----------------------------------------------------------------------------
@@ -234,13 +230,6 @@ class UsersController < ApplicationController
   def identify_user
     @user = User.find_by_id( params[:user_id] )
     @user = User.find( params[:id] ) if @user.blank?
-  end
-
-  #----------------------------------------------------------------------------
-
-  def load_associations
-    @city          = @user.city
-    @neighborhoods = @city.neighborhoods.includes(:city, :notices, :users)
   end
 
   #----------------------------------------------------------------------------
