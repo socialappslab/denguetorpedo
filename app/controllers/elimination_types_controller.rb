@@ -57,17 +57,4 @@ class EliminationTypesController < ApplicationController
 
 	#-----------------------------------------------------------------------------
 
-	def destroy
-		@type = BreedingSite.find( params[:id] )
-		respond_to do |format|
-			if @type.destroy
-				format.js
-			else
-				format.json { render json: {message: "failure"}, status: 401}
-			end
-		end
-	end
-
-	#-----------------------------------------------------------------------------
-
 end
