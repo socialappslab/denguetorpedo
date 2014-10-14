@@ -5,7 +5,7 @@ class BreedingSitesController < ApplicationController
 	# GET /elimination_types
 
 	def index
-		@types = BreedingSite.all
+		@types = BreedingSite.order("created_at ASC").includes(:elimination_methods)
 	end
 
 	#-----------------------------------------------------------------------------

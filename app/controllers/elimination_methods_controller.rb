@@ -1,8 +1,5 @@
 class EliminationMethodsController < ApplicationController
-  # Used in creating and editing elimination types and methods via reports/types.html.haml
-  # TODO - This doesn't seem like the best way to handle updating types and methods
-  # TODO - Check security for ajax calls to update methods
-
+  before_filter :ensure_proper_permissions
 
   #----------------------------------------------------------------------------
   # GET /elimination_methods/new

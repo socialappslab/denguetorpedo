@@ -3,7 +3,7 @@ class BreedingSite < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  has_many :elimination_methods, dependent: :destroy
+  has_many :elimination_methods, :dependent => :destroy
 
   #----------------------------------------------------------------------------
 
