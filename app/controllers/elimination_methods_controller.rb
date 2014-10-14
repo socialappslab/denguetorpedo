@@ -3,55 +3,73 @@ class EliminationMethodsController < ApplicationController
   # TODO - This doesn't seem like the best way to handle updating types and methods
   # TODO - Check security for ajax calls to update methods
 
-  #----------------------------------------------------------------------------
-
-  # TODO: We need to refactor this to use the proper association between
-  # elimination methods and breeding sites.
-	def create
-    @current_id = params[:current_id]
-
-		@method        = EliminationMethod.new(method: params[:name], points: params[:points])
-		@breeding_site = BreedingSite.find(params[:type_id])
-
-		@method.breeding_site_id = @breeding_site.id
-
-		respond_to do |format|
-			if @method.save
-				format.js
-			else
-			end
-		end
-	end
 
   #----------------------------------------------------------------------------
+  # GET /elimination_methods/new
 
-	def show
-		@method = EliminationMethod.find(params[:id])
-		respond_to do |format|
-			format.js
-		end
-	end
+  def new
+    @type   = BreedingSite.find( params[:breeding_site_id] )
+    @method = EliminationMethod.new
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /elimination_methods/:id/edit
+
+  def edit
+    @type   = BreedingSite.find( params[:breeding_site_id] )
+    @method = EliminationMethod.find( params[:id] )
+  end
+
+  #----------------------------------------------------------------------------
+  # POST /elimination_methods/:id
+
+  def create
+    @type   = BreedingSite.find( params[:breeding_site_id] )
+    @method = EliminationMethod.new( params[:elimination_method] )
+
+    @method.breeding_site_id = @type.id
+
+    if @method.save
+      flash[:notice] = "You've successfully created a new elimination type."
+      redirect_to breeding_sites_path and return
+    else
+      render "new" and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
+  # PUT /elimination_methods/:id
+
 	def update
-		@method = EliminationMethod.find(params[:id])
-		@method.method = params[:name]
-		@method.points = params[:points]
-		respond_to do |format|
-			if @method.save
-				format.js
-			else
-			end
-		end
+		@type   = BreedingSite.find( params[:breeding_site_id] )
+    @method = EliminationMethod.find( params[:id] )
+
+		if @method.update_attributes(params[:elimination_method])
+      flash[:notice] = "You've successfully created a new elimination type."
+      redirect_to breeding_sites_path and return
+    else
+      render "edit" and return
+    end
 	end
+
+  #----------------------------------------------------------------------------
+  # DELETE /elimination_methods/:id
+
 	def destroy
-		@method = EliminationMethod.find(params[:id])
+		@method = EliminationMethod.find( params[:id] )
 
-		respond_to do |format|
-			if @method.destroy
-
-				format.js
-			else
-				format.json { render json: {message: "failure"}, status: 401}
-			end
-		end
+    if @method.destroy
+      flash[:notice] = "You successfully destroyed an elimination type."
+      redirect_to breeding_sites_path and return
+    else
+      flash[:alert] = I18n.t("views.application.error")
+      redirect_to breeding_sites_path and return
+    end
 	end
+
+  #----------------------------------------------------------------------------
+
+
+
+
 end

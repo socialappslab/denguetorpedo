@@ -16,6 +16,14 @@ class BreedingSitesController < ApplicationController
 	end
 
 	#-----------------------------------------------------------------------------
+	# GET /elimination_types/1/edit
+
+	def edit
+		@type = BreedingSite.find( params[:id] )
+	end
+
+	#-----------------------------------------------------------------------------
+	# POST /breeding_sites
 
 	def create
 		@type = BreedingSite.new( params[:breeding_site] )
@@ -29,30 +37,31 @@ class BreedingSitesController < ApplicationController
 	end
 
 	#-----------------------------------------------------------------------------
+	# PUT /breeding_sites/1
 
 	def update
 		@type = BreedingSite.find( params[:id] )
 
-		if I18n.locale == :es
-			@type.description_in_es = params[:description]
+		if @type.update_attributes( params[:breeding_site] )
+			flash[:notice] = "You successfully updated a breeding site"
+			redirect_to breeding_sites_path and return
 		else
-			@type.description_in_pt = params[:description]
-		end
-
-		respond_to do |format|
-			if @type.save
-				format.js
-			else
-			end
+			render "edit" and return
 		end
 	end
 
 	#-----------------------------------------------------------------------------
+	# DELETE /elimination_types
 
-	def show
+	def destroy
 		@type = BreedingSite.find( params[:id] )
-		respond_to do |format|
-			format.js
+
+		if @type.destroy
+			flash[:notice] = "You successfully destroyed a breeding site type."
+			redirect_to breeding_sites_path and return
+		else
+			flash[:alert] = I18n.t("views.application.error")
+			redirect_to breeding_sites_path and return
 		end
 	end
 
