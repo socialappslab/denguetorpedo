@@ -1,4 +1,19 @@
 class EliminationTypesController < ApplicationController
+	before_filter :ensure_proper_permissions
+
+	#-----------------------------------------------------------------------------
+	# GET /elimination_types
+
+	def index
+		@types = BreedingSite.all
+	end
+
+	#-----------------------------------------------------------------------------
+	# GET /elimination_types/new
+
+	def new
+		@type = BreedingSite.new
+	end
 
 	#-----------------------------------------------------------------------------
 

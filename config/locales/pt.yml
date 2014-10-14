@@ -490,6 +490,8 @@ pt:
     cities:
       show:
         visit: Visitar
+    elimination_types:
+      create: "Criar um tipo de foco"
 
 
   #----------------------------------------------------------------------------

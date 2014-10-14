@@ -1,0 +1,42 @@
+.row
+  .span8.offset1
+    %h1{:style => "font-size: 30px;"}
+      = I18n.t("views.admin.edit_report")
+
+  .span8{:style => "text-align: right;"}
+    = link_to "+ " + I18n.t("views.elimination_types.create"), new_elimination_type_path, :class => "btn btn-success btn-large"
+
+.row{:style => "margin-top: 20px;"}
+  .span16.offset1
+    %table.table.table-bordered
+
+      - @types.each do |type|
+        %tr
+          %td
+            = type.description
+          %td
+          %td
+            = link_to I18n.t("common_terms.edit"), "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
+          %td
+            = link_to I18n.t("views.reports.types.delete"), "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
+            = link_to I18n.t("common_terms.cancel"), "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
+
+        - type.elimination_methods.each do |method|
+          %tr
+            %td{style: "padding-left:40px;"}
+              = method.description
+            %td
+              = method.points
+            %td
+              = link_to I18n.t("common_terms.edit"), "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
+            %td
+              = link_to I18n.t("views.reports.types.delete"), "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
+              = link_to I18n.t("common_terms.cancel"), "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
+        %tr
+          %td{style: "padding-left:40px;"}
+            %input{type: "text", style: "width:500px;margin-bottom:0px;", placeholder: "Novo método", id: "new_method_name_#{type.id}"}
+          %td
+            %input{type: "text", style: "margin-bottom:0px;width:100px;", placeholder: "pontos", id: "new_method_points_#{type.id}"}
+          %td
+            = link_to "Salvar", "", class: "new_method type_#{type.id}", id: "new_method_#{type.id}", data: { id: type.id }
+          %td

@@ -472,7 +472,8 @@ es:
     cities:
       show:
         visit: Visitar
-
+    elimination_types:
+      create: "Criar un tipo de foco"
 
   #----------------------------------------------------------------------------
   # Countries
