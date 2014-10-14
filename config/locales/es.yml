@@ -179,6 +179,7 @@ es:
   #----------------------------------
 
   common_terms:
+    not_available: No disponible
     back: Atrás
     codes: Códigos
     order_by: Ordenar por
@@ -474,6 +475,10 @@ es:
         visit: Visitar
     breeding_sites:
       create: "Criar un tipo de foco"
+      edit: "Editar un tipo de foco"
+    elimination_methods:
+      create: "Criar un método de eliminación"
+      edit: "Editar un método de eliminación"
 
   #----------------------------------------------------------------------------
   # Countries

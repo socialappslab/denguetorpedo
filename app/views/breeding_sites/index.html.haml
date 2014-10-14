@@ -1,5 +1,5 @@
 = render :partial => "shared/flashes"
-  
+
 .row
   .span8.offset1
     %h1{:style => "font-size: 30px;"}
@@ -17,11 +17,11 @@
           %td
             = type.description
           %td
+            = link_to I18n.t("views.elimination_methods.create"), new_breeding_site_elimination_method_path(type), :class => "btn btn-success"
           %td
-            = link_to I18n.t("common_terms.edit"), "", id: "edit_type_#{type.id}", class: "edit_type", data: { id: type.id }
+            = link_to I18n.t("common_terms.edit"), edit_breeding_site_path(type), :class => "btn btn-default"
           %td
-            = link_to I18n.t("views.reports.types.delete"), "", id: "delete_type_#{type.id}", class: "delete_type", data: { id: type.id }
-            = link_to I18n.t("common_terms.cancel"), "", id: "cancel_type_#{type.id}", class: "cancel_type", data: {id: type.id }, style: "display:none;"
+            = link_to I18n.t("common_terms.delete"), breeding_site_path(type), :method => "DELETE", :class => "btn btn-danger", :confirm => I18n.t("views.alerts.confirm")
 
         - type.elimination_methods.each do |method|
           %tr
@@ -30,15 +30,6 @@
             %td
               = method.points
             %td
-              = link_to I18n.t("common_terms.edit"), "", class: "edit_method", id: "edit_method_#{method.id}", data: { id: method.id }
+              = link_to I18n.t("common_terms.edit"), edit_breeding_site_elimination_method_path(type, method), :class => "btn btn-default btn-small"
             %td
-              = link_to I18n.t("views.reports.types.delete"), "", class: "delete_method type_#{type.id}", id: "delete_method_#{method.id}", data: { id: method.id }
-              = link_to I18n.t("common_terms.cancel"), "", class: "cancel_method", id: "cancel_method_#{method.id}", style: "display:none;", data: { id: method.id }
-        %tr
-          %td{style: "padding-left:40px;"}
-            %input{type: "text", style: "width:500px;margin-bottom:0px;", placeholder: "Novo método", id: "new_method_name_#{type.id}"}
-          %td
-            %input{type: "text", style: "margin-bottom:0px;width:100px;", placeholder: "pontos", id: "new_method_points_#{type.id}"}
-          %td
-            = link_to "Salvar", "", class: "new_method type_#{type.id}", id: "new_method_#{type.id}", data: { id: type.id }
-          %td
+              = link_to I18n.t("common_terms.delete"), breeding_site_elimination_method_path(type, method), :method => "DELETE", :class => "btn btn-danger btn-small", :confirm => I18n.t("views.alerts.confirm")
