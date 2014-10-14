@@ -1,10 +1,12 @@
+= render :partial => "shared/flashes"
+  
 .row
   .span8.offset1
     %h1{:style => "font-size: 30px;"}
       = I18n.t("views.admin.edit_report")
 
   .span8{:style => "text-align: right;"}
-    = link_to "+ " + I18n.t("views.elimination_types.create"), new_elimination_type_path, :class => "btn btn-success btn-large"
+    = link_to "+ " + I18n.t("views.breeding_sites.create"), new_breeding_site_path, :class => "btn btn-success btn-large"
 
 .row{:style => "margin-top: 20px;"}
   .span16.offset1

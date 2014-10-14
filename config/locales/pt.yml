@@ -490,8 +490,9 @@ pt:
     cities:
       show:
         visit: Visitar
-    elimination_types:
+    breeding_sites:
       create: "Criar um tipo de foco"
+
 
 
   #----------------------------------------------------------------------------

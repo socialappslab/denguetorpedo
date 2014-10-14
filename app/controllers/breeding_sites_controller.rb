@@ -1,4 +1,4 @@
-class EliminationTypesController < ApplicationController
+class BreedingSitesController < ApplicationController
 	before_filter :ensure_proper_permissions
 
 	#-----------------------------------------------------------------------------
@@ -18,12 +18,13 @@ class EliminationTypesController < ApplicationController
 	#-----------------------------------------------------------------------------
 
 	def create
-		@type = BreedingSite.new(:name => params[:name])
+		@type = BreedingSite.new( params[:breeding_site] )
 
-		respond_to do |format|
-			if @type.save
-				format.js
-			end
+		if @type.save
+			flash[:notice] = "You successfully created a breeding site"
+			redirect_to breeding_sites_path and return
+		else
+			render "new" and return
 		end
 	end
 

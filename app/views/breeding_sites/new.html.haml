@@ -1,0 +1,22 @@
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @type}
+.row
+  .span11.offset4
+    %h1
+      = I18n.t("views.breeding_sites.create")
+.row
+  .span11.offset4
+    = form_for @type, :html => { :id => "new-message-form", :class => "form-horizontal well"} do |f|
+      .control-group
+        = f.label :description_in_pt,  :class => "control-label", :style => "width: 200px; text-align: left;"
+        .controls
+          = f.text_area :description_in_pt, :class => "form-control span6", :style => "height: 50px;"
+      .control-group
+        = f.label :description_in_es, :class => "control-label", :style => "width: 200px; text-align: left;"
+        .controls
+          = f.text_area :description_in_es, :class => "form-control span6", :style => "height: 50px;"
+      .control-group
+        .controls.span6{:style => "margin-left: 195px;"}
+          = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.create")

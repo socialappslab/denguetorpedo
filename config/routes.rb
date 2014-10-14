@@ -25,7 +25,7 @@ Dengue::Application.routes.draw do
   # TODO: Do we really need these routes? They are used in reports/types.html
   # but their implementation is not intuitive.
   resources :elimination_methods
-  resources :elimination_types, :only => [:index, :show, :create, :update, :new]
+  resources :breeding_sites, :only => [:index, :show, :create, :update, :new]
 
   # TODO: What are the torpedos and why are they public???
   # TODO: Why are the phones listed publicly?
