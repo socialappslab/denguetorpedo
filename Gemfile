@@ -129,3 +129,6 @@ group :production, :staging do
 end
 
 #------------------------------------------------------------------------------
+# Analytics
+
+gem 'newrelic_rpm'
