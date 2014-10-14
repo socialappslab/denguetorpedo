@@ -6,25 +6,4 @@
       = I18n.t("views.elimination_methods.create")
 .row
   .span11.offset4
-    = form_for [@type, @method], :html => { :id => "new-message-form", :class => "form-horizontal well"} do |f|
-      .control-group
-        = label_tag :breeding_site_id, I18n.t("attributes.breeding_site_id"),  :class => "control-label", :style => "width: 200px; text-align: left;"
-        .controls
-          = text_field_tag :breeding_site_id, @type.description, :class => "form-control span6", :disabled => true
-      .control-group
-        = f.label :description_in_pt,  :class => "control-label", :style => "width: 200px; text-align: left;"
-        .controls
-          = f.text_area :description_in_pt, :class => "form-control span6", :style => "height: 50px;"
-      .control-group
-        = f.label :description_in_es, :class => "control-label", :style => "width: 200px; text-align: left;"
-        .controls
-          = f.text_area :description_in_es, :class => "form-control span6", :style => "height: 50px;"
-      .control-group
-        = f.label :points, :class => "control-label", :style => "width: 200px; text-align: left;"
-        .controls
-          = f.number_field :points, :class => "form-control span6", :min => 0
-      .control-group
-        .controls.span6{:style => "margin-left: 195px;"}
-          = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
-            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-            = I18n.t("views.buttons.create")
+    = render :partial => "elimination_methods/form"
