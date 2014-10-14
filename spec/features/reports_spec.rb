@@ -26,9 +26,10 @@ describe "Reports", :type => :feature do
     end
 
     it "notifies the user if report description is empty" do
-      fill_in "report_location_attributes_street_type", :with => "Rua"
-      fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
-      fill_in "report_location_attributes_street_number", :with => "45"
+      # fill_in "report_location_attributes_street_type", :with => "Rua"
+      # fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
+      # fill_in "report_location_attributes_street_number", :with => "45"
+      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
       attach_file("report_before_photo", photo_filepath)
 
       select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
@@ -38,9 +39,10 @@ describe "Reports", :type => :feature do
 
     it "notifies the user if report before photo is empty" do
       fill_in "report_content", :with => "This is a description"
-      fill_in "report_location_attributes_street_type", :with => "Rua"
-      fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
-      fill_in "report_location_attributes_street_number", :with => "45"
+      # fill_in "report_location_attributes_street_type", :with => "Rua"
+      # fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
+      # fill_in "report_location_attributes_street_number", :with => "45"
+      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
       select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       click_button I18n.t("views.buttons.create")
       expect(page).to have_content("A foto do foco é obrigatório")
@@ -57,9 +59,10 @@ describe "Reports", :type => :feature do
 
     it "notifies the user if identification type is empty" do
       fill_in "report_content", :with => "This is a description"
-      fill_in "report_location_attributes_street_type", :with => "Rua"
-      fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
-      fill_in "report_location_attributes_street_number", :with => "45"
+      # fill_in "report_location_attributes_street_type", :with => "Rua"
+      # fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
+      # fill_in "report_location_attributes_street_number", :with => "45"
+      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
       attach_file("report_before_photo", photo_filepath)
       click_button I18n.t("views.buttons.create")
       expect(page).to have_content("Tipo de foco é obrigatório")
@@ -68,9 +71,10 @@ describe "Reports", :type => :feature do
 
     context "successfully" do
       before(:each) do
-        fill_in "report_location_attributes_street_type", :with => "Rua"
-        fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
-        fill_in "report_location_attributes_street_number", :with => "45"
+        # fill_in "report_location_attributes_street_type", :with => "Rua"
+        # fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
+        # fill_in "report_location_attributes_street_number", :with => "45"
+        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
         fill_in "report_content", :with => "This is a description"
         attach_file("report_before_photo", photo_filepath)
         select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
@@ -93,9 +97,10 @@ describe "Reports", :type => :feature do
         expect(report.neighborhood_id).to eq(Neighborhood.first.id)
 
         expect(location).not_to eq(nil)
-        expect(location.street_type).to eq("Rua")
-        expect(location.street_name).to eq("Darci Vargas")
-        expect(location.street_number).to eq("45")
+        # expect(location.street_type).to eq("Rua")
+        # expect(location.street_name).to eq("Darci Vargas")
+        # expect(location.street_number).to eq("45")
+        expect(location.address).to eq("Rua Darci Vargas 45")
       end
 
       it "displays user's name as the creator" do
@@ -234,9 +239,10 @@ describe "Reports", :type => :feature do
     it "notifies the user if report before photo is empty" do
       visit edit_neighborhood_report_path(user.neighborhood, @report)
 
-      fill_in "report_location_attributes_street_type", :with => "Rua"
-      fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
-      fill_in "report_location_attributes_street_number", :with => "45"
+      # fill_in "report_location_attributes_street_type", :with => "Rua"
+      # fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
+      # fill_in "report_location_attributes_street_number", :with => "45"
+      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
       fill_in "report_content", :with => "This is a description"
       select(elimination_type.description_in_pt, :from => "report_breeding_site_id")
       click_button I18n.t("views.buttons.create")
@@ -247,9 +253,10 @@ describe "Reports", :type => :feature do
     it "notifies the user if identification type is empty" do
       visit edit_neighborhood_report_path(user.neighborhood, @report)
 
-      fill_in "report_location_attributes_street_type", :with => "Rua"
-      fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
-      fill_in "report_location_attributes_street_number", :with => "45"
+      # fill_in "report_location_attributes_street_type", :with => "Rua"
+      # fill_in "report_location_attributes_street_name", :with => "Darci Vargas"
+      # fill_in "report_location_attributes_street_number", :with => "45"
+      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
       click_button I18n.t("views.buttons.create")
@@ -262,9 +269,10 @@ describe "Reports", :type => :feature do
 
       visit edit_neighborhood_report_path(user.neighborhood, @report)
 
-      fill_in "report_location_attributes_street_type", 	 :with => "Rua"
-      fill_in "report_location_attributes_street_name", 	 :with => "Boca"
-      fill_in "report_location_attributes_street_number",  :with => "500"
+      # fill_in "report_location_attributes_street_type", 	 :with => "Rua"
+      # fill_in "report_location_attributes_street_name", 	 :with => "Boca"
+      # fill_in "report_location_attributes_street_number",  :with => "500"
+      fill_in "report_location_attributes_address", :with => "Rua Boca 500"
       fill_in "report_content", :with => "This is a description"
       attach_file("report_before_photo", photo_filepath)
       select elimination_type.description_in_pt, :from => "report_breeding_site_id"
