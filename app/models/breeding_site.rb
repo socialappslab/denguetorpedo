@@ -1,17 +1,15 @@
 class BreedingSite < ActiveRecord::Base
-  attr_accessible :description_in_pt, :description_in_es
+  attr_accessible :description_in_pt, :description_in_es, :elimination_methods_attributes
 
   #----------------------------------------------------------------------------
 
   has_many :elimination_methods, :dependent => :destroy
+  accepts_nested_attributes_for :elimination_methods, :allow_destroy => true
 
   #----------------------------------------------------------------------------
 
-  validate :description_in_locales
-
-  #----------------------------------------------------------------------------
-
-  before_save :set_locale_description
+  validates :description_in_pt, :presence => :true
+  validates :description_in_es, :presence => :true
 
   #----------------------------------------------------------------------------
 
@@ -23,23 +21,6 @@ class BreedingSite < ActiveRecord::Base
     end
 
     return I18n.t("common_terms.not_available")
-  end
-
-  #----------------------------------------------------------------------------
-
-  private
-
-  # We use this before_save callback to ensure that both description_in_pt *and*
-  # description_in_es are set.
-  def set_locale_description
-    self.description_in_pt = self.description_in_es if self.description_in_pt.blank?
-    self.description_in_es = self.description_in_pt if self.description_in_es.blank?
-  end
-
-  def description_in_locales
-    if self.description_in_es.blank? && self.description_in_pt.blank?
-      errors[:base] << "You need to supply a description in either Portuguese or Spanish (or both)"
-    end
   end
 
   #----------------------------------------------------------------------------
