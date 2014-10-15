@@ -34,6 +34,16 @@
 
 /------------------------------------------------------------------------------
 
+- if @current_user && @neighborhood.spanish?
+  .row{:style => "margin-bottom: 20px;"}
+    .span12.offset1
+      = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning" do
+        %i.fa.fa-file
+        Import CSV
+
+
+/------------------------------------------------------------------------------
+
 .row
   .span10.offset1
     #report_buttons
@@ -46,6 +56,7 @@
 
       - if @current_user
         = link_to I18n.t("common_terms.create_a_report"), nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
+
 
 
 /------------------------------------------------------------------------------
@@ -61,7 +72,6 @@
           = render :partial => "reports/attributes", :locals => {:report => report}
           - unless report.sms_incomplete?
             = render :partial => "reports/topbar",   :locals => {:report => report}
-
 
     #new_report
       = render :partial => 'make_report_form'
