@@ -19,7 +19,7 @@
     <td><%= notice.date %></td>
     <td><%= link_to 'Show', notice %></td>
     <td><%= link_to 'Edit', edit_notice_path(notice) %></td>
-    <td><%= link_to 'Destroy', notice, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to 'Destroy', notice, method: :delete, data: { :confirm => I18n.t("views.alerts.confirm") } %></td>
   </tr>
 <% end %>
 </table>

@@ -37,4 +37,4 @@
 .row.offset1
 	- if @current_user && @current_user.coordinator?
 		= link_to "Editar", edit_notice_path(@notice), :style => "font-size:15px;"
-		= link_to "Deletar", @notice, method: :delete, style: "font-size:15px;", data: { confirm: "Are you sure?"}
+		= link_to "Deletar", @notice, method: :delete, style: "font-size:15px;", data: { :confirm => I18n.t("views.alerts.confirm") }

@@ -14,6 +14,7 @@ pt:
     created_at: Data de inscrição
     points: Pontos
     body: Conteúdo
+    breeding_site_id: Tipo de foco
   activerecord:
     models:
       report:
@@ -179,6 +180,7 @@ pt:
   #----------------------------------
 
   common_terms:
+    not_available: Não disponível
     back: Atrás
     codes: Códigos
     order_by: Ordenar por
@@ -490,6 +492,13 @@ pt:
     cities:
       show:
         visit: Visitar
+    breeding_sites:
+      create: "Criar um tipo de foco"
+      edit: "Editar um tipo de foco"
+    elimination_methods:
+      create: "Criar um método de eliminação"
+      edit: "Editar um método de eliminação"
+
 
 
   #----------------------------------------------------------------------------

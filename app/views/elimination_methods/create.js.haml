@@ -1,6 +1,0 @@
-$('<tr><td style="padding-left:40px;">#{@method.method}</td><td>#{@method.points}</td><td><a href="" class="edit_method" id="edit_method_#{@method.id}"" data-id="#{@method.id}">Editar</a></td><td><a href="" class="delete_method" id="delete_method_#{@method.id}" data-id="#{@method.id}">Deletar</a></td></tr>').insertBefore($("#{@current_id}").parent().parent());
-$($($("#{@current_id}").parent().parent().children()[0]).children()[0]).val('');
-$($($("#{@current_id}").parent().parent().children()[1]).children()[0]).val('');
-
-$("#edit_method_#{@method.id}").click(function() {var name = $($(this).parent().parent().children()[0]);if ($(this).html() == "Editar") {$(this).html("Salvar");var name = $($(this).parent().parent().children()[0]);$(name).replaceWith('<input style="margin-left:40px;width:500px;margin-bottom:0px;" type="text" value="' + $(name).html() + '">');} else {var url = "/elimination_methods/" + $(this).data("id");$.ajax({url: url,method: "PUT",dataType: "script",data: "name=" + $(name).val()});}return false;});
-$(".delete_method_#{@method.id}").click(function() {var url = "/elimination_types/" + $(this).data("id");$.ajax({url: url,method: "DELETE",dataType: "script"});return false;});
