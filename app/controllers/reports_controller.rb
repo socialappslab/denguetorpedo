@@ -5,6 +5,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,             :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,                :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
+  before_filter :redirect_if_incomplete_reports, :only => [:index]
 
   #----------------------------------------------------------------------------
 
@@ -21,6 +22,8 @@ class ReportsController < NeighborhoodsBaseController
     @reports = @reports.limit(@report_limit).offset(@report_offset)
     @reports.reject!{ |r| r == params[:report]}
     @reports.reject!{ |r| r.neighborhood_id != @neighborhood.id }
+
+    @reports.reject!{ |r| r.before_photo.blank? }
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
@@ -420,6 +423,17 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+
+  def redirect_if_incomplete_reports
+    # We want to redirect only if user is viewing their own neighborhood.
+    return unless @neighborhood == @current_user.neighborhood
+
+    @report = @current_user.reports.order("created_at ASC").find {|r| r.incomplete?}
+    flash.keep
+    redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return if @report.present?
   end
 
   #----------------------------------------------------------------------------
