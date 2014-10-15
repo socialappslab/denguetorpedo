@@ -141,24 +141,23 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/edit
 
   def edit
-    @new_report = Report.find(params[:id])
+    @report = Report.find(params[:id])
 
-    if @new_report.location.blank?
-      @new_report.location = Location.new
+    if @report.location.blank?
+      @report.location = Location.new
+      @report.location.latitude  ||= 0
+      @report.location.longitude ||= 0
     end
 
-    @new_report.location.latitude  ||= 0
-    @new_report.location.longitude ||= 0
-
-    @open_locations       = [@new_report.location]
+    @open_locations       = [@report.location]
     @eliminated_locations = []
 
     # saved_params will exist if an error occurred and the user was redirect to the edit page
     # TODO: Deprecate this.
-    if params[:report].present?
-      @new_report.elimination_type = params[:report][:elimination_type]
-      @new_report.report =  params[:report][:report]
-    end
+    # if params[:report].present?
+    #   @new_report.elimination_type = params[:report][:elimination_type]
+    #   @new_report.report =  params[:report][:report]
+    # end
 
   end
 
