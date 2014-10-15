@@ -7,7 +7,7 @@ class BreedingSitesController < ApplicationController
 	def index
 		@types = BreedingSite.includes(:elimination_methods)
 
-		if I18n.locale == User::Locales::SPANISH
+		if I18n.locale.to_s == User::Locales::SPANISH
 			@types = @types.order("description_in_es ASC")
 		else
 			@types = @types.order("description_in_pt ASC")
