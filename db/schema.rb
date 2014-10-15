@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141014201830) do
+ActiveRecord::Schema.define(:version => 20141015170534) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -95,6 +95,17 @@ ActiveRecord::Schema.define(:version => 20141014201830) do
 
   create_table "countries", :force => true do |t|
     t.string "name"
+  end
+
+  create_table "csv_reports", :force => true do |t|
+    t.text     "parsed_content"
+    t.integer  "report_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+    t.string   "csv_file_name"
+    t.string   "csv_content_type"
+    t.integer  "csv_file_size"
+    t.datetime "csv_updated_at"
   end
 
   create_table "documentation_sections", :force => true do |t|
