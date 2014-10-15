@@ -5,22 +5,15 @@
     %h1{:style => "font-size: 30px;"}
       = I18n.t("views.admin.edit_report")
 
-  .span8{:style => "text-align: right;"}
-    = link_to "+ " + I18n.t("views.breeding_sites.create"), new_breeding_site_path, :class => "btn btn-success btn-large"
-
 .row{:style => "margin-top: 20px;"}
   .span16.offset1
     %table.table.table-bordered
       - @types.each do |type|
-        %tr
+        %tr.info
           %td{:style => "font-weight: bold;"}
             = type.description
           %td
-            = link_to I18n.t("views.elimination_methods.create"), new_breeding_site_elimination_method_path(type), :class => "btn btn-success"
-          %td
-            = link_to I18n.t("common_terms.edit"), edit_breeding_site_path(type), :class => "btn btn-default"
-          -# %td
-          -#   = link_to I18n.t("common_terms.delete"), breeding_site_path(type), :method => "DELETE", :class => "btn btn-danger", :confirm => I18n.t("views.alerts.confirm")
+
 
         - type.elimination_methods.order("created_at ASC").each do |method|
           %tr
@@ -28,7 +21,3 @@
               = method.description
             %td
               = method.points
-            %td
-              = link_to I18n.t("common_terms.edit"), edit_breeding_site_elimination_method_path(type, method), :class => "btn btn-default btn-small"
-            -# %td
-            -#   = link_to I18n.t("common_terms.delete"), breeding_site_elimination_method_path(type, method), :method => "DELETE", :class => "btn btn-danger btn-small", :confirm => I18n.t("views.alerts.confirm")
