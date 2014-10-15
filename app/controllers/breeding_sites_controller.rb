@@ -5,7 +5,13 @@ class BreedingSitesController < ApplicationController
 	# GET /elimination_types
 
 	def index
-		@types = BreedingSite.order("created_at ASC").includes(:elimination_methods)
+		@types = BreedingSite.includes(:elimination_methods)
+
+		if I18n.locale == User::Locales::SPANISH
+			@types = @types.order("description_in_es ASC")
+		else
+			@types = @types.order("description_in_pt ASC")
+		end
 	end
 
 	#-----------------------------------------------------------------------------
