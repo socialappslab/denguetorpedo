@@ -21,21 +21,7 @@ $(document).ready(function() {
     else{
         // style all reports as selected
         selected_tab_css_update('all_reports_button');
-
-        //show all reports on start
-        $('#new_report').css('display','none');
     }
-
-    // keep the map on the page when scrolling
-    $(window).scroll(function() {
-        var scrollAmount = $(window).scrollTop();
-        if (scrollAmount > 200) {
-            $("#map_div").css("margin-top", scrollAmount - 263);
-        } else {
-            $("#map_div").css("margin-top", 0);
-        }
-    });
-
 
 
     // TODO @awdorsett - Are these methods still used? If so refactor
