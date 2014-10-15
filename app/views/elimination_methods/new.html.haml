@@ -1,9 +1,0 @@
-= render :partial => "shared/flashes"
-= render :partial => "shared/form_errors", :locals => {:item => @method}
-.row
-  .span11.offset4
-    %h1
-      = I18n.t("views.elimination_methods.create")
-.row
-  .span11.offset4
-    = render :partial => "elimination_methods/form"
