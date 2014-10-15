@@ -28,18 +28,21 @@
 
 /------------------------------------------------------------------------------
 
-- if @report_count > @report_limit
-  .row
-    = render :partial => "reports/pagination"
-
 /------------------------------------------------------------------------------
 
 - if @current_user && @neighborhood.spanish?
   .row{:style => "margin-bottom: 20px;"}
-    .span12.offset1
-      = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning" do
+    .span4.offset1{:style => "margin-top: 20px;"}
+      = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-large" do
+        %i.fa.fa-map-marker
+        = I18n.t("common_terms.create_a_report")
+    .span4{:style => "margin-top: 20px;"}
+      = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
         %i.fa.fa-file
         Import CSV
+    .span4.pull-right
+      - if @report_count > @report_limit
+        = render :partial => "reports/pagination"
 
 
 /------------------------------------------------------------------------------
