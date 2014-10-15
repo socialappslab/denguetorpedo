@@ -185,7 +185,7 @@ class ReportsController < NeighborhoodsBaseController
     @report.location_id  = location.id
 
     # Update SMS
-    if @report.sms_incomplete?
+    if @report.incomplete?
 
       # Verify report saves and form submission is valid
       if @report.update_attributes(params[:report])
@@ -193,10 +193,10 @@ class ReportsController < NeighborhoodsBaseController
 
         @report.neighborhood_id = @neighborhood.id
         @report.completed_at    = Time.now
-        @report.save
+        @report.save(:validate => false)
 
         # Let's award the user for submitting a report.
-        @current_user.award_points_for_submitting(@report)
+        # @current_user.award_points_for_submitting(@report)
 
         redirect_to neighborhood_reports_path(@neighborhood) and return
 
@@ -206,7 +206,6 @@ class ReportsController < NeighborhoodsBaseController
         redirect_to edit_neighborhood_report_path(@neighborhood, {:report => params[:report]}) and return
       end
     end
-
 
     if @report.update_attributes(params[:report])
       @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
