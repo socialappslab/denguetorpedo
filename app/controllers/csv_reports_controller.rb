@@ -85,13 +85,15 @@ class CsvReportsController < NeighborhoodsBaseController
           site = BreedingSite.find_by_string_id(BreedingSite::Types::OTHER)
         end
 
+
+
       else
         flash[:alert] = "One or more of the breeding sites can't be identified. Please use B, T, N or O to identify breeding sites."
         render "new" and return
       end
 
       # At this point, we know the breeding site.
-      description = "Total de tipo: #{row['total de tipo']}, Protegido: #{row['protegido']}, Abatizado: #{row['abatizado']}, Larvas: #{row['larvas']}, Pupas: #{row['pupas']}"
+      description = "Total de tipo: #{row['total de tipo'].to_i}, Protegido: #{row['protegido']}, Abatizado: #{row['abatizado']}, Larvas: #{row['larvas']}, Pupas: #{row['pupas']}"
       before_reports << {:breeding_site => site, :description => description}
     end
 
@@ -118,6 +120,7 @@ class CsvReportsController < NeighborhoodsBaseController
       r.location_id      = location.id
       r.neighborhood_id  = @neighborhood.id
       r.reporter_id      = @current_user.id
+      r.csv_report_id    = @csv_report.id
       r.save(:validate => false)
     end
 
