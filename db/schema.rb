@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141015190734) do
+ActiveRecord::Schema.define(:version => 20141015223758) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -100,7 +100,6 @@ ActiveRecord::Schema.define(:version => 20141015190734) do
 
   create_table "csv_reports", :force => true do |t|
     t.text     "parsed_content"
-    t.integer  "report_id"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
     t.string   "csv_file_name"
@@ -344,6 +343,7 @@ ActiveRecord::Schema.define(:version => 20141015190734) do
     t.string   "status"
     t.integer  "breeding_site_id"
     t.integer  "elimination_method_id"
+    t.integer  "csv_report_id"
   end
 
   create_table "reports_users", :id => false, :force => true do |t|
