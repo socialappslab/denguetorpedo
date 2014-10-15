@@ -15,8 +15,7 @@ class CsvReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
   # POST /neighborhoods/1/csv_reports
 
-  # Assume the template is as follows:
-  # ["Visita", "Fecha", "Hora", "Tipo", "Protegido", "Abatizado", "Larvas", "Pupas"]
+
   def create
     @csv_report = CsvReport.new
 
@@ -41,14 +40,25 @@ class CsvReportsController < NeighborhoodsBaseController
       render "new" and return
     end
 
-    header = spreadsheet.row(1)
-    header.map! {|h| h.downcase.strip}
+    # Assume the template is as follows:
+    # * First row is the house number or an address of sorts
+    # * Second row is empty
+    # * Third row is the beginning of the table,
+    # * All subsequent rows are entries in the table.
+    # ["Visita", "Fecha", "Hora", "Tipo", "Total de tipo", "Protegido?", "Abatizado?", "Larvas?", "Pupas?"]
+    header  = spreadsheet.row(1)
+    address = "#{header[1]}"
+    header  = spreadsheet.row(3)
+    header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "") }
 
     before_reports = []
     after_reports  = []
     current_visit = -1
-    (2..spreadsheet.last_row).each do |i|
+    parsed_content = []
+    (4..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
+      puts "row; #{row}"
+      parsed_content << row
 
       # Ensure that there are at most two visits to a location.
       if row["visita"].to_i > 2
@@ -62,11 +72,27 @@ class CsvReportsController < NeighborhoodsBaseController
       # Ensure that the breeding site is identifiable.
       if row["tipo"] && ["b", "t", "n", "o"].include?( row["tipo"].strip.downcase )
         type = row["tipo"].strip.downcase
+
+
+
+        if type == "b"
+          site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+        elsif type == "t"
+          site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+        elsif type == "n"
+          site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+        else
+          site = BreedingSite.find_by_string_id(BreedingSite::Types::OTHER)
+        end
+
       else
         flash[:alert] = "One or more of the breeding sites can't be identified. Please use B, T, N or O to identify breeding sites."
         render "new" and return
       end
 
+      # At this point, we know the breeding site.
+      description = "Total de tipo: #{row['total de tipo']}, Protegido: #{row['protegido']}, Abatizado: #{row['abatizado']}, Larvas: #{row['larvas']}, Pupas: #{row['pupas']}"
+      before_reports << {:breeding_site => site, :description => description}
     end
 
     if current_visit == -1
@@ -74,10 +100,29 @@ class CsvReportsController < NeighborhoodsBaseController
       render "new" and return
     end
 
+
     # At this point, we have at least one, but no more than two visits to the location.
-    # The before_* and after_* reports are also prefilled.
+    # The before_* and after_* reports are also prefilled. Let's create the CsvReport
+    # and the reports.
+    @csv_report.csv = file
+    @csv_report.parsed_content = parsed_content.to_json
+    @csv_report.save!
 
+    # Now let's create the location.
+    location = Location.create!(:latitude => lat, :longitude => long, :address => address)
 
+    before_reports.each do |report|
+      r = Report.new
+      r.report           = report[:description]
+      r.breeding_site_id = report[:breeding_site].id
+      r.location_id      = location.id
+      r.neighborhood_id  = @neighborhood.id
+      r.reporter_id      = @current_user.id
+      r.save(:validate => false)
+    end
+
+    flash[:notice] = "The reports were successfully created from CSV."
+    redirect_to neighborhood_reports_path(@neighborhood) and return
   end
 
 
