@@ -1,5 +1,6 @@
 # encoding: UTF-8
 
+
 require "#{Rails.root}/db/seeds/breeding_site"
 require "#{Rails.root}/db/seeds/documentation_section"
 
@@ -75,23 +76,25 @@ puts "[ok] Done seeding countries, cities, and neighborhoods..."
 puts "-" * 80
 
 #------------------------------------------------------------------------------
-# Elimination types and methods
+# Elimination types, methods, and documentation section.
 
-seed_breeding_sites_and_elimination_methods()
+# NOTE: We NEVER want to overwrite the coordinator changes in production
+# or staging with the seed.
+if Rails.env.test? || Rails.env.development?
+  seed_breeding_sites_and_elimination_methods()
 
-#------------------------------------------------------------------------------
-# Manual
+  puts "\n" * 3
+  puts "[...] Seeding /howto documentation in Spanish"
+  puts "-" * 80
 
-seed_manual()
 
-puts "\n" * 3
-puts "[...] Seeding /howto documentation in Spanish"
-puts "-" * 80
+  seed_manual()
+  Rake::Task["documentation_sections:add_spanish_translation"].invoke
 
-Rake::Task["documentation_sections:add_spanish_translation"].invoke
+  puts "\n" * 3
+  puts "[ok] Done seeding /howto documentation in Spanish"
+  puts "-" * 80
 
-puts "\n" * 3
-puts "[ok] Done seeding /howto documentation in Spanish"
-puts "-" * 80
+end
 
 #------------------------------------------------------------------------------
