@@ -24,8 +24,8 @@ es:
         one: Usuario
         other: Usuarios
       neighborhood:
-        one: Comunidad
-        other: Comunidades
+        one: Barrio
+        other: Barrios
       feedback: Mensaje
       house: Casa
       documentation_section: Sección
@@ -142,7 +142,7 @@ es:
     my_profile: Mi Perfíl
     my_house: Mi Casa
     my_community: Mi Comunidad
-    reports: Focos Marcados
+    reports: Criaderos
 
 
   #----------------------------------------------------------------------------
@@ -473,6 +473,7 @@ es:
           empty_body: "Contenido es obligatorio."
     cities:
       show:
+        header: Visita otros barrios
         visit: Visitar
     breeding_sites:
       create: "Criar un tipo de foco"
