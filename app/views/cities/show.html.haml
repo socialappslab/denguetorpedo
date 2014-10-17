@@ -15,7 +15,9 @@
 
     %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
 
-    - @neighborhoods.each_with_index do |neighborhood, index|
+    - @rankings.each_with_index do |neighborhood_data, index|
+      - neighborhood        = neighborhood_data[0]
+      - neighborhood_points = neighborhood_data[1]
       .row{:style => "height: 100px;"}
         .span2
           %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
@@ -33,7 +35,7 @@
             .span4{:style => "display: table; height: 65px;"}
               %span{:style => "display: table-cell; vertical-align: bottom;"}
                 %span{:style => " font-size: 30px; color: #5cb85c; display: inline;"}
-                  = neighborhood.total_points
+                  = neighborhood_points
                 = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
 
         .span3
