@@ -142,7 +142,7 @@ pt:
     my_profile: Meu Perfil
     my_house: Minha Casa
     my_community: Minha Comunidade
-    reports: Focos Marcados
+    reports: Focos
 
 
   #----------------------------------------------------------------------------
@@ -491,6 +491,7 @@ pt:
           empty_body: "Conteúdo é obrigatória."
     cities:
       show:
+        header: Visitar outros comunidades
         visit: Visitar
     breeding_sites:
       create: "Criar um tipo de foco"
