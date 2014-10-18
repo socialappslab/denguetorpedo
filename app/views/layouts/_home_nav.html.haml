@@ -54,7 +54,15 @@
     -# .span1
     -#   = render :partial => "home/flags"
     .span7.pull-right
+
       #login
+        - if I18n.locale.to_s == User::Locales::SPANISH
+          = link_to I18n.t("common_terms.portuguese"), "?locale=pt", :style => "display: block; text-align: right; margin-right: 7px; color: white;"
+        - else
+          = link_to I18n.t("common_terms.spanish"), "?locale=es", :style => "display: block; text-align: right; margin-right: 7px; color: white;"
+
+
+
         = form_tag(session_path, :style => "margin-bottom: 0px;") do
           %ul
             %li
@@ -63,6 +71,7 @@
               = password_field_tag :password, nil, :placeholder => I18n.t("activerecord.attributes.user.password"), :style => "width:150px;"
             %li
               = submit_tag "Entrar", :class => "btn btn-success"
+
           = link_to I18n.t("login_form.forgot_password"), new_password_reset_path, :id => "forgot_password", :class => "logout_button"
 
 
