@@ -102,7 +102,6 @@ class Report < ActiveRecord::Base
   # We define an incomplete report to be a report that was created from
   # an SMS OR a CSV report.
   def incomplete?
-    puts "self.csv_report.present?: #{self.csv_report.present?}\n\n\n self.sms.present?: #{self.sms.present?}\n\n\n self.completed_at: #{self.completed_at}"
     if self.completed_at == nil
       return true if self.csv_report.present?
       return true if self.sms.present?

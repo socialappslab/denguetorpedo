@@ -4,6 +4,10 @@ require 'spec_helper'
 describe UsersController do
 	render_views
 
+	before(:each) do
+		I18n.default_locale = User::Locales::PORTUGUESE
+	end
+
 	#-----------------------------------------------------------------------------
 
 	context "Deleting a user" do
