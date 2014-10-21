@@ -49,7 +49,7 @@
         #description
           %p{:style => "margin-top: 30px;"}
             = f.label :report, "2. #{I18n.t('activerecord.attributes.report.report')}", :style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"
-          = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"), :id => 'report_content', :rows => 3, :style => "width: 100%;"
+          = f.text_area :report, :placeholder => I18n.t("views.reports.new.description_placeholder"), :id => 'report_content', :rows => 3, :style => "width: 100%;"
 
         #elimination_type
           %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
