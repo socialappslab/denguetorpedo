@@ -11,13 +11,13 @@ class ReportsController < NeighborhoodsBaseController
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
+    @reports = @reports.where("before_photo_updated_at IS NOT NULL")
     @report_count  = @reports.count
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit
 
     # Remove report that incurred an error, it should be at the top already
     @reports = @reports.limit(@report_limit).offset(@report_offset)
-    @reports.reject!{ |r| r.before_photo.blank? }
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
