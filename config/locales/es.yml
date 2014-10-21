@@ -276,7 +276,6 @@ es:
     form:
       address: Dirección de criadero localizada
       example_of_street_type: "Calle"
-      example_of_description: "Describa la localización de un criadero (max 100 caracteres) Ex: Criadero en el terreno de un lado o Criadero en la banqueta de enfrente"
       photo_of_report: Cargue una imagen del criadero encontrado
       select_elimination_type: "Seleccione un tipo de criadero"
       select_elimination_method: "Seleccione un método de eliminación"
@@ -442,6 +441,8 @@ es:
     reports:
       new:
         neighborhood_address: Nombre el barrio donde encontró el criadero
+        description_placeholder: "Describa el lugar y tipo de criadero"
+
       types:
         delete: Eliminar
       edit:
