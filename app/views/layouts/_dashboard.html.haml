@@ -1,61 +1,36 @@
 
 .row
   #dashboard_bar
-
-    /------------------------------------------------------------------------
-
     .dashboard-item{:style => "margin-left: 160px;"}
-      - if @current_user && current_page?(:controller => "users", :action => "show", :id => @current_user.id)
-        - header_styling = "font-weight: bold;"
-      - else
-        - header_styling = ""
-
-      - if @current_user.role == User::Types::SPONSOR
-        = link_to sponsor_path(@current_user), :style => "#{header_styling}" do
-          %i.fa.fa-user.fa-2
-          = I18n.t("dashboard.my_profile")
-      - else
-        = link_to user_path(@current_user), :style => "#{header_styling}" do
-          %i.fa.fa-user.fa-2
-          = I18n.t("dashboard.my_profile")
+      - header_styling = current_page?(:controller => "users", :action => "show") ? "font-weight:bold;" : ""
+      = link_to user_path(@current_user), :style => header_styling do
+        %i.fa.fa-user
+        = I18n.t("dashboard.my_profile")
 
 
-    /------------------------------------------------------------------------
+    -# .dashboard-item
+    -#   - header_styling = current_page?(:controller => "neighborhoods", :action => "show") ? "font-weight:bold;" : ""
+    -#   = link_to neighborhood_path(@current_user.neighborhood), :style => "#{header_styling}" do
+    -#     %i.fa.fa-users.fa-2
+    -#     = I18n.t("dashboard.my_community")
+
 
     .dashboard-item
-      - if @current_user && @current_user.neighborhood && current_page?(:controller => "neighborhoods", :action => "show", :id => @current_user.neighborhood.id)
-        - header_styling = "font-weight: bold;"
-      - else
-        - header_styling = ""
-
-      - if @current_user && @current_user.neighborhood
-        - relevant_link = neighborhood_path(@current_user.neighborhood)
-      - elsif @current_user.role != User::Types::VISITOR
-        - relevant_link = edit_user_path(@current_user)
-      - else
-        - relevant_link = neighborhood_path(Neighborhood.first)
-      = link_to relevant_link, :style => "#{header_styling}" do
+      - header_styling = current_page?(:controller => "cities", :action => "show") ? "font-weight:bold;" : ""
+      = link_to city_path(@current_user.neighborhood.city), :style => header_styling do
         %i.fa.fa-users.fa-2
-        = I18n.t("dashboard.my_community")
+        = I18n.t("activerecord.models.neighborhood", :count => 2)
 
-
-    /------------------------------------------------------------------------
 
     .dashboard-item
-      - bold_header_title = ( current_page?(:controller => "teams", :action => "index") ? "font-weight: bold;" : "" )
-      = link_to teams_path, :style => "#{bold_header_title}" do
-        %i.fa.fa-search
+      - header_styling = current_page?(:controller => "teams", :action => "index") ? "font-weight:bold;" : ""
+      = link_to teams_path, :style => header_styling do
+        %i.fa.fa-futbol-o
         = I18n.t("activerecord.models.team", :count => 3)
 
-    /------------------------------------------------------------------------
 
     .dashboard-item
-      - if @current_user && @current_user.neighborhood
-        - relevant_link = neighborhood_reports_path(@current_user.neighborhood)
-      - elsif @current_user.role != User::Types::VISITOR
-        - relevant_link = edit_user_path(@current_user)
-      - else
-        - relevant_link = reports_path
-      = link_to relevant_link do
+      - header_styling = current_page?(:controller => "reports", :action => "index") ? "font-weight:bold;" : ""
+      = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
         %i.fa.fa-map-marker
         = I18n.t("dashboard.reports")
