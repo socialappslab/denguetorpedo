@@ -105,7 +105,10 @@ window.maps.initializeGoogleMaps = function(){
     createOrUpdateNewMarker(markerLoc);
   }
 
-  if ( !$("#new_report").is(":visible") )
+  // TODO: Right now, this is build with the assumption that the map renders in
+  // only /neighborhoods/:id/reports OR /neighborhoods/:id/csv_reports. Let's
+  // update this accordingly.
+  if ( !$("#new_report").is(":visible") && $("#report_buttons").length > 0 )
   {
     window.maps.populateGoogleMaps(openLocations, map, "open");
     window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");

@@ -1,0 +1,57 @@
+-# TODO @awdorsett - on error return to appropriate tab
+-# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
+
+
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/flashes"
+
+/------------------------------------------------------------------------------
+
+.row
+  .span10.offset5
+    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
+      Create reports from CSV
+
+.row
+  .span10.offset4
+
+    %p{:style => "font-size: 16px;margin-bottom: 20px;"}
+      Note: Each CSV report must correspond to one house. The report can have only two visits,
+      the first focusing on breeding site identification, and the second (if possible) focusing
+      on elimination. If you have more than two visits, split up the CSV into multiple files.
+      %br
+      %br
+      Need a CSV template?
+      = link_to "Click here to download", "/assets/forma_visita_entomologica.xls"
+
+
+    #upload_csv{:style => "display: block;"}
+      -# = form_tag upload_csv_neighborhood_reports_path(@neighborhood), :multipart => true do
+      -#   = file_field_tag :csv_file
+      -#   %button.btn.btn-success.btn-large.submit-button{:style => "width: 210px;", :type => "submit"}
+      -#     %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+      -#     = I18n.t("views.buttons.submit")
+      = form_for [@neighborhood, @csv_report], :multipart => true do |f|
+        #new_report
+          = hidden_field_tag "report_location_attributes_latitude"
+          = hidden_field_tag "report_location_attributes_longitude"
+
+        %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+          1. Haga click y mueva el marcador donde encontró el foco
+        #map_div{:style => "position: static;"}
+          = render :partial => "reports/google_map"
+
+        %p{:style => "font-size: 16px; margin-top: 30px; margin-bottom: 20px; font-weight: bold;"}
+          2. Upload CSV
+
+        = f.file_field :csv, :style => "width: 100%; height: 50px;"
+
+        %button.btn.btn-success.btn-large.submit-button{:style => "width: 100%; display: block;", :type => "submit"}
+          %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+          = I18n.t("views.buttons.submit")
+
+
+- content_for :scripts do
+  = javascript_include_tag "map"
+  = javascript_include_tag "googlemap/map-csv"

@@ -71,11 +71,12 @@ group :assets do
 end
 
 #------------------------------------------------------------------------------
-# Image Management and Processing
+# File management
 
 gem 'aws-sdk'
 gem 'rmagick'
 gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
+gem "roo"
 
 #------------------------------------------------------------------------------
 # Server Management

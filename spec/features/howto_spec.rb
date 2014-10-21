@@ -5,6 +5,10 @@ describe "How To", :type => :feature do
   let(:section) { DocumentationSection.first }
   let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
+  before(:each) do
+    I18n.default_locale = User::Locales::PORTUGUESE
+  end
+
   it "displays seeded data" do
     visit howto_path
     expect(page).to have_content("Como completar sua conta")

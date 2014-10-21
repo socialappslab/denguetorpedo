@@ -275,7 +275,6 @@ pt:
     form:
       address: Endereço do foco localizado
       example_of_street_type: "Rua, Beco etc."
-      example_of_description: "Descreva a localização do foco (max 100 caracteres) Ex: Foco no terreno ao lado; ou, Foco na calçada em frente"
       photo_of_report: Carregue a imagem do foco encontrado
       select_elimination_type: "Selecione o tipo de foco"
       select_elimination_method: "Selecione o método de eliminação"
@@ -460,6 +459,7 @@ pt:
     reports:
       new:
         neighborhood_address: ""
+        description_placeholder: "Descreva a localização e tipo do foco"
       types:
         delete: Deletar
       edit:

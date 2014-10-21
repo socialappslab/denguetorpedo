@@ -24,6 +24,7 @@ def seed_breeding_sites_and_elimination_methods
     },
 
     {
+      :string_id => BreedingSite::Types::TIRE,
       :breeding_site_in_pt => "Pneu",
       :breeding_site_in_es => "Llanta",
       :elimination_methods_in_pt => [
@@ -57,6 +58,7 @@ def seed_breeding_sites_and_elimination_methods
     },
 
     {
+      :string_id => BreedingSite::Types::SMALL_CONTAINER,
       :breeding_site_in_pt => "Pequenos Recipientes utilizáveis Garrafas de vidro, vasos, baldes, tigela de água de cachorro",
       :breeding_site_in_es => "Botellas de pequeños contenedores de vidrio utilizable, jarrones, cubetas, tazón de agua de mascotas",
       :elimination_methods_in_pt => [
@@ -71,6 +73,7 @@ def seed_breeding_sites_and_elimination_methods
     },
 
     {
+      :string_id => BreedingSite::Types::LARGE_CONTAINER,
       :breeding_site_in_pt => "Grandes Recipientes Utilizáveis Tonéis, outras depósitos de água, pias, galões d’água.",
       :breeding_site_in_es => "Recipientes grandes utilizables, toneles, galones, piletas, otros depósitos de agua.",
       :elimination_methods_in_pt => [
@@ -186,6 +189,7 @@ def seed_breeding_sites_and_elimination_methods
     # Find (or create) the breeding site.
     bs = BreedingSite.find_or_create_by_description_in_pt( types_hash[:breeding_site_in_pt] )
     bs.description_in_es = types_hash[:breeding_site_in_es]
+    bs.string_id         = types_hash[:string_id]
     bs.save!
 
     # Find (or create) each method.

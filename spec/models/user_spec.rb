@@ -6,6 +6,10 @@ require "cancan/matchers"
 describe User do
 	let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
+	before(:each) do
+		I18n.default_locale = User::Locales::PORTUGUESE
+	end
+
 	it "validates presence of neighborhood" do
 		I18n.locale = I18n.default_locale
 		user.neighborhood_id = nil

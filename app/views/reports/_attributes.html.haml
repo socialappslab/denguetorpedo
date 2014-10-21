@@ -9,16 +9,15 @@
       = report.report
 
     - if !report.sms_incomplete?
-      - if report.descriptive_address.present?
-        .row
-          .span2
-            %h1{:style => "margin-top: 15px;"}
-              = I18n.t("activerecord.models.location")
-          - if report.location && report.location.latitude.present? && report.location.longitude.present?
-            .span3
-              = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
-        %p
-          = report.descriptive_address
+      .row
+        .span2
+          %h1{:style => "margin-top: 15px;"}
+            = I18n.t("activerecord.models.location")
+        - if report.location && report.location.latitude.present? && report.location.longitude.present?
+          .span3
+            = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
+      %p
+        = report.descriptive_address
 
 
     - if report.breeding_site_id.present?

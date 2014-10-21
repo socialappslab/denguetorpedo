@@ -5,13 +5,10 @@ require 'rack/test'
 
 describe Report do
 	let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
-	before(:each) do
-		I18n.locale = I18n.default_locale
-	end
-	
+
 	it "validates reporter" do
 		report = Report.create
-		expect(report.errors.full_messages).to include("Reporter é obrigatório")
+		expect(report.errors.full_messages).to include("Reporter can't be blank")
 	end
 
 	it "does not require presence of location" do

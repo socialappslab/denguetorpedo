@@ -3,7 +3,7 @@
 var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
 var GMAPS_VERSION = 3.17; //latest stable version
 var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
-var STREET_ZOOM = 18; // the zoom level at which we see street details
+var STREET_ZOOM = 16; // the zoom level at which we see street details
 
 var map; //this is a shared variable used by all methods.
 var newmarker = null; // this is a global var for the new marker, to be updated whenever a new marker is added
@@ -28,36 +28,33 @@ function createOrUpdateNewMarker(markerLoc){
     });
     console.log("Added marker to page at " + markerLoc);
 
-    // We only want to add dragging event listeners if the New Report
-    // form is visible.
-    if ( $("#new_report").is(":visible") )
-    {
-      // We only want to add handlers to map clicks to allow moving the marker when clicked.
-      google.maps.event.addListener(map, 'click', function(clickEvent) {
-        console.log('Mouse clicked at ' + clickEvent.latLng.lat());
-        window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
 
-        var latitude = clickEvent.latLng.lat();
-        var longitude = clickEvent.latLng.lng();
-        window.maps.updateHTMLFormLocation(latitude, longitude);
+    // We only want to add handlers to map clicks to allow moving the marker when clicked.
+    google.maps.event.addListener(map, 'click', function(clickEvent) {
+      console.log('Mouse clicked at ' + clickEvent.latLng.lat());
+      window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
 
-        // NOTE: This creates a recursive call.
-        createOrUpdateNewMarker(clickEvent.latLng);
-      });
+      var latitude = clickEvent.latLng.lat();
+      var longitude = clickEvent.latLng.lng();
+      window.maps.updateHTMLFormLocation(latitude, longitude);
 
-      google.maps.event.addListener(newmarker, 'dragstart', function() {
-        console.log('Dragging start.');
-      });
-      google.maps.event.addListener(newmarker, 'drag', function() {
-        console.log('Dragging... now at ' + newmarker.getPosition());
-      });
-      google.maps.event.addListener(newmarker, 'dragend', function() {
-        var position = newmarker.getPosition();
-        console.log('Drag ended. now at ' + position);
-        window.maps.updateHTMLFormLocation(position.lat(), position.lng());
-        window.maps.updateHTMLFormAddressFromPosition(position);
-      });
-    }
+      // NOTE: This creates a recursive call.
+      createOrUpdateNewMarker(clickEvent.latLng);
+    });
+
+    google.maps.event.addListener(newmarker, 'dragstart', function() {
+      console.log('Dragging start.');
+    });
+    google.maps.event.addListener(newmarker, 'drag', function() {
+      console.log('Dragging... now at ' + newmarker.getPosition());
+    });
+    google.maps.event.addListener(newmarker, 'dragend', function() {
+      var position = newmarker.getPosition();
+      console.log('Drag ended. now at ' + position);
+      window.maps.updateHTMLFormLocation(position.lat(), position.lng());
+      window.maps.updateHTMLFormAddressFromPosition(position);
+    });
+
   }
   else {
     newmarker.setPosition(markerLoc)
@@ -70,7 +67,7 @@ $(document).ready(function() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   //sensor parameter no longer needed
-  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=window.maps.initializeGoogleMaps';
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=initializeGMaps';
   document.body.appendChild(script);
 
   // Listener for location attribute updates
@@ -102,7 +99,7 @@ $(document).ready(function() {
           console.log("Starting to plot...");
           var latitude  = results[0].geometry.location.lat;
           var longitude = results[0].geometry.location.lng;
-	        window.maps.updateHTMLFormLocation(latitude, longitude);
+          window.maps.updateHTMLFormLocation(latitude, longitude);
           window.maps.hideError()
 
           console.log("("+latitude+","+longitude+")");
@@ -114,7 +111,7 @@ $(document).ready(function() {
           newmarker = null
           window.maps.hideMarkers()
           window.maps.markers = []
-	        createOrUpdateNewMarker(markerLoc);
+          createOrUpdateNewMarker(markerLoc);
         }
       },
       error:    function() {
@@ -128,11 +125,31 @@ $(document).ready(function() {
   });
 
 
-  // NOTE: Ideally, these listeners will be refactored out into assets/map.js
-  // so that we can reuse them for both ArcGis and GoogleMaps. That will
-  // require checking for (typeof esri) and then making a decision how to
-  // deal with the specific API.
-  $('#make_report_button').on('click', function(){
+  initializeGMaps = function()
+  {
+    var mapOptions = {
+      zoom: REGION_ZOOM,
+      center: new google.maps.LatLng(communityLatitude, communityLongitude)
+      };
+    // Initialize the map, and add the geographical layer to it.
+    map = new google.maps.Map(document.getElementById('gmap'),
+        mapOptions);
+    window.maps.hideLoading();
+
+    //see if lat and long are set, if so, this is an error page, and we should set
+    //the marker
+    var oldlat = $("#new_report #report_location_attributes_latitude").val();
+    var oldlong = $("#new_report #report_location_attributes_longitude").val();
+    if (oldlat != "" && oldlong != ""){
+      //we want none of them to be blank
+      var markerLoc = new google.maps.LatLng(oldlat, oldlong);
+      console.log("setting up stored marker at "+ markerLoc);
+      createOrUpdateNewMarker(markerLoc);
+    }
+
+   //initialize the geocoder
+   geocoder = new google.maps.Geocoder();
+
     window.maps.hideMarkers()
 
     // We only want to add handlers to map clicks to allow moving the marker when clicked.
@@ -146,45 +163,9 @@ $(document).ready(function() {
       window.maps.updateHTMLFormAddressFromPosition(clickEvent.latLng);
       createOrUpdateNewMarker(clickEvent.latLng);
     });
-  });
+  }
 
 
-  // A more efficient way is to keep the markers in memory, and simply
-  // display them. For now, we're using this quick hack that doesn't add much
-  // overhead to development efforts.
-  $('#all_reports_button').on('click', function(){
-    window.maps.hideMarker(newmarker);
-    newmarker = null;
-
-    map.setZoom(REGION_ZOOM);
-    google.maps.event.clearInstanceListeners(map);
-    window.maps.hideMarkers()
-    window.maps.markers = []
-    window.maps.populateGoogleMaps(openLocations, map, "open");
-    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
-  });
-
-  $('#open_reports_button').on('click', function(){
-    window.maps.hideMarker(newmarker);
-    newmarker = null;
-
-    map.setZoom(REGION_ZOOM);
-    google.maps.event.clearInstanceListeners(map);
-    window.maps.hideMarkers()
-    window.maps.markers = []
-    window.maps.populateGoogleMaps(openLocations, map, "open");
-  });
-
-  $('#eliminated_reports_button').on('click', function(){
-    window.maps.hideMarker(newmarker);
-    newmarker = null;
-
-    map.setZoom(REGION_ZOOM);
-    google.maps.event.clearInstanceListeners(map);
-    window.maps.hideMarkers()
-    window.maps.markers = []
-    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
-  });
 
   //zoom and center map on the location of this marker
   $('a.mapa').on('click', function(event){
