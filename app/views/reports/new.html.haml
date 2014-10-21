@@ -25,26 +25,30 @@
           = f.hidden_field :reporter_id, :value => @current_user && @current_user.id
 
         #address
-          - if @neighborhood.nicaraguan?
-            %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+
+          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+            - if @neighborhood.nicaraguan?
               1. Haga click y mueva el marcador donde encontró el foco
-          - else
-            = I18n.t("report.form.address")
-
-          #attention_div
-          %p{style: "font-weight: bold;"}
-            %b{style: "color:red;"}
-              = I18n.t("report.form.attention")
-
-          #map_div{:style => "position: static;"}
-            = render :partial => "reports/google_map"
-
+            - else
+              = I18n.t("report.form.address")
 
           = f.fields_for :location, @report.location || Location.new do |location_fields|
             - if @neighborhood.mexican? || @neighborhood.brazilian?
               = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
             = location_fields.hidden_field :latitude
             = location_fields.hidden_field :longitude
+
+          #attention_div
+          %p{style: "font-weight: bold;"}
+            %b{style: "color:red;"}
+              = I18n.t("report.form.attention")
+
+
+
+
+        #map_div{:style => "position: static;"}
+          = render :partial => "reports/google_map"
+
 
         #description
           %p{:style => "margin-top: 30px;"}
