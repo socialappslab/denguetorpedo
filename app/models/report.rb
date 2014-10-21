@@ -16,8 +16,18 @@ class Report < ActiveRecord::Base
   # PaperClip configurations
   #-------------------------
 
-  has_attached_file :before_photo, :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_before_photo.png'
-  has_attached_file :after_photo,  :styles => {:medium => "150x150>", :thumb => "100x100>"}, :default_url => 'default_images/report_after_photo.png'
+  has_attached_file :before_photo,
+  :default_url => 'default_images/report_before_photo.png', :styles => {
+    :large => ["300x300>", :jpg],
+    :medium => "150x150>",
+    :thumb => "100x100>"
+  }
+  has_attached_file :after_photo,
+  :default_url => 'default_images/report_after_photo.png', :styles => {
+    :large => ["300x300>", :jpg],
+    :medium => "150x150>",
+    :thumb => "100x100>"
+  }
 
   #----------------------------------------------------------------------------
   # Associations

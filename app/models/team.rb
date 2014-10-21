@@ -3,7 +3,11 @@
 class Team < ActiveRecord::Base
   attr_accessible :name, :blocked, :profile_photo, :neighborhood_id
 
-  has_attached_file :profile_photo, :styles => {:small => "60x60>", :medium => "150x150>" , :large => "225x225>"}
+  has_attached_file :profile_photo, :styles => {
+    :small => "60x60>",
+    :medium => "150x150>" ,
+    :large => ["300x300>", :jpg]
+  }
 
   has_many :team_memberships, :dependent => :destroy
   has_many :users, :through => :team_memberships
