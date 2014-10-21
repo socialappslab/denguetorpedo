@@ -14,12 +14,12 @@ es:
     created_at: Fecha de registro
     points: Puntos
     body: Conteúdo
-    breeding_site_id: Tipo de foco
+    breeding_site_id: Tipo de criadero
   activerecord:
     models:
       report:
-        one: Foco
-        other: Focos
+        one: Criadero
+        other: Criaderos
       user:
         one: Usuario
         other: Usuarios
@@ -70,11 +70,11 @@ es:
         name: Nombre
         message: Mensaje
       report:
-        before_photo: Foto del foco
-        elimination_type: Tipo de foco
-        breeding_site_id: Tipo de foco
+        before_photo: Foto del criadero
+        elimination_type: Tipo de criadero
+        breeding_site_id: Tipo de criadero
         report: Descripción
-        after_photo: Foto del foco
+        after_photo: Foto del criadero
         elimination_method_id: Método de eliminación
       documentation_section:
         title: Contenido en portugués
@@ -113,10 +113,10 @@ es:
         blank: "es obligatorio"
     success:
       report:
-        create: Foco marcado exitosamente
-        eliminate: Ustéd eliminó un foco
-        delete: Foco eliminado exitosamente
-        verify: El foco fué verificado
+        create: Criadero marcado exitosamente
+        eliminate: Ustéd eliminó un criadero
+        delete: Criadero eliminado exitosamente
+        verify: El criadero fué verificado
       comment:
         create: Comentario hecho con éxito
 
@@ -161,7 +161,7 @@ es:
     community:
       future_community: Futura comunidad
       visit: Vá para a %{name}
-      total_reports: Total de focos marcados
+      total_reports: Total de criaderos marcados
       search_for_other_communities: Busque comunidades
     house:
       title_with_name: Casas %{name}
@@ -205,11 +205,11 @@ es:
     eliminated: Eliminado
     verified: Verificado
     reported: Marcado
-    create_a_report: Marcar un foco
-    create_reports: Marcar focos
-    complete_report: Complete el marcado del foco
+    create_a_report: Marcar un criadero
+    create_reports: Marcar criaderos
+    complete_report: Complete el marcado del criadero
     exchange_points_for_prizes: "Intercambie puntos por premios"
-    go_to_report: "Ir a un foco"
+    go_to_report: "Ir a un criadero"
     go_to_notices: "Ir a noticias"
     their_house: Su casa
     their_community: Su comunidad
@@ -220,7 +220,7 @@ es:
     badges: medallas
     like: Me gusta
     redeemed_prizes: Premios adquiridos
-    go_to_reports: "Ir a focos marcados"
+    go_to_reports: "Ir a criaderos marcados"
     eliminate_and_gain_points: Eliminar y ganar puntos
     comment: "Comentar"
     sponsor: Patrocinador
@@ -261,10 +261,10 @@ es:
     description: "Estoy combatiendo al dengue con @DengueTorpedo"
 
   twitter:
-    created_new_report: "Acabo de marcar um foco con @DengueTorpedo."
+    created_new_report: "Acabo de marcar um criadero con @DengueTorpedo."
 
   reports_feed:
-    title: "Focos marcados en %{name}"
+    title: "Criaderos marcados en %{name}"
 
   map:
     location_not_found: Dirección no encontrada. Marque manualmente.
@@ -274,16 +274,16 @@ es:
 
   report:
     form:
-      address: Dirección de foco localizada
+      address: Dirección de criadero localizada
       example_of_street_type: "Calle"
-      example_of_description: "Describa la localización de un foco (max 100 caracteres) Ex: Foco en el terreno de un lado o Foco en la banqueta de enfrente"
-      photo_of_report: Cargue una imagen del foco encontrado
-      select_elimination_type: "Seleccione un tipo de foco"
+      example_of_description: "Describa la localización de un criadero (max 100 caracteres) Ex: Criadero en el terreno de un lado o Criadero en la banqueta de enfrente"
+      photo_of_report: Cargue una imagen del criadero encontrado
+      select_elimination_type: "Seleccione un tipo de criadero"
       select_elimination_method: "Seleccione un método de eliminación"
       attention: "ATENCION: A veces no se puede encontrar la dirección en el mapa. En tal caso, trate de apuntar en la dirección correcta y haga click manualmente para añadir un marcador."
       fill_in_complete_address: Usted debe enviar una dirección completa
-      problem_with_verification: ¡Problema! el foco no fue marcado. Póngase en contacto con nosotros.
-      upload_photo_of_eliminated_report: Cargue una foto del foco eliminado
+      problem_with_verification: ¡Problema! el criadero no fue marcado. Póngase en contacto con nosotros.
+      upload_photo_of_eliminated_report: Cargue una foto del criadero eliminado
 
 
   #----------------------------------------------------------------------------
@@ -441,11 +441,11 @@ es:
         time: "Hora de la actividad"
     reports:
       new:
-        neighborhood_address: Nombre el barrio donde encontró el foco
+        neighborhood_address: Nombre el barrio donde encontró el criadero
       types:
         delete: Eliminar
       edit:
-        title: Complete el marcado del foco
+        title: Complete el marcado del criadero
     about:
       title: Dengue Torpedo
       description: Um aplicativo interativo de celular e web para o controle da dengue
@@ -457,8 +457,8 @@ es:
         ignore_email: "Si usted no ha solicitado un cambio de contraseña, ignore este mensaje y su contraseña no cambiará."
     feed:
       report:
-        reported:   "Encontré un foco"
-        eliminated: "Eliminé un foco"
+        reported:   "Encontré un criadero"
+        eliminated: "Eliminé un criadero"
     conversations:
       index:
         new_message: Nuevo mensaje
@@ -476,8 +476,8 @@ es:
         header: Visita otros barrios
         visit: Visitar
     breeding_sites:
-      create: "Criar un tipo de foco"
-      edit: "Editar un tipo de foco"
+      create: "Criar un tipo de criadero"
+      edit: "Editar un tipo de criadero"
     elimination_methods:
       create: "Criar un método de eliminación"
       edit: "Editar un método de eliminación"
