@@ -51,16 +51,15 @@
             = f.label :report, "2. #{I18n.t('activerecord.attributes.report.report')}", :style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"
           = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"), :id => 'report_content', :rows => 3, :style => "width: 100%;"
 
-        #photo
-          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
-            = "3. #{I18n.t("report.form.photo_of_report")}"
-          = f.file_field :before_photo
-        %br
-
         #elimination_type
           %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
-            = "4. #{I18n.t("activerecord.attributes.report.elimination_type")}"
+            = "3. #{I18n.t("activerecord.attributes.report.elimination_type")}"
           = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , :prompt => I18n.t("report.form.select_elimination_type")
+
+        #photo
+          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+            = "4. #{I18n.t("report.form.photo_of_report")}"
+          = f.file_field :before_photo
         %br
 
         = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do

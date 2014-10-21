@@ -73,27 +73,6 @@ function filter_reports(e, filter_class){
     }
 }
 
-// displays new report div
-function display_new_report(e){
-    e.preventDefault();
-    // style tab as selected
-    selected_tab_css_update(e.target.id);
-
-    if($('#new_report').css('display') == 'none'){
-      // clear existing form
-      //$('#new_report_form form').trigger('reset');
-
-      // hide all reports
-      $('.report').each(function(){
-          $(this).css('display','none');
-      });
-
-      // display new report div
-      $('#new_report').css('display','block');
-    }
-
-}
-
 // pass the id of tab to change the css so that it appears as selected
 // e.g. larger size, different color, etc
 function selected_tab_css_update(id){

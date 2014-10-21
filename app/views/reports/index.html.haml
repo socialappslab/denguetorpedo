@@ -30,16 +30,17 @@
 
 /------------------------------------------------------------------------------
 
-- if @current_user && @neighborhood.spanish?
+- if @current_user
   .row{:style => "margin-bottom: 20px;"}
     .span4.offset1{:style => "margin-top: 20px;"}
       = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-large" do
         %i.fa.fa-map-marker
         = I18n.t("common_terms.create_a_report")
-    .span4{:style => "margin-top: 20px;"}
-      = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
-        %i.fa.fa-file
-        Import CSV
+    -# - if @neighborhood.spanish?
+    -#   .span4{:style => "margin-top: 20px;"}
+    -#     = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
+    -#       %i.fa.fa-file
+    -#       Import CSV
     .span4.pull-right
       - if @report_count > @report_limit
         = render :partial => "reports/pagination"
@@ -57,10 +58,6 @@
       = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
         :onclick => 'filter_reports(event,"eliminated")'
 
-      - if @current_user
-        = link_to I18n.t("common_terms.create_a_report"), nil, :id =>'make_report_button', :class => 'bttn', :onclick => 'display_new_report(event);'
-
-
 
 /------------------------------------------------------------------------------
 
@@ -75,9 +72,6 @@
           = render :partial => "reports/attributes", :locals => {:report => report}
           - unless report.sms_incomplete?
             = render :partial => "reports/topbar",   :locals => {:report => report}
-
-    #new_report
-      = render :partial => 'make_report_form'
 
   -# - if @neighborhood.name == Neighborhood::Names::MARE
   -#   .span7#map_div

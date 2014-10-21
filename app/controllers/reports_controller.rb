@@ -15,14 +15,8 @@ class ReportsController < NeighborhoodsBaseController
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit
 
-    @new_report          = Report.new(params[:new_report])
-    @new_report_location = Location.find_by_id(params[:location]) || Location.new
-
     # Remove report that incurred an error, it should be at the top already
     @reports = @reports.limit(@report_limit).offset(@report_offset)
-    @reports.reject!{ |r| r == params[:report]}
-    @reports.reject!{ |r| r.neighborhood_id != @neighborhood.id }
-
     @reports.reject!{ |r| r.before_photo.blank? }
 
     # Generate the different types of locations based on report.
@@ -58,63 +52,22 @@ class ReportsController < NeighborhoodsBaseController
   # POST /neighborhoods/1/reports
 
   def create
-    # If location was previously created, use that
+    # Add the neighborhood id to location attributes before saving the report.
+    # There are three different types of locations we may get:
+    # 1. Full street type, name and number coming from Brazilian communities (to be deprecated),
+    # 2. Single address field coming from Mexican communities,
+    # 3. Vague neighborhood/district from Nicaraguan communities.
+    # NOTE: We should NOT make any assumptions about pre-existing location
+    # instances with same user input. For instance, if we already have a location
+    # record with same :neighborhood string, then we should use the existing
+    # location record. We should always choose the conservative option.
+    params[:report][:location_attributes][:neighborhood_id] = @neighborhood.id
 
-    # TODO @awdorsett: The new refactoring will make this fail. Let's move away
-    # from usage of session.
-    # TODO: I don't think we're using saved_location anymore so we should clean up
-    # this method.
-    saved_location = Location.find_by_id(session[:location_id])
-    location_attributes = params[:report][:location_attributes]
-
-    if saved_location
-      location = saved_location
-    else
-      if location_attributes.blank?
-        flash[:alert] = I18n.t("report.form.fill_in_complete_address")
-        redirect_to neighborhood_reports_path(@neighborhood, :params => {:new_report => params[:report].except(:before_photo)}) and return
-      end
-
-      # At this point, we know that at least one of three types of locations
-      # exists.
-      # There are three different types of locations we may get:
-      # 1. Full street type, name and number coming from Brazilian communities (to be deprecated),
-      # 2. Single address field coming from Mexican communities,
-      # 3. Vague neighborhood/district from Nicaraguan communities.
-      # NOTE: We should NOT make any assumptions about pre-existing location
-      # instances with same user input. For instance, if we already have a location
-      # record with same :neighborhood string, then we should use the existing
-      # location record. We should always choose the conservative option.
-      location = Location.new
-
-      if location_attributes[:address].present?
-        location.address = location_attributes[:address]
-      end
-
-      if location_attributes[:street_type].present? && location_attributes[:street_name].present? && location_attributes[:street_number].present?
-
-        location.street_type   = location_attributes[:street_type].downcase.titleize
-        location.street_name   = location_attributes[:street_name].downcase.titleize
-        location.street_number = location_attributes[:street_number].downcase.titleize
-      end
-
-      if location_attributes[:neighborhood].present?
-        location.neighborhood = location_attributes[:neighborhood]
-      end
-
-      location.latitude     = location_attributes[:latitude]
-      location.longitude    = location_attributes[:longitude]
-      location.neighborhood_id = @neighborhood.id
-      location.save
-    end
-
-    @report              = Report.new(params[:report])
+    @report = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
-    @report.location_id  = location.id
     @report.completed_at = Time.now
 
-    # Now let's save the report.
     if @report.save
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
@@ -124,15 +77,7 @@ class ReportsController < NeighborhoodsBaseController
 
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-      error_flash = "<h2>#{I18n.t("views.application.devise_errors", :num_errors => @report.errors.count)}</h2><ul>"
-      @report.errors.full_messages.each do |error_msg|
-        error_flash += "<li>#{error_msg}</li>"
-      end
-      error_flash += "</ul>"
-      flash[:alert] = error_flash
-
-      redirect_to neighborhood_reports_path(@neighborhood,
-        :params => {:new_report => params[:report].except(:before_photo), :location => location.id}) and return
+      render "new" and return
     end
 
   end
@@ -151,14 +96,6 @@ class ReportsController < NeighborhoodsBaseController
 
     @open_locations       = [@report.location]
     @eliminated_locations = []
-
-    # saved_params will exist if an error occurred and the user was redirect to the edit page
-    # TODO: Deprecate this.
-    # if params[:report].present?
-    #   @new_report.elimination_type = params[:report][:elimination_type]
-    #   @new_report.report =  params[:report][:report]
-    # end
-
   end
 
   #-----------------------------------------------------------------------------
