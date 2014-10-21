@@ -363,6 +363,9 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def redirect_if_incomplete_reports
+    # Avoid redirect if the user is simply visiting.
+    return if @current_user.blank?
+
     # We want to redirect only if user is viewing their own neighborhood.
     return unless @neighborhood == @current_user.neighborhood
 
