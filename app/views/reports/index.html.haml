@@ -36,12 +36,13 @@
       = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-large" do
         %i.fa.fa-map-marker
         = I18n.t("common_terms.create_a_report")
-    -# - if @neighborhood.spanish?
-    -#   .span4{:style => "margin-top: 20px;"}
-    -#     = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
-    -#       %i.fa.fa-file
-    -#       Import CSV
-    .span4.pull-right
+
+    -# .span6{:style => "margin-top: 20px;"}
+      -# - if @neighborhood.spanish?
+      -#     = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
+      -#       %i.fa.fa-file
+      -#       Import CSV
+    .span6.offset6
       - if @report_count > @report_limit
         = render :partial => "reports/pagination"
 
