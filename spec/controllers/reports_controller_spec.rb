@@ -32,11 +32,13 @@ describe ReportsController do
 		context "through SMS" do
 			render_views
 
-			it "displays the report in the reports page" do
+			it "redirects to the unfinished report when user tries to visit reports page" do
+				cookies[:auth_token] = user.auth_token
+
 				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-				sign_in(user)
-				visit neighborhood_reports_path(user.neighborhood)
-				expect(page).to have_content("Completar o foco")
+				expect(
+					get "index", :neighborhood_id => Neighborhood.first.id
+				).to redirect_to(edit_neighborhood_report_path(Neighborhood.first, Report.last))
 			end
 
 			it "does not award points" do
@@ -197,8 +199,7 @@ describe ReportsController do
 					:reporter_id => user.id,
 					:before_photo => uploaded_photo,
 					:location_attributes => location_hash,
-					:breeding_site_id => elimination_type.id,
-					:neighborhood_id => Neighborhood.first.id
+					:breeding_site_id => elimination_type.id
 				}
 
 				expect(Report.last.location.neighborhood_id).to eq(Neighborhood.first.id)
@@ -219,6 +220,19 @@ describe ReportsController do
 				expect(location.street_type).to eq("Rua")
 				expect(location.street_name).to eq("Darci Vargas")
 				expect(location.street_number).to eq("45")
+			end
+
+			it "creates only one location" do
+				expect {
+					post :create, :neighborhood_id => Neighborhood.first.id, :report => {
+						:report => "This is a description",
+						:location_attributes => location_hash,
+						:reporter_id => user.id,
+						:before_photo => uploaded_photo,
+						:breeding_site_id => elimination_type.id,
+						:neighborhood_id => Neighborhood.first.id
+					}
+				}.to change(Location, :count).by(1)
 			end
 
 			it "adds latitude/longitude to location robject if found" do
@@ -277,6 +291,7 @@ describe ReportsController do
 			expect(location.reload.street_type).to eq("Rua")
 			expect(location.reload.street_name).to eq("Darci Vargas")
 			expect(location.reload.street_number).to eq("45")
+			expect(location.reload.neighborhood_id).to eq(Neighborhood.first.id)
 		end
 
 		it "adds latitude/longitude to location object if found" do

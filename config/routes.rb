@@ -82,6 +82,7 @@ Dengue::Application.routes.draw do
         post 'problem'
         get 'types'
       end
+
       member do
         post 'like'
         post "comment"
@@ -90,6 +91,9 @@ Dengue::Application.routes.draw do
         post 'discredit'
       end
     end
+
+
+    resources :csv_reports, :only => [:new, :create]
 
     resources :houses do
 

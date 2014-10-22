@@ -1,15 +1,70 @@
+/------------------------------------------------------------------------------
+
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @report}
 
+/------------------------------------------------------------------------------
 
 .row
-  .span9.offset1
-    %h1
-      = I18n.t("views.reports.edit.title")
+  .span10.offset6
+    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
+      = I18n.t("common_terms.complete_report")
 
-    = render :partial => "reports/make_report_form"
+- if @report.incomplete? && @report.csv_report.present?
+  .row
+    .span12.offset3
+      .alert.alert-warning.alert-dismissable
+        Please enter a before photo for this report.
 
-  .span7#map_div
-    - if @neighborhood.name == "Maré"
-      = render :partial => "reports/map"
-      = render :partial => "reports/arcgis_map"
+.row
+  .span12.offset3
+    #new_report_form
+      = form_for [@neighborhood, @report], :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+
+        #address
+          - if @neighborhood.nicaraguan?
+            %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+              1. Haga click y mueva el marcador donde encontró el foco
+          - else
+            = I18n.t("report.form.address")
+
+          #attention_div
+          %p{style: "font-weight: bold;"}
+            %b{style: "color:red;"}
+              = I18n.t("report.form.attention")
+
+          #map_div{:style => "position: static;"}
+            = render :partial => "reports/google_map"
+
+
+          = f.fields_for :location, @report.location || Location.new do |location_fields|
+            - if @neighborhood.mexican? || @neighborhood.brazilian?
+              = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
+            = location_fields.hidden_field :latitude
+            = location_fields.hidden_field :longitude
+
+        #description
+          %p{:style => "margin-top: 30px;"}
+            = f.label :report, "2. #{I18n.t('activerecord.attributes.report.report')}", :style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"
+          = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"), :id => 'report_content', :rows => 3, :style => "width: 100%;"
+
+        #photo
+          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+            = "3. #{I18n.t("report.form.photo_of_report")}"
+          = f.file_field :before_photo
+        %br
+
+        #elimination_type
+          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
+            = "4. #{I18n.t("activerecord.attributes.report.elimination_type")}"
+          = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , :prompt => I18n.t("report.form.select_elimination_type")
+        %br
+
+        = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
+          %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+          = I18n.t("views.buttons.create")
+
+
+- content_for :scripts do
+  = javascript_include_tag "map"
+  = javascript_include_tag "googlemap/map-csv"

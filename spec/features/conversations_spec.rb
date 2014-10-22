@@ -14,6 +14,8 @@ describe "Conversations", :type => :feature do
     conversation.save
 
     FactoryGirl.create(:team_membership, :user_id => user.id, :team_id => team.id)
+
+    I18n.default_locale = User::Locales::PORTUGUESE
   end
 
   context "when visiting /conversations" do

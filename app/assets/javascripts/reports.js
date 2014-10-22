@@ -21,21 +21,7 @@ $(document).ready(function() {
     else{
         // style all reports as selected
         selected_tab_css_update('all_reports_button');
-
-        //show all reports on start
-        $('#new_report').css('display','none');
     }
-
-    // keep the map on the page when scrolling
-    $(window).scroll(function() {
-        var scrollAmount = $(window).scrollTop();
-        if (scrollAmount > 200) {
-            $("#map_div").css("margin-top", scrollAmount - 263);
-        } else {
-            $("#map_div").css("margin-top", 0);
-        }
-    });
-
 
 
     // TODO @awdorsett - Are these methods still used? If so refactor
@@ -85,27 +71,6 @@ function filter_reports(e, filter_class){
             $(this).css('display',value);
         })
     }
-}
-
-// displays new report div
-function display_new_report(e){
-    e.preventDefault();
-    // style tab as selected
-    selected_tab_css_update(e.target.id);
-
-    if($('#new_report').css('display') == 'none'){
-      // clear existing form
-      //$('#new_report_form form').trigger('reset');
-
-      // hide all reports
-      $('.report').each(function(){
-          $(this).css('display','none');
-      });
-
-      // display new report div
-      $('#new_report').css('display','block');
-    }
-
 }
 
 // pass the id of tab to change the css so that it appears as selected

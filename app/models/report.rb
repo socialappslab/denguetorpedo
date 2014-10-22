@@ -5,7 +5,7 @@ class Report < ActiveRecord::Base
   :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
-  :verifier, :resolved_verifier, :eliminator, :eliminated_at
+  :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id
 
   #----------------------------------------------------------------------------
   # Constants
@@ -46,6 +46,7 @@ class Report < ActiveRecord::Base
   belongs_to :eliminator,        :class_name => "User"
   belongs_to :verifier,          :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
+  belongs_to :csv_report
 
 
   #----------------------------------------------------------------------------
@@ -66,13 +67,13 @@ class Report < ActiveRecord::Base
 
   # Validation on photos
   validates :before_photo, :presence => true, :unless => :sms?
-  validates :before_photo, :presence => {:on => :update, :if => :sms_incomplete? }
-  validates :after_photo, :presence => {:on => :update, :unless => :sms_incomplete?}
+  validates :before_photo, :presence => {:on => :update, :if => :incomplete? }
+  validates :after_photo, :presence => {:on => :update, :unless => :incomplete?}
 
   # Validation on breeding sites, and elimination types.
   validates :breeding_site_id, :presence => true, :unless => :sms?
-  validates :breeding_site_id, :presence => {:on => :update, :if => :sms_incomplete? }
-  validates :elimination_method_id, :presence => {:on => :update, :unless => :sms_incomplete?}
+  validates :breeding_site_id, :presence => {:on => :update, :if => :incomplete? }
+  validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
 
   #----------------------------------------------------------------------------
 
@@ -93,8 +94,20 @@ class Report < ActiveRecord::Base
     return self.elimination_method_id.blank?
   end
 
+  # TODO: Deprecate this in favor for incomplete?
   def sms_incomplete?
     return (self.sms && self.completed_at == nil)
+  end
+
+  # We define an incomplete report to be a report that was created from
+  # an SMS OR a CSV report.
+  def incomplete?
+    if self.completed_at == nil
+      return true if self.csv_report.present?
+      return true if self.sms.present?
+    end
+
+    return false
   end
 
   # We define a report to be public if it's not SMS.
