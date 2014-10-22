@@ -37,6 +37,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   has_attached_file :photo, :styles => { :large => ["400x400", :jpg], :thumbnail => "150x150" }
+  do_not_validate_attachment_file_type :photo
 
   #----------------------------------------------------------------------------
   # Geographical data

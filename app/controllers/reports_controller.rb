@@ -63,10 +63,39 @@ class ReportsController < NeighborhoodsBaseController
     # location record. We should always choose the conservative option.
     params[:report][:location_attributes][:neighborhood_id] = @neighborhood.id
 
+    # NOTE: Since we're no longer using the original uploaded image files,
+    # we're excluding before_photo params (whatever it may be). Instead,
+    # we're going to use before_photo_compressed attribute.
+    params[:report].except!(:before_photo)
+
+
     @report = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
     @report.completed_at = Time.now
+
+    if params[:report][:compressed_photo].blank?
+      flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
+      render "new" and return
+    else
+      # NOTE: We have to use this hack (even though Paperclip handles base64 images)
+      # because we want to explicitly specify the content type and filename. Some
+      # of this is taken from
+      # https://github.com/thoughtbot/paperclip/blob/master/lib/paperclip/io_adapters/data_uri_adapter.rb
+      # and
+      # https://gist.github.com/WizardOfOgz/1012107
+      base64_image = params[:report][:compressed_photo]
+      regexp = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
+      data_uri_parts = base64_image.match(regexp) || []
+      data = StringIO.new(Base64.decode64(data_uri_parts[2] || ''))
+      data.class_eval do
+        attr_accessor :content_type, :original_filename
+      end
+      data.content_type = "image/jpeg"
+      data.original_filename = @current_user.display_name.underscore + "_report.jpg"
+
+      @report.before_photo = data
+    end
 
     if @report.save
       flash[:should_render_social_media_buttons] = true

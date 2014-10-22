@@ -75,7 +75,7 @@ end
 
 gem 'aws-sdk'
 gem 'rmagick'
-gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip'
+gem 'paperclip', '~> 4.2.0'
 gem "roo"
 
 #------------------------------------------------------------------------------

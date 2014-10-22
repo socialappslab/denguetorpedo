@@ -64,6 +64,10 @@
           %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
             = "4. #{I18n.t("report.form.photo_of_report")}"
           = f.file_field :before_photo
+          %img#preview{:style => "display: block;"}
+          %canvas{:style => "display: none;"}
+          = hidden_field_tag "report[compressed_photo]", nil
+
         %br
 
         = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
@@ -74,3 +78,20 @@
 - content_for :scripts do
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
+  = javascript_include_tag "image-compression"
+
+  :javascript
+    $(document).ready(function()
+    {
+      $("#report_before_photo").on("change", function(event){
+        if ( window.File && window.FileReader && window.FileList && window.Blob )
+        {
+          window.compression.compressFileFromHTMLInput(event.target);
+        }
+        else
+        {
+          alert('The File APIs are not fully supported in this browser.');
+          return false;
+        }
+      });
+    })

@@ -8,6 +8,7 @@ class Team < ActiveRecord::Base
     :medium => "150x150>" ,
     :large => ["300x300>", :jpg]
   }
+  validates_attachment :profile_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
   has_many :team_memberships, :dependent => :destroy
   has_many :users, :through => :team_memberships
