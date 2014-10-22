@@ -8,7 +8,7 @@ describe Report do
 
 	it "validates reporter" do
 		report = Report.create
-		expect(report.errors.full_messages).to include("Reporter can't be blank")
+		expect(report.errors.full_messages).to include("Reporter é obrigatório")
 	end
 
 	it "does not require presence of location" do
