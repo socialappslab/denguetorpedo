@@ -28,6 +28,8 @@ class Report < ActiveRecord::Base
     :medium => "150x150>",
     :thumb => "100x100>"
   }
+  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
+  validates_attachment :after_photo, content_type:  { content_type: /\Aimage\/.*\Z/ }
 
   #----------------------------------------------------------------------------
   # Associations

@@ -4,6 +4,7 @@ class House < ActiveRecord::Base
   attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes, :neighborhood_id
 
   has_attached_file :profile_photo, :styles => {:small => "60x60>", :medium => "150x150>" , :large => "225x225>"}, :default_url => 'default_images/house_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
+  do_not_validate_attachment_file_type :profile_photo
 
   has_many :members, :class_name => "User"
   has_many :posts, :as => :wall
@@ -46,7 +47,7 @@ class House < ActiveRecord::Base
       house.save
       return house
     end
-    
+
     # create the location
     location = Location.find_or_create(address, neighborhood)
 
