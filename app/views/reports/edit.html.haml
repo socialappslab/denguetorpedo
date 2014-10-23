@@ -28,20 +28,23 @@
           - else
             = I18n.t("report.form.address")
 
-          #attention_div
-          %p{style: "font-weight: bold;"}
-            %b{style: "color:red;"}
-              = I18n.t("report.form.attention")
 
-          #map_div{:style => "position: static;"}
-            = render :partial => "reports/google_map"
+        = f.fields_for :location, @report.location || Location.new do |location_fields|
+          - if @neighborhood.mexican? || @neighborhood.brazilian?
+            = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
+          = location_fields.hidden_field :latitude
+          = location_fields.hidden_field :longitude
 
 
-          = f.fields_for :location, @report.location || Location.new do |location_fields|
-            - if @neighborhood.mexican? || @neighborhood.brazilian?
-              = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
-            = location_fields.hidden_field :latitude
-            = location_fields.hidden_field :longitude
+        #attention_div
+        %p{style: "font-weight: bold;"}
+          %b{style: "color:red;"}
+            = I18n.t("report.form.attention")
+
+
+        #map_div{:style => "position: static;"}
+          = render :partial => "reports/google_map"
+
 
         #description
           %p{:style => "margin-top: 30px;"}
@@ -51,7 +54,10 @@
         #photo
           %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
             = "3. #{I18n.t("report.form.photo_of_report")}"
-          = f.file_field :before_photo
+          = f.file_field :before_photo, :class => "upload_photo"
+          %img.preview{:style => "display: block;"}
+          %canvas{:style => "display: none;"}
+          = hidden_field_tag "report[compressed_photo]", nil, :class => "report_compressed_photo"
         %br
 
         #elimination_type
@@ -68,3 +74,4 @@
 - content_for :scripts do
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
+  = javascript_include_tag "image-compression"

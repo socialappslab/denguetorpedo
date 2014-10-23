@@ -44,8 +44,6 @@
               = I18n.t("report.form.attention")
 
 
-
-
         #map_div{:style => "position: static;"}
           = render :partial => "reports/google_map"
 
@@ -63,10 +61,10 @@
         #photo
           %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
             = "4. #{I18n.t("report.form.photo_of_report")}"
-          = f.file_field :before_photo
-          %img#preview{:style => "display: block;"}
+          = f.file_field :before_photo, :class => "upload_photo"
+          %img.preview{:style => "display: block;"}
           %canvas{:style => "display: none;"}
-          = hidden_field_tag "report[compressed_photo]", nil
+          = hidden_field_tag "report[compressed_photo]", nil, :class => "report_compressed_photo"
 
         %br
 
