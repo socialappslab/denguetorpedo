@@ -49,15 +49,31 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  .span10.offset1
-    #report_buttons
-      = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
-        :onclick => 'filter_reports(event,"all")'
-      = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
-        :onclick => 'filter_reports(event,"open")'
-      = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
-        :onclick => 'filter_reports(event,"eliminated")'
+-# .row
+-#   .span10.offset1
+-#     #report_buttons
+-#       = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
+-#         :onclick => 'filter_reports(event,"all")'
+-#       = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
+-#         :onclick => 'filter_reports(event,"open")'
+-#       = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
+-#         :onclick => 'filter_reports(event,"eliminated")'
+
+.row{:style => "margin-top: 20px;"}
+  .span3.offset1
+    %h2
+      = I18n.t("common_terms.order_by")
+  .span6
+    %label.radio.inline{:style => "margin-top: 5px;"}
+      %input{:type => "radio", :name => "reports", :id => 'all_reports_button', :value => "points", :checked => params[:sort] != "name", :onclick => 'filter_reports(event,"all")'}
+      = I18n.t("common_terms.all")
+    %label.radio.inline{:style => "margin-top: 5px;"}
+      %input{:type => "radio", :name => "reports", :id => 'open_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"open")'}
+      = I18n.t("common_terms.open_reports")
+    %label.radio.inline{:style => "margin-top: 5px;"}
+      %input{:type => "radio", :name => "reports", :id => 'eliminated_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"eliminated")'}
+      = I18n.t("common_terms.eliminated_reports")
+
 
 
 /------------------------------------------------------------------------------
