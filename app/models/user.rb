@@ -271,13 +271,13 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def total_torpedos
-    self.reports.sms.where('elimination_type IS NOT NULL')
+    self.reports.sms.where('breeding_site_id IS NOT NULL')
   end
 
   #----------------------------------------------------------------------------
 
   def creditable_torpedos
-    self.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil)
+    self.reports.sms.where('breeding_site_id IS NOT NULL').where(is_credited: nil)
   end
 
   #----------------------------------------------------------------------------

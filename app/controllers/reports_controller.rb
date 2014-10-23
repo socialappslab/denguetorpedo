@@ -319,7 +319,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def torpedos
     @user = User.find(params[:id])
-    @reports = @user.reports.sms.where('elimination_type IS NOT NULL')
+    @reports = @user.reports.sms.where('breeding_site_id IS NOT NULL')
   end
 
   #----------------------------------------------------------------------------
