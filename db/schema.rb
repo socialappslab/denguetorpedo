@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141015223758) do
+ActiveRecord::Schema.define(:version => 20141023221404) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -186,14 +186,12 @@ ActiveRecord::Schema.define(:version => 20141015223758) do
     t.string   "address"
     t.float    "latitude"
     t.float    "longitude"
-    t.boolean  "gmaps"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-    t.string   "formatted_address"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.integer  "neighborhood_id"
-    t.string   "street_type",       :default => ""
-    t.string   "street_name",       :default => ""
-    t.string   "street_number",     :default => ""
+    t.string   "street_type",     :default => ""
+    t.string   "street_name",     :default => ""
+    t.string   "street_number",   :default => ""
     t.string   "neighborhood"
   end
 
@@ -302,14 +300,8 @@ ActiveRecord::Schema.define(:version => 20141015223758) do
   end
 
   create_table "reports", :force => true do |t|
-    t.string   "nation"
-    t.string   "state"
-    t.string   "city"
-    t.string   "address"
-    t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
-    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.integer  "eliminator_id"
@@ -323,8 +315,6 @@ ActiveRecord::Schema.define(:version => 20141015223758) do
     t.integer  "after_photo_file_size"
     t.datetime "after_photo_updated_at"
     t.datetime "eliminated_at"
-    t.string   "elimination_type"
-    t.string   "elimination_method"
     t.string   "isVerified"
     t.integer  "verifier_id"
     t.datetime "verified_at"
@@ -332,13 +322,10 @@ ActiveRecord::Schema.define(:version => 20141015223758) do
     t.datetime "resolved_verified_at"
     t.string   "is_resolved_verified"
     t.boolean  "sms",                       :default => false
-    t.string   "reporter_name",             :default => ""
-    t.string   "eliminator_name",           :default => ""
     t.string   "verifier_name",             :default => ""
     t.datetime "completed_at"
     t.datetime "credited_at"
     t.boolean  "is_credited"
-    t.integer  "feed_type_cd"
     t.integer  "neighborhood_id"
     t.string   "status"
     t.integer  "breeding_site_id"
