@@ -19,15 +19,15 @@ class Neighborhood < ActiveRecord::Base
   has_many :locations
   belongs_to :city
 
-  # TODO: Deprecate houses association
-  has_many :houses
   has_many :teams
   has_many :members, :class_name => "User"
   has_many :users
   has_many :reports
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
-  has_many :health_agents, :through => :houses, :source => "members", :conditions => "is_health_agent = 1"
+
+  # TODO: We no longer have houses so we may have to deprecate this.
+  # has_many :health_agents, :through => :houses, :source => "members", :conditions => "is_health_agent = 1"
 
   #----------------------------------------------------------------------------
 

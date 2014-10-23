@@ -6,7 +6,6 @@ class Location < ActiveRecord::Base
   # validates :latitude, :uniqueness => { :scope => :longitude }
   # validates :neighborhood_id, :presence => true
 
-  has_one :house, dependent: :destroy
   has_many :reports, dependent: :destroy
 
   # NOTE: We already have a 'neighborhood' column in locations, so
