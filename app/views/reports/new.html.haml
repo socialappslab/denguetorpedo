@@ -79,19 +79,3 @@
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
   = javascript_include_tag "image-compression"
-
-  :javascript
-    $(document).ready(function()
-    {
-      $("#report_before_photo").on("change", function(event){
-        if ( window.File && window.FileReader && window.FileList && window.Blob )
-        {
-          window.compression.compressFileFromHTMLInput(event.target);
-        }
-        else
-        {
-          alert('The File APIs are not fully supported in this browser.');
-          return false;
-        }
-      });
-    })
