@@ -16,7 +16,7 @@
             .feed-item-timestamp
               %i.fa.fa-clock-o
               = I18n.t("common_terms.eliminated")
-              = format_timestamp(report.created_at)
+              = format_timestamp(report.eliminated_at)
 
         - if report.verifier
           %div{:style => "display: block;"}
@@ -24,7 +24,7 @@
             .feed-item-timestamp
               %i.fa.fa-clock-o
               = I18n.t("common_terms.verified")
-              = format_timestamp(report.created_at)
+              = format_timestamp(report.verified_at)
 
 
 
