@@ -1,10 +1,5 @@
 .row{:style => "background-color: #408bca; height: 75px;"}
-
-  -# Logo
-  - if @current_user
-    = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), user_path(@current_user)
-  - else
-    = link_to image_tag("home_images/logo.png", :id => "logo", :style=> "z-index:3;"), root_path
+  = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
 
 
   -# Education dropdown

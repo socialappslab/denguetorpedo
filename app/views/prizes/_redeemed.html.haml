@@ -6,7 +6,7 @@
 			#{redeemed.cost} pontos
 	.prize_content
 		- if redeemed.prize_photo_file_name.nil?
-			= image_tag("home_images/logo.png", :class => "prizes")
+			= image_tag("default_images/report_before_photo.png", :class => "prizes")
 		- else
 			= image_tag(redeemed.prize_photo.url(:large), :class => "prizes")
 		.description

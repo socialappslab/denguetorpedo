@@ -1,5 +1,13 @@
 module ApplicationHelper
 
+  def logo_image
+    if I18n.locale.to_s == User::Locales::PORTUGUESE
+      image_tag("logo_pt.png", :id => "logo", :style=> "z-index:3;")
+    else
+      image_tag("logo_es.png", :id => "logo", :style=> "z-index:3;")
+    end
+  end
+
   #----------------------------------------------------------------------------
 
   def self.temp_password_generator

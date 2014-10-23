@@ -5,7 +5,7 @@ class Prize < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  has_attached_file :prize_photo, :default_url => 'home_images/logo.png', :styles => { :small => "60x60>", :large => "150x150>" }#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
+  has_attached_file :prize_photo, :default_url => 'default_images/report_before_photo.png', :styles => { :small => "60x60>", :large => "150x150>" }#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
   validates_attachment :prize_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
   #----------------------------------------------------------------------------

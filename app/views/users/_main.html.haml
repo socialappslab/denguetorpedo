@@ -43,7 +43,7 @@
         .prize_content
           = link_to prize_path(prize) do
             - if prize.prize_photo_file_name.nil?
-              = image_tag("home_images/logo.png", :class => "prizes img-rounded")
+              = image_tag("default_images/report_before_photo.png", :class => "prizes img-rounded")
             - else
               = image_tag(prize.prize_photo.url(:large), :class => "prizes img-rounded")
             .description{:style => "height: 35px; overflow: none;"}
