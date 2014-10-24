@@ -48,6 +48,12 @@ class HomeController < ApplicationController
     else
       @introductory_video_on_dengue = "http://www.youtube.com/embed/o6IY0NjdmZc?rel=0"
     end
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited homepage") if Rails.env.production?
+    else
+      Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited homepage") if Rails.env.production?
+    end
   end
 
   #----------------------------------------------------------------------------

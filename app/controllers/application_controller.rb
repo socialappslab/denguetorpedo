@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
   before_filter :get_new_notifications
 
+  before_filter :identify_for_segmentio
+
   #----------------------------------------------------------------------------
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -83,6 +85,14 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   private
+
+  def identify_for_segmentio
+    return unless Rails.env.production?
+
+    if @current_user
+      Analytics.identify( user_id: @current_user.id, traits: { username: @current_user.username })
+    else
+  end
 
   def ensure_team_chosen
     return if @current_user.nil?

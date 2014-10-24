@@ -40,6 +40,12 @@ class ReportsController < NeighborhoodsBaseController
 
     @open_locations.compact!
     @eliminated_locations.compact!
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
+    else
+      Analytics.track(:anonymous_id => SecureRandom.base64, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
+    end
   end
 
   #----------------------------------------------------------------------------
@@ -87,6 +93,8 @@ class ReportsController < NeighborhoodsBaseController
     if @report.save
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
+
+      Analytics.track( :user_id => @current_user.id, :event => "Created a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
@@ -177,6 +185,8 @@ class ReportsController < NeighborhoodsBaseController
     if @report.update_attributes(params[:report])
       @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
 
+      Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
+
       # Let's award the user for submitting a report.
       @current_user.award_points_for_eliminating(@report)
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
@@ -208,6 +218,8 @@ class ReportsController < NeighborhoodsBaseController
       Like.create(:user_id => @current_user.id, :likeable_id => @report.id, :likeable_type => Report.name)
       count += 1
       liked  = true
+
+      Analytics.track( :user_id => @current_user.id, :event => "Liked a report", :properties => {:report => @report.id}) if Rails.env.production?
     end
 
     render :json => {'count' => count.to_s, 'liked' => liked} and return
@@ -224,6 +236,7 @@ class ReportsController < NeighborhoodsBaseController
     c         = Comment.new(:user_id => @current_user.id, :commentable_id => @report.id, :commentable_type => Report.name)
     c.content = params[:comment][:content]
     if c.save
+      Analytics.track( :user_id => @current_user.id, :event => "Commented on a report", :properties => {:report => @report.id}) if Rails.env.production?
       redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
     else
       redirect_to :back, :alert => I18n.t("attributes.content") + " " + I18n.t("activerecord.errors.comments.blank") and return

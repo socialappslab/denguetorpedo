@@ -73,6 +73,8 @@ class MessagesController < ApplicationController
         UserNotification.create(:user_id => u.id, :notification_type => UserNotification::Types::MESSAGE, :viewed => false)
       end
 
+      Analytics.track( :user_id => @current_user.id, :event => "Created a new message") if Rails.env.production?
+
       flash[:notice] = I18n.t("views.conversations.flashes.success")
       redirect_to user_conversation_path(@current_user, @conversation) and return
     else

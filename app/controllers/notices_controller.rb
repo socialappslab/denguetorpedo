@@ -41,7 +41,7 @@ class NoticesController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  
+
   # GET /notices/1/edit
   def edit
     @neighborhoods = Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]}
@@ -115,6 +115,8 @@ class NoticesController < ApplicationController
       Like.create(:user_id => @current_user.id, :likeable_id => @news.id, :likeable_type => Notice.name)
       count += 1
       liked  = true
+
+      Analytics.track( :user_id => @current_user.id, :event => "Liked a news snippet", :properties => {:news => @news.id}) if Rails.env.production?
     end
 
     render :json => {'count' => count.to_s, "liked" => liked} and return
@@ -129,6 +131,7 @@ class NoticesController < ApplicationController
     c         = Comment.new(:user_id => @current_user.id, :commentable_id => @news.id, :commentable_type => Notice.name)
     c.content = params[:comment][:content]
     if c.save
+      Analytics.track( :user_id => @current_user.id, :event => "Commented on a news snippet", :properties => {:news => @news.id}) if Rails.env.production?
       redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
     else
       redirect_to :back, :alert => I18n.t("attributes.content") + " " + I18n.t("activerecord.errors.comments.blank") and return

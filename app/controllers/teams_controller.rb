@@ -18,6 +18,12 @@ class TeamsController < ApplicationController
       team_rankings  = @teams.map {|t| [t, t.total_points]}
       @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
     end
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited teams page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
+    else
+      Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited teams page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
+    end
   end
 
   #----------------------------------------------------------------------------
@@ -42,6 +48,12 @@ class TeamsController < ApplicationController
     end
 
     @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?
+    else
+      Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?
+    end
   end
 
 
@@ -65,6 +77,9 @@ class TeamsController < ApplicationController
       # automatically.
       TeamMembership.create(:team_id => @team.id, :user_id => @current_user.id, :verified => true)
       flash[:notice] = I18n.t("views.teams.success_create_flash")
+
+      Analytics.track( :user_id => @current_user.id, :event => "Created a team", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
+
 
       respond_to do |format|
         format.html { redirect_to teams_path and return }
