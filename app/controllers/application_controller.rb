@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
 
     if @current_user
       Analytics.identify( user_id: @current_user.id, traits: { username: @current_user.username })
-    else
+    end
   end
 
   def ensure_team_chosen
