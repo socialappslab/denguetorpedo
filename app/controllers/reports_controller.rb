@@ -150,8 +150,35 @@ class ReportsController < NeighborhoodsBaseController
 
     @report.location_id  = location.id
 
+    if params[:report][:compressed_photo].blank?
+      flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
+      redirect_to neighborhood_reports_path(@neighborhood) and return
+    else
+
+      # NOTE: We have to use this hack (even though Paperclip handles base64 images)
+      # because we want to explicitly specify the content type and filename. Some
+      # of this is taken from
+      # https://github.com/thoughtbot/paperclip/blob/master/lib/paperclip/io_adapters/data_uri_adapter.rb
+      # and
+      # https://gist.github.com/WizardOfOgz/1012107
+      base64_image = params[:report][:compressed_photo]
+      regexp = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
+      data_uri_parts = base64_image.match(regexp) || []
+      data = StringIO.new(Base64.decode64(data_uri_parts[2] || ''))
+      data.class_eval do
+        attr_accessor :content_type, :original_filename
+      end
+      data.content_type = "image/jpeg"
+      data.original_filename = @current_user.display_name.underscore + "_report.jpg"
+    end
+
+
+
     # Update SMS
     if @report.incomplete?
+      # We set data on before_photo in this case since it come from an SMS,
+      # which doesn't have an image.
+      @report.before_photo = data
 
       # Verify report saves and form submission is valid
       if @report.update_attributes(params[:report])
@@ -169,9 +196,12 @@ class ReportsController < NeighborhoodsBaseController
       # Error occurred when completing SMS report
       else
         flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
-        redirect_to edit_neighborhood_report_path(@neighborhood, {:report => params[:report]}) and return
+        redirect_to edit_neighborhood_report_path(@neighborhood) and return
       end
+    else
+      @report.after_photo = data
     end
+
 
     if @report.update_attributes(params[:report])
       @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)

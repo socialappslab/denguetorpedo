@@ -1,5 +1,13 @@
 module ApplicationHelper
 
+  def logo_image
+    if I18n.locale.to_s == User::Locales::PORTUGUESE
+      image_tag("logo_pt.png", :id => "logo", :style=> "z-index:3;")
+    else
+      image_tag("logo_es.png", :id => "logo", :style=> "z-index:3;")
+    end
+  end
+
   #----------------------------------------------------------------------------
 
   def self.temp_password_generator
@@ -7,22 +15,6 @@ module ApplicationHelper
     char_bank.shuffle.shuffle.shuffle!
     (1..8).collect{|a| char_bank[rand(char_bank.size)] }.join
   end
-
-  #----------------------------------------------------------------------------
-
-  # def elimination_selection(selection)
-  #   selection_list = []
-  #   if type = BreedingSite.find_by_description_in_pt(selection) || type = BreedingSite.find_by_description_in_es(selection)
-  #
-  #     type.elimination_methods.each do |method|
-  #       selection_list << {:name=> method.id, :points => method.points,:id => method.id,
-  #                          :display=> method.description + " (" + method.points.to_s + " pontos)"}
-  #     end
-  #
-  #   end
-  #
-  #   return selection_list
-  # end
 
   #----------------------------------------------------------------------------
 

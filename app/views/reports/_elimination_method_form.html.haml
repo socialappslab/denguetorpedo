@@ -1,7 +1,7 @@
 = form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
   %h1{:style => "margin-top: 15px;"}
     = I18n.t("activerecord.models.elimination_method")
-  = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.description + " (#{em.points} #{I18n.t("attributes.points").downcase})", em.id]}, report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods"}
+  = f.select :elimination_method_id, options_for_select(report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods"}
 
   = f.fields_for :location, report.location || Location.new do |location_fields|
     = location_fields.hidden_field :latitude
@@ -14,7 +14,10 @@
 
   %h3{:style => "font-weight: bold;"}
     = I18n.t("report.form.upload_photo_of_eliminated_report")
-  = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :style => "width: 300px;"
+  = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :style => "width: 300px;", :class => "upload_photo"
+  %img.preview{:style => "display: block;"}
+  %canvas{:style => "display: none;"}
+  = hidden_field_tag "report[compressed_photo]", nil, :class => "report_compressed_photo"
 
   %br
   .row
@@ -29,3 +32,7 @@
       = button_tag :type => "submit", :class => "report_submission btn btn-success submit-button", :disabled => should_disable, :onclick=>"setLocationVariablesUsingOSM(#{report.location.to_json},event);" do
         %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
         = I18n.t("views.buttons.submit")
+
+
+- content_for :scripts do
+  = javascript_include_tag "image-compression"

@@ -2,9 +2,9 @@ window.compression = {}
 
 window.compression.compressFileFromHTMLInput = function(element) {
   var canvas     = $(element).parent().find("canvas")[0];
-  var preview    = $(element).parent().find("#preview");
+  var preview    = $(element).parent().find(".preview");
   var file       = element.files[0];
-  var compressedHTMLInput = $(element).parent().find("#report_compressed_photo")
+  var compressedHTMLInput = $(element).parent().find(".report_compressed_photo")
 
   if (!file.type.match('image.*'))
     return;
@@ -21,8 +21,6 @@ window.compression.compressFileFromHTMLInput = function(element) {
         $(element).val("");
         $(compressedHTMLInput).val(compressedImage)
       };
-
-
     };
   })(file);
 
@@ -61,3 +59,18 @@ compressImageOntoCanvas = function(image, canvas) {
   // http://www.html5rocks.com/en/tutorials/speed/img-compression/
   return canvas.toDataURL("image/jpeg", 0.75);
 }
+
+$(document).ready(function()
+{
+  $(".upload_photo").on("change", function(event){
+    if ( window.File && window.FileReader && window.FileList && window.Blob )
+    {
+      window.compression.compressFileFromHTMLInput(event.target);
+    }
+    else
+    {
+      alert('The File APIs are not fully supported in this browser.');
+      return false;
+    }
+  });
+})

@@ -6,7 +6,7 @@
 			= I18n.t("activerecord.attributes.prize.cost", :count => prize.cost)
 	.prize_content
 		- if prize.prize_photo_file_name.nil?
-			= link_to image_tag("home_images/logo.png", :class => "prizes"), prize_path(prize)
+			= link_to image_tag("default_images/report_before_photo.png", :class => "prizes"), prize_path(prize)
 		- else
 			= link_to image_tag(prize.prize_photo.url(:large), :class => "prizes"), prize_path(prize)
 		.description

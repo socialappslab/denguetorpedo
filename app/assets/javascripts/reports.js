@@ -51,7 +51,7 @@ $(document).ready(function() {
 
 
 function filter_reports(e, filter_class){
-    e.preventDefault();
+    // e.preventDefault();
 
     // hide new report div
     $('#new_report').css('display','none');

@@ -24,4 +24,11 @@ class EliminationMethod < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def detailed_description
+    return self.description + " (#{self.points} #{I18n.t("attributes.points").downcase})"
+  end
+
+  #----------------------------------------------------------------------------
+
+
 end
