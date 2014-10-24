@@ -35,7 +35,11 @@
           .control-group
             = f.label I18n.t("activerecord.attributes.team.profile_photo"), :class => "control-label", :style => "width: 200px; text-align: left;"
             .controls
-              = f.file_field :profile_photo, :class => "span6"
+              = f.file_field :profile_photo, :class => "span6 upload_photo"
+              %img.preview{:style => "display: block;"}
+              %canvas{:style => "display: none;"}
+              = hidden_field_tag "team[compressed_photo]", nil, :class => "compressed_photo"
+
           .control-group
             .controls.span6{:style => "margin-left: 195px;"}
               = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
@@ -90,66 +94,24 @@
         %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
 
 
--# NOTE: See comment below.
--# #progressBarModal.modal.hide.fade{:tabindex => "-1", :role => "dialog"}
--#   .modal-header
--#     %h3#progressBarLabel
--#       Loading...
--#   .modal-body
--#     %i.fa.fa-spinner.fa-spin{:style => "font-size: 64px;"}
--#
+- content_for :scripts do
+  = javascript_include_tag "image-compression"
 
-:javascript
-  $(document).ready(function()
-  {
-    // Listener on new team button.
-    $("#create-new-team").on("click", function(e)
+  :javascript
+    $(document).ready(function()
     {
-      e.preventDefault();
-      $("#new-team-form").toggle()
-    });
+      // Listener on new team button.
+      $("#create-new-team").on("click", function(e)
+      {
+        e.preventDefault();
+        $("#new-team-form").toggle()
+      });
 
-    // Listen for team ordering event.
-    // TODO: Consider making radio buttons links themselves.
-    $("#order-teams input[name='team-order']").on("click", function(e)
-    {
-      var uri = window.location.href.split("?")[0]
-      window.location.href = uri + "?" + $.param({sort: $(e.currentTarget).val()})
-    });
-
-    // NOTE: As cool as this is, its implementation requires adding/rewriting
-    // a lot of the existing functionality. Consider coming back to this.
-    // $(".submit-button").on("click", function(e)
-    // {
-    //   e.preventDefault();
-    //
-    //   $(".messagesFromJSON .alert-danger").hide();
-    //   $(".messagesFromJSON .alert-success").hide();
-    //
-    //   var ajaxRequest = $.ajax({"url": e.currentTarget.form.action, "method": e.currentTarget.form.method, "data": $(e.currentTarget.form).serialize(), "dataType": "json"})
-    //   ajaxRequest.done(function(xhr, data, response)
-    //   {
-    //     $('#progressBarModal').modal("hide")
-    //
-    //     if (xhr.errors)
-    //     {
-    //       for (var prop in xhr.errors)
-    //       {
-    //         $(".messagesFromJSON .alert-danger ul").append("<li>" + xhr.errors[prop] + "</li>")
-    //       }
-    //
-    //       $(".messagesFromJSON .alert-danger").show();
-    //     }
-    //     else
-    //     {
-    //       $(".messagesFromJSON .alert-success p").text(xhr.success)
-    //       $(".messagesFromJSON .alert-success").show();
-    //     }
-    //
-    //
-    //
-    //   })
-    //
-    // });
-
-  })
+      // Listen for team ordering event.
+      // TODO: Consider making radio buttons links themselves.
+      $("#order-teams input[name='team-order']").on("click", function(e)
+      {
+        var uri = window.location.href.split("?")[0]
+        window.location.href = uri + "?" + $.param({sort: $(e.currentTarget).val()})
+      });
+    })

@@ -103,32 +103,34 @@
 /-------------
 
 #fb-root
-:javascript
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/#{@facebook_locale}/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
 
-:javascript
-  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+- content_for :scripts do
+  = javascript_include_tag "image-compression"
 
-  $(document).ready(function(){
-    //show all reports on start
-    $('#new_report').css('display','none');
+  :javascript
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/#{@facebook_locale}/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
+    $(document).ready(function(){
+      //show all reports on start
+      $('#new_report').css('display','none');
+
+      // keep the map on the page when scrolling
+      $(window).scroll(function() {
+        var scrollAmount = $(window).scrollTop();
+        if (scrollAmount > 200) {
+            $("#map_div").css("margin-top", scrollAmount - 263);
+        } else {
+            $("#map_div").css("margin-top", 0);
+        }
+      });
 
 
-    // keep the map on the page when scrolling
-    $(window).scroll(function() {
-      var scrollAmount = $(window).scrollTop();
-      if (scrollAmount > 200) {
-          $("#map_div").css("margin-top", scrollAmount - 263);
-      } else {
-          $("#map_div").css("margin-top", 0);
-      }
-    });
-
-
-  })
+    })

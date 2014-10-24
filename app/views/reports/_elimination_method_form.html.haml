@@ -17,7 +17,7 @@
   = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :style => "width: 300px;", :class => "upload_photo"
   %img.preview{:style => "display: block;"}
   %canvas{:style => "display: none;"}
-  = hidden_field_tag "report[compressed_photo]", nil, :class => "report_compressed_photo"
+  = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
 
   %br
   .row
@@ -32,7 +32,3 @@
       = button_tag :type => "submit", :class => "report_submission btn btn-success submit-button", :disabled => should_disable, :onclick=>"setLocationVariablesUsingOSM(#{report.location.to_json},event);" do
         %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
         = I18n.t("views.buttons.submit")
-
-
-- content_for :scripts do
-  = javascript_include_tag "image-compression"

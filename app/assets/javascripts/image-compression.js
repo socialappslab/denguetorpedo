@@ -4,7 +4,7 @@ window.compression.compressFileFromHTMLInput = function(element) {
   var canvas     = $(element).parent().find("canvas")[0];
   var preview    = $(element).parent().find(".preview");
   var file       = element.files[0];
-  var compressedHTMLInput = $(element).parent().find(".report_compressed_photo")
+  var compressedHTMLInput = $(element).parent().find(".compressed_photo")
 
   if (!file.type.match('image.*'))
     return;
