@@ -43,6 +43,7 @@ GEM
       multi_json (~> 1.0)
     addressable (2.3.5)
     afm (0.2.0)
+    analytics-ruby (2.0.8)
     arbre (1.0.1)
       activesupport (>= 3.0.0)
     arel (3.0.3)
@@ -333,6 +334,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin
+  analytics-ruby (~> 2.0.8)
   awesome_nested_set
   aws-sdk
   bcrypt-ruby (~> 3.0.0)

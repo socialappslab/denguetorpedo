@@ -133,3 +133,4 @@ end
 # Analytics
 
 gem 'newrelic_rpm'
+gem "analytics-ruby", '~> 2.0.8'
