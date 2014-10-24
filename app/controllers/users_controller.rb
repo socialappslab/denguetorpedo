@@ -74,6 +74,12 @@ class UsersController < ApplicationController
 
     @activity_feed  = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
     @reports_by_user = @user.reports
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
+    else
+      Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
+    end
   end
 
   #----------------------------------------------------------------------------

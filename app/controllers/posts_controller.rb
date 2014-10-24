@@ -87,6 +87,8 @@ class PostsController < ApplicationController
       Like.create(:user_id => @current_user.id, :likeable_id => @post.id, :likeable_type => Post.name)
       count += 1
       liked  = true
+
+      Analytics.track( :user_id => @current_user.id, :event => "Liked a post", :properties => {:post => @post.id}) if Rails.env.production?
     end
 
     render :json => {'count' => count.to_s, "liked" => liked} and return
@@ -101,6 +103,7 @@ class PostsController < ApplicationController
     c         = Comment.new(:user_id => @current_user.id, :commentable_id => @post.id, :commentable_type => Post.name)
     c.content = params[:comment][:content]
     if c.save
+      Analytics.track( :user_id => @current_user.id, :event => "Commented on a post", :properties => {:post => @post.id}) if Rails.env.production?
       redirect_to :back, :notice => I18n.t("activerecord.success.comment.create") and return
     else
       redirect_to :back, :alert => I18n.t("attributes.content") + " " + I18n.t("activerecord.errors.comments.blank") and return

@@ -16,6 +16,12 @@ class CitiesController < ApplicationController
     # Calculate ranking for each community.
     rankings  = @neighborhoods.map {|n| [n, n.total_points]}
     @rankings = rankings.sort {|a, b| a[1] <=> b[1]}.reverse
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited city page", :properties => {:city => @city.name}) if Rails.env.production?
+    else
+      Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited city page", :properties => {:city => @city.name}) if Rails.env.production?
+    end
   end
 
 

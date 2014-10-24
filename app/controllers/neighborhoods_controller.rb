@@ -27,6 +27,12 @@ class NeighborhoodsController < NeighborhoodsBaseController
     end
 
     @activity_feed = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
+
+    if @current_user.present?
+      Analytics.track( :user_id => @current_user.id, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
+    else
+      Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
+    end
   end
 
 
