@@ -74,27 +74,14 @@ class ReportsController < NeighborhoodsBaseController
     @report.neighborhood_id = @neighborhood.id
     @report.completed_at = Time.now
 
-    if params[:report][:compressed_photo].blank?
+    base64_image = params[:report][:compressed_photo]
+    if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       render "new" and return
     else
-      # NOTE: We have to use this hack (even though Paperclip handles base64 images)
-      # because we want to explicitly specify the content type and filename. Some
-      # of this is taken from
-      # https://github.com/thoughtbot/paperclip/blob/master/lib/paperclip/io_adapters/data_uri_adapter.rb
-      # and
-      # https://gist.github.com/WizardOfOgz/1012107
-      base64_image = params[:report][:compressed_photo]
-      regexp = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
-      data_uri_parts = base64_image.match(regexp) || []
-      data = StringIO.new(Base64.decode64(data_uri_parts[2] || ''))
-      data.class_eval do
-        attr_accessor :content_type, :original_filename
-      end
-      data.content_type = "image/jpeg"
-      data.original_filename = @current_user.display_name.underscore + "_report.jpg"
-
-      @report.before_photo = data
+      filename             = @current_user.display_name.underscore + "_report.jpg"
+      paperclip_image      = prepare_base64_image_for_paperclip(base64_image, filename)
+      @report.before_photo = paperclip_image
     end
 
     if @report.save
@@ -103,7 +90,6 @@ class ReportsController < NeighborhoodsBaseController
 
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
-
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
       render "new" and return
@@ -150,29 +136,14 @@ class ReportsController < NeighborhoodsBaseController
 
     @report.location_id  = location.id
 
-    if params[:report][:compressed_photo].blank?
+    base64_image = params[:report][:compressed_photo]
+    if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-
-      # NOTE: We have to use this hack (even though Paperclip handles base64 images)
-      # because we want to explicitly specify the content type and filename. Some
-      # of this is taken from
-      # https://github.com/thoughtbot/paperclip/blob/master/lib/paperclip/io_adapters/data_uri_adapter.rb
-      # and
-      # https://gist.github.com/WizardOfOgz/1012107
-      base64_image = params[:report][:compressed_photo]
-      regexp = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
-      data_uri_parts = base64_image.match(regexp) || []
-      data = StringIO.new(Base64.decode64(data_uri_parts[2] || ''))
-      data.class_eval do
-        attr_accessor :content_type, :original_filename
-      end
-      data.content_type = "image/jpeg"
-      data.original_filename = @current_user.display_name.underscore + "_report.jpg"
+      filename  = @current_user.display_name.underscore + "_report.jpg"
+      data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
-
-
 
     # Update SMS
     if @report.incomplete?
@@ -208,8 +179,6 @@ class ReportsController < NeighborhoodsBaseController
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_eliminating(@report)
-
-
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else

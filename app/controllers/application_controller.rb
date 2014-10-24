@@ -60,6 +60,28 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
+  def prepare_base64_image_for_paperclip(base64_image, filename = nil)
+    # NOTE: We have to use this hack (even though Paperclip handles base64 images)
+    # because we want to explicitly specify the content type and filename. Some
+    # of this is taken from
+    # https://github.com/thoughtbot/paperclip/blob/master/lib/paperclip/io_adapters/data_uri_adapter.rb
+    # and
+    # https://gist.github.com/WizardOfOgz/1012107
+    regexp = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
+    data_uri_parts = base64_image.match(regexp) || []
+    data = StringIO.new(Base64.decode64(data_uri_parts[2] || ''))
+    data.class_eval do
+      attr_accessor :content_type, :original_filename
+    end
+    data.content_type = "image/jpeg"
+    data.original_filename = filename || SecureRandom.base64 + ".jpg"
+
+    return data
+  end
+
+
+  #----------------------------------------------------------------------------
+
   private
 
   def ensure_team_chosen

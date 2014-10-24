@@ -139,6 +139,13 @@ class UsersController < ApplicationController
     @user.update_attribute(:nickname, params[:user][:nickname])
     @user.update_column(:locale, params[:user][:locale].to_s)
 
+    base64_image = params[:user][:compressed_photo]
+    if base64_image.present?
+      filename            = @user.display_name.underscore + "_profile_photo.jpg"
+      paperclip_image     = prepare_base64_image_for_paperclip(base64_image, filename)
+      @user.profile_photo = paperclip_image
+    end
+
     @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
 
     # TODO: Clean up and clarify the intent of this line.
