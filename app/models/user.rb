@@ -1,12 +1,12 @@
 # encoding: utf-8
 
 class User < ActiveRecord::Base
-  attr_accessible :locale, :house_attributes, :first_name, :reporter,
+  attr_accessible :locale, :first_name, :reporter,
   :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username,
   :password, :password_confirmation, :auth_token, :phone_number,
   :phone_number_confirmation, :profile_photo, :is_verifier,
   :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked,
-  :house_id, :carrier, :prepaid, :points, :total_points
+  :carrier, :prepaid, :points, :total_points
 
   #----------------------------------------------------------------------------
 
@@ -88,7 +88,6 @@ class User < ActiveRecord::Base
   has_one :recruiter, :through => :recruiter_relationships, :source => :recruiter
   has_many :recruitee_relationships, :class_name => "Recruitment", :foreign_key => "recruiter_id"
   has_many :recruitees, :through => :recruitee_relationships, :source => :recruitee
-  belongs_to :house
   belongs_to :neighborhood
 
   scope :residents, where("role = 'morador' OR role = 'coordenador'")
@@ -98,10 +97,6 @@ class User < ActiveRecord::Base
   has_many :user_notifications, :dependent => :destroy
 
   has_and_belongs_to_many :conversations
-
-  #----------------------------------------------------------------------------
-
-  accepts_nested_attributes_for :house, :allow_destroy => true
 
   #----------------------------------------------------------------------------
 
@@ -177,7 +172,7 @@ class User < ActiveRecord::Base
       lat = house.location.latitude
       lon = house.location.longitude
       dist_str = "((locations.latitude - #{lat}) * (locations.latitude - #{lat}) + (locations.longitude - #{lon}) * (locations.longitude - #{lon}))"
-      User.joins(:house => :location).where("houses.id != ?", house.id).order(dist_str).limit(n)
+      User.order(dist_str).limit(n)
     end
   end
 
@@ -271,13 +266,13 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def total_torpedos
-    self.reports.sms.where('elimination_type IS NOT NULL')
+    self.reports.sms.where('breeding_site_id IS NOT NULL')
   end
 
   #----------------------------------------------------------------------------
 
   def creditable_torpedos
-    self.reports.sms.where('elimination_type IS NOT NULL').where(is_credited: nil)
+    self.reports.sms.where('breeding_site_id IS NOT NULL').where(is_credited: nil)
   end
 
   #----------------------------------------------------------------------------

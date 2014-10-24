@@ -1,5 +1,4 @@
 class EliminationMethod < ActiveRecord::Base
-  belongs_to :elimination_type
   belongs_to :breeding_site
 
   #----------------------------------------------------------------------------

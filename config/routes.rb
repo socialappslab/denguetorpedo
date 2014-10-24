@@ -94,15 +94,6 @@ Dengue::Application.routes.draw do
 
 
     resources :csv_reports, :only => [:new, :create]
-
-    resources :houses do
-
-      # TODO: Deprecate the posts behavior...?
-      resources :posts do
-        post "like",    :on => :member
-        post "comment", :on => :member
-      end
-    end
   end
 
   #----------------------------------------------------------------------------
@@ -140,9 +131,6 @@ Dengue::Application.routes.draw do
   # undefined '_path' errors. At some point, we should refactor these.
   match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
   match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
-
-  match '/houses'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
-  match '/houses/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
 
   #----------------------------------------------------------------------------
   # Prizes

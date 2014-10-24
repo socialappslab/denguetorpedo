@@ -43,16 +43,6 @@ FactoryGirl.define do
 		cost 100
 		stock 100
 		description "Description"
-
-	end
-
-	factory :house do
-		name "Rede Trel"
-		association :location
-		profile_photo_file_name "File name"
-		profile_photo_content_type "image/png"
-		profile_photo_file_size 1024
-		profile_photo_updated_at Time.new
 	end
 
 	factory :location do
