@@ -30,3 +30,7 @@
       - elsif @current_user.role == User::Types::SPONSOR
         .well{:style => "border: 1px solid #bdc3c7;"}
           = render :partial => "users/sponsor_links"
+
+
+- content_for :scripts do
+  = javascript_include_tag "image-compression"
