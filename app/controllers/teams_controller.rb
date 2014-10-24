@@ -52,6 +52,13 @@ class TeamsController < ApplicationController
     @team                 = Team.new(params[:team])
     @team.neighborhood_id = @neighborhood.id
 
+    base64_image = params[:team][:compressed_photo]
+    if base64_image.present?
+      filename            = "team_profile_photo.jpg"
+      paperclip_image     = prepare_base64_image_for_paperclip(base64_image, filename)
+      @team.profile_photo = paperclip_image
+    end
+
     if @team.save
       # If the team was successfully created, create the team membership
       # since any user who creates a team must be interested in joining it,
