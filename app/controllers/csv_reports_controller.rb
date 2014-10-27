@@ -45,62 +45,94 @@ class CsvReportsController < NeighborhoodsBaseController
     # * Second row is empty
     # * Third row is the beginning of the table,
     # * All subsequent rows are entries in the table.
-    # ["Visita", "Fecha", "Hora", "Tipo", "Total de tipo", "Protegido?", "Abatizado?", "Larvas?", "Pupas?"]
+    #
     header  = spreadsheet.row(1)
+    puts "header: #{header}"
     address = "#{header[1]}"
-    header  = spreadsheet.row(3)
-    header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "") }
+
+    start_index = 2
+    while spreadsheet.row(start_index)[0].blank?
+      start_index += 1
+    end
+
+    # Define the header.
+    header  = spreadsheet.row(start_index)
+    header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
     before_reports = []
     after_reports  = []
     current_visit = -1
     parsed_content = []
-    (4..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-      puts "row; #{row}"
+    # The rows of the table are:
+    # {
+    #   "fecha de visita (aaaammdd)"=>20141010.0, "tipo de criadero"=>"B",
+    #   "localización"=>"Cerca del baño", "¿protegido"=>0.0, "¿abatizado"=>0.0,
+    #   "¿larvas"=>1.0, "pupas"=>0.0, "¿foto de criadero"=>nil,
+    #   "eliminado (aaaammdd)"=>20141012.0, "¿foto de eliminación"=>nil,
+    #   "comentarios sobre tipo y/o eliminación*"=>nil
+    # }
+    (start_index + 1..spreadsheet.last_row).each do |i|
+      row            = Hash[[header, spreadsheet.row(i)].transpose]
+      date           = row["fecha de visita (aaaammdd)"]
+      site           = row["tipo de criadero"]
+      location_within_house = row["localización"]
+      comments       = row.select {|k,v| k.include?("comentarios")}.values[0]
+      is_protected   = row['protegido'].to_i
+      is_pupas       = row["pupas"].to_i
+      is_larvas      = row["larvas"].to_i
+      is_covered     = row["abatizado"].to_i
+
+
       parsed_content << row
 
-      # Ensure that there are at most two visits to a location.
-      if row["visita"].to_i > 2
-        flash[:alert] = "There can only be at most 2 visits to a location. Please redo the CSV report."
-        render "new" and return
-      end
-
       # Update the current visit to differentiate between before and after report.
-      current_visit = row["visita"].to_i if row["visita"].to_i != 0
+      current_visit = 1 if date.present?
+
+      # This is the csv_uuid on the reports table. We use this column
+      # to identify the row that corresponds to this report.
+      uuid = date.to_s + site.to_s + location_within_house.to_s + comments.to_s + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_covered.to_s
+      puts "uuid: #{uuid}"
+      next if Report.where(:csv_uuid => uuid).present?
+
 
       # Ensure that the breeding site is identifiable.
-      if row["tipo"] && ["b", "t", "n", "o"].include?( row["tipo"].strip.downcase )
-        type = row["tipo"].strip.downcase
+      if site && ["a", "b", "l", "m", "p", "t", "o"].include?( site.strip.downcase )
+        type = site.strip.downcase
 
-
-
-        if type == "b"
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+        if type == "a"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+        elsif type == "b"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+        elsif type == "l"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+        elsif type == "m"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+        elsif type == "p"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
         elsif type == "t"
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
-        elsif type == "n"
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
-        else
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::OTHER)
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
         end
 
-
-
       else
-        flash[:alert] = "One or more of the breeding sites can't be identified. Please use B, T, N or O to identify breeding sites."
-        render "new" and return
+        next
+        # flash[:alert] = "One or more of the breeding sites can't be identified. Please use A, B, L, M, P, T, or O to identify breeding sites."
+        # render "new" and return
       end
 
       # At this point, we know the breeding site.
-      description = "Total de tipo: #{row['total de tipo'].to_i}, Protegido: #{row['protegido']}, Abatizado: #{row['abatizado']}, Larvas: #{row['larvas']}, Pupas: #{row['pupas']}"
-      before_reports << {:breeding_site => site, :description => description}
+      description = ""
+      description += "Localización: #{location_within_house}, " if location_within_house.present?
+      description += "Comentarios sobre tipo y/o eliminación: #{comments}, " if comments.present?
+      description += "Protegido: #{is_protected}, Abatizado: #{is_covered}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
+      before_reports << {:breeding_site => breeding_site, :description => description, :csv_uuid => uuid}
     end
 
     if current_visit == -1
       flash[:alert] = "You need to have at least 1 visit to a location. Please redo the CSV report."
       render "new" and return
     end
+
+    puts "before_reports: #{before_reports}"
 
 
     # At this point, we have at least one, but no more than two visits to the location.
@@ -116,11 +148,12 @@ class CsvReportsController < NeighborhoodsBaseController
     before_reports.each do |report|
       r = Report.new
       r.report           = report[:description]
-      r.breeding_site_id = report[:breeding_site].id
+      r.breeding_site_id = report[:breeding_site].id if report[:breeding_site].present?
       r.location_id      = location.id
       r.neighborhood_id  = @neighborhood.id
       r.reporter_id      = @current_user.id
       r.csv_report_id    = @csv_report.id
+      r.csv_uuid         = report[:csv_uuid]
       r.save(:validate => false)
     end
 
