@@ -105,7 +105,7 @@ class Report < ActiveRecord::Base
   # an SMS OR a CSV report.
   def incomplete?
     if self.completed_at == nil
-      return true if self.csv_report.present?
+      return true if self.csv_report_id.present?
       return true if self.sms.present?
     end
 
