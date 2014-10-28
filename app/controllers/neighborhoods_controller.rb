@@ -16,7 +16,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Limit the amount of records we show.
     @total_reports = @reports.count
-    @total_points  = @users.sum(:total_points)
+    @total_points  = @neighborhood.total_points
 
     if params[:feed].to_s == "1"
       @posts = @users.includes(:posts).map {|u| u.posts }.flatten
