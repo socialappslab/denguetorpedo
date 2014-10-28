@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141027225324) do
+ActiveRecord::Schema.define(:version => 20141028201535) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -300,8 +300,14 @@ ActiveRecord::Schema.define(:version => 20141027225324) do
   end
 
   create_table "reports", :force => true do |t|
+    t.string   "nation"
+    t.string   "state"
+    t.string   "city"
+    t.string   "address"
+    t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
+    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.integer  "eliminator_id"
@@ -326,6 +332,7 @@ ActiveRecord::Schema.define(:version => 20141027225324) do
     t.datetime "completed_at"
     t.datetime "credited_at"
     t.boolean  "is_credited"
+    t.integer  "feed_type_cd"
     t.integer  "neighborhood_id"
     t.string   "status"
     t.integer  "breeding_site_id"
@@ -354,9 +361,10 @@ ActiveRecord::Schema.define(:version => 20141027225324) do
     t.string   "profile_photo_content_type"
     t.integer  "profile_photo_file_size"
     t.datetime "profile_photo_updated_at"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.boolean  "blocked"
+    t.integer  "points",                     :default => 0
   end
 
   create_table "user_notifications", :force => true do |t|

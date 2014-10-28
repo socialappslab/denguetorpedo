@@ -119,6 +119,8 @@ pt:
         verify: O foco foi verificado
       comment:
         create: Comentou com sucesso
+      post:
+        delete: Post deletado com sucesso
 
   #----------------------------------------------------------------------------
   # Home Navigation

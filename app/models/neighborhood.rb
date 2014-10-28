@@ -87,7 +87,7 @@ class Neighborhood < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def total_points
-    self.members.sum(:total_points)
+    self.teams.sum(:points)
   end
 
   #----------------------------------------------------------------------------
