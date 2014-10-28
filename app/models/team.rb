@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 class Team < ActiveRecord::Base
-  attr_accessible :name, :blocked, :profile_photo, :neighborhood_id
+  attr_accessible :name, :blocked, :profile_photo, :neighborhood_id, :points
 
   has_attached_file :profile_photo, :styles => {
     :small => "60x60>",
