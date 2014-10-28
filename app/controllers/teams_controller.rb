@@ -13,9 +13,9 @@ class TeamsController < ApplicationController
 
     # Calculate ranking for each team.
     if params[:sort].present? && params[:sort].downcase == "name"
-      @team_rankings = @teams.order("name").map {|t| [t, t.total_points]}
+      @team_rankings = @teams.order("name").map {|t| [t, t.points]}
     else
-      team_rankings  = @teams.map {|t| [t, t.total_points]}
+      team_rankings  = @teams.map {|t| [t, t.points]}
       @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
     end
 
@@ -38,7 +38,7 @@ class TeamsController < ApplicationController
     @reports = @users.map {|u| u.reports.order("updated_at DESC")}.flatten
 
     @total_reports = @reports.count
-    @total_points  = @users.sum(:total_points)
+    @total_points  = @team.points
 
     if params[:feed].to_s == "1"
       @posts = @users.map {|u| u.posts}.flatten
@@ -89,7 +89,7 @@ class TeamsController < ApplicationController
       @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
 
       # Calculate ranking for each team.
-      team_rankings  = @teams.map {|t| [t, t.total_points]}
+      team_rankings  = @teams.map {|t| [t, t.points]}
       @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
 
       # Let's simplify the user's life by displaying the form in case of failure.

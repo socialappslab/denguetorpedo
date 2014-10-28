@@ -57,7 +57,6 @@ Dengue::Application.routes.draw do
     resources :reports, :except => [:show]
     resources :conversations, :only => [:index, :show]
     resources :messages,      :only => [:create]
-    resources :posts
 
     collection do
       get 'special_new', :as => :coordinator_create
@@ -99,7 +98,7 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Posts
 
-  resources :posts do
+  resources :posts, :only => [:create, :destroy] do
     post "like",    :on => :member
     post "comment", :on => :member
   end
