@@ -119,6 +119,8 @@ es:
         verify: El criadero fué verificado
       comment:
         create: Comentario hecho con éxito
+      post:
+        delete: Post deletado com sucesso
 
   #----------------------------------------------------------------------------
   # Home Navigation

@@ -1,73 +1,51 @@
 # encoding: UTF-8
 
 class PostsController < ApplicationController
-  before_filter :require_login, :except => [:index]
-  before_filter :load_wall, :except => [:like, :comment]
-  before_filter :find_by_id, :only => [:like, :comment]
-
-  def index
-    @posts = Post.all
-  end
-
-  def new
-    @post = Post.new
-    @post.user_id = @current_user.id
-  end
+  before_filter :require_login
+  before_filter :find_by_id,   :only => [:like, :comment]
 
   #----------------------------------------------------------------------------
-  # POST /create ... and /neighborhood/1/houses/1/posts
+  # POST /posts/
 
   def create
-    # TODO: Deprecate the @wall behavior...
-    if @wall.nil?
-      p = Post.new(params[:post])
-      p.user_id = @current_user.id
+    post         = Post.new(params[:post])
+    post.user_id = @current_user.id
 
-      # TODO: Allow the specific errors to show through.
-      if p.save
-        flash[:notice] = I18n.t("views.posts.success_create_flash")
-        redirect_to :back and return
-      else
-        flash[:alert] = I18n.t("views.application.error")
-        redirect_to :back and return
-      end
+    if post.save
+      @current_user.award_points_for_posting
+      flash[:notice] = I18n.t("views.posts.success_create_flash")
+      redirect_to :back and return
     else
-      @wall.posts.create params[:post] do |post|
-        post.user_id = @current_user.id
-      end
+      flash[:alert] = I18n.t("views.application.error")
+      redirect_to :back and return
     end
-
-    redirect_to :back and return
   end
 
   #----------------------------------------------------------------------------
-
-  def show
-    @post = Post.find params[:id]
-    head :not_found and return if @post.nil?
-  end
-
-  def edit
-    @post = Post.find params[:id]
-    head :forbidden and return if @post.user_id != @current_user.id
-  end
-
-  def update
-    post = Post.find params[:post][:id]
-    head :not_found and return if post.nil?
-    head :forbidden and return if post.user_id != @current_user.id
-    post.update_attributes params[:post]
-  end
+  # DELETE /posts/1
 
   def destroy
-    post = Post.find params[:id]
-    head :forbidden and return if post.user_id != @current_user.id
-    post.destroy
-    redirect_to(:back)
+    post = Post.find( params[:id] )
+
+    unless (post.user_id == @current_user.id || @current_user.coordinator?)
+      flash[:alert] = I18n.t("views.application.permission_required")
+      redirect_to root_path and return
+    end
+
+    if post.destroy
+      points = @current_user.total_points || 0
+      @current_user.update_column(:total_points, points - User::Points::POST_CREATED)
+      @current_user.teams.each do |team|
+        team.update_column(:points, team.points - User::Points::POST_CREATED)
+      end
+
+      flash[:notice] = I18n.t("activerecord.success.post.delete")
+      redirect_to :back and return
+    end
   end
 
   #----------------------------------------------------------------------------
-  # POST /users/1/posts/1/like
+  # POST /posts/1/like
 
   def like
     count = params[:count].to_i
@@ -95,7 +73,7 @@ class PostsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # POST /users/1/posts/1/comment
+  # POST /posts/1/comment
 
   def comment
     redirect_to :back and return if ( @current_user.blank? || @post.blank? )
@@ -113,16 +91,6 @@ class PostsController < ApplicationController
   #----------------------------------------------------------------------------
 
   private
-
-  #----------------------------------------------------------------------------
-
-  def load_wall
-    # TODO @dman7: This is not the way of identifying resources...
-    resource, id = request.path.split('/')[3,4]
-
-    return if resource.nil?
-    @wall = resource.singularize.classify.constantize.find(id)
-  end
 
   #----------------------------------------------------------------------------
 

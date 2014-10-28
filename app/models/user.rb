@@ -29,6 +29,7 @@ class User < ActiveRecord::Base
   module Points
     REPORT_VERIFIED  = 50
     REPORT_SUBMITTED = 50
+    POST_CREATED     = 5
 
     # Points for certain badges
     WATCHER      = 10
