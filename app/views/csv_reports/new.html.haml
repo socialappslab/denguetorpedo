@@ -17,13 +17,11 @@
   .span10.offset4
 
     %p{:style => "font-size: 16px;margin-bottom: 20px;"}
-      Note: Each CSV report must correspond to one house. The report can have only two visits,
-      the first focusing on breeding site identification, and the second (if possible) focusing
-      on elimination. If you have more than two visits, split up the CSV into multiple files.
+      Note: Use the same CSV for multiple visits. Each row in the CSV file must correspond to a breeding site at the specified location. If the breeding site is eliminated, use the same row to update with elimination date, and a comment.
       %br
       %br
       Need a CSV template?
-      = link_to "Click here to download", "/assets/forma_visita_entomologica.xls"
+      = link_to "Click here to download", "/assets/forma_visita_entomologica.xlsx"
 
 
     #upload_csv{:style => "display: block;"}

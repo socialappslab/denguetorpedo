@@ -485,6 +485,9 @@ es:
     elimination_methods:
       create: "Criar un método de eliminación"
       edit: "Editar un método de eliminación"
+    csv_reports:
+      flashes:
+        create: "Los nuevos criaderos han sido documentados”
 
   #----------------------------------------------------------------------------
   # Countries
