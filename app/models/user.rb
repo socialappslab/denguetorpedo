@@ -125,19 +125,36 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def award_points_for_posting
+    points = self.total_points || 0
+    self.update_column(:total_points, points + Points::POST_CREATED)
+    self.teams.each do |team|
+      team.update_column(:points, team.points + Points::POST_CREATED)
+    end
+  end
+
   def award_points_for_submitting(report)
     points = self.total_points || 0
     self.update_column(:total_points, points + Points::REPORT_SUBMITTED)
+    self.teams.each do |team|
+      team.update_column(:points, team.points + Points::REPORT_SUBMITTED)
+    end
   end
 
   def award_points_for_verifying(report)
     points = self.total_points || 0
     self.update_column(:total_points, points + Points::REPORT_VERIFIED)
+    self.teams.each do |team|
+      team.update_column(:points, team.points + Points::REPORT_VERIFIED)
+    end
   end
 
   def award_points_for_eliminating(report)
     points = self.total_points || 0
     self.update_column(:total_points, points + report.elimination_method.points)
+    self.teams.each do |team|
+      team.update_column(:points, team.points + report.elimination_method.points)
+    end
   end
 
   #----------------------------------------------------------------------------
