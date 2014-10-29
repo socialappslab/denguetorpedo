@@ -5,13 +5,12 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,             :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,                :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
-  before_filter :redirect_if_incomplete_reports, :only => [:index]
 
   #----------------------------------------------------------------------------
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
-    @reports = @reports.where("before_photo_updated_at IS NOT NULL")
+    @reports = @reports.where("completed_at IS NOT NULL")
     @report_count  = @reports.count
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit

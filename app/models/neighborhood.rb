@@ -22,7 +22,7 @@ class Neighborhood < ActiveRecord::Base
   has_many :teams
   has_many :members, :class_name => "User"
   has_many :users
-  has_many :reports
+  has_many :reports, :conditions => "completed_at IS NOT NULL"
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
 
