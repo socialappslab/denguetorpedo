@@ -41,6 +41,10 @@ class ReportsController < NeighborhoodsBaseController
     @eliminated_locations.compact!
 
     if @current_user.present?
+      @incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+    end
+
+    if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
     else
       Analytics.track(:anonymous_id => SecureRandom.base64, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
@@ -146,7 +150,7 @@ class ReportsController < NeighborhoodsBaseController
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
-      redirect_to neighborhood_reports_path(@neighborhood) and return
+      redirect_to :back and return
     else
       filename  = @current_user.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
@@ -160,16 +164,24 @@ class ReportsController < NeighborhoodsBaseController
 
       # Verify report saves and form submission is valid
       if @report.update_attributes(params[:report])
-        flash[:notice] = I18n.t("activerecord.success.report.create")
-
         @report.neighborhood_id = @neighborhood.id
         @report.completed_at    = Time.now
         @report.save(:validate => false)
 
         # Let's award the user for submitting a report.
-        # @current_user.award_points_for_submitting(@report)
+        @current_user.award_points_for_submitting(@report)
 
-        redirect_to neighborhood_reports_path(@neighborhood) and return
+        # Decide where to redirect: if there are still incomplete reports,
+        # then let's redirect to the first available one.
+        incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+        if incomplete_reports.present?
+          report = incomplete_reports.first
+          flash[:notice] = "Report created successfully. Here is another one."
+          redirect_to edit_neighborhood_report_path(@neighborhood, report) and return
+        else
+          flash[:notice] = I18n.t("activerecord.success.report.create")
+          redirect_to neighborhood_reports_path(@neighborhood) and return
+        end
 
       # Error occurred when completing SMS report
       else
@@ -398,20 +410,6 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
-  end
-
-  #----------------------------------------------------------------------------
-
-  def redirect_if_incomplete_reports
-    # Avoid redirect if the user is simply visiting.
-    return if @current_user.blank?
-
-    # We want to redirect only if user is viewing their own neighborhood.
-    return unless @neighborhood == @current_user.neighborhood
-
-    @report = @current_user.reports.order("created_at ASC").find {|r| r.incomplete?}
-    flash.keep
-    redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return if @report.present?
   end
 
   #----------------------------------------------------------------------------
