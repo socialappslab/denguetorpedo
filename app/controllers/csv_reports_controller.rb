@@ -27,7 +27,7 @@ class CsvReportsController < NeighborhoodsBaseController
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
     if lat.blank? || long.blank?
-      flash[:alert] = "You need to mark the location on the map!"
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_location")
       render "new" and return
     end
 
@@ -35,7 +35,7 @@ class CsvReportsController < NeighborhoodsBaseController
     file        = params[:csv_report][:csv]
     spreadsheet = load_spreadsheet( file )
     unless spreadsheet
-      flash[:alert] = "You must upload a .csv, .xls or a .xlsx file"
+      flash[:alert] = I18n.t("views.csv_reports.flashes.unknown_format")
       render "new" and return
     end
 
@@ -43,7 +43,7 @@ class CsvReportsController < NeighborhoodsBaseController
     # The first row is reserved for the house location/address.
     address = spreadsheet.row(1)[1]
     if address.blank?
-      flash[:alert] = "The CSV form must have a location. Please see the CSV template."
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_house")
       render "new" and return
     end
     address = address.to_s
@@ -110,7 +110,7 @@ class CsvReportsController < NeighborhoodsBaseController
           breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
         end
       else
-        flash[:alert] = "One or more of the breeding sites can't be identified. Please use A, B, L, M, P, T, or O to identify breeding sites."
+        flash[:alert] = I18n.t("views.csv_reports.flashes.unknown_code")
         render "new" and return
       end
 
@@ -137,7 +137,7 @@ class CsvReportsController < NeighborhoodsBaseController
 
     # 5. Error out if there are no reports extracted.
     if reports.count == 0
-      flash[:alert] = "You need to have at least 1 visit to a location. Please see the CSV template."
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_visits")
       render "new" and return
     end
 
