@@ -156,6 +156,8 @@ class CsvReportsController < NeighborhoodsBaseController
     end
 
     # 8. Create or update the reports.
+    # NOTE: We set completed_at to nil in order to signify that the user
+    # has to update the report.
     reports.each do |report|
       r = Report.find_by_csv_uuid(report[:csv_uuid])
       r = Report.new if r.blank?
@@ -167,6 +169,7 @@ class CsvReportsController < NeighborhoodsBaseController
       r.reporter_id      = @current_user.id
       r.csv_report_id    = @csv_report.id
       r.csv_uuid         = report[:csv_uuid]
+      r.completed_at     = nil
       r.save(:validate => false)
     end
 
