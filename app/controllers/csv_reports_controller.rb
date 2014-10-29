@@ -169,7 +169,6 @@ class CsvReportsController < NeighborhoodsBaseController
       r.reporter_id      = @current_user.id
       r.csv_report_id    = @csv_report.id
       r.csv_uuid         = report[:csv_uuid]
-      r.completed_at     = nil
       r.save(:validate => false)
     end
 
