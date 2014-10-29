@@ -391,6 +391,7 @@ pt:
       create:  "Criar"
       edit:    "Editar"
       delete:  Deletar
+      upload:  Cahegar
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
