@@ -92,7 +92,7 @@ Dengue::Application.routes.draw do
     end
 
 
-    resources :csv_reports, :only => [:new, :create]
+    resources :csv_reports, :only => [:new, :create, :index]
   end
 
   #----------------------------------------------------------------------------
