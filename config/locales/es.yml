@@ -443,6 +443,11 @@ es:
         date: "Data de la actividad"
         time: "Hora de la actividad"
     reports:
+      index:
+        incomplete:
+          one:   "Usted tiene un reporte incompleto"
+          other: "Usted tiene %{count} reportes incompletos"
+        complete_now_button: "Termine ahora"
       new:
         neighborhood_address: Nombre el barrio donde encontró el criadero
         description_placeholder: "Describa el lugar y tipo de criadero"
