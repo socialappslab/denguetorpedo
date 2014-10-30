@@ -496,7 +496,7 @@ es:
         create: "Los nuevos criaderos han sido documentados"
         missing_location: "¡Usted tiene que marcar el lugar en el mapa!"
         unknown_format: "Usted tiene que subir un archivo con extensión .csv, .xls, o .xlsx"
-        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, u O para identificar criaderos como en la forma CSV modelo"
+        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, u X para identificar criaderos como en la forma CSV modelo"
         missing_visits: Usted tiene que tener al menos un creadero por lugar
         missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
   #----------------------------------------------------------------------------
