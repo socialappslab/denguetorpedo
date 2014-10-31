@@ -1,5 +1,5 @@
 class BreedingSite < ActiveRecord::Base
-  attr_accessible :description_in_pt, :description_in_es, :elimination_methods_attributes
+  attr_accessible :description_in_pt, :description_in_es, :elimination_methods_attributes, :string_id
 
   #----------------------------------------------------------------------------
 
