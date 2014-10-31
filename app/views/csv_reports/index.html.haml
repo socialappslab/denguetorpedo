@@ -19,23 +19,28 @@
 
 .row{:style => "margin-top: 20px;"}
   .span16.offset1
-    %table.table.table-bordered
-      %thead
-        %th
-          File name
-        %th
-          Location
-        %th
-          Number of reports
-        %th
-          Download link
-      - @csv_reports.each do |type|
-        %tr
-          %td{:style => "font-weight: bold;"}
-            = type.csv_file_name
-          %td
-            = type.reports.first.location ? type.reports.first.location.address : ""
-          %td
-            = type.reports.count
-          %td
-            = link_to "Download", type.csv.url
+    - if @csv_reports.blank?
+      = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
+        %i.fa.fa-file
+        = I18n.t("views.buttons.upload_csv")
+    - else
+      %table.table.table-bordered
+        %thead
+          %th
+            Lugar
+          %th
+            Fecha
+          %th
+            Número de criaderos marcados
+          %th
+            Descargar
+        - @csv_reports.each do |type|
+          %tr
+            %td{:style => "font-weight: bold;"}
+              = type.reports.first.location ? type.reports.first.location.address : ""
+            %td
+              = type.created_at.strftime("%Y-%m-%d")
+            %td
+              = type.reports.count
+            %td
+              = link_to type.csv_file_name, type.csv.url

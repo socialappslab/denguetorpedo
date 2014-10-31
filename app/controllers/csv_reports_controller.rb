@@ -9,8 +9,7 @@ class CsvReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/csv_reports
 
   def index
-    # TODO: Associate users to csv reports.
-    @csv_reports = CsvReport.all.find_all {|csv| csv.reports.present? && csv.reports.first.reporter == @current_user}
+    @csv_reports = @current_user.csv_reports
   end
 
 
