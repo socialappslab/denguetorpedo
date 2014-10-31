@@ -1,58 +1,14 @@
 .row{:style => "margin-top: 50px;"}
-  - if @current_user.blank? || @neighborhood.spanish?
-    .span16.offset1
-      %h1{:style => "font-size: 32px;"}
-        = I18n.t("views.prizes.index.header_non_logged_in")
+  .span16.offset1
+    %h1{:style => "font-size: 32px;"}
+      = I18n.t("views.prizes.index.header_non_logged_in")
 
 
-      %p{:style => "font-size: 18px; line-height: 24px; margin-top: 30px;"}
-        = I18n.t("views.prizes.index.badge_explanation")
+    %p{:style => "font-size: 18px; line-height: 24px; margin-top: 30px;"}
+      = I18n.t("views.prizes.index.badge_explanation")
 
-      #badges.prizes{style: "margin-top:20px; margin-top: 40px;"}
-        = render :partial => "prizes/badges"
+    #badges.prizes{style: "margin-top:20px; margin-top: 40px;"}
+      = render :partial => "prizes/badges"
 
-      %h1{:style => "margin-top: 50px;"}
-        = link_to I18n.t("views.prizes.index.how_to_win_prizes"), faq_path
-
-
-  - else
-    .span12.offset1
-      %h1
-        = I18n.t("attributes.points")
-
-      .button_to#how_to
-        = link_to "Como ganhar pontos?", faq_path
-
-      %br
-
-      .row#neighborhood_stats
-        .span4
-          .row
-            #available_prizes_button.span1
-            .span3
-              %b= @available.sum(:stock)
-              %br Disponiveis
-
-        .span4
-          .row
-            #neighborhood_resolved_report_button.span1
-            .span3
-              %b= @redeemed_counts
-              %br Resgatados
-
-
-    = render :partial => "prizes/sponsors"
-
-    .row
-      .span16.offset1
-        - if params[:filter] == nil
-          = render :partial => "prizes/default_list"
-        - else
-          - if params[:filter] == "individual"
-            %h2 Para você
-          - elsif params[:filter] == "community"
-            %br
-            %h2 Para a comunidade
-          - elsif params[:filter] == "badges"
-            %h2 Medalhas
-          = render :partial => "prizes/filtered_list"
+    %h1{:style => "margin-top: 50px;"}
+      = link_to I18n.t("views.prizes.index.how_to_win_prizes"), faq_path
