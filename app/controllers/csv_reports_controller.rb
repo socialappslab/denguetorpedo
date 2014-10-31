@@ -154,8 +154,9 @@ class CsvReportsController < NeighborhoodsBaseController
     # TODO: For now, we simply create a new CSV file everytime it's uploaded.
     # In the future, we want to search out CSV reports to see if any/all report
     # UUID match those that were parsed here.
-    @csv_report.csv = file
+    @csv_report.csv            = file
     @csv_report.parsed_content = parsed_content.to_json
+    @csv_report.user_id        = @current_user.id
     @csv_report.save!
 
     # 7. Find and/or create the location.
