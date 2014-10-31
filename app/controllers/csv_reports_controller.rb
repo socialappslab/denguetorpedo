@@ -102,7 +102,7 @@ class CsvReportsController < NeighborhoodsBaseController
 
 
       # 4b. Attempt to identify the breeding sites from the codes.
-      if type && ["a", "b", "l", "m", "p", "t", "o"].include?( type.strip.downcase )
+      if type && ["a", "b", "l", "m", "p", "t", "x"].include?( type.strip.downcase )
         type = type.strip.downcase
 
         if type == "a"
@@ -112,7 +112,7 @@ class CsvReportsController < NeighborhoodsBaseController
         elsif type == "l"
           breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
         elsif type == "m"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
         elsif type == "p"
           breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
         elsif type == "t"

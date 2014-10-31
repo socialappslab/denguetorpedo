@@ -30,7 +30,6 @@ class BreedingSite < ActiveRecord::Base
     LARGE_CONTAINER = "large-containers"
     SMALL_CONTAINER = "small-containers"
     TIRE            = "tire"
-    OTHER           = "other"
   end
 
 end
