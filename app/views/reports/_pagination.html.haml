@@ -1,6 +1,6 @@
 - last_offset    = (@report_count / @report_limit).to_i
 - current_offset = params[:page].to_i
-.pagination.pagination-large
+.pagination
   %ul.pull-right
     - if last_offset < 5
       - (0..last_offset).each do |offset|
