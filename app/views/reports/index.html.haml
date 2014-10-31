@@ -46,7 +46,7 @@
 
     .span2{:style => "margin-top: 20px;"}
       - if @neighborhood.nicaraguan?
-        = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
+        = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
     .span6.offset2

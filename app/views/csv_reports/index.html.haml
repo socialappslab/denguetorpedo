@@ -15,11 +15,10 @@
 
 .row{:style => "margin-top: 20px;"}
   .span16.offset1
-    - if @csv_reports.blank?
-      = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
-        %i.fa.fa-file
-        = I18n.t("views.buttons.upload_csv")
-    - else
+    = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
+      %i.fa.fa-file
+      = I18n.t("views.buttons.upload_csv")
+    - if @csv_reports.present?
       %table.table.table-bordered
         %thead
           %th

@@ -391,7 +391,7 @@ es:
       edit:    "Editar"
       delete:  Eliminar
       upload:  Cargue
-      upload_csv: Cargue el CSV
+      upload_csv: Cargue un nuevo CSV
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
