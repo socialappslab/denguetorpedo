@@ -56,6 +56,7 @@ ActiveAdmin.register BreedingSite do
           item.input :_destroy, :as => :boolean, :label => "Delete this elimination method?"
         end
       end
+      f.input "string_id"
     end
 
 
