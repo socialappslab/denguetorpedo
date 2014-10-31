@@ -207,7 +207,7 @@ es:
     eliminated: Eliminado
     verified: Verificado
     reported: Marcado
-    create_a_report: Marcar un criadero
+    create_a_report: Marque un criadero
     create_reports: Marcar criaderos
     complete_report: Complete el marcado del criadero
     exchange_points_for_prizes: "Intercambie puntos por premios"
@@ -390,7 +390,8 @@ es:
       create:  "Crear"
       edit:    "Editar"
       delete:  Eliminar
-      upload:  Cahegar
+      upload:  Cargue
+      upload_csv: Cargue el CSV
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
@@ -451,7 +452,8 @@ es:
       new:
         neighborhood_address: Nombre el barrio donde encontró el criadero
         description_placeholder: "Describa el lugar y tipo de criadero"
-
+      flashes:
+        call_to_action_to_complete: "Criadero marcado exitosamente. Termine otro documento incompleto."
       types:
         delete: Eliminar
       edit:

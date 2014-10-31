@@ -176,7 +176,7 @@ class ReportsController < NeighborhoodsBaseController
         incomplete_reports = @current_user.reports.where("completed_at IS NULL")
         if incomplete_reports.present?
           report = incomplete_reports.first
-          flash[:notice] = "Report created successfully. Here is another one."
+          flash[:notice] = I18n.t("views.report.flashes.call_to_action_to_complete")
           redirect_to edit_neighborhood_report_path(@neighborhood, report) and return
         else
           flash[:notice] = I18n.t("activerecord.success.report.create")

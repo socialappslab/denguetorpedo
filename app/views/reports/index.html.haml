@@ -48,7 +48,7 @@
       - if @neighborhood.nicaraguan?
         = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-warning btn-large" do
           %i.fa.fa-file
-          Import CSV
+          = I18n.t("views.buttons.upload_csv")
     .span6.offset2
       - if @report_count > @report_limit
         = render :partial => "reports/pagination"
