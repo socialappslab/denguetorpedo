@@ -6,15 +6,9 @@
 /------------------------------------------------------------------------------
 
 .row
-  .span10.offset6
-    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
+  .span12.offset3
+    %h1{:style => "font-size: 36px; margin-bottom: 30px; text-align: center;"}
       = I18n.t("common_terms.complete_report")
-
-- if @report.incomplete? && @report.csv_report.present?
-  .row
-    .span12.offset3
-      .alert.alert-warning.alert-dismissable
-        Please enter a before photo for this report.
 
 .row
   .span12.offset3
@@ -30,8 +24,7 @@
 
 
         = f.fields_for :location, @report.location || Location.new do |location_fields|
-          - if @neighborhood.mexican? || @neighborhood.brazilian?
-            = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
+          = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
           = location_fields.hidden_field :latitude
           = location_fields.hidden_field :longitude
 
@@ -55,7 +48,10 @@
           %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
             = "3. #{I18n.t("report.form.photo_of_report")}"
           = f.file_field :before_photo, :class => "upload_photo"
-          %img.preview{:style => "display: block;"}
+          - if @report.before_photo.present?
+            = image_tag(@report.before_photo, :style => "display: block;", :class => "preview")
+          - else
+            %img.preview{:style => "display: block;"}
           %canvas{:style => "display: none;"}
           = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
         %br
@@ -68,7 +64,7 @@
 
         = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
           %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-          = I18n.t("views.buttons.create")
+          = I18n.t("views.buttons.update")
 
 
 - content_for :scripts do

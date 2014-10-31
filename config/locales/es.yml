@@ -207,7 +207,7 @@ es:
     eliminated: Eliminado
     verified: Verificado
     reported: Marcado
-    create_a_report: Marcar un criadero
+    create_a_report: Marque un criadero
     create_reports: Marcar criaderos
     complete_report: Complete el marcado del criadero
     exchange_points_for_prizes: "Intercambie puntos por premios"
@@ -390,6 +390,8 @@ es:
       create:  "Crear"
       edit:    "Editar"
       delete:  Eliminar
+      upload:  Cargue
+      upload_csv: Cargue el CSV
     post:
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
     home:
@@ -399,7 +401,7 @@ es:
         title: Ciudades em destaque no Dengue Torpedo
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
-      chat_description: Chatee con otros miembros de la comunidad para reportar e controlar criaderos de mosquitos
+      chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
       teams_description: Únase a equipos para combatir el dengue y ganar puntos
       video_description_html: "Vea un video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aquí</a>"
     footer:
@@ -442,10 +444,16 @@ es:
         date: "Data de la actividad"
         time: "Hora de la actividad"
     reports:
+      index:
+        incomplete:
+          one:   "Usted tiene un reporte incompleto"
+          other: "Usted tiene %{count} reportes incompletos"
+        complete_now_button: "Termine ahora"
       new:
         neighborhood_address: Nombre el barrio donde encontró el criadero
         description_placeholder: "Describa el lugar y tipo de criadero"
-
+      flashes:
+        call_to_action_to_complete: "Criadero marcado exitosamente. Termine otro documento incompleto."
       types:
         delete: Eliminar
       edit:
@@ -485,7 +493,14 @@ es:
     elimination_methods:
       create: "Criar un método de eliminación"
       edit: "Editar un método de eliminación"
-
+    csv_reports:
+      flashes:
+        create: "Los nuevos criaderos han sido documentados"
+        missing_location: "¡Usted tiene que marcar el lugar en el mapa!"
+        unknown_format: "Usted tiene que subir un archivo con extensión .csv, .xls, o .xlsx"
+        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, u X para identificar criaderos como en la forma CSV modelo"
+        missing_visits: Usted tiene que tener al menos un creadero por lugar
+        missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
   #----------------------------------------------------------------------------
   # Countries
   #----------

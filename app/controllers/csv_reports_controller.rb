@@ -6,6 +6,15 @@ class CsvReportsController < NeighborhoodsBaseController
   before_filter :require_login
 
   #----------------------------------------------------------------------------
+  # GET /neighborhoods/1/csv_reports
+
+  def index
+    # TODO: Associate users to csv reports.
+    @csv_reports = CsvReport.all.find_all {|csv| csv.reports.present? && csv.reports.first.reporter == @current_user}
+  end
+
+
+  #----------------------------------------------------------------------------
   # GET /neighborhoods/1/csv_reports/new
 
   def new
@@ -15,118 +24,187 @@ class CsvReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
   # POST /neighborhoods/1/csv_reports
 
-
+  # We assume the user will upload a specific CSV (or .xls, .xlsx) template.
+  # Once uploaded, we parse the CSV and assign a UUID to each row which
+  # will be saved with a new report (if it's ever created).
+  # If a report exists with the UUID, then we update that report instead of
+  # creating a new one.
   def create
     @csv_report = CsvReport.new
 
-    # Ensure that the location has been identified on the map.
+    # 1. Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
     if lat.blank? || long.blank?
-      flash[:alert] = "You need to mark the location on the map!"
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_location")
       render "new" and return
     end
 
-    file = params[:csv_report][:csv]
+    # 2. Identify the file content type.
+    file        = params[:csv_report][:csv]
+    spreadsheet = load_spreadsheet( file )
+    unless spreadsheet
+      flash[:alert] = I18n.t("views.csv_reports.flashes.unknown_format")
+      render "new" and return
+    end
 
+    # 3. Identify the start of the reports table in the CSV file.
+    # The first row is reserved for the house location/address.
+    address = spreadsheet.row(1)[1]
+    if address.blank?
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_house")
+      render "new" and return
+    end
+    address = address.to_s
+
+
+    start_index = 2
+    while spreadsheet.row(start_index)[0].blank?
+      start_index += 1
+    end
+    header  = spreadsheet.row(start_index)
+    header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
+
+
+    reports        = []
+    parsed_content = []
+    # 4. Parse the CSV.
+    # The CSV is laid out to define the house number (or address)
+    # on the first row, and then the following template for the table:
+    # [
+    #   "fecha de visita (aaaa-mm-dd)",
+    #   "tipo de criadero",
+    #   "localización",
+    #   "protegido",
+    #   "abatizado",
+    #   "larvas",
+    #   "pupas",
+    #   "foto de criadero",
+    #   "eliminado (aaaa-mm-dd)",
+    #   "foto de eliminación",
+    #   "comentarios sobre tipo y/o eliminación*"
+    # ]
+    (start_index + 1..spreadsheet.last_row).each do |i|
+      row            = Hash[[header, spreadsheet.row(i)].transpose]
+      parsed_content << row
+
+      # 4a. Extract the attributes. NOTE: We use fuzzy matching instead of
+      # exact matching since users may vary the columns slightly.
+      date           = row.select {|k,v| k.include?("fecha")}.values[0].to_s
+      room           = row["localización"].to_s
+      type           = row.select {|k,v| k.include?("tipo")}.values[0].to_s
+      is_protected   = row['protegido'].to_i
+      is_pupas       = row["pupas"].to_i
+      is_larvas      = row["larvas"].to_i
+      is_covered     = row["abatizado"].to_i
+      elim_date      = row.select {|k,v| k.include?("eliminado")}.values[0].to_s
+      comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
+
+
+      # 4b. Attempt to identify the breeding sites from the codes.
+      if type && ["a", "b", "l", "m", "p", "t", "x"].include?( type.strip.downcase )
+        type = type.strip.downcase
+
+        if type == "a"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+        elsif type == "b"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+        elsif type == "l"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+        elsif type == "m"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+        elsif type == "p"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+        elsif type == "t"
+          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+        end
+      else
+        flash[:alert] = I18n.t("views.csv_reports.flashes.unknown_code")
+        render "new" and return
+      end
+
+      # 4c. Define the description based on the collected attributes.
+      description  = "Fecha de visita: #{date}"
+      description += ", Localización: #{room} (#{address})" if room.present?
+      description += ", Protegido: #{is_protected}, Abatizado: #{is_covered}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
+      description += ", Eliminado: #{elim_date}" if elim_date.present?
+      description += ", Comentarios sobre tipo y/o eliminación: #{comments}" if comments.present?
+
+      # 4d. Generate a UUID to identify the row that the report will correspond
+      # to. We define the UUID based on
+      # * House location,
+      # * Date of visit,
+      # * The room within the house,
+      # * Type of site,
+      # * Properties identified at the site.
+      # If there is a match, then we simply update the existing report.
+      uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_covered.to_s)
+      uuid = uuid.strip.downcase.underscore
+
+      reports << {:breeding_site => breeding_site, :description => description, :csv_uuid => uuid}
+    end
+
+    # 5. Error out if there are no reports extracted.
+    if reports.count == 0
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_visits")
+      render "new" and return
+    end
+
+    # 6. Create or update the CSV file.
+    # TODO: For now, we simply create a new CSV file everytime it's uploaded.
+    # In the future, we want to search out CSV reports to see if any/all report
+    # UUID match those that were parsed here.
+    @csv_report.csv = file
+    @csv_report.parsed_content = parsed_content.to_json
+    @csv_report.save!
+
+    # 7. Find and/or create the location.
+    location = Location.find_by_latitude_and_longitude_and_address(lat, long, address)
+    if location.blank?
+      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
+    end
+
+    # 8. Create or update the reports.
+    # NOTE: We set completed_at to nil in order to signify that the user
+    # has to update the report.
+    reports.each do |report|
+      r = Report.find_by_csv_uuid(report[:csv_uuid])
+      r = Report.new if r.blank?
+
+      r.report           = report[:description]
+      r.breeding_site_id = report[:breeding_site].id if report[:breeding_site].present?
+      r.location_id      = location.id
+      r.neighborhood_id  = @neighborhood.id
+      r.reporter_id      = @current_user.id
+      r.csv_report_id    = @csv_report.id
+      r.csv_uuid         = report[:csv_uuid]
+      r.save(:validate => false)
+    end
+
+    # At this point, let's celebrate.
+    flash[:notice] = I18n.t("views.csv_reports.flashes.create")
+    redirect_to neighborhood_reports_path(@neighborhood) and return
+  end
+
+  #----------------------------------------------------------------------------
+
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  def load_spreadsheet(file)
     if File.extname( file.original_filename ) == ".csv"
       spreadsheet = Roo::CSV.new(file.tempfile.path, :file_warning => :ignore)
     elsif File.extname( file.original_filename ) == ".xls"
       spreadsheet = Roo::Excel.new(file.tempfile.path, :file_warning => :ignore)
     elsif File.extname( file.original_filename ) == ".xlsx"
       spreadsheet = Roo::Excelx.new(file.tempfile.path, :file_warning => :ignore)
-    else
-      flash[:alert] = "You must upload a .csv, .xls or a .xlsx file"
-      render "new" and return
     end
 
-    # Assume the template is as follows:
-    # * First row is the house number or an address of sorts
-    # * Second row is empty
-    # * Third row is the beginning of the table,
-    # * All subsequent rows are entries in the table.
-    # ["Visita", "Fecha", "Hora", "Tipo", "Total de tipo", "Protegido?", "Abatizado?", "Larvas?", "Pupas?"]
-    header  = spreadsheet.row(1)
-    address = "#{header[1]}"
-    header  = spreadsheet.row(3)
-    header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "") }
-
-    before_reports = []
-    after_reports  = []
-    current_visit = -1
-    parsed_content = []
-    (4..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-      puts "row; #{row}"
-      parsed_content << row
-
-      # Ensure that there are at most two visits to a location.
-      if row["visita"].to_i > 2
-        flash[:alert] = "There can only be at most 2 visits to a location. Please redo the CSV report."
-        render "new" and return
-      end
-
-      # Update the current visit to differentiate between before and after report.
-      current_visit = row["visita"].to_i if row["visita"].to_i != 0
-
-      # Ensure that the breeding site is identifiable.
-      if row["tipo"] && ["b", "t", "n", "o"].include?( row["tipo"].strip.downcase )
-        type = row["tipo"].strip.downcase
-
-
-
-        if type == "b"
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
-        elsif type == "t"
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
-        elsif type == "n"
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
-        else
-          site = BreedingSite.find_by_string_id(BreedingSite::Types::OTHER)
-        end
-
-
-
-      else
-        flash[:alert] = "One or more of the breeding sites can't be identified. Please use B, T, N or O to identify breeding sites."
-        render "new" and return
-      end
-
-      # At this point, we know the breeding site.
-      description = "Total de tipo: #{row['total de tipo'].to_i}, Protegido: #{row['protegido']}, Abatizado: #{row['abatizado']}, Larvas: #{row['larvas']}, Pupas: #{row['pupas']}"
-      before_reports << {:breeding_site => site, :description => description}
-    end
-
-    if current_visit == -1
-      flash[:alert] = "You need to have at least 1 visit to a location. Please redo the CSV report."
-      render "new" and return
-    end
-
-
-    # At this point, we have at least one, but no more than two visits to the location.
-    # The before_* and after_* reports are also prefilled. Let's create the CsvReport
-    # and the reports.
-    @csv_report.csv = file
-    @csv_report.parsed_content = parsed_content.to_json
-    @csv_report.save!
-
-    # Now let's create the location.
-    location = Location.create!(:latitude => lat, :longitude => long, :address => address)
-
-    before_reports.each do |report|
-      r = Report.new
-      r.report           = report[:description]
-      r.breeding_site_id = report[:breeding_site].id
-      r.location_id      = location.id
-      r.neighborhood_id  = @neighborhood.id
-      r.reporter_id      = @current_user.id
-      r.csv_report_id    = @csv_report.id
-      r.save(:validate => false)
-    end
-
-    flash[:notice] = "The reports were successfully created from CSV."
-    redirect_to neighborhood_reports_path(@neighborhood) and return
+    return spreadsheet
   end
 
+  #----------------------------------------------------------------------------
 
 end

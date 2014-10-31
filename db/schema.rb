@@ -338,6 +338,7 @@ ActiveRecord::Schema.define(:version => 20141028201535) do
     t.integer  "breeding_site_id"
     t.integer  "elimination_method_id"
     t.integer  "csv_report_id"
+    t.string   "csv_uuid"
   end
 
   create_table "reports_users", :id => false, :force => true do |t|

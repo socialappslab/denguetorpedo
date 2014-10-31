@@ -9,21 +9,22 @@
 /------------------------------------------------------------------------------
 
 .row
-  .span10.offset5
-    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
-      Create reports from CSV
+  .span12.offset3
+    %h1{:style => "font-size: 30px; margin-bottom: 30px; text-align: center;"}
+      Cree reportes a partir de archivos CSV
 
 .row
   .span10.offset4
 
     %p{:style => "font-size: 16px;margin-bottom: 20px;"}
-      Note: Each CSV report must correspond to one house. The report can have only two visits,
-      the first focusing on breeding site identification, and the second (if possible) focusing
-      on elimination. If you have more than two visits, split up the CSV into multiple files.
+      Nota: use el mismo CSV para múltiples visitas.
+      Cada renglón en el archivo CSV debe corresponder a un criadero en el lugar
+      especificado. Si el sitio es eliminado, use la misma fila para actualizar
+      el registro con la fecha de eliminación y un comentario.
       %br
       %br
-      Need a CSV template?
-      = link_to "Click here to download", "/assets/forma_visita_entomologica.xls"
+      ¿Necesita usted una forma como modelo a seguir?
+      = link_to "Haga clic aquí para bajar una", "/assets/forma_visita_entomologica.xlsx"
 
 
     #upload_csv{:style => "display: block;"}
@@ -43,13 +44,13 @@
           = render :partial => "reports/google_map"
 
         %p{:style => "font-size: 16px; margin-top: 30px; margin-bottom: 20px; font-weight: bold;"}
-          2. Upload CSV
+          2. Cargue un CSV
 
         = f.file_field :csv, :style => "width: 100%; height: 50px;"
 
         %button.btn.btn-success.btn-large.submit-button{:style => "width: 100%; display: block;", :type => "submit"}
           %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-          = I18n.t("views.buttons.submit")
+          = I18n.t("views.buttons.upload")
 
 
 - content_for :scripts do

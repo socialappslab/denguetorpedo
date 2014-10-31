@@ -26,10 +26,10 @@ class BreedingSite < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   module Types
+    DISH            = "dish"
     LARGE_CONTAINER = "large-containers"
     SMALL_CONTAINER = "small-containers"
     TIRE            = "tire"
-    OTHER           = "other"
   end
 
 end

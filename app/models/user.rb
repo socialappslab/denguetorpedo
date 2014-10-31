@@ -57,8 +57,8 @@ class User < ActiveRecord::Base
   validates :username, :presence => true
   validates :username, :uniqueness => true
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
-  validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
-  validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
+  # validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
+  # validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :neighborhood_id, :presence => true
 
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_blank => true

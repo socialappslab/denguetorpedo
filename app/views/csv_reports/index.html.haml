@@ -1,0 +1,41 @@
+-# TODO @awdorsett - on error return to appropriate tab
+-# TODO @awdorsett - before making ajax call look to see if location already exists, need to either pass locations to view or call server first
+
+
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/flashes"
+
+/------------------------------------------------------------------------------
+
+.row
+  .span8.offset1
+    %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
+      Uploaded CSV reports
+  .span6.pull-right
+    %p{:style => "margin-top: 10px;"}
+      %i.fa.fa-lock
+      This is a private site. It can only be seen by you.
+
+.row{:style => "margin-top: 20px;"}
+  .span16.offset1
+    %table.table.table-bordered
+      %thead
+        %th
+          File name
+        %th
+          Location
+        %th
+          Number of reports
+        %th
+          Download link
+      - @csv_reports.each do |type|
+        %tr
+          %td{:style => "font-weight: bold;"}
+            = type.csv_file_name
+          %td
+            = type.reports.first.location ? type.reports.first.location.address : ""
+          %td
+            = type.reports.count
+          %td
+            = link_to "Download", type.csv.url

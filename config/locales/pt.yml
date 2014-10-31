@@ -391,6 +391,7 @@ pt:
       create:  "Criar"
       edit:    "Editar"
       delete:  Deletar
+      upload:  Cahegar
     post:
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
@@ -400,7 +401,7 @@ pt:
         title: Cidades em destaque no Dengue Torpedo
       header: Cidadãos no Combate à Dengue
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
-      chat_description: Tecle com outras pessoas da comunidade para identificar e controlar focos de mosquito
+      chat_description: Troque mensagem entre seus amigos para colaborar no controle dos focos do mosquito da dengue.
       teams_description: "Entre numa equipe para combater a dengue e ganhe pontos"
       video_description_html: "Veja o video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aqui</a>"
     footer:

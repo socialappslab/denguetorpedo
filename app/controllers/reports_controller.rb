@@ -5,13 +5,12 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,             :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,                :only   => [:update, :creditar, :credit, :discredit, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
-  before_filter :redirect_if_incomplete_reports, :only => [:index]
 
   #----------------------------------------------------------------------------
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
-    @reports = @reports.where("before_photo_updated_at IS NOT NULL")
+    @reports = @reports.where("completed_at IS NOT NULL")
     @report_count  = @reports.count
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit
@@ -40,6 +39,10 @@ class ReportsController < NeighborhoodsBaseController
 
     @open_locations.compact!
     @eliminated_locations.compact!
+
+    if @current_user.present?
+      @incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+    end
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
@@ -147,7 +150,7 @@ class ReportsController < NeighborhoodsBaseController
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
-      redirect_to neighborhood_reports_path(@neighborhood) and return
+      redirect_to :back and return
     else
       filename  = @current_user.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
@@ -161,16 +164,24 @@ class ReportsController < NeighborhoodsBaseController
 
       # Verify report saves and form submission is valid
       if @report.update_attributes(params[:report])
-        flash[:notice] = I18n.t("activerecord.success.report.create")
-
         @report.neighborhood_id = @neighborhood.id
         @report.completed_at    = Time.now
         @report.save(:validate => false)
 
         # Let's award the user for submitting a report.
-        # @current_user.award_points_for_submitting(@report)
+        @current_user.award_points_for_submitting(@report)
 
-        redirect_to neighborhood_reports_path(@neighborhood) and return
+        # Decide where to redirect: if there are still incomplete reports,
+        # then let's redirect to the first available one.
+        incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+        if incomplete_reports.present?
+          report = incomplete_reports.first
+          flash[:notice] = I18n.t("views.report.flashes.call_to_action_to_complete")
+          redirect_to edit_neighborhood_report_path(@neighborhood, report) and return
+        else
+          flash[:notice] = I18n.t("activerecord.success.report.create")
+          redirect_to neighborhood_reports_path(@neighborhood) and return
+        end
 
       # Error occurred when completing SMS report
       else
@@ -399,20 +410,6 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
-  end
-
-  #----------------------------------------------------------------------------
-
-  def redirect_if_incomplete_reports
-    # Avoid redirect if the user is simply visiting.
-    return if @current_user.blank?
-
-    # We want to redirect only if user is viewing their own neighborhood.
-    return unless @neighborhood == @current_user.neighborhood
-
-    @report = @current_user.reports.order("created_at ASC").find {|r| r.incomplete?}
-    flash.keep
-    redirect_to edit_neighborhood_report_path(@neighborhood, @report) and return if @report.present?
   end
 
   #----------------------------------------------------------------------------
