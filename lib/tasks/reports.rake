@@ -6,6 +6,16 @@
 # all existing houses with the Mare neighborhood.
 
 namespace :reports do
+  task :update_cleaned_locations => :environment do
+    Report.find_each do |r|
+      next unless r.eliminated?
+      next unless r.location.present?
+      r.location.update_column(:cleaned, true)
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
   desc "[One-off backfill task] Backfill reports with Maré neighborhood"
   task :backfill_with_mare_neighborhood => :environment do
     mare_neighborhood = Neighborhood.first
