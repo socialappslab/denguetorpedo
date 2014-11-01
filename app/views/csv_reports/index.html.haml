@@ -32,10 +32,7 @@
         - @csv_reports.each do |type|
           %tr
             %td{:style => "font-weight: bold;"}
-              - if type.reports.present?
-                = type.reports.first.location ? type.reports.first.location.address : ""
-              - else
-                N/A
+              = type.location.address
             %td
               = type.created_at.strftime("%Y-%m-%d")
             %td
