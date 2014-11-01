@@ -179,7 +179,6 @@ class CsvReportsController < NeighborhoodsBaseController
     @csv_report.parsed_content = parsed_content.to_json
     @csv_report.user_id        = @current_user.id
     @csv_report.location_id    = location.id
-    @csv_report.cleaned        = is_location_clean
     @csv_report.save!
 
     # 8. Create or update the reports.
