@@ -5,4 +5,5 @@ class CsvReport < ActiveRecord::Base
 
   has_many :reports
   belongs_to :user
+  belongs_to :location
 end

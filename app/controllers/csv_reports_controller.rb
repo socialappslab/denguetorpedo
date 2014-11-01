@@ -101,7 +101,7 @@ class CsvReportsController < NeighborhoodsBaseController
 
 
       # 4b. Attempt to identify the breeding sites from the codes.
-      if type && ["a", "b", "l", "m", "p", "t", "x"].include?( type.strip.downcase )
+      if type && ["a", "b", "l", "m", "p", "t", "x", "v"].include?( type.strip.downcase )
         type = type.strip.downcase
 
         if type == "a"
@@ -140,7 +140,9 @@ class CsvReportsController < NeighborhoodsBaseController
       uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_covered.to_s)
       uuid = uuid.strip.downcase.underscore
 
-      reports << {:breeding_site => breeding_site, :description => description, :csv_uuid => uuid}
+      if type && type.strip.downcase != "v"
+        reports << {:breeding_site => breeding_site, :description => description, :csv_uuid => uuid}
+      end
     end
 
     # 5. Error out if there are no reports extracted.
@@ -149,20 +151,21 @@ class CsvReportsController < NeighborhoodsBaseController
       render "new" and return
     end
 
-    # 6. Create or update the CSV file.
+    # 6. Find and/or create the location.
+    location = Location.find_by_latitude_and_longitude_and_address(lat, long, address)
+    if location.blank?
+      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
+    end
+
+    # 7. Create or update the CSV file.
     # TODO: For now, we simply create a new CSV file everytime it's uploaded.
     # In the future, we want to search out CSV reports to see if any/all report
     # UUID match those that were parsed here.
     @csv_report.csv            = file
     @csv_report.parsed_content = parsed_content.to_json
     @csv_report.user_id        = @current_user.id
+    @csv_report.location_id    = location.id
     @csv_report.save!
-
-    # 7. Find and/or create the location.
-    location = Location.find_by_latitude_and_longitude_and_address(lat, long, address)
-    if location.blank?
-      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
-    end
 
     # 8. Create or update the reports.
     # NOTE: We set completed_at to nil in order to signify that the user
