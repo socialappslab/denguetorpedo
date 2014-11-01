@@ -10,6 +10,11 @@ class CsvReportsController < NeighborhoodsBaseController
 
   def index
     @csv_reports = @current_user.csv_reports
+
+    @visits = @csv_reports.map {|csv| csv.location}.uniq
+    @total_visits = @visits.count
+    @clean_visits = @visits.find_all {|l| l.cleaned == true}.count
+    @dirty_visits = @visits.find_all {|l| l.cleaned != true}.count
   end
 
 
