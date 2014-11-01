@@ -196,6 +196,11 @@ class ReportsController < NeighborhoodsBaseController
     if @report.update_attributes(params[:report])
       @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
 
+      # Update the location to clean.
+      if @report.location
+        @report.location.update_column(:cleaned, true)
+      end
+
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
       # Let's award the user for submitting a report.
