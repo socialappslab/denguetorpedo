@@ -166,10 +166,11 @@ class CsvReportsController < NeighborhoodsBaseController
     end
 
     # 6. Find and/or create the location.
-    location = Location.find_by_latitude_and_longitude_and_address(lat, long, address)
+    location = Location.find_by_address(address)
     if location.blank?
-      location = Location.create!(:latitude => lat, :longitude => long, :address => address, :cleaned => is_location_clean)
+      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
+    location.update_column(:cleaned, is_location_clean)
 
     # 7. Create or update the CSV file.
     # TODO: For now, we simply create a new CSV file everytime it's uploaded.
