@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141031222539) do
+ActiveRecord::Schema.define(:version => 20141101002019) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -188,13 +188,14 @@ ActiveRecord::Schema.define(:version => 20141031222539) do
     t.string   "address"
     t.float    "latitude"
     t.float    "longitude"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.integer  "neighborhood_id"
     t.string   "street_type",     :default => ""
     t.string   "street_name",     :default => ""
     t.string   "street_number",   :default => ""
     t.string   "neighborhood"
+    t.boolean  "cleaned",         :default => false
   end
 
   create_table "messages", :force => true do |t|

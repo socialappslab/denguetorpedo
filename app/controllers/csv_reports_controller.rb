@@ -67,6 +67,10 @@ class CsvReportsController < NeighborhoodsBaseController
 
     reports        = []
     parsed_content = []
+
+    # NOTE: We assume the location is not clean unless otherwise noted.
+    is_location_clean = false
+
     # 4. Parse the CSV.
     # The CSV is laid out to define the house number (or address)
     # on the first row, and then the following template for the table:
@@ -143,6 +147,11 @@ class CsvReportsController < NeighborhoodsBaseController
       if type && type.strip.downcase != "v"
         reports << {:breeding_site => breeding_site, :description => description, :csv_uuid => uuid}
       end
+
+      # If the last type is v, then the location is clean (for now).
+      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "v"
+        is_location_clean = true
+      end
     end
 
     # 5. Error out if there are no reports extracted.
@@ -154,7 +163,7 @@ class CsvReportsController < NeighborhoodsBaseController
     # 6. Find and/or create the location.
     location = Location.find_by_latitude_and_longitude_and_address(lat, long, address)
     if location.blank?
-      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
+      location = Location.create!(:latitude => lat, :longitude => long, :address => address, :cleaned => is_location_clean)
     end
 
     # 7. Create or update the CSV file.
@@ -165,6 +174,7 @@ class CsvReportsController < NeighborhoodsBaseController
     @csv_report.parsed_content = parsed_content.to_json
     @csv_report.user_id        = @current_user.id
     @csv_report.location_id    = location.id
+    @csv_report.cleaned        = is_location_clean
     @csv_report.save!
 
     # 8. Create or update the reports.
