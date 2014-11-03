@@ -9,9 +9,9 @@ class CsvReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/csv_reports
 
   def index
-    @csv_reports = @current_user.csv_reports
+    @csv_reports = @current_user.csv_reports.order("updated_at DESC")
 
-    @visits = @csv_reports.map {|csv| csv.location}.uniq
+    @visits       = @csv_reports.map {|csv| csv.location}.uniq
     @total_visits = @visits.count
     @clean_visits = @visits.find_all {|l| l.cleaned == true}.count
     @dirty_visits = @visits.find_all {|l| l.cleaned != true}.count
