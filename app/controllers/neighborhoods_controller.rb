@@ -9,22 +9,26 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @post = Post.new
 
     # Load associations.
-    @neighborhood = Neighborhood.find(params[:id]) if @neighborhood.nil?
-    @users   = @neighborhood.members.where(:is_blocked => false).order("first_name ASC")
+    @neighborhood = Neighborhood.find(params[:id])
+    @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
     @teams   = @neighborhood.teams.order("name ASC")
     @reports = @neighborhood.reports
-    @notices = @neighborhood.notices
+    @notices = @neighborhood.notices.order("updated_at DESC")
 
-    # Limit the amount of records we show.
+    # Calculate total metrics before we start filtering.
     @total_reports = @reports.count
     @total_points  = @neighborhood.total_points
 
-    if params[:feed].to_s == "1"
-      @posts = @users.includes(:posts).map {|u| u.posts }.flatten
-    else
-      @posts   = @users.includes(:posts).map {|u| u.posts.order("updated_at DESC").limit(3)}.flatten
-      @reports = @reports.order("updated_at DESC").limit(5)
-      @notices = @notices.order("updated_at DESC").limit(5)
+    # Limit the activity feed to *current* neighborhood members.
+    user_ids = @users.pluck(:id)
+    @reports = @reports.order("updated_at DESC").where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
+    @posts   = @neighborhood.posts.where(:user_id => user_ids).order("updated_at DESC")
+
+    # Limit the amount of records we show.
+    unless params[:feed].to_s == "1"
+      @posts   = @posts.limit(3)
+      @reports = @reports.limit(5)
+      @notices = @notices.limit(5)
     end
 
     @activity_feed = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
