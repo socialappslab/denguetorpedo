@@ -13,15 +13,7 @@
 
         .row.feed-item-content{:style => "margin-bottom: 20px;"}
           .span7
-            - if report.open?
-              - report_feed_content = I18n.t("views.feed.report.reported")
-            - elsif report.eliminated?
-              - report_feed_content = I18n.t("views.feed.report.eliminated")
-
-            - if report_feed_content && report.complete_address.present?
-              - report_feed_content += " @ #{report.complete_address}"
-
-            = report_feed_content + "!"
+            = report.report
 
 
     .row.feed-item-report-photo
