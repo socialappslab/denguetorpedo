@@ -57,7 +57,6 @@ class UsersController < ApplicationController
     @badges            = @user.badges
     @teams             = @user.teams
     @neighborhood      = @user.neighborhood
-    @coupons           = @user.prize_codes.reject {|c| c.expired? }
     @prizes            = Prize.where('stock > 0').where(:is_badge => false).where('expire_on >= ? OR expire_on is NULL', Time.now)
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
