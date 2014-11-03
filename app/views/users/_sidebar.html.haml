@@ -39,12 +39,3 @@
     .row{:style => "text-align: center; margin-top: 20px;"}
       .span4
         = render :partial => "users/badges"
-
-  %hr{:style => "border-bottom: 1px solid #ccc;"}
-  %h1{:style => "text-align: center; color: #333;"}
-    = I18n.t("common_terms.redeemed_prizes")
-
-  - if @coupons.present?
-    .row{:style => "text-align: center; margin-top: 20px;"}
-      .span4
-        = render :partial => "users/coupons"
