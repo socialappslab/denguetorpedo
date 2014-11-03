@@ -62,7 +62,7 @@ class UsersController < ApplicationController
 
     # Build a feed depending on params.
     @posts   = @user.posts.order("updated_at DESC")
-    @reports = @user.reports.order("updated_at DESC")
+    @reports = @user.reports.where("completed_at IS NOT NULL").order("updated_at DESC")
     @reports_by_user = @reports.where("completed_at IS NOT NULL")
 
     unless params[:feed].to_s == "1"
