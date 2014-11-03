@@ -61,18 +61,16 @@ class UsersController < ApplicationController
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
     # Build a feed depending on params.
-    @posts  = @user.posts.order("updated_at DESC")
-    if params[:feed].to_s == "1"
-      @reports = @neighborhoods.map {|n| n.reports.order("updated_at DESC") }.flatten
-      @notices = @neighborhoods.map {|n| n.notices.order("updated_at DESC") }.flatten
-    else
+    @posts   = @user.posts.order("updated_at DESC")
+    @reports = @user.reports.order("updated_at DESC")
+    @reports_by_user = @reports.where("completed_at IS NOT NULL")
+
+    unless params[:feed].to_s == "1"
       @posts   = @posts.limit(3)
-      @reports = @neighborhoods.map {|n| n.reports.order("updated_at DESC").limit(5) }.flatten
-      @notices = @neighborhoods.map {|n| n.notices.order("updated_at DESC").limit(5) }.flatten
+      @reports = @reports.limit(5)
     end
 
-    @activity_feed  = (@posts.to_a + @reports.to_a + @notices.to_a).sort{|a,b| b.created_at <=> a.created_at }
-    @reports_by_user = @user.reports.where("completed_at IS NOT NULL")
+    @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
