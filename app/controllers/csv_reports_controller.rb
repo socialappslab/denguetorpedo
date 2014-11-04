@@ -182,12 +182,18 @@ class CsvReportsController < NeighborhoodsBaseController
     @csv_report.location_id    = location.id
     @csv_report.save!
 
+    Analytics.track( :user_id => @current_user.id, :event => "Created a CSV report") if Rails.env.production?
+
     # 8. Create or update the reports.
     # NOTE: We set completed_at to nil in order to signify that the user
     # has to update the report.
     reports.each do |report|
       r = Report.find_by_csv_uuid(report[:csv_uuid])
-      r = Report.new if r.blank?
+
+      if r.blank?
+        r = Report.new
+        Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
+      end
 
       r.report           = report[:description]
       r.breeding_site_id = report[:breeding_site].id if report[:breeding_site].present?

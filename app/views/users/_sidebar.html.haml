@@ -13,7 +13,7 @@
           = I18n.t("common_terms.configuration")
 
       - if @user == @current_user
-        - community_link_text = I18n.t("dashboard.my_community") + " (#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code})"
+        - community_link_text = I18n.t("dashboard.my_community")
       - else
         - community_link_text = I18n.t("common_terms.their_community")
 
@@ -21,6 +21,8 @@
         = link_to neighborhood_path(@user.neighborhood), :style => "display: block; font-size: 15px; margin-top: 20px;" do
           %i.fa.fa-users.fa-2
           = community_link_text
+          %span{:style => "display:block; text-align: center;"}
+            = "(#{@neighborhood.name}, #{@neighborhood.city.name})"
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}

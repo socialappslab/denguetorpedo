@@ -11,34 +11,39 @@
 				= I18n.t("views.about.university")
 			%h4 denguetorpedo@gmail.com
 
-		- if I18n.locale == :es
+		- if I18n.locale.to_s == User::Locales::SPANISH
 			%p
 				El dengue es un gran problema de salúd pública. No hay vacuna, y el número de casos de dengue registrados aumentó 190% entre enero del 2012 y enero del 2013 (Fuente: SMSDC). Una manera más eficaz de controlar el dengue es la eliminación de los lugares de agua estancada donde se reproduce el mosquito transmisor Aedes Aegypti; una tarea generalmente atribuida al gobierno. Los focos de agua son en su mayoría pequeños y están en residencias, por lo cual escapan al control gubernamental de vectores.  Estudios demuestran que ese control puede ser más eficaz a travéz de acciones comunitarias de los vecinos con el gobierno. El desafío es motivar a los moradores, que saben donde están los focos.
 			%br
 
 			%p
-				Dengue Torpedo (DT) es una aplicación social gratiuta para teléfonos celulares sencillos con cámara, ligado a un sitio de red, que promueve iniciativas comunitarias para la prevención del dengue. Creado y desarrollado por el Laboratorio de Aplicaciones Sociales de la Universidad de California en Berkeley, dirigido  por el Prof. James Holston, la aplicación combina tecnología de comunicación, elementos de juegos digitales y conocimiento local para motivar a los miembros de una comunidad a identificar y eliminar lugares de reproducción de Aedes en colaboración con agentes locales de salud. El DT es un proyecto de colaboración comunitaria que asocia dos tecnologías ya presentes e integradas cotidianamente en comunidades mexicanas, el uso de teléfonos celulares y computadoras, en especial de las redes sociales. Los participantes utilizarán sus propios celulares y accesarán al sitio de internet de DT, sea en sus propias computadoras, o en alguna computadora dentro de la comunidad.
+				Dengue Chat es una aplicación social gratiuta para teléfonos celulares sencillos con cámara,
+				ligado a un sitio de red, que promueve iniciativas comunitarias para el control del dengue.
+				Creado y desarrollado por el Laboratorio de Aplicaciones Sociales de la Universidad de
+				California en Berkeley, dirigido  por el Prof. James Holston, la aplicación combina tecnología
+				de comunicación, elementos de juegos digitales y conocimiento local para motivar a los miembros
+				de una comunidad a identificar y eliminar lugares de reproducción de Aedes en colaboración con agentes locales de salud. El Dengue Chat es un proyecto de colaboración comunitaria que asocia dos tecnologías ya presentes e integradas cotidianamente en comunidades mexicanas, el uso de teléfonos celulares y computadoras, en especial de las redes sociales. Los participantes utilizarán sus propios celulares y accesarán al sitio de internet de Dengue Chat, sea en sus propias computadoras, o en alguna computadora dentro de la comunidad.
 			%br
 
 			%p
-				El DT usa elementos de juegos y redes sociales para aumentar la motivación de los participantes en tres niveles de involucramiento, el de la vigilancia, a nivel de casa e individual. DT reconoce y recompensa acciones específicas de intervención contra el dengue y otorga puntos, medallas, títulos, y otras distinciones en el sitio de internet. Los individuos y grupos pueden cambiar sus puntos por premios destinados a proyectos comunitarios específicos, dados por patrocinadores locales, como un banco para la plaza o un contenedor de basura. Con esos ejemplos, los participantes contribuirán al mejoramiento de la sociabilidad, y al saneamiento del medio ambiente en sus comunidades.
+				El Dengue Chat usa elementos de juegos y redes sociales para aumentar la motivación de los participantes en tres niveles de involucramiento, el de la vigilancia, a nivel de casa e individual. Dengue Chat reconoce y recompensa acciones específicas de intervención contra el dengue y otorga puntos, medallas, títulos, y otras distinciones en el sitio de internet. Los individuos y grupos pueden cambiar sus puntos por premios destinados a proyectos comunitarios específicos, dados por patrocinadores locales, como un banco para la plaza o un contenedor de basura. Con esos ejemplos, los participantes contribuirán al mejoramiento de la sociabilidad, y al saneamiento del medio ambiente en sus comunidades.
 			%br
 
-			%p El proyecto DT propone un estudio piloto de 24 meses en la comunidad de Tepalcingo, Morelos, para probar y desarrollar la aplicación, con los siguientes objetivos:
+			%p El proyecto Dengue Chat propone un estudio piloto de 24 meses en la comunidad de Tepalcingo, Morelos, para probar y desarrollar la aplicación, con los siguientes objetivos:
 
 			%ol{:style => "margin-left: 25px; list-style: decimal; color: #65665C;"}
 				%li Motivar a los vecions a identificar y eliminar lugares de reproducción de Aedes;
 				%li Combatir el dengue por medio del involucramiento comunitario y el uso de la tecnologías de comunicación;
-				%li Producir una aplicación robusta con colaboración comunitaria que involucre a la comunidad local (moradores y agentes de salud) en el desarrollo y diseño de DT;
+				%li Producir una aplicación robusta con colaboración comunitaria que involucre a la comunidad local (moradores y agentes de salud) en el desarrollo y diseño de Dengue Chat;
 				%li Medir la adeción de los residantes;
 				%li Validar el impacto epidemiológico;
 				%li Involucrar a los residentes en la educación para la salud pública y ciudadanía activa;
-				%li Validad el potencial de DT para distribución a larga escala.
+				%li Validad el potencial de Dengue Chat para distribución a larga escala.
 			%br
 
 			%p
-				El proyecto DT en Maré, Rio de Janeiro, actualmente está bajo la coordinación del Prof. James Holston, se estructura sobre cuatro apoyos: las comunidades locales y sus organizaciones no gubernamentales (Redes de Desenvolvimiento de Maré), el gobierno municipal de Río (Instituto Pereira Passos de Salúd Regional AP 3.1), universidades (UC Berkeley y UFRJ) y el sector privado (IBM-Brazil, Rede Trel, UBS Optimus Foundation, Suiza).
-				El proyecto pretede involucrar a otros socios de  comercios locales, e.g. Tiendas de lozas y material de construcción. Después de 24 meses de estudio piloto, los socios están aptos para aumentar la escala de DT a toda la ciudad de Rio. La colaboración entre organizaciones comunitarias, gobierno local, iniciativa privada, e universidades de Brasil y el exterior configuran una articulación inovadora para la utilización de nuevas tecnologías de comunicación y construcción de una ciudadanía participativa.
+				El proyecto Dengue Chat actualmente está bajo la coordinación del Prof. James Holston, se estructura sobre cuatro apoyos: las comunidades locales y sus organizaciones no gubernamentales (Redes de Desenvolvimiento de Maré), el gobierno municipal de Río (Instituto Pereira Passos de Salúd Regional AP 3.1), universidades (UC Berkeley y UFRJ) y el sector privado (IBM-Brazil, Rede Trel, UBS Optimus Foundation, Suiza).
+				El proyecto pretede involucrar a otros socios de  comercios locales, e.g. Tiendas de lozas y material de construcción. Después de 24 meses de estudio piloto, los socios están aptos para aumentar la escala de Dengue Chat a toda la ciudad de Rio. La colaboración entre organizaciones comunitarias, gobierno local, iniciativa privada, e universidades de Brasil y el exterior configuran una articulación inovadora para la utilización de nuevas tecnologías de comunicación y construcción de una ciudadanía participativa.
 
 		- else
 			%p
@@ -57,7 +62,7 @@
 			%p
 				O Dengue Torpedo (DT) é um aplicativo social e gratuito para telefones
 				celulares basicos com câmeras, ligado a um site na web, que promove
-				iniciativas comunitárias para a prevenção da dengue. Criado e desenvolvido
+				iniciativas comunitárias para o controle da dengue. Criado e desenvolvido
 				pelo Social Apps Lab da Universidade de Califórnia, Berkeley, coordenado
 				pelo Prof. James Holston, ele combina tecnologia de comunicação, elementos
 				de jogos digitais e saber local para motivar moradores a identificar e

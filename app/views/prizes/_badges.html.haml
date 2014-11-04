@@ -3,7 +3,7 @@
     .span4.prizes.possible
       .status.possible
         .name
-          = link_to "Dengue Torpedo", about_path
+          = link_to I18n.t("views.app"), about_path
         .points
           = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
       .prize_content
@@ -17,7 +17,7 @@
     .span4.prizes.possible
       .status.possible
         .name
-          = link_to "Dengue Torpedo", about_path
+          = link_to I18n.t("views.app"), about_path
         .points
           = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
       .prize_content
@@ -31,7 +31,7 @@
     .span4.prizes.possible
       .status.possible
         .name
-          = link_to "Dengue Torpedo", about_path
+          = link_to I18n.t("views.app"), about_path
         .points
           = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
       .prize_content
@@ -47,7 +47,7 @@
     .span4.prizes.possible{:style => "margin-right: 20px;"}
       .status.possible
         .name
-          = link_to "Dengue Torpedo", about_path
+          = link_to I18n.t("views.app"), about_path
         .points
           = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
       .prize_content
@@ -61,7 +61,7 @@
     .span4.prizes.possible
       .status.possible
         .name
-          = link_to "Dengue Torpedo", about_path
+          = link_to I18n.t("views.app"), about_path
         .points
           = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase
       .prize_content
