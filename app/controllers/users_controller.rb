@@ -11,24 +11,12 @@ class UsersController < ApplicationController
   # GET /users/
 
   def index
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-
-    @users     = User.residents.order("created_at DESC")
-    @sponsors  = User.where(:role => User::Types::SPONSOR).order("created_at DESC")
-    @verifiers = User.where(:role => User::Types::VERIFIER).order("created_at DESC")
-
-    if @neighborhood.present?
-      @users     = @users.where(:neighborhood_id => @neighborhood.id)
-      @sponsors  = @sponsors.where(:neighborhood_id => @neighborhood.id)
-      @verifiers = @verifiers.where(:neighborhood_id => @neighborhood.id)
-    end
-
     authorize! :assign_roles, User
 
-    respond_to do |format|
-      format.html
-      format.json { render json: { users: @users}}
-    end
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+    @users        = User.order("username ASC")
+
+    @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
   end
 
   #----------------------------------------------------------------------------

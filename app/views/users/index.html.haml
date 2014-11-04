@@ -11,7 +11,7 @@
 			%table.users_table.span12{border: 1}
 				%thead
 					%th
-						= I18n.t("attributes.name")
+						= I18n.t("activerecord.attributes.user.username")
 					%th
 						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
 					%th
@@ -19,7 +19,7 @@
 				- @users.each do |user|
 					%tr
 						%td
-							= link_to user.full_name, edit_user_path(user)
+							= link_to user.username, edit_user_path(user)
 						%td
 							= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
 						%td
@@ -27,59 +27,5 @@
 	%br
 
 	-#----------------------------------------------------------------------------
-.row.offset1
-	.span12
-		%h2
-			= I18n.t("views.admin.edit_sponsors")
-		.row
-			%table.users_table.span12{border: 1}
-				%thead
-					%th
-						= I18n.t("attributes.name")
-					%th
-						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
-					%th
-						= I18n.t("attributes.created_at")
-
-				- @sponsors.each do |sponsor|
-					%tr
-						%td
-							= link_to "#{sponsor.full_name} (#{link_to I18n.t("common_terms.codes"), "/cupons/sponsor/#{sponsor.id}"})".html_safe, edit_user_path(sponsor)
-						%td
-							= link_to ( sponsor.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => sponsor.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-						%td
-							= sponsor.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
-	%br
-
-	-#----------------------------------------------------------------------------
-.row.offset1
-	.span12
-		%h2
-			= I18n.t("views.admin.edit_verifiers")
-		.row
-			%table.users_table.span12{border: 1}
-				%thead
-					%th
-						= I18n.t("attributes.name")
-					%th
-						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
-					%th
-						= I18n.t("attributes.created_at")
-
-				- @verifiers.each do | verifier|
-					%tr
-						- if verifier.is_blocked == false
-							%td
-								= link_to verifier.full_name, edit_user_path(verifier)
-							%td{:style => "margin-left:10px;"}
-								= link_to I18n.t("views.admin.block"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-						- else
-							%td{:style => "color:red"}
-								= link_to verifier.full_name, edit_user_path(verifier), :style => "color:red;"
-							%td
-								= link_to I18n.t("views.admin.unblock"), block_users_path(:id => verifier.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
-						%td
-							= verifier.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
-	%br
 
 	-#----------------------------------------------------------------------------
