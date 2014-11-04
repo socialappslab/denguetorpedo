@@ -174,7 +174,7 @@ es:
       quantity: "Existencia: %{quantity}"
       expiration: "Plazo: %{time}"
     orange_banner:
-      tagline: Use su celular para eliminar mosquitos – ¡participe en Dengue Torpedo y gane premios!
+      tagline: Use su celular para eliminar mosquitos – ¡participe en Dengue Chat y gane premios!
 
 
   #----------------------------------------------------------------------------
@@ -292,6 +292,7 @@ es:
   #------
 
   views:
+    app: Dengue Chat
     admin:
       block: 'Bloquear'
       unblock: 'Desbloquear'
@@ -315,9 +316,9 @@ es:
     application:
       error: "Algo salió mal. Por favor, intente nuevamente."
       devise_errors: "%{num_errors} errores impidieron que el usuario fuera salvado:"
-      login_required: "Regístrese para jugar en Dengue Torpedo o escriba la identificación con la que se registró"
+      login_required: "Regístrese para jugar en Dengue Chat o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
-      user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con Dengue Torpedo."
+      user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con Dengue Chat."
       email_invalid: "Correo electrónico incorrecta"
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
@@ -356,13 +357,13 @@ es:
         show_name_as: "Mostrar nombre como"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
-        username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de Dengue Torpedo y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
+        username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de Dengue Chat y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
     prizes:
       index:
         how_to_win_prizes: "¿Cómo ganar puntos?  Haga clic aquí."
         header_non_logged_in: Puntos y Medallas
-        badge_explanation: Todos ganan medallas en Dengue Torpedo por puntos acumulados.
-        community_explanation: Cada comunidad de Dengue Torpedo determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
+        badge_explanation: Todos ganan medallas en Dengue Chat por puntos acumulados.
+        community_explanation: Cada comunidad de Dengue Chat determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
       create:
         success_flash: "Premio añadido exitosamente"
       new:
@@ -393,12 +394,12 @@ es:
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
     post:
-      text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Torpedo!"
+      text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Chat!"
     home:
       login:
         username: Nombre de usuario o email
       cities:
-        title: Ciudades em destaque no Dengue Torpedo
+        title: Ciudades em destaque no Dengue Chat
       header: "Ciudadanos en el Combate contra el Dengue"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
@@ -408,7 +409,7 @@ es:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"
       contact: "Contacto DT"
-      about: "Sobre Dengue Torpedo"
+      about: "Sobre Dengue Chat"
       creator: "Creado por el Social Apps Lab at CITRIS, UC Berkeley"
     documentation_sections:
       new:
@@ -424,15 +425,15 @@ es:
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"
-      fighter: "Guerrero Dengue Torpedo"
+      fighter: "Guerrero Dengue Chat"
       health_worker: "Comunidad saludable"
       caretaker: "Yo cuido mi comunidad"
     education:
-      title: Manual Dengue Torpedo
+      title: Manual Dengue Chat
       summary: Sumario
     feedback:
       new:
-        header: Enviar un mensaje al Dengue Torpedo
+        header: Enviar un mensaje al Dengue Chat
         max_message_length: "Max 3500 caracteres"
     notices:
       new:
@@ -459,7 +460,7 @@ es:
       edit:
         title: Complete el marcado del criadero
     about:
-      title: Dengue Torpedo
+      title: Dengue Chat
       description: Um aplicativo interativo de celular e web para o controle da dengue
       university: "Universidad de California, Berkeley"
     user_mailer:

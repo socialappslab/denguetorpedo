@@ -291,6 +291,7 @@ pt:
   #------
 
   views:
+    app: Dengue Torpedo
     admin:
       block: 'Bloquear'
       unblock: 'Desbloquear'
