@@ -313,6 +313,8 @@ pt:
       edit_team_members: Administrar membros de equipes
       all_communities: Todas as comunidades
     application:
+      head:
+        description: "O Dengue Torpedo é um aplicativo social e gratuito para telefones celulares basicos com câmeras, ligado a um site na web, que promove iniciativas comunitárias para o controle da dengue."
       error: "Algo deu errado. Por favor, tente novamente."
       devise_errors: "%{num_errors} erros impediram que o usuário fosse salvo:"
       login_required: "Cadastre-se para jogar Dengue Torpedo ou faça o seu login se você já é cadastrado!"
@@ -402,7 +404,7 @@ pt:
         title: Cidades em destaque no Dengue Torpedo
       header: Cidadãos no Combate à Dengue
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
-      chat_description: Troque mensagens entre seus amigos para colaborar no controle dos focos do mosquito da dengue
+      chat_description: Troque mensagens entre seus amigos para colaborar no controle dos focos de mosquitos da dengue
       teams_description: "Entre numa equipe para combater a dengue e ganhe pontos"
       video_description_html: "Veja o video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aqui</a>"
     footer:

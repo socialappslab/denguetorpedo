@@ -314,6 +314,8 @@ es:
       edit_team_members: Administrar miembros de equipos
       all_communities: Todas las comunidades
     application:
+      head:
+        description: "Dengue Chat es una aplicación social gratiuta para teléfonos celulares sencillos con cámara, ligado a un sitio de red, que promueve iniciativas comunitarias para el control del dengue."
       error: "Algo salió mal. Por favor, intente nuevamente."
       devise_errors: "%{num_errors} errores impidieron que el usuario fuera salvado:"
       login_required: "Regístrese para jugar en Dengue Chat o escriba la identificación con la que se registró"
