@@ -262,7 +262,7 @@ pt:
     description: "Eu estou no combate à dengue no @DengueTorpedo"
 
   twitter:
-    created_new_report: "Acabei de marcar um foco no @DengueTorpedo."
+    created_new_report: "Acabei de marcar um foco no @DengueTorpedo"
 
   reports_feed:
     title: "Focos marcados na %{name}"

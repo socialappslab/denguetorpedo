@@ -1,4 +1,4 @@
 .span2{:style => "width:100px;"}
-  .fb-share-button{:data => {:href => "https://denguetorpedo.com/#{neighborhood_reports_path(@neighborhood)}", :type => "button"} }
+  .fb-share-button{:data => {:href => @locale_specific_url, :type => "button"} }
 .span2
-  = link_to "", "https://twitter.com/share", :class => "twitter-share-button", :data => {:related => "denguetorpedo", :lang => "#{I18n.locale}", :count => "none", :url => "#{neighborhood_reports_url(@neighborhood)}", :text => twitter_content}
+  = link_to "", "https://twitter.com/share", :class => "twitter-share-button", :data => {:related => "denguetorpedo", :lang => "#{I18n.locale}", :count => "none", :url => @locale_specific_url, :text => twitter_content}

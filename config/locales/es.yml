@@ -260,10 +260,10 @@ es:
 
 
   facebook:
-    description: "Estoy combatiendo al dengue con @DengueTorpedo"
+    description: "Estoy combatiendo al dengue con @DengueChat"
 
   twitter:
-    created_new_report: "Acabo de marcar um criadero con @DengueTorpedo."
+    created_new_report: "Acabo de marcar um criadero con @DengueChat"
 
   reports_feed:
     title: "Criaderos marcados en %{name}"
