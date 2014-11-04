@@ -502,6 +502,8 @@ es:
         unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, u X para identificar criaderos como en la forma CSV modelo"
         missing_visits: Usted tiene que tener al menos un creadero por lugar
         missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
+    faq:
+      title: Preguntas Frecuentes
   #----------------------------------------------------------------------------
   # Countries
   #----------

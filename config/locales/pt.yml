@@ -504,6 +504,8 @@ pt:
     elimination_methods:
       create: "Criar um método de eliminação"
       edit: "Editar um método de eliminação"
+    faq:
+      title: Perguntas Frequentes
 
 
 
