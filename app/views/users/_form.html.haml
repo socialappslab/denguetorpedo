@@ -1,10 +1,7 @@
 = form_for(@user, :html => {name: "configuration", :class => "form-horizontal"}, :url => {:action => action, :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}}) do |f|
 
   %h1{:id => "role_title"}
-    - if @user == @current_user
-      = I18n.t("common_terms.configuration")
-    - else
-      = I18n.t("views.coordinators.users.edit")
+    = I18n.t("common_terms.configuration")
   %br
 
 
