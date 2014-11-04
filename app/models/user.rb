@@ -32,11 +32,11 @@ class User < ActiveRecord::Base
     POST_CREATED     = 5
 
     # Points for certain badges
-    WATCHER      = 10
-    EXTERMINATOR = 45
-    WARRIOR      = 90
-    HEALTHWORKER = 135
-    PROTECTOR    = 180
+    WATCHER      = 50
+    EXTERMINATOR = 225
+    WARRIOR      = 450
+    HEALTHWORKER = 675
+    PROTECTOR    = 900
   end
 
   module Locales
