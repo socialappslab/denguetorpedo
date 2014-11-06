@@ -16,7 +16,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @notices = @neighborhood.notices.order("updated_at DESC")
 
     # Calculate total visits to (different) locations.
-    @visits       = @reports.map {|r| r.location}.uniq
+    @visits       = @reports.map {|r| r.location}.compact.uniq
     @total_visits = @visits.count
     @clean_visits = @visits.find_all {|l| l.cleaned == true}.count
     @dirty_visits = @visits.find_all {|l| l.cleaned != true}.count
