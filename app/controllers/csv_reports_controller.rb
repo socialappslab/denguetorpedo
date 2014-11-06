@@ -11,7 +11,7 @@ class CsvReportsController < NeighborhoodsBaseController
   def index
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
 
-    @visits       = @csv_reports.map {|csv| csv.location}.uniq
+    @visits       = @csv_reports.map {|r| r.location}.compact.uniq
     @total_visits = @visits.count
     @clean_visits = @visits.find_all {|l| l.cleaned == true}.count
     @dirty_visits = @visits.find_all {|l| l.cleaned != true}.count

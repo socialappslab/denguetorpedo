@@ -21,31 +21,11 @@
       = I18n.t("views.buttons.upload_csv")
 
 - if @csv_reports.present?
-  .row{:style => "margin-bottom: 20px; margin-top: 20px;"}
-    .span9.offset2
-      %h1{:style => "color: #5cb85c; font-size: 50px; display: inline;"}
-        = @clean_visits
-      %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
-        Casas verdes (sin criaderos)
-
-    .span5
-      %h1{:style => "color: #d9534f; font-size: 50px; display: inline;"}
-        = @dirty_visits
-      %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
-        Casas positivas (con criaderos)
-
   .row
-    .span9.offset2{:style => "margin-bottom: 20px; margin-top: 20px;"}
-      %h1{:style => "color: #5cb85c; font-size: 50px; display: inline;"}
-        = ((@clean_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
-      %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
-        Porcentaje de casas verdes
+    .span16.offset1
+      = render :partial => "shared/visit_statistics"
 
-    .span7{:style => "margin-top: 20px; margin-bottom: 20px; "}
-      %h1{:style => "color: #d9534f; font-size: 50px; display: inline;"}
-        = ((@dirty_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
-      %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
-        Porcentaje de casas positivas
+
 
 
 
@@ -58,8 +38,6 @@
           %th
             Fecha
           %th
-            Número de criaderos marcados
-          %th
             Descargar
         - @csv_reports.each do |type|
           %tr
@@ -67,7 +45,5 @@
               = type.location.address
             %td
               = type.created_at.strftime("%Y-%m-%d")
-            %td
-              = type.reports.count
             %td
               = link_to type.csv_file_name, type.csv.url
