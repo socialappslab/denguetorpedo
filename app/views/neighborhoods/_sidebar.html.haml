@@ -11,7 +11,9 @@
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.team", :count => 2).capitalize
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
+
+  - sidebar_height = (@teams.count > 5 ? "500px;" : "280px")
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
     .span4
       = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
@@ -19,17 +21,8 @@
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
+
+  - sidebar_height = (@users.count > 5 ? "500px;" : "280px")
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
     .span4
       = render :partial => "shared/sidebar_list", :locals => { :items => @users }
-
-
-  - if @sponsors.present?
-    %hr{:style => "border-bottom: 1px solid #ccc;"}
-    %h1{:style => "text-align: center; color: #333; font-size: 20px;"}
-      = I18n.t("common_terms.sponsors").capitalize
-    .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 280px;"}
-      .span4
-        = render :partial => "shared/sidebar_list", :locals => { :items => @sponsors }
-
-    %hr{:style => "border-bottom: 1px solid #ccc;"}

@@ -9,16 +9,12 @@
       - if @users.exclude?(@current_user)
         = form_tag join_team_path(@team), :method => "POST" do
           = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-success btn-block btn-large"
-      -# - else
-      -#   = form_tag leave_team_path(@team), :method => "POST" do
-      -#     = submit_tag I18n.t("views.teams.leave"), :class => "btn btn-danger btn-block btn-large"
-        -# = link_to nil, :class => "btn btn-success btn-large disabled", :style => "width: 100%;" do
-        -#   %i{:class => "fa fa-check"}
-        -#   = I18n.t("views.teams.my_team")
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
-  .row{:style => "margin-top: 20px; height: 280px;"}
+
+  - sidebar_height = (@team.users.count > 5 ? "500px;" : "280px")
+  .row{:style => "margin-top: 20px; height: #{sidebar_height};"}
     .span4
       = render :partial => "shared/sidebar_list", :locals => {:items => @team.users}
