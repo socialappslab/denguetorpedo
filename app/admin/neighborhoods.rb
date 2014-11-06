@@ -8,6 +8,8 @@ ActiveAdmin.register Neighborhood do
     column "created_at"
     column "updated_at"
     column "photo"
+    column "latitude"
+    column "longitude"
     default_actions
   end
 
@@ -27,6 +29,8 @@ ActiveAdmin.register Neighborhood do
       f.input "name"
       f.input "city_id", :as => :select, :collection => City.all.map {|c| [c.name, c.id]}
       f.input "photo"
+      f.input "latitude"
+      f.input "longitude"
     end
     f.actions
   end
