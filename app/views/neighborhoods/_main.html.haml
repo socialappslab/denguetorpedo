@@ -11,7 +11,7 @@
   .span9
     = render :partial => "shared/visit_statistics"
 
-.row{:style => "margin-bottom: 20px; margin-top: 20px;"}
+.row{:style => "margin-bottom: 30px; margin-top: 20px;"}
   .span5
     - if @total_points == 0
       - num_of_reports_color = "#d9534f";
@@ -38,7 +38,7 @@
 /------------------------------------------------------------------------------
 
 - if @current_user && @users.include?(@current_user)
-  .row{:style => "margin-top:60px;"}
+  .row{:style => "margin-top:40px;"}
     = render :partial => 'posts/new'
 
 .row
