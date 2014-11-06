@@ -1,0 +1,30 @@
+%table.table.table-bordered
+  %tbody
+    %tr
+      %td
+        %h1{:style => "color: #5cb85c; font-size: 36px; text-align: center;"}
+          = @clean_visits.to_s
+          %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
+            de
+          = @total_visits.to_s
+        %p{:style => "margin-top: 10px; font-size: 15px; text-align: center;"}
+          Casas verdes (sin criaderos)
+      %td
+        %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
+          = @dirty_visits
+          %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
+            de
+          = @total_visits.to_s
+        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
+          Casas positivas (con criaderos)
+    %tr
+      %td
+        %h1{:style => "color: #5cb85c; font-size: 36px; text-align: center;"}
+          = ((@clean_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
+        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
+          Porcentaje de casas verdes
+      %td
+        %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
+          = ((@dirty_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
+        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
+          Porcentaje de casas positivas
