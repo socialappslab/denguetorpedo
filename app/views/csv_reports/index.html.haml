@@ -38,8 +38,6 @@
           %th
             Fecha
           %th
-            Número de criaderos marcados
-          %th
             Descargar
         - @csv_reports.each do |type|
           %tr
@@ -47,7 +45,5 @@
               = type.location.address
             %td
               = type.created_at.strftime("%Y-%m-%d")
-            %td
-              = type.reports.count
             %td
               = link_to type.csv_file_name, type.csv.url
