@@ -20,11 +20,11 @@
     %tr
       %td
         %h1{:style => "color: #5cb85c; font-size: 36px; text-align: center;"}
-          = ((@clean_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
+          = @total_visits == 0 ? "0%" : ((@clean_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
         %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
           Porcentaje de casas verdes
       %td
         %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
-          = ((@dirty_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
+          = @total_visits == 0 ? "0%" : ((@dirty_visits.to_f / @total_visits) * 100).to_i.to_s + "%"
         %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
           Porcentaje de casas positivas
