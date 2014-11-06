@@ -14,19 +14,16 @@
 .row
   .span8.offset1
     %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
-      Reportes cargados en CSV
+      Sus reportes cargados en CSV
   .span5.pull-right
     = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large", :style => "margin-bottom:20px;" do
       %i.fa.fa-file
       = I18n.t("views.buttons.upload_csv")
 
 - if @csv_reports.present?
-  .row
+  .row{:style => "margin-top: 20px;"}
     .span16.offset1
       = render :partial => "shared/visit_statistics"
-
-
-
 
 
   .row{:style => "margin-top: 20px;"}
