@@ -375,7 +375,8 @@ es:
         delete: Eliminar
     password_resets:
       new:
-        title: Redefinir su contraseña
+        title: Restablecer su contraseña
+        description: "Para restablecer su contraseña, introduzca su correo electrónico debajo. Le enviaremos un correo electrónico con un enlace para restablecer tu contraseña. Si usted no tiene una dirección de correo electrónico, póngase en contacto con su coordinador local de Dengue Chat."
         email: "Teclee su correo electrónico registrado"
       does_not_exist: "El 'token' de cambio de contraseña no existe."
       edit:

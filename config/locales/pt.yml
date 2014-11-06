@@ -49,7 +49,7 @@ pt:
         other: Cidades
     attributes:
       user:
-        email: "Email"
+        email: "E-mail"
         username: "Nome de usuário"
         password: "Senha"
         phone_number: "Celular"
@@ -377,6 +377,7 @@ pt:
     password_resets:
       new:
         title: Redefinir sua senha
+        description: "Para redefinir sua senha, entre o seu e-mail abaixo. Nós lhe enviaremos um e-mail com um link para redefinir sua senha. Se você não tem um e-mail, contate o seu coordinador local de Dengue Torpedo."
         email: "Digite o seu e-mail cadastrado"
       does_not_exist: "A mudança de senha 'símbolo' não existe."
       edit:

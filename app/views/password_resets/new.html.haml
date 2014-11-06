@@ -1,16 +1,20 @@
 = render :partial => "shared/flashes"
 
-.offset5.span8.well
-  %h1{:style => "text-align: center; margin-bottom: 20px;"}
-    = I18n.t("views.password_resets.new.title")
+.row
+  .offset5.span9
+    = form_tag password_resets_path, :method => :post, :class => "form-horizontal well" do
+      %h1{:style => "text-align: center; margin-bottom: 20px;"}
+        = I18n.t("views.password_resets.new.title")
 
-  = form_tag password_resets_path, :method => :post, :class => "form-horizontal" do
-    .control-group
-      = label_tag :email, :class => "control-label", :style => "font-size: 12px;" do
-        = I18n.t("activerecord.attributes.user.email")
-      .controls
-        = text_field_tag :email
+      %p{:style => "margin-bottom: 30px;"}
+        = I18n.t("views.password_resets.new.description")
 
-    .control-group
-      .controls
-        = render :partial => "shared/submit_button"
+      .control-group{:style => "margin-top: 40px;"}
+        = label_tag :email, :class => "control-label", :style => "font-size: 12px;" do
+          = I18n.t("activerecord.attributes.user.email")
+        .controls
+          = text_field_tag :email, nil, :class => "form-control"
+
+      .control-group{:style => "margin-top: 30px;"}
+        .controls
+          = render :partial => "shared/submit_button"
