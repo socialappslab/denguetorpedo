@@ -1,4 +1,4 @@
-- dashboard_item_width = @current_user && @current_user.neighborhood.nicaraguan? ? '200px' : '250px'
+- dashboard_item_width = @current_user && @current_user.neighborhood.spanish? ? '200px' : '250px'
 .row
   #dashboard_bar
     .dashboard-item{:style => "margin-left: 160px; width: #{dashboard_item_width}"}
@@ -28,7 +28,7 @@
         %i.fa.fa-map-marker
         = I18n.t("dashboard.reports")
 
-    - if @current_user && @current_user.neighborhood.nicaraguan?
+    - if @current_user && @current_user.neighborhood.spanish?
       .dashboard-item{:style => "width: #{dashboard_item_width}"}
         - header_styling = current_page?(:controller => "csv_reports", :action => "index") ? "font-weight:bold;" : ""
         = link_to neighborhood_csv_reports_path(@current_user.neighborhood), :style => header_styling do
