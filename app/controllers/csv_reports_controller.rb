@@ -109,10 +109,12 @@ class CsvReportsController < NeighborhoodsBaseController
       comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
 
 
-      # 4b. Attempt to identify the breeding sites from the codes.
-      if type && ["a", "b", "l", "m", "p", "t", "x", "v"].include?( type.strip.downcase )
-        type = type.strip.downcase
+      # 4b. Attempt to identify the breeding sites from the codes. If no type
+      # is identified, then simply skip the whole row.
+      next if type.blank?
 
+      type = type.strip.downcase
+      if ["a", "b", "l", "m", "p", "t", "x", "v"].include?( type )
         if type == "a"
           breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
         elsif type == "b"
