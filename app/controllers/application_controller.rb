@@ -105,23 +105,26 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    # We use this to test the functionality of languages.
-    if params[:locale].present?
-      I18n.locale = params[:locale]
-      return
-    end
-
+    # raise "cookies[:locale_preference]: #{cookies[:locale_preference]}"
     # The choice to set a language is given by the following rules, in order
     # of importance:
     # 1. If user is logged in, and has locale set, use that locale (if compatible),
-    # 2. If no locale is set, then extract browser's default language
-    #    and use it (if compatible),
-    # 3. Default to I18n.default_locale if all else fails.
+    # 2. If no locale is set, then use the cookies[:locale_preference] attribute,
+    # according to the following:
+    # 2a. Set cookies to whatever params[:locale], if present,
+    # 2b. If not present, and cookies are not set, then set it to
+    #     browser's default language.
+    # 2c. Fallback to I18n.default_locale if all else fails.
     available = [User::Locales::PORTUGUESE, User::Locales::SPANISH]
     if @current_user.present? && available.include?(@current_user.locale)
       I18n.locale = @current_user.locale
     else
-      I18n.locale = http_accept_language.compatible_language_from(available) || I18n.default_locale
+      cookies[:locale_preference] = params[:locale] if params[:locale].present?
+      if cookies[:locale_preference].blank?
+        cookies[:locale_preference] = http_accept_language.compatible_language_from(available) || I18n.default_locale
+      end
+
+      I18n.locale = cookies[:locale_preference]
     end
 
     if I18n.locale.to_s == User::Locales::SPANISH
