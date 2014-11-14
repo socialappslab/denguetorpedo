@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class Neighborhood < ActiveRecord::Base
-  attr_accessible :name, :photo, :city_id, :as => :admin
+  attr_accessible :name, :photo, :city_id, :latitude, :longitude, :as => :admin
 
   #----------------------------------------------------------------------------
 
