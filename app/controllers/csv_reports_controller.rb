@@ -92,9 +92,11 @@ class CsvReportsController < NeighborhoodsBaseController
     #   "foto de eliminación",
     #   "comentarios sobre tipo y/o eliminación*"
     # ]
+    current_row = 0
     (start_index + 1..spreadsheet.last_row).each do |i|
       row            = Hash[[header, spreadsheet.row(i)].transpose]
       parsed_content << row
+      current_row   += 1
 
       # 4a. Extract the attributes. NOTE: We use fuzzy matching instead of
       # exact matching since users may vary the columns slightly.
@@ -162,7 +164,7 @@ class CsvReportsController < NeighborhoodsBaseController
     end
 
     # 5. Error out if there are no reports extracted.
-    if reports.count == 0
+    if current_row == 0
       flash[:alert] = I18n.t("views.csv_reports.flashes.missing_visits")
       render "new" and return
     end
