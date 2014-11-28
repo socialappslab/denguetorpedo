@@ -155,7 +155,7 @@ a:hover {
 
 // establishes page width and centers
 body, #container {
-  width: $gridRowWidth;
+  // width: $gridRowWidth;
   margin: 0px auto;
   position: relative;
   background: $background-color;
