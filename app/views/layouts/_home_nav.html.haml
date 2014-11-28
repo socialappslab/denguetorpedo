@@ -1,4 +1,4 @@
-.row{:style => "background-color: #408bca; height: 75px;"}
+.row.navigation-bar
   = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
 
 
