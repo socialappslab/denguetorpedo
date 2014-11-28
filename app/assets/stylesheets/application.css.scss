@@ -80,6 +80,25 @@ div {
 }
 
 
+//---
+// Navigation bar customizations
+.navigation-bar {
+  background-color: $denguechat-blue;
+  height: 80px;
+}
+
+.container-silver {
+  background-color: $denguechat-silver;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.container-white {
+  background-color: $denguechat-grey;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
 
 //-----------------------------------------------------------------------------
 // Sidebar Configurations
@@ -111,7 +130,8 @@ div {
 // Banner configuration
 
 #orange_slider {
-  background-image: url(banner.png);
+  // background-image: url(banner.png);
+  background-image: $denguechat-grey;
   background-size: 1200px 437px;
 }
 
