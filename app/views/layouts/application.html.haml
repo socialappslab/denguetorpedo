@@ -41,19 +41,27 @@
 
   /-----------------------------------------------------------------------------
 
-  #footer
-    %span
-      = link_to I18n.t("views.footer.code_of_conduct"), manual_path
-      |
-      = link_to I18n.t("views.footer.faq"), faq_path
-      |
-      = link_to I18n.t("views.footer.contact"), new_feedback_path
-      |
-      = link_to I18n.t("views.footer.about"), about_path
-    %span
-      2014 © Regents of the University of California
-      |
-      = link_to I18n.t("views.footer.creator"), credit_path
+  %footer.bs-docs-footer{:role => "contentinfo"}
+    .container
+      %p
+        = link_to I18n.t("views.footer.creator"), credit_path
+      %p
+        2014 © Regents of the University of California
+      %ul.bs-docs-footer-links.muted
+        %li
+          = link_to I18n.t("views.footer.code_of_conduct"), manual_path
+        %li ·
+        %li
+          = link_to I18n.t("views.footer.faq"), faq_path
+
+        %li ·
+        %li
+          = link_to I18n.t("views.footer.contact"), new_feedback_path
+        %li ·
+        %li
+          = link_to I18n.t("views.footer.about"), about_path
+
+
 
     / FontAwesome fonts.
     %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css", :rel => "stylesheet"}

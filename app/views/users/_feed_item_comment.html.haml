@@ -1,13 +1,13 @@
 .row
-  .span1.feed-item-profile-photo
+  .col-md-2.feed-item-profile-photo
     = link_to user_path(user) do
       - if user.profile_photo_file_name.nil?
         = image_tag("default_images/user_default_alt.png")
       - else
         = image_tag(user.profile_photo.url(:small))
-  .span6
+  .col-md-9
     .row.feed-item-bar
-      .span6
+      .col-md-12
         = link_to user.display_name, user_path(user), :style => "font-weight: bold;"
         .feed-item-timestamp
           %i.fa.fa-clock-o
@@ -21,5 +21,5 @@
 
 
     .row.feed-item-content
-      .span6
+      .col-md-12
         = comment.content

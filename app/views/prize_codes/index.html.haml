@@ -1,5 +1,5 @@
 .row
-  .span15.offset1
+  .col-md-15.col-md-offset-1
     %h1 Códigos de controle dos prêmios
     %p Clique nos links dos prêmios abaixo para ver o código que foi gerado para cada prêmio.
     %br
@@ -7,7 +7,7 @@
     %br
 
 .row
-  .span12.offset2
+  .col-md-12.col-md-offset-2
     %ul
     - @prizes.sort.each do |prize|
       %h2 #{prize.prize_name}

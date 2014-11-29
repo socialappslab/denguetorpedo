@@ -3,22 +3,8 @@
 #login {
   margin-top: 15px;
 
-  ul {
-    li {
-      display: inline;
-      input {
-        margin-bottom: 2px;
-      }
-    }
-  }
-  a {
-    margin: -10px 0px 0px 1px;
-    font-size: 12px;
-  }
 
-  input[type = "text"], input[type = "password"] {
-    width: $login-width;
-  }
+
 
   #error {
    height: $login_error_height;

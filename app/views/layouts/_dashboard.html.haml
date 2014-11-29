@@ -1,7 +1,7 @@
-- dashboard_item_width = @current_user && @current_user.neighborhood.spanish? ? '200px' : '250px'
+- dashboard_item_width = @current_user && @current_user.neighborhood.spanish? ? '275px' : '300px'
 .row
   #dashboard_bar
-    .dashboard-item{:style => "margin-left: 160px; width: #{dashboard_item_width}"}
+    .dashboard-item{:style => "margin-left: 200px; width: #{dashboard_item_width}"}
       - header_styling = current_page?(:controller => "users", :action => "show") ? "font-weight:bold;" : ""
       = link_to user_path(@current_user), :style => header_styling do
         %i.fa.fa-user

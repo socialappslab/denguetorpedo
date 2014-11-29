@@ -1,7 +1,7 @@
 = render :partial => "shared/flashes"
 
 .row
-  .span15.offset1
+  .col-md-12.col-md-offset-1
     %h1
       = I18n.t("views.education.title")
     %br
@@ -27,10 +27,10 @@
         .accordion-group
           .accordion-heading{style: "padding:10px;", id: "#{ds.html_id_tag}"}
             .row
-              .span8
+              .col-md-8
                 %h1{style: "color: black;"}
                   = ds.title
-              .span6{style: "text-align: right;"}
+              .col-md-4{style: "text-align: right;"}
                 - if @current_user && @current_user.coordinator?
                   = link_to I18n.t("views.buttons.edit"), edit_documentation_section_path(ds)
 

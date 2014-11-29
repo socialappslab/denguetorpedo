@@ -1,8 +1,8 @@
 .row.report-content-area
-  .span3
+  .col-md-3
     = render :partial => "reports/photos", :locals => {:report => report}
 
-  .span5
+  .col-md-8.col-md-offset-1
     %h1
       = I18n.t("activerecord.attributes.report.report")
     %p
@@ -10,11 +10,11 @@
 
     - if !report.sms_incomplete?
       .row
-        .span2
+        .col-md-6
           %h1{:style => "margin-top: 15px;"}
             = I18n.t("activerecord.models.location")
         - if report.location && report.location.latitude.present? && report.location.longitude.present?
-          .span3
+          .col-md-6
             = link_to I18n.t("map.find"), nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) }
       %p
         = report.descriptive_address

@@ -1,5 +1,5 @@
 .row
-	.span15.offset1
+	.col-md-15.col-md-offset-1
 		- if I18n.locale.to_s == User::Locales::PORTUGUESE
 			= render :partial => "home/manual_pt"
 		- else

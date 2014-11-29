@@ -1,15 +1,15 @@
 .post_feed
   .row
-    .span2{:style => "width:80px;"}
+    .col-md-2{:style => "width:80px;"}
       .post_feed_profile_photo
         = link_to image_tag(post.user.profile_photo.url(:large)), user_path(post.user)
-    .span6
+    .col-md-6
       .row
-        .span7
+        .col-md-7
           .post_feed_title
             %h3= post.title
       .row
-        .span7
+        .col-md-7
           .post_feed_content
             = auto_link(post.content)
 

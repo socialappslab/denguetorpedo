@@ -1,19 +1,8 @@
 .row
-  .span15.offset1
-    - if flash[:notice] 
-      .row#flash_dat_notice
-        #flashNotice 
-          %p
-            = flash[:notice]
-
-    - if flash[:alert] 
-      .row#flash_dat_alert
-        #flashAlert 
-          %p
-            = flash[:alert]
+  .col-md-12.col-md-offset-1
     .row#prize_name_and_photo
       .row#prize_info
-        .span15{style: "margin-left:40px;margin-top:10px;"}
+        .col-md-12{style: "margin-left:40px;margin-top:10px;"}
           #prize_cost
             .row#prize_cost{:style => "padding:10px;"}
               %h2 Medalhas
@@ -22,7 +11,6 @@
               %p{:style => "font-size:18px;"}
                 Você não precisa utilizar seus pontos!
       .row
-        .span14{style: "padding-left:30px;text-align:center;"}
+        .col-md-12{style: "padding-left:30px;text-align:center;"}
           - @badges.each do |badge|
             = image_tag("badges/#{badge}.png", width: 150, height: 150)
-

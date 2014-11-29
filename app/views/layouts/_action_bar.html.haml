@@ -1,6 +1,6 @@
 #action_bar  
   .row
-    .span6.offset1         
+    .col-md-6.col-md-offset-1         
       .action_active
         -#= image_tag('icons/neighborhood.png')
         = image_tag("http://placehold.it/160x160")
@@ -10,11 +10,11 @@
       .action_inactive
         -#= image_tag('icons/user_32.png')
         = image_tag("http://placehold.it/96x96")
-    .span2
+    .col-md-2
       %h2.action_data 23941 points
-    .span3
+    .col-md-3
       #action_picture
         = image_tag("http://placehold.it/160x160")
-    .span4
+    .col-md-4
       #action_map
         = image_tag("http://placehold.it/220x160")

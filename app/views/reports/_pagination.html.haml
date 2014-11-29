@@ -1,42 +1,42 @@
 - last_offset    = (@report_count / @report_limit).to_i
 - current_offset = params[:page].to_i
-.pagination
-  %ul.pull-right
-    - if last_offset < 5
-      - (0..last_offset).each do |offset|
+
+%ul.pagination.pull-right
+  - if last_offset < 5
+    - (0..last_offset).each do |offset|
+      %li{:class => (offset == current_offset) ? "disabled" : ""}
+        = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
+  - else
+
+
+
+    - if current_offset < 4
+      - (0..4).each do |offset|
         %li{:class => (offset == current_offset) ? "disabled" : ""}
           = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
+      %li
+        = link_to neighborhood_reports_path(@neighborhood, :page => last_offset), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-right
+          &nbsp;
+    - elsif current_offset > last_offset - 4
+      %li
+        = link_to neighborhood_reports_path(@neighborhood, :page => 0), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-left
+          &nbsp;
+
+      - ((last_offset - 4)..last_offset). each do |offset|
+        %li{:class => (offset == current_offset) ? "disabled" : ""}
+          = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
+
     - else
-
-
-
-      - if current_offset < 4
-        - (0..4).each do |offset|
-          %li{:class => (offset == current_offset) ? "disabled" : ""}
-            = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
-        %li
-          = link_to neighborhood_reports_path(@neighborhood, :page => last_offset), :style => "padding-right: 15px;" do
-            %i.fa.fa-chevron-right
-            &nbsp;
-      - elsif current_offset > last_offset - 4
-        %li
-          = link_to neighborhood_reports_path(@neighborhood, :page => 0), :style => "padding-right: 15px;" do
-            %i.fa.fa-chevron-left
-            &nbsp;
-
-        - ((last_offset - 4)..last_offset). each do |offset|
-          %li{:class => (offset == current_offset) ? "disabled" : ""}
-            = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
-
-      - else
-        %li
-          = link_to neighborhood_reports_path(@neighborhood, :page => 0), :style => "padding-right: 15px;" do
-            %i.fa.fa-chevron-left
-            &nbsp;
-        - ((current_offset - 2)..(current_offset + 2)).each do |offset|
-          %li{:class => (offset == current_offset) ? "disabled" : ""}
-            = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
-        %li
-          = link_to neighborhood_reports_path(@neighborhood, :page => last_offset), :style => "padding-right: 15px;" do
-            %i.fa.fa-chevron-right
-            &nbsp;
+      %li
+        = link_to neighborhood_reports_path(@neighborhood, :page => 0), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-left
+          &nbsp;
+      - ((current_offset - 2)..(current_offset + 2)).each do |offset|
+        %li{:class => (offset == current_offset) ? "disabled" : ""}
+          = link_to "#{offset + 1}", neighborhood_reports_path(@neighborhood, :page => offset)
+      %li
+        = link_to neighborhood_reports_path(@neighborhood, :page => last_offset), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-right
+          &nbsp;

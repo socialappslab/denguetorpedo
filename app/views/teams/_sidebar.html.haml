@@ -16,5 +16,5 @@
 
   - sidebar_height = (@team.users.count > 5 ? "500px;" : "280px")
   .row{:style => "margin-top: 20px; height: #{sidebar_height};"}
-    .span4
+    .col-md-12
       = render :partial => "shared/sidebar_list", :locals => {:items => @team.users}

@@ -1,11 +1,11 @@
 .row
-  .span14.offset1
+  .col-md-14.col-md-offset-1
     %h1
       = I18n.t("views.faq.title")
 
     - if I18n.locale.to_s == User::Locales::PORTUGUESE
       %h2 Sobre o Dengue Torpedo
-      .offset1
+      .col-md-offset-1
         %h3{style: "font-weight:bold;"} O que é o Dengue Torpedo?
         %p
           O Dengue Torpedo é um aplicativo social e gratuito para telefones celulares básicos com câmeras que promove iniciativas comunitárias para a prevenção da dengue. Para saber mais sobre o projeto leia <a class="users" href="/about">Sobre o Dengue Torpedo</a>.
@@ -27,7 +27,7 @@
         %br
 
       %h2 Sobre o sistema de pontuação.
-      .offset1
+      .col-md-offset-1
         %h3{style: "font-weight:bold;"} Onde eu troco meus pontos?
         %p
           Você pode trocar os seu pontos por prêmios. Cada prêmio necessita de um tipo de pontuação. Verifique a lista completa <a class="users" href="#{prizes_path}">no link prêmios</a>.
@@ -45,7 +45,7 @@
     - else
       %h2
         Sobre Dengue Chat
-      .offset1
+      .col-md-offset-1
         %h3{style: "font-weight:bold;"} ¿Qué es Dengue Chat?
         %p
           Dengue Chat es una aplicación social y gratuita para teléfonos celulares
@@ -76,7 +76,7 @@
         %br
 
       %h2 Sobre el sistema de puntuación
-      .offset1
+      .col-md-offset-1
         %h3{style: "font-weight:bold;"} ¿Hay un límite de puntos por participante?
         %p
           No hay límite de puntos por participante o por equipo.

@@ -1,0 +1,7 @@
+.col-md-12.prizes.prize-containers.img-rounded
+  %div{:style => "text-align: center; display: block; margin-top: 15px;"}
+    = link_to image_tag(prize_image_location, :style => "width: 75px; height: 75px;")
+  .description{:style => "text-align: center;"}
+    = link_to prize_name, badges_prizes_path
+  %div{:style => "text-align: center; display: block; margin-bottom: 15px;"}
+    = "#{prize_type} " + I18n.t("activerecord.attributes.user.total_points", :count => prize_type).downcase

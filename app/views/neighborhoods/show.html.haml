@@ -2,12 +2,12 @@
 
 %div{style: "min-height:700px;"}
   .row
-    .span5{:style => "border-right: 1px solid #ccc;"}
+    .col-md-3.col-md-offset-1{:style => "border-right: 1px solid #ccc;"}
       = render :partial => "neighborhoods/sidebar"
 
-    .span10.offset1
+    .col-md-7.col-md-offset-1
       = render :partial => "neighborhoods/main"
 
-    .span2{:style => "text-align: center; margin-top: -40px; margin-left: -40px;"}
+    .col-md-2{:style => "text-align: center; margin-top: -40px; margin-left: -40px;"}
       - if @neighborhood.name  == Neighborhood::Names::MARE
         = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success btn-large", :style => "margin-top: 120px;"

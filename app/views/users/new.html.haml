@@ -1,42 +1,35 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-.offset5.span8.well
-  %h1{:style => "text-align: center;"}
-    = I18n.t("common_terms.register")
-  %br
-  = form_for(@user, :html => {:class => "form-horizontal"}) do |f|
+.row
+  .col-md-5.col-md-offset-3.well
+    %h1{:style => "text-align: center;"}
+      = I18n.t("common_terms.register")
+    %br
+    = form_for(@user, :html => {:class => "form-horizontal"}) do |f|
 
-    .control-group
-      = f.label :username, :class => "control-label"
-      .controls
-        = f.text_field :username
+      .form-group
+        = f.label :username, :class => "control-label col-md-6"
+        .col-md-6
+          = f.text_field :username, :class => "form-control"
 
-    -# .control-group
-    -#   = f.label :first_name, :class => "control-label"
-    -#   .controls
-    -#     = f.text_field :first_name
-    -#
-    -# .control-group
-    -#   = f.label :last_name, :class => "control-label"
-    -#   .controls
-    -#     = f.text_field :last_name
+      .form-group
+        = f.label :password, :class => "control-label col-md-6"
+        .col-md-6
+          = f.password_field :password, :class => "form-control"
 
-    .control-group
-      = f.label :password, :class => "control-label"
-      .controls
-        = f.password_field :password
+      .form-group
+        = f.label :password_confirmation, :class => "control-label col-md-6"
+        .col-md-6
+          = f.password_field :password_confirmation, :class => "form-control"
 
-    .control-group
-      = f.label :password_confirmation, :class => "control-label"
-      .controls
-        = f.password_field :password_confirmation
+      .form-group
+        = f.label :neighborhood_id, :class => "control-label col-md-6"
+        .col-md-6
+          = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }, :class => "form-control"
 
-    .control-group
-      = f.label :neighborhood_id, :class => "control-label"
-      .controls
-        = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }
-
-    .control-group
-      .controls
-        = render :partial => "shared/submit_button"
+      .form-group
+        .col-md-6.col-md-offset-6
+          = button_tag :type => "submit", :class => "btn btn-success btn-large col-md-12" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.submit")

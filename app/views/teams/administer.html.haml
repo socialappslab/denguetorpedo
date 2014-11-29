@@ -1,15 +1,15 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/filter_by_community"
 
-.row.offset1
-  .span5
+.row.col-md-offset-1
+  .col-md-5
     %h1
       = I18n.t("views.admin.edit_teams")
 
 
-.row.offset1
+.row.col-md-offset-1
 
-  %table.users_table.span12{:cellpadding => 10, border: 1}
+  %table.users_table.col-md-12{:cellpadding => 10, border: 1}
     %colgroup
       %col{style: "width:70%;"}
       %col{style: "width:15%;"}

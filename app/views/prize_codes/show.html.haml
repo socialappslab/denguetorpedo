@@ -1,11 +1,11 @@
-.row.offset1
+.row.col-md-offset-1
   %h1
     Cupom
   - if not @prize_code.expired?
     %button{:style => "position:absolute;top:7px;left:629px;"}
       = link_to "Imprimir", prize_code_path(@prize_code) + ".pdf", target: "blank"
 %br
-.row.offset1
+.row.col-md-offset-1
   .coupons
     .status
       .name

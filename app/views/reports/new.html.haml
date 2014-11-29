@@ -12,12 +12,12 @@
 /------------------------------------------------------------------------------
 
 .row
-  .span10.offset6
+  .col-md-10.col-md-offset-1
     %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
       = I18n.t("common_terms.create_a_report")
 
 .row
-  .span12.offset3
+  .col-md-10.col-md-offset-1
     #new_report_form
       = form_for [@neighborhood, @report], :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
         = hidden_field_tag 'error', params[:new_report].present?

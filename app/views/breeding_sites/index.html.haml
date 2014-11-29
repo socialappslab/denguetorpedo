@@ -1,12 +1,12 @@
 = render :partial => "shared/flashes"
 
 .row
-  .span8.offset1
+  .col-md-8.col-md-offset-1
     %h1{:style => "font-size: 30px;"}
       = I18n.t("views.admin.edit_report")
 
 .row{:style => "margin-top: 20px;"}
-  .span16.offset1
+  .col-md-16.col-md-offset-1
     %table.table.table-bordered
       - @types.each do |type|
         %tr.info
