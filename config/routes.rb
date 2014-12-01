@@ -1,5 +1,15 @@
 Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
+  # API routes.
+
+  namespace :api do
+    namespace :v0 do
+      post "sessions", :to => "sessions#create"
+    end
+  end
+
+
+  #----------------------------------------------------------------------------
   # Landing Pages routes.
 
   match "home/:id" => "home#index", :as => "Home"
