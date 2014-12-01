@@ -19,7 +19,7 @@ class HomeController < ApplicationController
 
     # We're manually ordering this to display the diversity of
     # our cities.
-    @cities = [ City.find_by_name("Rio de Janeiro"), City.find_by_name("Tepalcingo"), City.find_by_name("Managua"), City.find_by_name("Cuernavaca") ]
+    @cities = [ City.find_by_name("Rio de Janeiro"), City.find_by_name("Managua"), City.find_by_name("Cuernavaca"), City.find_by_name("Tepalcingo") ]
 
     # Display ordered news.
     @notices  = @neighborhood.notices.order("date DESC").limit(6)
