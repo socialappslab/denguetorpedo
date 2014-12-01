@@ -2,24 +2,24 @@
 = form_for(@user, html: {name: "registration_form", :class => "form-horizontal" }) do |f|
 
   .form-group
-    = f.label :username, :class => "control-label col-md-6", :style => "font-size: 12px;"
+    = f.label :username, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
     .col-md-6
       = f.text_field :username, :class => "form-control"
 
   .form-group
-    = f.label :password, :class => "control-label col-md-6", :style => "font-size: 12px;"
+    = f.label :password, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
     .col-md-6
       = f.password_field :password, :class => "form-control"
 
 
   .form-group
-    = f.label :password_confirmation, :class => "control-label col-md-6", :style => "font-size: 12px;"
+    = f.label :password_confirmation, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
     .col-md-6
       = f.password_field :password_confirmation, :class => "form-control"
 
 
   .form-group
-    = f.label :neighborhood_id, :class => "control-label col-md-6", :style => "font-size: 12px;"
+    = f.label :neighborhood_id, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
     .col-md-6
       // TODO: CLEANUP.
       - neighborhoods = []
