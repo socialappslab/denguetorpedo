@@ -8,3 +8,9 @@
 #   inflect.irregular 'person', 'people'
 #   inflect.uncountable %w( fish sheep )
 # end
+
+ActiveSupport::Inflector.inflections do |inflect|
+  # This inflects Api -> API per suggestion by
+  # [http://collectiveidea.com/blog/archives/2013/06/13/building-awesome-rails-apis-part-1/]
+  inflect.acronym 'API'
+end
