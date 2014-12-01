@@ -203,13 +203,13 @@ div {
 
     &.left {
       top: 200px;
-      left: -50px;
+      left: 50px;
     }
 
     &.right {
       top: 200px;
       left: auto;
-      right: 150px;
+      right: 50px;
     }
   }
 }
