@@ -1,35 +1,16 @@
 
 .row
   .col-md-12
-    %h1{:style => "color: #333; font-size: 42px; margin-top: 50px; margin-bottom: 20px; text-align: center;"}
+    %h1{:style => "color: white; margin-top: 400px; font-size: 42px; margin-bottom: 20px; text-align: center;"}
       = I18n.t("views.home.header")
 
-.row
-  .col-md-7
-    .row{:style => "margin-top: 20px;"}
-      .col-md-2.col-md-offset-1{:style => "text-align: center;"}
-        %i.fa.fa-comments{:style => "font-size: 84px;"}
-      .col-md-8
-        %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
-          = I18n.t("views.home.chat_description")
-
-    .row{:style => "margin-top: 20px;"}
-      .col-md-2.col-md-offset-1{:style => "text-align: center;"}
-        %i.fa.fa-futbol-o{:style => "font-size: 64px;"}
-      .col-md-8
-        %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 10px;"}
-          = I18n.t("views.home.teams_description")
-
-
-  .col-md-4{:style => "margin-top: 25px;"}
-    = render "home/register_form"
 
 .row
   .col-md-6.col-md-offset-3{:style => "text-align: center; margin-bottom: 20px; margin-top: 20px;"}
     = link_to "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe", :id => 'play_button' do
-      %i.fa.fa-play-circle{:style => "font-size: 24px; color: #333;"}
+      %i.fa.fa-play-circle{:style => "font-size: 24px; color: white;"}
 
-    %h2{:style => "color: #333; font-size: 16px; display: inline-block;"}
+    %h2{:style => "color: white; font-size: 16px; display: inline-block;"}
       = I18n.t("views.home.video_description_html", :link_url => @introductory_video_on_dengue).html_safe
 
 
