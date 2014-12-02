@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141103043945) do
+ActiveRecord::Schema.define(:version => 20141201235716) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -108,6 +108,15 @@ ActiveRecord::Schema.define(:version => 20141103043945) do
     t.datetime "csv_updated_at"
     t.integer  "user_id"
     t.integer  "location_id"
+  end
+
+  create_table "device_sessions", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "token"
+    t.string   "device_name"
+    t.string   "device_model"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "documentation_sections", :force => true do |t|
