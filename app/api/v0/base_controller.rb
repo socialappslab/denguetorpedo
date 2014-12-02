@@ -13,14 +13,20 @@ class API::V0::BaseController < ApplicationController
     end
   end
 
-  rescue_from API::V1::Error, :with => :render_json_with_exception
+  rescue_from API::V0::Error, :with => :render_json_with_exception
 
   #----------------------------------------------------------------------------
 
   private
 
   def authenticate_user_via_device_token
-    return true
+    token = request.headers["DengueChat-API-V0-Device-Session-Token"]
+
+    puts "\n\n\n\nTOKEN: #{candidate_token}\n\n\n"
+
+    d = DeviceSession.find_by_token(token)
+    return true if d.present?
+    raise API::V0::Error.new("Device couldn't be authenticated. Please login again.", 401) and return
   end
 
   def render_json_with_exception(exception)

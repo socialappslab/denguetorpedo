@@ -11,8 +11,14 @@ class API::V0::SessionsController < API::V0::BaseController
 
 
     if user.present? && user.authenticate(params[:password]) && device
+      ds         = DeviceSession.new
+      ds.user_id = user.id
+      ds.token   = SecureRandom.uuid
+      ds.save!
+
+      render :json => { :device_session => { :token => ds.token } }, :status => 200
     else
-      raise Api::V0::Error.new("Invalid email or password. Please try again.", 401) and return
+      raise API::V0::Error.new("Invalid email or password. Please try again.", 401) and return
     end
 
   end
