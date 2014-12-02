@@ -22,7 +22,7 @@ class API::V0::BaseController < ApplicationController
   def authenticate_user_via_device_token
     token = request.headers["DengueChat-API-V0-Device-Session-Token"]
 
-    puts "\n\n\n\nTOKEN: #{candidate_token}\n\n\n"
+    puts "\n\n\n\nTOKEN: #{token}\n\n\n"
 
     d = DeviceSession.find_by_token(token)
     return true if d.present?
