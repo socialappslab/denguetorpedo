@@ -2,9 +2,9 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # API routes.
 
-  namespace :api do
+  namespace :api, :defaults => { :format => :json } do
     namespace :v0 do
-      post "sessions", :to => "sessions#create"
+      resources :sessions, :only => [:create]
     end
   end
 
