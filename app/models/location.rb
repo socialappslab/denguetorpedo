@@ -23,6 +23,19 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # The status of a location defines whether it's positive, potential, negative
+  # or clean. The first three are defined by the associated reports at that
+  # location, and the last one is separately set in the database. See the
+  # 'status' instance method.
+  module Status
+    POSITIVE  = 0
+    POTENTIAL = 1
+    NEGATIVE  = 2
+    CLEAN     = 3
+  end
+
+  #----------------------------------------------------------------------------
+
   # TODO: Deprecate this since we actually want to know when the :address
   # is left empty, and when it's not. As we move forward, we will deprecate
   # street_* columns, and can retroactively run a rake task to do this sort
@@ -87,29 +100,23 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # TODO: Complete deprecate this as this makes too many
-  # assumptions about what user input and pre-existing locations...
-  # def self.find_or_create(address, neighborhood=nil)
-  #   # construct the Location object using the argument
-  #   if address.class == String
-  #     location = Location.new
-  #     location.address = address
-  #   elsif address.class <= Hash
-  #     location = Location.new(address) # TODO: fix security issue...
-  #   else
-  #     return nil
-  #   end
-  #
-  #   # if the id argument is also passed, return the existing object that matches the id
-  #   if location.id != nil
-  #     existing_location = Location.find(location.id)
-  #     return existing_location unless existing_location.nil?
-  #   end
-  #
-  #   location.neighborhood_id = Neighborhood.find_or_create_by_name(neighborhood).id
-  #   location.save!
-  #   return location
-  # end
+  # The status of a location defines whether it's a positive, potential, negative
+  # or a clean location. The first three attributes are calculated based on the
+  # latest report associated with it. That is: are there any uneliminated reports
+  # that have larvae, pupae, etc. The last attribute is separately set in the
+  # database.
+  def status
+    reports         = self.reports.where("eliminated_at IS NULL")
+    protected_count = reports.where(:protected => true).count
+    larvae_count    = reports.where(:larvae => true).count
+    pupae_count     = reports.where(:pupae => true).count
+
+    return Status::POSITIVE  if pupae_count > 0
+    return Status::POTENTIAL if larvae_count > 0
+    return Status::NEGATIVE  if protected_count > 0
+    return Status::CLEAN     if self.cleaned == true
+    return nil
+  end
 
   #----------------------------------------------------------------------------
 
