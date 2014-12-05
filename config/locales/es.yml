@@ -186,6 +186,8 @@ es:
   #----------------------------------
 
   common_terms:
+    yes_string: Si
+    no_html_string:  <span>No</span>
     not_available: No disponible
     back: Atrás
     codes: Códigos
