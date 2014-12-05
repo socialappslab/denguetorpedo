@@ -105,9 +105,8 @@ class Location < ActiveRecord::Base
     reports         = self.reports.where("eliminated_at IS NULL")
     protected_count = reports.where(:protected => true).count
     larvae_count    = reports.where(:larvae => true).count
-    pupae_count     = reports.where(:pupae => true).count
 
-    return Status::POSITIVE  if (pupae_count > 0 || larvae_count > 0)
+    return Status::POSITIVE  if larvae_count > 0
     return Status::NEGATIVE  if protected_count > 0
     return Status::POTENTIAL
   end

@@ -42,16 +42,6 @@
         = f.radio_button :larvae, "false", :checked => true
         = I18n.t("common_terms.no_html_string").html_safe
 
-  .form-group
-    = f.label nil, :class => "col-md-4 control-label" do
-      = I18n.t("views.reports.new.did_you_see_pupae")
-    .col-md-8
-      .radio-inline
-        = f.radio_button :pupae, "true"
-        = I18n.t("common_terms.yes_string")
-      .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :pupae, "false", :checked => true
-        = I18n.t("common_terms.no_html_string").html_safe
     .row
       .col-md-offset-4
         %p{:style => "padding: 15px;"}

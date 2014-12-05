@@ -6,7 +6,7 @@ class Report < ActiveRecord::Base
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
   :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
-  :protected, :chemically_treated, :larvae, :pupae
+  :protected, :chemically_treated, :larvae
 
   #----------------------------------------------------------------------------
   # Constants

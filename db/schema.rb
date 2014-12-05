@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141205060530) do
+ActiveRecord::Schema.define(:version => 20141206181807) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -340,7 +340,6 @@ ActiveRecord::Schema.define(:version => 20141205060530) do
     t.datetime "credited_at"
     t.boolean  "is_credited"
     t.integer  "neighborhood_id"
-    t.string   "status"
     t.integer  "breeding_site_id"
     t.integer  "elimination_method_id"
     t.integer  "csv_report_id"
