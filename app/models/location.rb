@@ -100,22 +100,16 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # The status of a location defines whether it's a positive, potential, negative
-  # or a clean location. The first three attributes are calculated based on the
-  # latest report associated with it. That is: are there any uneliminated reports
-  # that have larvae, pupae, etc. The last attribute is separately set in the
-  # database.
+  # The status of a location defines whether it's a positive, potential, or negative.
   def status
     reports         = self.reports.where("eliminated_at IS NULL")
     protected_count = reports.where(:protected => true).count
     larvae_count    = reports.where(:larvae => true).count
     pupae_count     = reports.where(:pupae => true).count
 
-    return Status::POSITIVE  if pupae_count > 0
-    return Status::POTENTIAL if larvae_count > 0
+    return Status::POSITIVE  if (pupae_count > 0 || larvae_count > 0)
     return Status::NEGATIVE  if protected_count > 0
-    return Status::CLEAN     if self.cleaned == true
-    return nil
+    return Status::POTENTIAL
   end
 
   #----------------------------------------------------------------------------
