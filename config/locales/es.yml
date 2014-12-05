@@ -460,6 +460,9 @@ es:
           other: "Usted tiene %{count} reportes incompletos"
         complete_now_button: "Termine ahora"
       new:
+        did_you_see_larvae: ¿Ve larvas de mosquito?
+        did_you_see_pupae: ¿Ve pupas de mosquito?
+        description_of_larvae: "Si respondió que sí, es un criadero positivo. Si no, es un criadero potencial."
         neighborhood_address: Nombre el barrio donde encontró el criadero
         description_placeholder: "Describa el lugar y tipo de criadero"
       flashes:

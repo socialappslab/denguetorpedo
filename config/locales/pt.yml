@@ -472,6 +472,9 @@ pt:
         header: Oferecimento da Rede Trel
     reports:
       new:
+        did_you_see_larvae: Você vê larvas de mosquito?
+        did_you_see_pupae: Você vê pupas de mosquito?
+        description_of_larvae: "Se responder que sim, é um foco positivo.  Se não, é um foco potencial."
         neighborhood_address: ""
         description_placeholder: "Descreva a localização e tipo do foco"
       types:

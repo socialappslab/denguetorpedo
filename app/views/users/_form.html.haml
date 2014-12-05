@@ -58,18 +58,18 @@
 
 
   .form-group
-    = f.label nil, :class => "control-label col-md-6", :style => "position: relative;" do
+    = f.label nil, :class => "control-label col-md-6" do
       = I18n.t("attributes.neighborhood_id")
       %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
         *
     .col-md-6
-      = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, :class => "form-control"
+      = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, {}, :class => "form-control"
 
 
   .form-group
     = f.label :locale, :class => "control-label col-md-6"
     .col-md-6
-      = f.select :locale, [[I18n.t("common_terms.portuguese"), User::Locales::PORTUGUESE], [I18n.t("common_terms.spanish"), User::Locales::SPANISH]], :class => "form-control"
+      = f.select :locale, [[I18n.t("common_terms.portuguese"), User::Locales::PORTUGUESE], [I18n.t("common_terms.spanish"), User::Locales::SPANISH]], {}, :class => "form-control"
 
 
   - if @user == @current_user
