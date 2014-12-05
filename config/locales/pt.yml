@@ -76,6 +76,10 @@ pt:
         report: Descrição
         after_photo: A foto do foco
         elimination_method_id: Método de eliminação
+        protected: "Protegido"
+        chemically_treated: "Abatizado"
+        larvae: "Larvas"
+        pupae: "Pupas"
       documentation_section:
         title: Título em Português
         title_in_es: Título em espanhol

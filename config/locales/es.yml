@@ -76,6 +76,10 @@ es:
         report: Descripción
         after_photo: Foto del criadero
         elimination_method_id: Método de eliminación
+        protected: "Protegido"
+        chemically_treated: "Abatizado"
+        larvae: "Larvas"
+        pupae: "Pupas"
       documentation_section:
         title: Contenido en portugués
         title_in_es: Contenido en Español
