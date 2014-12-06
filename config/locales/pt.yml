@@ -408,11 +408,12 @@ pt:
         username: Nome de usuário ou email
       cities:
         title: Cidades em destaque no Dengue Torpedo
-      header: Cidadãos no Combate à Dengue e Chikungunya
+      header: Cidadãos no combate à Dengue e ao Chicungunha
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
       chat_description: Troque mensagens entre seus amigos para colaborar no controle dos focos de mosquitos
       teams_description: "Entre numa equipe para combater a dengue e a chikungunya e ganhe pontos"
-      video_description_html: "Veja um video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aqui</a>"
+      video_description: "Veja um video"
+      activity_description: "Clique numa cidade para ver as atividades do Dengue Torpedo"
     footer:
       code_of_conduct: "Manual de Conduta"
       faq: "Perguntas frequentes"

@@ -7,16 +7,16 @@
   = render :partial => "orange_slider"
 
 .container-silver{:style => "height: 300px;"}
-  .row
+  .row{:style => "margin-top: 30px;"}
     .col-md-3.col-md-offset-2{:style => "text-align: center;"}
       %i.fa.fa-comments{:style => "font-size: 84px;"}
 
-      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px; text-align: left;"}
+      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
         = I18n.t("views.home.chat_description")
     .col-md-3.col-md-offset-2{:style => "text-align: center;"}
       %i.fa.fa-futbol-o{:style => "font-size: 84px;"}
 
-      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px; text-align: left;"}
+      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
         = I18n.t("views.home.teams_description")
 
 
@@ -40,6 +40,11 @@
 
   .row{:style => "margin-top: 40px; margin-bottom: 40px;"}
     = render "home/neighborhood_list"
+
+  .row{:style => "margin-top: 60px; margin-bottom: 40px;"}
+    .col-md-12
+      %p{:style => "text-align: center; font-size: 18px;"}
+        = I18n.t("views.home.activity_description")
 
 
 /------------------------------------------------------------------------------
