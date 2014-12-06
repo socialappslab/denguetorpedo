@@ -143,7 +143,19 @@ div {
 //-----------------------------------------------------------------------------
 // Banner configuration
 
+.landing-page-banner {
+  background: url("/assets/denguechat.png") no-repeat center;
+  -webkit-background-size: cover;
+  -moz-background-size:    cover;
+  -o-background-size:      cover;
+  background-size: cover;
+  height: 600px;
+}
 
+
+#play_button {
+  color: white;
+}
 
 
 //-----------------------------------------------------------------------------
