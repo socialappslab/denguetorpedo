@@ -408,6 +408,7 @@ pt:
       chat_description: Troque mensagens entre seus amigos para colaborar no controle dos focos de mosquitos
       teams_description: "Entre numa equipe para combater a dengue e a chikungunya e ganhe pontos"
       video_description: "Veja um video"
+      activity_description: "Clique numa cidade para ver as atividades do Dengue Torpedo"
     footer:
       code_of_conduct: "Manual de Conduta"
       faq: "Perguntas frequentes"

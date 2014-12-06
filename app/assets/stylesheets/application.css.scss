@@ -18,8 +18,8 @@
 
 #logo {
   position: absolute;
-  left: 60px;
-  width: 150px;
+  left: 50px;
+  // width: 150px;
   z-index: 3;
   width: 200px;
 }
@@ -99,11 +99,12 @@ div {
 // Navigation bar customizations
 .navigation-bar {
   background-color: $denguechat-blue;
-  height: 80px;
+  height: 85px;
 
   .language-options {
-    margin-top: 10px;
-    line-height: 40px;
+    margin-top: 25px;
+    line-height: 25px;
+    text-align: center;
   }
 }
 
