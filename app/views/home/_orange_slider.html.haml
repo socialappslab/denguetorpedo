@@ -1,17 +1,15 @@
 
 .row
-  .col-md-6.col-md-offset-5
-    %h1{:style => "color: white; margin-top: 30px; font-size: 42px; margin-bottom: 20px; text-align: center;"}
+  .col-md-12
+    %h1
       = I18n.t("views.home.header")
 
 
 .row
-  .col-md-6.col-md-offset-5{:style => "text-align: center; margin-bottom: 20px; margin-top: 200px;"}
-    = link_to "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe", :id => 'play_button' do
+  .col-md-12.play-video-link
+    = link_to @introductory_video_on_dengue, :id => "play_button", :class => "fancybox-media fancybox.iframe" do
       %i.fa.fa-play-circle{:style => "font-size: 24px; color: white;"}
-
-    %h2{:style => "color: white; font-size: 16px; display: inline-block;"}
-      = I18n.t("views.home.video_description_html", :link_url => @introductory_video_on_dengue).html_safe
+      = I18n.t("views.home.video_description")
 
 
 
