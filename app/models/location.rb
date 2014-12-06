@@ -102,12 +102,12 @@ class Location < ActiveRecord::Base
 
   # The status of a location defines whether it's a positive, potential, or negative.
   def status
-    reports         = self.reports.where("eliminated_at IS NULL")
-    protected_count = reports.where(:protected => true).count
-    larvae_count    = reports.where(:larvae => true).count
+    reports         = self.reports
+    positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
+    negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
 
-    return Status::POSITIVE  if larvae_count > 0
-    return Status::NEGATIVE  if protected_count > 0
+    return Status::POSITIVE  if positive_count > 0
+    return Status::NEGATIVE  if negative_count > 0
     return Status::POTENTIAL
   end
 
