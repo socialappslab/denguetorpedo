@@ -12,10 +12,10 @@
 /------------------------------------------------------------------------------
 
 .row
-  .col-md-10.col-md-offset-1
-    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
+  .col-md-12
+    %h1{:style => "font-size: 36px; margin-bottom: 30px; text-align: center;"}
       = I18n.t("common_terms.create_a_report")
 
 .row
-  .col-md-8.col-md-offset-2.well
+  .col-md-6.col-md-offset-3.well
     = render :partial => "reports/form"

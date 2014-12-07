@@ -12,14 +12,14 @@ $gridRowWidth: ($gridColumns * $gridColumnWidth) + ($gridGutterWidth * ($gridCol
 @import 'bootstrap';
 @import "variables";
 
-html, body, button, input, select, textarea, label {
-  font-family: Verdana, Geneva, sans-serif;
-  font-color: #333333;
-  font-size: 100%;
-  font-size: 13px;
-  -webkit-text-size-adjust: 100%;
-  ms-text-size-adjust: 100%;
-}
+// html, body, button, input, select, textarea, label {
+//   font-family: Verdana, Geneva, sans-serif;
+//   font-color: #333333;
+//   font-size: 100%;
+//   font-size: 13px;
+//   -webkit-text-size-adjust: 100%;
+//   ms-text-size-adjust: 100%;
+// }
 
 label {
   font-size: 16px;
@@ -35,43 +35,6 @@ body {
   background: #eeeeee;*/
   margin-top: 0px;
   height: 100%;
-
-  input, input:focus {
-    // background-color: #ffffff;
-    // outline: none;
-
-    &[type = "text"], &[type = "password"], &[type = "number"] {
-      // height: 28px;
-      border-radius: 5px;
-    }
-
-    // &[type = "submit"] {
-    //   margin: 0px;
-    //   vertical-align: middle;
-    //   font-size: 12px;
-    //   color: #ffffff;
-    //   padding: 4px;
-    //   border-style: none;
-    //   border-radius: 2px;
-    //   background-color: $dark-gray;
-    //   margin-top: -6px;
-    //
-    //   &:hover {
-    //    color: #000000;
-    //   }
-    // }
-
-    &[type = "file"] {
-      height: 28px;
-      border-style:solid;
-      border-radius: 2px;
-      border-width:1px;
-      border-color: $light-gray;
-      padding-left: 5px;
-      padding-right: 5px;
-      margin-bottom: 10px;
-    }
-  }
 }
 
 button {
