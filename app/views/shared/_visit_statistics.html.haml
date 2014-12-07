@@ -7,6 +7,7 @@
           %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
             de
           = @total_locations.to_s
+          = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
         %p{:style => "margin-top: 10px; font-size: 15px; text-align: center;"}
           Lugares sin criaderos
       %td
@@ -15,6 +16,7 @@
           %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
             de
           = @total_locations.to_s
+          = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
         %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
           con criaderos positivos
       %td
@@ -23,22 +25,6 @@
           %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
             de
           = @total_locations.to_s
+          = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
         %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
           con criaderos potenciales
-
-    %tr
-      %td
-        %h1{:style => "color: #5cb85c; font-size: 36px; text-align: center;"}
-          = @total_locations == 0 ? "0%" : ((@negative_locations.to_f / @total_locations) * 100).to_i.to_s + "%"
-        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
-          Porcentaje de lugares sin criaderos
-      %td
-        %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
-          = @total_locations == 0 ? "0%" : ((@positive_locations.to_f / @total_locations) * 100).to_i.to_s + "%"
-        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
-          Porcentaje criaderos positivos
-      %td
-        %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
-          = @total_locations == 0 ? "0%" : ((@potential_locations.to_f / @total_locations) * 100).to_i.to_s + "%"
-        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
-          Porcentaje criaderos potenciales
