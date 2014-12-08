@@ -25,11 +25,17 @@ class API::V0::BaseController < ApplicationController
     puts "\n\n\n\nTOKEN: #{token}\n\n\n"
 
     d = DeviceSession.find_by_token(token)
-    return true if d.present?
+    if d.present?
+      @user = d.user
+      return true
+    end
+
     raise API::V0::Error.new("Device couldn't be authenticated. Please login again.", 401) and return
   end
 
+
   def render_json_with_exception(exception)
+    puts "Rendering error..."
     render :json => { :message => exception.message }, :status => exception.status_code
   end
 
