@@ -7,6 +7,7 @@ class Location < ActiveRecord::Base
   # validates :neighborhood_id, :presence => true
 
   has_many :reports, dependent: :destroy
+  has_many :location_statuses, :dependent => :destroy
 
   # NOTE: We already have a 'neighborhood' column in locations, so
   # we'll use community as the association on neighborhood_id.
