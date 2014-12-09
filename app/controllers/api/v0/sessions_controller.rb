@@ -9,7 +9,7 @@ class API::V0::SessionsController < API::V0::BaseController
     user = User.find_by_username( params[:username] )
     user = User.find_by_email( params[:username] ) if user.nil?
 
-    if user && user.authenticate(params[:password]) && device
+    if user.present? && user.authenticate(params[:password]) && device
       ds         = DeviceSession.new
       ds.user_id = user.id
       ds.token   = SecureRandom.uuid

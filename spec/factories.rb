@@ -38,6 +38,8 @@ FactoryGirl.define do
 
 	factory :prize_code
 
+	factory :device_session
+
 	factory :prize do
 		prize_name "Prize"
 		cost 100
