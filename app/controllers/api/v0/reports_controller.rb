@@ -30,7 +30,13 @@ class API::V0::ReportsController < API::V0::BaseController
     end
 
     if @report.save
-      render :json => @report, :status => 200 and return
+      render :json => @report.as_json(:only => [:id, :report, :created_at],
+      :include => {
+        :location => {:only => [:address]},
+        :breeding_site => {
+          :only => [:id, :description_in_es, :description_in_pt]
+        }
+      }), :status => 200 and return
     else
       raise API::V0::Error.new(@report.errors.full_messages[0], 403)
     end
