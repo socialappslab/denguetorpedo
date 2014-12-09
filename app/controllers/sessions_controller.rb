@@ -7,6 +7,8 @@ class SessionsController < ApplicationController
   #----------------------------------------------------------------------------
 
   def create
+    puts "WE RECEIVED A REQUEST: #{params}"
+
     user = User.find_by_username( params[:username] )
 
     # Try to identify the user by email if username fails. This is because we
