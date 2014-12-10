@@ -46,11 +46,12 @@ class LocationStatus < ActiveRecord::Base
     statistics = []
 
     segments = self.segment_locations_by_day(locations)
+    total = 0
     segments.each do |date, distribution|
       positive  = distribution[Types::POSITIVE]  || 0
       potential = distribution[Types::POTENTIAL] || 0
       negative  = distribution[Types::NEGATIVE]  || 0
-      total     = positive + potential + negative
+      total     += positive + potential + negative
       percent   = (positive + potential) / total.to_f
       statistics << [date, (percent * 100).to_i]
     end
