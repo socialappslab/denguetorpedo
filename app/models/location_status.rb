@@ -34,15 +34,12 @@ class LocationStatus < ActiveRecord::Base
     # leverage previous measurements to cumulatively add the stats.
     while day <= last_day
       key   = day.strftime("%Y-%m-%d")
-      stats = statuses.where("DATE(created_at) <= ?", key).select(:status)
+      stats = statuses.where("DATE(created_at) <= ?", key)
 
-      # Group and count them by status.
-      stats = stats.group(:status).count
-
-      positive_count  = stats[Types::POSITIVE]  || 0
-      potential_count = stats[Types::POTENTIAL] || 0
-      negative_count  = stats[Types::NEGATIVE]  || 0
-      clean_count     = stats[Types::CLEAN]     || 0
+      positive_count  = stats.find_all {|s| s.status == Types::POSITIVE}.count
+      potential_count = stats.find_all {|s| s.status == Types::POTENTIAL}.count
+      negative_count  = stats.find_all {|s| s.status == Types::NEGATIVE}.count
+      clean_count     = stats.find_all {|s| s.status == Types::CLEAN}.count
 
       total   = positive_count + potential_count + negative_count + clean_count
       percent = (positive_count + potential_count).to_f / total
