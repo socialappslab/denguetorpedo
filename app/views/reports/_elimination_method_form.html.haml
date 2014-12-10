@@ -16,7 +16,7 @@
   .form-group
     %h1{:style => "margin-top: 15px;"}
       = I18n.t("report.form.upload_photo_of_eliminated_report")
-    = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :style => "width: 300px;", :class => "upload_photo form-control"
+    = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :class => "upload_photo form-control"
     %img.preview{:style => "display: block;"}
     %canvas{:style => "display: none;"}
     = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
