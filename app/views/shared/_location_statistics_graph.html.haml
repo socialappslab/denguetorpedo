@@ -1,0 +1,36 @@
+#ex1
+
+
+%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
+
+
+:javascript
+  google.load('visualization', '1', {packages: ['corechart']});
+  google.setOnLoadCallback(drawChart);
+  var statistics = #{@statistics.to_json};
+  window.test = statistics
+
+  function drawChart() {
+    // data.addColumn('number', 'X');
+    // data.addColumn('number', 'Dogs');
+    statistics.unshift(["Time", "Percent of positive and potential sites"])
+
+    // data.addRows(statistics);
+    var data = new google.visualization.arrayToDataTable(statistics);
+
+    var options = {
+      width: 1000,
+      height: 563,
+      hAxis: {
+        title: 'Time'
+      },
+      vAxis: {
+        title: 'Percent of positive and potential sites'
+      },
+      backgroundColor: '#eff0f3'
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('ex1'));
+
+    chart.draw(data, options);
+  }
