@@ -103,13 +103,7 @@ class Location < ActiveRecord::Base
 
   # The status of a location defines whether it's a positive, potential, or negative.
   def status
-    reports         = self.reports
-    positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
-    negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
-
-    return Status::POSITIVE  if positive_count > 0
-    return Status::NEGATIVE  if negative_count > 0
-    return Status::POTENTIAL
+    self.location_statuses.order("created_at DESC").limit(1).pluck(:status)[0]
   end
 
   #----------------------------------------------------------------------------
