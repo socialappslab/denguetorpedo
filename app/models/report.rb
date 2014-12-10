@@ -108,8 +108,10 @@ class Report < ActiveRecord::Base
   # is eliminated, open, expired or SMS.
 
   def status
+    return Status::NEGATIVE if self.eliminated?
+
     return Report::Status::POSITIVE if (self.larvae || self.pupae)
-    return Report::Status::NEGATIVE if (self.protected || self.eliminated?)
+    return Report::Status::NEGATIVE if self.protected
     return Report::Status::POTENTIAL
   end
 
