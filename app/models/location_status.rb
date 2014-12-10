@@ -32,7 +32,7 @@ class LocationStatus < ActiveRecord::Base
 
     # TODO: This is going to get expensive very soon and fast. We need to
     # leverage previous measurements to cumulatively add the stats.
-    while day <= last_day
+    while day <= last_day.end_of_day
       key   = day.strftime("%Y-%m-%d")
       stats = statuses.where("DATE(created_at) <= ?", key)
 
