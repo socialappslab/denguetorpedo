@@ -13,7 +13,7 @@
   function drawChart() {
     // data.addColumn('number', 'X');
     // data.addColumn('number', 'Dogs');
-    statistics.unshift(["Time", "Percent of positive and potential sites"])
+    statistics.unshift(["Time", "Percent of positive and potential sites", "Percent of negative sites"])
 
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(statistics);
@@ -35,7 +35,7 @@
           italic: false
         }
       },
-      pointSize: 5,
+      pointSize: 2,
       vAxis: {
         title: 'Percent of positive and potential sites',
         viewWindow: {
@@ -48,8 +48,8 @@
         }
       },
       backgroundColor: '#eff0f3',
-      colors: ["#e74c3c"],
-      legend: {position: "none"},
+      colors: ["#e74c3c", "#2ecc71"],
+      legend: {position: "bottom"},
     };
 
     var chart = new google.visualization.LineChart(document.getElementById("chart"));

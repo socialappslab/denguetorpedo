@@ -8,7 +8,7 @@
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
+            = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
         %p
           Lugares sin criaderos
       %td
@@ -18,7 +18,7 @@
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
+            = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
         %p
           con criaderos positivos
       %td
@@ -28,6 +28,6 @@
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
+            = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
         %p
           con criaderos potenciales
