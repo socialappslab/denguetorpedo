@@ -20,7 +20,7 @@ namespace :locations do
     Location.find_each do |location|
       ls = LocationStatus.new(:location_id => location.id)
 
-      reports         = location.reports
+      reports         = location.reports.order("created_at DESC")
       positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
       negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
 
@@ -32,6 +32,7 @@ namespace :locations do
         ls.status = LocationStatus::Types::POTENTIAL
       end
 
+      ls.created_at = reports.first && reports.first.created_at
       ls.save
     end
   end
