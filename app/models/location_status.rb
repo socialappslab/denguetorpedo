@@ -34,7 +34,7 @@ class LocationStatus < ActiveRecord::Base
     # leverage previous measurements to cumulatively add the stats.
     while day <= last_day
       key   = day.strftime("%Y-%m-%d")
-      stats = statuses.where("DATE(created_at) <= ?", key)
+      stats = statuses.where("DATE(created_at) <= ?", key).select(:status)
 
       # Group and count them by status.
       stats = stats.group(:status).count
