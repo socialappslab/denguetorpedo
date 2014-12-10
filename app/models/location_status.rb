@@ -12,6 +12,35 @@ class LocationStatus < ActiveRecord::Base
     CLEAN     = 3
   end
 
+  #----------------------------------------------------------------------------
+
+  # Returns a hash of number of positive, potential, and negative
+  # locations for each day. A location belongs to the closest end-of-day.
+  # TODO: This looks like it can lend to a cleverly constructed SQL query...
+  def self.segment_locations_by_day(locations)
+    statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at DESC")
+
+    daily_distribution = {}
+    accounted_locations = []
+    statuses.each do |status|
+      key                = status.created_at.strftime("%Y-%m-%d")
+      unique_daily_index = [key, status.location_id]
+
+      # Exclude counting a status if its location has already been seen *for that day*.
+      next if accounted_locations.include?(unique_daily_index)
+      accounted_locations << unique_daily_index
+
+      # Initialize the key if it hasn't been initialized yet.
+      daily_distribution[key] ||= {}
+
+      daily_distribution[key][status.status] ||= 0
+      daily_distribution[key][status.status]  += 1
+    end
+
+    return daily_distribution
+  end
+
+  #----------------------------------------------------------------------------
 
 
 end

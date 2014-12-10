@@ -17,6 +17,21 @@ class CsvReportsController < NeighborhoodsBaseController
     @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
     @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
     @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
+
+    @segment = LocationStatus.segment_locations_by_day(@visits)
+
+    @statistics = []
+    @segment.each do |date, distribution|
+      positive  = distribution[LocationStatus::Types::POSITIVE]  || 0
+      potential = distribution[LocationStatus::Types::POTENTIAL] || 0
+      negative  = distribution[LocationStatus::Types::NEGATIVE]  || 0
+      total     = positive + potential + negative
+
+      percent = (positive + potential) / total.to_f
+
+      @statistics << [date, (percent * 100).to_i]
+    end
+
   end
 
 
