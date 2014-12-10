@@ -1,4 +1,4 @@
-#ex1
+#chart{:style => "width: 100%; height: 500px;"}
 
 
 %script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
@@ -18,19 +18,40 @@
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(statistics);
 
+    var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
+    formatter.format(data, 1);
+
     var options = {
-      width: 1000,
-      height: 563,
+      width: $("#chart").width(),
+      chartArea: {
+        left: 100,
+        top: 50,
+        width: "90%",
+        height:"75%"
+      },
       hAxis: {
-        title: 'Time'
+        title: 'Time',
+        titleTextStyle: {
+          italic: false
+        }
       },
+      pointSize: 5,
       vAxis: {
-        title: 'Percent of positive and potential sites'
+        title: 'Percent of positive and potential sites',
+        viewWindow: {
+          max: 101,
+          min: 0
+        },
+        format: "#\'%\'",
+        titleTextStyle: {
+          italic: false
+        }
       },
-      backgroundColor: '#eff0f3'
+      backgroundColor: '#eff0f3',
+      colors: ["#e74c3c"],
+      legend: {position: "none"},
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('ex1'));
-
+    var chart = new google.visualization.LineChart(document.getElementById("chart"));
     chart.draw(data, options);
   }
