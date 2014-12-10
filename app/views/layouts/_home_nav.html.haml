@@ -65,9 +65,9 @@
       .col-md-1
         .language-options
           - if I18n.locale.to_s == User::Locales::SPANISH
-            = link_to I18n.t("common_terms.portuguese"), "?locale=pt", :style => "display: inline-block; text-align: right;"
+            = link_to "Português", "?locale=pt", :style => "display: inline-block; text-align: right;"
           - else
-            = link_to I18n.t("common_terms.spanish"), "?locale=es", :style => "display: inline-block; text-align: right;"
+            = link_to "Español", "?locale=es", :style => "display: inline-block; text-align: right;"
 
 
     - else
