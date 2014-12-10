@@ -15,4 +15,24 @@ namespace :locations do
       loc.update_attribute(:neighborhood_id, mare_neighborhood.id)
     end
   end
+
+  task :backfill_location_statuses => :environment do
+    Location.find_each do |location|
+      ls = LocationStatus.new(:location_id => location.id)
+
+      reports         = location.reports
+      positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
+      negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
+
+      if positive_count > 0
+        ls.status = LocationStatus::Types::POSITIVE
+      elsif negative_count > 0
+        ls.status = LocationStatus::Types::NEGATIVE
+      else
+        ls.status = LocationStatus::Types::POTENTIAL
+      end
+
+      ls.save
+    end
+  end
 end
