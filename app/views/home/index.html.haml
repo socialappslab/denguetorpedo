@@ -29,11 +29,6 @@
     .col-md-12
       %h2{:style => "color: black; font-size: 32px; text-align: center; margin-top: 10px; margin-bottom: 10px;"}
         = I18n.t("views.home.cities.title")
-    -# .col-md-6{:style => "width: 325px;"}
-    -#   = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
-    -#     - neighborhoods = @searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
-    -#     = select_tag("neighborhood[name]", options_for_select( neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
-
 
   /------------------------------------------------------------------------------
   / Display a list of neighborhoods.
