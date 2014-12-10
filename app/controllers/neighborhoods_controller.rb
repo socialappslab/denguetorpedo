@@ -23,6 +23,9 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
     @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
 
+    @statistics = LocationStatus.calculate_affected_percentages_by_day(@visits)
+
+
     # Calculate total metrics before we start filtering.
     @total_reports = @reports.count
     @total_points  = @neighborhood.total_points
