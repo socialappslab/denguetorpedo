@@ -55,6 +55,7 @@ class LocationStatus < ActiveRecord::Base
       statistics << [date, (percent * 100).to_i]
     end
 
+    statistics = statistics.sort {|s1, s2| s1[0] <=> s2[0]}
     return statistics
   end
 
