@@ -19,7 +19,7 @@ class CsvReportsController < NeighborhoodsBaseController
     @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
 
 
-    @statistics = LocationStatus.calculate_affected_percentages_by_day(@visits)
+    @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
   end
 
 

@@ -297,8 +297,18 @@ class Report < ActiveRecord::Base
   def set_location_status
     return if self.location_id.blank?
 
-    ls = LocationStatus.new(:location_id => self.location_id)
+    # Find today's location_status instance. If it doesn't exist, then
+    # create it.
+    ls = LocationStatus.where(:location_id => self.location_id)
+    ls = ls.where(:created_at => (Time.now.beginning_of_day..Time.now.end_of_day))
+    if ls.blank?
+      ls = LocationStatus.new(:location_id => self.location_id)
+    else
+      ls = ls.first
+    end
 
+    # TODO: We can do some optimizations here by comparing current LocationStatus
+    # status with the report status...
     if self.status == Status::POSITIVE
       ls.status = LocationStatus::Types::POSITIVE
     else

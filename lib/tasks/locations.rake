@@ -16,11 +16,20 @@ namespace :locations do
     end
   end
 
-  task :backfill_location_statuses => :environment do
-    Location.find_each do |location|
-      ls = LocationStatus.new(:location_id => location.id)
+  task :backfill_statuses => :environment do
+    Report.find_each do |report|
+      next if report.location_id.blank?
 
-      reports         = location.reports.order("created_at DESC")
+      ls = LocationStatus.where(:location_id => report.location_id)
+      ls = ls.where(:created_at => (report.created_at.beginning_of_day..report.created_at.end_of_day))
+      if ls.blank?
+        ls            = LocationStatus.new(:location_id => report.location_id)
+        ls.created_at = report.created_at
+      else
+        ls = ls.first
+      end
+
+      reports         = report.location.reports
       positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
       negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
 
@@ -32,7 +41,6 @@ namespace :locations do
         ls.status = LocationStatus::Types::POTENTIAL
       end
 
-      ls.created_at = reports.first && reports.first.created_at
       ls.save
     end
   end

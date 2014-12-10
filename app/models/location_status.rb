@@ -1,3 +1,10 @@
+# NOTE: The associated LocationStatus table stores a *daily* snapshot
+# of the location's status. This means that if several reports are created in
+# a day, then we will simply update the existing LocationStatus entry.
+# This has two benefits:
+# a) statistics are *much* faster to calculate
+# b) there is no need for real-time location statuses.I went with real-time series before this,
+#    and it was a hassle to calculate daily trends (which is all what people care about).
 class LocationStatus < ActiveRecord::Base
   attr_accessible :location_id, :status
 
@@ -14,50 +21,41 @@ class LocationStatus < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # Returns a hash of number of positive, potential, and negative
-  # locations for each day. A location belongs to the closest end-of-day.
-  # TODO: This looks like it can lend to a cleverly constructed SQL query...
-  def self.segment_locations_by_day(locations)
-    statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at DESC")
+  def self.calculate_percentages_for_locations(locations)
+    statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at ASC")
+    return [] if statuses.blank?
 
-    daily_distribution = {}
-    accounted_locations = []
-    statuses.each do |status|
-      key                = status.created_at.strftime("%Y-%m-%d")
-      unique_daily_index = [key, status.location_id]
+    daily_stats = []
+    first_day   = statuses.first.created_at
+    last_day    = statuses.last.created_at
+    day         = first_day
 
-      # Exclude counting a status if its location has already been seen *for that day*.
-      next if accounted_locations.include?(unique_daily_index)
-      accounted_locations << unique_daily_index
+    # TODO: This is going to get expensive very soon and fast. We need to
+    # leverage previous measurements to cumulatively add the stats.
+    while day <= last_day
+      key   = day.strftime("%Y-%m-%d")
+      stats = statuses.where("DATE(created_at) <= ?", key)
 
-      # Initialize the key if it hasn't been initialized yet.
-      daily_distribution[key] ||= {}
+      # Group and count them by status.
+      stats = stats.group(:status).count
 
-      daily_distribution[key][status.status] ||= 0
-      daily_distribution[key][status.status]  += 1
+      positive_count  = stats[Types::POSITIVE]  || 0
+      potential_count = stats[Types::POTENTIAL] || 0
+      negative_count  = stats[Types::NEGATIVE]  || 0
+      clean_count     = stats[Types::CLEAN]     || 0
+
+      total   = positive_count + potential_count + negative_count + clean_count
+      percent = (positive_count + potential_count).to_f / total
+      neg_percent = (negative_count).to_f / total
+
+      daily_stats << [key, (percent * 100).round(0), (neg_percent * 100).round(0)]
+
+      day += 1.day
     end
 
-    return daily_distribution
-  end
 
-  #----------------------------------------------------------------------------
 
-  def self.calculate_affected_percentages_by_day(locations)
-    statistics = []
-
-    segments = self.segment_locations_by_day(locations)
-    total = locations.count
-    segments.each do |date, distribution|
-      positive  = distribution[Types::POSITIVE]  || 0
-      potential = distribution[Types::POTENTIAL] || 0
-      negative  = distribution[Types::NEGATIVE]  || 0
-      total     -= positive + potential + negative
-      percent   = (positive + potential) / total.to_f
-      statistics << [date, (percent * 100).to_i]
-    end
-
-    statistics = statistics.sort {|s1, s2| s1[0] <=> s2[0]}
-    return statistics
+    return daily_stats
   end
 
   #----------------------------------------------------------------------------
