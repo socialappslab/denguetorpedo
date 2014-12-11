@@ -23,6 +23,19 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # The status of a location defines whether it's positive, potential, negative
+  # or clean. The first three are defined by the associated reports at that
+  # location, and the last one is separately set in the database. See the
+  # 'status' instance method.
+  module Status
+    POSITIVE  = 0
+    POTENTIAL = 1
+    NEGATIVE  = 2
+    CLEAN     = 3
+  end
+
+  #----------------------------------------------------------------------------
+
   # TODO: Deprecate this since we actually want to know when the :address
   # is left empty, and when it's not. As we move forward, we will deprecate
   # street_* columns, and can retroactively run a rake task to do this sort
@@ -87,29 +100,16 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # TODO: Complete deprecate this as this makes too many
-  # assumptions about what user input and pre-existing locations...
-  # def self.find_or_create(address, neighborhood=nil)
-  #   # construct the Location object using the argument
-  #   if address.class == String
-  #     location = Location.new
-  #     location.address = address
-  #   elsif address.class <= Hash
-  #     location = Location.new(address) # TODO: fix security issue...
-  #   else
-  #     return nil
-  #   end
-  #
-  #   # if the id argument is also passed, return the existing object that matches the id
-  #   if location.id != nil
-  #     existing_location = Location.find(location.id)
-  #     return existing_location unless existing_location.nil?
-  #   end
-  #
-  #   location.neighborhood_id = Neighborhood.find_or_create_by_name(neighborhood).id
-  #   location.save!
-  #   return location
-  # end
+  # The status of a location defines whether it's a positive, potential, or negative.
+  def status
+    reports         = self.reports
+    positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
+    negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
+
+    return Status::POSITIVE  if positive_count > 0
+    return Status::NEGATIVE  if negative_count > 0
+    return Status::POTENTIAL
+  end
 
   #----------------------------------------------------------------------------
 

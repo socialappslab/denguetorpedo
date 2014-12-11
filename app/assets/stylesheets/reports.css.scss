@@ -157,13 +157,6 @@
 #new_report{
   display: block;
 
-  .new_report_label{
-    font-weight: bold;
-  }
-
-  .inline_display{
-    display:inline;
-  }
 
   #mark_map_bttn{
     border:1px;
@@ -175,16 +168,18 @@
       color:blue;
     }
   }
+
+  label {
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 40px;
+  }
 }
 
 /*-----------------------------------------------------------------------------
 */
-#attention_div p{
-  font-weight:bold;
-  font-size:13px;
-  margin-top:10px;
-}
-
 
 #mark_map_btn {
   border-style: solid;
@@ -255,7 +250,9 @@
 
   h1 {
     color: #8899a6;
-    font-size: 20px;
+    font-size: 16px;
+    // font-family: "Lato", sans-serif;
+    // font-weight: 300;
   }
 
   p {

@@ -12,9 +12,11 @@ class CsvReportsController < NeighborhoodsBaseController
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
 
     @visits       = @csv_reports.map {|r| r.location}.compact.uniq
-    @total_visits = @visits.count
-    @clean_visits = @visits.find_all {|l| l.cleaned == true}.count
-    @dirty_visits = @visits.find_all {|l| l.cleaned != true}.count
+    @total_locations     = @visits.count
+    @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
+    @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
+    @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
+    @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
   end
 
 
@@ -106,7 +108,7 @@ class CsvReportsController < NeighborhoodsBaseController
       is_protected   = row['protegido'].to_i
       is_pupas       = row["pupas"].to_i
       is_larvas      = row["larvas"].to_i
-      is_covered     = row["abatizado"].to_i
+      is_chemical     = row["abatizado"].to_i
       elim_date      = row.select {|k,v| k.include?("eliminado")}.values[0].to_s
       comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
 
@@ -138,7 +140,7 @@ class CsvReportsController < NeighborhoodsBaseController
       # 4c. Define the description based on the collected attributes.
       description  = "Fecha de visita: #{date}"
       description += ", Localización: #{room} (#{address})" if room.present?
-      description += ", Protegido: #{is_protected}, Abatizado: #{is_covered}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
+      description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
       description += ", Eliminado: #{elim_date}" if elim_date.present?
       description += ", Comentarios sobre tipo y/o eliminación: #{comments}" if comments.present?
 
@@ -150,11 +152,14 @@ class CsvReportsController < NeighborhoodsBaseController
       # * Type of site,
       # * Properties identified at the site.
       # If there is a match, then we simply update the existing report.
-      uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_covered.to_s)
+      uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_chemical.to_s)
       uuid = uuid.strip.downcase.underscore
 
       if type && type.strip.downcase != "v"
-        reports << {:breeding_site => breeding_site, :description => description, :csv_uuid => uuid}
+        reports << {:breeding_site => breeding_site,
+          :description => description,
+          :protected => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
+          :csv_uuid => uuid}
       end
 
       # If the last type is v, then the location is clean (for now).
@@ -199,13 +204,17 @@ class CsvReportsController < NeighborhoodsBaseController
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
       end
 
-      r.report           = report[:description]
-      r.breeding_site_id = report[:breeding_site].id if report[:breeding_site].present?
-      r.location_id      = location.id
-      r.neighborhood_id  = @neighborhood.id
-      r.reporter_id      = @current_user.id
-      r.csv_report_id    = @csv_report.id
-      r.csv_uuid         = report[:csv_uuid]
+      r.report             = report[:description]
+      r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
+      r.protected          = report[:protected]
+      r.chemically_treated = report[:chemically_treated]
+      r.larvae             = report[:larvae]
+      r.pupae              = report[:pupae]
+      r.location_id        = location.id
+      r.neighborhood_id    = @neighborhood.id
+      r.reporter_id        = @current_user.id
+      r.csv_report_id      = @csv_report.id
+      r.csv_uuid           = report[:csv_uuid]
       r.save(:validate => false)
     end
 

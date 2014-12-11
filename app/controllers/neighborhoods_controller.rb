@@ -17,10 +17,11 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Calculate total visits to (different) locations.
     @visits       = @reports.map {|r| r.location}.compact.uniq
-    @total_visits = @visits.count
-    @clean_visits = @visits.find_all {|l| l.cleaned == true}.count
-    @dirty_visits = @visits.find_all {|l| l.cleaned != true}.count
-
+    @total_locations     = @visits.count
+    @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
+    @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
+    @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
+    @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
 
     # Calculate total metrics before we start filtering.
     @total_reports = @reports.count

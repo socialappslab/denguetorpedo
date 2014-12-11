@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141201235716) do
+ActiveRecord::Schema.define(:version => 20141206183908) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -313,14 +313,8 @@ ActiveRecord::Schema.define(:version => 20141201235716) do
   end
 
   create_table "reports", :force => true do |t|
-    t.string   "nation"
-    t.string   "state"
-    t.string   "city"
-    t.string   "address"
-    t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
-    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.integer  "eliminator_id"
@@ -345,13 +339,15 @@ ActiveRecord::Schema.define(:version => 20141201235716) do
     t.datetime "completed_at"
     t.datetime "credited_at"
     t.boolean  "is_credited"
-    t.integer  "feed_type_cd"
     t.integer  "neighborhood_id"
-    t.string   "status"
     t.integer  "breeding_site_id"
     t.integer  "elimination_method_id"
     t.integer  "csv_report_id"
     t.string   "csv_uuid"
+    t.boolean  "protected"
+    t.boolean  "chemically_treated"
+    t.boolean  "larvae"
+    t.boolean  "pupae"
   end
 
   create_table "reports_users", :id => false, :force => true do |t|

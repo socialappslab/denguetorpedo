@@ -6,68 +6,10 @@
 /------------------------------------------------------------------------------
 
 .row
-  .col-md-10.col-md-offset-1
-    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
+  .col-md-12
+    %h1{:style => "font-size: 36px; margin-bottom: 30px; text-align: center;"}
       = I18n.t("common_terms.complete_report")
 
 .row
-  .col-md-10.col-md-offset-1
-    #new_report_form
-      = form_for [@neighborhood, @report], :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
-
-        #address
-          - if @neighborhood.nicaraguan?
-            %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
-              1. Haga click y mueva el marcador donde encontró el foco
-          - else
-            = I18n.t("report.form.address")
-
-
-        = f.fields_for :location, @report.location || Location.new do |location_fields|
-          = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
-          = location_fields.hidden_field :latitude
-          = location_fields.hidden_field :longitude
-
-
-        #attention_div
-        %p{style: "font-weight: bold;"}
-          %b{style: "color:red;"}
-            = I18n.t("report.form.attention")
-
-
-        #map_div{:style => "position: static;"}
-          = render :partial => "reports/google_map"
-
-
-        #description
-          %p{:style => "margin-top: 30px;"}
-            = f.label :report, "2. #{I18n.t('activerecord.attributes.report.report')}", :style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"
-          = f.text_area :report, :placeholder => I18n.t("report.form.example_of_description"), :id => 'report_content', :rows => 3, :style => "width: 100%;"
-
-        #photo
-          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
-            = "3. #{I18n.t("report.form.photo_of_report")}"
-          = f.file_field :before_photo, :class => "upload_photo"
-          - if @report.before_photo.present?
-            = image_tag(@report.before_photo, :style => "display: block;", :class => "preview")
-          - else
-            %img.preview{:style => "display: block;"}
-          %canvas{:style => "display: none;"}
-          = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
-        %br
-
-        #elimination_type
-          %p{:style => "font-size: 16px; margin-top: 10px; margin-bottom: 10px; font-weight: bold;"}
-            = "4. #{I18n.t("activerecord.attributes.report.elimination_type")}"
-          = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , :prompt => I18n.t("report.form.select_elimination_type")
-        %br
-
-        = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
-          %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-          = I18n.t("views.buttons.update")
-
-
-- content_for :scripts do
-  = javascript_include_tag "map"
-  = javascript_include_tag "googlemap/map-csv"
-  = javascript_include_tag "image-compression"
+  .col-md-6.col-md-offset-3.well
+    = render :partial => "reports/form"

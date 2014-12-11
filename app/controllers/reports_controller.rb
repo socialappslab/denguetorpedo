@@ -9,7 +9,8 @@ class ReportsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def index
-    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id).order("created_at DESC")
+    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
+    @reports = @reports.where(:protected => [nil, false]).order("created_at DESC")
     @reports = @reports.where("completed_at IS NOT NULL")
     @report_count  = @reports.count
     @report_limit  = 10
@@ -196,9 +197,14 @@ class ReportsController < NeighborhoodsBaseController
     if @report.update_attributes(params[:report])
       @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
 
-      # Update the location to clean.
-      if @report.location
-        @report.location.update_column(:cleaned, true)
+      # Update the location to clean only if there are no more reports that
+      # are potential or positive.
+      if location = @report.location
+
+        if [Location::Status::POSITIVE, Location::Status::POTENTIAL, Location::Status::NEGATIVE].exclude?(location.status)
+          location.update_column(:cleaned, true)
+        end
+
       end
 
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?

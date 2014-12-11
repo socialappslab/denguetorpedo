@@ -5,12 +5,21 @@ class Report < ActiveRecord::Base
   :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
-  :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id
+  :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
+  :protected, :chemically_treated, :larvae
 
   #----------------------------------------------------------------------------
   # Constants
 
   EXPIRATION_WINDOW = 48 * 3600 # in seconds
+
+  # The status of a report defines whether it's positive (has larvae or pupae),
+  # potential (no larvae, pupae) or negative (protected, or eliminated)
+  module Status
+    POSITIVE  = 0
+    POTENTIAL = 1
+    NEGATIVE  = 2
+  end
 
   #----------------------------------------------------------------------------
   # PaperClip configurations
@@ -86,6 +95,12 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
+
+  def status
+    return Report::Status::POSITIVE if (self.larvae || self.pupae)
+    return Report::Status::NEGATIVE if (self.protected || self.eliminated?)
+    return Report::Status::POTENTIAL
+  end
 
   def eliminated?
     return self.elimination_method_id.present?

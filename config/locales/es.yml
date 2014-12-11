@@ -76,6 +76,9 @@ es:
         report: Descripción
         after_photo: Foto del criadero
         elimination_method_id: Método de eliminación
+        protected: "Protegido"
+        chemically_treated: "Abatizado"
+        larvae: "Larvas"
       documentation_section:
         title: Contenido en portugués
         title_in_es: Contenido en Español
@@ -182,6 +185,8 @@ es:
   #----------------------------------
 
   common_terms:
+    yes_string: Si
+    no_html_string:  <span>No</span>
     not_available: No disponible
     back: Atrás
     codes: Códigos
@@ -455,6 +460,8 @@ es:
           other: "Usted tiene %{count} reportes incompletos"
         complete_now_button: "Termine ahora"
       new:
+        did_you_see_larvae: ¿Ve larvas o pupas de mosquito?
+        description_of_larvae: "Si respondió que sí, es un criadero positivo. Si no, es un criadero potencial."
         neighborhood_address: Nombre el barrio donde encontró el criadero
         description_placeholder: "Describa el lugar y tipo de criadero"
       flashes:
