@@ -258,9 +258,10 @@ es:
     november: "noviembre"
     december: "diciembre"
     spanish: Español
-    portuguese: Portugués
+    portuguese: Português
     filter_by: Filtrar por
     to: A
+    percentage: Porcentaje
 
 
 
@@ -342,7 +343,7 @@ es:
       success_join_flash: "Usted se unió al equipo exitosamente"
       success_create_flash: "Usted creó un equipo exitosamente"
       success_leave_flash: "Usted dejó al equipo exitosamente"
-      join: "Únase a un equipo"
+      join: "Únase a este equipo"
       leave: Salir
       create: "Cree un equipo"
       my_team: "Mi equipo"
@@ -515,6 +516,17 @@ es:
         missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
     faq:
       title: Preguntas Frecuentes
+    statistics:
+      table:
+        negative_sites: Lugares sin criaderos
+        positive_sites: con criaderos positivos
+        potential_sites: con criaderos potenciales
+      chart:
+        time: Tiempo
+        percent_of_negative_sites: Porcentaje de lugares sin criaderos
+        percent_of_positive_sites: Porcentaje de lugares con criaderos positivos o potenciales
+
+
   #----------------------------------------------------------------------------
   # Countries
   #----------

@@ -1,4 +1,4 @@
-%table.table.table-bordered.location-statistics-table
+%table.table.table-bordered.location-statistics-table{:style => "margin-bottom: 40px;"}
   %tbody
     %tr
       %td
@@ -10,7 +10,7 @@
           .percentages
             = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
         %p
-          Lugares sin criaderos
+          = I18n.t("views.statistics.table.negative_sites")
       %td
         %h1{:style => "color: #d9534f;"}
           = @positive_locations.to_s
@@ -20,7 +20,7 @@
           .percentages
             = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
         %p
-          con criaderos positivos
+          = I18n.t("views.statistics.table.positive_sites")
       %td
         %h1{:style => "color: #d9534f;"}
           = @potential_locations.to_s
@@ -30,4 +30,4 @@
           .percentages
             = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
         %p
-          con criaderos potenciales
+          = I18n.t("views.statistics.table.potential_sites")

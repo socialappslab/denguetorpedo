@@ -257,10 +257,11 @@ pt:
     october: "outubro"
     november: "novembro"
     december: "dezembro"
-    spanish: Espanhol
+    spanish: Español
     portuguese: Português
     filter_by: Filtrar por
     to: A
+    percentage: Porcentagem
 
 
   facebook:
@@ -517,6 +518,16 @@ pt:
       edit: "Editar um método de eliminação"
     faq:
       title: Perguntas Frequentes
+    statistics:
+      table:
+        negative_sites: Lugares sem focos
+        positive_sites: com focos positivos
+        potential_sites: com focos potenciais
+      chart:
+        time: Tempo
+        percent_of_negative_sites: Porcentagem de lugares sem focos
+        percent_of_positive_sites: Porcentagem de lugares com focos positivos ou potenciais
+
 
 
 
