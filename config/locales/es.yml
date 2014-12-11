@@ -262,7 +262,8 @@ es:
     filter_by: Filtrar por
     to: A
     percentage: Porcentaje
-
+    positive: Positivo
+    potential: Potencial
 
 
   facebook:

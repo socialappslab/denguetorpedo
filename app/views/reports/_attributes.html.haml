@@ -5,6 +5,7 @@
   .col-md-8.col-md-offset-1
     %h1
       = I18n.t("activerecord.attributes.report.report")
+
     %p
       = report.report
 
@@ -18,8 +19,18 @@
 
 
     - if report.breeding_site_id.present?
-      %h1{:style => "margin-top: 15px;"}
-        = I18n.t("activerecord.attributes.report.breeding_site_id")
+      .row{:style => "margin-top: 15px;"}
+        .col-md-6
+          %h1
+            = I18n.t("activerecord.attributes.report.breeding_site_id")
+        .col-md-6
+          .pull-right
+            - if report.status == Report::Status::POSITIVE
+              %i.fa.fa-exclamation-circle{:style => "color: #e67e22"}
+                = I18n.t("common_terms.positive")
+            - elsif report.status == Report::Status::POTENTIAL
+              %i.fa.fa-exclamation-circle{:style => "color: #e67e22"}
+                = I18n.t("common_terms.potential")
       %p
         = report.breeding_site.description
 

@@ -262,6 +262,8 @@ pt:
     filter_by: Filtrar por
     to: A
     percentage: Porcentagem
+    positive: Positivo
+    potential: Potencial
 
 
   facebook:
