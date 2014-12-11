@@ -11,12 +11,15 @@ class CsvReportsController < NeighborhoodsBaseController
   def index
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
 
-    @visits       = @csv_reports.map {|r| r.location}.compact.uniq
+    @visits              = @csv_reports.map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
     @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
     @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
     @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
     @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
+
+
+    @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
   end
 
 

@@ -1,30 +1,33 @@
-%table.table.table-bordered
+%table.table.table-bordered.location-statistics-table{:style => "margin-bottom: 40px;"}
   %tbody
     %tr
       %td
-        %h1{:style => "color: #5cb85c; font-size: 36px; text-align: center;"}
+        %h1{:style => "color: #5cb85c;"}
           = @negative_locations.to_s
           %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
             de
           = @total_locations.to_s
-          = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
-        %p{:style => "margin-top: 10px; font-size: 15px; text-align: center;"}
-          Lugares sin criaderos
+          .percentages
+            = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+        %p
+          = I18n.t("views.statistics.table.negative_sites")
       %td
-        %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
+        %h1{:style => "color: #d9534f;"}
           = @positive_locations.to_s
           %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
             de
           = @total_locations.to_s
-          = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
-        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
-          con criaderos positivos
+          .percentages
+            = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+        %p
+          = I18n.t("views.statistics.table.positive_sites")
       %td
-        %h1{:style => "color: #d9534f; font-size: 36px; text-align: center;"}
+        %h1{:style => "color: #d9534f;"}
           = @potential_locations.to_s
           %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
             de
           = @total_locations.to_s
-          = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).to_i.to_s + "%)"
-        %p{:style => "margin-top: 10px; text-align: center; font-size: 15px;"}
-          con criaderos potenciales
+          .percentages
+            = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+        %p
+          = I18n.t("views.statistics.table.potential_sites")

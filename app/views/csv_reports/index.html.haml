@@ -9,7 +9,6 @@
       %i.fa.fa-lock
       Este es un sitio privado, sólo usted lo puede ver.
 
-
 .row
   .col-md-8.col-md-offset-1
     %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
@@ -18,6 +17,12 @@
     = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large", :style => "margin-bottom:20px;" do
       %i.fa.fa-file
       = I18n.t("views.buttons.upload_csv")
+
+- if @csv_reports.present?
+  .row{:style => "margin-top: 20px;"}
+    .col-md-10.col-md-offset-1
+      = render :partial => "shared/location_statistics_graph"
+
 
 - if @csv_reports.present?
   .row{:style => "margin-top: 20px;"}

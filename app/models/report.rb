@@ -93,12 +93,25 @@ class Report < ActiveRecord::Base
   scope :sms, where(sms: true).order(:created_at)
 
   #----------------------------------------------------------------------------
+  # Callbacks
+  #----------
+
+  # NOTE: We don't want to limit this to create/destroy because CSVReports also
+  # *update* the reports. As a result, any time a report gets updated, we add
+  # the location status. This is perfectly fine because a single report being
+  # updated can't affect the aggregate location status metric. Furthermore, when
+  # a report is eliminated, it is updated so update action must be accounted for.
+  after_commit :set_location_status
+
+  #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
 
   def status
+    return Status::NEGATIVE if self.eliminated?
+
     return Report::Status::POSITIVE if (self.larvae || self.pupae)
-    return Report::Status::NEGATIVE if (self.protected || self.eliminated?)
+    return Report::Status::NEGATIVE if self.protected
     return Report::Status::POTENTIAL
   end
 
@@ -273,6 +286,48 @@ class Report < ActiveRecord::Base
     end
 
     return self.after_photo.url(:medium)
+  end
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  # Adds a calculated location status to location_statuses table based on the following:
+  # * If the report is positive, then the location is positive,
+  # * If the report is potential or negative, then calculate state based on
+  # all reports.
+  def set_location_status
+    return if self.location_id.blank?
+
+    # Find today's location_status instance. If it doesn't exist, then
+    # create it.
+    ls = LocationStatus.where(:location_id => self.location_id)
+    ls = ls.where(:created_at => (Time.now.beginning_of_day..Time.now.end_of_day))
+    if ls.blank?
+      ls = LocationStatus.new(:location_id => self.location_id)
+    else
+      ls = ls.first
+    end
+
+    # TODO: We can do some optimizations here by comparing current LocationStatus
+    # status with the report status...
+    if self.status == Status::POSITIVE
+      ls.status = LocationStatus::Types::POSITIVE
+    else
+      reports         = self.location.reports
+      positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
+      negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
+
+      if positive_count > 0
+        ls.status = LocationStatus::Types::POSITIVE
+      elsif negative_count > 0
+        ls.status = LocationStatus::Types::NEGATIVE
+      else
+        ls.status = LocationStatus::Types::POTENTIAL
+      end
+    end
+
+    ls.save
   end
 
   #----------------------------------------------------------------------------

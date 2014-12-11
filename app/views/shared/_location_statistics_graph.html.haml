@@ -1,0 +1,65 @@
+#chart{:style => "width: 100%; height: 500px; margin-bottom: 60px;"}
+
+
+%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
+
+
+:javascript
+  google.load('visualization', '1', {packages: ['corechart']});
+  google.setOnLoadCallback(drawChart);
+  var statistics = #{@statistics.to_json};
+
+  function drawChart() {
+    // data.addColumn('number', 'X');
+    // data.addColumn('number', 'Dogs');
+    statistics.unshift(["#{I18n.t('views.statistics.chart.time')}", "#{I18n.t('views.statistics.chart.percent_of_positive_sites')}", "#{I18n.t('views.statistics.chart.percent_of_negative_sites')}"])
+
+    // data.addRows(statistics);
+    var data = new google.visualization.arrayToDataTable(statistics);
+
+    var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
+    formatter.format(data, 1);
+
+    var options = {
+      width: $("#chart").width(),
+      chartArea: {
+        left: 100,
+        top: 50,
+        width: "90%",
+        height:"75%"
+      },
+      hAxis: {
+        title: "#{I18n.t('views.statistics.chart.time')}",
+        titleTextStyle: {
+          italic: false,
+          fontSize: "20"
+        },
+        showTextEvery: parseInt(data.getNumberOfRows() / 4)
+      },
+      curveType: "function",
+      vAxis: {
+        title: "#{I18n.t('common_terms.percentage')}",
+        viewWindow: {
+          max: 110,
+          min: 0
+        },
+        format: "#\'%\'",
+        titleTextStyle: {
+          italic: false,
+          fontSize: "20"
+        }
+      },
+      backgroundColor: '#eff0f3',
+      colors: ["#e74c3c", "#2ecc71"],
+      legend: {
+        position: "bottom",
+        alignment: "start",
+        textStyle: {
+          fontSize: "15"
+        }
+      }
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById("chart"));
+    chart.draw(data, options);
+  }

@@ -1,0 +1,26 @@
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @feedback}
+
+= form_for(@feedback, :html => {:class => "form-horizontal"}) do |f|
+  .form-group
+    = f.label :title, :class => "col-md-4 control-label"
+    .col-md-6
+      = f.text_field :title, :class => "form-control"
+  .form-group
+    = f.label :email, :class => "col-md-4 control-label"
+    .col-md-6
+      = f.text_field :email, :class => "form-control"
+  .form-group
+    = f.label :name, :class => "col-md-4 control-label"
+    .col-md-6
+      = f.text_field :name, :class => "form-control"
+  .form-group
+    = f.label :message, :class => "col-md-4 control-label"
+    .col-md-6
+      = f.text_area :message, :class => "form-control"
+
+  .form-group
+    .col-md-6.col-md-offset-4
+      = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
+        %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+        = I18n.t("views.buttons.submit")

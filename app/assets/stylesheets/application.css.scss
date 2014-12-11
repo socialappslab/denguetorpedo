@@ -246,3 +246,16 @@ div {
     }
   }
 }
+
+
+.location-statistics-table {
+  h1 {
+    font-size: 36px; text-align: center;
+  }
+  p {
+    margin-top: 10px; text-align: center; font-size: 15px;
+  }
+  .percentages {
+    font-size: 20px; display: inline; font-weight: 300;
+  }
+}

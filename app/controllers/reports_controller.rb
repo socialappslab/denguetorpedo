@@ -195,17 +195,10 @@ class ReportsController < NeighborhoodsBaseController
 
 
     if @report.update_attributes(params[:report])
-      @report.update_attributes(:eliminated_at => Time.now, :neighborhood_id => @neighborhood.id, :eliminator_id => @current_user.id)
-
-      # Update the location to clean only if there are no more reports that
-      # are potential or positive.
-      if location = @report.location
-
-        if [Location::Status::POSITIVE, Location::Status::POTENTIAL, Location::Status::NEGATIVE].exclude?(location.status)
-          location.update_column(:cleaned, true)
-        end
-
-      end
+      # NOTE: We don't want to trigger callbacks after the above statement.
+      @report.update_column(:eliminated_at, Time.now)
+      @report.update_column(:neighborhood_id, @neighborhood.id)
+      @report.update_column(:eliminator_id, @current_user.id)
 
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
