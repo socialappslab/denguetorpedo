@@ -4,7 +4,7 @@ class API::V0::SessionsController < API::V0::BaseController
   #----------------------------------------------------------------------------
   # POST /api/v0/sessions
   def create
-    device   = params[:device]
+    device = params[:device]
 
     user = User.find_by_username( params[:username] )
     user = User.find_by_email( params[:username] ) if user.nil?
@@ -13,7 +13,11 @@ class API::V0::SessionsController < API::V0::BaseController
       ds         = DeviceSession.new
       ds.user_id = user.id
       ds.token   = SecureRandom.uuid
+      ds.device_name  = device[:device]
+      ds.device_model = device[:model]
       ds.save!
+
+      puts "ds: #{ds.inspect}"
 
       render :json => { :device_session => { :token => ds.token } }, :status => 200
     else

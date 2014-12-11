@@ -1,36 +1,32 @@
-- dashboard_item_width = @current_user && @current_user.neighborhood.spanish? ? '200px' : '250px'
-.row
-  #dashboard_bar
-    .dashboard-item{:style => "margin-left: 160px; width: #{dashboard_item_width}"}
-      - header_styling = current_page?(:controller => "users", :action => "show") ? "font-weight:bold;" : ""
-      = link_to user_path(@current_user), :style => header_styling do
-        %i.fa.fa-user
-        = I18n.t("dashboard.my_profile")
+- dashboard_item_width = @current_user && @current_user.neighborhood.spanish? ? '275px' : '300px'
+.row#dashboard_bar
+  .col-md-2.col-md-offset-2
+    - header_styling = current_page?(:controller => "users", :action => "show") ? "font-weight:bold;" : ""
+    = link_to user_path(@current_user), :style => header_styling do
+      %i.fa.fa-user
+      = I18n.t("dashboard.my_profile")
 
+  .col-md-2
+    - header_styling = current_page?(:controller => "cities", :action => "show") ? "font-weight:bold;" : ""
+    = link_to city_path(@current_user.neighborhood.city), :style => header_styling do
+      %i.fa.fa-users.fa-2
+      = I18n.t("activerecord.models.neighborhood", :count => 2)
 
-    .dashboard-item{:style => "width: #{dashboard_item_width}"}
-      - header_styling = current_page?(:controller => "cities", :action => "show") ? "font-weight:bold;" : ""
-      = link_to city_path(@current_user.neighborhood.city), :style => header_styling do
-        %i.fa.fa-users.fa-2
-        = I18n.t("activerecord.models.neighborhood", :count => 2)
+  .col-md-2
+    - header_styling = current_page?(:controller => "teams", :action => "index") ? "font-weight:bold;" : ""
+    = link_to teams_path, :style => header_styling do
+      %i.fa.fa-futbol-o
+      = I18n.t("activerecord.models.team", :count => 3)
 
+  .col-md-2
+    - header_styling = current_page?(:controller => "reports", :action => "index") ? "font-weight:bold;" : ""
+    = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
+      %i.fa.fa-map-marker
+      = I18n.t("dashboard.reports")
 
-    .dashboard-item{:style => "width: #{dashboard_item_width}"}
-      - header_styling = current_page?(:controller => "teams", :action => "index") ? "font-weight:bold;" : ""
-      = link_to teams_path, :style => header_styling do
-        %i.fa.fa-futbol-o
-        = I18n.t("activerecord.models.team", :count => 3)
-
-
-    .dashboard-item{:style => "width: #{dashboard_item_width}"}
-      - header_styling = current_page?(:controller => "reports", :action => "index") ? "font-weight:bold;" : ""
-      = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
-        %i.fa.fa-map-marker
-        = I18n.t("dashboard.reports")
-
+  .col-md-2
     - if @current_user && @current_user.neighborhood.spanish?
-      .dashboard-item{:style => "width: #{dashboard_item_width}"}
-        - header_styling = current_page?(:controller => "csv_reports", :action => "index") ? "font-weight:bold;" : ""
-        = link_to neighborhood_csv_reports_path(@current_user.neighborhood), :style => header_styling do
-          %i.fa.fa-file
-          CSV
+      - header_styling = current_page?(:controller => "csv_reports", :action => "index") ? "font-weight:bold;" : ""
+      = link_to neighborhood_csv_reports_path(@current_user.neighborhood), :style => header_styling do
+        %i.fa.fa-file
+        CSV

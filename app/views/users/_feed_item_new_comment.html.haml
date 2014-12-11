@@ -1,19 +1,19 @@
 .row
-  .span1.feed-item-profile-photo
+  .col-md-2.feed-item-profile-photo
     - if @current_user.profile_photo_file_name.nil?
       = image_tag("default_images/user_default_alt.png")
     - else
       = image_tag(@current_user.profile_photo.url(:small))
-  .span6
+  .col-md-9
     .row.feed-item-bar
-      .span6
+      .col-md-12
         %span{:style => "font-weight: bold;"}
           = @current_user.display_name
 
     .row
-      .span6
+      .col-md-12
         = form_tag path do
-          = text_area_tag "comment[content]", nil, :style => "width: 100%; display: block;"
-          = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "float: right; display: inline-block;" do
+          = text_area_tag "comment[content]", nil, :style => "width: 100%; display: block;", :class => "form-control"
+          = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "float: right; display: inline-block; margin-top: 10px;" do
             %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
             = I18n.t("views.buttons.publish")

@@ -403,11 +403,12 @@ es:
         username: Nombre de usuario o email
       cities:
         title: Ciudades em destaque no Dengue Chat
-      header: "Ciudadanos en el Combate contra el Dengue"
+      header: "Ciudadanos en el Combate contra el Dengue y la Chikungunya"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
-      teams_description: Únase a equipos para combatir el dengue y ganar puntos
-      video_description_html: "Vea un video <a href='%{link_url}' id = 'play_button' class = 'fancybox-media fancybox.iframe' style ='text-decoration:underline'>aquí</a>"
+      teams_description: Únase a equipos para combatir el dengue y a chikungunya y ganar puntos
+      video_description: "Vea un video"
+      activity_description: "Haga clic en una ciudad para ver las actividades del Dengue Chat"
     footer:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"

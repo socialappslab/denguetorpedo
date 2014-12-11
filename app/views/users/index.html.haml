@@ -3,12 +3,12 @@
 
 = render :partial => "shared/filter_by_community"
 
-.row.offset1
-	.span12
+.row.col-md-offset-1
+	.col-md-12
 		%h2
 			= I18n.t("views.admin.edit_user")
 		.row
-			%table.users_table.span12{border: 1}
+			%table.users_table.col-md-12{border: 1}
 				%thead
 					%th
 						= I18n.t("activerecord.attributes.user.username")

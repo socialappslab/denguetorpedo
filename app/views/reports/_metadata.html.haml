@@ -1,7 +1,7 @@
 .row
-  .span9
+  .col-md-12
     .row.report-metadata
-      .span5
+      .col-md-8
         = link_to report.reporter.display_name, user_path(report.reporter), :style => "font-weight: bold;"
         .feed-item-timestamp
           %i.fa.fa-clock-o
@@ -28,7 +28,7 @@
 
 
 
-      .span3{:style => "text-align: right; font-weight: bold;"}
+      .col-md-4{:style => "text-align: right; font-weight: bold;"}
         - if report.sms_incomplete?
           %div{style: "margin-top:3px; margin-right:10px;"}
             = I18n.t("common_terms.sms")

@@ -5,18 +5,18 @@
   %ul
     - @notices.each do |notice|
       %a{:href => notice_path(notice)}
-        %li.span4.neighborhood_news_title{:style => "height:270px;position:relative;"}
+        %li.col-md-4.neighborhood_news_title{:style => "height:270px;position:relative;"}
           .row
-            .span5
+            .col-md-5
               - if notice.title.size > 28
                 = notice.title[0..25] + "..."
               - else
                 = notice.title
           %br
           .row
-            .span1
+            .col-md-1
               = image_tag(notice.photo.url(:small), :style => "width: 100px;")
-            .span3
+            .col-md-3
               // TODO: Move this into the model.
               - if notice.summary.size > 33
                 = notice.summary[0..30] + "..."

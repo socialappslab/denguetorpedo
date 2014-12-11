@@ -6,7 +6,7 @@
       = @user.display_name
 
   .row
-    .span4
+    .col-md-12
       - if @user == @current_user
         = link_to edit_user_path(@current_user), :style => "display: block; font-size: 15px; margin-top: 20px;" do
           %i.fa.fa-gear.fa-2
@@ -21,7 +21,7 @@
         = link_to neighborhood_path(@user.neighborhood), :style => "display: block; font-size: 15px; margin-top: 20px;" do
           %i.fa.fa-users.fa-2
           = community_link_text
-          %span{:style => "display:block; text-align: center;"}
+          %span{:style => "display:block;"}
             = "(#{@neighborhood.name}, #{@neighborhood.city.name})"
 
   %hr{:style => "border-bottom: 1px solid #ccc;"}
@@ -29,7 +29,7 @@
     = I18n.t("common_terms.my_teams").capitalize
 
   .row{:style => "margin-top: 20px;"}
-    .span4
+    .col-md-12
       = render :partial => "shared/sidebar_list", :locals => {:items => @teams}
 
 
@@ -39,5 +39,5 @@
 
   - if @user.total_points >= 100
     .row{:style => "text-align: center; margin-top: 20px;"}
-      .span4
+      .col-md-12
         = render :partial => "users/badges"

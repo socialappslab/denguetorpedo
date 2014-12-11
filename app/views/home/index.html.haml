@@ -1,64 +1,63 @@
 /------------------------------------------------------------------------------
 
 = render :partial => "shared/flashes"
-= render :partial => "orange_slider"
+
+
+.landing-page-banner
+  = render :partial => "orange_slider"
+
+.container-silver{:style => "height: 300px;"}
+  .row{:style => "margin-top: 30px;"}
+    .col-md-3.col-md-offset-2{:style => "text-align: center;"}
+      %i.fa.fa-comments{:style => "font-size: 84px;"}
+
+      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
+        = I18n.t("views.home.chat_description")
+    .col-md-3.col-md-offset-2{:style => "text-align: center;"}
+      %i.fa.fa-futbol-o{:style => "font-size: 84px;"}
+
+      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
+        = I18n.t("views.home.teams_description")
+
+
 
 /------------------------------------------------------------------------------
 
 / Render the header, along with a dropdown to other neighborhoods.
-.row{:style => "margin-top: 40px;"}
-  .span10.offset1
-    %h1
-      = I18n.t("views.home.cities.title")
-  .span5{:style => "width: 325px;"}
-    = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
-      - neighborhoods = @searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
-      = select_tag("neighborhood[name]", options_for_select( neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
+.container-white
+  .row
+    .col-md-12
+      %h2{:style => "color: black; font-size: 32px; text-align: center; margin-top: 10px; margin-bottom: 10px;"}
+        = I18n.t("views.home.cities.title")
+    -# .col-md-6{:style => "width: 325px;"}
+    -#   = form_tag neighborhood_search_path, :style => "margin: 0px; text-align: right;" do
+    -#     - neighborhoods = @searchable_neighborhoods << [I18n.t("landing_page.community.future_community"), neighborhood_invitation_path]
+    -#     = select_tag("neighborhood[name]", options_for_select( neighborhoods  ), :prompt => I18n.t("landing_page.community.search_for_other_communities"), :id => "search-neighborhoods")
 
 
-/------------------------------------------------------------------------------
-/ Display a list of neighborhoods.
+  /------------------------------------------------------------------------------
+  / Display a list of neighborhoods.
 
-.row{:style => "margin-top: 40px;"}
-  = render "home/neighborhood_list"
+  .row{:style => "margin-top: 40px; margin-bottom: 40px;"}
+    = render "home/neighborhood_list"
+
+  .row{:style => "margin-top: 60px; margin-bottom: 40px;"}
+    .col-md-12
+      %p{:style => "text-align: center; font-size: 18px;"}
+        = I18n.t("views.home.activity_description")
 
 
 /------------------------------------------------------------------------------
 / Display a list of teams.
 
-.row{:style => "margin-top: 40px;"}
-  .span2.offset1
-    %h1{style: 'text-align: center;'}
-      = I18n.t("activerecord.models.team", :count => 2)
-    %ul#house_list{:style => "margin-top: 30px; margin-left: 0px;"}
-      - @teams.shuffle.each do |team|
-        %li
-          #house_photo_thumb
-            = image_tag(team.picture, :class => "img-rounded")
-
-          %div{:style => "margin-top: 10px;"}
-            = link_to team.name, team_path(team)
-
-
-  -# Display the news feed.
-  .span9{:style => "margin-left: 40px;"}
-    %h1{style: 'text-align: center;'}
-      = I18n.t("common_terms.activities")
-    = render :partial => "shared/news_feed"
-
-    .span9{:style => "text-align: center;"}
-      = link_to new_user_path, :style => "color: #6655ee; font-size: 20px;" do
-        %i.fa.fa-chevron-down
-        = I18n.t("common_terms.more")
-
-  -# Display a list of prizes.
-  .span4{:style => "margin-left: 30px; text-align: center;"}
-    %h1
-      = link_to I18n.t("common_terms.badges").capitalize, prizes_path, :style => "color: #65665C;"
-
-    #badges.prizes{style: "margin-top:20px; margin-top: 30px;"}
-      = render :partial => "prizes/badges_in_column"
-
+.container-silver
+  .row
+    .col-md-12
+      %h2{:style => "color: black; font-size: 32px; text-align: center; margin-bottom: 20px;"}
+        = I18n.t("common_terms.register")
+  .row
+    .col-md-4.col-md-offset-3{:style => "margin-top: 25px;"}
+      = render "home/register_form"
 
 
 

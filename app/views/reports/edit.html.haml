@@ -6,12 +6,12 @@
 /------------------------------------------------------------------------------
 
 .row
-  .span12.offset3
-    %h1{:style => "font-size: 36px; margin-bottom: 30px; text-align: center;"}
+  .col-md-10.col-md-offset-1
+    %h1{:style => "font-size: 36px; margin-bottom: 30px;"}
       = I18n.t("common_terms.complete_report")
 
 .row
-  .span12.offset3
+  .col-md-10.col-md-offset-1
     #new_report_form
       = form_for [@neighborhood, @report], :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
 

@@ -2,52 +2,52 @@
 = render :partial => "shared/form_errors", :locals => {:item => @message}
 
 .row
-  .span12.offset4
+  .col-md-12.col-md-offset-1
     .row
-      .span6
+      .col-md-6
         %h1{:style => "font-size: 40px;"}
           = I18n.t("activerecord.models.conversation", :count => 2)
 
-      .span4{:style => "text-align: right;"}
+      .col-md-4{:style => "text-align: right;"}
         = link_to "+ #{I18n.t('views.conversations.index.new_message')}", nil, :class => "btn btn-success btn-large", :id => "create-new-message"
 
 
     .row
-      .span10
+      .col-md-10
         - should_display_form = (flash[:show_new_message_form] == true || params[:form] == "true")
         = form_for [@current_user, @message], :html => { :id => "new-message-form", :class => "form-horizontal well", :style => "#{should_display_form == true ? '' : 'display: none;'}; margin-top: 20px;" } do |f|
-          .control-group
-            = label_tag I18n.t("views.conversations.index.to"), nil, :class => "control-label", :style => "width: 200px; text-align: left;"
-            .controls
+          .form-group
+            = label_tag I18n.t("views.conversations.index.to"), nil, :class => "control-label col-md-4"
+            .col-md-8
               = text_area_tag :users, params[:users], :class => "form-control span6 typeahead", :style => "height: 50px;"
-          .control-group
-            = f.label :body, I18n.t("attributes.content"), :class => "control-label", :style => "width: 200px; text-align: left;"
-            .controls
+          .form-group
+            = f.label :body, I18n.t("attributes.content"), :class => "control-label col-md-4"
+            .col-md-8
               = f.text_area :body, :class => "form-control span6", :style => "height: 50px;"
-          .control-group
-            .controls.span6{:style => "margin-left: 195px;"}
+          .form-group
+            .col-md-8.col-md-offset-4
               = button_tag :type => "submit", :class => "btn btn-success btn-block submit-button" do
                 %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
                 = I18n.t("views.buttons.create")
 
 
     .row{:style => "margin-top: 20px;"}
-      .span10
+      .col-md-10
         - @conversations.each do |c|
           .user_activity_item
             .row
-              .span6
+              .col-md-6
                 .row.feed-item-bar
-                  .span6
+                  .col-md-6
 
                     .feed-item-timestamp
                       %i.fa.fa-clock-o
                       = format_timestamp(c.updated_at)
                 .row.feed-item-content
-                  .span6
+                  .col-md-6
                     = I18n.t("views.conversations.index.messages_between") + " #{c.users.map(&:display_name).join(', ')}"
 
-              .span3.pull-right{:style => "line-height: 60px; height: 60px;"}
+              .col-md-3.pull-right{:style => "line-height: 60px; height: 60px;"}
                 = link_to user_conversation_path(@current_user, c) do
                   = I18n.t("views.conversations.index.visit_messages")
                   %i.fa.fa-chevron-right

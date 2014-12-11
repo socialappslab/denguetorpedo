@@ -222,7 +222,7 @@
 // Action bar for each report
 .action-bar {
   color: #8899a6;
-  display: inline-block;
+  // display: inline-block;
   font-size: 20px;
   margin-top: 20px;
 
@@ -306,7 +306,7 @@
 
 #map_div {
   position:absolute;
-  right:30px;
+  right:100px;
   overflow-y:hidden;
   overflow-x:hidden;
 

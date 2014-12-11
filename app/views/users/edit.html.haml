@@ -2,13 +2,11 @@
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
 .row
-  .span8.offset1
+  .col-md-5.col-md-offset-1
     .well{:style => "border: 1px solid #bdc3c7; text-align: center;"}
       = render :partial => "users/form", :locals => {:action => "update"}
 
-  .span1
-    %br
-  .span7
+  .col-md-5
 
     -# Create or join a team section.
     .well{:style => "border: 1px solid #bdc3c7; text-align: center;"}

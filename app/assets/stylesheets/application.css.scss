@@ -18,9 +18,10 @@
 
 #logo {
   position: absolute;
-  left: 40px;
-  width: 150px;
-  z-index: 1;
+  left: 50px;
+  // width: 150px;
+  z-index: 3;
+  width: 200px;
 }
 
 #logo_short {
@@ -40,11 +41,25 @@
 }
 
 
-#footer {
-  padding: 10px;
-  height: 45px;
+.bs-docs-footer {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: white;
   text-align: center;
+  border-top: 1px solid #e5e5e5;
 }
+
+.bs-docs-footer-links {
+  padding-left: 0;
+  margin-top: 20px;
+  color: #999;
+
+  li {
+    display: inline;
+    padding: 0 2px;
+  }
+}
+
 
 .clearfloat {
   clear: both;
@@ -80,6 +95,31 @@ div {
 }
 
 
+//---
+// Navigation bar customizations
+.navigation-bar {
+  background-color: $denguechat-blue;
+  height: 85px;
+
+  .language-options {
+    margin-top: 25px;
+    line-height: 25px;
+    text-align: center;
+  }
+}
+
+.container-silver {
+  background-color: $denguechat-silver;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.container-white {
+  background-color: $denguechat-grey;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
 
 //-----------------------------------------------------------------------------
 // Sidebar Configurations
@@ -110,11 +150,33 @@ div {
 //-----------------------------------------------------------------------------
 // Banner configuration
 
-#orange_slider {
-  background-image: url(banner.png);
-  background-size: 1200px 437px;
+.landing-page-banner {
+  background: url("/assets/denguechat.jpg") no-repeat center;
+  -webkit-background-size: cover;
+  -moz-background-size:    cover;
+  -o-background-size:      cover;
+  background-size: cover;
+  height: 630px;
+
+  h1 {
+    color: white;
+    margin-top: 460px;
+    font-size: 42px; margin-bottom: 20px; text-align: center;
+  }
+
+  .play-video-link {
+    text-align: center;
+
+    a {
+      color: white; font-size: 24px; display: inline-block;
+    }
+  }
 }
 
+
+#play_button {
+  color: white;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -161,6 +223,7 @@ div {
   }
 
   .dt-carousel-control {
+    background-image: none !important;
     position: absolute;
     // top: 150px;
     left: 15px;
@@ -173,13 +236,13 @@ div {
 
     &.left {
       top: 200px;
-      left: -50px;
+      left: 50px;
     }
 
     &.right {
       top: 200px;
       left: auto;
-      right: 0px;
+      right: 50px;
     }
   }
 }

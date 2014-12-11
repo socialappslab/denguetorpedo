@@ -2,9 +2,9 @@
 = render :partial => "shared/form_errors", :locals => {:item => @team}
 
 .row
-  .span12.offset3
+  .col-md-10.col-md-offset-1
     .row
-      .span12
+      .col-md-12
         %h1{:style => "font-size: 40px;"}
           - if I18n.locale.to_s == User::Locales::PORTUGUESE
             - preposition = ( @city.name == "Rio de Janeiro" ? "no" : "em")
@@ -15,34 +15,36 @@
 
     %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}
 
-    - @rankings.each_with_index do |neighborhood_data, index|
-      - neighborhood        = neighborhood_data[0]
-      - neighborhood_points = neighborhood_data[1]
-      .row{:style => "height: 100px;"}
-        .span2
-          %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
-            = index + 1
-        .span2
-          = link_to neighborhood_path(neighborhood) do
-            - image_tag(neighborhood.picture, :class => "img-rounded", :style => "height: 100px; width: 100px;")
+- @rankings.each_with_index do |neighborhood_data, index|
+  - neighborhood        = neighborhood_data[0]
+  - neighborhood_points = neighborhood_data[1]
+  .row{:style => "height: 100px;"}
+    .col-md-1.col-md-offset-1
+      %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
+        = index + 1
+    .col-md-1
+      = link_to neighborhood_path(neighborhood) do
+        - image_tag(neighborhood.picture, :class => "img-rounded", :style => "height: 100px; width: 100px;")
 
-        .span5
-          .row
-            .span6
-              %h1
-                = link_to neighborhood.name, neighborhood_path(neighborhood)
-          .row
-            .span4{:style => "display: table; height: 65px;"}
-              %span{:style => "display: table-cell; vertical-align: bottom;"}
-                %span{:style => " font-size: 30px; color: #5cb85c; display: inline;"}
-                  = neighborhood_points
-                = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
+    .col-md-6
+      .row
+        .col-md-12
+          %h1
+            = link_to neighborhood.name, neighborhood_path(neighborhood)
+      .row
+        .col-md-12{:style => "display: table; height: 65px;"}
+          %span{:style => "display: table-cell; vertical-align: bottom;"}
+            %span{:style => " font-size: 30px; color: #5cb85c; display: inline;"}
+              = neighborhood_points
+            = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
 
-        .span3
-          %div{:style => "display: table; height: 100px; width: 100%; float: left;"}
-            %div{:style => "display: table-cell; vertical-align: middle;"}
-              = link_to neighborhood_path(neighborhood), :class => "btn btn-success btn-large", :style => "width: 100%;" do
-                = I18n.t("views.cities.show.visit")
-                %i{:class => "fa fa-chevron-right"}
+    .col-md-2
+      %div{:style => "display: table; height: 100px; width: 100%; float: left;"}
+        %div{:style => "display: table-cell; vertical-align: middle;"}
+          = link_to neighborhood_path(neighborhood), :class => "btn btn-success btn-large", :style => "width: 100%;" do
+            = I18n.t("views.cities.show.visit")
+            %i{:class => "fa fa-chevron-right"}
 
+  .row
+    .col-md-10.col-md-offset-1
       %hr{:style => "border: 1px solid #e5e6e9; border-bottom: none;"}

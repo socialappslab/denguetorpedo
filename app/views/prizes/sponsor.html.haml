@@ -1,4 +1,4 @@
-.span4{ :style => "margin-top:-42px;height:467px;"}
+.col-md-4{ :style => "margin-top:-42px;height:467px;"}
 	%select{:id => "sponsors_select", :onchange => "location = this.options[this.selectedIndex].value;", :style => "width:263px;"}
 		%option Patrocinador / Apoio (#{@sponsors.count})
 		- @sponsors.each do |sponsor|

@@ -4,14 +4,14 @@
 
   - if @team.blocked
     .row
-      .span16{:style => "width: 1140px;"}
+      .col-md-12{:style => "width: 1140px;"}
         .alert.alert-danger.alert-dismissable{:style => "margin-left: 30px;"}
           = I18n.t("views.teams.show.blocked")
 
 
   .row
-    .span5{:style => "border-right: 1px solid #ccc;"}
+    .col-md-3.col-md-offset-1{:style => "border-right: 1px solid #ccc;"}
       = render :partial => "teams/sidebar"
 
-    .span11.offset1
+    .col-md-7.col-md-offset-1
       = render :partial => "teams/main"

@@ -1,32 +1,5 @@
 @import "variables";
 
-#login {
-  margin-top: 15px;
-
-  ul {
-    li {
-      display: inline;
-      input {
-        margin-bottom: 2px;
-      }
-    }
-  }
-  a {
-    margin: -10px 0px 0px 1px;
-    font-size: 12px;
-  }
-
-  input[type = "text"], input[type = "password"] {
-    width: $login-width;
-  }
-
-  #error {
-   height: $login_error_height;
-   margin-left: 5px;
-   font-size: 11px;
-  }
-}
-
 #logged_in {
   margin-top: 20px;
   margin-right: 10px;

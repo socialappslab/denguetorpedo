@@ -1,37 +1,15 @@
-#orange_slider
-  .row
-    .span16.offset2
-      %h1{:style => "color: #333; font-style: italic; font-size: 36px; margin-top: 70px; margin-left: 30px;"}
-        = I18n.t("views.home.header")
 
-  .row
-    .span11
-      .row{:style => "margin-top: 20px;"}
-        .span2.offset1{:style => "text-align: center;"}
-          %i.fa.fa-comments{:style => "font-size: 84px;"}
-        .span8{:style => "width: 460px;"}
-          %h2{:style => "color: #333; font-size: 15px; line-height: 25px; margin-top: 20px;"}
-            = I18n.t("views.home.chat_description")
-
-      .row{:style => "margin-top: 20px;"}
-        .span2.offset1{:style => "text-align: center;"}
-          %i.fa.fa-futbol-o{:style => "font-size: 64px;"}
-        .span8{:style => "width: 510px;"}
-          %h2{:style => "color: #333; font-size: 15px; margin-top: 10px;"}
-            = I18n.t("views.home.teams_description")
+.row
+  .col-md-12
+    %h1
+      = I18n.t("views.home.header")
 
 
-
-    .span6{:style => "margin-top: 25px;"}
-      = render "home/register_form"
-
-  .row
-    .span6.offset6{:style => "text-align: center; margin-bottom: 20px;"}
-      = link_to "http://www.youtube.com/embed/o6IY0NjdmZc", class: "fancybox-media fancybox.iframe", :id => 'play_button' do
-        %i.fa.fa-play-circle{:style => "font-size: 24px; color: #333;"}
-
-      %h2{:style => "color: #333; font-size: 16px; display: inline-block;"}
-        = I18n.t("views.home.video_description_html", :link_url => @introductory_video_on_dengue).html_safe
+.row
+  .col-md-12.play-video-link
+    = link_to @introductory_video_on_dengue, :id => "play_button", :class => "fancybox-media fancybox.iframe" do
+      %i.fa.fa-play-circle{:style => "font-size: 24px; color: white;"}
+      = I18n.t("views.home.video_description")
 
 
 

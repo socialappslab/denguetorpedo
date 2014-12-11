@@ -1,72 +1,18 @@
 .row
-  .span6
-    .span4.prizes.possible
-      .status.possible
-        .name
-          = link_to I18n.t("views.app"), about_path
-        .points
-          = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
-      .prize_content
-        = link_to image_tag("badges/de_olho.png", :class => "prizes")
-        .description
-          = link_to I18n.t("views.badges.eye_of_the_mosquito"), badges_prizes_path
-        .stock
-          = "#{User::Points::WATCHER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WATCHER).downcase
+  .col-md-2
+    = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/de_olho.png", :prize_name => I18n.t("views.badges.eye_of_the_mosquito"), :prize_type => User::Points::WATCHER }
 
-  .span6
-    .span4.prizes.possible
-      .status.possible
-        .name
-          = link_to I18n.t("views.app"), about_path
-        .points
-          = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
-      .prize_content
-        = link_to image_tag("badges/exterminador.png", :class => "prizes")
-        .description
-          = link_to I18n.t("views.badges.exterminator"), badges_prizes_path
-        .stock
-          = "#{User::Points::EXTERMINATOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::EXTERMINATOR).downcase
+  .col-md-2.col-md-offset-2
+    = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/exterminador.png", :prize_name => I18n.t("views.badges.exterminator"), :prize_type => User::Points::EXTERMINATOR }
 
-  .span4
-    .span4.prizes.possible
-      .status.possible
-        .name
-          = link_to I18n.t("views.app"), about_path
-        .points
-          = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
-      .prize_content
-        = link_to image_tag("badges/guerreiro.png", :class => "prizes")
-        .description
-          = link_to I18n.t("views.badges.fighter"), badges_prizes_path
-        .stock
-          = "#{User::Points::WARRIOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::WARRIOR).downcase
+  .col-md-2.col-md-offset-2
+    = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/guerreiro.png", :prize_name => I18n.t("views.badges.fighter"), :prize_type => User::Points::WARRIOR }
+
 
 
 .row{:style => "margin-top: 20px;"}
-  .span6.offset3
-    .span4.prizes.possible{:style => "margin-right: 20px;"}
-      .status.possible
-        .name
-          = link_to I18n.t("views.app"), about_path
-        .points
-          = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
-      .prize_content
-        = link_to image_tag("badges/saudavel.png", :class => "prizes")
-        .description
-          = link_to I18n.t("views.badges.health_worker"), badges_prizes_path
-        .stock
-          = "#{User::Points::HEALTHWORKER} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::HEALTHWORKER).downcase
+  .col-md-2.col-md-offset-2
+    = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/saudavel.png", :prize_name => I18n.t("views.badges.health_worker"), :prize_type => User::Points::HEALTHWORKER }
 
-  .span6
-    .span4.prizes.possible
-      .status.possible
-        .name
-          = link_to I18n.t("views.app"), about_path
-        .points
-          = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase
-      .prize_content
-        = link_to image_tag("badges/cuido.png", :class => "prizes")
-        .description
-          = link_to I18n.t("views.badges.caretaker"), badges_prizes_path
-        .stock
-          = "#{User::Points::PROTECTOR} " + I18n.t("activerecord.attributes.user.total_points", :count => User::Points::PROTECTOR).downcase
+  .col-md-2.col-md-offset-2
+    = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/cuido.png", :prize_name => I18n.t("views.badges.caretaker"), :prize_type => User::Points::PROTECTOR }

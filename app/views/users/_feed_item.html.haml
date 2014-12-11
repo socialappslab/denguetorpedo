@@ -1,18 +1,18 @@
 .feed-item
   .user_activity_item
     .row
-      .span1.feed-item-profile-photo
+      .col-md-2.feed-item-profile-photo
         = link_to user_path(owner) do
           - if owner.profile_photo_file_name.nil?
             = image_tag("default_images/user_default_alt.png")
           - else
             = image_tag(owner.profile_photo.url(:small))
 
-      .span7
+      .col-md-9
         = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => post_path(post)}
 
         .row.feed-item-content
-          .span7
+          .col-md-12
             - if post.content.length >= Post::CHARACTER_LIMIT
               = auto_link(post.content[0..Post::CHARACTER_LIMIT - 1])
               #hidden-post-content{:style => "display: none;"}
@@ -26,9 +26,8 @@
 
     - if @current_user
       .row.feed-item-interaction-menu
-        .span7
+        .col-md-12
           = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
-
 
 
   = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

@@ -1,6 +1,6 @@
 
 .row{:style => "margin-bottom: 20px;"}
-  .span5
+  .col-md-5
     - if @user.total_points == 0
       - total_points_color = "#d9534f";
     - else
@@ -16,7 +16,7 @@
       = link_to prizes_path, :class => "btn btn-orange btn-large profile-view-points-button" do
         = I18n.t("common_terms.exchange_points_for_prizes")
 
-  .span4{:style => "text-align: right;"}
+  .col-md-4{:style => "text-align: right;"}
     - if @reports_by_user.blank?
       - num_of_reports_color = "#d9534f";
     - else
@@ -35,7 +35,7 @@
 .row
   - if @current_user && @current_user == @user
     - @redeemable_prizes[0..2].each do |prize|
-      .span3.prizes.possible{:style => "height: 100px;"}
+      .col-md-3.prizes.possible{:style => "height: 100px;"}
         .status.possible
           .name{style: "height:20px;"}
             = link_to truncate(prize.sponsor_name, length: 18), sponsor_path(prize.user)
@@ -53,7 +53,7 @@
                 = prize.cost
               = I18n.t("activerecord.attributes.user.total_points", :count => 3)
     - if @redeemable_prizes.any?
-      .span1
+      .col-md-1
         = link_to prizes_path do
           %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
 
@@ -68,6 +68,7 @@
 
 -# ----------------------------------------------------------------------------
 
-= render :partial => "shared/full_feed_button"
+%div{:style => "margin-bottom: 40px;"}
+  = render :partial => "shared/full_feed_button"
 
 -# ----------------------------------------------------------------------------

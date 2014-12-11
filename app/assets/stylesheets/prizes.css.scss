@@ -201,7 +201,7 @@ img.prize_photo {
   //padding: 30px;
 }
 
-#prize_name_and_photo .row .span6 div, #prize_name_and_photo .row .span9 div {
+#prize_name_and_photo .row .col-md-6 div, #prize_name_and_photo .row .col-md-9 div {
   padding: 30px;
 }
 
@@ -219,7 +219,7 @@ img.prize_photo {
   margin-bottom: 30px;
 }
 
-#prize_instructions_and_cost .span9 div {
+#prize_instructions_and_cost .col-md-9 div {
   /*padding: 30px;*/
 }
 
@@ -231,7 +231,7 @@ img.prize_photo {
 }
 
 
-#prize_instructions_and_cost .span9 {
+#prize_instructions_and_cost .col-md-9 {
 
   background-color: #fff;
 }
@@ -332,11 +332,11 @@ img.prize_photo {
   margin-bottom: 10px;
 }
 
-#sponsor_area_title_thing .span15 div {
+#sponsor_area_title_thing .col-md-15 div {
   padding: 10px 0px 10px 30px;
 }
 
-#sponsor_area_title_thing .span15 div h3 {
+#sponsor_area_title_thing .col-md-15 div h3 {
   color: #fff;
   font-weight: bold;
   font-size: 22px;
@@ -347,21 +347,21 @@ img.prize_photo {
   margin-bottom: 30px;
 }
 
-#sponsor_spot .span3 div {
+#sponsor_spot .col-md-3 div {
   padding: 10px 10px 10px 30px;
 }
 
-#sponsor_spot .span7 div {
+#sponsor_spot .col-md-7 div {
   padding: 10px 10px 10px 0px;
 }
 
-#sponsor_spot .span7 div h4 {
+#sponsor_spot .col-md-7 div h4 {
   font-weight: bold;
   font-size: 20px;
   line-height: 35px;
 }
 
-#sponsor_spot .span7 div p {
+#sponsor_spot .col-md-7 div p {
   font-size: 12px;
   line-height: 18px;
 }
@@ -502,12 +502,12 @@ div.prizes {
   display: inline-block;
 }
 
-.span4.prizes, .span3.prizes {
+.prize-containers {
   // display: inline-block;
   background-color: white;
   border: 1px solid #60BB50;
   // width: 240px;
-  height: 120px;
+  // height: 120px;
   margin-bottom: 5px;
 
   .status {

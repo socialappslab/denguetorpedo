@@ -2,6 +2,6 @@
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
 .row
-  .span8.offset1
+  .col-md-8.col-md-offset-1
     .well{:style => "border: 1px solid #bdc3c7; text-align: center;"}
       = render :partial => "users/form", :locals => {:action => "special_create"}

@@ -1,8 +1,8 @@
 .row#map-action-bar
-  .span5
+  .col-md-5
     #map-error-description
       = I18n.t("map.location_not_found")
-  .span2
+  .col-md-2
     %input{type: "button", value: I18n.t("map.go_to_community", :name => "Maré"), id: "go_to_mare", :class => "btn btn-warning", :style => "float: right;"}
 
 

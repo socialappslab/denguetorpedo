@@ -41,7 +41,7 @@ body {
     // outline: none;
 
     &[type = "text"], &[type = "password"], &[type = "number"] {
-      height: 28px;
+      // height: 28px;
       border-radius: 5px;
     }
 
@@ -155,7 +155,7 @@ a:hover {
 
 // establishes page width and centers
 body, #container {
-  width: $gridRowWidth;
+  // width: $gridRowWidth;
   margin: 0px auto;
   position: relative;
   background: $background-color;
@@ -164,7 +164,7 @@ body, #container {
 body > #container {
   height: auto;
   min-height: 100%;
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
 }
 
 .image_placeholder {

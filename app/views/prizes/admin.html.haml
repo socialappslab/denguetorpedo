@@ -1,12 +1,12 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/filter_by_community"
 
-.row.offset1
-	.span12
+.row.col-md-offset-1
+	.col-md-12
 		%h1
 			= I18n.t("activerecord.models.prize", :count => 2)
 
-		%table.users_table.span12{:cellpadding => 10, border: 1}
+		%table.users_table.col-md-12{:cellpadding => 10, border: 1}
 			%colgroup
 				%col{style: "width:70%;"}
 				%col{style: "width:15%;"}
