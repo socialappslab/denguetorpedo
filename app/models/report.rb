@@ -194,6 +194,10 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def formatted_created_at
+    return self.created_at.strftime("%k:%M %Y-%m-%d")
+  end
+
   def self.create_from_user(report_content, params)
     create(:report => report_content) do |r|
       r.reporter_id = params[:reporter] && params[:reporter].id
