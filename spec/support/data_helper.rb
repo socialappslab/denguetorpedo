@@ -69,7 +69,8 @@ def populate_data
         :neighborhood_id => mare.id, :completed_at => Time.now,
         :before_photo => File.open("./spec/support/foco_marcado.jpg"),
         :after_photo => File.open("./spec/support/foco_marcado.jpg"),
-        :eliminator_id => eliminator.id)
+        :eliminator_id => eliminator.id,
+        :eliminated_at => Time.now)
     end
 
     report = u.build_report_via_sms({ :body => "SMS report" })
