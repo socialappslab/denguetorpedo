@@ -28,13 +28,13 @@
       = f.label :location do
         = "1. " + I18n.t("report.form.address")
       = f.fields_for :location, @report.location || Location.new do |location_fields|
-        = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), class: 'address_field form-control', :disabled => !@report.new_record?
+        = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), class: 'address_field form-control', :disabled => @report.completed_at.present?
 
 
 
   .form-group
     = f.label :breeding_site_id, "2. " + I18n.t("activerecord.attributes.report.elimination_type")
-    = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , {:prompt => I18n.t("report.form.select_elimination_type")}, :class => "form-control", :disabled => !@report.new_record?
+    = f.select :breeding_site_id, BreedingSite.all.map {|bs| [bs.description, bs.id]} , {:prompt => I18n.t("report.form.select_elimination_type")}, :class => "form-control", :disabled => @report.completed_at.present?
 
   .form-group
     = f.label :larvae, "3. " + I18n.t("views.reports.new.did_you_see_larvae")
@@ -42,10 +42,10 @@
 
     %div{:style => "display: block;"}
       .radio-inline
-        = f.radio_button :larvae, "true", :disabled => !@report.new_record?
+        = f.radio_button :larvae, "true", :disabled => @report.completed_at.present?
         = I18n.t("common_terms.yes_string")
       .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :larvae, "false", :disabled => !@report.new_record?
+        = f.radio_button :larvae, "false", :disabled => @report.completed_at.present?
         = I18n.t("common_terms.no_html_string").html_safe
 
     %p{:style => "margin-top: 10px;"}
@@ -54,7 +54,7 @@
 
   .form-group
 
-    - if @report.new_record?
+    - if @report.completed_at.blank?
       = f.label :before_photo, "4. " + I18n.t("report.form.photo_of_report")
       = f.file_field :before_photo, :class => "upload_photo form-control"
       %img.preview{:style => "display: block;"}
@@ -75,9 +75,9 @@
 
   .form-group
     = f.label :report, "5. " + I18n.t('activerecord.attributes.report.report')
-    = f.text_field :report, :placeholder => I18n.t("views.reports.new.description_placeholder"), :class => "form-control", :disabled => !@report.new_record?
+    = f.text_field :report, :placeholder => I18n.t("views.reports.new.description_placeholder"), :class => "form-control", :disabled => @report.completed_at.present?
 
-  - unless @report.new_record?
+  - if @report.completed_at.present?
     .form-group
       = f.label :eliminated_method_id, "6. " + I18n.t("activerecord.models.elimination_method")
       = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, @report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods form-control"}
