@@ -35,6 +35,10 @@ RSpec.configure do |config|
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
 
+  config.before(:each, :after_commit => true) do
+    DatabaseCleaner.strategy = :truncation, { :except => %w[breeding_sites elimination_methods neighborhoods] }
+  end
+
   config.before(:suite) do
     Dengue::Application.load_tasks
     # Dir.glob("#{Rails.root}/lib/tasks/*.rake").each { |r| puts "r: #{r}"; load r }
