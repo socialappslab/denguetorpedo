@@ -41,11 +41,13 @@ class LocationStatus < ActiveRecord::Base
       negative_count  = stats.find_all {|s| s.status == Types::NEGATIVE}.count
       clean_count     = stats.find_all {|s| s.status == Types::CLEAN}.count
 
-      total   = positive_count + potential_count + negative_count + clean_count
-      percent = (positive_count + potential_count).to_f / total
-      neg_percent = (negative_count).to_f / total
+      total         = positive_count + potential_count + negative_count + clean_count
+      pos_percent   = (positive_count).to_f / total
+      pot_percent   = (potential_count).to_f / total
+      neg_percent   = (negative_count).to_f / total
+      clean_percent = (clean_count).to_f / total
 
-      daily_stats << [key, (percent * 100).round(0), (neg_percent * 100).round(0)]
+      daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
 
       day += 1.day
     end
