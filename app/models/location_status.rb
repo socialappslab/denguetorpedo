@@ -78,8 +78,8 @@ class LocationStatus < ActiveRecord::Base
 
 
     # Limit the history to 2 months
-    if first_day < last_day - 2.months
-      first_day = last_day - 2.months
+    if first_day < last_day - 1.month
+      first_day = last_day - 1.month
     end
     day         = first_day
 
