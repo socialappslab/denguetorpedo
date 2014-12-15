@@ -522,13 +522,18 @@ pt:
       title: Perguntas Frequentes
     statistics:
       table:
-        negative_sites: Lugares sem focos
+        clean_sites: Lugares verdes sem focos por mais de 14 dias
+        negative_sites: com focos eliminados
         positive_sites: com focos positivos
         potential_sites: com focos potenciais
       chart:
+        title: Mudança em Risco em Sua Comunidade de Dengue e Chikungunya
         time: Tempo
-        percent_of_negative_sites: Porcentagem de lugares sem focos
-        percent_of_positive_sites: Porcentagem de lugares com focos positivos ou potenciais
+        percent_of_negative_sites: Porcentagem de lugares com eliminados
+        percent_of_positive_sites: Porcentagem de lugares com focos positivos
+        percent_of_potential_sites: Porcentagem de lugares com focos potenciais
+        percent_of_green_sites: Porcentagem de lugares sem focos por mais de 14 dias
+
 
 
 
