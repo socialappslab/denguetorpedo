@@ -32,7 +32,7 @@ namespace :locations do
 
       # TODO: We can do some optimizations here by comparing current LocationStatus
       # status with the report status...
-      if report.status == Status::POSITIVE
+      if report.status == Report::Status::POSITIVE
         ls.status = LocationStatus::Types::POSITIVE
       else
         reports         = report.location.reports
