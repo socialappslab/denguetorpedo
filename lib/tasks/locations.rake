@@ -26,6 +26,7 @@ namespace :locations do
       ls = ls.where(:created_at => (report.updated_at.beginning_of_day..report.updated_at.end_of_day))
       if ls.blank?
         ls = LocationStatus.new(:location_id => report.location_id)
+        ls.created_at = report.created_at
       else
         ls = ls.first
       end
@@ -66,6 +67,7 @@ namespace :locations do
 
         end
       end
+
 
       ls.save
     end
