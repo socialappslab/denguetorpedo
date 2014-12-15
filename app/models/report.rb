@@ -320,7 +320,6 @@ class Report < ActiveRecord::Base
     if self.status == Status::POSITIVE
       ls.status = LocationStatus::Types::POSITIVE
     else
-      puts "Calculating status..."
       reports         = self.location.reports
       positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
       potential_count = reports.find_all {|r| r.status == Report::Status::POTENTIAL}.count
@@ -328,14 +327,10 @@ class Report < ActiveRecord::Base
 
 
       if positive_count > 0
-        puts "positive..."
         ls.status = LocationStatus::Types::POSITIVE
       elsif potential_count > 0
-        puts "potential..."
         ls.status = LocationStatus::Types::POTENTIAL
       else
-        puts "negative or clean..."
-
         # At this point, let's see if this location has been negative for 14 days.
         start = (self.updated_at - 2.weeks).beginning_of_day
         history = LocationStatus.where(:location_id => self.location_id)
@@ -356,8 +351,6 @@ class Report < ActiveRecord::Base
 
       end
     end
-
-    puts "Now saving..."
 
     ls.save
   end
