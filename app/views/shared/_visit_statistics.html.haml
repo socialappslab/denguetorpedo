@@ -3,7 +3,7 @@
     %tr
       %td{:style => "width: 25%;"}
         %h1{:style => "color: #5cb85c;"}
-          = @table_statistics[:clean][:count].to_s
+          = (@total_locations * @table_statistics[:clean][:percent].round(0) / 100).round(0).to_s
           %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
@@ -14,7 +14,7 @@
 
       %td
         %h1{:style => "color: #95a5a6;"}
-          = @table_statistics[:negative][:count].to_s
+          = (@total_locations * @table_statistics[:negative][:percent].round(0) / 100).round(0).to_s
           %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
@@ -25,7 +25,7 @@
 
       %td
         %h1{:style => "color: #f1c40f;"}
-          = @table_statistics[:potential][:count].to_s
+          = (@total_locations * @table_statistics[:potential][:percent].round(0) / 100).round(0).to_s
           %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
@@ -37,7 +37,7 @@
 
       %td
         %h1{:style => "color: #d9534f;"}
-          = @table_statistics[:positive][:count].to_s
+          = (@total_locations * @table_statistics[:positive][:percent].round(0) / 100).round(0).to_s
           %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
