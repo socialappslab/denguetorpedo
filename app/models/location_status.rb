@@ -75,12 +75,13 @@ class LocationStatus < ActiveRecord::Base
     daily_stats = []
     first_day   = statuses.last.created_at
     last_day    = statuses.first.created_at
-    day         = first_day
+
 
     # Limit the history to 2 months
     if first_day < last_day - 2.months
       first_day = last_day - 2.months
     end
+    day         = first_day
 
     # TODO: This is going to get expensive very soon and fast. We need to
     # leverage previous measurements to cumulatively add the stats.
