@@ -17,7 +17,7 @@ class CsvReportsController < NeighborhoodsBaseController
     @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
     @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
     @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
-    @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
+    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
     @table_statistics = @statistics.last
     @chart_statistics = @statistics.map {|hash|
       [
