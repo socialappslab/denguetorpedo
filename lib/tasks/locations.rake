@@ -26,13 +26,14 @@ namespace :locations do
       ls = ls.where(:created_at => (report.updated_at.beginning_of_day..report.updated_at.end_of_day))
       if ls.blank?
         ls = LocationStatus.new(:location_id => report.location_id)
+        ls.created_at = report.created_at
       else
         ls = ls.first
       end
 
       # TODO: We can do some optimizations here by comparing current LocationStatus
       # status with the report status...
-      if report.status == Status::POSITIVE
+      if report.status == Report::Status::POSITIVE
         ls.status = LocationStatus::Types::POSITIVE
       else
         reports         = report.location.reports
@@ -53,7 +54,7 @@ namespace :locations do
           history = history.where(:created_at => (start..report.updated_at.end_of_day))
 
           # Ensure that the first record is in fact 2 weeks ago (at least)
-          if history.first.created_at <= start
+          if history.first && history.first.created_at <= start
             history = history.pluck(:status)
             if history.include?(LocationStatus::Types::POTENTIAL) || history.include?(LocationStatus::Types::POSITIVE)
               ls.status = LocationStatus::Types::NEGATIVE
@@ -66,6 +67,7 @@ namespace :locations do
 
         end
       end
+
 
       ls.save
     end

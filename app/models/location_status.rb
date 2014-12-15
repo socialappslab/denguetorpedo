@@ -47,8 +47,16 @@ class LocationStatus < ActiveRecord::Base
       neg_percent   = (negative_count).to_f / total
       clean_percent = (clean_count).to_f / total
 
-      daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
+      # daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
 
+      hash = {
+        :date => key,
+        :positive  => {:count => positive_count,  :percent => (pos_percent * 100).round(0)},
+        :potential => {:count => potential_count, :percent => (pot_percent * 100).round(0)},
+        :negative  => {:count => negative_count,  :percent => (neg_percent * 100).round(0)},
+        :clean     => {:count => clean_count,     :percent => (clean_percent * 100).round(0)}
+      }
+      daily_stats << hash
       day += 1.day
     end
 
@@ -58,5 +66,66 @@ class LocationStatus < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
+
+
+  def self.calculate_time_series_for_locations(locations)
+    statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at DESC")
+    return [] if statuses.blank?
+
+    daily_stats = []
+    first_day   = statuses.last.created_at
+    last_day    = statuses.first.created_at
+    day         = first_day
+
+    # TODO: This is going to get expensive very soon and fast. We need to
+    # leverage previous measurements to cumulatively add the stats.
+
+    while day <= last_day.end_of_day
+      key   = day.strftime("%Y-%m-%d")
+      stats = statuses.where("DATE(created_at) <= ?", key)
+
+      positive_count  = 0
+      potential_count = 0
+      negative_count  = 0
+      clean_count     = 0
+
+      locations.each do |loc|
+        status = stats.where(:location_id => loc.id).limit(1).pluck(:status)[0]
+
+        if status == Types::POSITIVE
+          positive_count += 1
+        elsif status == Types::POTENTIAL
+          potential_count += 1
+        elsif status == Types::NEGATIVE
+          negative_count += 1
+        elsif status == Types::CLEAN
+          clean_count += 1
+        end
+      end
+
+
+      total         = positive_count + potential_count + negative_count + clean_count
+      pos_percent   = (positive_count).to_f / total
+      pot_percent   = (potential_count).to_f / total
+      neg_percent   = (negative_count).to_f / total
+      clean_percent = (clean_count).to_f / total
+
+      # daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
+
+      hash = {
+        :date => key,
+        :positive  => {:count => positive_count,  :percent => (pos_percent * 100).round(0)},
+        :potential => {:count => potential_count, :percent => (pot_percent * 100).round(0)},
+        :negative  => {:count => negative_count,  :percent => (neg_percent * 100).round(0)},
+        :clean     => {:count => clean_count,     :percent => (clean_percent * 100).round(0)}
+      }
+      daily_stats << hash
+      day += 1.day
+    end
+
+
+
+    return daily_stats
+  end
 
 end

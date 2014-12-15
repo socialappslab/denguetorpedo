@@ -16,14 +16,24 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @notices = @neighborhood.notices.order("updated_at DESC")
 
     # Calculate total visits to (different) locations.
-    @visits       = @reports.map {|r| r.location}.compact.uniq
+    @visits              = @reports.map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
     @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
     @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
     @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
     @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
 
-    @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
+
+    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
+    @chart_statistics = @statistics.map {|hash|
+      [
+        hash[:date],
+        hash[:positive][:percent],
+        hash[:potential][:percent],
+        hash[:negative][:percent],
+        hash[:clean][:percent]
+      ]
+    }
 
 
     # Calculate total metrics before we start filtering.
@@ -32,7 +42,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Limit the activity feed to *current* neighborhood members.
     user_ids = @users.pluck(:id)
-    @reports = @reports.order("updated_at DESC").where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
+    @reports = @reports.where(:protected => [nil, false]).order("updated_at DESC").where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
     @posts   = @neighborhood.posts.where(:user_id => user_ids).order("updated_at DESC")
 
     # Limit the amount of records we show.
