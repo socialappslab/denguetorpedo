@@ -519,13 +519,17 @@ es:
       title: Preguntas Frecuentes
     statistics:
       table:
-        negative_sites: Lugares sin criaderos
+        clean_sites: Lugares verdes sin criaderos por mas de 14 dias
+        negative_sites: con criaderos eliminados
         positive_sites: con criaderos positivos
         potential_sites: con criaderos potenciales
       chart:
+        title: Cambio en Riesgo en Tu Barrio de Dengue y Chikungunya
         time: Tiempo
-        percent_of_negative_sites: Porcentaje de lugares sin criaderos
-        percent_of_positive_sites: Porcentaje de lugares con criaderos positivos o potenciales
+        percent_of_negative_sites: Porcentaje de lugares con criaderos eliminados
+        percent_of_positive_sites: Porcentaje de lugares con criaderos positivos
+        percent_of_potential_sites: Porcentaje de lugares con criaderos potenciales
+        percent_of_green_sites: Porcentaje de lugares sin criaderos por mas de 14 dias
 
 
   #----------------------------------------------------------------------------

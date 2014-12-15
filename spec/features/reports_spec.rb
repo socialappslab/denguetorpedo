@@ -18,7 +18,6 @@ describe "Reports", :type => :feature do
     I18n.default_locale = User::Locales::SPANISH
   end
 
-
   #-----------------------------------------------------------------------------
 
   context "when creating a report through the web app" do
