@@ -22,7 +22,7 @@
 :javascript
   google.load('visualization', '1', {packages: ['corechart']});
   google.setOnLoadCallback(drawChart);
-  var statistics = #{@statistics.to_json};
+  var statistics = #{@chart_statistics.to_json};
 
   function drawChart() {
     // data.addColumn('number', 'X');
@@ -40,6 +40,9 @@
 
     var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
     formatter.format(data, 1);
+    formatter.format(data, 2);
+    formatter.format(data, 3);
+    formatter.format(data, 4);
 
     var options = {
       title: "#{I18n.t('views.statistics.chart.title')}",
