@@ -53,7 +53,7 @@ namespace :locations do
           history = history.where(:created_at => (start..report.updated_at.end_of_day))
 
           # Ensure that the first record is in fact 2 weeks ago (at least)
-          if history.first.created_at <= start
+          if history.first && history.first.created_at <= start
             history = history.pluck(:status)
             if history.include?(LocationStatus::Types::POTENTIAL) || history.include?(LocationStatus::Types::POSITIVE)
               ls.status = LocationStatus::Types::NEGATIVE
