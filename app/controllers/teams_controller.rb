@@ -35,7 +35,7 @@ class TeamsController < ApplicationController
     # Load associations.
     @team    = Team.find(params[:id])
     @users   = @team.users.includes(:posts)
-    @reports = @users.map {|u| u.reports.where(:protected => [nil, false]).order("updated_at DESC")}.flatten
+    @reports = @users.map {|u| u.reports.where("completed_at IS NOT NULL").where(:protected => [nil, false]).order("updated_at DESC")}.flatten
 
     @total_reports = @reports.count
     @total_points  = @team.points
