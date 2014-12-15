@@ -47,8 +47,16 @@ class LocationStatus < ActiveRecord::Base
       neg_percent   = (negative_count).to_f / total
       clean_percent = (clean_count).to_f / total
 
-      daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
+      # daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
 
+      hash = {
+        :date => key,
+        :positive  => {:count => positive_count,  :percent => (pos_percent * 100).round(0)},
+        :potential => {:count => potential_count, :percent => (pot_percent * 100).round(0)},
+        :negative  => {:count => negative_count,  :percent => (neg_percent * 100).round(0)},
+        :clean     => {:count => clean_count,     :percent => (clean_percent * 100).round(0)}
+      }
+      daily_stats << hash
       day += 1.day
     end
 

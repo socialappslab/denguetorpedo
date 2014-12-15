@@ -1,47 +1,47 @@
 %table.table.table-bordered.location-statistics-table{:style => "margin-bottom: 40px;"}
   %tbody
     %tr
-      %td{:style => "width: 150px;"}
+      %td{:style => "width: 25%;"}
         %h1{:style => "color: #5cb85c;"}
-          = @clean_locations.to_s
-          %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
+          = @table_statistics[:clean][:count].to_s
+          %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@clean_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+            = "(#{@table_statistics[:clean][:percent].round(0).to_i.to_s}%)"
         %p
           = I18n.t("views.statistics.table.clean_sites")
 
       %td
         %h1{:style => "color: #95a5a6;"}
-          = @negative_locations.to_s
-          %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
+          = @table_statistics[:negative][:count].to_s
+          %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@negative_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+            = "(#{@table_statistics[:negative][:percent].round(0).to_i.to_s}%)"
         %p
           = I18n.t("views.statistics.table.negative_sites")
 
       %td
         %h1{:style => "color: #f1c40f;"}
-          = @potential_locations.to_s
-          %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
+          = @table_statistics[:potential][:count].to_s
+          %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@potential_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+            = "(#{@table_statistics[:potential][:percent].round(0).to_i.to_s}%)"
         %p
           = I18n.t("views.statistics.table.potential_sites")
 
 
       %td
         %h1{:style => "color: #d9534f;"}
-          = @positive_locations.to_s
-          %span{:style => "font-weight: normal; font-size: 30px; display: inline;"}
+          = @table_statistics[:positive][:count].to_s
+          %span{:style => "font-weight: normal; font-size: 24px; display: inline;"}
             de
           = @total_locations.to_s
           .percentages
-            = @total_locations == 0 ? "(0%)" : "(" + ((@positive_locations.to_f / @total_locations) * 100).round(0).to_s + "%)"
+            = "(#{@table_statistics[:positive][:percent].round(0).to_i.to_s}%)"
         %p
           = I18n.t("views.statistics.table.positive_sites")
