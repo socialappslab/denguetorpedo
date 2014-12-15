@@ -13,10 +13,10 @@ class CsvReportsController < NeighborhoodsBaseController
 
     @visits              = @csv_reports.map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-    # @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
-    # @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
-    # @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
-    # @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
+    @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
+    @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
+    @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
+    @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
     @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
     @table_statistics = @statistics.last
     @chart_statistics = @statistics.map {|hash|
