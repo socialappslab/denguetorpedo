@@ -30,7 +30,7 @@ class CsvReportsController < NeighborhoodsBaseController
     }
 
 
-    @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
+    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
   end
 
 

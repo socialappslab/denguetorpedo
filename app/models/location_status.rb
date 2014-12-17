@@ -21,52 +21,6 @@ class LocationStatus < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def self.calculate_percentages_for_locations(locations)
-    statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at ASC")
-    return [] if statuses.blank?
-
-    daily_stats = []
-    first_day   = statuses.first.created_at
-    last_day    = statuses.last.created_at
-    day         = first_day
-
-    # TODO: This is going to get expensive very soon and fast. We need to
-    # leverage previous measurements to cumulatively add the stats.
-    while day <= last_day.end_of_day
-      key   = day.strftime("%Y-%m-%d")
-      stats = statuses.where("DATE(created_at) <= ?", key)
-
-      positive_count  = stats.find_all {|s| s.status == Types::POSITIVE}.count
-      potential_count = stats.find_all {|s| s.status == Types::POTENTIAL}.count
-      negative_count  = stats.find_all {|s| s.status == Types::NEGATIVE}.count
-      clean_count     = stats.find_all {|s| s.status == Types::CLEAN}.count
-
-      total         = positive_count + potential_count + negative_count + clean_count
-      pos_percent   = (positive_count).to_f / total
-      pot_percent   = (potential_count).to_f / total
-      neg_percent   = (negative_count).to_f / total
-      clean_percent = (clean_count).to_f / total
-
-      # daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
-
-      hash = {
-        :date => key,
-        :positive  => {:count => positive_count,  :percent => (pos_percent * 100).round(0)},
-        :potential => {:count => potential_count, :percent => (pot_percent * 100).round(0)},
-        :negative  => {:count => negative_count,  :percent => (neg_percent * 100).round(0)},
-        :clean     => {:count => clean_count,     :percent => (clean_percent * 100).round(0)}
-      }
-      daily_stats << hash
-      day += 1.day
-    end
-
-
-
-    return daily_stats
-  end
-
-  #----------------------------------------------------------------------------
-
 
   def self.calculate_time_series_for_locations(locations)
     statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at DESC")
