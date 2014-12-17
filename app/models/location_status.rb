@@ -21,69 +21,75 @@ class LocationStatus < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-
+  # In order to calculate time series for locations, we need to realize that
+  # location statuses exhibit "gaps" in reported status of a location. This means
+  # that there is no guarantee we have a record of the location status on any
+  # given day. Instead, we have to calculate it based on *last known row entry* (assume
+  # POTENTIAL if no entry). This is what is known as the "Gaps and Islands" problem:
+  # https://www.simple-talk.com/sql/t-sql-programming/the-sql-of-gaps-and-islands-in-sequences/
+  # The islands are singular row entries of the location, and the gaps are all the days
+  # that we don't have an entry for that location.
+  #
+  # There are several ways to try to solve this problem. One is to perform SQL for
+  # each day by ordering in reverse chronological order, and looking at all days in the
+  # past, and then grouping by location. This is problematic since you have to ensure
+  # that each location is counted only once. I haven't found a clean way for doig this.
+  #
+  # An alternative way is to memoize the location statuses, and calculate percentages
+  # from this memoized result, making sure to update this memoized result after each
+  # day iteration. In other words, we essentially keep track of all locations, and update
+  # each location with new metrics as we get more information.
+  # NOTE: Keep in mind that we can't just initialize the memoized variable with
+  # all locations as not all locations existed for all time. Otherwise, we may
+  # skew the actual statistics.
   def self.calculate_time_series_for_locations(locations)
-    statuses = LocationStatus.where(:location_id => locations.map(&:id)).order("created_at DESC")
+    location_ids    = locations.map(&:id)
+    statuses = LocationStatus.where(:location_id => location_ids).order("created_at ASC")
     return [] if statuses.blank?
 
-    daily_stats = []
-    first_day   = statuses.last.created_at
-    last_day    = statuses.first.created_at
 
+    # Determine the timeframe.
+    start_time  = statuses.first.created_at.beginning_of_day
+    end_time    = statuses.last.created_at.end_of_day
+    time        = start_time
 
-    # Limit the history to 2 months
-    if first_day < last_day - 10.days
-      first_day = last_day - 10.days
-    end
-    day         = first_day
+    # Initialize the memoized hash.
+    daily_stats        = []
+    memoized_locations = {}
 
-    # TODO: This is going to get expensive very soon and fast. We need to
-    # leverage previous measurements to cumulatively add the stats.
+    # Iterate over the timeframe, upating the memoized result each day to reflect
+    # the correct state space.
+    while time <= end_time
+      date_key = time.strftime("%Y-%m-%d")
+      stats = statuses.where("DATE(created_at) = ?", date_key)
 
-    while day <= last_day.end_of_day
-      key   = day.strftime("%Y-%m-%d")
-      stats = statuses.where("DATE(created_at) <= ?", key)
-
-      positive_count  = 0
-      potential_count = 0
-      negative_count  = 0
-      clean_count     = 0
-
-      locations.each do |loc|
-        status = stats.where(:location_id => loc.id).limit(1).pluck(:status)[0]
-
-        if status == Types::POSITIVE
-          positive_count += 1
-        elsif status == Types::POTENTIAL
-          potential_count += 1
-        elsif status == Types::NEGATIVE
-          negative_count += 1
-        elsif status == Types::CLEAN
-          clean_count += 1
-        end
+      # Update the memoized result with new data (or fallback to POTENTIAL)
+      stats.each do |location_state|
+        memoized_locations[location_state.location_id] = location_state.status || memoized_locations[location_state.location_id] || LocationStatus::Types::POTENTIAL
       end
 
-
-      total         = positive_count + potential_count + negative_count + clean_count
-      pos_percent   = (positive_count).to_f / total
-      pot_percent   = (potential_count).to_f / total
-      neg_percent   = (negative_count).to_f / total
-      clean_percent = (clean_count).to_f / total
-
-      # daily_stats << [key, (pos_percent * 100).round(0), (pot_percent * 100).round(0), (neg_percent * 100).round(0), (clean_percent * 100).round(0)]
+      # Calculate the count and percentages of the latest memoized result.
+      positive_count  = memoized_locations.find_all {|loc_id, status| status == Types::POSITIVE}.count
+      potential_count = memoized_locations.find_all {|loc_id, status| status == Types::POTENTIAL}.count
+      negative_count  = memoized_locations.find_all {|loc_id, status| status == Types::NEGATIVE}.count
+      clean_count     = memoized_locations.find_all {|loc_id, status| status == Types::CLEAN}.count
+      total_count     = positive_count + potential_count + negative_count + clean_count
+      
+      pos_percent   = total_count == 0 ? 0 : (positive_count).to_f  / total_count
+      pot_percent   = total_count == 0 ? 0 : (potential_count).to_f / total_count
+      neg_percent   = total_count == 0 ? 0 : (negative_count).to_f  / total_count
+      clean_percent = total_count == 0 ? 0 : (clean_count).to_f     / total_count
 
       hash = {
-        :date => key,
+        :date => date_key,
         :positive  => {:count => positive_count,  :percent => (pos_percent * 100).round(0)},
         :potential => {:count => potential_count, :percent => (pot_percent * 100).round(0)},
         :negative  => {:count => negative_count,  :percent => (neg_percent * 100).round(0)},
         :clean     => {:count => clean_count,     :percent => (clean_percent * 100).round(0)}
       }
       daily_stats << hash
-      day += 1.day
+      time += 1.day
     end
-
-
 
     return daily_stats
   end
