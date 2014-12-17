@@ -16,13 +16,8 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @notices = @neighborhood.notices.order("updated_at DESC")
 
     # Calculate total visits to (different) locations.
-    @visits              = @reports.map {|r| r.location}.compact.uniq
+    @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-    @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
-    @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
-    @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
-    @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
-
 
     @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
     @chart_statistics = @statistics.map {|hash|
@@ -34,6 +29,20 @@ class NeighborhoodsController < NeighborhoodsBaseController
         hash[:clean][:percent]
       ]
     }
+
+    @newest_status_distribution = @statistics.last
+    if @newest_status_distribution.present?
+      @positive_locations  = @newest_status_distribution[:positive][:count]
+      @potential_locations = @newest_status_distribution[:potential][:count]
+      @negative_locations  = @newest_status_distribution[:negative][:count]
+      @clean_locations     = @newest_status_distribution[:clean][:count]
+    else
+      @positive_locations  = 0
+      @potential_locations = 0
+      @negative_locations  = 0
+      @clean_locations     = 0
+    end
+
 
 
     # Calculate total metrics before we start filtering.
