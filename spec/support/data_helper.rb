@@ -3,6 +3,8 @@
 #------------------------------------------------------------------------------
 
 def populate_data
+  locations = ["San Francisco", "Managua", "Ocachicualli"]
+
   mare = Neighborhood.find_by_name('Maré')
 
   10.times do |index|
@@ -76,6 +78,36 @@ def populate_data
     report = u.build_report_via_sms({ :body => "SMS report" })
     report.save!
   end
+
+  users = User.all
+  sites = BreedingSite.all
+  methods = EliminationMethod.all
+
+
+  reports_json = JSON.parse( JSON.load( File.open(Rails.root + "spec/support/reports.json").read ) )
+  reports_json.each do |r|
+
+    if Location.find_by_id(r["location_id"]).blank?
+      r["location_id"] = Location.create!(:address => locations.sample).id
+    end
+
+    site = sites.sample
+
+    r["neighborhood_id"] = mare.id
+    r["reporter_id"]     = users.sample.id
+    r["eliminator_id"]   = users.sample.id if r["eliminator_id"].present?
+    r["breeding_site_id"] = site.id
+    r["elimination_method_id"] = site.elimination_methods.sample.id if r["elimination_method_id"].present?
+    if r["elimination_method_id"].present?
+      r["eliminated_at"] = Time.now - (0..100).to_a.sample.days
+    end
+
+    report = Report.new(r)
+    report.created_at = Time.now - (0..100).to_a.sample.days
+    report.updated_at = report.created_at
+    report.save(:validate => false)
+  end
+
 
   # Populate news
   10.times do |index|

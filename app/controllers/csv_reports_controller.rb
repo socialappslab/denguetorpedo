@@ -11,12 +11,8 @@ class CsvReportsController < NeighborhoodsBaseController
   def index
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
 
-    @visits              = @csv_reports.map {|r| r.location}.compact.uniq
+    @visits              = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-    @positive_locations  = @visits.find_all {|l| l.status == Location::Status::POSITIVE}.count
-    @potential_locations = @visits.find_all {|l| l.status == Location::Status::POTENTIAL}.count
-    @negative_locations  = @visits.find_all {|l| l.status == Location::Status::NEGATIVE}.count
-    @clean_locations     = @visits.find_all {|l| l.status == Location::Status::CLEAN}.count
     @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
     @table_statistics = @statistics.last
     @chart_statistics = @statistics.map {|hash|
@@ -29,8 +25,23 @@ class CsvReportsController < NeighborhoodsBaseController
       ]
     }
 
+    @newest_status_distribution = @statistics.last
+    if @newest_status_distribution.present?
+      @positive_locations  = @newest_status_distribution[:positive][:count]
+      @potential_locations = @newest_status_distribution[:potential][:count]
+      @negative_locations  = @newest_status_distribution[:negative][:count]
+      @clean_locations     = @newest_status_distribution[:clean][:count]
+    else
+      @positive_locations  = 0
+      @potential_locations = 0
+      @negative_locations  = 0
+      @clean_locations     = 0
+    end
+    
 
-    @statistics = LocationStatus.calculate_percentages_for_locations(@visits)
+
+
+    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
   end
 
 
