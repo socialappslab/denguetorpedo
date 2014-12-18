@@ -10,7 +10,13 @@ namespace :csv_reports do
 
 
     CsvReport.find_each do |csv|
-      spreadsheet = load_spreadsheet( csv.csv )
+      begin
+        spreadsheet = load_spreadsheet( csv.csv )
+      rescue
+        puts "Couldn't open csv: #{csv.inspect}. \n\n\nSkipping...\n\n\n"
+        next
+      end
+
       start_index = 2
       while spreadsheet.row(start_index)[0].blank?
         start_index += 1
@@ -65,7 +71,7 @@ namespace :csv_reports do
         rescue
           puts "Failed to parse date = #{date}"
         end
-        
+
         puts "-" * 50
       end
     end
