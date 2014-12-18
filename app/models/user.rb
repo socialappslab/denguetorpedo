@@ -173,28 +173,6 @@ class User < ActiveRecord::Base
     UserMailer.password_reset(self).deliver
   end
 
-  def nearby_reports(n = 10)
-    if house.nil? or house.location.nil?
-      nil
-    else
-      lat = house.location.latitude
-      lon = house.location.longitude
-      dist_str = "((locations.latitude - #{lat}) * (locations.latitude - #{lat}) + (locations.longitude - #{lon}) * (locations.longitude - #{lon}))"
-      Report.joins(:location).order(dist_str).limit(n)
-    end
-  end
-
-  def neighbors(n = 10)
-    if house.nil? or house.location.nil?
-      nil
-    else
-      lat = house.location.latitude
-      lon = house.location.longitude
-      dist_str = "((locations.latitude - #{lat}) * (locations.latitude - #{lat}) + (locations.longitude - #{lon}) * (locations.longitude - #{lon}))"
-      User.order(dist_str).limit(n)
-    end
-  end
-
   #----------------------------------------------------------------------------
   # In order to generate a coupon for a prize, the following must happen:
   # a) Prize stock must decrease by 1, and
