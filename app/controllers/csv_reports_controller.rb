@@ -234,11 +234,14 @@ class CsvReportsController < NeighborhoodsBaseController
         # Also, note that we *must* set updated_at to same as created_at in order
         # for the set_location_status method to correctly update the LocationStatus
         # instance to the right date (which is the date of house inspection).
-        begin
-          r.created_at = DateTime.parse( report[:inspection_date] )
-          r.updated_at = DateTime.parse( report[:inspection_date] )
-        rescue
-        end
+        # TODO: We shouldn't activate this until the users are ready to accept
+        # the fact that some reports will be eliminated expired with no possibility
+        # of elimination...
+        # begin
+        #   r.created_at = DateTime.parse( report[:inspection_date] )
+        #   r.updated_at = DateTime.parse( report[:inspection_date] )
+        # rescue
+        # end
 
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
       end
