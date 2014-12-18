@@ -36,7 +36,7 @@ RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
 
   config.before(:each, :after_commit => true) do
-    DatabaseCleaner.strategy = :truncation, { :except => %w[breeding_sites elimination_methods neighborhoods] }
+    DatabaseCleaner.strategy = :truncation, { :except => %w[breeding_sites countries cities elimination_methods neighborhoods] }
   end
 
   config.before(:suite) do

@@ -115,17 +115,16 @@
       = I18n.t("views.users.edit.phone.postpaid")
 
 
-  - if @user == @current_user
-    %hr{:style => "border-color: #ff6600; border-bottom: none;"}
+  %hr{:style => "border-color: #ff6600; border-bottom: none;"}
 
-    .form-group
-      = f.label nil, :class => "control-label col-md-6", :style => "position: relative; font-size: 12px;" do
-        = I18n.t("views.users.edit.referral_question")
-        %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
-          *
-      .col-md-6
-        - user_recruiter = ( @user.recruiter.present? ? [ @user.recruiter.full_name, @user.recruiter.id ] : nil )
-        = select_tag :recruiter_id, options_for_select(User.all.map {|u| [u.full_name, u.id]}, user_recruiter ), :prompt => I18n.t("common_terms.no_one")
+  .form-group
+    = f.label nil, :class => "control-label col-md-6", :style => "position: relative; font-size: 12px;" do
+      = I18n.t("views.users.edit.referral_question")
+      %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+        *
+    .col-md-6
+      - user_recruiter = ( @user.recruiter.present? ? [ @user.recruiter.full_name, @user.recruiter.id ] : nil )
+      = select_tag :recruiter_id, options_for_select(User.all.map {|u| [u.full_name, u.id]}, user_recruiter ), :prompt => I18n.t("common_terms.no_one")
 
 
   = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do

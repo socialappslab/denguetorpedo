@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
     REPORT_VERIFIED  = 50
     REPORT_SUBMITTED = 50
     POST_CREATED     = 5
+    REFERRAL         = 50
 
     # Points for certain badges
     WATCHER      = 50
@@ -125,6 +126,11 @@ class User < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
+
+  def award_points_for_referring
+    points = self.total_points || 0
+    self.update_column(:total_points, points + Points::REFERRAL)
+  end
 
   def award_points_for_posting
     points = self.total_points || 0
