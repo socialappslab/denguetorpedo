@@ -25,7 +25,7 @@ class HomeController < ApplicationController
     @notices  = @neighborhood.notices.order("date DESC").limit(6)
 
     # Display teams.
-    @teams = @neighborhood.teams
+    @teams = @neighborhood.teams.includes(:users)
     @teams = @teams.find_all {|t| t.users.count > 0}
     @teams = @teams.shuffle[0..6]
 
