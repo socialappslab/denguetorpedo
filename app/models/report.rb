@@ -297,8 +297,6 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  private
-
   # Adds a calculated location status to location_statuses table based on the following:
   # * If at least one report is positive, then the location is positive,
   # * If no reports are positive, but at least one report is potential, then the

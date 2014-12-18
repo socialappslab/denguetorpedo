@@ -65,6 +65,8 @@ communities.each do |c_hash|
   if n.nil?
     n                   = Neighborhood.new
     n.name              = c_hash[:name]
+    n.latitude          = c_hash[:lat]
+    n.longitude         = c_hash[:long]
     n.city_id           = City.find_by_name( c_hash[:city_name] ).id
     n.save!
   end
