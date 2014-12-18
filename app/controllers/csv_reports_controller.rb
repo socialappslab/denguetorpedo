@@ -37,7 +37,7 @@ class CsvReportsController < NeighborhoodsBaseController
       @negative_locations  = 0
       @clean_locations     = 0
     end
-    
+
 
 
 
@@ -181,7 +181,9 @@ class CsvReportsController < NeighborhoodsBaseController
       uuid = uuid.strip.downcase.underscore
 
       if type && type.strip.downcase != "v"
-        reports << {:breeding_site => breeding_site,
+        reports << {
+          :inspection_date => date,
+          :breeding_site => breeding_site,
           :description => description,
           :protected => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
           :csv_uuid => uuid}
@@ -226,6 +228,18 @@ class CsvReportsController < NeighborhoodsBaseController
 
       if r.blank?
         r = Report.new
+
+        # Note: We're overriding the created_at and updated_at dates in order
+        # to more closely reflect the correct site identification time.
+        # Also, note that we *must* set updated_at to same as created_at in order
+        # for the set_location_status method to correctly update the LocationStatus
+        # instance to the right date (which is the date of house inspection).
+        begin
+          r.created_at = DateTime.parse( report[:inspection_date] )
+          r.updated_at = DateTime.parse( report[:inspection_date] )
+        rescue
+        end
+
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
       end
 
