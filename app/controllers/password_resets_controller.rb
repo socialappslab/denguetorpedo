@@ -16,7 +16,7 @@ class PasswordResetsController < ApplicationController
 
     if @user
       @user.send_password_reset
-      redirect_to root_url, :alert => I18n.t("views.password_resets.create.reset_email_sent")
+      redirect_to root_url, :notice => I18n.t("views.password_resets.create.reset_email_sent")
     else
       flash[:alert] = I18n.t("views.application.email_invalid")
       redirect_to new_password_reset_path

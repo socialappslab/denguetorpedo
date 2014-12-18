@@ -1,23 +1,26 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-.col-md-offset-5.col-md-8.well
-  %h1{:style => "text-align: center; margin-bottom: 20px;"}
-    = I18n.t("views.users.edit.password")
+.row
+  .col-md-4.col-md-offset-4.well
+    %h1{:style => "text-align: center; margin-bottom: 20px;"}
+      = I18n.t("views.users.edit.password")
 
-  = form_for @user, :url => password_reset_path(params[:id]), :html => { :class => "form-horizontal" } do |f|
+    = form_for @user, :url => password_reset_path(params[:id]), :html => { :class => "form-horizontal" } do |f|
 
-    .control-group
-      = f.label :password, :class => "control-label", :style => "font-size: 12px;" do
-        = I18n.t("views.password_resets.edit.password")
-      .controls
-        = f.password_field :password
+      .form-group
+        = f.label :password, :class => "control-label col-md-4" do
+          = I18n.t("views.password_resets.edit.password")
+        .col-md-4
+          = f.password_field :password, :class => "form-control"
 
-    .control-group
-      = f.label :password_confirmation, :class => "control-label", :style => "font-size: 12px;"
-      .controls
-        = f.password_field :password_confirmation
+      .form-group
+        = f.label :password_confirmation, :class => "control-label col-md-4"
+        .col-md-4
+          = f.password_field :password_confirmation, :class => "form-control"
 
-    .control-group
-      .controls
-        = render :partial => "shared/submit_button"
+      .form-group
+        .col-md-4.col-md-offset-4
+          = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button form-control" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.submit")
