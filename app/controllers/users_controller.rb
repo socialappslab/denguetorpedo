@@ -121,14 +121,9 @@ class UsersController < ApplicationController
   # PUT /users/1
 
   def update
-    # NOTE: These horrendous actions are a result of trying to save form information,
-    # even when later information may not be correct.
-    @user.update_attribute(:gender, params[:user][:gender])
-    @user.update_attribute(:neighborhood_id, params[:user][:neighborhood_id])
-    @user.update_attribute(:first_name, params[:user][:first_name])
-    @user.update_attribute(:last_name, params[:user][:last_name])
-    @user.update_attribute(:nickname, params[:user][:nickname])
-    @user.update_column(:locale, params[:user][:locale].to_s)
+    if params[:user][:password].blank?
+      params[:user].except!(:password, :password_confirmation)
+    end
 
     base64_image = params[:user][:compressed_photo]
     if base64_image.present?
@@ -137,30 +132,17 @@ class UsersController < ApplicationController
       @user.profile_photo = paperclip_image
     end
 
-    @user.update_attributes(params[:user].slice(:phone_number, :carrier, :prepaid)) if params[:cellphone] == "false"
-
-    # TODO: Clean up and clarify the intent of this line.
-    user_params = params[:user].slice(:profile_photo, :gender, :username, :email, :first_name, :last_name, :nickname, :neighborhood_id, :phone_number, :cellphone, :carrier, :prepaid)
-
-    if @user.update_attributes(user_params)
-      # Identify the recruiter for this user.
-      recruiter = User.find_by_id( params[:recruiter_id] )
-      if recruiter
+    if @user.update_attributes(params[:user])
+      if recruiter = User.find_by_id( params[:recruiter_id] ) && @user.is_fully_registered != true
         @user.recruiter = recruiter
-
-        # Only add points to the recruiter if the user isn't fully registered.
-        recruiter.total_points += 50 if @user.is_fully_registered == false
-
-
         recruiter.save
       end
 
-      @user.update_attribute(:is_fully_registered, true)
+      @user.update_column(:is_fully_registered, true) unless @user.is_fully_registered == true
+      redirect_to edit_user_path(@user), :flash => { :notice => I18n.t("views.users.edit.success_flash") }
     else
       render "edit" and return
     end
-
-    redirect_to edit_user_path(@user), :flash => { :notice => I18n.t("views.users.edit.success_flash") }
   end
 
 
