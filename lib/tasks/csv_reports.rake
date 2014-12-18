@@ -49,16 +49,23 @@ namespace :csv_reports do
         r = Report.find_by_csv_uuid(uuid)
         next if r.blank?
 
-        puts "Looking at report with id = #{r.id}"
-        puts "date: #{date} | parsed: #{DateTime.parse(date)}"
-        puts "\n\n\n"
+        begin
+          puts "Looking at report with id = #{r.id}"
+          puts "date: #{date} | parsed: #{DateTime.parse(date)}"
+          puts "\n\n\n"
 
-        # NOTE: We do NOT want to trigger set_location_status callback since
-        # it depends on the self.updated_at column of the report. Instead,
-        # we will use update_column (which doesn't update updated_at) and
-        # then call set_location_status.
-        r.update_column(:created_at, DateTime.parse(date))
-        r.set_location_status
+          # NOTE: We want the location status of the report to trigger *on the
+          # inspection date*. In order to accomplish this, we will overwrite
+          # the updated_at column of the report. This will either create a
+          # new location status or update an existing one with the new status.
+          # Consequently, this will alter *past* location statuses.
+          r.created_at = DateTime.parse(date)
+          r.updated_at = DateTime.parse(date)
+          r.save(:validate => false)
+        rescue
+          puts "Failed to parse date = #{date}"
+        end
+        
         puts "-" * 50
       end
     end
