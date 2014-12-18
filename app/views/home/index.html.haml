@@ -8,17 +8,21 @@
 
 .container-silver{:style => "height: 300px;"}
   .row{:style => "margin-top: 30px;"}
-    .col-md-3.col-md-offset-2{:style => "text-align: center;"}
+    .col-md-3.col-md-offset-1{:style => "text-align: center;"}
       %i.fa.fa-comments{:style => "font-size: 84px;"}
 
       %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
         = I18n.t("views.home.chat_description")
-    .col-md-3.col-md-offset-2{:style => "text-align: center;"}
+
+    .col-md-4{:style => "text-align: center; margin-top: 50px;"}
+      = link_to I18n.t("common_terms.register"), new_user_path, :class => "btn btn-success btn-xlg"
+
+
+    .col-md-3{:style => "text-align: center;"}
       %i.fa.fa-futbol-o{:style => "font-size: 84px;"}
 
       %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
         = I18n.t("views.home.teams_description")
-
 
 
 /------------------------------------------------------------------------------
@@ -56,11 +60,8 @@
 
 
 
-
-
-
-
 /------------------------------------------------------------------------------
+
 
 :javascript
   $(document).ready(function()
