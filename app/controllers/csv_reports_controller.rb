@@ -187,7 +187,7 @@ class CsvReportsController < NeighborhoodsBaseController
           :breeding_site    => breeding_site,
           :description      => description,
           :protected        => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
-          :clean            => (type == "n")
+          :clean            => (type == "n"),
           :csv_uuid         => uuid}
       end
 
