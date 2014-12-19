@@ -59,6 +59,9 @@ class Report < ActiveRecord::Base
   belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :csv_report
 
+  # We're going to use prepared_at until we can deprecate completed_at
+  alias_attribute :prepared_at, :completed_at
+
 
   #----------------------------------------------------------------------------
   # Validations
@@ -126,13 +129,13 @@ class Report < ActiveRecord::Base
 
   # TODO: Deprecate this in favor for incomplete?
   def sms_incomplete?
-    return (self.sms && self.completed_at == nil)
+    return (self.sms && self.prepared_at == nil)
   end
 
   # We define an incomplete report to be a report that was created from
   # an SMS OR a CSV report.
   def incomplete?
-    if self.completed_at == nil
+    if self.prepared_at == nil
       return true if self.csv_report_id.present?
       return true if self.sms.present?
     end

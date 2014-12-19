@@ -1,4 +1,4 @@
-= form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
+= form_for([@neighborhood, report], :url => eliminate_neighborhood_report_path(@neighborhood, report), :html => {:autocomplete => "off", :multipart => true}) do |f|
   .form-group
     %h1{:style => "margin-top: 15px;"}
       = I18n.t("activerecord.models.elimination_method")
