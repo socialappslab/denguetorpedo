@@ -1,4 +1,4 @@
-= form_for([@neighborhood, report], :html => {:autocomplete => "off", :multipart => true}) do |f|
+= form_for([@neighborhood, report], :url => eliminate_neighborhood_report_path(@neighborhood, report), :html => {:autocomplete => "off", :multipart => true}) do |f|
   .form-group
     %h1{:style => "margin-top: 15px;"}
       = I18n.t("activerecord.models.elimination_method")
@@ -20,6 +20,16 @@
     %img.preview{:style => "display: block;"}
     %canvas{:style => "display: none;"}
     = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
+
+
+  .form-group
+    %h1{:style => "margin-top: 15px;"}
+      = I18n.t("activerecord.attributes.report.eliminated_at")
+    .datetimepicker.input-group
+      = f.text_field :eliminated_at, {:value => format_as_date(Time.now), :class=>"elimination_methods form-control", :data => {"date-format" => "YYYY-MM-DD"} }
+      %span.input-group-addon
+        %i.fa.fa-calendar
+
 
 
   .form-group

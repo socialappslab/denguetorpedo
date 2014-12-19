@@ -87,6 +87,10 @@ window.maps.updateHTMLFormAddressFromPosition = function(pos) {
 window.maps.initializeGoogleMaps = function(){
   var mapOptions = {
     zoom: REGION_ZOOM,
+    zoomControl: false,
+    streetViewControl: false,
+    scrollwheel: false,
+    disableDoubleClickZoom: true,
     center: new google.maps.LatLng(communityLatitude, communityLongitude)
     };
   // Initialize the map, and add the geographical layer to it.

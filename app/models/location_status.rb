@@ -8,6 +8,9 @@
 class LocationStatus < ActiveRecord::Base
   attr_accessible :location_id, :status
 
+  validates :location_id, :presence => true
+  validates :status, :presence => true
+
   # The status of a location defines whether it's positive, potential, negative
   # or clean. The first three are defined by the associated reports at that
   # location, and the last one is separately set in the database. See the
@@ -74,7 +77,7 @@ class LocationStatus < ActiveRecord::Base
       negative_count  = memoized_locations.find_all {|loc_id, status| status == Types::NEGATIVE}.count
       clean_count     = memoized_locations.find_all {|loc_id, status| status == Types::CLEAN}.count
       total_count     = positive_count + potential_count + negative_count + clean_count
-      
+
       pos_percent   = total_count == 0 ? 0 : (positive_count).to_f  / total_count
       pot_percent   = total_count == 0 ? 0 : (potential_count).to_f / total_count
       neg_percent   = total_count == 0 ? 0 : (negative_count).to_f  / total_count
@@ -92,6 +95,53 @@ class LocationStatus < ActiveRecord::Base
     end
 
     return daily_stats
+  end
+
+  #-----
+
+  # Adds a calculated location status to location_statuses table based on the following:
+  # * If at least one report is positive, then the location is positive,
+  # * If no reports are positive, but at least one report is potential, then the
+  #   location is potential,
+  # * If there are no reports that are positive, or potential, then they are negative
+  # * If a location has been negative for 14 days, then it's classified as green.
+  # TODO: We can do some optimizations here by comparing current LocationStatus
+  # status with the report status...
+  # NOTE: We use time input to choose where to calculate the 4 week cutoff for
+  # green house.
+  def self.calculate_status_using_report_and_times(report, start_time, end_time)
+
+    if report.status == Report::Status::POSITIVE
+      return LocationStatus::Types::POSITIVE
+    else
+      reports = report.location.reports
+      count   = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
+      return LocationStatus::Types::POSITIVE if count > 0
+
+      count = reports.find_all {|r| r.status == Report::Status::POTENTIAL}.count
+      return LocationStatus::Types::POTENTIAL if count > 0
+
+      # At this point, let's see if this location has been negative for 4 weeks.
+      history = LocationStatus.where(:location_id => report.location_id)
+      history = history.order("created_at ASC")
+      history = history.where(:created_at => (start_time..end_time))
+
+      # Ensure that the first record is in fact 4 weeks ago (at least)
+      if history.first && (history.first.created_at <= start_time)
+
+        # We now have a 4 week history. If there is at least one potential, or
+        # positive, then this is NOT a clean site (but is negative).
+        history = history.pluck(:status)
+        if history.include?(LocationStatus::Types::POTENTIAL) || history.include?(LocationStatus::Types::POSITIVE)
+          return LocationStatus::Types::NEGATIVE
+        else
+          return LocationStatus::Types::CLEAN
+        end
+      else
+        return LocationStatus::Types::NEGATIVE
+      end
+
+    end
   end
 
 end

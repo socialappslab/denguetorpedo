@@ -37,7 +37,7 @@ class CsvReportsController < NeighborhoodsBaseController
       @negative_locations  = 0
       @clean_locations     = 0
     end
-    
+
 
 
 
@@ -89,19 +89,23 @@ class CsvReportsController < NeighborhoodsBaseController
     address = address.to_s
 
 
-    start_index = 2
-    while spreadsheet.row(start_index)[0].blank?
+    # The start index is essentially the number of rows that are occupied by
+    # location metadata (including address, permission to record, etc)
+    start_index = 4
+    while spreadsheet.row(start_index)[0].to_s.downcase.exclude?("fecha de visita")
       start_index += 1
     end
     header  = spreadsheet.row(start_index)
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
 
+    # NOTE: We assume the location is not negative unless otherwise noted, and
+    # there is no last inspection date to correspond with the clean location.
+    is_location_clean    = false
+    last_inspection_date = nil
     reports        = []
     parsed_content = []
 
-    # NOTE: We assume the location is not clean unless otherwise noted.
-    is_location_clean = false
 
     # 4. Parse the CSV.
     # The CSV is laid out to define the house number (or address)
@@ -138,12 +142,13 @@ class CsvReportsController < NeighborhoodsBaseController
       comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
 
 
+
       # 4b. Attempt to identify the breeding sites from the codes. If no type
       # is identified, then simply skip the whole row.
       next if type.blank?
 
       type = type.strip.downcase
-      if ["a", "b", "l", "m", "p", "t", "x", "v"].include?( type )
+      if ["a", "b", "l", "m", "p", "t", "x", "n"].include?( type )
         if type == "a"
           breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
         elsif type == "b"
@@ -163,10 +168,9 @@ class CsvReportsController < NeighborhoodsBaseController
       end
 
       # 4c. Define the description based on the collected attributes.
-      description  = "Fecha de visita: #{date}"
-      description += ", Localización: #{room} (#{address})" if room.present?
+      description = ""
+      description += "Localización: #{room}" if room.present?
       description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
-      description += ", Eliminado: #{elim_date}" if elim_date.present?
       description += ", Comentarios sobre tipo y/o eliminación: #{comments}" if comments.present?
 
       # 4d. Generate a UUID to identify the row that the report will correspond
@@ -180,15 +184,25 @@ class CsvReportsController < NeighborhoodsBaseController
       uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_chemical.to_s)
       uuid = uuid.strip.downcase.underscore
 
-      if type && type.strip.downcase != "v"
-        reports << {:breeding_site => breeding_site,
-          :description => description,
-          :protected => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
-          :csv_uuid => uuid}
+      if type && type != "n"
+        reports << {
+          :inspection_date  => date,
+          :elimination_date => elim_date,
+          :breeding_site    => breeding_site,
+          :description      => description,
+          :protected        => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
+          :csv_uuid         => uuid
+        }
       end
 
       # If the last type is v, then the location is clean (for now).
-      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "v"
+      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
+        begin
+          last_inspection_date = DateTime.parse( date )
+        rescue
+          last_inspection_date = Time.now
+        end
+
         is_location_clean = true
       end
     end
@@ -204,7 +218,25 @@ class CsvReportsController < NeighborhoodsBaseController
     if location.blank?
       location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
-    location.update_column(:cleaned, is_location_clean)
+
+    # Now that we have a location, let's update the LocationStatus *only*
+    # if the location is clean. The status will be NEGATIVE. Note that if the
+    # reports that will be reported after this have any positive status, then
+    # the location will be treated updated accordingly.
+    if is_location_clean == true
+      ls = LocationStatus.where(:location_id => location.id)
+      ls = ls.where(:created_at => (last_inspection_date.beginning_of_day..last_inspection_date.end_of_day) )
+      if ls.blank?
+        ls            = LocationStatus.new(:location_id => location.id)
+        ls.created_at = last_inspection_date
+      else
+        ls = ls.first
+      end
+
+      ls.status = LocationStatus::Types::NEGATIVE
+      ls.save
+    end
+
 
     # 7. Create or update the CSV file.
     # TODO: For now, we simply create a new CSV file everytime it's uploaded.
@@ -226,7 +258,26 @@ class CsvReportsController < NeighborhoodsBaseController
 
       if r.blank?
         r = Report.new
+
+        # Note: We're overriding the created_at and updated_at dates in order
+        # to more closely reflect the correct site identification time.
+        # Also, note that we *must* set updated_at to same as created_at in order
+        # for the set_location_status method to correctly update the LocationStatus
+        # instance to the right date (which is the date of house inspection).
+        begin
+          r.created_at = DateTime.parse( report[:inspection_date] )
+          r.updated_at = DateTime.parse( report[:inspection_date] )
+        rescue
+        end
+
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
+      end
+
+      # Note: We're overriding the eliminated_at column in order to allow
+      # Nicaraguan community members to have more control over their reports.
+      begin
+        r.eliminated_at = DateTime.parse( report[:elimination_date] )
+      rescue
       end
 
       r.report             = report[:description]

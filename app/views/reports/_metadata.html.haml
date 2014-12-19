@@ -42,15 +42,7 @@
             = I18n.t("common_terms.open_for")
           .countdown.countdownHolder.timer{:style => "display: inline-block;", :data => {:report => report.to_json(:only => [], :methods => [:expire_date])} }
 
-.row
-  .col-md-12
-    .row.report-metadata
-      .col-md-6.col-md-offset-6
-        .pull-right
-          - if report.location && report.location.latitude.present? && report.location.longitude.present?
-            = link_to nil, class: "mapa", data: {location: report.location.to_json(:only => [:latitude, :longitude]) } do
-              %i.fa.fa-map-marker
-              = I18n.t("map.find")
+
 
 
 

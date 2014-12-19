@@ -94,6 +94,8 @@ Dengue::Application.routes.draw do
       end
 
       member do
+        put  "eliminate"
+        put  "prepare"
         post 'like'
         post "comment"
         post 'creditar'

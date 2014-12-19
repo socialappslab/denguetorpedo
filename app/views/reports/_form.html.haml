@@ -1,6 +1,22 @@
-= form_for [@neighborhood, @report], :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+- if @report.new_record?
+  - update_url = neighborhood_reports_path(@neighborhood)
+- else
+  - update_url = @report.completed_at.present? ? eliminate_neighborhood_report_path(@neighborhood, @report) : prepare_neighborhood_report_path(@neighborhood, @report)
+
+= form_for [@neighborhood, @report], :url => update_url, :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
   - if @report.reporter_id.blank?
     = f.hidden_field :reporter_id, :value => @current_user && @current_user.id
+
+  - if @report.protected == true
+    .form-group
+      %p{:style => "font-size: 14px; color: black;"}
+        NOTE: Since this report was marked as protected it will not appear in the reports feed.
+
+  - unless @report.new_record?
+    .form-group
+      = f.label :created_at
+      = f.text_field :created_at, {:value => format_as_date(@report.created_at), :class => "form-control", :disabled => true}
+
 
   .form-group
     - if @report.new_record?
@@ -82,10 +98,16 @@
       = f.label :eliminated_method_id, "6. " + I18n.t("activerecord.models.elimination_method")
       = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, @report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods form-control"}
 
+    .form-group
+      = f.label :eliminated_at
+      .datetimepicker.input-group
+        = f.text_field :eliminated_at, {:value => format_as_date(@report.eliminated_at || Time.now), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD"} }
+        %span.input-group-addon
+          %i.fa.fa-calendar
+
 
 
   .form-group
-
     = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
       %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
       = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")
@@ -95,3 +117,6 @@
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
   = javascript_include_tag "image-compression"
+  = javascript_include_tag "moment"
+  = javascript_include_tag "bootstrap/datetimepicker"
+  = javascript_include_tag "datepicker"

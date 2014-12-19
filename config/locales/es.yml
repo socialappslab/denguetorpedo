@@ -11,7 +11,7 @@ es:
     content: Contenido
     profile_photo: "Foto del perfil"
     photo: "Foto"
-    created_at: Fecha de registro
+    created_at: Fecha de inspección
     points: Puntos
     body: Conteúdo
     breeding_site_id: Tipo de criadero
@@ -73,6 +73,7 @@ es:
         before_photo: Foto del criadero
         elimination_type: Tipo de criadero
         breeding_site_id: Tipo de criadero
+        eliminated_at: Fecha de eliminación
         report: Descripción
         after_photo: Foto del criadero
         elimination_method_id: Método de eliminación
@@ -512,7 +513,7 @@ es:
         create: "Los nuevos criaderos han sido documentados"
         missing_location: "¡Usted tiene que marcar el lugar en el mapa!"
         unknown_format: "Usted tiene que subir un archivo con extensión .csv, .xls, o .xlsx"
-        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, u X para identificar criaderos como en la forma CSV modelo"
+        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, X u N para identificar criaderos como en la forma CSV modelo"
         missing_visits: Usted tiene que tener al menos un creadero por lugar
         missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
     faq:
