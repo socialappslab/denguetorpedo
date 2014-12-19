@@ -92,20 +92,20 @@ class CsvReportsController < NeighborhoodsBaseController
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
     start_index = 4
-    while spreadsheet.row(start_index)[0].blank?
+    while spreadsheet.row(start_index)[0].to_s.downcase.exclude?("fecha de visita")
       start_index += 1
     end
     header  = spreadsheet.row(start_index)
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
 
-    reports        = []
-    parsed_content = []
-
     # NOTE: We assume the location is not negative unless otherwise noted, and
     # there is no last inspection date to correspond with the clean location.
     is_location_clean    = false
     last_inspection_date = nil
+    reports        = []
+    parsed_content = []
+
 
     # 4. Parse the CSV.
     # The CSV is laid out to define the house number (or address)
@@ -126,7 +126,6 @@ class CsvReportsController < NeighborhoodsBaseController
     current_row = 0
     (start_index + 1..spreadsheet.last_row).each do |i|
       row            = Hash[[header, spreadsheet.row(i)].transpose]
-      puts "row: #{row}"
       parsed_content << row
       current_row   += 1
 
