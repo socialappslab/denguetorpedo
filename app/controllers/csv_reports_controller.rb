@@ -79,6 +79,15 @@ class CsvReportsController < NeighborhoodsBaseController
       render "new" and return
     end
 
+
+    # NOTE: We assume the location is not negative unless otherwise noted, and
+    # there is no last inspection date to correspond with the clean location.
+    is_location_clean    = false
+    last_inspection_date = nil
+    reports        = []
+    parsed_content = []
+
+
     # 3. Identify the start of the reports table in the CSV file.
     # The first row is reserved for the house location/address.
     address = spreadsheet.row(1)[1]
@@ -88,6 +97,24 @@ class CsvReportsController < NeighborhoodsBaseController
     end
     address = address.to_s
 
+    # TODO: This is actually incorrect to think of has dengue and or chik based
+    # on location without a timestamp. The correct way would be to update the
+    # particular visit date (the row).
+    # 3b. Identify if this location has auto reported cases of dengue and/or
+    # chikungunya.
+    # has_dengue = spreadsheet.row(3)[1].to_s
+    # if has_dengue && has_dengue.strip == "1"
+    #   has_dengue = true
+    # else
+    #   has_dengue = false
+    # end
+    #
+    # has_chik = spreadsheet.row(4)[1].to_s
+    # if has_chik && has_chik.strip == "1"
+    #   has_chik == true
+    # else
+    #   has_chik = false
+    # end
 
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
@@ -98,13 +125,6 @@ class CsvReportsController < NeighborhoodsBaseController
     header  = spreadsheet.row(start_index)
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
-
-    # NOTE: We assume the location is not negative unless otherwise noted, and
-    # there is no last inspection date to correspond with the clean location.
-    is_location_clean    = false
-    last_inspection_date = nil
-    reports        = []
-    parsed_content = []
 
 
     # 4. Parse the CSV.
