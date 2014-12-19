@@ -138,6 +138,7 @@ class CsvReportsController < NeighborhoodsBaseController
       comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
 
 
+
       # 4b. Attempt to identify the breeding sites from the codes. If no type
       # is identified, then simply skip the whole row.
       next if type.blank?
@@ -182,7 +183,8 @@ class CsvReportsController < NeighborhoodsBaseController
 
       if type && type.strip.downcase != "v"
         reports << {
-          :inspection_date => date,
+          :inspection_date  => date,
+          :elimination_date => elim_date,
           :breeding_site => breeding_site,
           :description => description,
           :protected => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
@@ -234,16 +236,20 @@ class CsvReportsController < NeighborhoodsBaseController
         # Also, note that we *must* set updated_at to same as created_at in order
         # for the set_location_status method to correctly update the LocationStatus
         # instance to the right date (which is the date of house inspection).
-        # TODO: We shouldn't activate this until the users are ready to accept
-        # the fact that some reports will be eliminated expired with no possibility
-        # of elimination...
-        # begin
-        #   r.created_at = DateTime.parse( report[:inspection_date] )
-        #   r.updated_at = DateTime.parse( report[:inspection_date] )
-        # rescue
-        # end
+        begin
+          r.created_at = DateTime.parse( report[:inspection_date] )
+          r.updated_at = DateTime.parse( report[:inspection_date] )
+        rescue
+        end
 
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
+      end
+
+      # Note: We're overriding the eliminated_at column in order to allow
+      # Nicaraguan community members to have more control over their reports.
+      begin
+        r.eliminated_at = DateTime.parse( report[:elimination_date] )
+      rescue
       end
 
       r.report             = report[:description]
