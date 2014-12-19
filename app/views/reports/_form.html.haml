@@ -1,4 +1,7 @@
-- update_url = @report.completed_at.present? ? eliminate_neighborhood_report_path(@neighborhood, @report) : prepare_neighborhood_report_path(@neighborhood, @report)
+- if @report.new_record?
+  - update_url = neighborhood_reports_path(@neighborhood)
+- else
+  - update_url = @report.completed_at.present? ? eliminate_neighborhood_report_path(@neighborhood, @report) : prepare_neighborhood_report_path(@neighborhood, @report)
 
 = form_for [@neighborhood, @report], :url => update_url, :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
   - if @report.reporter_id.blank?
