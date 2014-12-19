@@ -12,9 +12,10 @@
       %p{:style => "font-size: 14px; color: black;"}
         NOTE: Since this report was marked as protected it will not appear in the reports feed.
 
-  .form-group
-    = f.label :created_at
-    = f.text_field :created_at, {:value => format_as_date(@report.created_at), :class => "form-control", :disabled => true}
+  - unless @report.new_record?
+    .form-group
+      = f.label :created_at
+      = f.text_field :created_at, {:value => format_as_date(@report.created_at), :class => "form-control", :disabled => true}
 
 
   .form-group
