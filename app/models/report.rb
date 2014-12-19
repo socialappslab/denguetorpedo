@@ -115,7 +115,7 @@ class Report < ActiveRecord::Base
     return Status::NEGATIVE if self.eliminated?
 
     return Report::Status::POSITIVE if (self.larvae || self.pupae)
-    return Report::Status::NEGATIVE if (self.protected || self.clean)
+    return Report::Status::NEGATIVE if (self.protected)
     return Report::Status::POTENTIAL
   end
 

@@ -89,7 +89,9 @@ class CsvReportsController < NeighborhoodsBaseController
     address = address.to_s
 
 
-    start_index = 2
+    # The start index is essentially the number of rows that are occupied by
+    # location metadata (including address, permission to record, etc)
+    start_index = 4
     while spreadsheet.row(start_index)[0].blank?
       start_index += 1
     end
@@ -100,8 +102,10 @@ class CsvReportsController < NeighborhoodsBaseController
     reports        = []
     parsed_content = []
 
-    # NOTE: We assume the location is not clean unless otherwise noted.
-    is_location_clean = false
+    # NOTE: We assume the location is not negative unless otherwise noted, and
+    # there is no last inspection date to correspond with the clean location.
+    is_location_clean    = false
+    last_inspection_date = nil
 
     # 4. Parse the CSV.
     # The CSV is laid out to define the house number (or address)
@@ -122,6 +126,7 @@ class CsvReportsController < NeighborhoodsBaseController
     current_row = 0
     (start_index + 1..spreadsheet.last_row).each do |i|
       row            = Hash[[header, spreadsheet.row(i)].transpose]
+      puts "row: #{row}"
       parsed_content << row
       current_row   += 1
 
@@ -180,19 +185,25 @@ class CsvReportsController < NeighborhoodsBaseController
       uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_chemical.to_s)
       uuid = uuid.strip.downcase.underscore
 
-      if type
+      if type && type != "n"
         reports << {
           :inspection_date  => date,
           :elimination_date => elim_date,
           :breeding_site    => breeding_site,
           :description      => description,
           :protected        => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
-          :clean            => (type == "n"),
-          :csv_uuid         => uuid}
+          :csv_uuid         => uuid
+        }
       end
 
       # If the last type is v, then the location is clean (for now).
-      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "v"
+      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
+        begin
+          last_inspection_date = DateTime.parse( date )
+        rescue
+          last_inspection_date = Time.now
+        end
+
         is_location_clean = true
       end
     end
@@ -208,7 +219,25 @@ class CsvReportsController < NeighborhoodsBaseController
     if location.blank?
       location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
-    location.update_column(:cleaned, is_location_clean)
+
+    # Now that we have a location, let's update the LocationStatus *only*
+    # if the location is clean. The status will be NEGATIVE. Note that if the
+    # reports that will be reported after this have any positive status, then
+    # the location will be treated updated accordingly.
+    if is_location_clean == true
+      ls = LocationStatus.where(:location_id => location.id)
+      ls = ls.where(:created_at => (last_inspection_date.beginning_of_day..last_inspection_date.end_of_day) )
+      if ls.blank?
+        ls            = LocationStatus.new(:location_id => location.id)
+        ls.created_at = last_inspection_date
+      else
+        ls = ls.first
+      end
+
+      ls.status = LocationStatus::Types::NEGATIVE
+      ls.save
+    end
+
 
     # 7. Create or update the CSV file.
     # TODO: For now, we simply create a new CSV file everytime it's uploaded.
@@ -253,7 +282,6 @@ class CsvReportsController < NeighborhoodsBaseController
       end
 
       r.report             = report[:description]
-      r.clean              = report[:clean]
       r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
       r.protected          = report[:protected]
       r.chemically_treated = report[:chemically_treated]
