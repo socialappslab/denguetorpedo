@@ -104,7 +104,8 @@ class Report < ActiveRecord::Base
   # the location status. This is perfectly fine because a single report being
   # updated can't affect the aggregate location status metric. Furthermore, when
   # a report is eliminated, it is updated so update action must be accounted for.
-  after_commit :set_location_status
+  after_commit :set_location_status,    :on => :create
+  after_commit :update_location_status, :on => :update
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
@@ -297,64 +298,54 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # Adds a calculated location status to location_statuses table based on the following:
-  # * If at least one report is positive, then the location is positive,
-  # * If no reports are positive, but at least one report is potential, then the
-  #   location is potential,
-  # * If there are no reports that are positive, or potential, then they are negative
-  # * If a location has been negative for 14 days, then it's classified as green.
+  # This method is run when the report is created. The purpose is to
+  # use created_at (not completed_at since a CSV-generated report may not have
+  # that set, and we don't want to assume members will fill in DengueChat reports
+  # immediately after CSV) to associate with a particular LocationStatus.
   def set_location_status
     return if self.location_id.blank?
 
-    # Find today's location_status instance. If it doesn't exist, then
-    # create it.
     ls = LocationStatus.where(:location_id => self.location_id)
-    ls = ls.where(:created_at => (self.updated_at.beginning_of_day..self.updated_at.end_of_day))
+    ls = ls.where(:created_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
     if ls.blank?
-      ls = LocationStatus.new(:location_id => self.location_id)
+      ls            = LocationStatus.new(:location_id => self.location_id)
+      ls.created_at = self.created_at
     else
       ls = ls.first
     end
 
-    # TODO: We can do some optimizations here by comparing current LocationStatus
-    # status with the report status...
-    if self.status == Status::POSITIVE
-      ls.status = LocationStatus::Types::POSITIVE
-    else
-      reports         = self.location.reports
-      positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
-      potential_count = reports.find_all {|r| r.status == Report::Status::POTENTIAL}.count
-      negative_count  = reports.find_all {|r| r.status == Report::Status::NEGATIVE}.count
-
-
-      if positive_count > 0
-        ls.status = LocationStatus::Types::POSITIVE
-      elsif potential_count > 0
-        ls.status = LocationStatus::Types::POTENTIAL
-      else
-        # At this point, let's see if this location has been negative for 14 days.
-        start = (self.updated_at - 2.weeks).beginning_of_day
-        history = LocationStatus.where(:location_id => self.location_id)
-        history = history.order("created_at ASC")
-        history = history.where(:created_at => (start..self.updated_at.end_of_day))
-
-        # Ensure that the first record is in fact 2 weeks ago (at least)
-        if history.first.created_at <= start
-          history = history.pluck(:status)
-          if history.include?(LocationStatus::Types::POTENTIAL) || history.include?(LocationStatus::Types::POSITIVE)
-            ls.status = LocationStatus::Types::NEGATIVE
-          else
-            ls.status = LocationStatus::Types::CLEAN
-          end
-        else
-          ls.status = LocationStatus::Types::NEGATIVE
-        end
-
-      end
-    end
+    start_time = self.created_at - 4.weeks
+    end_time   = self.created_at
+    ls.status  = LocationStatus.calculate_status_using_report_and_times(self, start_time, end_time)
 
     ls.save
   end
+
+  #----------------------------------------------------------------------------
+
+
+  # This method is run when the report is *eliminated*. The purpose is to
+  # use eliminated_at to associate with a particular LocationStatus.
+  def update_location_status
+    return if self.location_id.blank?
+    return if self.eliminated_at.blank?
+
+    ls = LocationStatus.where(:location_id => self.location_id)
+    ls = ls.where(:created_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
+    if ls.blank?
+      ls            = LocationStatus.new(:location_id => self.location_id)
+      ls.created_at = self.eliminated_at
+    else
+      ls = ls.first
+    end
+
+    start_time = self.eliminated_at - 4.weeks
+    end_time   = self.eliminated_at
+    ls.status  = LocationStatus.calculate_status_using_report_and_times(self, start_time, end_time)
+
+    ls.save
+  end
+
 
   #----------------------------------------------------------------------------
 
