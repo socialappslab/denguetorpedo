@@ -197,11 +197,12 @@ class ReportsController < NeighborhoodsBaseController
     # which doesn't have an image.
     @report.before_photo    = data
     @report.neighborhood_id = @neighborhood.id
-    @report.completed_at    = Time.now
+
 
     # Verify report saves and form submission is valid
     if @report.update_attributes(params[:report])
-
+      @report.update_column(:completed_at, Time.now)
+      
       # Let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
 
@@ -216,7 +217,7 @@ class ReportsController < NeighborhoodsBaseController
         flash[:notice] = I18n.t("activerecord.success.report.create")
         redirect_to neighborhood_reports_path(@neighborhood) and return
       end
-      
+
     else
       flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
       redirect_to edit_neighborhood_report_path(@neighborhood) and return
