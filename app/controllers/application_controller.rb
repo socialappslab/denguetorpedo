@@ -9,7 +9,9 @@ class ApplicationController < ActionController::Base
   before_filter :identify_for_segmentio
   before_filter :get_locale_specific_url
 
-  before_filter :set_time_zone
+  # TODO: Work through this some other time. As of 2014-12-18, we should
+  # focus on other efforts.
+  # before_filter :set_time_zone
 
   #----------------------------------------------------------------------------
 
