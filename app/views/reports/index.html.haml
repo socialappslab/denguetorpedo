@@ -113,8 +113,12 @@
 
 - content_for :scripts do
   = javascript_include_tag "image-compression"
+  = javascript_include_tag "moment"
+  = javascript_include_tag "bootstrap/datetimepicker"
+  = javascript_include_tag "datepicker"
 
   :javascript
+
     (function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;

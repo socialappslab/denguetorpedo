@@ -130,6 +130,14 @@ class ReportsController < NeighborhoodsBaseController
 
   # This action is used exclusively for eliminating an existing report.
   def eliminate
+    # Let's try to parse the eliminated_at date. If that's not possible, then let's
+    # just set it to now.
+    begin
+      @report.update_column(:eliminated_at, DateTime.parse(  params[:report][:eliminated_at] ) )
+    rescue
+      @report.eliminated_at = Time.now
+    end
+
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
@@ -138,14 +146,11 @@ class ReportsController < NeighborhoodsBaseController
       filename  = @current_user.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
-
     @report.after_photo = data
 
-    if @report.update_attributes(params[:report])
-      # NOTE: We don't want to trigger callbacks after the above statement.
-      @report.update_column(:eliminated_at, Time.now)
-      @report.update_column(:eliminator_id, @current_user.id)
 
+    @report.eliminator_id = @current_user.id
+    if @report.update_attributes(params[:report])
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
       # Let's award the user for submitting a report.
@@ -202,7 +207,7 @@ class ReportsController < NeighborhoodsBaseController
     # Verify report saves and form submission is valid
     if @report.update_attributes(params[:report])
       @report.update_column(:completed_at, Time.now)
-      
+
       # Let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
 

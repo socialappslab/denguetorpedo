@@ -73,6 +73,7 @@ es:
         before_photo: Foto del criadero
         elimination_type: Tipo de criadero
         breeding_site_id: Tipo de criadero
+        eliminated_at: Fecha de eliminación
         report: Descripción
         after_photo: Foto del criadero
         elimination_method_id: Método de eliminación
