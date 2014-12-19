@@ -144,7 +144,7 @@ class CsvReportsController < NeighborhoodsBaseController
       next if type.blank?
 
       type = type.strip.downcase
-      if ["a", "b", "l", "m", "p", "t", "x", "v"].include?( type )
+      if ["a", "b", "l", "m", "p", "t", "x", "n"].include?( type )
         if type == "a"
           breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
         elsif type == "b"
@@ -180,14 +180,15 @@ class CsvReportsController < NeighborhoodsBaseController
       uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_chemical.to_s)
       uuid = uuid.strip.downcase.underscore
 
-      if type && type.strip.downcase != "v"
+      if type
         reports << {
           :inspection_date  => date,
           :elimination_date => elim_date,
-          :breeding_site => breeding_site,
-          :description => description,
-          :protected => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
-          :csv_uuid => uuid}
+          :breeding_site    => breeding_site,
+          :description      => description,
+          :protected        => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
+          :clean            => (type == "n")
+          :csv_uuid         => uuid}
       end
 
       # If the last type is v, then the location is clean (for now).
@@ -252,6 +253,7 @@ class CsvReportsController < NeighborhoodsBaseController
       end
 
       r.report             = report[:description]
+      r.clean              = report[:clean]
       r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
       r.protected          = report[:protected]
       r.chemically_treated = report[:chemically_treated]
