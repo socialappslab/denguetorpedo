@@ -34,4 +34,12 @@ module ApplicationHelper
 
   #----------------------------------------------------------------------------
 
+  def display_as_icon(boolean)
+    if boolean
+      return "<i class = 'fa fa-check' />".html_safe
+    else
+      return "<i class = 'fa fa-close' />".html_safe
+    end
+  end
+
 end
