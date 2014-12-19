@@ -8,6 +8,9 @@
 class LocationStatus < ActiveRecord::Base
   attr_accessible :location_id, :status
 
+  validates :location_id, :presence => true
+  validates :status, :presence => true
+
   # The status of a location defines whether it's positive, potential, negative
   # or clean. The first three are defined by the associated reports at that
   # location, and the last one is separately set in the database. See the
@@ -74,7 +77,7 @@ class LocationStatus < ActiveRecord::Base
       negative_count  = memoized_locations.find_all {|loc_id, status| status == Types::NEGATIVE}.count
       clean_count     = memoized_locations.find_all {|loc_id, status| status == Types::CLEAN}.count
       total_count     = positive_count + potential_count + negative_count + clean_count
-      
+
       pos_percent   = total_count == 0 ? 0 : (positive_count).to_f  / total_count
       pot_percent   = total_count == 0 ? 0 : (potential_count).to_f / total_count
       neg_percent   = total_count == 0 ? 0 : (negative_count).to_f  / total_count
