@@ -66,6 +66,18 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def time_zone
+    if self.mexican?
+      return "America/Mexico_City"
+    elsif self.nicaraguan?
+      return "America/Guatemala"
+    elsif brazilian?
+      return "America/Sao_Paulo"
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
   def geographical_name
     return "#{self.name}, #{self.city.name}"
   end

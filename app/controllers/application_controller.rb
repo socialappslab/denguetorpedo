@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
   before_filter :identify_for_segmentio
   before_filter :get_locale_specific_url
 
+  before_filter :set_time_zone
+
   #----------------------------------------------------------------------------
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -86,6 +88,13 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   private
+
+  def set_time_zone
+    Time.zone = "America/Guatemala"
+    if current_user
+      Time.zone = current_user.neighborhood.time_zone
+    end
+  end
 
   def identify_for_segmentio
     return unless Rails.env.production?
