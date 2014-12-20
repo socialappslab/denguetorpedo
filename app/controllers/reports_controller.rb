@@ -42,7 +42,7 @@ class ReportsController < NeighborhoodsBaseController
     @eliminated_locations.compact!
 
     if @current_user.present?
-      @incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+      @incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
     end
 
     if @current_user.present?
