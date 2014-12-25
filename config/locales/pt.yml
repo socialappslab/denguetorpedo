@@ -76,6 +76,7 @@ pt:
         report: Descrição
         after_photo: A foto do foco
         elimination_method_id: Método de eliminação
+        eliminated_at: Data de eliminação
         protected: "Protegido"
         chemically_treated: "Abatizado"
         larvae: "Larvas"

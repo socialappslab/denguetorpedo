@@ -10,7 +10,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
-    @reports = @reports.where(:protected => [nil, false]).order("created_at DESC")
+    @reports = @reports.where(:protected => [nil, false]).order("updated_at DESC")
     @reports = @reports.where("completed_at IS NOT NULL")
     @report_count  = @reports.count
     @report_limit  = 10
