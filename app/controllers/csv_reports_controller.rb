@@ -131,14 +131,14 @@ class CsvReportsController < NeighborhoodsBaseController
 
       # 4a. Extract the attributes. NOTE: We use fuzzy matching instead of
       # exact matching since users may vary the columns slightly.
-      date           = row.select {|k,v| k.include?("fecha")}.values[0].to_s
+      date           = row.select {|k,v| k.include?("fecha de visita")}.values[0].to_s
       room           = row["localización"].to_s
       type           = row.select {|k,v| k.include?("tipo")}.values[0].to_s
       is_protected   = row['protegido'].to_i
       is_pupas       = row["pupas"].to_i
       is_larvas      = row["larvas"].to_i
       is_chemical     = row["abatizado"].to_i
-      elim_date      = row.select {|k,v| k.include?("eliminado")}.values[0].to_s
+      elim_date      = row.select {|k,v| k.include?("fecha de eliminac")}.values[0].to_s
       comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
 
 
@@ -268,6 +268,7 @@ class CsvReportsController < NeighborhoodsBaseController
           r.created_at = DateTime.parse( report[:inspection_date] )
           r.updated_at = DateTime.parse( report[:inspection_date] )
         rescue
+          puts "\n\n\n [Error] Could not parse inspection date = #{report[:inspection_date]}...\n\n\n"
         end
 
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
@@ -278,6 +279,7 @@ class CsvReportsController < NeighborhoodsBaseController
       begin
         r.eliminated_at = DateTime.parse( report[:elimination_date] )
       rescue
+        puts "\n\n\n [Error] Could not parse elimination date = #{report[:elimination_date]}...\n\n\n"
       end
 
       r.report             = report[:description]
