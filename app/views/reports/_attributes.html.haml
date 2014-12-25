@@ -32,7 +32,7 @@
           = report.elimination_method.detailed_description
         %br
 
-      - elsif report.open? && @current_user.present? && !report.expired?
+      - elsif @current_user.present?
         = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
     - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
