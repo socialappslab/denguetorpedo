@@ -16,7 +16,7 @@
   .form-group
     %h1{:style => "margin-top: 15px;"}
       = I18n.t("report.form.upload_photo_of_eliminated_report")
-    = f.file_field :after_photo, :disabled => (report.after_photo_file_size || report.expired?), :class => "upload_photo form-control"
+    = f.file_field :after_photo, :disabled => (report.after_photo_file_size), :class => "upload_photo form-control"
     %img.preview{:style => "display: block;"}
     %canvas{:style => "display: none;"}
     = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
@@ -26,7 +26,7 @@
     %h1{:style => "margin-top: 15px;"}
       = I18n.t("activerecord.attributes.report.eliminated_at")
     .datetimepicker.input-group
-      = f.text_field :eliminated_at, {:value => format_as_date(Time.now), :class=>"elimination_methods form-control", :data => {"date-format" => "YYYY-MM-DD"} }
+      = f.text_field :eliminated_at, {:value => format_as_date(report.eliminated_at || Time.now), :class=>"elimination_methods form-control", :data => {"date-format" => "YYYY-MM-DD"} }
       %span.input-group-addon
         %i.fa.fa-calendar
 
@@ -34,7 +34,7 @@
 
   .form-group
 
-    - should_disable = ( @current_user && [User::Types::VERIFIER, User::Types::VISITOR].include?(@current_user.role) ) || report.expired? || report.isVerified == "f" || report.sms_incomplete?
+    - should_disable = ( @current_user && [User::Types::VERIFIER, User::Types::VISITOR].include?(@current_user.role) ) || report.isVerified == "f" || report.sms_incomplete?
     = button_tag :type => "submit", :class => "report_submission btn btn-success submit-button", :disabled => should_disable, :onclick=>"setLocationVariablesUsingOSM(#{report.location.to_json},event);", :style => "width: 100%;" do
       %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
       = I18n.t("views.buttons.submit")

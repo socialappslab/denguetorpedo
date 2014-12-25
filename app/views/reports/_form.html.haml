@@ -87,7 +87,7 @@
       = image_tag(@report.before_photo, :style => "display: block; margin-bottom: 20px;")
 
       = f.label :after_photo, "4b. " + I18n.t("report.form.upload_photo_of_eliminated_report")
-      = f.file_field :after_photo, :disabled => (@report.after_photo_file_size || @report.expired?), :class => "upload_photo form-control"
+      = f.file_field :after_photo, :disabled => (@report.after_photo_file_size), :class => "upload_photo form-control"
       %img.preview{:style => "display: block;"}
       %canvas{:style => "display: none;"}
       = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
