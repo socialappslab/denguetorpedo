@@ -213,7 +213,7 @@ class ReportsController < NeighborhoodsBaseController
 
       # Decide where to redirect: if there are still incomplete reports,
       # then let's redirect to the first available one.
-      incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+      incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
       if incomplete_reports.present?
         report = incomplete_reports.first
         flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")
@@ -279,7 +279,7 @@ class ReportsController < NeighborhoodsBaseController
 
         # Decide where to redirect: if there are still incomplete reports,
         # then let's redirect to the first available one.
-        incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+        incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
         if incomplete_reports.present?
           report = incomplete_reports.first
           flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")
