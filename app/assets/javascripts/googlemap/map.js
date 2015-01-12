@@ -70,7 +70,7 @@ $(document).ready(function() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   //sensor parameter no longer needed
-  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=window.maps.initializeGoogleMaps';
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&libraries=visualization&callback=window.maps.initializeGoogleMaps';
   document.body.appendChild(script);
 
   // Listener for location attribute updates

@@ -24,6 +24,22 @@ window.maps.populateGoogleMaps = function(locations, map, locationType) {
   }
 }
 
+//set up a heatmap
+window.maps.setupHeatMap = function(locations, map){
+  console.log("setting up heatmap now");
+  var heatmapData = Array(locations.length);
+  for(var i = 0; i < locations.length; i++) {
+    var latitude  = locations[i].latitude;
+    var longitude = locations[i].longitude;
+    heatmapData[i] = new google.maps.LatLng(latitude, longitude);
+  }
+
+  var heatmap = new google.maps.visualization.HeatmapLayer({
+    data: heatmapData
+  });
+  heatmap.setMap(map);
+
+}
 
 window.maps.showLoading = function(){
   $("#loading").show();
@@ -87,7 +103,7 @@ window.maps.updateHTMLFormAddressFromPosition = function(pos) {
 window.maps.initializeGoogleMaps = function(){
   var mapOptions = {
     zoom: REGION_ZOOM,
-    zoomControl: false,
+    zoomControl: true,
     streetViewControl: false,
     scrollwheel: false,
     disableDoubleClickZoom: true,
@@ -114,8 +130,10 @@ window.maps.initializeGoogleMaps = function(){
   // update this accordingly.
   if ( !$("#new_report").is(":visible") && $("#report_buttons").length > 0 )
   {
-    window.maps.populateGoogleMaps(openLocations, map, "open");
-    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
+//    window.maps.populateGoogleMaps(openLocations, map, "open");
+//    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
+    window.maps.setupHeatMap(openLocations, map);
+
   }
 
    //initialize the geocoder
