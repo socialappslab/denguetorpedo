@@ -36,7 +36,17 @@ window.maps.setupHeatMap = function(locations, map){
 
   var heatmap = new google.maps.visualization.HeatmapLayer({
     data: heatmapData,
-    radius: 100
+    radius: 100,
+    gradient: [
+    'rgba(0, 255, 255, 0)',
+    "rgba(241,196,15, 1.0)",
+    "rgba(239,176,23,1)",
+    "rgba(238,156,30,1)",
+    "rgba(236,136,37,1)",
+    "rgba(234,116,45,1)",
+    "rgba(233,96,53,1)",
+    "rgba(231,76,60,1)"
+    ]
   });
   heatmap.setMap(map);
 
