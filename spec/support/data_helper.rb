@@ -3,8 +3,6 @@
 #------------------------------------------------------------------------------
 
 def populate_data
-  locations = ["San Francisco", "Managua", "Ocachicualli"]
-
   mare = Neighborhood.find_by_name('Maré')
 
   10.times do |index|
@@ -83,12 +81,15 @@ def populate_data
   sites = BreedingSite.all
   methods = EliminationMethod.all
 
-
-  reports_json = JSON.parse( JSON.load( File.open(Rails.root + "spec/support/reports.json").read ) )
+  locations_json = JSON.parse( JSON.load( File.open(Rails.root + "spec/support/locations.json").read ) )
+  reports_json   = JSON.parse( JSON.load( File.open(Rails.root + "spec/support/reports.json").read ) )
   reports_json.each do |r|
 
     if Location.find_by_id(r["location_id"]).blank?
-      r["location_id"] = Location.create!(:address => locations.sample).id
+      location = locations_json.pop
+      if location.present?
+        r["location_id"] = Location.create!(:address => location["address"], :latitude => location["latitude"], :longitude => location["longitude"]).id
+      end
     end
 
     site = sites.sample

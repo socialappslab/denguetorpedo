@@ -2,7 +2,8 @@
 require 'active_support/core_ext'
 
 class Location < ActiveRecord::Base
-  attr_accessible :address, :street_type, :street_name, :street_number, :latitude, :longitude, :neighborhood, :neighborhood_id, :cleaned
+  attr_accessible :address, :street_type, :street_name, :street_number,
+  :latitude, :longitude, :neighborhood, :neighborhood_id, :cleaned
   # validates :latitude, :uniqueness => { :scope => :longitude }
   # validates :neighborhood_id, :presence => true
 

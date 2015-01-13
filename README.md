@@ -23,4 +23,5 @@ We strongly recommend Mac OS X or GNU/Linux (the below has been tested with XUbu
 After `git clone` or `git checkout`, you need to do the following:
 * `bundle install`
 * `bundle exec rake db:migrate`
+* `bundle exec rake db:development:prepare`
 * `bundle exec foreman start`

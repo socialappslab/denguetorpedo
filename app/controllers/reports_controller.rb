@@ -10,14 +10,11 @@ class ReportsController < NeighborhoodsBaseController
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
-    @reports = @reports.where(:protected => [nil, false]).order("created_at DESC")
+    @reports = @reports.where(:protected => [nil, false]).order("updated_at DESC")
     @reports = @reports.where("completed_at IS NOT NULL")
     @report_count  = @reports.count
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit
-
-    # Remove report that incurred an error, it should be at the top already
-    @reports = @reports.limit(@report_limit).offset(@report_offset)
 
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
@@ -40,6 +37,11 @@ class ReportsController < NeighborhoodsBaseController
 
     @open_locations.compact!
     @eliminated_locations.compact!
+
+    # NOTE: We don't want to do this *before* we define @open_ and @eliminated_
+    # locations because we want the heatmap to include all the data.
+    # Remove report that incurred an error, it should be at the top already
+    @reports = @reports.limit(@report_limit).offset(@report_offset)
 
     if @current_user.present?
       @incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
@@ -213,7 +215,7 @@ class ReportsController < NeighborhoodsBaseController
 
       # Decide where to redirect: if there are still incomplete reports,
       # then let's redirect to the first available one.
-      incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+      incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
       if incomplete_reports.present?
         report = incomplete_reports.first
         flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")
@@ -279,7 +281,7 @@ class ReportsController < NeighborhoodsBaseController
 
         # Decide where to redirect: if there are still incomplete reports,
         # then let's redirect to the first available one.
-        incomplete_reports = @current_user.reports.where("completed_at IS NULL")
+        incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
         if incomplete_reports.present?
           report = incomplete_reports.first
           flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")

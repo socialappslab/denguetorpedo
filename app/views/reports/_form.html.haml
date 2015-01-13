@@ -15,7 +15,12 @@
   - unless @report.new_record?
     .form-group
       = f.label :created_at
-      = f.text_field :created_at, {:value => format_as_date(@report.created_at), :class => "form-control", :disabled => true}
+      .datetimepicker.input-group
+        = f.text_field :created_at, {:value => format_as_date(@report.created_at), :disabled => @report.completed_at.present?, :class => "form-control", :data => {"date-format" => "YYYY-MM-DD"}}
+        %span.input-group-addon
+          %i.fa.fa-calendar
+
+
 
 
   .form-group
@@ -82,7 +87,7 @@
       = image_tag(@report.before_photo, :style => "display: block; margin-bottom: 20px;")
 
       = f.label :after_photo, "4b. " + I18n.t("report.form.upload_photo_of_eliminated_report")
-      = f.file_field :after_photo, :disabled => (@report.after_photo_file_size || @report.expired?), :class => "upload_photo form-control"
+      = f.file_field :after_photo, :disabled => (@report.after_photo_file_size), :class => "upload_photo form-control"
       %img.preview{:style => "display: block;"}
       %canvas{:style => "display: none;"}
       = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
