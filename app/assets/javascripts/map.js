@@ -35,7 +35,8 @@ window.maps.setupHeatMap = function(locations, map){
   }
 
   var heatmap = new google.maps.visualization.HeatmapLayer({
-    data: heatmapData
+    data: heatmapData,
+    radius: 100
   });
   heatmap.setMap(map);
 
@@ -103,7 +104,7 @@ window.maps.updateHTMLFormAddressFromPosition = function(pos) {
 window.maps.initializeGoogleMaps = function(){
   var mapOptions = {
     zoom: REGION_ZOOM,
-    zoomControl: true,
+    zoomControl: false,
     streetViewControl: false,
     scrollwheel: false,
     disableDoubleClickZoom: true,
