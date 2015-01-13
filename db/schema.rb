@@ -196,10 +196,10 @@ ActiveRecord::Schema.define(:version => 20141219230600) do
   create_table "location_statuses", :force => true do |t|
     t.integer  "location_id"
     t.integer  "status"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.boolean  "dengue"
-    t.boolean  "chikungunya"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.integer  "dengue_count"
+    t.integer  "chik_count"
   end
 
   create_table "locations", :force => true do |t|
