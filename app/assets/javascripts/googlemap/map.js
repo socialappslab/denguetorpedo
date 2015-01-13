@@ -2,7 +2,7 @@
 
 var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
 var GMAPS_VERSION = 3.17; //latest stable version
-var REGION_ZOOM = 13; // the zoom level at which we see the entire neighborhood
+var REGION_ZOOM = 15; // the zoom level at which we see the entire neighborhood
 var STREET_ZOOM = 18; // the zoom level at which we see street details
 
 var map; //this is a shared variable used by all methods.
@@ -70,7 +70,7 @@ $(document).ready(function() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   //sensor parameter no longer needed
-  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&callback=window.maps.initializeGoogleMaps';
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&libraries=visualization&callback=window.maps.initializeGoogleMaps';
   document.body.appendChild(script);
 
   // Listener for location attribute updates
