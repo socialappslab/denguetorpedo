@@ -16,9 +16,6 @@ class ReportsController < NeighborhoodsBaseController
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit
 
-    # Remove report that incurred an error, it should be at the top already
-    @reports = @reports.limit(@report_limit).offset(@report_offset)
-
     # Generate the different types of locations based on report.
     # TODO: This iteration should be done in SQL!
     @open_locations       = []
@@ -40,6 +37,11 @@ class ReportsController < NeighborhoodsBaseController
 
     @open_locations.compact!
     @eliminated_locations.compact!
+
+    # NOTE: We don't want to do this *before* we define @open_ and @eliminated_
+    # locations because we want the heatmap to include all the data.
+    # Remove report that incurred an error, it should be at the top already
+    @reports = @reports.limit(@report_limit).offset(@report_offset)
 
     if @current_user.present?
       @incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
