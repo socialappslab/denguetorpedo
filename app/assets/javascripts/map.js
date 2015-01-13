@@ -38,7 +38,7 @@ window.maps.setupHeatMap = function(locations, map){
     data: heatmapData,
     radius: 100,
     gradient: [
-    'rgba(0, 255, 255, 0)',
+    "rgba(0, 255, 255, 0)",
     "rgba(241,196,15, 1.0)",
     "rgba(239,176,23,1)",
     "rgba(238,156,30,1)",
