@@ -172,7 +172,7 @@ class CsvReportsController < NeighborhoodsBaseController
       # 4c. Define the description based on the collected attributes.
       description = ""
       description += "Localización: #{room}" if room.present?
-      description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
+      description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas == 1 ? "si" : "no"}, Pupas: #{is_pupas == 1 ? "si" : "no"}"
       description += ", Comentarios sobre tipo y/o eliminación: #{comments}" if comments.present?
 
       # 4d. Generate a UUID to identify the row that the report will correspond
