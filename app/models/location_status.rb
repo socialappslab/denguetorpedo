@@ -24,6 +24,19 @@ class LocationStatus < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # This is a convenience method that uses calculate_time_series_for_locations_in_timeframe
+  # under the hood.
+  def self.calculate_time_series_for_locations(locations)
+    location_ids    = locations.map(&:id)
+    statuses = LocationStatus.where(:location_id => location_ids).order("created_at ASC")
+    return [] if statuses.blank?
+
+    # Determine the timeframe.
+    start_time  = statuses.first.created_at.beginning_of_day
+    end_time    = statuses.last.created_at.end_of_day
+    self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
+  end
+
   # In order to calculate time series for locations, we need to realize that
   # location statuses exhibit "gaps" in reported status of a location. This means
   # that there is no guarantee we have a record of the location status on any
@@ -45,18 +58,15 @@ class LocationStatus < ActiveRecord::Base
   # NOTE: Keep in mind that we can't just initialize the memoized variable with
   # all locations as not all locations existed for all time. Otherwise, we may
   # skew the actual statistics.
-  def self.calculate_time_series_for_locations(locations)
+  def self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
     location_ids    = locations.map(&:id)
     statuses = LocationStatus.where(:location_id => location_ids).order("created_at ASC")
     return [] if statuses.blank?
 
 
-    # Determine the timeframe.
-    start_time  = statuses.first.created_at.beginning_of_day
-    end_time    = statuses.last.created_at.end_of_day
-    time        = start_time
 
     # Initialize the memoized hash.
+    time               = start_time
     daily_stats        = []
     memoized_locations = {}
 
