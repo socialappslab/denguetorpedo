@@ -19,9 +19,9 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
 
-    start_time = Time.now - 3.months
-    end_time   = Time.now
-    @statistics = LocationStatus.calculate_time_series_for_locations_in_timeframe(@visits, start_time, end_time)
+    # start_time = Time.now - 3.months
+    # end_time   = Time.now
+    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
     @chart_statistics = @statistics.map {|hash|
       [
         hash[:date],
