@@ -70,6 +70,11 @@ class LocationStatus < ActiveRecord::Base
     daily_stats        = []
     memoized_locations = {}
 
+    # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
+    if (end_time - start_time).abs > 6.months
+      start_time = end_time - 6.months
+    end
+
     # Iterate over the timeframe, upating the memoized result each day to reflect
     # the correct state space.
     while time <= end_time
