@@ -35,6 +35,13 @@ module ApplicationHelper
   end
 
   #----------------------------------------------------------------------------
+  
+  def format_as_date_time(timestamp)
+    return "" if timestamp.blank?
+    return timestamp.strftime("%Y-%m-%d %H:%M")
+  end
+
+  #----------------------------------------------------------------------------
 
   def display_as_icon(boolean)
     if boolean
