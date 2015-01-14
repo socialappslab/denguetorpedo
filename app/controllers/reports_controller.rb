@@ -5,6 +5,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,             :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,                :only   => [:prepare, :eliminate, :update, :creditar, :credit, :discredit, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
+  before_filter :ensure_coordinator,        :only => [:coordinator_edit, :coordinator_update]
 
   #----------------------------------------------------------------------------
 
@@ -522,6 +523,12 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+
+  def ensure_coordinator
+    redirect_to neighborhood_reports_path(@neighborhood) unless @current_user && @current_user.coordinator?
   end
 
   #----------------------------------------------------------------------------
