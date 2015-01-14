@@ -79,8 +79,18 @@ class CsvReportsController < NeighborhoodsBaseController
       render "new" and return
     end
 
+    # NOTE: We assume the location is not negative unless otherwise noted, and
+    # there is no last inspection date to correspond with the clean location.
+    is_location_clean    = false
+    last_inspection_date = nil
+    reports        = []
+    visits         = []
+    parsed_content = []
+
+
     # 3. Identify the start of the reports table in the CSV file.
     # The first row is reserved for the house location/address.
+    # Second row is reserved for permission.
     address = spreadsheet.row(1)[1]
     if address.blank?
       flash[:alert] = I18n.t("views.csv_reports.flashes.missing_house")
@@ -88,23 +98,14 @@ class CsvReportsController < NeighborhoodsBaseController
     end
     address = address.to_s
 
-
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
-    start_index = 4
+    start_index = 3
     while spreadsheet.row(start_index)[0].to_s.downcase.exclude?("fecha de visita")
       start_index += 1
     end
     header  = spreadsheet.row(start_index)
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
-
-
-    # NOTE: We assume the location is not negative unless otherwise noted, and
-    # there is no last inspection date to correspond with the clean location.
-    is_location_clean    = false
-    last_inspection_date = nil
-    reports        = []
-    parsed_content = []
 
 
     # 4. Parse the CSV.
@@ -123,7 +124,9 @@ class CsvReportsController < NeighborhoodsBaseController
     #   "foto de eliminación",
     #   "comentarios sobre tipo y/o eliminación*"
     # ]
-    current_row = 0
+    current_row   = 0
+    current_visit = nil
+
     (start_index + 1..spreadsheet.last_row).each do |i|
       row            = Hash[[header, spreadsheet.row(i)].transpose]
       parsed_content << row
@@ -140,7 +143,6 @@ class CsvReportsController < NeighborhoodsBaseController
       is_chemical     = row["abatizado"].to_i
       elim_date      = row.select {|k,v| k.include?("fecha de eliminac")}.values[0].to_s
       comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
-
 
 
       # 4b. Attempt to identify the breeding sites from the codes. If no type
@@ -170,7 +172,7 @@ class CsvReportsController < NeighborhoodsBaseController
       # 4c. Define the description based on the collected attributes.
       description = ""
       description += "Localización: #{room}" if room.present?
-      description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas}, Pupas: #{is_pupas}"
+      description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas == 1 ? "si" : "no"}, Pupas: #{is_pupas == 1 ? "si" : "no"}"
       description += ", Comentarios sobre tipo y/o eliminación: #{comments}" if comments.present?
 
       # 4d. Generate a UUID to identify the row that the report will correspond
@@ -195,15 +197,47 @@ class CsvReportsController < NeighborhoodsBaseController
         }
       end
 
-      # If the last type is v, then the location is clean (for now).
-      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
-        begin
-          last_inspection_date = DateTime.parse( date )
-        rescue
-          last_inspection_date = Time.now
+      # Finally, let's create a location status, if appropriate. We do
+      # this by comparing the new visit date with the current one.
+      if date.present? && current_visit != date
+        puts "current_visit: #{current_visit} | date = #{date}"
+        current_visit = date
+
+        # Let's parse the reporting on chik and dengue.
+        # The format can be nil, 5c3d, 5c, 3d, or 5d3c.
+        chik_count      = 0
+        dengue_count    = 0
+        disease_report  = row.select {|k,v| k.include?("reporte")}.values[0].to_s
+        if disease_report.present?
+          chik_count   = /([0-9]*)c/.match(disease_report)
+          chik_count   = chik_count[1].to_i if chik_count.present?
+          dengue_count = /([0-9]*)d/.match(disease_report)
+          dengue_count = dengue_count[1].to_i if dengue_count.present?
         end
 
-        is_location_clean = true
+        # Now let's see if the location is clean.
+        # If the last type is n, then the location is clean (for now).
+        # If it's not the last row, then we simply label the status as a potential
+        # breeding site. The actual status will be updated when the associated
+        # report for the location is updated.
+        if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
+          status = LocationStatus::Types::NEGATIVE
+        else
+          status = LocationStatus::Types::POTENTIAL
+        end
+
+        # Now let's try parsing the date.
+        begin
+          visit_date = DateTime.parse( date )
+        rescue
+          visit_date = Time.now
+        end
+
+        visits << {
+          :date => visit_date, :chik_count => chik_count,
+          :dengue_count => dengue_count, :status => status
+        }
+
       end
     end
 
@@ -219,21 +253,22 @@ class CsvReportsController < NeighborhoodsBaseController
       location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
 
-    # Now that we have a location, let's update the LocationStatus *only*
-    # if the location is clean. The status will be NEGATIVE. Note that if the
-    # reports that will be reported after this have any positive status, then
-    # the location will be treated updated accordingly.
-    if is_location_clean == true
+    # Now that we have a location, let's update the LocationStatus.
+    # Note that if the reports that will be reported after this have any
+    # positive status, then the location will be treated updated accordingly.
+    visits.each do |visit|
       ls = LocationStatus.where(:location_id => location.id)
-      ls = ls.where(:created_at => (last_inspection_date.beginning_of_day..last_inspection_date.end_of_day) )
+      ls = ls.where(:created_at => (visit[:date].beginning_of_day..visit[:date].end_of_day) )
       if ls.blank?
-        ls            = LocationStatus.new(:location_id => location.id)
-        ls.created_at = last_inspection_date
+        ls = LocationStatus.new(:location_id => location.id)
+        ls.created_at = visit[:date]
       else
         ls = ls.first
       end
 
-      ls.status = LocationStatus::Types::NEGATIVE
+      ls.status       = visit[:status]
+      ls.chik_count   = visit[:chik_count]
+      ls.dengue_count = visit[:dengue_count]
       ls.save
     end
 

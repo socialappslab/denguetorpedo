@@ -6,7 +6,7 @@
 # b) there is no need for real-time location statuses.I went with real-time series before this,
 #    and it was a hassle to calculate daily trends (which is all what people care about).
 class LocationStatus < ActiveRecord::Base
-  attr_accessible :location_id, :status
+  attr_accessible :location_id, :status, :dengue, :chikungunya
 
   validates :location_id, :presence => true
   validates :status, :presence => true
