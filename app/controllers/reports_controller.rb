@@ -84,7 +84,6 @@ class ReportsController < NeighborhoodsBaseController
     @report = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
-    @report.completed_at = Time.now
 
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
@@ -97,6 +96,8 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     if @report.save
+      @report.update_column(:completed_at, Time.now)
+
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
