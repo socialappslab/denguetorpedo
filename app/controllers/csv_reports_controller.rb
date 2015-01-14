@@ -197,15 +197,47 @@ class CsvReportsController < NeighborhoodsBaseController
         }
       end
 
-      # If the last type is v, then the location is clean (for now).
-      if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
-        begin
-          last_inspection_date = DateTime.parse( date )
-        rescue
-          last_inspection_date = Time.now
+      # Finally, let's create a location status, if appropriate. We do
+      # this by comparing the new visit date with the current one.
+      if date.present? && current_visit != date
+        puts "current_visit: #{current_visit} | date = #{date}"
+        current_visit = date
+
+        # Let's parse the reporting on chik and dengue.
+        # The format can be nil, 5c3d, 5c, 3d, or 5d3c.
+        chik_count      = 0
+        dengue_count    = 0
+        disease_report  = row.select {|k,v| k.include?("reporte")}.values[0].to_s
+        if disease_report.present?
+          chik_count   = /([0-9]*)c/.match(disease_report)
+          chik_count   = chik_count[1].to_i if chik_count.present?
+          dengue_count = /([0-9]*)d/.match(disease_report)
+          dengue_count = dengue_count[1].to_i if dengue_count.present?
         end
 
-        is_location_clean = true
+        # Now let's see if the location is clean.
+        # If the last type is n, then the location is clean (for now).
+        # If it's not the last row, then we simply label the status as a potential
+        # breeding site. The actual status will be updated when the associated
+        # report for the location is updated.
+        if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
+          status = LocationStatus::Types::NEGATIVE
+        else
+          status = LocationStatus::Types::POTENTIAL
+        end
+
+        # Now let's try parsing the date.
+        begin
+          visit_date = DateTime.parse( date )
+        rescue
+          visit_date = Time.now
+        end
+
+        visits << {
+          :date => visit_date, :chik_count => chik_count,
+          :dengue_count => dengue_count, :status => status
+        }
+
       end
     end
 
@@ -221,21 +253,22 @@ class CsvReportsController < NeighborhoodsBaseController
       location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
 
-    # Now that we have a location, let's update the LocationStatus *only*
-    # if the location is clean. The status will be NEGATIVE. Note that if the
-    # reports that will be reported after this have any positive status, then
-    # the location will be treated updated accordingly.
-    if is_location_clean == true
+    # Now that we have a location, let's update the LocationStatus.
+    # Note that if the reports that will be reported after this have any
+    # positive status, then the location will be treated updated accordingly.
+    visits.each do |visit|
       ls = LocationStatus.where(:location_id => location.id)
-      ls = ls.where(:created_at => (last_inspection_date.beginning_of_day..last_inspection_date.end_of_day) )
+      ls = ls.where(:created_at => (visit[:date].beginning_of_day..visit[:date].end_of_day) )
       if ls.blank?
-        ls            = LocationStatus.new(:location_id => location.id)
-        ls.created_at = last_inspection_date
+        ls = LocationStatus.new(:location_id => location.id)
+        ls.created_at = visit[:date]
       else
         ls = ls.first
       end
 
-      ls.status = LocationStatus::Types::NEGATIVE
+      ls.status       = visit[:status]
+      ls.chik_count   = visit[:chik_count]
+      ls.dengue_count = visit[:dengue_count]
       ls.save
     end
 
