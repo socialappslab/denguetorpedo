@@ -19,7 +19,7 @@
 
       .form-group
         = f.label :eliminator_id
-        = f.select :reporter_id, User.all.map {|bs| [bs.username, bs.id]}, {}, :class => "form-control"
+        = f.select :eliminator_id, User.all.map {|bs| [bs.username, bs.id]}, {:include_blank => true}, :class => "form-control"
 
       - if @report.protected == true
         .form-group
