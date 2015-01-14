@@ -70,6 +70,11 @@ es:
         name: Nombre
         message: Mensaje
       report:
+        location_id: Dirección
+        prepared_at: Fecha de preparación
+        completed_at: Fecha de preparación
+        reporter_id: Marcado por
+        eliminator_id: Eliminado por
         before_photo: Foto del criadero
         elimination_type: Tipo de criadero
         breeding_site_id: Tipo de criadero
