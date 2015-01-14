@@ -12,6 +12,9 @@
 
   .col-md-6
     .pull-right
+      - if @current_user && @current_user.coordinator?
+        = link_to I18n.t("common_terms.edit"), coordinator_edit_neighborhood_report_path(@neighborhood, report)
+
       - if @current_user && (@current_user == report.reporter || @current_user.coordinator?)
         = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
           %i.fa.fa-trash-o

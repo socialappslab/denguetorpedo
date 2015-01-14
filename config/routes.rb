@@ -94,6 +94,8 @@ Dengue::Application.routes.draw do
       end
 
       member do
+        get "coordinator-edit", :action => :coordinator_edit, :as => :coordinator_edit
+        put "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
         put  "eliminate"
         put  "prepare"
         post 'like'

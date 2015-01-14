@@ -5,6 +5,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,             :except => [:index, :verification, :gateway, :notifications, :creditar, :credit, :discredit]
   before_filter :find_by_id,                :only   => [:prepare, :eliminate, :update, :creditar, :credit, :discredit, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
+  before_filter :ensure_coordinator,        :only => [:coordinator_edit, :coordinator_update]
 
   #----------------------------------------------------------------------------
 
@@ -84,7 +85,6 @@ class ReportsController < NeighborhoodsBaseController
     @report = Report.new(params[:report])
     @report.reporter_id  = @current_user.id
     @report.neighborhood_id = @neighborhood.id
-    @report.completed_at = Time.now
 
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
@@ -97,6 +97,8 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     if @report.save
+      @report.update_column(:completed_at, Time.now)
+
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
@@ -233,91 +235,146 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #-----------------------------------------------------------------------------
-  # PUT /neighborhoods/1/reports
+  # GET /neighborhoods/1/reports/1/coordinator-edit
 
-  def update
-    address = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
-    address.each{ |k,v| address[k] = v.downcase.titleize}
+  def coordinator_edit
+    @report = Report.find(params[:id])
 
-    # Update the location.
-    if @report.location
-      location = @report.location
-      location.update_attributes(address)
-    else
-      # for whatever reason if location doesn't exist create a new one
-      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(address)
+    if @report.location.blank?
+      @report.location = Location.new
+      @report.location.latitude  ||= 0
+      @report.location.longitude ||= 0
+    end
+  end
+
+  #-----------------------------------------------------------------------------
+  # PUT /neighborhoods/1/reports/1/coordinator-update
+
+  def coordinator_update
+    @report = Report.find(params[:id])
+
+    # Update the date columns of the report.
+    begin
+      @report.update_column(:eliminated_at, DateTime.parse(  params[:report][:eliminated_at] ) )
+    rescue
+      @report.eliminated_at = Time.now
     end
 
-    location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
-    location.longitude    = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
-    location.neighborhood_id = @neighborhood.id
-    location.save
+    begin
+      @report.update_column(:created_at, DateTime.parse(  params[:report][:created_at] ) )
+    rescue
+      @report.created_at = Time.now
+    end
 
-    @report.location_id  = location.id
+    begin
+      @report.update_column(:completed_at, DateTime.parse(  params[:report][:completed_at] ) )
+    rescue
+      @report.completed_at = Time.now
+    end
+
 
     base64_image = params[:report][:compressed_photo]
-    if base64_image.blank?
-      flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
-      redirect_to :back and return
-    else
-      filename  = @current_user.display_name.underscore + "_report.jpg"
+    if base64_image.present?
+      filename  = @report.eliminator.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
-    end
-
-    # Update SMS
-    if @report.incomplete?
-      # We set data on before_photo in this case since it come from an SMS,
-      # which doesn't have an image.
-      @report.before_photo = data
-
-      # Verify report saves and form submission is valid
-      if @report.update_attributes(params[:report])
-        @report.neighborhood_id = @neighborhood.id
-        @report.completed_at    = Time.now
-        @report.save(:validate => false)
-
-        # Let's award the user for submitting a report.
-        @current_user.award_points_for_submitting(@report)
-
-        # Decide where to redirect: if there are still incomplete reports,
-        # then let's redirect to the first available one.
-        incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
-        if incomplete_reports.present?
-          report = incomplete_reports.first
-          flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")
-          redirect_to edit_neighborhood_report_path(@neighborhood, report) and return
-        else
-          flash[:notice] = I18n.t("activerecord.success.report.create")
-          redirect_to neighborhood_reports_path(@neighborhood) and return
-        end
-
-      # Error occurred when completing SMS report
-      else
-        flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
-        redirect_to edit_neighborhood_report_path(@neighborhood) and return
-      end
-    else
       @report.after_photo = data
     end
 
 
-    if @report.update_attributes(params[:report])
-      # NOTE: We don't want to trigger callbacks after the above statement.
-      @report.update_column(:eliminated_at, Time.now)
-      @report.update_column(:neighborhood_id, @neighborhood.id)
-      @report.update_column(:eliminator_id, @current_user.id)
+    @report.assign_attributes(params[:report])
+    @report.save(:validate => false)
 
-      Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
-
-      # Let's award the user for submitting a report.
-      @current_user.award_points_for_eliminating(@report)
-      flash[:notice] = I18n.t("activerecord.success.report.eliminate")
-      redirect_to neighborhood_reports_path(@neighborhood) and return
-    else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
-      redirect_to :back and return
-    end
+    flash[:notice] = "Saved!"
+    redirect_to coordinator_edit_neighborhood_report_path(@neighborhood, @report) and return
   end
+
+
+  #-----------------------------------------------------------------------------
+  # PUT /neighborhoods/1/reports
+
+  # def update
+  #   address = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
+  #   address.each{ |k,v| address[k] = v.downcase.titleize}
+  #
+  #   # Update the location.
+  #   if @report.location
+  #     location = @report.location
+  #     location.update_attributes(address)
+  #   else
+  #     # for whatever reason if location doesn't exist create a new one
+  #     location = Location.find_or_create_by_street_type_and_street_name_and_street_number(address)
+  #   end
+  #
+  #   location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
+  #   location.longitude    = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
+  #   location.neighborhood_id = @neighborhood.id
+  #   location.save
+  #
+  #   @report.location_id  = location.id
+  #
+  #   base64_image = params[:report][:compressed_photo]
+  #   if base64_image.blank?
+  #     flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
+  #     redirect_to :back and return
+  #   else
+  #     filename  = @current_user.display_name.underscore + "_report.jpg"
+  #     data      = prepare_base64_image_for_paperclip(base64_image, filename)
+  #   end
+  #
+  #   # Update SMS
+  #   if @report.incomplete?
+  #     # We set data on before_photo in this case since it come from an SMS,
+  #     # which doesn't have an image.
+  #     @report.before_photo = data
+  #
+  #     # Verify report saves and form submission is valid
+  #     if @report.update_attributes(params[:report])
+  #       @report.neighborhood_id = @neighborhood.id
+  #       @report.completed_at    = Time.now
+  #       @report.save(:validate => false)
+  #
+  #       # Let's award the user for submitting a report.
+  #       @current_user.award_points_for_submitting(@report)
+  #
+  #       # Decide where to redirect: if there are still incomplete reports,
+  #       # then let's redirect to the first available one.
+  #       incomplete_reports = @current_user.reports.where("completed_at IS NULL").where(:protected => [nil, false])
+  #       if incomplete_reports.present?
+  #         report = incomplete_reports.first
+  #         flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")
+  #         redirect_to edit_neighborhood_report_path(@neighborhood, report) and return
+  #       else
+  #         flash[:notice] = I18n.t("activerecord.success.report.create")
+  #         redirect_to neighborhood_reports_path(@neighborhood) and return
+  #       end
+  #
+  #     # Error occurred when completing SMS report
+  #     else
+  #       flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
+  #       redirect_to edit_neighborhood_report_path(@neighborhood) and return
+  #     end
+  #   else
+  #     @report.after_photo = data
+  #   end
+  #
+  #
+  #   if @report.update_attributes(params[:report])
+  #     # NOTE: We don't want to trigger callbacks after the above statement.
+  #     @report.update_column(:eliminated_at, Time.now)
+  #     @report.update_column(:neighborhood_id, @neighborhood.id)
+  #     @report.update_column(:eliminator_id, @current_user.id)
+  #
+  #     Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
+  #
+  #     # Let's award the user for submitting a report.
+  #     @current_user.award_points_for_eliminating(@report)
+  #     flash[:notice] = I18n.t("activerecord.success.report.eliminate")
+  #     redirect_to neighborhood_reports_path(@neighborhood) and return
+  #   else
+  #     flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
+  #     redirect_to :back and return
+  #   end
+  # end
 
   #----------------------------------------------------------------------------
   # POST /neighborhoods/1/reports/1/like
@@ -521,6 +578,12 @@ class ReportsController < NeighborhoodsBaseController
 
   def find_by_id
     @report = Report.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+
+  def ensure_coordinator
+    redirect_to neighborhood_reports_path(@neighborhood) unless @current_user && @current_user.coordinator?
   end
 
   #----------------------------------------------------------------------------

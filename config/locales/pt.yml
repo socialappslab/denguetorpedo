@@ -70,6 +70,8 @@ pt:
         name: Nome
         message: Mensagem
       report:
+        reporter_id: Marcado por
+        eliminator_id: Eliminado por
         before_photo: A foto do foco
         elimination_type: Tipo de foco
         breeding_site_id: Tipo de foco

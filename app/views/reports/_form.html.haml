@@ -100,13 +100,13 @@
 
   - if @report.completed_at.present?
     .form-group
-      = f.label :eliminated_method_id, "6. " + I18n.t("activerecord.models.elimination_method")
+      = f.label  :elimination_method_id, "6. " + I18n.t("activerecord.models.elimination_method")
       = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, @report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods form-control"}
 
     .form-group
       = f.label :eliminated_at
       .datetimepicker.input-group
-        = f.text_field :eliminated_at, {:value => format_as_date(@report.eliminated_at || Time.now), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD"} }
+        = f.text_field :eliminated_at, {:value => format_as_date(@report.eliminated_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD"} }
         %span.input-group-addon
           %i.fa.fa-calendar
 
