@@ -2,13 +2,13 @@
 
 #dashboard_bar {
   background-color: white;
-  height: 50px;
+  height: 85px;
   border-width: 0px 0px 3px 0px;
   border-style: solid;
   border-color: $orange;
   font-size: 20px;
 
-  .col-md-2 {
+  .col-md-2, .col-md-1 {
     margin-top: 15px;
   }
 
@@ -16,6 +16,10 @@
     text-align: center;
     margin-top: 15px;
     float: left;
+  }
+
+  a {
+    line-height: 50px;
   }
 }
 

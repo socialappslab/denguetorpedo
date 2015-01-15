@@ -32,7 +32,11 @@
 
   %body{:class => [params[:controller].parameterize, params[:action].parameterize]}
     #container{style: "overflow-y: auto;overflow:hidden;"}
-      = render "layouts/home_nav"
+      = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
+
+
+      - if @current_user.nil?
+        = render "layouts/home_nav"
       - if @current_user.present?
         = render "layouts/dashboard"
       - if !current_page?(root_url)
