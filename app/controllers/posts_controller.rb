@@ -10,6 +10,7 @@ class PostsController < ApplicationController
   def create
     post         = Post.new(params[:post])
     post.user_id = @current_user.id
+    post.neighborhood_id = @current_user.neighborhood_id
 
     if post.save
       @current_user.award_points_for_posting

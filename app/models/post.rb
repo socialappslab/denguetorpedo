@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  attr_accessible :content, :title, :user_id, :parent_id
+  attr_accessible :content, :title, :user_id, :parent_id, :neighborhood_id
 
   #----------------------------------------------------------------------------
 

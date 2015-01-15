@@ -24,6 +24,14 @@ describe PostsController do
       expect(user.reload.total_points).to eq(before_points + User::Points::POST_CREATED)
     end
 
+    it "sets the neighborhood to user's neighborhood" do
+      before_points = user.total_points
+      post "create", :post => {:title => "Hello", :content => "Testing"}
+
+      p = Post.last
+      expect(p.neighborhood_id).to eq(user.neighborhood_id)
+    end
+
     it "awards points to the team" do
       before_points = team.points
       before_points_for_other_team = other_team.points
