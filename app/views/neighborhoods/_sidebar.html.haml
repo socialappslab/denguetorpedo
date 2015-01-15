@@ -26,3 +26,40 @@
   .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => { :items => @users }
+
+
+  %hr{:style => "border-bottom: 1px solid #ccc;"}
+  %h1{:style => "text-align: center; color: #333;"}
+    = I18n.t("activerecord.models.notice").capitalize
+
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: 500px;"}
+    .col-md-12
+      - @notices.each do |notice|
+        .feed-item
+          .user_activity_item
+            .row.feed-item-bar
+              .col-md-12
+                %b{:style => "color: #6655ee;"}
+                  = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
+                .feed-item-timestamp
+                  %i.fa.fa-clock-o
+                  = format_timestamp(notice.created_at)
+
+            .row.feed-item-content
+              .col-md-12
+                - if notice.title.present?
+                  = notice.title
+
+                - if notice.summary.present?
+                  %div{:style => "margin-top: 5px;"}
+                    %i.fa.fa-info-circle
+                    = notice.summary
+
+                - if notice.location.present?
+                  %div{:style => "margin-top: 5px;"}
+                    %i.fa.fa-bank
+                    = notice.location
+
+                %div{:style => "margin-top: 5px;"}
+                  %i.fa.fa-calendar
+                  = format_as_date_time(notice.date)
