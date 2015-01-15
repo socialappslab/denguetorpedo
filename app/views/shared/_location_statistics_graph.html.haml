@@ -13,29 +13,6 @@
 
 
 
-.chart-legend{:style => "margin-bottom: 40px;"}
-  %div{:style => "width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_positive_sites')
-  %br
-
-  %div{:style => "width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_potential_sites')
-  %br
-
-
-  %div{:style => "width: 10px; height: 10px; background-color: #95a5a6; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_negative_sites')
-
-  %br
-
-  %div{:style => "width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_green_sites')
-
-
-
-
-%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
-
 
 :javascript
   google.load('visualization', '1', {packages: ['corechart']});
