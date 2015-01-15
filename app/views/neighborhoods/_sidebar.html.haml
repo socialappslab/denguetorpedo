@@ -7,27 +7,6 @@
     .sidebar-entity-name
       = "#{@neighborhood.city.localized_country_name}"
 
-
-  %hr{:style => "border-bottom: 1px solid #ccc;"}
-  %h1{:style => "text-align: center; color: #333;"}
-    = I18n.t("activerecord.models.team", :count => 2).capitalize
-
-  - sidebar_height = (@teams.count > 5 ? "500px;" : "280px")
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
-    .col-md-12
-      = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
-
-
-  %hr{:style => "border-bottom: 1px solid #ccc;"}
-  %h1{:style => "text-align: center; color: #333;"}
-    = I18n.t("common_terms.participants").capitalize
-
-  - sidebar_height = (@users.count > 5 ? "500px;" : "280px")
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
-    .col-md-12
-      = render :partial => "shared/sidebar_list", :locals => { :items => @users }
-
-
   %hr{:style => "border-bottom: 1px solid #ccc;"}
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.notice").capitalize
@@ -63,3 +42,24 @@
                 %div{:style => "margin-top: 5px;"}
                   %i.fa.fa-calendar
                   = format_as_date_time(notice.date)
+
+
+
+  %hr{:style => "border-bottom: 1px solid #ccc;"}
+  %h1{:style => "text-align: center; color: #333;"}
+    = I18n.t("activerecord.models.team", :count => 2).capitalize
+
+  - sidebar_height = (@teams.count > 5 ? "500px;" : "280px")
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
+    .col-md-12
+      = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
+
+
+  %hr{:style => "border-bottom: 1px solid #ccc;"}
+  %h1{:style => "text-align: center; color: #333;"}
+    = I18n.t("common_terms.participants").capitalize
+
+  - sidebar_height = (@users.count > 5 ? "500px;" : "280px")
+  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; height: #{sidebar_height};"}
+    .col-md-12
+      = render :partial => "shared/sidebar_list", :locals => { :items => @users }
