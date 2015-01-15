@@ -3,38 +3,33 @@
 %h3{:style => "font-size: 24px; margin-top: 40px; text-align: center;"}
   = I18n.t('views.statistics.chart.title')
 
-%div{:style => "width: 100%; display: block;"}
-  #chart{:style => "width: 50%; float:left; height: 250px; display: inline-block;"}
-  #potential-chart{:style => "width: 50%; float:right; height: 250px; display: inline-block;"}
+.row
+  .col-md-6
+    #chart{:style => "height: 250px; display: block;"}
 
-%div{:style => "width: 100%; display: block;"}
-  #negative-chart{:style => "width: 50%; float:left; height: 250px; display: inline-block;"}
-  #green-chart{:style => "width: 50%;float:right; height: 250px; display: inline-block;"}
-
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_positive_sites')
 
 
-.chart-legend{:style => "margin-bottom: 40px;"}
-  %div{:style => "width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_positive_sites')
-  %br
+  .col-md-6
+    #potential-chart{:style => "height: 250px; display: block;"}
 
-  %div{:style => "width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_potential_sites')
-  %br
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_potential_sites')
 
+.row
+  .col-md-6
+    #negative-chart{:style => "height: 250px;"}
 
-  %div{:style => "width: 10px; height: 10px; background-color: #95a5a6; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_negative_sites')
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #95a5a6; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_negative_sites')
 
-  %br
+  .col-md-6
+    #green-chart{:style => "height: 250px;"}
 
-  %div{:style => "width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_green_sites')
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_green_sites')
 
-
-
-
-%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
 
 
 :javascript
@@ -60,15 +55,15 @@
       right: 50,
       top: 50,
       bottom: 50,
-      width: "60%",
-      height:"60%"
+      width: "70%",
+      height:"70%"
     },
     hAxis: {
-      title: "#{I18n.t('views.statistics.chart.time')}",
-      titleTextStyle: {
-        italic: false,
-        fontSize: "20"
-      }
+      // title: "#{I18n.t('views.statistics.chart.time')}",
+      // titleTextStyle: {
+      //   italic: false,
+      //   fontSize: "20"
+      // }
     },
     vAxis: {
       gridlines: {
@@ -108,14 +103,14 @@
 
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(positiveStatistics);
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 3);
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 2);
     options.colors = ["#e74c3c"];
 
-    options.vAxis.title = "#{I18n.t('common_terms.percentage')}"
-    options.vAxis.titleTextStyle = {
-      italic: false,
-      fontSize: "20"
-    }
+    // options.vAxis.title = "#{I18n.t('common_terms.percentage')}"
+    // options.vAxis.titleTextStyle = {
+    //   italic: false,
+    //   fontSize: "20"
+    // }
 
     var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
     formatter.format(data, 1);
@@ -135,7 +130,7 @@
 
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(potentialStatistics);
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 2);
     options.colors = ["#f1c40f"];
 
     options.vAxis.title = null
@@ -161,7 +156,7 @@
 
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(negativeStatistics);
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 2);
     options.colors = ["#95a5a6"];
 
     var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
@@ -182,9 +177,11 @@
     options.vAxis.title = null
     options.hAxis.title = null
 
+    options.vAxis.viewWindow = {min: 0};
+
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(negativeStatistics);
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 2);
     options.colors = ["#2ecc71"];
 
     var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});

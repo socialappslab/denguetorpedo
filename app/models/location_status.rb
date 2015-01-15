@@ -63,17 +63,15 @@ class LocationStatus < ActiveRecord::Base
     statuses = LocationStatus.where(:location_id => location_ids).order("created_at ASC")
     return [] if statuses.blank?
 
-
+    # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
+    if (end_time - start_time).abs > 6.months
+      start_time = end_time - 6.months
+    end
 
     # Initialize the memoized hash.
     time               = start_time
     daily_stats        = []
     memoized_locations = {}
-
-    # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
-    if (end_time - start_time).abs > 6.months
-      start_time = end_time - 6.months
-    end
 
     # Iterate over the timeframe, upating the memoized result each day to reflect
     # the correct state space.

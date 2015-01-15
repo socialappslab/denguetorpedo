@@ -1,4 +1,6 @@
 
+%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
+
 
 /------------------------------------------------------------------------------
 
@@ -11,12 +13,13 @@
 - if @statistics.present?
   .row
     .col-md-9
+      = render :partial => "shared/visit_statistics"
+
+  .row
+    .col-md-9
       = render :partial => "shared/location_statistics_graph"
 
 
-.row
-  .col-md-9
-    = render :partial => "shared/visit_statistics"
 
 .row{:style => "margin-bottom: 30px; margin-top: 20px;"}
   .col-md-5
