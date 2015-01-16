@@ -13,7 +13,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
     @teams   = @neighborhood.teams.order("name ASC")
     @reports = @neighborhood.reports
-    @notices = @neighborhood.notices.order("updated_at DESC")
+    @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
 
     # Calculate total visits to (different) locations.
     @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
