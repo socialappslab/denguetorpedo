@@ -1,3 +1,6 @@
+
+%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
+
 /------------------------------------------------------------------------------
 
 = render :partial => "shared/flashes"
@@ -21,13 +24,14 @@
 - if @statistics.present?
   .row{:style => "margin-top: 20px;"}
     .col-md-10.col-md-offset-1
+      = render :partial => "shared/visit_statistics"
+
+
+  .row{:style => "margin-top: 20px;"}
+    .col-md-10.col-md-offset-1
       = render :partial => "shared/location_statistics_graph"
 
 
-- if @csv_reports.present?
-  .row{:style => "margin-top: 20px;"}
-    .col-md-10.col-md-offset-1
-      = render :partial => "shared/visit_statistics"
 
 
   .row{:style => "margin-top: 20px;"}

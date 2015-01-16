@@ -284,8 +284,8 @@ class ReportsController < NeighborhoodsBaseController
     @report.assign_attributes(params[:report])
     @report.save(:validate => false)
 
-    flash[:notice] = "Saved!"
-    redirect_to coordinator_edit_neighborhood_report_path(@neighborhood, @report) and return
+    flash[:notice] = I18n.t("common_terms.saved")
+    redirect_to neighborhood_reports_path(@neighborhood) and return
   end
 
 
