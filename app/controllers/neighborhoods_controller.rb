@@ -32,20 +32,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
       ]
     }
 
-    @newest_status_distribution = @statistics.last
-    if @newest_status_distribution.present?
-      @positive_locations  = @newest_status_distribution[:positive][:count]
-      @potential_locations = @newest_status_distribution[:potential][:count]
-      @negative_locations  = @newest_status_distribution[:negative][:count]
-      @clean_locations     = @newest_status_distribution[:clean][:count]
-    else
-      @positive_locations  = 0
-      @potential_locations = 0
-      @negative_locations  = 0
-      @clean_locations     = 0
-    end
-
-
     @last_statistics = []
     legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
     I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
@@ -54,8 +40,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
         @last_statistics << [legend[index], @statistics.last[key][:count]]
       end
     end
-
-
 
 
     # Calculate total metrics before we start filtering.
