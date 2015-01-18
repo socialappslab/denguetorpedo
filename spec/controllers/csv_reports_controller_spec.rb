@@ -108,18 +108,15 @@ describe CsvReportsController do
         expect(ls.status).to eq(LocationStatus::Types::POTENTIAL)
       end
 
-      it "correctly sets dengue and chik count" do
+      it "correctly sets the health report" do
         ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-24").first
-        expect(ls.chik_count).to eq(3)
-        expect(ls.dengue_count).to eq(5)
+        expect(ls.health_report).to eq("3c5d")
 
         ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-31").first
-        expect(ls.chik_count).to eq(1)
-        expect(ls.dengue_count).to eq(1)
+        expect(ls.health_report).to eq("1c1d")
 
         ls = LocationStatus.where("DATE(created_at) = ?", "2015-01-10").first
-        expect(ls.chik_count).to eq(0)
-        expect(ls.dengue_count).to eq(0)
+        expect(ls.health_report).to eq("0c0d")
       end
     end
   end

@@ -188,6 +188,7 @@ pt:
   #----------------------------------
 
   common_terms:
+    saved: Atualizado
     yes_string: Sim
     no_html_string: <span>Não</span>
     not_available: Não disponível
