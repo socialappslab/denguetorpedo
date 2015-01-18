@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141219230600) do
+ActiveRecord::Schema.define(:version => 20150118151833) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -196,10 +196,11 @@ ActiveRecord::Schema.define(:version => 20141219230600) do
   create_table "location_statuses", :force => true do |t|
     t.integer  "location_id"
     t.integer  "status"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.integer  "dengue_count"
     t.integer  "chik_count"
+    t.string   "health_report"
   end
 
   create_table "locations", :force => true do |t|
