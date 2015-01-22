@@ -8,8 +8,15 @@
 class LocationStatus < ActiveRecord::Base
   attr_accessible :location_id, :status, :dengue, :chikungunya
 
-  validates :location_id, :presence => true
-  validates :status, :presence => true
+  #----------------------------------------------------------------------------
+  # Validators
+
+  validates :location_id,         :presence => true
+  validates :identification_type, :presence => true
+  validates :identified_at,       :presence => true
+
+  #----------------------------------------------------------------------------
+  # Constants
 
   # The status of a location defines whether it's positive, potential, negative
   # or clean. The first three are defined by the associated reports at that
