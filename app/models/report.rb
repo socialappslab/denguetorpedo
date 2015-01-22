@@ -157,7 +157,7 @@ class Report < ActiveRecord::Base
 
   def expired?
     return false if self.eliminated?
-    return Time.now > self.created_at + EXPIRATION_WINDOW
+    return Time.now > self.expire_date
   end
 
   # A valid report is a report that is
@@ -273,7 +273,7 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def expire_date
-    self.created_at + EXPIRATION_WINDOW
+    self.completed_at + EXPIRATION_WINDOW
   end
 
   #----------------------------------------------------------------------------

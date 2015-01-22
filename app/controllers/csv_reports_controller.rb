@@ -25,23 +25,18 @@ class CsvReportsController < NeighborhoodsBaseController
       ]
     }
 
-    @newest_status_distribution = @statistics.last
-    if @newest_status_distribution.present?
-      @positive_locations  = @newest_status_distribution[:positive][:count]
-      @potential_locations = @newest_status_distribution[:potential][:count]
-      @negative_locations  = @newest_status_distribution[:negative][:count]
-      @clean_locations     = @newest_status_distribution[:clean][:count]
-    else
-      @positive_locations  = 0
-      @potential_locations = 0
-      @negative_locations  = 0
-      @clean_locations     = 0
+    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
+
+
+    @last_statistics = []
+    legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
+    I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
+    if @statistics.present?
+      [:positive, :potential, :negative, :clean].each_with_index do |key, index|
+        @last_statistics << [legend[index], @statistics.last[key][:count]]
+      end
     end
 
-
-
-
-    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
   end
 
 
@@ -204,16 +199,14 @@ class CsvReportsController < NeighborhoodsBaseController
         current_visit = date
 
         # Let's parse the reporting on chik and dengue.
-        # The format can be nil, 5c3d, 5c, 3d, or 5d3c.
-        chik_count      = 0
-        dengue_count    = 0
-        disease_report  = row.select {|k,v| k.include?("reporte")}.values[0].to_s
-        if disease_report.present?
-          chik_count   = /([0-9]*)c/.match(disease_report)
-          chik_count   = chik_count[1].to_i if chik_count.present?
-          dengue_count = /([0-9]*)d/.match(disease_report)
-          dengue_count = dengue_count[1].to_i if dengue_count.present?
-        end
+        disease_report = row.select {|k,v| k.include?("reporte")}.values[0].to_s
+        disease_report = nil if disease_report.blank?
+        # if disease_report.present?
+        #   chik_count   = /([0-9]*)c/.match(disease_report)
+        #   chik_count   = chik_count[1].to_i if chik_count.present?
+        #   dengue_count = /([0-9]*)d/.match(disease_report)
+        #   dengue_count = dengue_count[1].to_i if dengue_count.present?
+        # end
 
         # Now let's see if the location is clean.
         # If the last type is n, then the location is clean (for now).
@@ -234,8 +227,7 @@ class CsvReportsController < NeighborhoodsBaseController
         end
 
         visits << {
-          :date => visit_date, :chik_count => chik_count,
-          :dengue_count => dengue_count, :status => status
+          :date => visit_date, :health_report => disease_report, :status => status
         }
 
       end
@@ -266,9 +258,8 @@ class CsvReportsController < NeighborhoodsBaseController
         ls = ls.first
       end
 
-      ls.status       = visit[:status]
-      ls.chik_count   = visit[:chik_count]
-      ls.dengue_count = visit[:dengue_count]
+      ls.status        = visit[:status]
+      ls.health_report = visit[:health_report]
       ls.save
     end
 
