@@ -298,10 +298,18 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # This method is run when the report is created. The purpose is to
-  # use created_at (not completed_at since a CSV-generated report may not have
-  # that set, and we don't want to assume members will fill in DengueChat reports
-  # immediately after CSV) to associate with a particular LocationStatus.
+  # This method is run when the report is created. Each report essentially
+  # represents the identification type of a location.
+  #
+
+
+  # A new report offers new information regarding a location. We use this information
+  # to update or set the identification_type based on the following information:
+  # * If report is status = POSITIVE, then the identification_type is POSITIVE
+  # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
+  #   of existing LocationStatus does not equal POSITIVE.
+  # The actual status of a location will be dynamically calculated based on
+  # cleaned_at, identification_type, and identified_at attributes.
   def set_location_status
     return if self.location_id.blank?
 
@@ -314,9 +322,9 @@ class Report < ActiveRecord::Base
       ls = ls.first
     end
 
-    start_time = self.created_at - 4.weeks
-    end_time   = self.created_at
-    ls.status  = LocationStatus.calculate_status_using_report_and_times(self, start_time, end_time)
+    if ls.identification_type != LocationStatus::Types::POSITIVE
+      ls.identification_type = self.status
+    end
 
     ls.save
   end
@@ -338,10 +346,6 @@ class Report < ActiveRecord::Base
     else
       ls = ls.first
     end
-
-    start_time = self.eliminated_at - 4.weeks
-    end_time   = self.eliminated_at
-    ls.status  = LocationStatus.calculate_status_using_report_and_times(self, start_time, end_time)
 
     ls.save
   end
