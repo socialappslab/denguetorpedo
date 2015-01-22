@@ -314,10 +314,10 @@ class Report < ActiveRecord::Base
     return if self.location_id.blank?
 
     ls = LocationStatus.where(:location_id => self.location_id)
-    ls = ls.where(:created_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
+    ls = ls.where(:identified_at => (self.created_at.beginning_of_day..self.created_at.end_of_day)).order("identified_at DESC")
     if ls.blank?
-      ls            = LocationStatus.new(:location_id => self.location_id)
-      ls.created_at = self.created_at
+      ls               = LocationStatus.new(:location_id => self.location_id)
+      ls.identified_at = self.created_at
     else
       ls = ls.first
     end
@@ -332,19 +332,32 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
 
-  # This method is run when the report is *eliminated*. The purpose is to
-  # use eliminated_at to associate with a particular LocationStatus.
+  # This method is run when the report is *eliminated*. Again, the eliminated
+  # report gleams some insight into the state of the location. Whether the location
+  # is actually cleaned or not depends on all other reports, however. Therefore,
+  # we update cleaned_at ONLY IF all reports have been eliminated. We set cleaned_at
+  # to be the time of the incoming report's eliminated_at time.
+  #
+  # What LocationStatus are we updating? The one whose identified_at corresponds
+  # to the report's created_at date. This ensures consistency between the
+  # set_location_status method, and this method so we're working on the same
+  # LocationStatus.
   def update_location_status
     return if self.location_id.blank?
     return if self.eliminated_at.blank?
 
+    # NOTE: We're expecting a LocationStatus to exist because we're being consistent
+    # with the method above.
     ls = LocationStatus.where(:location_id => self.location_id)
-    ls = ls.where(:created_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
-    if ls.blank?
-      ls            = LocationStatus.new(:location_id => self.location_id)
-      ls.created_at = self.eliminated_at
-    else
-      ls = ls.first
+    ls = ls.where(:identified_at => (self.created_at.beginning_of_day..self.created_at.end_of_day)).order("identified_at DESC")
+    ls = ls.first
+
+    # Now, let's update cleaned_at column only if there are no more positive/potential
+    # reports.
+    reports = self.location.reports
+    possible_report = reports.find {|r| [Report::Status::POSITIVE, Report::Status::POTENTIAL].include?(r.status) }
+    if possible_report.blank?
+      ls.cleaned_at = self.eliminated_at
     end
 
     ls.save
