@@ -322,8 +322,25 @@ class Report < ActiveRecord::Base
       ls = ls.first
     end
 
-    if ls.identification_type != LocationStatus::Types::POSITIVE
+    # We set the identification type to be the *worst* found type, meaning that
+    # if the report is positive, we set the identification_type to positive. If
+    # the report is positive and the identification_type is already positive, then
+    # we keep it positive.
+    if ls.identification_type.blank?
       ls.identification_type = self.status
+    elsif self.status == Status::POSITIVE
+      ls.identification_type = Status::POSITIVE
+    elsif self.status == Status::POTENTIAL && ls.identification_type != Status::POSITIVE
+      ls.identification_type = Status::POTENTIAL
+    elsif self.status == Status::NEGATIVE && ls.identification_type == LocationStatus::Types::CLEAN
+      ls.identification_type = Status::NEGATIVE
+    end
+
+    # In case we're updating an existing LocationStatus instance, we
+    # must set the cleaned_at column back to nil if this report is
+    # positive or potential.
+    if [Status::POSITIVE, Status::POTENTIAL].include?(self.status)
+      ls.cleaned_at = nil
     end
 
     ls.save
