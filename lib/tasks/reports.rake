@@ -61,4 +61,22 @@ namespace :reports do
 
   #----------------------------------------------------------------------------
 
+  task :backfill_visits => :environment do
+    Report.find_each do |r|
+      puts "\n\n\n[ ] Updating Visit model by running set_location_status on each Report\n\n\n"
+
+      r.set_location_status()
+
+      puts "\n\n\n[x] Updating Visit model by running set_location_status on each Report\n\n\n"
+      puts "\n\n\n[ ] Triggering after_commit, :on => :update method to trigger update_location_status\n\n\n"
+
+      r.save(:validate => false)
+
+      puts "\n\n\n[x] Triggering after_commit, :on => :update method to trigger update_location_status\n\n\n"
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
+
 end
