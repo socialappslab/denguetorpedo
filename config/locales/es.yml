@@ -138,12 +138,15 @@ es:
     education:
       title: SEPA MÁS
       description: Sobre el dengue
+      title_and_description: Sepa más
     howto:
       title: JUEGUE
       description: ¿Cómo?
+      title_and_description: ¿Juegue cómo?
     prizes:
       title: GANE
       description: Puntos
+      title_and_description: Gane puntos
 
 
   #----------------------------------------------------------------------------

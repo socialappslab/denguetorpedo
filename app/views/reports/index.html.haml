@@ -37,7 +37,7 @@
 
 /------------------------------------------------------------------------------
 
-- if @current_user
+- if @current_user && @current_user.neighborhood == @neighborhood
   .row{:style => "margin-bottom: 20px;"}
     .col-md-2.col-md-offset-1{:style => "margin-top: 20px;"}
       = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-large" do
@@ -49,7 +49,15 @@
         = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
-    .col-md-4.col-md-offset-2
+
+    .col-md-2{:style => "margin-top: 20px;"}
+      - if @neighborhood.spanish?
+        = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info btn-large" do
+          %i.fa.fa-file
+          View uploaded CSV
+
+
+    .col-md-4
       - if @report_count > @report_limit
         = render :partial => "reports/pagination"
 

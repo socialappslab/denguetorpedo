@@ -18,16 +18,9 @@
 
 #logo {
   position: absolute;
-  left: 50px;
-  // width: 150px;
+  left: 25px;
   z-index: 3;
-  width: 200px;
-}
-
-#logo_short {
-  position: absolute;
-  left: 70px;
-  width: 150px;
+  width: 100px;
 }
 
 #white_spacer {
@@ -73,9 +66,9 @@
   position: absolute;
 }
 
-a.logout_button:hover {
-  color: black;
-}
+// a.logout_button:hover {
+//   color: black;
+// }
 
 div {
   word-wrap: break-word;
