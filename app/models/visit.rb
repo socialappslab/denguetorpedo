@@ -3,7 +3,7 @@
 # a day, then we will simply update the existing Visit entry.
 # This has two benefits:
 # a) statistics are *much* faster to calculate
-# b) there is no need for real-time location statuses.I went with real-time series before this,
+# b) there is no need for real-time location visits.I went with real-time series before this,
 #    and it was a hassle to calculate daily trends (which is all what people care about).
 
 # A Visit is the correct real-world representation instead of Visit, as
@@ -46,21 +46,42 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # The status of a visit depends on its identification_type, identified_at date
+  # and cleaned_at date as follows:
+  # * If cleaned_at is nil, then that means the site was identified but not
+  #   cleaned since last reported report (note: this does not mean it was never
+  #   cleaned). We rely on identification_type to define the status.
+  # * If cleaned_at is present, then we compare it to the date of identified_at.
+  #   If they match, then we still report that location as whatever identification_type
+  #   has it set. If cleaned_at and identified_at dates do NOT match, then we
+  #   treat this location as cleaned.
+  def status
+    if self.cleaned_at.blank?
+      return self.identification_type
+    elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
+      return self.identification_type
+    elsif self.cleaned_at < 2.weeks.ago
+      return Visit::Types::CLEAN
+    else
+      return Report::Status::NEGATIVE
+    end
+  end
+
   # This is a convenience method that uses calculate_time_series_for_locations_in_timeframe
   # under the hood.
   def self.calculate_time_series_for_locations(locations)
     location_ids    = locations.map(&:id)
-    statuses = Visit.where(:location_id => location_ids).order("created_at ASC")
-    return [] if statuses.blank?
+    visits = Visit.where(:location_id => location_ids).order("created_at ASC")
+    return [] if visits.blank?
 
     # Determine the timeframe.
-    start_time  = statuses.first.created_at.beginning_of_day
-    end_time    = statuses.last.created_at.end_of_day
+    start_time  = visits.first.created_at.beginning_of_day
+    end_time    = visits.last.created_at.end_of_day
     self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
   end
 
   # In order to calculate time series for locations, we need to realize that
-  # location statuses exhibit "gaps" in reported status of a location. This means
+  # location visits exhibit "gaps" in reported status of a location. This means
   # that there is no guarantee we have a record of the location status on any
   # given day. Instead, we have to calculate it based on *last known row entry* (assume
   # POTENTIAL if no entry). This is what is known as the "Gaps and Islands" problem:
@@ -73,7 +94,7 @@ class Visit < ActiveRecord::Base
   # past, and then grouping by location. This is problematic since you have to ensure
   # that each location is counted only once. I haven't found a clean way for doig this.
   #
-  # An alternative way is to memoize the location statuses, and calculate percentages
+  # An alternative way is to memoize the location visits, and calculate percentages
   # from this memoized result, making sure to update this memoized result after each
   # day iteration. In other words, we essentially keep track of all locations, and update
   # each location with new metrics as we get more information.
@@ -82,8 +103,8 @@ class Visit < ActiveRecord::Base
   # skew the actual statistics.
   def self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
     location_ids    = locations.map(&:id)
-    statuses = Visit.where(:location_id => location_ids).order("created_at ASC")
-    return [] if statuses.blank?
+    visits = Visit.where(:location_id => location_ids).order("identified_at ASC")
+    return [] if visits.blank?
 
     # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
     if (end_time - start_time).abs > 6.months
@@ -99,17 +120,17 @@ class Visit < ActiveRecord::Base
     # the correct state space.
     while time <= end_time
       date_key = time.strftime("%Y-%m-%d")
-      stats = statuses.where("DATE(created_at) = ?", date_key)
+      stats = visits.where("DATE(identified_at) = ?", date_key)
 
       # Update the memoized result with new data (or fallback to POTENTIAL)
-      stats.each do |location_state|
-        memoized_locations[location_state.location_id] = location_state.status || memoized_locations[location_state.location_id] || Visit::Types::POTENTIAL
+      stats.each do |v|
+        memoized_locations[location_state.location_id] = v.status || memoized_locations[v.location_id]
       end
 
       # Calculate the count and percentages of the latest memoized result.
-      positive_count  = memoized_locations.find_all {|loc_id, status| status == Types::POSITIVE}.count
-      potential_count = memoized_locations.find_all {|loc_id, status| status == Types::POTENTIAL}.count
-      negative_count  = memoized_locations.find_all {|loc_id, status| status == Types::NEGATIVE}.count
+      positive_count  = memoized_locations.find_all {|loc_id, status| status == Report::Status::POSITIVE}.count
+      potential_count = memoized_locations.find_all {|loc_id, status| status == Report::Status::POTENTIAL}.count
+      negative_count  = memoized_locations.find_all {|loc_id, status| status == Report::Status::NEGATIVE}.count
       clean_count     = memoized_locations.find_all {|loc_id, status| status == Types::CLEAN}.count
       total_count     = positive_count + potential_count + negative_count + clean_count
 
