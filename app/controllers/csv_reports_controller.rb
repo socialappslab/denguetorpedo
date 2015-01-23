@@ -212,7 +212,7 @@ class CsvReportsController < NeighborhoodsBaseController
         # If the last type is n, then the location is clean (for now).
         # If it's not the last row, then we simply label the status as a potential
         # breeding site. The actual status will be updated when the associated
-        # report for the location is updated.
+        # report's create callback is invoked.
         if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
           status = Visit::Types::NEGATIVE
         else
@@ -248,18 +248,20 @@ class CsvReportsController < NeighborhoodsBaseController
     # Now that we have a location, let's update the Visit.
     # Note that if the reports that will be reported after this have any
     # positive status, then the location will be treated updated accordingly.
+    # NOTE: The reports will be associated with these visits thanks to the report's
+    # callback hook.
     visits.each do |visit|
       ls = Visit.where(:location_id => location.id)
-      ls = ls.where(:created_at => (visit[:date].beginning_of_day..visit[:date].end_of_day) )
+      ls = ls.where(:identified_at => (visit[:date].beginning_of_day..visit[:date].end_of_day) ).order("identified_at DESC")
       if ls.blank?
         ls = Visit.new(:location_id => location.id)
-        ls.created_at = visit[:date]
+        ls.identified_at = visit[:date]
       else
         ls = ls.first
       end
 
-      ls.status        = visit[:status]
-      ls.health_report = visit[:health_report]
+      ls.identification_type  = visit[:status]
+      ls.health_report        = visit[:health_report]
       ls.save
     end
 
