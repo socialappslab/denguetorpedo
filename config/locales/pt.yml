@@ -135,12 +135,15 @@ pt:
     education:
       title: SAIBA MAIS
       description: Sobre a dengue
+      title_and_description: Saiba mais
     howto:
       title: JOGUE
       description: Como?
+      title_and_description: Jogue como?
     prizes:
       title: GANHE
       description: Pontos
+      title_and_description: Ganhe pontos
 
 
   #----------------------------------------------------------------------------

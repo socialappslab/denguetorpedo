@@ -2,9 +2,9 @@ module ApplicationHelper
 
   def logo_image
     if I18n.locale.to_s == User::Locales::PORTUGUESE
-      image_tag("logo_pt.png", :id => "logo", :style=> "z-index:3;")
+      image_tag("logo_pt.png", :id => "logo")
     else
-      image_tag("logo_es.png", :id => "logo", :style=> "z-index:3;")
+      image_tag("logo_es.png", :id => "logo")
     end
   end
 
@@ -35,7 +35,7 @@ module ApplicationHelper
   end
 
   #----------------------------------------------------------------------------
-  
+
   def format_as_date_time(timestamp)
     return "" if timestamp.blank?
     return timestamp.strftime("%Y-%m-%d %H:%M")
