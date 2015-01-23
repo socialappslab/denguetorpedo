@@ -75,8 +75,8 @@ class Visit < ActiveRecord::Base
     return [] if visits.blank?
 
     # Determine the timeframe.
-    start_time = visits.first.created_at.beginning_of_day
-    end_time   = visits.last.created_at.end_of_day
+    start_time = visits.first.identified_at.beginning_of_day
+    end_time   = visits.last.identified_at.end_of_day
     self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
   end
 
