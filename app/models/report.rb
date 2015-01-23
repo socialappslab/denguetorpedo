@@ -344,6 +344,9 @@ class Report < ActiveRecord::Base
     end
 
     ls.save
+
+    # Finally, associate the report with a particular visit.
+    self.update_column(:visit_id, ls.id)
   end
 
   #----------------------------------------------------------------------------
@@ -378,6 +381,9 @@ class Report < ActiveRecord::Base
     end
 
     ls.save
+
+    # Finally, associate the report with a particular visit if it's not associated yet.
+    self.update_column(:visit_id, ls.id) if self.visit_id.blank?
   end
 
 
