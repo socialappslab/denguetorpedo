@@ -104,8 +104,9 @@ class Report < ActiveRecord::Base
   # the location status. This is perfectly fine because a single report being
   # updated can't affect the aggregate location status metric. Furthermore, when
   # a report is eliminated, it is updated so update action must be accounted for.
-  after_commit :set_location_status,    :on => :create
-  after_commit :update_location_status, :on => :update
+  after_commit :set_location_status,     :on => :create
+  after_commit :update_location_status,  :on => :update
+  after_commit :destroy_location_status, :on => :destroy
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
@@ -351,7 +352,6 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-
   # This method is run when the report is *eliminated*. Again, the eliminated
   # report gleams some insight into the state of the location. Whether the location
   # is actually cleaned or not depends on all other reports, however. Therefore,
@@ -386,6 +386,18 @@ class Report < ActiveRecord::Base
     self.update_column(:visit_id, ls.id) if self.visit_id.blank?
   end
 
+
+  #----------------------------------------------------------------------------
+
+  # This method is run when the report is *destroyed*. We want to make sure that
+  # if this is the last report associated with the Visit, then make sure to
+  # destroy that visit.
+  def destroy_location_status
+    return if self.visit_id.blank?
+
+    remaining_reports_count = Report.where(:visit_id => self.visit_id).count
+    Visit.find(self.visit_id).destroy if remaining_reports_count == 0
+  end
 
   #----------------------------------------------------------------------------
 
