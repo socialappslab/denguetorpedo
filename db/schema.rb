@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150123164801) do
+ActiveRecord::Schema.define(:version => 20150123165032) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -192,19 +192,6 @@ ActiveRecord::Schema.define(:version => 20150123164801) do
   end
 
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], :name => "index_likes_on_user_id_and_likeable_id_and_likeable_type", :unique => true
-
-  create_table "location_statuses", :force => true do |t|
-    t.integer  "location_id"
-    t.integer  "status"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
-    t.integer  "dengue_count"
-    t.integer  "chik_count"
-    t.string   "health_report"
-    t.integer  "identification_type"
-    t.datetime "identified_at"
-    t.datetime "cleaned_at"
-  end
 
   create_table "locations", :force => true do |t|
     t.string   "address"
@@ -440,5 +427,18 @@ ActiveRecord::Schema.define(:version => 20150123164801) do
   end
 
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
+
+  create_table "visits", :force => true do |t|
+    t.integer  "location_id"
+    t.integer  "status"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "dengue_count"
+    t.integer  "chik_count"
+    t.string   "health_report"
+    t.integer  "identification_type"
+    t.datetime "identified_at"
+    t.datetime "cleaned_at"
+  end
 
 end
