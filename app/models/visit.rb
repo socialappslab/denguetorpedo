@@ -21,7 +21,7 @@
 # Note that this model limits the number of actions a user can do: either
 # identify (and do nothing), or identify and clean the whole place.
 class Visit < ActiveRecord::Base
-  attr_accessible :location_id, :status, :health_report
+  attr_accessible :location_id, :identification_type, :identified_at, :cleaned_at, :health_report
 
   #----------------------------------------------------------------------------
   # Validators
@@ -56,8 +56,8 @@ class Visit < ActiveRecord::Base
   #   has it set. If cleaned_at and identified_at dates do NOT match, then we
   #   treat this location as cleaned.
   # TODO: We don't implement CLEAN status for now since it requires heavy SQL
-  # queries into the history of Visits. 
-  def status
+  # queries into the history of Visits.
+  def state
     if self.cleaned_at.blank?
       return self.identification_type
     elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
@@ -70,13 +70,13 @@ class Visit < ActiveRecord::Base
   # This is a convenience method that uses calculate_time_series_for_locations_in_timeframe
   # under the hood.
   def self.calculate_time_series_for_locations(locations)
-    location_ids    = locations.map(&:id)
-    visits = Visit.where(:location_id => location_ids).order("created_at ASC")
+    location_ids = locations.map(&:id)
+    visits  = Visit.where(:location_id => location_ids).order("identified_at ASC")
     return [] if visits.blank?
 
     # Determine the timeframe.
-    start_time  = visits.first.created_at.beginning_of_day
-    end_time    = visits.last.created_at.end_of_day
+    start_time = visits.first.created_at.beginning_of_day
+    end_time   = visits.last.created_at.end_of_day
     self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
   end
 
@@ -102,8 +102,8 @@ class Visit < ActiveRecord::Base
   # all locations as not all locations existed for all time. Otherwise, we may
   # skew the actual statistics.
   def self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
-    location_ids    = locations.map(&:id)
-    visits = Visit.where(:location_id => location_ids).order("identified_at ASC")
+    location_ids = locations.map(&:id)
+    visits       = Visit.where(:location_id => location_ids).order("identified_at ASC")
     return [] if visits.blank?
 
     # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
@@ -124,7 +124,7 @@ class Visit < ActiveRecord::Base
 
       # Update the memoized result with new data (or fallback to POTENTIAL)
       stats.each do |v|
-        memoized_locations[location_state.location_id] = v.status || memoized_locations[v.location_id]
+        memoized_locations[v.location_id] = v.state || memoized_locations[v.location_id]
       end
 
       # Calculate the count and percentages of the latest memoized result.

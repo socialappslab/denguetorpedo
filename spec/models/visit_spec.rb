@@ -17,13 +17,13 @@ describe Visit do
     it "returns POSITIVE if there is an open report" do
       report.save(:validate => false)
       v = Visit.first
-      expect(v.status).to eq(Report::Status::POSITIVE)
+      expect(v.state).to eq(Report::Status::POSITIVE)
     end
 
     it "returns POTENTIAL if there is an open report" do
       FactoryGirl.create(:report, :larvae => false, :report => "Saw Report #2", :location_id => location.id, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id, :created_at => identified_at)
       v = Visit.first
-      expect(v.status).to eq(Report::Status::POTENTIAL)
+      expect(v.state).to eq(Report::Status::POTENTIAL)
     end
 
     it "returns identification type if cleaning date is same day as identification date" do
@@ -35,7 +35,7 @@ describe Visit do
       report.save(:validate => false)
 
       v = Visit.first
-      expect(v.status).to eq(Report::Status::POSITIVE)
+      expect(v.state).to eq(Report::Status::POSITIVE)
     end
 
     it "returns NEGATIVE if cleaning date doesn't equal identification date" do
@@ -47,7 +47,7 @@ describe Visit do
       report.save(:validate => false)
 
       v = Visit.first
-      expect(v.status).to eq(Report::Status::NEGATIVE)
+      expect(v.state).to eq(Report::Status::NEGATIVE)
     end
   end
 
