@@ -13,7 +13,7 @@ class CsvReportsController < NeighborhoodsBaseController
 
     @visits              = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
+    @statistics = Visit.calculate_time_series_for_locations(@visits)
     @table_statistics = @statistics.last
     @chart_statistics = @statistics.map {|hash|
       [
@@ -25,7 +25,7 @@ class CsvReportsController < NeighborhoodsBaseController
       ]
     }
 
-    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
+    @statistics = Visit.calculate_time_series_for_locations(@visits)
 
 
     @last_statistics = []
@@ -214,9 +214,9 @@ class CsvReportsController < NeighborhoodsBaseController
         # breeding site. The actual status will be updated when the associated
         # report for the location is updated.
         if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
-          status = LocationStatus::Types::NEGATIVE
+          status = Visit::Types::NEGATIVE
         else
-          status = LocationStatus::Types::POTENTIAL
+          status = Visit::Types::POTENTIAL
         end
 
         # Now let's try parsing the date.
@@ -245,14 +245,14 @@ class CsvReportsController < NeighborhoodsBaseController
       location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
 
-    # Now that we have a location, let's update the LocationStatus.
+    # Now that we have a location, let's update the Visit.
     # Note that if the reports that will be reported after this have any
     # positive status, then the location will be treated updated accordingly.
     visits.each do |visit|
-      ls = LocationStatus.where(:location_id => location.id)
+      ls = Visit.where(:location_id => location.id)
       ls = ls.where(:created_at => (visit[:date].beginning_of_day..visit[:date].end_of_day) )
       if ls.blank?
-        ls = LocationStatus.new(:location_id => location.id)
+        ls = Visit.new(:location_id => location.id)
         ls.created_at = visit[:date]
       else
         ls = ls.first
@@ -288,7 +288,7 @@ class CsvReportsController < NeighborhoodsBaseController
         # Note: We're overriding the created_at and updated_at dates in order
         # to more closely reflect the correct site identification time.
         # Also, note that we *must* set updated_at to same as created_at in order
-        # for the set_location_status method to correctly update the LocationStatus
+        # for the set_location_status method to correctly update the Visit
         # instance to the right date (which is the date of house inspection).
         begin
           r.created_at = DateTime.parse( report[:inspection_date] )

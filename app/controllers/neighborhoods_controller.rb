@@ -21,7 +21,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # start_time = Time.now - 3.months
     # end_time   = Time.now
-    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
+    @statistics = Visit.calculate_time_series_for_locations(@visits)
     @chart_statistics = @statistics.map {|hash|
       [
         hash[:date],

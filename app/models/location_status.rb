@@ -1,11 +1,26 @@
-# NOTE: The associated LocationStatus table stores a *daily* snapshot
+# NOTE: The associated Visit table stores a *daily* snapshot
 # of the location's status. This means that if several reports are created in
-# a day, then we will simply update the existing LocationStatus entry.
+# a day, then we will simply update the existing Visit entry.
 # This has two benefits:
 # a) statistics are *much* faster to calculate
 # b) there is no need for real-time location statuses.I went with real-time series before this,
 #    and it was a hassle to calculate daily trends (which is all what people care about).
-class LocationStatus < ActiveRecord::Base
+
+# A Visit is the correct real-world representation instead of Visit, as
+# we're tracking the health status of a location at a given time. This
+# "track" can be roughly thought of as a visit to that location.
+#
+# Armed with this thought process, it now becomes obvious to append
+# more properties to this model. For instance,
+# * dengue cases,
+# * chik cases,
+# * identification type (positive, potential, or negative/clean)
+# * time of identification
+# * time of cleaning (if the elimination was performed).
+#
+# Note that this model limits the number of actions a user can do: either
+# identify (and do nothing), or identify and clean the whole place.
+class Visit < ActiveRecord::Base
   attr_accessible :location_id, :status, :health_report
 
   #----------------------------------------------------------------------------
@@ -35,7 +50,7 @@ class LocationStatus < ActiveRecord::Base
   # under the hood.
   def self.calculate_time_series_for_locations(locations)
     location_ids    = locations.map(&:id)
-    statuses = LocationStatus.where(:location_id => location_ids).order("created_at ASC")
+    statuses = Visit.where(:location_id => location_ids).order("created_at ASC")
     return [] if statuses.blank?
 
     # Determine the timeframe.
@@ -67,7 +82,7 @@ class LocationStatus < ActiveRecord::Base
   # skew the actual statistics.
   def self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
     location_ids    = locations.map(&:id)
-    statuses = LocationStatus.where(:location_id => location_ids).order("created_at ASC")
+    statuses = Visit.where(:location_id => location_ids).order("created_at ASC")
     return [] if statuses.blank?
 
     # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
@@ -88,7 +103,7 @@ class LocationStatus < ActiveRecord::Base
 
       # Update the memoized result with new data (or fallback to POTENTIAL)
       stats.each do |location_state|
-        memoized_locations[location_state.location_id] = location_state.status || memoized_locations[location_state.location_id] || LocationStatus::Types::POTENTIAL
+        memoized_locations[location_state.location_id] = location_state.status || memoized_locations[location_state.location_id] || Visit::Types::POTENTIAL
       end
 
       # Calculate the count and percentages of the latest memoized result.

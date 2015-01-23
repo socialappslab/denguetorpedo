@@ -35,16 +35,16 @@ describe Report do
 		it "sets location status to positive if at least one report is positive" do
 			FactoryGirl.create(:report, :report => "Saw Report", :location_id => location.id, :larvae => true, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
 			puts "CREATED>.."
-			expect(location.reload.status).to eq(LocationStatus::Types::POSITIVE)
+			expect(location.reload.status).to eq(Visit::Types::POSITIVE)
 		end
 
 		it "sets location status to potential if at least one report is potential" do
 			FactoryGirl.create(:report, :report => "Saw Report", :location_id => location.id, :larvae => false, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
-			expect(location.reload.status).to eq(LocationStatus::Types::POTENTIAL)
+			expect(location.reload.status).to eq(Visit::Types::POTENTIAL)
 		end
 
 		it "sets location status to clean if location has been clean for more than 14 days" do
-			expect(location.reload.status).to eq(LocationStatus::Types::CLEAN)
+			expect(location.reload.status).to eq(Visit::Types::CLEAN)
 		end
 	end
 

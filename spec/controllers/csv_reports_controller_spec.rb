@@ -43,7 +43,7 @@ describe CsvReportsController do
         post :create, :csv_report => { :csv => uploaded_csv },
         :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
         :neighborhood_id => Neighborhood.first.id
-      }.to change(LocationStatus, :count).by(3)
+      }.to change(Visit, :count).by(3)
     end
 
 
@@ -84,7 +84,7 @@ describe CsvReportsController do
     end
 
 
-    describe "the parsed LocationStatus attributes", :after_commit => true do
+    describe "the parsed Visit attributes", :after_commit => true do
       before(:each) do
         post :create, :csv_report => { :csv => uploaded_csv },
         :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
@@ -92,30 +92,30 @@ describe CsvReportsController do
       end
 
       it "correctly sets status" do
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-24").first
-        expect(ls.status).to eq(LocationStatus::Types::POSITIVE)
+        ls = Visit.where("DATE(created_at) = ?", "2014-12-24").first
+        expect(ls.status).to eq(Visit::Types::POSITIVE)
 
         # NOTE: These should be positive since the above location status is positive,
         # and still hasn't been eliminated.
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-31").first
-        expect(ls.status).to eq(LocationStatus::Types::POSITIVE)
+        ls = Visit.where("DATE(created_at) = ?", "2014-12-31").first
+        expect(ls.status).to eq(Visit::Types::POSITIVE)
 
-        # TODO: Perhaps we should instead think of LocationStatus as Visits that
+        # TODO: Perhaps we should instead think of Visit as Visits that
         # essentially categorize each visit as POSITIVE, POTENTIAL, or NEGATIVE.
         # The status of a location is then dependent on whether each visit resolved
         # its status... We would need to define what "resolved" means in this context.
-        ls = LocationStatus.where("DATE(created_at) = ?", "2015-01-10").first
-        expect(ls.status).to eq(LocationStatus::Types::POTENTIAL)
+        ls = Visit.where("DATE(created_at) = ?", "2015-01-10").first
+        expect(ls.status).to eq(Visit::Types::POTENTIAL)
       end
 
       it "correctly sets the health report" do
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-24").first
+        ls = Visit.where("DATE(created_at) = ?", "2014-12-24").first
         expect(ls.health_report).to eq("3c5d")
 
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-31").first
+        ls = Visit.where("DATE(created_at) = ?", "2014-12-31").first
         expect(ls.health_report).to eq("1c1d")
 
-        ls = LocationStatus.where("DATE(created_at) = ?", "2015-01-10").first
+        ls = Visit.where("DATE(created_at) = ?", "2015-01-10").first
         expect(ls.health_report).to eq("0c0d")
       end
     end

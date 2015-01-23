@@ -307,16 +307,16 @@ class Report < ActiveRecord::Base
   # to update or set the identification_type based on the following information:
   # * If report is status = POSITIVE, then the identification_type is POSITIVE
   # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
-  #   of existing LocationStatus does not equal POSITIVE.
+  #   of existing Visit does not equal POSITIVE.
   # The actual status of a location will be dynamically calculated based on
   # cleaned_at, identification_type, and identified_at attributes.
   def set_location_status
     return if self.location_id.blank?
 
-    ls = LocationStatus.where(:location_id => self.location_id)
+    ls = Visit.where(:location_id => self.location_id)
     ls = ls.where(:identified_at => (self.created_at.beginning_of_day..self.created_at.end_of_day)).order("identified_at DESC")
     if ls.blank?
-      ls               = LocationStatus.new(:location_id => self.location_id)
+      ls               = Visit.new(:location_id => self.location_id)
       ls.identified_at = self.created_at
     else
       ls = ls.first
@@ -332,11 +332,11 @@ class Report < ActiveRecord::Base
       ls.identification_type = Status::POSITIVE
     elsif self.status == Status::POTENTIAL && ls.identification_type != Status::POSITIVE
       ls.identification_type = Status::POTENTIAL
-    elsif self.status == Status::NEGATIVE && ls.identification_type == LocationStatus::Types::CLEAN
+    elsif self.status == Status::NEGATIVE && ls.identification_type == Visit::Types::CLEAN
       ls.identification_type = Status::NEGATIVE
     end
 
-    # In case we're updating an existing LocationStatus instance, we
+    # In case we're updating an existing Visit instance, we
     # must set the cleaned_at column back to nil if this report is
     # positive or potential.
     if [Status::POSITIVE, Status::POTENTIAL].include?(self.status)
@@ -355,17 +355,17 @@ class Report < ActiveRecord::Base
   # we update cleaned_at ONLY IF all reports have been eliminated. We set cleaned_at
   # to be the time of the incoming report's eliminated_at time.
   #
-  # What LocationStatus are we updating? The one whose identified_at corresponds
+  # What Visit are we updating? The one whose identified_at corresponds
   # to the report's created_at date. This ensures consistency between the
   # set_location_status method, and this method so we're working on the same
-  # LocationStatus.
+  # Visit.
   def update_location_status
     return if self.location_id.blank?
     return if self.eliminated_at.blank?
 
-    # NOTE: We're expecting a LocationStatus to exist because we're being consistent
+    # NOTE: We're expecting a Visit to exist because we're being consistent
     # with the method above.
-    ls = LocationStatus.where(:location_id => self.location_id)
+    ls = Visit.where(:location_id => self.location_id)
     ls = ls.where(:identified_at => (self.created_at.beginning_of_day..self.created_at.end_of_day)).order("identified_at DESC")
     ls = ls.first
 
