@@ -55,15 +55,15 @@ class Visit < ActiveRecord::Base
   #   If they match, then we still report that location as whatever identification_type
   #   has it set. If cleaned_at and identified_at dates do NOT match, then we
   #   treat this location as cleaned.
+  # TODO: We don't implement CLEAN status for now since it requires heavy SQL
+  # queries into the history of Visits. 
   def status
     if self.cleaned_at.blank?
       return self.identification_type
     elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
       return self.identification_type
-    elsif self.cleaned_at < 2.weeks.ago
-      return Visit::Types::CLEAN
     else
-      return Report::Status::NEGATIVE
+      return Visit::Types::NEGATIVE
     end
   end
 
