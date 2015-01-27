@@ -41,6 +41,7 @@ cities.each do |c_hash|
     c.state = c_hash[:state]
     c.state_code = c_hash[:state_code]
     c.country_id = Country.find_by_name( c_hash[:country_name] ).id
+    c.time_zone  = "Mexico City"
     c.save!
   end
 end

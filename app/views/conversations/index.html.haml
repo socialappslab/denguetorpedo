@@ -42,7 +42,7 @@
 
                     .feed-item-timestamp
                       %i.fa.fa-clock-o
-                      = format_timestamp(c.updated_at)
+                      = timestamp_in_metadata(c.updated_at)
                 .row.feed-item-content
                   .col-md-6
                     = I18n.t("views.conversations.index.messages_between") + " #{c.users.map(&:display_name).join(', ')}"

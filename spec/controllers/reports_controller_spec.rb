@@ -11,8 +11,13 @@ describe ReportsController do
 		:street_type => "Rua", :street_name => "Darci Vargas",
 		:street_number => "45", :latitude => "50.0", :longitude => "40.0"}
 	}
+	let(:base64_image) { "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAbAA8DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBlt4f0yC0ls1t5PKkJ3gysSefWrkXhzTJPkWF0OOCJCcfnUkcqFjlgOauQzIrjkVCm0XyJ9DmY761Zs/a4uecbxVtb61XBN1H/AN9ivHRFHNOxkRW4J6VXKJx8if8AfIrR4eztclVdNj//2Q=="}
+	let(:before_photo)     { Report.base64_image_to_paperclip(base64_image) }
+
 
 	before(:each) do
+		request.env["HTTP_REFERER"] = neighborhood_reports_path(Neighborhood.first)
+
 		team = FactoryGirl.create(:team, :name => "Test Team", :neighborhood_id => Neighborhood.first.id)
 		FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
 		FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => other_user.id)
@@ -29,107 +34,110 @@ describe ReportsController do
 	#-----------------------------------------------------------------------------
 
 	context "Creating a new report" do
-		context "through SMS" do
-			render_views
 
-			it "redirects to the unfinished report when user tries to visit reports page" do
-				cookies[:auth_token] = user.auth_token
+		#---------------------------------------------------------------------------
 
-				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-				expect(
-					get "index", :neighborhood_id => Neighborhood.first.id
-				).to redirect_to(edit_neighborhood_report_path(Neighborhood.first, Report.last))
-			end
-
-			it "does not award points" do
-				before_points = user.total_points
-				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-				expect(user.reload.total_points).to eq(before_points)
-			end
-
-			it "does not display report for other users" do
-				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-				sign_in(other_user)
-
-				visit neighborhood_reports_path(user.neighborhood)
-				expect(page).not_to have_content("Completar o foco")
-			end
-
-			it "should not be displayed for other house members" do
-				post "gateway", :body => "Not in my house!", :from => user.phone_number
-
-				sign_in(other_user)
-				visit user_path(user)
-				expect(page).not_to have_content("Encontrei um foco")
-			end
-
-
-      # TODO Change text to be dynamic when additional languages are added
-      context "when phone number is not registered" do
-        let(:unregistered) {"123456789012"}
-        it "should create notification" do
-          expect{
-            post "gateway", :body => "Rua Tatajuba 1", :from => :unregistered
-          }.to change(Notification, :count).by(1)
-        end
-
-        it "should respond with correct text" do
-          post "gateway", :body => "Rua Tatajuba 1", :from => :unregistered
-          expect(Notification.last.text).to eq("Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
-        end
-
-      end
-
-      context "when phone number is registered" do
-        it "should create a notification" do
-          expect{
-            post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-          }.to change(Notification, :count).by(1)
-        end
-
-        it "should respond with correct text" do
-          post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-          expect(Notification.last.text).to eq("Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
-        end
-
-      end
-
-      context "when the phone number is below minimum" do
-        it "should not create a notification" do
-          expect{
-            post "gateway", :body => "Rua Tatajuba 1", :from => "1"
-          }.not_to change(Notification, :count).by(1)
-        end
-      end
-
-      it "should have the correct date" do
-        expect {
-          post "gateway", :body => "Testing the date", :from => user.phone_number
-        }.to change(Report, :count).by(1)
-
-        report = Report.find_by_report("Testing the date")
-        expect(report.created_at.strftime("%b. %Y")).to eq(Time.now.strftime("%b. %Y"))
-      end
-
-
-			it "creates a new report with proper attributes" do
-				expect {
-					post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-				}.to change(Report, :count).by(1)
-
-				report = Report.find_by_report("Rua Tatajuba 1")
-				# expect(report.status).to eq(Report::STATUS[:sms])
-				expect(report.neighborhood_id).to eq(user.neighborhood_id)
-				expect(report.sms).to eq(true)
-			end
-
-			it "creates a new location for the report with proper attributes" do
-				post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
-				report = Report.find_by_report("Rua Tatajuba 1")
-				expect(report.location).not_to eq(nil)
-				expect(report.location.neighborhood_id).to eq(user.neighborhood_id)
-			end
-		end
+		# context "through SMS" do
+		# 	render_views
+		#
+		# 	it "redirects to the unfinished report when user tries to visit reports page" do
+		# 		cookies[:auth_token] = user.auth_token
+		#
+		# 		post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+		# 		expect(
+		# 			get "index", :neighborhood_id => Neighborhood.first.id
+		# 		).to redirect_to(edit_neighborhood_report_path(Neighborhood.first, Report.last))
+		# 	end
+		#
+		# 	it "does not award points" do
+		# 		before_points = user.total_points
+		# 		post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+		# 		expect(user.reload.total_points).to eq(before_points)
+		# 	end
+		#
+		# 	it "does not display report for other users" do
+		# 		post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+		# 		sign_in(other_user)
+		#
+		# 		visit neighborhood_reports_path(user.neighborhood)
+		# 		expect(page).not_to have_content("Completar o foco")
+		# 	end
+		#
+		# 	it "should not be displayed for other house members" do
+		# 		post "gateway", :body => "Not in my house!", :from => user.phone_number
+		#
+		# 		sign_in(other_user)
+		# 		visit user_path(user)
+		# 		expect(page).not_to have_content("Encontrei um foco")
+		# 	end
+		#
+		#
+    #   # TODO Change text to be dynamic when additional languages are added
+    #   context "when phone number is not registered" do
+    #     let(:unregistered) {"123456789012"}
+    #     it "should create notification" do
+    #       expect{
+    #         post "gateway", :body => "Rua Tatajuba 1", :from => :unregistered
+    #       }.to change(Notification, :count).by(1)
+    #     end
+		#
+    #     it "should respond with correct text" do
+    #       post "gateway", :body => "Rua Tatajuba 1", :from => :unregistered
+    #       expect(Notification.last.text).to eq("Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
+    #     end
+		#
+    #   end
+		#
+    #   context "when phone number is registered" do
+    #     it "should create a notification" do
+    #       expect{
+    #         post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+    #       }.to change(Notification, :count).by(1)
+    #     end
+		#
+    #     it "should respond with correct text" do
+    #       post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+    #       expect(Notification.last.text).to eq("Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
+    #     end
+		#
+    #   end
+		#
+    #   context "when the phone number is below minimum" do
+    #     it "should not create a notification" do
+    #       expect{
+    #         post "gateway", :body => "Rua Tatajuba 1", :from => "1"
+    #       }.not_to change(Notification, :count).by(1)
+    #     end
+    #   end
+		#
+    #   it "should have the correct date" do
+    #     expect {
+    #       post "gateway", :body => "Testing the date", :from => user.phone_number
+    #     }.to change(Report, :count).by(1)
+		#
+    #     report = Report.find_by_report("Testing the date")
+    #     expect(report.created_at.strftime("%b. %Y")).to eq(Time.now.strftime("%b. %Y"))
+    #   end
+		#
+		#
+		# 	it "creates a new report with proper attributes" do
+		# 		expect {
+		# 			post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+		# 		}.to change(Report, :count).by(1)
+		#
+		# 		report = Report.find_by_report("Rua Tatajuba 1")
+		# 		# expect(report.status).to eq(Report::STATUS[:sms])
+		# 		expect(report.neighborhood_id).to eq(user.neighborhood_id)
+		# 		expect(report.sms).to eq(true)
+		# 	end
+		#
+		# 	it "creates a new location for the report with proper attributes" do
+		# 		post "gateway", :body => "Rua Tatajuba 1", :from => user.phone_number
+		# 		report = Report.find_by_report("Rua Tatajuba 1")
+		# 		expect(report.location).not_to eq(nil)
+		# 		expect(report.location.neighborhood_id).to eq(user.neighborhood_id)
+		# 	end
+		# end
 
 		#---------------------------------------------------------------------------
 
@@ -137,6 +145,7 @@ describe ReportsController do
 			before(:each) do
 				cookies[:auth_token] = user.auth_token
 			end
+
 
 
 			context "when in Managua" do
@@ -159,8 +168,6 @@ describe ReportsController do
 					l = Location.last
 					expect(l.neighborhood).to eq("The Barrio")
 				end
-
-
 			end
 
 
@@ -252,6 +259,29 @@ describe ReportsController do
     end
 
 
+
+	end
+
+	#---------------------------------------------------------------------------
+
+	context "when eliminating reports" do
+		let(:report) {FactoryGirl.create(:report, :before_photo => before_photo, :reporter_id => user.id, :report => "This is a description",:breeding_site_id => elimination_type.id, :neighborhood_id => Neighborhood.first.id) }
+
+		before(:each) do
+			cookies[:auth_token] = user.auth_token
+		end
+
+		it "correctly sets the eliminated_at" do
+			post :eliminate, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
+				:compressed_photo => base64_image,
+				:elimination_method_id => BreedingSite.first.elimination_methods.first.id,
+				:eliminated_at => "2015-12-25 15:00"
+			}
+
+			r = Report.last
+			expect(r.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-12-25")
+			expect(r.eliminated_at.strftime("%H:%M")).to eq("15:00")
+		end
 	end
 
 	#-----------------------------------------------------------------------------

@@ -29,21 +29,21 @@
       .form-group
         = f.label :created_at
         .datetimepicker.input-group
-          = f.text_field :created_at, {:value => format_as_date_time(@report.created_at), :class => "form-control", :data => {"date-format" => "YYYY-MM-DD HH:MM"}}
+          = f.text_field :created_at, {:value => format_timestamp(@report.created_at), :class => "form-control", :data => {"date-format" => "YYYY-MM-DD HH:MM"}}
           %span.input-group-addon
             %i.fa.fa-calendar
 
       .form-group
         = f.label :completed_at
         .datetimepicker.input-group
-          = f.text_field :completed_at, {:value => format_as_date_time(@report.prepared_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD HH:MM"} }
+          = f.text_field :completed_at, {:value => format_timestamp(@report.prepared_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD HH:MM"} }
           %span.input-group-addon
             %i.fa.fa-calendar
 
       .form-group
         = f.label :eliminated_at
         .datetimepicker.input-group
-          = f.text_field :eliminated_at, {:value => format_as_date_time(@report.eliminated_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD HH:MM"} }
+          = f.text_field :eliminated_at, {:value => format_timestamp(@report.eliminated_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD HH:MM"} }
           %span.input-group-addon
             %i.fa.fa-calendar
 

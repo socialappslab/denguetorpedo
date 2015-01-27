@@ -23,7 +23,7 @@
                     = link_to m.user.display_name, user_path(m.user), :style => "font-weight: bold;"
                     .feed-item-timestamp
                       %i.fa.fa-clock-o
-                      = format_timestamp(m.created_at)
+                      = timestamp_in_metadata(m.created_at)
                 .row.feed-item-content
                   .col-md-7
                     = m.body

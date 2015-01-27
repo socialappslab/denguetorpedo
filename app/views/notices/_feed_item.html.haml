@@ -15,7 +15,7 @@
               = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
             .feed-item-timestamp
               %i.fa.fa-clock-o
-              = format_timestamp(notice.created_at)
+              = timestamp_in_metadata(notice.created_at)
 
         .row.feed-item-content
           .col-md-7

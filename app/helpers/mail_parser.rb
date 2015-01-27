@@ -1,12 +1,10 @@
 module MailParser
   class Parser
-    
+
     attr_reader :report, :nation, :city, :address, :neighborhood, :state
-    
-    def initialize(input, type = 'email')
-      if (type == 'email')
-        text_body = MMS2R::Media.new(input).body
-      elsif (type == 'sms')
+
+    def initialize(input, type = 'sms')
+      if (type == 'sms')
         text_body = input
       end
       @report = parse('report', text_body)
@@ -16,9 +14,9 @@ module MailParser
       @neighborhood = parse('neighborhood', text_body)
       @state = parse('state', text_body)
     end
-  
+
     private
-  
+
     def parse(hashtag, text_body)
       case hashtag
         when 'report'
@@ -33,11 +31,11 @@ module MailParser
           result = /(?:#neighborhood|#h) ([^#]+)/i.match(text_body)
         when 'state'
           result = /(?:#state|#s) ([^#]+)/i.match(text_body)
-        else 
+        else
           result = nil
         end
       result ? result[1].strip.gsub(/\n/," ") : result
     end
   end
-  
+
 end
