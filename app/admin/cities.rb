@@ -29,7 +29,7 @@ ActiveAdmin.register City do
       f.input "state_code"
       f.input "country_id", :as => :select, :collection => Country.all.map {|c| [c.name, c.id]}
       f.input "photo"
-      f.input "time_zone"
+      f.input "time_zone", :as => :select, :collection => TZInfo::Timezone.all.map{ |tz| [tz.name, tz.name] };
     end
     f.actions
   end
