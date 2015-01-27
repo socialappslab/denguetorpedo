@@ -29,6 +29,8 @@ class Visit < ActiveRecord::Base
   validates :location_id,         :presence => true
   validates :identification_type, :presence => true
   validates :identified_at,       :presence => true
+  validates :visit_type,          :presence => true
+  validates :visited_at,          :presence => true
 
   #----------------------------------------------------------------------------
   # Constants
