@@ -26,7 +26,7 @@
     %h1{:style => "margin-top: 15px;"}
       = I18n.t("activerecord.attributes.report.eliminated_at")
     .datetimepicker.input-group
-      = f.text_field :eliminated_at, {:value => format_as_date(report.eliminated_at), :class=>"elimination_methods form-control", :data => {"date-format" => "YYYY-MM-DD HH:mm"} }
+      = f.text_field :eliminated_at, {:value => format_timestamp(report.eliminated_at), :class=>"elimination_methods form-control", :data => {"date-format" => "YYYY-MM-DD HH:mm"} }
       %span.input-group-addon
         %i.fa.fa-calendar
 
