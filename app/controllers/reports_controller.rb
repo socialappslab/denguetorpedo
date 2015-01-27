@@ -134,13 +134,12 @@ class ReportsController < NeighborhoodsBaseController
 
   # This action is used exclusively for eliminating an existing report.
   def eliminate
-    # Let's try to parse the eliminated_at date. If that's not possible, then let's
-    # just set it to now.
-    begin
-      @report.update_column(:eliminated_at, DateTime.parse(  params[:report][:eliminated_at] ) )
-    rescue
-      @report.eliminated_at = Time.now
-    end
+    # Parse the eliminated_at param or set to current time. Make sure to
+    # remove the param from params[:report] to avoid updating it in update_attributes.
+    eliminated_time = Time.zone.parse(params[:report][:eliminated_at])
+    eliminated_time = Time.now if eliminated_time.blank?
+    params[:report].delete(:eliminated_at)
+    @report.eliminated_at = eliminated_time
 
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
@@ -151,7 +150,7 @@ class ReportsController < NeighborhoodsBaseController
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
     @report.after_photo = data
-
+    params[:report].delete(:compressed_photo)
 
     @report.eliminator_id = @current_user.id
     if @report.update_attributes(params[:report])
@@ -253,33 +252,31 @@ class ReportsController < NeighborhoodsBaseController
   def coordinator_update
     @report = Report.find(params[:id])
 
-    # Update the date columns of the report.
-    begin
-      @report.update_column(:eliminated_at, DateTime.parse(  params[:report][:eliminated_at] ) )
-    rescue
-      @report.eliminated_at = Time.now
-    end
+    # Parse the created_at column.
+    created_at = Time.zone.parse(params[:report][:created_at])
+    created_at = Time.now if created_at.blank?
+    @report.created_at = created_at
+    params[:report].delete(:created_at)
 
-    begin
-      @report.update_column(:created_at, DateTime.parse(  params[:report][:created_at] ) )
-    rescue
-      @report.created_at = Time.now
-    end
+    # Parse the completed_at column.
+    completed_at = Time.zone.parse(params[:report][:completed_at])
+    completed_at = Time.now if completed_at.blank?
+    @report.completed_at = completed_at
+    params[:report].delete(:completed_at)
 
-    begin
-      @report.update_column(:completed_at, DateTime.parse(  params[:report][:completed_at] ) )
-    rescue
-      @report.completed_at = Time.now
-    end
-
+    # Parse the eliminated_at column.
+    eliminated_at = Time.zone.parse(params[:report][:eliminated_at])
+    eliminated_at = Time.now if eliminated_at.blank?
+    @report.eliminated_at = eliminated_at
+    params[:report].delete(:eliminated_at)
 
     base64_image = params[:report][:compressed_photo]
+    params[:report].delete(:compressed_photo)
     if base64_image.present?
       filename  = @report.eliminator.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
       @report.after_photo = data
     end
-
 
     @report.assign_attributes(params[:report])
     @report.save(:validate => false)

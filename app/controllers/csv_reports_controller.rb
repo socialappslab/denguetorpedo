@@ -220,11 +220,8 @@ class CsvReportsController < NeighborhoodsBaseController
         end
 
         # Now let's try parsing the date.
-        begin
-          visit_date = DateTime.parse( date )
-        rescue
-          visit_date = Time.now
-        end
+        visit_date = Time.zone.parse(date)
+        visit_date = Time.now if visit_date.blank?
 
         visits << {
           :date => visit_date, :health_report => disease_report, :status => status
@@ -290,11 +287,12 @@ class CsvReportsController < NeighborhoodsBaseController
         # Also, note that we *must* set updated_at to same as created_at in order
         # for the set_location_status method to correctly update the LocationStatus
         # instance to the right date (which is the date of house inspection).
-        begin
-          r.created_at = DateTime.parse( report[:inspection_date] )
-          r.updated_at = DateTime.parse( report[:inspection_date] )
-        rescue
+        parsed_inspection_date = Time.zone.parse( report[:inspection_date] )
+        if parsed_inspection_date.blank?
           puts "\n\n\n [Error] Could not parse inspection date = #{report[:inspection_date]}...\n\n\n"
+        else
+          r.created_at = parsed_inspection_date
+          r.updated_at = parsed_inspection_date
         end
 
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
@@ -302,10 +300,11 @@ class CsvReportsController < NeighborhoodsBaseController
 
       # Note: We're overriding the eliminated_at column in order to allow
       # Nicaraguan community members to have more control over their reports.
-      begin
-        r.eliminated_at = DateTime.parse( report[:elimination_date] )
-      rescue
+      elimination_date = Time.zone.parse( report[:elimination_date] )
+      if elimination_date.blank?
         puts "\n\n\n [Error] Could not parse elimination date = #{report[:elimination_date]}...\n\n\n"
+      else
+        r.eliminated_at = elimination_date
       end
 
       r.report             = report[:description]
