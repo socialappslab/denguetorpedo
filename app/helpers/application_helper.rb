@@ -18,25 +18,18 @@ module ApplicationHelper
 
   #----------------------------------------------------------------------------
 
-  def format_timestamp(timestamp)
+  def timestamp_in_metadata(timestamp)
     return "" if timestamp.blank?
     if (timestamp - Time.now).abs < 3.days
       time_ago_in_words(timestamp) + " " + I18n.t("common_terms.ago")
     else
-      return timestamp.strftime("%Y-%m-%d")
+      return timestamp.strftime("%Y-%m-%d %H:%M")
     end
   end
 
   #----------------------------------------------------------------------------
 
-  def format_as_date(timestamp)
-    return "" if timestamp.blank?
-    return timestamp.strftime("%Y-%m-%d")
-  end
-
-  #----------------------------------------------------------------------------
-
-  def format_as_date_time(timestamp)
+  def format_timestamp(timestamp)
     return "" if timestamp.blank?
     return timestamp.strftime("%Y-%m-%d %H:%M")
   end

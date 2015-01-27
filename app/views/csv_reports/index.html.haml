@@ -60,7 +60,7 @@
             %td{:style => "font-weight: bold;", :rowspan => [csv.reports.count + 1, 1].max }
               = csv.location.address
             %td{:style => "font-weight: bold;", :rowspan => [csv.reports.count + 1, 1].max }
-              = format_as_date(csv.created_at)
+              = format_timestamp(csv.created_at)
 
             %td{:style => "font-weight: bold;", :rowspan => [csv.reports.count + 1, 1].max }
               = link_to csv.csv_file_name, csv.csv.url

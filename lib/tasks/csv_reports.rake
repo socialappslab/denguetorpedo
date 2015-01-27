@@ -57,7 +57,7 @@ namespace :csv_reports do
 
         begin
           puts "Looking at report with id = #{r.id}"
-          puts "date: #{date} | parsed: #{DateTime.parse(date)}"
+          puts "date: #{date}"
           puts "\n\n\n"
 
           # NOTE: We want the location status of the report to trigger *on the

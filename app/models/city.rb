@@ -1,5 +1,5 @@
 class City < ActiveRecord::Base
-  attr_accessible :name, :photo, :state, :state_code, :country_id, :as => :admin
+  attr_accessible :name, :photo, :state, :state_code, :country_id, :time_zone, :as => :admin
 
   belongs_to :country
   has_many   :neighborhoods
@@ -10,6 +10,7 @@ class City < ActiveRecord::Base
   validates :state,      :presence => true
   validates :state_code, :presence => true
   validates :country_id, :presence => true
+  validates :time_zone,  :presence => true
 
   #----------------------------------------------------------------------------
 

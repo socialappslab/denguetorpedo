@@ -2,6 +2,15 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 es:
+  datetime:
+    distance_in_words:
+      about_x_minutes:
+        one: "1 minuto"
+        other: "%{count} minutos"
+      about_x_hours:
+        one: "1 hora"
+        other: "%{count} horas"
+
   attributes:
     title: "Título"
     neighborhood_id: "Comunidad"

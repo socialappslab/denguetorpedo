@@ -16,7 +16,7 @@
     .form-group
       = f.label :created_at
       .datetimepicker.input-group
-        = f.text_field :created_at, {:value => format_as_date(@report.created_at), :disabled => @report.completed_at.present?, :class => "form-control", :data => {"date-format" => "YYYY-MM-DD"}}
+        = f.text_field :created_at, {:value => format_timestamp(@report.created_at), :disabled => @report.completed_at.present?, :class => "form-control", :data => {"date-format" => "YYYY-MM-DD HH:mm"}}
         %span.input-group-addon
           %i.fa.fa-calendar
 
@@ -106,7 +106,7 @@
     .form-group
       = f.label :eliminated_at
       .datetimepicker.input-group
-        = f.text_field :eliminated_at, {:value => format_as_date(@report.eliminated_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD"} }
+        = f.text_field :eliminated_at, {:value => format_timestamp(@report.eliminated_at), :class=>"form-control", :data => {"date-format" => "YYYY-MM-DD HH:mm"} }
         %span.input-group-addon
           %i.fa.fa-calendar
 
