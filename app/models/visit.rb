@@ -39,11 +39,16 @@ class Visit < ActiveRecord::Base
   # or clean. The first three are defined by the associated reports at that
   # location, and the last one is separately set in the database. See the
   # 'status' instance method.
-  module Types
+  module Cleaning
     POSITIVE  = 0
     POTENTIAL = 1
     NEGATIVE  = 2
     CLEAN     = 3
+  end
+
+  module Types
+    INSPECTION = 0
+    FOLLOWUP   = 1
   end
 
   #----------------------------------------------------------------------------
@@ -65,7 +70,7 @@ class Visit < ActiveRecord::Base
     elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
       return self.identification_type
     else
-      return Visit::Types::NEGATIVE
+      return Visit::Cleaning::NEGATIVE
     end
   end
 

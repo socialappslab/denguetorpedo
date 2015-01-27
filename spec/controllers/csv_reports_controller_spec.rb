@@ -93,19 +93,19 @@ describe CsvReportsController do
 
       it "correctly sets status" do
         ls = Visit.where("DATE(created_at) = ?", "2014-12-24").first
-        expect(ls.status).to eq(Visit::Types::POSITIVE)
+        expect(ls.status).to eq(Visit::Cleaning::POSITIVE)
 
         # NOTE: These should be positive since the above location status is positive,
         # and still hasn't been eliminated.
         ls = Visit.where("DATE(created_at) = ?", "2014-12-31").first
-        expect(ls.status).to eq(Visit::Types::POSITIVE)
+        expect(ls.status).to eq(Visit::Cleaning::POSITIVE)
 
         # TODO: Perhaps we should instead think of Visit as Visits that
         # essentially categorize each visit as POSITIVE, POTENTIAL, or NEGATIVE.
         # The status of a location is then dependent on whether each visit resolved
         # its status... We would need to define what "resolved" means in this context.
         ls = Visit.where("DATE(created_at) = ?", "2015-01-10").first
-        expect(ls.status).to eq(Visit::Types::POTENTIAL)
+        expect(ls.status).to eq(Visit::Cleaning::POTENTIAL)
       end
 
       it "correctly sets the health report" do

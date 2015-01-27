@@ -333,7 +333,7 @@ class Report < ActiveRecord::Base
       ls.identification_type = Status::POSITIVE
     elsif self.status == Status::POTENTIAL && ls.identification_type != Status::POSITIVE
       ls.identification_type = Status::POTENTIAL
-    elsif self.status == Status::NEGATIVE && ls.identification_type == Visit::Types::CLEAN
+    elsif self.status == Status::NEGATIVE && ls.identification_type == Visit::Cleaning::CLEAN
       ls.identification_type = Status::NEGATIVE
     end
 

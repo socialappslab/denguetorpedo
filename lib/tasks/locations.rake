@@ -34,7 +34,7 @@ namespace :locations do
       # TODO: We can do some optimizations here by comparing current Visit
       # status with the report status...
       if report.status == Report::Status::POSITIVE
-        ls.status = Visit::Types::POSITIVE
+        ls.status = Visit::Cleaning::POSITIVE
       else
         reports         = report.location.reports
         positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
@@ -43,9 +43,9 @@ namespace :locations do
 
 
         if positive_count > 0
-          ls.status = Visit::Types::POSITIVE
+          ls.status = Visit::Cleaning::POSITIVE
         elsif potential_count > 0
-          ls.status = Visit::Types::POTENTIAL
+          ls.status = Visit::Cleaning::POTENTIAL
         else
           # At this point, let's see if this location has been negative for 14 days.
           start = (report.updated_at - 2.weeks).beginning_of_day
@@ -56,13 +56,13 @@ namespace :locations do
           # Ensure that the first record is in fact 2 weeks ago (at least)
           if history.first && history.first.created_at <= start
             history = history.pluck(:status)
-            if history.include?(Visit::Types::POTENTIAL) || history.include?(Visit::Types::POSITIVE)
-              ls.status = Visit::Types::NEGATIVE
+            if history.include?(Visit::Cleaning::POTENTIAL) || history.include?(Visit::Cleaning::POSITIVE)
+              ls.status = Visit::Cleaning::NEGATIVE
             else
-              ls.status = Visit::Types::CLEAN
+              ls.status = Visit::Cleaning::CLEAN
             end
           else
-            ls.status = Visit::Types::NEGATIVE
+            ls.status = Visit::Cleaning::NEGATIVE
           end
 
         end

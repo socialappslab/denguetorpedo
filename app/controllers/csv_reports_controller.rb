@@ -214,9 +214,9 @@ class CsvReportsController < NeighborhoodsBaseController
         # breeding site. The actual status will be updated when the associated
         # report's create callback is invoked.
         if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
-          status = Visit::Types::NEGATIVE
+          status = Visit::Cleaning::NEGATIVE
         else
-          status = Visit::Types::POTENTIAL
+          status = Visit::Cleaning::POTENTIAL
         end
 
         # Now let's try parsing the date.
