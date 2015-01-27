@@ -11,7 +11,18 @@ class ApplicationController < ActionController::Base
 
   # TODO: Work through this some other time. As of 2014-12-18, we should
   # focus on other efforts.
-  # before_filter :set_time_zone
+  # See this for motivation: http://www.elabs.se/blog/36-working-with-time-zones-in-ruby-on-rails
+  around_filter :set_time_zone
+
+  #-------------------------------------------------------------------------------------------------
+
+  def set_time_zone(&block)
+    if current_user
+      Time.use_zone(current_user.neighborhood.city.time_zone, &block)
+    else
+      Time.use_zone("America/Guatemala", &block)
+    end
+  end
 
   #----------------------------------------------------------------------------
 
@@ -90,13 +101,6 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   private
-
-  def set_time_zone
-    Time.zone = "America/Guatemala"
-    if current_user
-      Time.zone = current_user.neighborhood.time_zone
-    end
-  end
 
   def identify_for_segmentio
     return unless Rails.env.production?
