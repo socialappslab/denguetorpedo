@@ -8,6 +8,7 @@ ActiveAdmin.register City do
     column "state_code"
     column "country_id"
     column "photo"
+    column "time_zone"
     default_actions
   end
 
@@ -28,6 +29,7 @@ ActiveAdmin.register City do
       f.input "state_code"
       f.input "country_id", :as => :select, :collection => Country.all.map {|c| [c.name, c.id]}
       f.input "photo"
+      f.input "time_zone"
     end
     f.actions
   end
