@@ -99,14 +99,12 @@ class Report < ActiveRecord::Base
   # Callbacks
   #----------
 
-  # NOTE: We don't want to limit this to create/destroy because CSVReports also
-  # *update* the reports. As a result, any time a report gets updated, we add
-  # the location status. This is perfectly fine because a single report being
-  # updated can't affect the aggregate location status metric. Furthermore, when
-  # a report is eliminated, it is updated so update action must be accounted for.
-  after_commit :set_location_status,     :on => :create
-  after_commit :update_location_status,  :on => :update
-  after_commit :destroy_location_status, :on => :destroy
+  # Every time a report gets created/updated, conceptually a visit must take place
+  # at some location. Whether it's an identification or followup visit depends
+  # on how the report is created/updated and with what attributes.
+  after_commit :create_identification_visit, :on => :create
+  after_commit :create_followup_visit,       :on => :update
+  # after_commit :destroy_visit,               :on => :destroy
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
@@ -304,50 +302,34 @@ class Report < ActiveRecord::Base
   #
 
 
-  # A new report offers new information regarding a location. We use this information
-  # to update or set the identification_type based on the following information:
+  # A new report offers conceptually implies a visit to some location.
+  # Specifically, the report tells us *what* was identified at the location,
+  # and *when* it was identified. The *what* depends on what other reports
+  # correspond to that location, so it will be calculated appropriately.
+  # Specifically, to update or set the identification_type based on the following information:
   # * If report is status = POSITIVE, then the identification_type is POSITIVE
   # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
   #   of existing Visit does not equal POSITIVE.
-  # The actual status of a location will be dynamically calculated based on
-  # cleaned_at, identification_type, and identified_at attributes.
-  def set_location_status
+  def create_identification_visit
     return if self.location_id.blank?
 
     ls = Visit.where(:location_id => self.location_id)
-    ls = ls.where(:identified_at => (self.created_at.beginning_of_day..self.created_at.end_of_day)).order("identified_at DESC")
+    ls = ls.where(:visit_type => Visit::Types::IDENTIFICATION).
+    ls = ls.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
+    ls = ls.order("visited_at DESC").limit(1)
     if ls.blank?
-      ls               = Visit.new(:location_id => self.location_id)
-      ls.identified_at = self.created_at
+      ls            = Visit.new(:location_id => self.location_id)
+      ls.visit_type = Visit::Types::IDENTIFICATION
+      ls.visited_at = self.created_at
     else
       ls = ls.first
     end
 
-    # We set the identification type to be the *worst* found type, meaning that
-    # if the report is positive, we set the identification_type to positive. If
-    # the report is positive and the identification_type is already positive, then
-    # we keep it positive.
-    if ls.identification_type.blank?
-      ls.identification_type = self.status
-    elsif self.status == Status::POSITIVE
-      ls.identification_type = Status::POSITIVE
-    elsif self.status == Status::POTENTIAL && ls.identification_type != Status::POSITIVE
-      ls.identification_type = Status::POTENTIAL
-    elsif self.status == Status::NEGATIVE && ls.identification_type == Visit::Cleaning::CLEAN
-      ls.identification_type = Status::NEGATIVE
-    end
-
-    # In case we're updating an existing Visit instance, we
-    # must set the cleaned_at column back to nil if this report is
-    # positive or potential.
-    if [Status::POSITIVE, Status::POTENTIAL].include?(self.status)
-      ls.cleaned_at = nil
-    end
-
+    ls.identification_type = ls.calculate_identification_type_for_report(report)
     ls.save
 
     # Finally, associate the report with a particular visit.
-    self.update_column(:visit_id, ls.id)
+    # self.update_column(:visit_id, ls.id)
   end
 
   #----------------------------------------------------------------------------
@@ -360,31 +342,47 @@ class Report < ActiveRecord::Base
   #
   # What Visit are we updating? The one whose identified_at corresponds
   # to the report's created_at date. This ensures consistency between the
-  # set_location_status method, and this method so we're working on the same
+  # create_visit method, and this method so we're working on the same
   # Visit.
-  def update_location_status
+  def create_followup_visit
     return if self.location_id.blank?
     return if self.eliminated_at.blank?
 
-    # NOTE: We're expecting a Visit to exist because we're being consistent
-    # with the method above.
     ls = Visit.where(:location_id => self.location_id)
-    ls = ls.where(:identified_at => (self.created_at.beginning_of_day..self.created_at.end_of_day)).order("identified_at DESC")
-    ls = ls.first
+    ls = ls.where(:visit_type => Visit::Types::FOLLOWUP).
+    ls = ls.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
+    ls = ls.order("visited_at DESC").limit(1)
+    if ls.blank?
+      ls            = Visit.new(:location_id => self.location_id)
+      ls.visit_type = Visit::Types::FOLLOWUP
+      ls.visited_at = self.eliminated_at
+    else
+      ls = ls.first
+    end
 
     # Now, let's update cleaned_at column only if there are no more positive/potential
     # reports.
-    reports = self.location.reports
-    possible_report = reports.find {|r| [Report::Status::POSITIVE, Report::Status::POTENTIAL].include?(r.status) }
-    if possible_report.blank?
-      ls.cleaned_at = self.eliminated_at
-    end
-
+    ls.identification_type = ls.calculate_identification_type_for_report(self)
     ls.save
 
     # Finally, associate the report with a particular visit if it's not associated yet.
-    self.update_column(:visit_id, ls.id) if self.visit_id.blank?
+    # self.update_column(:visit_id, ls.id) if self.visit_id.blank?
   end
+
+  #----------------------------------------------------------------------------
+
+  # This method is run when the report is *destroyed*. We want to make sure that
+  # if this is the last report associated with the Visit, then make sure to
+  # destroy that visit.
+  # def destroy_visit
+  #   return if self.visit_id.blank?
+  #
+  #   remaining_reports_count = Report.where(:visit_id => self.visit_id).count
+  #   Visit.find(self.visit_id).destroy if remaining_reports_count == 0
+  # end
+
+  #----------------------------------------------------------------------------
+
 
   # NOTE: We have to use this hack (even though Paperclip handles base64 images)
   # because we want to explicitly specify the content type and filename. Some
@@ -405,19 +403,7 @@ class Report < ActiveRecord::Base
     return data
   end
 
-
   #----------------------------------------------------------------------------
 
-  # This method is run when the report is *destroyed*. We want to make sure that
-  # if this is the last report associated with the Visit, then make sure to
-  # destroy that visit.
-  def destroy_location_status
-    return if self.visit_id.blank?
-
-    remaining_reports_count = Report.where(:visit_id => self.visit_id).count
-    Visit.find(self.visit_id).destroy if remaining_reports_count == 0
-  end
-
-  #----------------------------------------------------------------------------
 
 end

@@ -1,9 +1,9 @@
-# NOTE: The associated Visit table stores a *daily* snapshot
-# of the location's status. This means that if several reports are created in
-# a day, then we will simply update the existing Visit entry.
+# NOTE: The associated Visit table's granularity is down to the *day*, meaning
+# that if several reports are created in a day, then we will simply update the
+# existing Visit entry.
 # This has two benefits:
 # a) statistics are *much* faster to calculate
-# b) there is no need for real-time location visits.I went with real-time series before this,
+# b) there is no need for real-time visits.I went with real-time series before this,
 #    and it was a hassle to calculate daily trends (which is all what people care about).
 
 # A Visit is the correct real-world representation instead of Visit, as
@@ -15,11 +15,15 @@
 # * dengue cases,
 # * chik cases,
 # * identification type (positive, potential, or negative/clean)
-# * time of identification
-# * time of cleaning (if the elimination was performed).
+# * time of visit
+# * type of visit
 #
 # Note that this model limits the number of actions a user can do: either
 # identify (and do nothing), or identify and clean the whole place.
+#
+# For our purposes, there are only *two* visits: an identification visit,
+# and a followup visit. The act of identifying and eliminating breeding sites
+# falls into one of the two classes.
 class Visit < ActiveRecord::Base
   attr_accessible :location_id, :identification_type, :identified_at, :cleaned_at, :health_report
 
@@ -28,7 +32,6 @@ class Visit < ActiveRecord::Base
 
   validates :location_id,         :presence => true
   validates :identification_type, :presence => true
-  validates :identified_at,       :presence => true
   validates :visit_type,          :presence => true
   validates :visited_at,          :presence => true
 
@@ -72,6 +75,28 @@ class Visit < ActiveRecord::Base
     else
       return Visit::Cleaning::NEGATIVE
     end
+  end
+
+  # We set the identification type to be the *worst* found type, meaning that
+  # if the report is positive, we set the identification_type to positive. If
+  # the report is positive and the identification_type is already positive, then
+  # we keep it positive.
+  def calculate_identification_type_for_report(report)
+    # Immediately return if the status of this report is POSITIVE.
+    return Report::Status::POSITIVE if report.status == Report::Status::POSITIVE
+
+    # At this point, the status of a report is either potential or negative.
+    # We must result to calculating the status of other reports before knowing
+    # what the identification_type of this visit should be.
+    reports = self.location.reports
+    positive_report  = reports.find {|r| r.status == Status::POSITIVE  }
+    potential_report = reports.find {|r| r.status == Status::POTENTIAL }
+    return Report::Status::POSITIVE  if positive_report.present?
+    return Report::Status::POTENTIAL if potential_report.present?
+
+    # At this point, there are no positive or potential reports. The identification_type
+    # of this location depends purely on this report...
+    return report.status
   end
 
   # This is a convenience method that uses calculate_time_series_for_locations_in_timeframe
