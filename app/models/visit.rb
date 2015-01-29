@@ -100,19 +100,7 @@ class Visit < ActiveRecord::Base
     return report.status
   end
 
-  # This is a convenience method that uses calculate_time_series_for_locations_in_timeframe
-  # under the hood.
-  def self.calculate_time_series_for_locations(locations)
-    location_ids = locations.map(&:id)
-    visits  = Visit.where(:location_id => location_ids).order("identified_at ASC")
-    return [] if visits.blank?
-
-    # Determine the timeframe.
-    start_time = visits.first.identified_at.beginning_of_day
-    end_time   = visits.last.identified_at.end_of_day
-    self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
-  end
-
+  # TODO: REwrite these comments as they are outdated.
   # In order to calculate time series for locations, we need to realize that
   # location visits exhibit "gaps" in reported status of a location. This means
   # that there is no guarantee we have a record of the location status on any
@@ -134,53 +122,49 @@ class Visit < ActiveRecord::Base
   # NOTE: Keep in mind that we can't just initialize the memoized variable with
   # all locations as not all locations existed for all time. Otherwise, we may
   # skew the actual statistics.
-  def self.calculate_time_series_for_locations_in_timeframe(locations, start_time, end_time)
+  def self.calculate_time_series_for_locations(locations)
     location_ids = locations.map(&:id)
-    visits       = Visit.where(:location_id => location_ids).order("identified_at ASC")
+    visits       = Visit.where(:location_id => location_ids).order("visited_at ASC")
     return [] if visits.blank?
 
-    # NOTE: To avoid overloading the server, we have to limit the timeframe to 6 months.
-    if (end_time - start_time).abs > 6.months
-      start_time = end_time - 6.months
-    end
+    daily_stats = []
+    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type).count
+    visits_by_date_and_type.each do |grouping, count|
+      visited_at_date     = grouping[0].to_s
+      identification_type = grouping[1].to_i
 
-    # Initialize the memoized hash.
-    time               = start_time
-    daily_stats        = []
-    memoized_locations = {}
-
-    # Iterate over the timeframe, upating the memoized result each day to reflect
-    # the correct state space.
-    while time <= end_time
-      date_key = time.strftime("%Y-%m-%d")
-      stats = visits.where("DATE(identified_at) = ?", date_key)
-
-      # Update the memoized result with new data (or fallback to POTENTIAL)
-      stats.each do |v|
-        memoized_locations[v.location_id] = v.state || memoized_locations[v.location_id]
+      day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
+      if day_statistic.blank?
+        day_statistic = {
+          :date      => visited_at_date,
+          :positive  => {:count => 0, :percent => 0},
+          :potential => {:count => 0, :percent => 0},
+          :negative  => {:count => 0, :percent => 0}
+        }
+        daily_stats << day_statistic
       end
 
-      # Calculate the count and percentages of the latest memoized result.
-      positive_count  = memoized_locations.find_all {|loc_id, status| status == Report::Status::POSITIVE}.count
-      potential_count = memoized_locations.find_all {|loc_id, status| status == Report::Status::POTENTIAL}.count
-      negative_count  = memoized_locations.find_all {|loc_id, status| status == Report::Status::NEGATIVE}.count
-      clean_count     = memoized_locations.find_all {|loc_id, status| status == Types::CLEAN}.count
-      total_count     = positive_count + potential_count + negative_count + clean_count
+      if identification_type == Report::Status::POSITIVE
+        day_statistic[:positive][:count] = count
+      elsif identification_type == Report::Status::POTENTIAL
+        day_statistic[:potential][:count] = count
+      elsif identification_type == Report::Status::NEGATIVE
+        day_statistic[:negative][:count] = count
+      end
+    end
 
-      pos_percent   = total_count == 0 ? 0 : (positive_count).to_f  / total_count
-      pot_percent   = total_count == 0 ? 0 : (potential_count).to_f / total_count
-      neg_percent   = total_count == 0 ? 0 : (negative_count).to_f  / total_count
-      clean_percent = total_count == 0 ? 0 : (clean_count).to_f     / total_count
+    # Now, let's iterate over daily_stats, calculating percentage.
+    daily_stats.each_with_index do |day_statistic, index|
+      positive_count  = day_statistic[:positive][:count]
+      potential_count = day_statistic[:potential][:count]
+      negative_count  = day_statistic[:negative][:count]
 
-      hash = {
-        :date => date_key,
-        :positive  => {:count => positive_count,  :percent => (pos_percent * 100).round(0)},
-        :potential => {:count => potential_count, :percent => (pot_percent * 100).round(0)},
-        :negative  => {:count => negative_count,  :percent => (neg_percent * 100).round(0)},
-        :clean     => {:count => clean_count,     :percent => (clean_percent * 100).round(0)}
-      }
-      daily_stats << hash
-      time += 1.day
+      total = positive_count + potential_count + negative_count
+      day_statistic[:positive][:percent]  = (total == 0 ? 0 : (positive_count.to_f / total * 100).round(0)  )
+      day_statistic[:potential][:percent] = (total == 0 ? 0 : (potential_count.to_f / total * 100).round(0) )
+      day_statistic[:negative][:percent]  = (total == 0 ? 0 : (negative_count.to_f / total * 100).round(0)  )
+
+      daily_stats[index] = day_statistic
     end
 
     return daily_stats
