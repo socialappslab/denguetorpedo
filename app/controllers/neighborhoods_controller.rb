@@ -26,8 +26,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
       [
         hash[:date],
         hash[:positive][:percent],
-        hash[:potential][:percent],
-        hash[:negative][:percent]
+        hash[:potential][:percent]
       ]
     }
 
