@@ -27,8 +27,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
         hash[:date],
         hash[:positive][:percent],
         hash[:potential][:percent],
-        hash[:negative][:percent],
-        hash[:clean][:percent]
+        hash[:negative][:percent]
       ]
     }
 
@@ -36,7 +35,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
     I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
     if @statistics.present?
-      [:positive, :potential, :negative, :clean].each_with_index do |key, index|
+      [:positive, :potential, :negative].each_with_index do |key, index|
         @last_statistics << [legend[index], @statistics.last[key][:count]]
       end
     end
