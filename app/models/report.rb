@@ -119,12 +119,12 @@ class Report < ActiveRecord::Base
   end
 
   def eliminated?
-    return self.elimination_method_id.present?
+    return (self.eliminated_at.present? && self.elimination_method_id.present?)
   end
 
   # NOTE: Open does not mean active. An open report can be expired.
   def open?
-    return self.elimination_method_id.blank?
+    return (self.eliminated_at.blank? || self.elimination_method_id.blank?)
   end
 
   # TODO: Deprecate this in favor for incomplete?
