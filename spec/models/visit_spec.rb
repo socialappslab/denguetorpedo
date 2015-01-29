@@ -160,4 +160,75 @@ describe Visit do
 
   #-----------------------------------------------------------------------------
 
+  describe "Calculating time-series", :after_commit => true do
+    let(:second_location)       { FactoryGirl.create(:location, :address => "New Test address")}
+    let(:locations) { [location, second_location] }
+    let!(:hundred_days_ago)     { DateTime.parse("2014-10-21 11:00") }
+    let!(:ten_days_ago)         { DateTime.parse("2015-01-19 11:00") }
+    let!(:twenty_six_hours_ago) { DateTime.parse("2015-01-28 11:00") }
+    let!(:fifteen_hours_ago)    { DateTime.parse("2015-01-29 11:00") }
+
+    before(:each) do
+      [hundred_days_ago, ten_days_ago, twenty_six_hours_ago].each_with_index do |created_at, index|
+        FactoryGirl.create(:visit,
+        :visit_type => Visit::Types::INSPECTION,
+        :identification_type => Report::Status::POSITIVE,
+        :location_id => location.id,
+        :visited_at => created_at)
+
+        # Create a visit for a location unless it's a specific index (for variety)
+        unless index == 1
+          FactoryGirl.create(:visit,
+          :visit_type => Visit::Types::INSPECTION,
+          :identification_type => Report::Status::POTENTIAL,
+          :location_id => second_location.id,
+          :visited_at => created_at)
+        end
+      end
+
+      # The last visit should have a followup that results in elimination.
+      v = Visit.order("visited_at DESC").first
+      FactoryGirl.create(:visit, :visit_type => Visit::Types::FOLLOWUP, :identification_type => Report::Status::NEGATIVE, :location_id => location.id, :visited_at => fifteen_hours_ago)
+    end
+
+    it "returns six time-series points" do
+      expect(Visit.calculate_time_series_for_locations(locations).count).to eq(6)
+    end
+
+    it "orders points by visited_at in ascending order" do
+      visits = Visit.calculate_time_series_for_locations(locations)
+      expect(visits.first.visited_at).to eq(hundred_days_ago)
+      expect(visits.last.visited_at).to eq(fifteen_hours_ago)
+    end
+
+    it "orders points by visited_at in ascending order" do
+      visits = Visit.calculate_time_series_for_locations(locations)
+      expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
+      expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
+    end
+
+    it "returns the correct time-series" do
+      visits = Visit.calculate_time_series_for_locations(locations)
+      expect(visits).to eq([
+        {
+          :date=>"2014-10-21",
+          :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+        },
+        {
+          :date=>"2015-01-19", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}
+        },
+        {
+          :date=>"2015-01-28", :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+        },
+        {
+          :date=>"2015-01-29", :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+        }
+      ])
+    end
+
+
+  end
+
+  #-----------------------------------------------------------------------------
+
 end
