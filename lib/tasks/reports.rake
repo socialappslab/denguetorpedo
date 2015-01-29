@@ -63,16 +63,16 @@ namespace :reports do
 
   task :backfill_visits => :environment do
     Report.find_each do |r|
-      puts "\n\n\n[ ] Updating Visit model by running set_location_status on each Report\n\n\n"
+      puts "\n\n\n[ ] Creating an identification visit for report with id = #{r.id}...\n\n\n"
 
-      r.set_location_status()
+      r.create_identification_visit()
 
-      puts "\n\n\n[x] Updating Visit model by running set_location_status on each Report\n\n\n"
-      puts "\n\n\n[ ] Triggering after_commit, :on => :update method to trigger update_location_status\n\n\n"
+      puts "\n\n\n[x] Created an identification visit for report with id = #{r.id}\n\n\n"
+      puts "\n\n\n[ ] Creating a follow-up visit for report with id = #{r.id}\n\n\n"
 
-      r.save(:validate => false)
+      r.create_followup_visit()
 
-      puts "\n\n\n[x] Triggering after_commit, :on => :update method to trigger update_location_status\n\n\n"
+      puts "\n\n\n[x] Created a follow-up visit for report with id = #{r.id}\n\n\n"
     end
   end
 
