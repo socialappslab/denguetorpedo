@@ -67,15 +67,15 @@ class Visit < ActiveRecord::Base
   #   treat this location as cleaned.
   # TODO: We don't implement CLEAN status for now since it requires heavy SQL
   # queries into the history of Visits.
-  def state
-    if self.cleaned_at.blank?
-      return self.identification_type
-    elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
-      return self.identification_type
-    else
-      return Visit::Cleaning::NEGATIVE
-    end
-  end
+  # def state
+  #   if self.cleaned_at.blank?
+  #     return self.identification_type
+  #   elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
+  #     return self.identification_type
+  #   else
+  #     return Visit::Cleaning::NEGATIVE
+  #   end
+  # end
 
   # We set the identification type to be the *worst* found type, meaning that
   # if the report is positive, we set the identification_type to positive. If
@@ -88,9 +88,10 @@ class Visit < ActiveRecord::Base
     # At this point, the status of a report is either potential or negative.
     # We must result to calculating the status of other reports before knowing
     # what the identification_type of this visit should be.
-    reports = self.location.reports
-    positive_report  = reports.find {|r| r.status == Status::POSITIVE  }
-    potential_report = reports.find {|r| r.status == Status::POTENTIAL }
+    reports          = report.location.reports
+    positive_report  = reports.find {|r| r.status == Report::Status::POSITIVE  }
+    potential_report = reports.find {|r| r.status == Report::Status::POTENTIAL }
+
     return Report::Status::POSITIVE  if positive_report.present?
     return Report::Status::POTENTIAL if potential_report.present?
 

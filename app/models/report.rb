@@ -314,18 +314,19 @@ class Report < ActiveRecord::Base
     return if self.location_id.blank?
 
     ls = Visit.where(:location_id => self.location_id)
-    ls = ls.where(:visit_type => Visit::Types::IDENTIFICATION).
+    ls = ls.where(:visit_type => Visit::Types::INSPECTION)
     ls = ls.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
     ls = ls.order("visited_at DESC").limit(1)
     if ls.blank?
-      ls            = Visit.new(:location_id => self.location_id)
-      ls.visit_type = Visit::Types::IDENTIFICATION
-      ls.visited_at = self.created_at
+      ls             = Visit.new
+      ls.visit_type  = Visit::Types::INSPECTION
+      ls.location_id = self.location_id
+      ls.visited_at  = self.created_at
     else
       ls = ls.first
     end
 
-    ls.identification_type = ls.calculate_identification_type_for_report(report)
+    ls.identification_type = ls.calculate_identification_type_for_report(self)
     ls.save
 
     # Finally, associate the report with a particular visit.
@@ -349,13 +350,14 @@ class Report < ActiveRecord::Base
     return if self.eliminated_at.blank?
 
     ls = Visit.where(:location_id => self.location_id)
-    ls = ls.where(:visit_type => Visit::Types::FOLLOWUP).
+    ls = ls.where(:visit_type => Visit::Types::FOLLOWUP)
     ls = ls.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
     ls = ls.order("visited_at DESC").limit(1)
     if ls.blank?
-      ls            = Visit.new(:location_id => self.location_id)
-      ls.visit_type = Visit::Types::FOLLOWUP
-      ls.visited_at = self.eliminated_at
+      ls             = Visit.new
+      ls.location_id = self.location_id
+      ls.visit_type  = Visit::Types::FOLLOWUP
+      ls.visited_at  = self.eliminated_at
     else
       ls = ls.first
     end

@@ -65,10 +65,29 @@ FactoryGirl.define do
 		content "Hello world"
 	end
 
+	#-----------------------------------------------------------------------------
+
   factory :report do
-    report "Description"
-    before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+    report 					 "Description"
+    before_photo 		 Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+		breeding_site_id BreedingSite.first.id
+		neighborhood_id  Neighborhood.first.id
+
+		factory :positive_report do
+			larvae true
+		end
+
+		factory :potential_report do
+			larvae false
+			pupae  false
+		end
+
+		factory :negative_report do
+			protected true
+		end
   end
+
+	#-----------------------------------------------------------------------------
 
 	factory :team do
 	end
