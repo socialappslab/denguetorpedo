@@ -24,12 +24,12 @@
 - if @statistics.present?
   .row{:style => "margin-top: 20px;"}
     .col-md-10.col-md-offset-1
-      = render :partial => "shared/visit_statistics"
+      = render :partial => "shared/last_visit_pie_chart"
 
 
   .row{:style => "margin-top: 20px;"}
     .col-md-10.col-md-offset-1
-      = render :partial => "shared/location_statistics_graph"
+      = render :partial => "shared/visits_time_series_chart"
 
 
 
