@@ -10,14 +10,13 @@
       = @neighborhood.name
 
 
-- if @statistics.present?
-  -# .row
-  -#   .col-md-9
-  -#     = render :partial => "shared/last_visit_pie_chart"
+-# .row
+-#   .col-md-9
+-#     = render :partial => "shared/last_visit_pie_chart"
 
-  .row
-    .col-md-9
-      = render :partial => "shared/visits_time_series_chart"
+.row
+  .col-md-9
+    = render :partial => "shared/visits_time_series_chart"
 
 
 

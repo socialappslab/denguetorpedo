@@ -3,20 +3,21 @@
   = I18n.t('views.statistics.chart.title')
 
 
-.row
-  .col-md-12
-    #chart{:style => "height: 350px; display: block;"}
+- if @last_statistics.present?
+  .row
+    .col-md-12
+      #chart{:style => "height: 350px; display: block;"}
 
 
-%div
-  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_positive_sites')
+  %div
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_positive_sites')
 
 
 
-%div
-  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_potential_sites')
+  %div
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_potential_sites')
 
 
 
