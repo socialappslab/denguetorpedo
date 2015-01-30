@@ -126,7 +126,8 @@ class Visit < ActiveRecord::Base
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     location_ids = locations.map(&:id)
-    visits       = Visit.where(:location_id => location_ids).order("visited_at ASC")
+    visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
+    visits       = visits.select([:visited_at, :identification_type, :visit_type])
     return [] if visits.blank?
 
 
