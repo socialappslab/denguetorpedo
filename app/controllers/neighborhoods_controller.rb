@@ -64,7 +64,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
     end
   end
 
-
   #----------------------------------------------------------------------------
   # GET /neighborhoods/invitation
   #------------------------------
