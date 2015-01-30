@@ -202,7 +202,7 @@ class Visit < ActiveRecord::Base
     if start_time.present?
       parsed_start_time = start_time.strftime("%Y-%m-%d")
       first_index = daily_stats.find_index { |day_stat| Time.parse(day_stat[:date]) >= Time.parse(parsed_start_time) }
-      daily_stats = daily_stats[first_index..-1]
+      daily_stats = daily_stats[first_index..-1] if first_index.present?
     end
 
     return daily_stats
