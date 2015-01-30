@@ -122,10 +122,12 @@ class Visit < ActiveRecord::Base
   # NOTE: Keep in mind that we can't just initialize the memoized variable with
   # all locations as not all locations existed for all time. Otherwise, we may
   # skew the actual statistics.
-  def self.calculate_time_series_for_locations(locations)
+  def self.calculate_time_series_for_locations_and_start_time(locations, start_time = nil)
     location_ids = locations.map(&:id)
     visits       = Visit.where(:location_id => location_ids).order("visited_at ASC")
+    visits       = visits.where("visited_at > ?", start_time) if start_time.present?
     return [] if visits.blank?
+
 
     daily_stats = []
     visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type).count
