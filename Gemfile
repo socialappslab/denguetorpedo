@@ -29,13 +29,6 @@ gem 'cancan'
 gem 'ruby-gmail'
 
 #------------------------------------------------------------------------------
-# PDF-related
-# 
-# gem 'prawn'
-# gem 'prawn-layout'
-# gem "prawnto_2", :require => "prawnto"
-
-#------------------------------------------------------------------------------
 # Internationalization
 
 gem 'rails-i18n'
