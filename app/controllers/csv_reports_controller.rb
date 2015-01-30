@@ -13,19 +13,16 @@ class CsvReportsController < NeighborhoodsBaseController
 
     @visits              = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_type(@visits)
+    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_types(@visits)
     @table_statistics = @statistics.last
     @chart_statistics = @statistics.map {|hash|
       [
         hash[:date],
         hash[:positive][:percent],
         hash[:potential][:percent],
-        hash[:negative][:percent],
-        hash[:clean][:percent]
+        hash[:negative][:percent]
       ]
     }
-
-    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_type(@visits)
 
 
     # @last_statistics = []
