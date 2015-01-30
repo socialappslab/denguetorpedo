@@ -79,6 +79,7 @@ es:
         name: Nombre
         message: Mensaje
       report:
+        created_at: Fecha de inspección
         location_id: Dirección
         prepared_at: Fecha de preparación
         completed_at: Fecha de preparación
