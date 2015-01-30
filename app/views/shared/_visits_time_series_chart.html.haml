@@ -1,0 +1,142 @@
+
+%h3{:style => "font-size: 18px; margin-top: 20px; text-align: center;"}
+  = I18n.t('views.statistics.chart.title')
+
+
+- if @last_statistics.present?
+  .row
+    .col-md-12
+      #chart{:style => "height: 350px; display: block;"}
+
+
+  %div
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_positive_sites')
+
+
+
+  %div
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_potential_sites')
+
+
+
+= form_tag time_series_settings_path, :method => "POST" do
+  %table.table.table-bordered{:style => "margin-top: 20px;"}
+    %tbody
+      %tr{:style => "text-align: center;"}
+        %td{:colspan => 2}
+          = I18n.t("common_terms.filter_by")
+      %tr
+        %td
+          .checkbox
+            = label_tag do
+              = check_box_tag "chart[positive_inspection]", 1, chart_cookies.blank? || chart_cookies["positive_inspection"]
+              = I18n.t("views.statistics.chart.filters.positive_inspection")
+
+          .checkbox
+            = label_tag do
+              = check_box_tag "chart[potential_inspection]", 1, chart_cookies.blank? || chart_cookies["potential_inspection"]
+              = I18n.t("views.statistics.chart.filters.potential_inspection")
+
+
+          .checkbox
+            = label_tag do
+              = check_box_tag "chart[positive_followup]", 1, chart_cookies.blank? || chart_cookies["positive_followup"]
+              = I18n.t("views.statistics.chart.filters.positive_followup")
+
+          .checkbox
+            = label_tag do
+              = check_box_tag "chart[potential_followup]", 1, chart_cookies.blank? || chart_cookies["potential_followup"]
+              = I18n.t("views.statistics.chart.filters.potential_followup")
+
+
+        %td
+          .radio
+            = label_tag do
+              = radio_button_tag "chart[timeframe]", "1", chart_cookies.blank? || chart_cookies["timeframe"] == "1"
+              = I18n.t("views.statistics.chart.filters.one_month")
+          .radio
+            = label_tag do
+              = radio_button_tag "chart[timeframe]", "3", chart_cookies["timeframe"] == "3"
+              = I18n.t("views.statistics.chart.filters.three_months")
+
+          .radio
+            = label_tag do
+              = radio_button_tag "chart[timeframe]", "-1", chart_cookies["timeframe"] == "-1"
+              = I18n.t("views.statistics.chart.filters.all_time")
+        %tr
+          %td{:colspan => 2}
+            = submit_tag I18n.t("common_terms.filter"), :class => "btn btn-success btn-sm col-md-4 col-md-offset-4"
+
+
+
+:javascript
+  google.load('visualization', '1', {packages: ['corechart']});
+  google.setOnLoadCallback(drawChart);
+
+  var statistics = #{@chart_statistics.to_json};
+
+  var options = {
+    width: $("#chart").width(),
+    chartArea: {
+      left: 50,
+      right: 50,
+      top: 50,
+      bottom: 0,
+      width: "90%",
+      height: "70%"
+    },
+    hAxis: {
+      // title: "#{I18n.t('views.statistics.chart.time')}",
+      // titleTextStyle: {
+      //   italic: false,
+      //   fontSize: "20"
+      // }
+    },
+    vAxis: {
+      gridlines: {
+        color: "transparent"
+      },
+      format: "#\'%\'",
+      // viewWindow: {
+      //   max: 110,
+      //   min: 0
+      // },
+    },
+    backgroundColor: '#eff0f3',
+    legend: {
+      position: "none",
+      alignment: "start",
+      textStyle: {
+        fontSize: "15"
+      }
+    }
+  };
+
+
+
+  function drawChart() {
+    positiveStatistics = statistics;
+
+    // data.addRows(statistics);
+    var data = new google.visualization.arrayToDataTable(positiveStatistics);
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+
+    options.colors = ["#e74c3c", "#f1c40f"];
+
+    // options.colors = ["#e74c3c"];
+
+    // options.vAxis.title = "#{I18n.t('common_terms.percentage')}"
+    // options.vAxis.titleTextStyle = {
+    //   italic: false,
+    //   fontSize: "20"
+    // }
+
+    var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
+    formatter.format(data, 1);
+
+
+    var chart = new google.visualization.ColumnChart(document.getElementById("chart"));
+    chart.draw(data, options);
+  }
