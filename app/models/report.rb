@@ -89,6 +89,8 @@ class Report < ActiveRecord::Base
   validates :breeding_site_id, :presence => {:on => :update, :if => :incomplete? }
   validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
 
+  validate :eliminated_at, :eliminated_after_creation?
+
   #----------------------------------------------------------------------------
 
   accepts_nested_attributes_for :location
@@ -407,5 +409,23 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  private
+
+  # Validator that ensures that eliminated_at is after created_at.
+  def eliminated_after_creation?
+    return true if self.eliminated_at.blank?
+
+    # If the report hasn't been created yet, then let's compare elimination time
+    # to the current time. Otherwise, let's compare to the time of creation.
+    if self.created_at.blank?
+      return true if self.eliminated_at > Time.now
+    else
+      return true if self.eliminated_at > self.created_at
+    end
+
+    created_at = I18n.t("activerecord.attributes.report.created_at") || "inspection date"
+    self.errors[:eliminated_at] << "can't be before " + created_at.downcase
+    return false
+  end
 
 end
