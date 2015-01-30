@@ -19,9 +19,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
 
-    # start_time = Time.now - 3.months
-    # end_time   = Time.now
-
     # Determine what to render, depending on the attributes present in the cookie.
     start_time  = nil
     visit_types = []
@@ -37,39 +34,17 @@ class NeighborhoodsController < NeighborhoodsBaseController
       end
     end
 
+    # Calculate the statistics based on the start_time and visit_types.
     @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
 
-    legend = [I18n.t('views.statistics.chart.time')]
-    if cookies[:chart].present?
-      chart_settings = JSON.parse(cookies[:chart])
-      if chart_settings["positive_inspection"] || chart_settings["positive_followup"]
-        legend << I18n.t('views.statistics.chart.percent_of_positive_sites')
-      end
-
-      if chart_settings["potential_inspection"] || chart_settings["potential_followup"]
-        legend << I18n.t('views.statistics.chart.percent_of_potential_sites')
-      end
-    end
-
-
-    @chart_statistics = [legend]
+    # Format the data in a way that Google Charts can use.
+    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites')]]
     @statistics.each do |hash|
-      series_array = [
-        hash[:date]
+      @chart_statistics << [
+        hash[:date],
+        hash[:positive][:percent],
+        hash[:potential][:percent]
       ]
-
-      if cookies[:chart].present?
-        chart_settings = JSON.parse(cookies[:chart])
-        if chart_settings["positive_inspection"] || chart_settings["positive_followup"]
-          series_array << hash[:positive][:percent]
-        end
-
-        if chart_settings["potential_inspection"] || chart_settings["potential_followup"]
-          series_array << hash[:potential][:percent]
-        end
-      end
-
-      @chart_statistics << series_array
     end
 
 

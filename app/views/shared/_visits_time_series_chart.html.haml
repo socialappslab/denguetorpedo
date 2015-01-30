@@ -75,8 +75,8 @@
   google.load('visualization', '1', {packages: ['corechart']});
   google.setOnLoadCallback(drawChart);
 
-  var statistics = #{@chart_statistics.to_json};
 
+  var statistics = #{@chart_statistics.to_json};
   var options = {
     width: $("#chart").width(),
     chartArea: {
@@ -87,23 +87,13 @@
       width: "90%",
       height: "70%"
     },
-    hAxis: {
-      // title: "#{I18n.t('views.statistics.chart.time')}",
-      // titleTextStyle: {
-      //   italic: false,
-      //   fontSize: "20"
-      // }
-    },
     vAxis: {
       gridlines: {
         color: "transparent"
       },
-      format: "#\'%\'",
-      // viewWindow: {
-      //   max: 110,
-      //   min: 0
-      // },
+      format: "#\'%\'"
     },
+    hAxis: {},
     backgroundColor: '#eff0f3',
     legend: {
       position: "none",
@@ -111,32 +101,34 @@
       textStyle: {
         fontSize: "15"
       }
-    }
+    },
+    colors: ["#e74c3c", "#f1c40f"]
   };
 
-
-
   function drawChart() {
-    positiveStatistics = statistics;
-
-    // data.addRows(statistics);
-    var data = new google.visualization.arrayToDataTable(positiveStatistics);
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
-
-    options.colors = ["#e74c3c", "#f1c40f"];
-
-    // options.colors = ["#e74c3c"];
-
-    // options.vAxis.title = "#{I18n.t('common_terms.percentage')}"
-    // options.vAxis.titleTextStyle = {
-    //   italic: false,
-    //   fontSize: "20"
-    // }
-
+    // Initialize the critical variables.
+    var chart     = new google.visualization.ColumnChart(document.getElementById("chart"));
+    var data      = new google.visualization.arrayToDataTable(statistics);
     var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
     formatter.format(data, 1);
 
+    // Customize the options so we dont' fill up the horizontal axis.
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
 
-    var chart = new google.visualization.ColumnChart(document.getElementById("chart"));
-    chart.draw(data, options);
+    // Let's hide the columns corresponding to unchecked checkboxes.
+    var view         = new google.visualization.DataView(data);
+    var uncheckedIds = $("input:checkbox:not(:checked)").map(function(index,el) { return $(el).attr("id") });
+    if ( $.inArray("chart_positive_inspection", uncheckedIds) !== -1 && $.inArray("chart_positive_followup", uncheckedIds) !== -1 )
+    {
+      view.hideColumns([1]);
+      options.colors = ["#f1c40f"];
+    }
+    else if ( $.inArray("chart_potential_inspection", uncheckedIds) !== -1 && $.inArray("chart_potential_followup", uncheckedIds) !== -1 )
+    {
+      view.hideColumns([2]);
+      options.colors = ["#e74c3c"];
+    }
+
+    // Finally, let's draw the chart.
+    chart.draw(view, options);
   }
