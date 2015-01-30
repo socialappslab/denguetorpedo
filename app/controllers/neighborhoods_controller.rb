@@ -23,14 +23,21 @@ class NeighborhoodsController < NeighborhoodsBaseController
     # end_time   = Time.now
 
     # Determine what to render, depending on the attributes present in the cookie.
-    start_time = nil
+    start_time  = nil
+    visit_types = []
     if cookies[:chart].present?
       chart_settings = JSON.parse(cookies[:chart])
-      start_time = 1.month.ago if chart_settings["timeframe"]  == "1"
+      start_time = 1.month.ago  if chart_settings["timeframe"]  == "1"
       start_time = 6.months.ago if chart_settings["timeframe"] == "6"
+
+      if chart_settings["positive_inspection"].present? || chart_settings["potential_inspection"].present?
+        visit_types << Visit::Types::INSPECTION
+      elsif chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
+        visit_types << Visit::Types::FOLLOWUP
+      end
     end
 
-    @statistics = Visit.calculate_time_series_for_locations_and_start_time(@visits, start_time)
+    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
 
     legend = [I18n.t('views.statistics.chart.time')]
     if cookies[:chart].present?

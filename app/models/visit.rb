@@ -122,7 +122,7 @@ class Visit < ActiveRecord::Base
   # NOTE: Keep in mind that we can't just initialize the memoized variable with
   # all locations as not all locations existed for all time. Otherwise, we may
   # skew the actual statistics.
-  def self.calculate_time_series_for_locations_and_start_time(locations, start_time = nil)
+  def self.calculate_time_series_for_locations_start_time_and_visit_types(locations, start_time = nil, visit_types = nil)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     location_ids = locations.map(&:id)
@@ -131,20 +131,28 @@ class Visit < ActiveRecord::Base
 
 
     daily_stats = []
-    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type).count
+    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
     visits_by_date_and_type.each do |grouping, count|
       visited_at_date     = grouping[0].to_s
       identification_type = grouping[1].to_i
+      visit_type          = grouping[2].to_i
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
         day_statistic = {
-          :date      => visited_at_date,
-          :positive  => {:count => 0, :percent => 0},
-          :potential => {:count => 0, :percent => 0},
-          :negative  => {:count => 0, :percent => 0}
+          :date       => visited_at_date,
+          :matching_visit_type => false,
+          :positive   => {:count => 0, :percent => 0},
+          :potential  => {:count => 0, :percent => 0},
+          :negative   => {:count => 0, :percent => 0}
         }
       end
+
+      # NOTE: To include only the visit types that we're matching against, we're
+      # going to simply compare all visit types for this date, and if at least
+      # one visit type matches the one we want, then we'll set the value to true.
+      matching_visit_type = visit_types.blank? || visit_types.include?(visit_type)
+      day_statistic[:matching_visit_type] = true if matching_visit_type == true
 
       if identification_type == Report::Status::POSITIVE
         day_statistic[:positive][:count] = count
@@ -185,6 +193,9 @@ class Visit < ActiveRecord::Base
 
       daily_stats[index] = day_statistic
     end
+
+    # Finally, let's include only those visit types that match the visit type.
+    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
 
     # Now that the full history is captured, let's filter starting from the start_time
     if start_time.present?
