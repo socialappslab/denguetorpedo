@@ -28,14 +28,14 @@ class CsvReportsController < NeighborhoodsBaseController
     @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_type(@visits)
 
 
-    @last_statistics = []
-    legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
-    I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
-    if @statistics.present?
-      [:positive, :potential, :negative, :clean].each_with_index do |key, index|
-        @last_statistics << [legend[index], @statistics.last[key][:count]]
-      end
-    end
+    # @last_statistics = []
+    # legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
+    # I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
+    # if @statistics.present?
+    #   [:positive, :potential, :negative, :clean].each_with_index do |key, index|
+    #     @last_statistics << [legend[index], @statistics.last[key][:count]]
+    #   end
+    # end
 
   end
 
