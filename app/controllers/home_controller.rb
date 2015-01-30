@@ -78,6 +78,27 @@ class HomeController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # POST /time-series-settings
+  #------------------------------
+
+  def time_series_settings
+    settings = {}
+
+    if params["chart"]
+      if params["chart"]["timeframe"].present? && ["1", "6", "-1"].include?(params["chart"]["timeframe"])
+        settings["timeframe"] = params["chart"]["timeframe"]
+      end
+
+      ["positive_inspection", "potential_inspection", "positive_followup", "potential_followup"].each do |key|
+        settings[key] = params["chart"][key]
+      end
+    end
+
+    cookies[:chart] = settings.to_json
+    redirect_to :back and return
+  end
+
+  #----------------------------------------------------------------------------
 
   private
 

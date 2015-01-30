@@ -206,6 +206,10 @@ Dengue::Application.routes.draw do
   resources :buy_ins, :only => [:new, :create, :destroy]
   resources :group_buy_ins, :only => [:new, :create, :destroy]
 
+
+  post "time-series-settings", :controller => "home", :action => :time_series_settings, :as => :time_series_settings
+
+
   #----------------------------------------------------------------------------
   # Active Admin
 
