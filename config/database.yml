@@ -1,11 +1,15 @@
-# SQLite version 3.x
-#   gem install sqlite3
+#-------------------------------------------------------------------------------
+# Database Connections
 #
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
+# Note that we do not specify anything for production, since Heroku will take
+# care of this.
+#-------------------------------------------------------------------------------
+
 development:
-  adapter: sqlite3
-  database: db/development.sqlite3
+  adapter: postgresql
+  encoding: unicode
+  database: denguechat_dev
+  username: postgres
   pool: 5
   timeout: 5000
 
@@ -13,22 +17,10 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test: &test
-  adapter: sqlite3
-  database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
-
-production:
-  adapter: sqlite3
+  adapter: postgresql
   encoding: unicode
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
-
-staging:
-  adapter: sqlite3
-  encoding: unicode
-  database: db/staging.sqlite3
+  database: denguechat_test
+  username: postgres
   pool: 5
   timeout: 5000
 
