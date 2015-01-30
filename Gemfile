@@ -3,9 +3,7 @@ source 'http://rubygems.org'
 ruby "1.9.3"
 gem 'rails', '~> 3.2.18'
 
-group :staging, :production do
-  gem 'pg'
-end
+gem 'pg'
 
 #------------------------------------------------------------------------------
 # Encoding support
@@ -32,10 +30,10 @@ gem 'ruby-gmail'
 
 #------------------------------------------------------------------------------
 # PDF-related
-
-gem 'prawn'
-gem 'prawn-layout'
-gem "prawnto_2", :require => "prawnto"
+# 
+# gem 'prawn'
+# gem 'prawn-layout'
+# gem "prawnto_2", :require => "prawnto"
 
 #------------------------------------------------------------------------------
 # Internationalization
