@@ -57,8 +57,8 @@
               = I18n.t("views.statistics.chart.filters.one_month")
           .radio
             = label_tag do
-              = radio_button_tag "chart[timeframe]", "6", chart_cookies["timeframe"] == "6"
-              = I18n.t("views.statistics.chart.filters.six_months")
+              = radio_button_tag "chart[timeframe]", "3", chart_cookies["timeframe"] == "3"
+              = I18n.t("views.statistics.chart.filters.three_months")
 
           .radio
             = label_tag do
@@ -116,19 +116,7 @@
 
 
   function drawChart() {
-    // var positiveStatistics = [];
-    // var min = statistics[1][1];
-    // var max = statistics[1][1];
-    // for (var i = 0; i < statistics.length; i++) {
-    //   positiveStatistics.push( [ statistics[i][0], statistics[i][1] ] )
-    //   // if (statistics[i][1] < min)
-    //   //   min = statistics[i][1]
-    //   // if (statistics[i][1] > max)
-    //   //   max = statistics[i][1]
-    // }
-
     positiveStatistics = statistics;
-
 
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(positiveStatistics);
