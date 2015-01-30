@@ -122,6 +122,57 @@ describe CsvReportsController do
     end
   end
 
+
+
+
+
+
+
+
+  context "when uploading the same CSV" do
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+
+      post :create, :csv_report => { :csv => uploaded_csv },
+      :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+      :neighborhood_id => Neighborhood.first.id
+    end
+
+    it "reuses the same location" do
+      expect {
+        post :create, :csv_report => { :csv => uploaded_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.not_to change(Location, :count)
+    end
+
+    it "does not create new CsvReport" do
+      expect {
+        post :create, :csv_report => { :csv => uploaded_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.not_to change(CsvReport, :count)
+    end
+
+    it "does NOT create new reports" do
+      expect {
+        post :create, :csv_report => { :csv => uploaded_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.not_to change(Report, :count)
+    end
+
+    it "does NOT create new LocationStatuses" do
+      expect {
+        post :create, :csv_report => { :csv => uploaded_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.not_to change(LocationStatus, :count)
+    end
+
+  end
+
+
   #-----------------------------------------------------------------------------
 
   context "when uploading a custom CSV" do
