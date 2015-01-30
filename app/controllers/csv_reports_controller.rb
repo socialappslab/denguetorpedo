@@ -68,39 +68,26 @@ class CsvReportsController < NeighborhoodsBaseController
 
     # 2. Identify the file content type.
     file        = params[:csv_report][:csv]
-    spreadsheet = load_spreadsheet( file )
+    spreadsheet = CsvReport.load_spreadsheet( file )
     unless spreadsheet
       flash[:alert] = I18n.t("views.csv_reports.flashes.unknown_format")
       render "new" and return
     end
 
-    # NOTE: We assume the location is not negative unless otherwise noted, and
-    # there is no last inspection date to correspond with the clean location.
-    is_location_clean    = false
-    last_inspection_date = nil
-    reports        = []
-    visits         = []
-    parsed_content = []
-
-
     # 3. Identify the start of the reports table in the CSV file.
     # The first row is reserved for the house location/address.
     # Second row is reserved for permission.
-    address = spreadsheet.row(1)[1]
+    address = CsvReport.extract_address_from_spreadsheet(spreadsheet)
     if address.blank?
       flash[:alert] = I18n.t("views.csv_reports.flashes.missing_house")
       render "new" and return
     end
-    address = address.to_s
+
+
 
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
-    start_index = 3
-    while spreadsheet.row(start_index)[0].to_s.downcase.exclude?("fecha de visita")
-      start_index += 1
-    end
-    header  = spreadsheet.row(start_index)
-    header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
+    header = CsvReport.extract_header_from_spreadsheet(spreadsheet)
 
 
     # 4. Parse the CSV.
@@ -119,121 +106,97 @@ class CsvReportsController < NeighborhoodsBaseController
     #   "foto de eliminación",
     #   "comentarios sobre tipo y/o eliminación*"
     # ]
-    current_row   = 0
-    current_visit = nil
 
-    (start_index + 1..spreadsheet.last_row).each do |i|
-      row            = Hash[[header, spreadsheet.row(i)].transpose]
-      parsed_content << row
-      current_row   += 1
+    # 5. Error out if there are no reports extracted.
+    rows = CsvReport.extract_rows_from_spreadsheet(spreadsheet)
+    if rows.blank?
+      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_visits")
+      render "new" and return
+    end
 
-      # 4a. Extract the attributes. NOTE: We use fuzzy matching instead of
-      # exact matching since users may vary the columns slightly.
-      date           = row.select {|k,v| k.include?("fecha de visita")}.values[0].to_s
-      room           = row["localización"].to_s
-      type           = row.select {|k,v| k.include?("tipo")}.values[0].to_s
-      is_protected   = row['protegido'].to_i
-      is_pupas       = row["pupas"].to_i
-      is_larvas      = row["larvas"].to_i
-      is_chemical     = row["abatizado"].to_i
-      elim_date      = row.select {|k,v| k.include?("fecha de eliminac")}.values[0].to_s
-      comments       = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
+    # At this point, we know that there is at least one row. Let's see if there
+    # are any incorrect breeding site codes.
+    rows.each do |row|
+      row_content = CsvReport.extract_content_from_row(row)
+      next if row_content[:breeding_site].blank?
 
-
-      # 4b. Attempt to identify the breeding sites from the codes. If no type
-      # is identified, then simply skip the whole row.
-      next if type.blank?
-
-      type = type.strip.downcase
-      if ["a", "b", "l", "m", "p", "t", "x", "n"].include?( type )
-        if type == "a"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-        elsif type == "b"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
-        elsif type == "l"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
-        elsif type == "m"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-        elsif type == "p"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
-        elsif type == "t"
-          breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
-        end
-      else
+      type = row_content[:breeding_site].strip.downcase
+      if CsvReport.accepted_breeding_site_codes.exclude?(type)
         flash[:alert] = I18n.t("views.csv_reports.flashes.unknown_code")
         render "new" and return
       end
+    end
 
-      # 4c. Define the description based on the collected attributes.
-      description = ""
-      description += "Localización: #{room}" if room.present?
-      description += ", Protegido: #{is_protected}, Abatizado: #{is_chemical}, Larvas: #{is_larvas == 1 ? "si" : "no"}, Pupas: #{is_pupas == 1 ? "si" : "no"}"
-      description += ", Comentarios sobre tipo y/o eliminación: #{comments}" if comments.present?
+    # At this point, we have a non-trivial CSV with valid breeding codes.
+    reports            = []
+    visits             = []
+    current_visited_at = nil
 
-      # 4d. Generate a UUID to identify the row that the report will correspond
-      # to. We define the UUID based on
-      # * House location,
-      # * Date of visit,
-      # * The room within the house,
-      # * Type of site,
-      # * Properties identified at the site.
-      # If there is a match, then we simply update the existing report.
-      uuid = (address + date + room + type + is_protected.to_s + is_pupas.to_s + is_larvas.to_s + is_chemical.to_s)
-      uuid = uuid.strip.downcase.underscore
+    rows.each_with_index do |row, row_index|
+      row_content = CsvReport.extract_content_from_row(row)
+      next if row_content[:breeding_site].blank?
 
-      if type && type != "n"
+      # Build report attributes.
+      uuid        = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)
+      description = CsvReport.generate_description_from_row_content(row_content)
+
+      type = row_content[:breeding_site].strip.downcase
+      if type == "a"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+      elsif type == "b"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+      elsif type == "l"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+      elsif type == "m"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+      elsif type == "p"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+      elsif type == "t"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+      end
+
+      # Add to reports only if the code doesn't equal "negative" code.
+      unless type == "n"
         reports << {
-          :inspection_date  => date,
-          :elimination_date => elim_date,
-          :breeding_site    => breeding_site,
-          :description      => description,
-          :protected        => is_protected, :chemically_treated => is_chemical, :larvae => is_larvas, :pupae => is_pupas,
-          :csv_uuid         => uuid
+          :visited_at    => row_content[:visited_at],
+          :eliminated_at => row_content[:eliminated_at],
+          :breeding_site => breeding_site,
+          :description   => description,
+          :protected     => row_content[:protected],
+          :chemically_treated => row_content[:chemical],
+          :larvae => row_content[:larvae],
+          :pupae => row_content[:pupae],
+          :csv_uuid => uuid
         }
       end
 
-      # Finally, let's create a location status, if appropriate. We do
-      # this by comparing the new visit date with the current one.
-      if date.present? && current_visit != date
-        puts "current_visit: #{current_visit} | date = #{date}"
-        current_visit = date
-
-        # Let's parse the reporting on chik and dengue.
-        disease_report = row.select {|k,v| k.include?("reporte")}.values[0].to_s
-        disease_report = nil if disease_report.blank?
-        # if disease_report.present?
-        #   chik_count   = /([0-9]*)c/.match(disease_report)
-        #   chik_count   = chik_count[1].to_i if chik_count.present?
-        #   dengue_count = /([0-9]*)d/.match(disease_report)
-        #   dengue_count = dengue_count[1].to_i if dengue_count.present?
-        # end
+      # Finally, let's add a visit if it's a new visit.
+      if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
+        current_visited_at = row_content[:visited_at]
+        disease_report     = row_content[:health_report]
 
         # Now let's see if the location is clean.
         # If the last type is n, then the location is clean (for now).
         # If it's not the last row, then we simply label the status as a potential
         # breeding site. The actual status will be updated when the associated
         # report for the location is updated.
-        if i.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
+        if row_index.to_i == spreadsheet.last_row.to_i && type && type.strip.downcase == "n"
           status = LocationStatus::Types::NEGATIVE
         else
           status = LocationStatus::Types::POTENTIAL
         end
 
         # Now let's try parsing the date.
-        visit_date = Time.zone.parse(date)
+        visit_date = Time.zone.parse(row_content[:visited_at])
         visit_date = Time.now if visit_date.blank?
 
         visits << {
-          :date => visit_date, :health_report => disease_report, :status => status
+          :visited_at => visit_date,
+          :health_report => disease_report,
+          :status => status
         }
 
       end
-    end
-
-    # 5. Error out if there are no reports extracted.
-    if current_row == 0
-      flash[:alert] = I18n.t("views.csv_reports.flashes.missing_visits")
-      render "new" and return
     end
 
     # 6. Find and/or create the location.
@@ -242,15 +205,15 @@ class CsvReportsController < NeighborhoodsBaseController
       location = Location.create!(:latitude => lat, :longitude => long, :address => address)
     end
 
-    # Now that we have a location, let's update the LocationStatus.
+    # Now that we have a location, let's update the visit.
     # Note that if the reports that will be reported after this have any
     # positive status, then the location will be treated updated accordingly.
     visits.each do |visit|
       ls = LocationStatus.where(:location_id => location.id)
-      ls = ls.where(:created_at => (visit[:date].beginning_of_day..visit[:date].end_of_day) )
+      ls = ls.where(:created_at => (visit[:visited_at].beginning_of_day..visit[:visited_at].end_of_day) )
       if ls.blank?
         ls = LocationStatus.new(:location_id => location.id)
-        ls.created_at = visit[:date]
+        ls.created_at = visit[:visited_at]
       else
         ls = ls.first
       end
@@ -266,7 +229,7 @@ class CsvReportsController < NeighborhoodsBaseController
     # In the future, we want to search out CSV reports to see if any/all report
     # UUID match those that were parsed here.
     @csv_report.csv            = file
-    @csv_report.parsed_content = parsed_content.to_json
+    @csv_report.parsed_content = rows.to_json
     @csv_report.user_id        = @current_user.id
     @csv_report.location_id    = location.id
     @csv_report.save!
@@ -278,7 +241,6 @@ class CsvReportsController < NeighborhoodsBaseController
     # has to update the report.
     reports.each do |report|
       r = Report.find_by_csv_uuid(report[:csv_uuid])
-
       if r.blank?
         r = Report.new
 
@@ -287,9 +249,9 @@ class CsvReportsController < NeighborhoodsBaseController
         # Also, note that we *must* set updated_at to same as created_at in order
         # for the set_location_status method to correctly update the LocationStatus
         # instance to the right date (which is the date of house inspection).
-        parsed_inspection_date = Time.zone.parse( report[:inspection_date] )
+        parsed_inspection_date = Time.zone.parse( report[:visited_at] )
         if parsed_inspection_date.blank?
-          puts "\n\n\n [Error] Could not parse inspection date = #{report[:inspection_date]}...\n\n\n"
+          puts "\n\n\n [Error] Could not parse inspection date = #{report[:visited_at]}...\n\n\n"
         else
           r.created_at = parsed_inspection_date
           r.updated_at = parsed_inspection_date
@@ -298,11 +260,12 @@ class CsvReportsController < NeighborhoodsBaseController
         Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
       end
 
+
       # Note: We're overriding the eliminated_at column in order to allow
       # Nicaraguan community members to have more control over their reports.
-      elimination_date = Time.zone.parse( report[:elimination_date] )
+      elimination_date = Time.zone.parse( report[:eliminated_at] )
       if elimination_date.blank?
-        puts "\n\n\n [Error] Could not parse elimination date = #{report[:elimination_date]}...\n\n\n"
+        puts "\n\n\n [Error] Could not parse elimination date = #{report[:eliminated_at]}...\n\n\n"
       else
         r.eliminated_at = elimination_date
       end
@@ -331,19 +294,7 @@ class CsvReportsController < NeighborhoodsBaseController
 
   private
 
-  #----------------------------------------------------------------------------
 
-  def load_spreadsheet(file)
-    if File.extname( file.original_filename ) == ".csv"
-      spreadsheet = Roo::CSV.new(file.tempfile.path, :file_warning => :ignore)
-    elsif File.extname( file.original_filename ) == ".xls"
-      spreadsheet = Roo::Excel.new(file.tempfile.path, :file_warning => :ignore)
-    elsif File.extname( file.original_filename ) == ".xlsx"
-      spreadsheet = Roo::Excelx.new(file.tempfile.path, :file_warning => :ignore)
-    end
-
-    return spreadsheet
-  end
 
   #----------------------------------------------------------------------------
 
