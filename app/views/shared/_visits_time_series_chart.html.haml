@@ -75,12 +75,6 @@
   google.setOnLoadCallback(drawChart);
 
   var statistics = #{@chart_statistics.to_json};
-  console.log(statistics)
-  statistics.unshift([
-    "#{I18n.t('views.statistics.chart.time')}",
-    "#{I18n.t('views.statistics.chart.percent_of_positive_sites')}",
-    "#{I18n.t('views.statistics.chart.percent_of_potential_sites')}"
-  ])
 
   var options = {
     width: $("#chart").width(),
@@ -88,9 +82,9 @@
       left: 50,
       right: 50,
       top: 50,
-      bottom: 50,
-      width: "70%",
-      height:"70%"
+      bottom: 0,
+      width: "90%",
+      height: "70%"
     },
     hAxis: {
       // title: "#{I18n.t('views.statistics.chart.time')}",
@@ -110,7 +104,6 @@
       // },
     },
     backgroundColor: '#eff0f3',
-    colors: ["#e74c3c", "#f1c40f"],
     legend: {
       position: "none",
       alignment: "start",
@@ -140,6 +133,9 @@
     // data.addRows(statistics);
     var data = new google.visualization.arrayToDataTable(positiveStatistics);
     options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+
+    options.colors = ["#e74c3c", "#f1c40f"];
+
     // options.colors = ["#e74c3c"];
 
     // options.vAxis.title = "#{I18n.t('common_terms.percentage')}"
