@@ -112,12 +112,19 @@ class Report < ActiveRecord::Base
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
 
-  def status
-    return Status::NEGATIVE if self.eliminated?
-
+  # This method returns the report's original status, which is the status
+  # that the report had when it was first created.
+  def original_status
     return Report::Status::POSITIVE if (self.larvae || self.pupae)
     return Report::Status::NEGATIVE if (self.protected)
     return Report::Status::POTENTIAL
+  end
+
+  # This is the authoritative method for the report's status since it also
+  # considers the report's elimination state.
+  def status
+    return Status::NEGATIVE if self.eliminated?
+    return self.original_status
   end
 
   def eliminated?
