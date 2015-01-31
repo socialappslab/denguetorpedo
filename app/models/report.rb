@@ -361,6 +361,7 @@ class Report < ActiveRecord::Base
   # Visit.
   def create_followup_visit
     return if self.location_id.blank?
+    return if self.completed_at.blank?
     return if self.eliminated_at.blank?
 
     ls = Visit.where(:location_id => self.location_id)

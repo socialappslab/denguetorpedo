@@ -77,6 +77,7 @@ describe Visit do
       # This eliminates the report.
       report.after_photo   				 = photo
       report.elimination_method_id = report.breeding_site.elimination_methods.first.id
+      report.completed_at          = Time.now
       report.eliminator_id 				 = user.id
       report.eliminated_at 				 = eliminated_at
     end
