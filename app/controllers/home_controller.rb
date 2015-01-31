@@ -85,7 +85,7 @@ class HomeController < ApplicationController
     settings = {}
 
     if params["chart"]
-      if params["chart"]["timeframe"].present? && ["1", "3", "-1"].include?(params["chart"]["timeframe"])
+      if params["chart"]["timeframe"].present? && ["1", "3", "6", "-1"].include?(params["chart"]["timeframe"])
         settings["timeframe"] = params["chart"]["timeframe"]
       end
 
