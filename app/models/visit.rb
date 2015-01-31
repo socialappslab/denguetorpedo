@@ -129,7 +129,6 @@ class Visit < ActiveRecord::Base
     visits       = visits.select([:visited_at, :identification_type, :visit_type])
     return [] if visits.blank?
 
-
     daily_stats = []
     visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
     visits_by_date_and_type.each do |grouping, count|
@@ -146,6 +145,8 @@ class Visit < ActiveRecord::Base
           :potential  => {:count => 0, :percent => 0},
           :negative   => {:count => 0, :percent => 0}
         }
+
+        daily_stats << day_statistic
       end
 
       # NOTE: To include only the visit types that we're matching against, we're
@@ -169,15 +170,17 @@ class Visit < ActiveRecord::Base
       negative_count  = day_statistic[:negative][:count]
       total           = positive_count + potential_count + negative_count
 
-      if daily_stats.length == 0
+      if daily_stats.length == 1
         cumulative_total = total
       else
-        cumulative_total = daily_stats[-1][:cumulative_total] + total
+        cumulative_total = daily_stats[-2][:cumulative_total] + total
       end
       day_statistic[:cumulative_total] = cumulative_total
 
-      # Finally, add the hash to the daily_stats and move on.
-      daily_stats << day_statistic
+      # NOTE: We're not adding the hash here because there's a chance we simply
+      # modified an existing element. We're going to search for it again.
+      index = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
+      daily_stats[index] = day_statistic
     end
 
     # Now, let's iterate over daily_stats, calculating percentage.

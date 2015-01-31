@@ -210,6 +210,7 @@ describe Visit do
           :location_id => second_location.id,
           :visited_at => created_at)
         end
+
       end
 
       # The last visit should have a followup that results in elimination.
@@ -219,6 +220,21 @@ describe Visit do
 
     it "returns six time-series points" do
       expect(Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(6)
+    end
+
+    it "doesn't add duplicate date to time series" do
+      # Let's create a visit 100 days ago to the second location. We're
+      # going to ensure that there's only one time point with hundred_days_ago.strftime.
+      FactoryGirl.create(:visit,
+      :visit_type => Visit::Types::INSPECTION,
+      :identification_type => Report::Status::POSITIVE,
+      :location_id => second_location.id,
+      :visited_at => hundred_days_ago)
+
+      date_key = hundred_days_ago.strftime("%Y-%m-%d")
+      time_series = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
+
+      expect(time_series.find_all {|ts| ts[:date] == date_key}.length).to eq(1)
     end
 
     it "orders points by visited_at in ascending order" do
