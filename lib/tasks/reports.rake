@@ -65,7 +65,7 @@ namespace :reports do
     Report.find_each do |r|
       puts "\n\n\n[ ] Creating an identification visit for report with id = #{r.id}...\n\n\n"
 
-      r.create_identification_visit()
+      r.create_inspection_visit()
 
       puts "\n\n\n[x] Created an identification visit for report with id = #{r.id}\n\n\n"
       puts "\n\n\n[ ] Creating a follow-up visit for report with id = #{r.id}\n\n\n"
