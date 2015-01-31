@@ -4,16 +4,13 @@
 
 class CsvReportsController < NeighborhoodsBaseController
   before_filter :require_login
-  after_filter :calculate_time_series_for_visits, :only => [:index]
+  before_filter :calculate_ivars,                  :only => [:index]
+  before_filter :calculate_time_series_for_visits, :only => [:index]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1/csv_reports
 
   def index
-    @csv_reports = @current_user.csv_reports.order("updated_at DESC")
-
-    @visits              = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
-    @total_locations     = @visits.count
   end
 
 
@@ -273,10 +270,14 @@ class CsvReportsController < NeighborhoodsBaseController
 
   #----------------------------------------------------------------------------
 
-
   private
 
+  #----------------------------------------------------------------------------
 
+  def calculate_ivars
+    @csv_reports = @current_user.csv_reports.order("updated_at DESC")
+    @visits      = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
+  end
 
   #----------------------------------------------------------------------------
 

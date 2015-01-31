@@ -1,6 +1,7 @@
 class NeighborhoodsController < NeighborhoodsBaseController
-  before_filter :ensure_team_chosen, :only => [:show]
-  after_filter :calculate_time_series_for_visits, :only => [:show]
+  before_filter :ensure_team_chosen,               :only => [:show]
+  before_filter :calculate_ivars,                  :only => [:show]
+  before_filter :calculate_time_series_for_visits, :only => [:show]
 
 
   #----------------------------------------------------------------------------
@@ -8,17 +9,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
   def show
     @post = Post.new
-
-    # Load associations.
-    @neighborhood = Neighborhood.find(params[:id])
-    @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
-    @teams   = @neighborhood.teams.order("name ASC")
-    @reports = @neighborhood.reports
-    @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
-
-    # Calculate total visits to (different) locations.
-    @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
-    @total_locations     = @visits.count
 
     # Calculate total metrics before we start filtering.
     @total_reports = @reports.count
@@ -58,5 +48,17 @@ class NeighborhoodsController < NeighborhoodsBaseController
   private
 
   #----------------------------------------------------------------------------
+
+  def calculate_ivars
+    # Load associations.
+    @neighborhood = Neighborhood.find(params[:id])
+    @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
+    @teams   = @neighborhood.teams.order("name ASC")
+    @reports = @neighborhood.reports
+    @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
+
+    # Calculate total visits to (different) locations.
+    @visits = @reports.includes(:location).map {|r| r.location}.compact.uniq
+  end
 
 end
