@@ -39,14 +39,6 @@ describe CsvReportsController do
       }.to change(Report, :count).by(3)
     end
 
-    it "creates 3 new location_statuses" do
-      expect {
-        post :create, :csv_report => { :csv => uploaded_csv },
-        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
-        :neighborhood_id => Neighborhood.first.id
-      }.to change(Visit, :count).by(3)
-    end
-
 
     describe "the parsed Report attributes" do
       before(:each) do
@@ -92,31 +84,39 @@ describe CsvReportsController do
         :neighborhood_id => Neighborhood.first.id
       end
 
-      it "correctly sets status" do
-        ls = Visit.where("DATE(created_at) = ?", "2014-12-24").first
-        expect(ls.status).to eq(Visit::Cleaning::POSITIVE)
+      it "creates 3 inspection visits" do
+        expect(Visit.where(:visit_type => Visit::Types::INSPECTION).count).to eq(3)
+      end
+
+      it "creates no follow-up visits" do
+        expect(Visit.where(:visit_type => Visit::Types::FOLLOWUP).count).to eq(0)
+      end
+
+      it "correctly sets inspection type" do
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-24").first
+        expect(ls.identification_type).to eq(Report::Status::POSITIVE)
 
         # NOTE: These should be positive since the above location status is positive,
         # and still hasn't been eliminated.
-        ls = Visit.where("DATE(created_at) = ?", "2014-12-31").first
-        expect(ls.status).to eq(Visit::Cleaning::POSITIVE)
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-31").first
+        expect(ls.identification_type).to eq(Report::Status::POSITIVE)
 
         # TODO: Perhaps we should instead think of Visit as Visits that
         # essentially categorize each visit as POSITIVE, POTENTIAL, or NEGATIVE.
         # The status of a location is then dependent on whether each visit resolved
         # its status... We would need to define what "resolved" means in this context.
-        ls = Visit.where("DATE(created_at) = ?", "2015-01-10").first
-        expect(ls.status).to eq(Visit::Cleaning::POTENTIAL)
+        ls = Visit.where("DATE(visited_at) = ?", "2015-01-10").first
+        expect(ls.identification_type).to eq(Report::Status::POTENTIAL)
       end
 
       it "correctly sets the health report" do
-        ls = Visit.where("DATE(created_at) = ?", "2014-12-24").first
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-24").first
         expect(ls.health_report).to eq("3c5d")
 
-        ls = Visit.where("DATE(created_at) = ?", "2014-12-31").first
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-31").first
         expect(ls.health_report).to eq("1c1d")
 
-        ls = Visit.where("DATE(created_at) = ?", "2015-01-10").first
+        ls = Visit.where("DATE(visited_at) = ?", "2015-01-10").first
         expect(ls.health_report).to eq("0c0d")
       end
     end
@@ -129,7 +129,7 @@ describe CsvReportsController do
 
 
 
-  context "when uploading the same CSV" do
+  context "when uploading the same CSV", :after_commit => true do
     before(:each) do
       cookies[:auth_token] = user.auth_token
 
@@ -162,12 +162,12 @@ describe CsvReportsController do
       }.not_to change(Report, :count)
     end
 
-    it "does NOT create new LocationStatuses" do
+    it "does NOT create new Visit" do
       expect {
         post :create, :csv_report => { :csv => uploaded_csv },
         :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
         :neighborhood_id => Neighborhood.first.id
-      }.not_to change(LocationStatus, :count)
+      }.not_to change(Visit, :count)
     end
 
   end

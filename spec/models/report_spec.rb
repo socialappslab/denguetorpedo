@@ -15,7 +15,7 @@ describe Report do
 
 	it "does not require presence of location" do
 		expect {
-			FactoryGirl.build(:report, :reporter => user)
+			FactoryGirl.create(:report, :reporter_id => user.id)
 		}.to change(Report, :count).by(1)
 	end
 
@@ -28,7 +28,7 @@ describe Report do
 
 		expect(report.errors.full_messages).to include("Fecha de eliminación can't be before fecha de inspección")
 	end
-	
+
 	#-----------------------------------------------------------------------------
 
 
