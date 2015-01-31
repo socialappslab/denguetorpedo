@@ -65,6 +65,7 @@
     var data      = new google.visualization.arrayToDataTable(statistics);
     var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
     formatter.format(data, 1);
+    formatter.format(data, 2);
 
     // Customize the options so we dont' fill up the horizontal axis.
     options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
