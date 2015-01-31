@@ -13,14 +13,14 @@
 
           .checkbox
             = label_tag do
-              = check_box_tag "chart[potential_inspection]", 1, chart_cookies.blank? || chart_cookies["potential_inspection"]
-              = I18n.t("views.statistics.chart.filters.potential_inspection")
-
+              = check_box_tag "chart[positive_followup]", 1, chart_cookies.blank? || chart_cookies["positive_followup"]
+              = I18n.t("views.statistics.chart.filters.positive_followup")
 
           .checkbox
             = label_tag do
-              = check_box_tag "chart[positive_followup]", 1, chart_cookies.blank? || chart_cookies["positive_followup"]
-              = I18n.t("views.statistics.chart.filters.positive_followup")
+              = check_box_tag "chart[potential_inspection]", 1, chart_cookies.blank? || chart_cookies["potential_inspection"]
+              = I18n.t("views.statistics.chart.filters.potential_inspection")
+
 
           .checkbox
             = label_tag do
