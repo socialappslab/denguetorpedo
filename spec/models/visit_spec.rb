@@ -218,8 +218,8 @@ describe Visit do
       FactoryGirl.create(:visit, :visit_type => Visit::Types::FOLLOWUP, :identification_type => Report::Status::NEGATIVE, :location_id => location.id, :visited_at => fifteen_hours_ago)
     end
 
-    it "returns six time-series points" do
-      expect(Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(6)
+    it "returns one time-series point for each date" do
+      expect(Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
     end
 
     it "doesn't add duplicate date to time series" do
@@ -239,12 +239,6 @@ describe Visit do
 
     it "orders points by visited_at in ascending order" do
       visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
-      expect(visits.first.visited_at).to eq(hundred_days_ago)
-      expect(visits.last.visited_at).to eq(fifteen_hours_ago)
-    end
-
-    it "orders points by visited_at in ascending order" do
-      visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
       expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
       expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
     end
@@ -254,16 +248,27 @@ describe Visit do
       expect(visits).to eq([
         {
           :date=>"2014-10-21",
-          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+          :matching_visit_type=>true,
+          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+          :cumulative_total => 2
         },
         {
-          :date=>"2015-01-19", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}
+          :date=>"2015-01-19",
+          :matching_visit_type=>true,
+          :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+          :cumulative_total => 3
         },
         {
-          :date=>"2015-01-28", :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+          :date=>"2015-01-28",
+          :matching_visit_type=>true,
+          :positive=>{:count=>1, :percent=>20}, :potential=>{:count=>1, :percent=>20}, :negative=>{:count=>0, :percent=>0},
+          :cumulative_total => 5
         },
         {
-          :date=>"2015-01-29", :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+          :date=>"2015-01-29",
+          :matching_visit_type=>true,
+          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>17},
+          :cumulative_total => 6
         }
       ])
     end
