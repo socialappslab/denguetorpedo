@@ -81,14 +81,13 @@ class Visit < ActiveRecord::Base
   # if the report is positive, we set the identification_type to positive. If
   # the report is positive and the identification_type is already positive, then
   # we keep it positive.
-  def calculate_identification_type_for_report(report)
+  def calculate_identification_type_from_status_and_reports(status, reports)
     # Immediately return if the status of this report is POSITIVE.
-    return Report::Status::POSITIVE if report.status == Report::Status::POSITIVE
+    return Report::Status::POSITIVE if status == Report::Status::POSITIVE
 
     # At this point, the status of a report is either potential or negative.
     # We must result to calculating the status of other reports before knowing
     # what the identification_type of this visit should be.
-    reports          = report.location.reports
     positive_report  = reports.find {|r| r.status == Report::Status::POSITIVE  }
     potential_report = reports.find {|r| r.status == Report::Status::POTENTIAL }
 
@@ -97,7 +96,7 @@ class Visit < ActiveRecord::Base
 
     # At this point, there are no positive or potential reports. The identification_type
     # of this location depends purely on this report...
-    return report.status
+    return status
   end
 
   # TODO: REwrite these comments as they are outdated.

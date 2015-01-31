@@ -104,9 +104,9 @@ class Report < ActiveRecord::Base
   # Every time a report gets created/updated, conceptually a visit must take place
   # at some location. Whether it's an identification or followup visit depends
   # on how the report is created/updated and with what attributes.
-  after_commit :create_identification_visit, :on => :create
-  after_commit :create_followup_visit,       :on => :update
-  # after_commit :destroy_visit,               :on => :destroy
+  after_commit :create_inspection_visit, :on => :create
+  after_commit :create_followup_visit,   :on => :update
+  # after_commit :destroy_visit,         :on => :destroy
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
@@ -319,7 +319,7 @@ class Report < ActiveRecord::Base
   # * If report is status = POSITIVE, then the identification_type is POSITIVE
   # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
   #   of existing Visit does not equal POSITIVE.
-  def create_identification_visit
+  def create_inspection_visit
     return if self.location_id.blank?
 
     ls = Visit.where(:location_id => self.location_id)
@@ -335,7 +335,12 @@ class Report < ActiveRecord::Base
       ls = ls.first
     end
 
-    ls.identification_type = ls.calculate_identification_type_for_report(self)
+    # When creating an inspection visit, we must use the original status of a report.
+    # This is because the report's elimination state should not affect what it was
+    # when it was first created.
+    status  = self.original_status
+    reports = self.location.reports
+    ls.identification_type = ls.calculate_identification_type_from_status_and_reports(status, reports)
     ls.save
 
     # Finally, associate the report with a particular visit.
@@ -371,9 +376,12 @@ class Report < ActiveRecord::Base
       ls = ls.first
     end
 
-    # Now, let's update cleaned_at column only if there are no more positive/potential
+    # When creating a follow-up visit, it's OK to include the elimination state
+    # in the calculation as the follow-up visit may very well eliminate some or all
     # reports.
-    ls.identification_type = ls.calculate_identification_type_for_report(self)
+    status  = self.status
+    reports = self.location.reports
+    ls.identification_type = ls.calculate_identification_type_from_status_and_reports(status, reports)
     ls.save
 
     # Finally, associate the report with a particular visit if it's not associated yet.
