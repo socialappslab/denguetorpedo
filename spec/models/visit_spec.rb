@@ -127,34 +127,51 @@ describe Visit do
 
     it "returns positive if report is positive" do
       v = Visit.new
-      expect(v.calculate_identification_type_for_report(positive_report)).to eq(Report::Status::POSITIVE)
+      status  = positive_report.original_status
+      reports = positive_report.location.reports
+      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POSITIVE)
     end
 
     it "returns potential if report is potential" do
       v = Visit.new
-      expect(v.calculate_identification_type_for_report(potential_report)).to eq(Report::Status::POTENTIAL)
+
+      status  = potential_report.original_status
+      reports = potential_report.location.reports
+      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POTENTIAL)
     end
 
     it "returns negative if report is negative" do
       v = Visit.new
-      expect(v.calculate_identification_type_for_report(negative_report)).to eq(Report::Status::NEGATIVE)
+
+      status  = negative_report.original_status
+      reports = negative_report.location.reports
+      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::NEGATIVE)
     end
 
     it "returns positive if at least one report is positive" do
       positive_report.save
       v = Visit.last
-      expect(v.calculate_identification_type_for_report(negative_report)).to eq(Report::Status::POSITIVE)
+
+      status  = negative_report.original_status
+      reports = negative_report.location.reports
+      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POSITIVE)
     end
 
     it "returns potential if no positives and at least one report is potential" do
       potential_report.save
       v = Visit.last
-      expect(v.calculate_identification_type_for_report(negative_report)).to eq(Report::Status::POTENTIAL)
+
+      status  = negative_report.original_status
+      reports = negative_report.location.reports
+      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POTENTIAL)
     end
 
     it "returns negative if no positives and no potential" do
       v = Visit.new
-      expect(v.calculate_identification_type_for_report(negative_report)).to eq(Report::Status::NEGATIVE)
+
+      status  = negative_report.original_status
+      reports = negative_report.location.reports
+      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::NEGATIVE)
     end
   end
 
@@ -201,23 +218,23 @@ describe Visit do
     end
 
     it "returns six time-series points" do
-      expect(Visit.calculate_time_series_for_locations(locations).count).to eq(6)
+      expect(Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(6)
     end
 
     it "orders points by visited_at in ascending order" do
-      visits = Visit.calculate_time_series_for_locations(locations)
+      visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
       expect(visits.first.visited_at).to eq(hundred_days_ago)
       expect(visits.last.visited_at).to eq(fifteen_hours_ago)
     end
 
     it "orders points by visited_at in ascending order" do
-      visits = Visit.calculate_time_series_for_locations(locations)
+      visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
       expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
       expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
     end
 
     it "returns the correct time-series" do
-      visits = Visit.calculate_time_series_for_locations(locations)
+      visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
       expect(visits).to eq([
         {
           :date=>"2014-10-21",
