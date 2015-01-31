@@ -1,5 +1,6 @@
 class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen, :only => [:show]
+  after_filter :calculate_time_series_for_visits, :only => [:show]
 
 
   #----------------------------------------------------------------------------
@@ -18,46 +19,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
     # Calculate total visits to (different) locations.
     @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-
-    # Determine what to render, depending on the attributes present in the cookie.
-    start_time  = nil
-    visit_types = []
-    if cookies[:chart].present?
-      chart_settings = JSON.parse(cookies[:chart])
-      start_time = 1.month.ago  if chart_settings["timeframe"]  == "1"
-      start_time = 6.months.ago if chart_settings["timeframe"] == "6"
-
-      if chart_settings["positive_inspection"].present? || chart_settings["potential_inspection"].present?
-        visit_types << Visit::Types::INSPECTION
-      elsif chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
-        visit_types << Visit::Types::FOLLOWUP
-      end
-    end
-
-    # Calculate the statistics based on the start_time and visit_types.
-    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
-
-    # Format the data in a way that Google Charts can use.
-    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites')]]
-    @statistics.each do |hash|
-      @chart_statistics << [
-        hash[:date],
-        hash[:positive][:percent],
-        hash[:potential][:percent]
-      ]
-    end
-
-
-    #
-    # @last_statistics = []
-    # legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
-    # I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
-    # if @statistics.present?
-    #   [:positive, :potential, :negative].each_with_index do |key, index|
-    #     @last_statistics << [legend[index], @statistics.last[key][:count]]
-    #   end
-    # end
-
 
     # Calculate total metrics before we start filtering.
     @total_reports = @reports.count

@@ -4,6 +4,7 @@
 
 class CsvReportsController < NeighborhoodsBaseController
   before_filter :require_login
+  after_filter :calculate_time_series_for_visits, :only => [:index]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1/csv_reports
@@ -13,27 +14,6 @@ class CsvReportsController < NeighborhoodsBaseController
 
     @visits              = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
     @total_locations     = @visits.count
-    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_types(@visits)
-    @table_statistics = @statistics.last
-    @chart_statistics = @statistics.map {|hash|
-      [
-        hash[:date],
-        hash[:positive][:percent],
-        hash[:potential][:percent],
-        hash[:negative][:percent]
-      ]
-    }
-
-
-    # @last_statistics = []
-    # legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
-    # I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
-    # if @statistics.present?
-    #   [:positive, :potential, :negative, :clean].each_with_index do |key, index|
-    #     @last_statistics << [legend[index], @statistics.last[key][:count]]
-    #   end
-    # end
-
   end
 
 
