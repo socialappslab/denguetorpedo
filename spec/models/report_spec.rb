@@ -8,9 +8,15 @@ describe Report do
 	let(:photo_file) { File.open("spec/support/foco_marcado.jpg") }
 	let(:location) 	 { FactoryGirl.create(:location, :address => "Test address")}
 
+	it "creates a report" do
+		expect {
+			FactoryGirl.create(:report, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
+		}.to change(Report, :count).by(1)
+	end
+
 	it "validates reporter" do
 		report = Report.create
-		expect(report.errors.full_messages).to include("Reporter é obrigatório")
+		expect(report.errors.full_messages).to include("Reporter can't be blank")
 	end
 
 	it "does not require presence of location" do
@@ -28,34 +34,14 @@ describe Report do
 		expect(report.errors.full_messages).to include("Fecha de eliminación can't be before fecha de inspección")
 	end
 
+	it "raises an error if elimination date is before creation date" do
+		I18n.locale = "es"
 
-	#-----------------------------------------------------------------------------
+		report = Report.create(:report => "Saw Report",
+		:location_id => location.id, :neighborhood_id => Neighborhood.first.id,
+		:reporter => user, :breeding_site_id => BreedingSite.first.id, :created_at => Time.now + 1.minute)
 
-	context "Setting Location Status", :after_commit => true do
-		before(:each) do
-			20.times do |index|
-				report = FactoryGirl.create(:report, :report => "Saw Report ##{index}", :location_id => location.id, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
-				report.eliminated_at = Time.now - index.days.ago
-				report.after_photo   = photo_file
-				report.elimination_method_id = BreedingSite.first.elimination_methods.first.id
-				report.save!
-			end
-		end
-
-		it "sets location status to positive if at least one report is positive" do
-			FactoryGirl.create(:report, :report => "Saw Report", :location_id => location.id, :larvae => true, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
-			puts "CREATED>.."
-			expect(location.reload.status).to eq(LocationStatus::Types::POSITIVE)
-		end
-
-		it "sets location status to potential if at least one report is potential" do
-			FactoryGirl.create(:report, :report => "Saw Report", :location_id => location.id, :larvae => false, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
-			expect(location.reload.status).to eq(LocationStatus::Types::POTENTIAL)
-		end
-
-		it "sets location status to clean if location has been clean for more than 14 days" do
-			expect(location.reload.status).to eq(LocationStatus::Types::CLEAN)
-		end
+		expect(report.errors.full_messages).to include("Fecha de inspección can't be in the future")
 	end
 
 	#-----------------------------------------------------------------------------

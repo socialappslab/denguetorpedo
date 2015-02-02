@@ -90,6 +90,7 @@ class Report < ActiveRecord::Base
   validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
 
   validate :eliminated_at, :eliminated_after_creation?
+  validate :created_at,    :inspected_in_the_past?
 
   #----------------------------------------------------------------------------
 
@@ -388,5 +389,15 @@ class Report < ActiveRecord::Base
     self.errors[:eliminated_at] << "can't be before " + created_at.downcase
     return false
   end
+
+  def inspected_in_the_past?
+    return true if self.created_at.blank?
+    return true if self.created_at <= Time.now
+
+    self.errors[:created_at] << "can't be in the future"
+    return false
+  end
+
+  #----------------------------------------------------------------------------
 
 end
