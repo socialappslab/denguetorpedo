@@ -60,10 +60,18 @@ class ApplicationController < ActionController::Base
       elsif chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
         visit_types << Visit::Types::FOLLOWUP
       end
+
+      if chart_settings["percentages"].present? && chart_settings["percentages"] == "daily"
+        @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
+      end
     end
 
-    # Calculate the statistics based on the start_time and visit_types.
-    @statistics = Visit.calculate_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
+    # Calculate the statistics based on the start_time and visit_types only
+    # if it hasn't been calculated yet.
+    puts "chart_settings: #{chart_settings}"
+    if @statistics.blank?
+      @statistics = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
+    end
 
     # Format the data in a way that Google Charts can use.
     @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites')]]

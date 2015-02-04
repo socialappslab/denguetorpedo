@@ -90,7 +90,7 @@ class HomeController < ApplicationController
       end
 
       if params["chart"]["percentages"].present? && ["daily", "cumulative"].include?(params["chart"]["percentages"])
-        settings["percentages"] = params["chart"]["percentage"]
+        settings["percentages"] = params["chart"]["percentages"]
       end
 
       ["positive_inspection", "potential_inspection", "positive_followup", "potential_followup"].each do |key|
