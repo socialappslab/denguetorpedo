@@ -297,6 +297,16 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def self.statuses_as_symbols
+    return {
+      Status::POSITIVE  => :positive,
+      Status::POTENTIAL => :potential,
+      Status::NEGATIVE  => :negative
+    }
+  end
+
+  #----------------------------------------------------------------------------
+
   def elimination_method_picture
     if self.after_photo_file_name.nil?
       return nil

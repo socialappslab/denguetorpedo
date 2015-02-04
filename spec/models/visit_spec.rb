@@ -259,22 +259,26 @@ describe Visit do
           {
             :date=>"2014-10-21",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+            :total => {:count => 2}
           },
           {
             :date=>"2015-01-19",
             :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}
+            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 1}
           },
           {
             :date=>"2015-01-28",
             :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 2}
           },
           {
             :date=>"2015-01-29",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
+            :total => {:count => 1}
           }
         ])
       end
@@ -285,7 +289,8 @@ describe Visit do
           {
             :date=>"2015-01-29",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
+            :total => {:count => 1}
           }
         ])
       end
@@ -296,17 +301,20 @@ describe Visit do
           {
             :date=>"2014-10-21",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+            :total => {:count => 2}
           },
           {
             :date=>"2015-01-19",
             :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}
+            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 1}
           },
           {
             :date=>"2015-01-28",
             :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 2}
           }
         ])
       end
@@ -317,7 +325,8 @@ describe Visit do
           {
             :date=>"2015-01-29",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
+            :total => {:count => 1}
           }
         ])
       end
@@ -335,22 +344,26 @@ describe Visit do
           {
             :date=>"2014-10-21",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+            :total => {:count => 2}
           },
           {
             :date=>"2015-01-19",
             :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}
+            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33},
+            :total => {:count => 3}
           },
           {
             :date=>"2015-01-28",
             :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20}
+            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20},
+            :total => {:count => 5}
           },
           {
             :date=>"2015-01-29",
             :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33}
+            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33},
+            :total => {:count => 6}
           }
         ])
       end
@@ -362,7 +375,8 @@ describe Visit do
           {
             :date=>"2015-01-29",
             :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33}
+            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33},
+            :total => {:count => 6}
           }
         ])
       end
@@ -373,17 +387,20 @@ describe Visit do
           {
             :date=>"2014-10-21",
             :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+            :total => {:count => 2}
           },
           {
             :date=>"2015-01-19",
             :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}
+            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33},
+            :total => {:count => 3}
           },
           {
             :date=>"2015-01-28",
             :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20}
+            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20},
+            :total => {:count => 5}
           }
         ])
       end
@@ -394,7 +411,8 @@ describe Visit do
           {
             :date=>"2015-01-29",
             :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=>33}, :potential=>{:count=>2, :percent=>33}, :negative=>{:count=>2, :percent=>33}
+            :positive=>{:count=>2, :percent=>33}, :potential=>{:count=>2, :percent=>33}, :negative=>{:count=>2, :percent=>33},
+            :total => {:count => 6}
           }
         ])
       end

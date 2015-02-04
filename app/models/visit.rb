@@ -124,7 +124,8 @@ class Visit < ActiveRecord::Base
           :matching_visit_type => false,
           :positive   => {:count => 0, :percent => 0},
           :potential  => {:count => 0, :percent => 0},
-          :negative   => {:count => 0, :percent => 0}
+          :negative   => {:count => 0, :percent => 0},
+          :total      => {:count => 0}
         }
 
         daily_stats << day_statistic
@@ -136,13 +137,10 @@ class Visit < ActiveRecord::Base
       matching_visit_type = visit_types.blank? || visit_types.include?(visit_type)
       day_statistic[:matching_visit_type] = true if matching_visit_type == true
 
-      if identification_type == Report::Status::POSITIVE
-        day_statistic[:positive][:count] = count
-      elsif identification_type == Report::Status::POTENTIAL
-        day_statistic[:potential][:count] = count
-      elsif identification_type == Report::Status::NEGATIVE
-        day_statistic[:negative][:count] = count
-      end
+      # Define the relative count for each identification type (and total, as well)
+      key = Report.statuses_as_symbols[identification_type]
+      day_statistic[key][:count]    = count
+      day_statistic[:total][:count] += count
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
@@ -151,28 +149,11 @@ class Visit < ActiveRecord::Base
     end
 
     # Now, let's iterate over daily_stats, calculating percentage.
-    daily_stats.each_with_index do |day_statistic, index|
-      positive_count  = day_statistic[:positive][:count]
-      potential_count = day_statistic[:potential][:count]
-      negative_count  = day_statistic[:negative][:count]
-      total           = positive_count + potential_count + negative_count
-
-      day_statistic[:positive][:percent]  = (total == 0 ? 0 : (positive_count.to_f / total * 100).round(0)  )
-      day_statistic[:potential][:percent] = (total == 0 ? 0 : (potential_count.to_f / total * 100).round(0) )
-      day_statistic[:negative][:percent]  = (total == 0 ? 0 : (negative_count.to_f / total * 100).round(0)  )
-
-      daily_stats[index] = day_statistic
-    end
-
     # Finally, let's include only those visit types that match the visit type.
-    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
-
     # Now that the full history is captured, let's filter starting from the start_time
-    if start_time.present?
-      parsed_start_time = start_time.strftime("%Y-%m-%d")
-      first_index = daily_stats.find_index { |day_stat| Time.parse(day_stat[:date]) >= Time.parse(parsed_start_time) }
-      daily_stats = daily_stats[first_index..-1] if first_index.present?
-    end
+    daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
+    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
+    daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
 
     return daily_stats
   end
@@ -212,18 +193,17 @@ class Visit < ActiveRecord::Base
           :matching_visit_type => false,
           :positive   => {:count => positive_count, :percent => 0},
           :potential  => {:count => potential_count, :percent => 0},
-          :negative   => {:count => negative_count, :percent => 0}
+          :negative   => {:count => negative_count, :percent => 0},
+          :total      => {:count => positive_count + potential_count + negative_count}
         }
 
         daily_stats << day_statistic
       else
-
         day_statistic[:positive][:count]  = daily_stats[-1][:positive][:count]
         day_statistic[:potential][:count] = daily_stats[-1][:potential][:count]
         day_statistic[:negative][:count]  = daily_stats[-1][:negative][:count]
-
+        day_statistic[:total][:count]     = daily_stats[-1][:total][:count]
       end
-
 
       # NOTE: To include only the visit types that we're matching against, we're
       # going to simply compare all visit types for this date, and if at least
@@ -231,29 +211,34 @@ class Visit < ActiveRecord::Base
       matching_visit_type = visit_types.blank? || visit_types.include?(visit_type)
       day_statistic[:matching_visit_type] = true if matching_visit_type == true
 
-
-      if identification_type == Report::Status::POSITIVE
-        day_statistic[:positive][:count]  += count
-      elsif identification_type == Report::Status::POTENTIAL
-        day_statistic[:potential][:count] += count
-      elsif identification_type == Report::Status::NEGATIVE
-        day_statistic[:negative][:count]  += count
-      end
-
+      key = Report.statuses_as_symbols[identification_type]
+      day_statistic[key][:count]    += count
+      day_statistic[:total][:count] += count
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
       index = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
       daily_stats[index] = day_statistic
-
     end
 
     # Now, let's iterate over daily_stats, calculating percentage.
+    # Finally, let's include only those visit types that match the visit type.
+    # Now that the full history is captured, let's filter starting from the start_time
+    daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
+    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
+    daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
+
+    return daily_stats
+  end
+
+  #----------------------------------------------------------------------------
+
+  def self.calculate_percentages_for_time_series(daily_stats)
     daily_stats.each_with_index do |day_statistic, index|
       positive_count  = day_statistic[:positive][:count]
       potential_count = day_statistic[:potential][:count]
       negative_count  = day_statistic[:negative][:count]
-      total           = positive_count + potential_count + negative_count
+      total           = day_statistic[:total][:count]
 
       day_statistic[:positive][:percent]  = (total == 0 ? 0 : (positive_count.to_f / total * 100).round(0)  )
       day_statistic[:potential][:percent] = (total == 0 ? 0 : (potential_count.to_f / total * 100).round(0) )
@@ -262,10 +247,12 @@ class Visit < ActiveRecord::Base
       daily_stats[index] = day_statistic
     end
 
-    # Finally, let's include only those visit types that match the visit type.
-    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
+    return daily_stats
+  end
 
-    # Now that the full history is captured, let's filter starting from the start_time
+  #----------------------------------------------------------------------------
+
+  def self.filter_time_series_from_date(daily_stats, start_time)
     if start_time.present?
       parsed_start_time = start_time.strftime("%Y-%m-%d")
       first_index = daily_stats.find_index { |day_stat| Time.parse(day_stat[:date]) >= Time.parse(parsed_start_time) }
