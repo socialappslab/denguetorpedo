@@ -179,43 +179,41 @@ describe Visit do
   #-----------------------------------------------------------------------------
 
   describe "Calculating time-series", :after_commit => true do
-    let(:second_location)       { FactoryGirl.create(:location, :address => "New Test address")}
-    let(:locations) { [location, second_location] }
-    let!(:hundred_days_ago)     { DateTime.parse("2014-10-21 11:00") }
-    let!(:ten_days_ago)         { DateTime.parse("2015-01-19 11:00") }
-    let!(:twenty_six_hours_ago) { DateTime.parse("2015-01-28 11:00") }
-    let!(:fifteen_hours_ago)    { DateTime.parse("2015-01-29 11:00") }
+    let!(:second_location)       { FactoryGirl.create(:location, :address => "New Test address")}
+    let!(:third_location)       { FactoryGirl.create(:location, :address => "New Test address again")}
+    let!(:fourth_location)       { FactoryGirl.create(:location, :address => "New Test address 3")}
+    let(:locations) { [location, second_location, third_location, fourth_location] }
+    let!(:date1)    { DateTime.parse("2014-10-21 11:00") }
+    let!(:date2)    { DateTime.parse("2015-01-19 11:00") }
+    let!(:date3)    { DateTime.parse("2015-01-28 11:00") }
+    let!(:date4)    { DateTime.parse("2015-01-29 11:00") }
 
     before(:each) do
-      [hundred_days_ago, ten_days_ago, twenty_six_hours_ago].each_with_index do |created_at, index|
+      # The distribution of houses is as follows:
+      # First date had 2 visits to 2 (first and second) locations (first negative, second potential)
+      # Second date had 1 visit to second location (second positive)
+      # Third date had 2 visits to 2 (first and third) locations (first positive and third potential)
+      # Fourth date had 1 visit to first location (first negative)
+      FactoryGirl.create(:visit,
+      :visit_type => Visit::Types::INSPECTION, :identification_type => Report::Status::NEGATIVE,
+      :location_id => location.id, :visited_at => date1)
+      FactoryGirl.create(:visit, :visit_type => Visit::Types::INSPECTION,
+      :identification_type => Report::Status::POTENTIAL,
+      :location_id => second_location.id, :visited_at => date1)
 
-        if created_at == hundred_days_ago
-          FactoryGirl.create(:visit,
-          :visit_type => Visit::Types::INSPECTION,
-          :identification_type => Report::Status::NEGATIVE,
-          :location_id => location.id,
-          :visited_at => created_at)
-        else
-          FactoryGirl.create(:visit,
-          :visit_type => Visit::Types::INSPECTION,
-          :identification_type => Report::Status::POSITIVE,
-          :location_id => location.id,
-          :visited_at => created_at)
-        end
+      FactoryGirl.create(:visit,
+      :visit_type => Visit::Types::INSPECTION, :identification_type => Report::Status::POSITIVE,
+      :location_id => second_location.id, :visited_at => date2)
 
-        # Create a visit for a location unless it's a specific index (for variety)
-        if created_at != ten_days_ago
-          FactoryGirl.create(:visit,
-          :visit_type => Visit::Types::INSPECTION,
-          :identification_type => Report::Status::POTENTIAL,
-          :location_id => second_location.id,
-          :visited_at => created_at)
-        end
-      end
+      FactoryGirl.create(:visit,
+      :visit_type => Visit::Types::INSPECTION, :identification_type => Report::Status::POSITIVE,
+      :location_id => location.id, :visited_at => date3)
+      FactoryGirl.create(:visit,
+      :visit_type => Visit::Types::INSPECTION, :identification_type => Report::Status::POTENTIAL,
+      :location_id => third_location.id, :visited_at => date3)
 
-      # The last visit should have a followup that results in elimination.
       v = Visit.order("visited_at DESC").first
-      FactoryGirl.create(:visit, :visit_type => Visit::Types::FOLLOWUP, :identification_type => Report::Status::NEGATIVE, :location_id => location.id, :visited_at => fifteen_hours_ago)
+      FactoryGirl.create(:visit, :visit_type => Visit::Types::FOLLOWUP, :identification_type => Report::Status::NEGATIVE, :location_id => location.id, :visited_at => date4)
     end
 
     it "returns one time-series point for each date" do
@@ -225,14 +223,14 @@ describe Visit do
 
     it "doesn't add duplicate date to time series" do
       # Let's create a visit 100 days ago to the second location. We're
-      # going to ensure that there's only one time point with hundred_days_ago.strftime.
+      # going to ensure that there's only one time point with date1.strftime.
       FactoryGirl.create(:visit,
       :visit_type => Visit::Types::INSPECTION,
       :identification_type => Report::Status::POSITIVE,
       :location_id => second_location.id,
-      :visited_at => hundred_days_ago)
+      :visited_at => date1)
 
-      date_key = hundred_days_ago.strftime("%Y-%m-%d")
+      date_key = date1.strftime("%Y-%m-%d")
       time_series = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
       expect(time_series.find_all {|ts| ts[:date] == date_key}.length).to eq(1)
 
@@ -242,15 +240,21 @@ describe Visit do
 
     it "orders points by visited_at in ascending order" do
       visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
-      expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
-      expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
+      expect(visits.first[:date]).to eq( date1.strftime("%Y-%m-%d") )
+      expect(visits.last[:date]).to  eq( date4.strftime("%Y-%m-%d") )
 
       visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
-      expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
-      expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
+      expect(visits.first[:date]).to eq( date1.strftime("%Y-%m-%d") )
+      expect(visits.last[:date]).to  eq( date4.strftime("%Y-%m-%d") )
     end
 
     #--------------------------------------------------------------------------
+
+    # The distribution of houses is as follows:
+    # First date had 2 visits to 2 (first and second) locations (first negative, second potential)
+    # Second date had 1 visit to second location (second positive)
+    # Third date had 2 visits to 2 (first and third) locations (first positive and third potential)
+    # Fourth date had 1 visit to first location (first negative)
 
     describe "for Daily percentage relative to houses visited on a date" do
       it "returns the correct time-series" do
@@ -258,25 +262,21 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
-            :matching_visit_type=>true,
             :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
             :total => {:count => 2}
           },
           {
             :date=>"2015-01-19",
-            :matching_visit_type=>true,
             :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
             :total => {:count => 1}
           },
           {
             :date=>"2015-01-28",
-            :matching_visit_type=>true,
             :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0},
             :total => {:count => 2}
           },
           {
             :date=>"2015-01-29",
-            :matching_visit_type=>true,
             :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
             :total => {:count => 1}
           }
@@ -287,8 +287,22 @@ describe Visit do
         visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::FOLLOWUP])
         expect(visits).to eq([
           {
+            :date=>"2014-10-21",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 0}
+          },
+          {
+            :date=>"2015-01-19",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 0}
+          },
+          {
+            :date=>"2015-01-28",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 0}
+          },
+          {
             :date=>"2015-01-29",
-            :matching_visit_type=>true,
             :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
             :total => {:count => 1}
           }
@@ -300,21 +314,23 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
-            :matching_visit_type=>true,
             :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
             :total => {:count => 2}
           },
           {
             :date=>"2015-01-19",
-            :matching_visit_type=>true,
             :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
             :total => {:count => 1}
           },
           {
             :date=>"2015-01-28",
-            :matching_visit_type=>true,
             :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0},
             :total => {:count => 2}
+          },
+          {
+            :date=>"2015-01-29",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 0}
           }
         ])
       end
@@ -324,7 +340,6 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
-            :matching_visit_type=>true,
             :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
             :total => {:count => 1}
           }
@@ -337,33 +352,35 @@ describe Visit do
 
     #--------------------------------------------------------------------------
 
+    # The distribution of houses is as follows:
+    # First date had 2 visits to 2 (first and second) locations (first negative, second potential)
+    # Second date had 1 visit to second location (second positive)
+    # Third date had 2 visits to 2 (first and third) locations (first positive and third potential)
+    # Fourth date had 1 visit to first location (first negative)
+
     describe "for Cumulative percentage relative to all houses visited" do
       it "returns the correct time-series for cumulative percentage" do
         visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
-            :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
-            :total => {:count => 2}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>25}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
           },
           {
             :date=>"2015-01-19",
-            :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33},
-            :total => {:count => 3}
+            :positive=>{:count=>1, :percent=>25}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
           },
           {
             :date=>"2015-01-28",
-            :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20},
-            :total => {:count => 5}
+            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>1, :percent=>25}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 4}
           },
           {
             :date=>"2015-01-29",
-            :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33},
-            :total => {:count => 6}
+            :positive=>{:count=>1, :percent=> 25}, :potential=>{:count=>1, :percent=> 25}, :negative=>{:count=>1, :percent=> 25},
+            :total => {:count => 4}
           }
         ])
       end
@@ -373,10 +390,24 @@ describe Visit do
         visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::FOLLOWUP])
         expect(visits).to eq([
           {
+            :date=>"2014-10-21",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 4}
+          },
+          {
+            :date=>"2015-01-19",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 4}
+          },
+          {
+            :date=>"2015-01-28",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 4}
+          },
+          {
             :date=>"2015-01-29",
-            :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33},
-            :total => {:count => 6}
+            :positive=>{:count=>0, :percent=> 0}, :potential=>{:count=>0, :percent=> 0}, :negative=>{:count=>1, :percent=> 25},
+            :total => {:count => 4}
           }
         ])
       end
@@ -386,21 +417,23 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
-            :matching_visit_type=>true,
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
-            :total => {:count => 2}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>25}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
           },
           {
             :date=>"2015-01-19",
-            :matching_visit_type=>true,
-            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33},
-            :total => {:count => 3}
+            :positive=>{:count=>1, :percent=>25}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
           },
           {
             :date=>"2015-01-28",
-            :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20},
-            :total => {:count => 5}
+            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>1, :percent=>25}, :negative=>{:count=>0, :percent=>0},
+            :total => {:count => 4}
+          },
+          {
+            :date=>"2015-01-29",
+            :positive=>{:count=>0, :percent=> 0}, :potential=>{:count=>0, :percent=> 0}, :negative=>{:count=>0, :percent=> 0},
+            :total => {:count => 4}
           }
         ])
       end
@@ -410,9 +443,8 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
-            :matching_visit_type=>true,
-            :positive=>{:count=>2, :percent=>33}, :potential=>{:count=>2, :percent=>33}, :negative=>{:count=>2, :percent=>33},
-            :total => {:count => 6}
+            :positive=>{:count=>1, :percent=> 25}, :potential=>{:count=>1, :percent=> 25}, :negative=>{:count=>1, :percent=> 25},
+            :total => {:count => 4}
           }
         ])
       end
