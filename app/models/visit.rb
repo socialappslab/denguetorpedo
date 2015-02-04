@@ -110,6 +110,10 @@ class Visit < ActiveRecord::Base
     visits       = visits.select([:visited_at, :identification_type, :visit_type])
     return [] if visits.blank?
 
+    # NOTE: Why are we only focusing on visits as opposed to locations? Because
+    # we're looking at daily data, and we know that each location has one data
+    # point for each day, we can map a visit on a particular day to a unique location
+    # and (if a visit exists) the other way around.
     daily_stats = []
     visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
     visits_by_date_and_type.each do |grouping, count|
@@ -121,7 +125,6 @@ class Visit < ActiveRecord::Base
       if day_statistic.blank?
         day_statistic = {
           :date       => visited_at_date,
-          :matching_visit_type => false,
           :positive   => {:count => 0, :percent => 0},
           :potential  => {:count => 0, :percent => 0},
           :negative   => {:count => 0, :percent => 0},
@@ -131,16 +134,15 @@ class Visit < ActiveRecord::Base
         daily_stats << day_statistic
       end
 
-      # NOTE: To include only the visit types that we're matching against, we're
-      # going to simply compare all visit types for this date, and if at least
-      # one visit type matches the one we want, then we'll set the value to true.
-      matching_visit_type = visit_types.blank? || visit_types.include?(visit_type)
-      day_statistic[:matching_visit_type] = true if matching_visit_type == true
 
-      # Define the relative count for each identification type (and total, as well)
-      key = Report.statuses_as_symbols[identification_type]
-      day_statistic[key][:count]    = count
-      day_statistic[:total][:count] += count
+      if visit_types.blank? || visit_types.include?(visit_type)
+        # Define the relative count for each identification type (and total, as well)
+        key = Report.statuses_as_symbols[identification_type]
+        if visit_types.blank? || visit_types.include?(visit_type)
+          day_statistic[key][:count] += count
+        end
+        day_statistic[:total][:count] += count
+      end
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
@@ -152,7 +154,6 @@ class Visit < ActiveRecord::Base
     # Finally, let's include only those visit types that match the visit type.
     # Now that the full history is captured, let's filter starting from the start_time
     daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
     daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
 
     return daily_stats
@@ -161,59 +162,54 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def self.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations, start_time = nil, visit_types = nil)
+    # raise "visit_types: #{visit_types}"
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     location_ids = locations.map(&:id)
     visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
-    visits       = visits.select([:visited_at, :identification_type, :visit_type])
+    visits       = visits.select([:location_id, :visited_at, :identification_type, :visit_type])
     return [] if visits.blank?
 
-    daily_stats = []
-    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
+    daily_stats        = []
+    memoized_locations = []
+    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type, :location_id).count
     visits_by_date_and_type.each do |grouping, count|
       visited_at_date     = grouping[0].to_s
       identification_type = grouping[1].to_i
       visit_type          = grouping[2].to_i
+      location_id         = grouping[3].to_i
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
 
-        if daily_stats.length == 0
-          positive_count  = 0
-          potential_count = 0
-          negative_count  = 0
-        else
-          positive_count  = daily_stats[-1][:positive][:count]
-          potential_count = daily_stats[-1][:potential][:count]
-          negative_count  = daily_stats[-1][:negative][:count]
-        end
-
         day_statistic = {
           :date       => visited_at_date,
-          :matching_visit_type => false,
-          :positive   => {:count => positive_count, :percent => 0},
-          :potential  => {:count => potential_count, :percent => 0},
-          :negative   => {:count => negative_count, :percent => 0},
-          :total      => {:count => positive_count + potential_count + negative_count}
+          :positive   => {:count => 0, :percent => 0},
+          :potential  => {:count => 0, :percent => 0},
+          :negative   => {:count => 0, :percent => 0},
+          :total      => {:count => location_ids.length}
         }
 
         daily_stats << day_statistic
-      else
-        day_statistic[:positive][:count]  = daily_stats[-1][:positive][:count]
-        day_statistic[:potential][:count] = daily_stats[-1][:potential][:count]
-        day_statistic[:negative][:count]  = daily_stats[-1][:negative][:count]
-        day_statistic[:total][:count]     = daily_stats[-1][:total][:count]
       end
 
-      # NOTE: To include only the visit types that we're matching against, we're
-      # going to simply compare all visit types for this date, and if at least
-      # one visit type matches the one we want, then we'll set the value to true.
-      matching_visit_type = visit_types.blank? || visit_types.include?(visit_type)
-      day_statistic[:matching_visit_type] = true if matching_visit_type == true
 
-      key = Report.statuses_as_symbols[identification_type]
-      day_statistic[key][:count]    += count
-      day_statistic[:total][:count] += count
+      if visit_types.blank? || visit_types.include?(visit_type)
+        # Memoize the location with the latest status.
+        location = memoized_locations.find {|loc| loc[:id] == location_id}
+        if location.blank?
+          location = {:id => location_id}
+          memoized_locations << location
+        end
+        location[:status] = identification_type
+        index = memoized_locations.find_index {|stat| stat[:id] == location_id}
+        memoized_locations[index] = location
+
+        Report.statuses_as_symbols.each do |key, value|
+          key_count = memoized_locations.find_all {|loc| loc[:status] == key}.count
+          day_statistic[value][:count] = key_count
+        end
+      end
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
@@ -225,7 +221,6 @@ class Visit < ActiveRecord::Base
     # Finally, let's include only those visit types that match the visit type.
     # Now that the full history is captured, let's filter starting from the start_time
     daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-    daily_stats = daily_stats.find_all {|ds| ds[:matching_visit_type] == true}
     daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
 
     return daily_stats
