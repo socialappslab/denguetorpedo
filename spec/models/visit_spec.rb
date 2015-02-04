@@ -189,7 +189,7 @@ describe Visit do
     before(:each) do
       [hundred_days_ago, ten_days_ago, twenty_six_hours_ago].each_with_index do |created_at, index|
 
-        if index == 0
+        if created_at == hundred_days_ago
           FactoryGirl.create(:visit,
           :visit_type => Visit::Types::INSPECTION,
           :identification_type => Report::Status::NEGATIVE,
@@ -204,14 +204,13 @@ describe Visit do
         end
 
         # Create a visit for a location unless it's a specific index (for variety)
-        unless index == 1
+        if created_at != ten_days_ago
           FactoryGirl.create(:visit,
           :visit_type => Visit::Types::INSPECTION,
           :identification_type => Report::Status::POTENTIAL,
           :location_id => second_location.id,
           :visited_at => created_at)
         end
-
       end
 
       # The last visit should have a followup that results in elimination.
@@ -220,7 +219,8 @@ describe Visit do
     end
 
     it "returns one time-series point for each date" do
-      expect(Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
+      expect(Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
+      expect(Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
     end
 
     it "doesn't add duplicate date to time series" do
@@ -233,47 +233,174 @@ describe Visit do
       :visited_at => hundred_days_ago)
 
       date_key = hundred_days_ago.strftime("%Y-%m-%d")
-      time_series = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
+      time_series = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+      expect(time_series.find_all {|ts| ts[:date] == date_key}.length).to eq(1)
 
+      time_series = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
       expect(time_series.find_all {|ts| ts[:date] == date_key}.length).to eq(1)
     end
 
     it "orders points by visited_at in ascending order" do
-      visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
+      visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+      expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
+      expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
+
+      visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
       expect(visits.first[:date]).to eq( hundred_days_ago.strftime("%Y-%m-%d") )
       expect(visits.last[:date]).to  eq( fifteen_hours_ago.strftime("%Y-%m-%d") )
     end
 
-    it "returns the correct time-series" do
-      visits = Visit.calculate_time_series_for_locations_start_time_and_visit_types(locations)
-      expect(visits).to eq([
-        {
-          :date=>"2014-10-21",
-          :matching_visit_type=>true,
-          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
-          :cumulative_total => 2
-        },
-        {
-          :date=>"2015-01-19",
-          :matching_visit_type=>true,
-          :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-          :cumulative_total => 3
-        },
-        {
-          :date=>"2015-01-28",
-          :matching_visit_type=>true,
-          :positive=>{:count=>1, :percent=>20}, :potential=>{:count=>1, :percent=>20}, :negative=>{:count=>0, :percent=>0},
-          :cumulative_total => 5
-        },
-        {
-          :date=>"2015-01-29",
-          :matching_visit_type=>true,
-          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>17},
-          :cumulative_total => 6
-        }
-      ])
+    #--------------------------------------------------------------------------
+
+    describe "for Daily percentage relative to houses visited on a date" do
+      it "returns the correct time-series" do
+        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+        expect(visits).to eq([
+          {
+            :date=>"2014-10-21",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+          },
+          {
+            :date=>"2015-01-19",
+            :matching_visit_type=>true,
+            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}
+          },
+          {
+            :date=>"2015-01-28",
+            :matching_visit_type=>true,
+            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+          },
+          {
+            :date=>"2015-01-29",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100}
+          }
+        ])
+      end
+
+      it "returns only follow-up time series" do
+        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::FOLLOWUP])
+        expect(visits).to eq([
+          {
+            :date=>"2015-01-29",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100}
+          }
+        ])
+      end
+
+      it "returns only inspection time series" do
+        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::INSPECTION])
+        expect(visits).to eq([
+          {
+            :date=>"2014-10-21",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+          },
+          {
+            :date=>"2015-01-19",
+            :matching_visit_type=>true,
+            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}
+          },
+          {
+            :date=>"2015-01-28",
+            :matching_visit_type=>true,
+            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0}
+          }
+        ])
+      end
+
+      it "returns truncated time series when start time is set" do
+        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, DateTime.parse("2015-01-29 00:00"), [])
+        expect(visits).to eq([
+          {
+            :date=>"2015-01-29",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100}
+          }
+        ])
+      end
+
+
     end
 
+
+    #--------------------------------------------------------------------------
+
+    describe "for Cumulative percentage relative to all houses visited" do
+      it "returns the correct time-series for cumulative percentage" do
+        visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
+        expect(visits).to eq([
+          {
+            :date=>"2014-10-21",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+          },
+          {
+            :date=>"2015-01-19",
+            :matching_visit_type=>true,
+            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}
+          },
+          {
+            :date=>"2015-01-28",
+            :matching_visit_type=>true,
+            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20}
+          },
+          {
+            :date=>"2015-01-29",
+            :matching_visit_type=>true,
+            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33}
+          }
+        ])
+      end
+
+
+      it "returns only follow-up time series" do
+        visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::FOLLOWUP])
+        expect(visits).to eq([
+          {
+            :date=>"2015-01-29",
+            :matching_visit_type=>true,
+            :positive=>{:count=>2, :percent=> 33}, :potential=>{:count=>2, :percent=> 33}, :negative=>{:count=>2, :percent=> 33}
+          }
+        ])
+      end
+
+      it "returns only inspection time series" do
+        visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::INSPECTION])
+        expect(visits).to eq([
+          {
+            :date=>"2014-10-21",
+            :matching_visit_type=>true,
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50}
+          },
+          {
+            :date=>"2015-01-19",
+            :matching_visit_type=>true,
+            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}
+          },
+          {
+            :date=>"2015-01-28",
+            :matching_visit_type=>true,
+            :positive=>{:count=>2, :percent=>40}, :potential=>{:count=>2, :percent=>40}, :negative=>{:count=>1, :percent=>20}
+          }
+        ])
+      end
+
+      it "returns truncated time series when start time is set" do
+        visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations, DateTime.parse("2015-01-29 00:00"), [])
+        expect(visits).to eq([
+          {
+            :date=>"2015-01-29",
+            :matching_visit_type=>true,
+            :positive=>{:count=>2, :percent=>33}, :potential=>{:count=>2, :percent=>33}, :negative=>{:count=>2, :percent=>33}
+          }
+        ])
+      end
+    end
+
+    #-----------------------------------------------------------------------------
 
   end
 
