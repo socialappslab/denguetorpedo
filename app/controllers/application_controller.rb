@@ -57,7 +57,9 @@ class ApplicationController < ActionController::Base
 
       if chart_settings["positive_inspection"].present? || chart_settings["potential_inspection"].present?
         visit_types << Visit::Types::INSPECTION
-      elsif chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
+      end
+
+      if chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
         visit_types << Visit::Types::FOLLOWUP
       end
 
@@ -68,7 +70,6 @@ class ApplicationController < ActionController::Base
 
     # Calculate the statistics based on the start_time and visit_types only
     # if it hasn't been calculated yet.
-    puts "chart_settings: #{chart_settings}"
     if @statistics.blank?
       @statistics = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
     end
