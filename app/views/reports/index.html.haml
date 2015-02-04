@@ -54,7 +54,7 @@
       - if @neighborhood.spanish?
         = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info btn-large" do
           %i.fa.fa-file
-          View uploaded CSV
+          = I18n.t("views.reports.index.view_csv")
 
 
     .col-md-4

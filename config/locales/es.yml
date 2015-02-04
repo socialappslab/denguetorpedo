@@ -481,6 +481,7 @@ es:
           one:   "Usted tiene un reporte incompleto"
           other: "Usted tiene %{count} reportes incompletos"
         complete_now_button: "Termine ahora"
+        view_csv: Ver CSV formas cargadas
       new:
         did_you_see_larvae: ¿Ve larvas o pupas de mosquito?
         description_of_larvae: "Si respondió que sí, es un criadero positivo. Si no, es un criadero potencial."

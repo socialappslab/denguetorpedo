@@ -10,10 +10,10 @@
 
 .row
   .col-md-10.col-md-offset-1
-    %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
+    %h1{:style => "font-size: 30px; text-align: center;"}
       Cree reportes a partir de archivos CSV
 
-.row
+.row{:style => "margin-top: 50px;"}
   .col-md-6.col-md-offset-3.well
 
     %p{:style => "font-size: 16px;margin-bottom: 20px;"}
@@ -24,7 +24,8 @@
       %br
       %br
       ¿Necesita usted una forma como modelo a seguir?
-      = link_to "Haga clic aquí para bajar una", "/assets/forma_csv.xlsx", :style => "font-weight: bold; color: #3a9bdc;"
+      %br
+      = link_to "Haga clic aquí para bajar una forma CSV", "/assets/forma_csv.xlsx", :style => "font-weight: bold; color: #3a9bdc;"
 
 
     #upload_csv{:style => "display: block;"}
