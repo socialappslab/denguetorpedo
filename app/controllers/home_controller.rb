@@ -89,6 +89,10 @@ class HomeController < ApplicationController
         settings["timeframe"] = params["chart"]["timeframe"]
       end
 
+      if params["chart"]["percentages"].present? && ["daily", "cumulative"].include?(params["chart"]["percentages"])
+        settings["percentages"] = params["chart"]["percentage"]
+      end
+
       ["positive_inspection", "potential_inspection", "positive_followup", "potential_followup"].each do |key|
         settings[key] = params["chart"][key]
       end

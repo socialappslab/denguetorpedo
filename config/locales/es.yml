@@ -563,6 +563,9 @@ es:
           months:
             one: "1 mes"
             other: "%{count} meses"
+          percentages:
+            cumulative: Porcentaje acumulado relativo a todos los lugares visitados
+            daily: Porcentaje relativo a los lugares visitados en un dia
 
 
 
