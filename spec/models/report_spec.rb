@@ -14,11 +14,6 @@ describe Report do
 		}.to change(Report, :count).by(1)
 	end
 
-	it "validates reporter" do
-		report = Report.create
-		expect(report.errors.full_messages).to include("Reporter can't be blank")
-	end
-
 	it "does not require presence of location" do
 		expect {
 			FactoryGirl.create(:report, :reporter_id => user.id)

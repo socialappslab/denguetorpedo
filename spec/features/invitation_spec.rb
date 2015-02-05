@@ -10,10 +10,11 @@ describe "Contact Form for Future Communities", :type => :feature do
     expect(ActionMailer::Base.deliveries.count).to eq(0)
 
     visit neighborhood_invitation_path
+    fill_in "feedback_title", :with => "Hello"
     fill_in "feedback_email", :with => "test@denguetorpedo.com"
     fill_in "feedback_name", :with => "Test"
     fill_in "feedback_message", :with => "Test again"
-    click_button I18n.t("views.buttons.submit")
+    page.find(".submit-button").click
 
     expect(ActionMailer::Base.deliveries.count).to eq(1)
 

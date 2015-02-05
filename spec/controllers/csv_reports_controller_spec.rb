@@ -94,7 +94,7 @@ describe CsvReportsController do
 
       it "correctly sets inspection type" do
         ls = Visit.where("DATE(visited_at) = ?", "2014-12-24").first
-        expect(ls.identification_type).to eq(Report::Status::POSITIVE)
+        expect(ls.reload.identification_type).to eq(Report::Status::POSITIVE)
 
         # NOTE: These should be positive since the above location status is positive,
         # and still hasn't been eliminated.

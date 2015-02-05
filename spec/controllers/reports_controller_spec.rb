@@ -228,7 +228,7 @@ describe ReportsController do
 				:elimination_method_id => method.id
 			}
 
-			expect(other_user.reload.total_points).to eq(before_points + method.points)
+			expect(user.reload.total_points).to eq(before_points + method.points)
 		end
 	end
 

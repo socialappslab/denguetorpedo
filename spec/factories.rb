@@ -58,7 +58,7 @@ FactoryGirl.define do
 		description "Description"
 		summary "Summary"
 		location "DT Headquarter"
-		date Date.new
+		date Time.now
 	end
 
 	factory :post do
