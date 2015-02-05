@@ -65,6 +65,8 @@ FactoryGirl.define do
 		content "Hello world"
 	end
 
+	factory :csv_report
+
 	#-----------------------------------------------------------------------------
 
   factory :report do
