@@ -29,8 +29,6 @@ describe UsersController do
 				visit root_path
 
 				fill_in "user_username", 		 				:with => "test"
-				fill_in "user_first_name", 					 :with => "Test"
-				fill_in "user_last_name",  					 :with => "Tester"
 				fill_in "user_password", 						 :with => "abcdefg"
 				fill_in "user_password_confirmation", :with => "abcdefg"
 
@@ -45,8 +43,6 @@ describe UsersController do
 			visit root_path
 
 			fill_in "user_username", 		 			  :with => "test"
-			fill_in "user_first_name", 					 :with => "Test"
-			fill_in "user_last_name",  					 :with => "Tester"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
 			select(Neighborhood.first.name, :from => "user_neighborhood_id")
@@ -60,8 +56,6 @@ describe UsersController do
 			visit root_path
 
 			fill_in "user_username", 		 			  :with => "test"
-			fill_in "user_first_name", 					 :with => "Test"
-			fill_in "user_last_name",  					 :with => "Tester"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
 			select(Neighborhood.first.name, :from => "user_neighborhood_id")
