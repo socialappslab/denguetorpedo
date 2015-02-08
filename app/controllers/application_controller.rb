@@ -74,6 +74,10 @@ class ApplicationController < ActionController::Base
       @statistics = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
     end
 
+    # Daily for Nicaragua sample.
+    # @statistics = [{:date=>"2014-01-21", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-15", :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}, :total=>{:count=>3}}, {:date=>"2014-11-22", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-24", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-26", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}, {:date=>"2014-12-05", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-12-13", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2015-01-10", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-21", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}]
+
+
     # Format the data in a way that Google Charts can use.
     @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites')]]
     @statistics.each do |hash|

@@ -190,4 +190,85 @@ describe CsvReportsController do
 
   end
 
+  #-----------------------------------------------------------------------------
+
+  context "when uploading custom Nicaraguan CSV", :after_commit => true do
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+    end
+
+    it "does " do
+      neighborhood = Neighborhood.first
+      Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|
+        csv      = File.open(f)
+        csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+        post :create, :csv_report => { :csv => csv_file },
+        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+        :neighborhood_id => neighborhood.id
+      end
+
+      reports = Report.where(:neighborhood_id => neighborhood.id)
+      @visits = reports.includes(:location).map {|r| r.reload.location}.compact.uniq
+
+      cum_stats = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits)
+      puts "cum_stats = #{cum_stats}"
+
+      daily_stats = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits)
+      puts "daily_stats = #{daily_stats}"
+
+      # cum_stats = [{:date=>"2014-01-21", :positive=>{:count=>2, :percent=>67}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-15", :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}, :total=>{:count=>3}}, {:date=>"2014-11-22", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-24", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-26", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-12-05", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-12-13", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-10", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-21", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}]
+      # daily_stats = [{:date=>"2014-01-21", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-15", :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}, :total=>{:count=>3}}, {:date=>"2014-11-22", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-24", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-26", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}, {:date=>"2014-12-05", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-12-13", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2015-01-10", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-21", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}]
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-22"}
+      expect(stat).to eq ({
+        :positive => {:count=>2, :percent=>66},
+        :potential => {:count=>1, :percent=>33},
+        :negative => {:count=>0, :percent=>0},
+        :total => {:count=>3}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-24"}
+      expect(stat).to eq ({
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>2, :percent=>50},
+        :negative => {:count=>2, :percent=>50},
+        :total => {:count=>4}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-12-05"}
+      expect(stat).to eq ({
+        :positive => {:count=>1, :percent=>20},
+        :potential => {:count=>2, :percent=>40},
+        :negative => {:count=>2, :percent=>40},
+        :total => {:count=>5}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-12-13"}
+      expect(stat).to eq ({
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>3, :percent=>75},
+        :negative => {:count=>1, :percent=>25},
+        :total => {:count=>4}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2015-01-10"}
+      expect(stat).to eq ({
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>1, :percent=>14},
+        :negative => {:count=>6, :percent=>86},
+        :total => {:count=>7}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2015-01-21"}
+      expect(stat).to eq ({
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>1, :percent=>14},
+        :negative => {:count=>6, :percent=>86},
+        :total => {:count=>7}
+      })
+
+    end
+  end
+
 end
