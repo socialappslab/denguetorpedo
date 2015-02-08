@@ -51,6 +51,9 @@ class Report < ActiveRecord::Base
   has_many :likes,    :as => :likeable
   has_many :comments, :as => :commentable
 
+  has_many :inspections
+  has_many :visits, :through => :inspections
+
   # The following associations define all stakeholders in the reporting
   # process.
   belongs_to :reporter,          :class_name => "User"

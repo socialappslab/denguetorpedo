@@ -35,6 +35,9 @@ class Visit < ActiveRecord::Base
   validates :visit_type,          :presence => true
   validates :visited_at,          :presence => true
 
+  has_many :inspections
+  has_many :reports, :through => :inspections
+
   #----------------------------------------------------------------------------
   # Constants
 
