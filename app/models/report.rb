@@ -116,6 +116,10 @@ class Report < ActiveRecord::Base
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
 
+  def initial_visit
+    return self.visits.where(:parent_visit_id => nil).first
+  end
+
   # This method returns the report's original status, which is the status
   # that the report had when it was first created.
   def original_status

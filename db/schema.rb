@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150208180202) do
+ActiveRecord::Schema.define(:version => 20150208182507) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -445,6 +445,7 @@ ActiveRecord::Schema.define(:version => 20150208180202) do
     t.integer  "identification_type"
     t.integer  "visit_type"
     t.datetime "visited_at"
+    t.integer  "parent_visit_id"
   end
 
 end
