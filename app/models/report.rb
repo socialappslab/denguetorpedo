@@ -336,29 +336,23 @@ class Report < ActiveRecord::Base
   def create_inspection_visit
     return if self.location_id.blank?
 
-    ls = Visit.where(:location_id => self.location_id)
-    ls = ls.where(:visit_type => Visit::Types::INSPECTION)
-    ls = ls.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
-    ls = ls.order("visited_at DESC").limit(1)
-    if ls.blank?
-      ls             = Visit.new
-      ls.visit_type  = Visit::Types::INSPECTION
-      ls.location_id = self.location_id
-      ls.visited_at  = self.created_at
+    v = Visit.where(:location_id => self.location_id)
+    # ls = ls.where(:visit_type => Visit::Types::INSPECTION)
+    v = v.where(:parent_visit_id => nil)
+    v = v.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
+    v = v.order("visited_at DESC").limit(1)
+    if v.blank?
+      v             = Visit.new
+      v.location_id = self.location_id
+      v.visited_at  = self.created_at
+      v.save
     else
-      ls = ls.first
+      v = v.first
     end
 
-    # When creating an inspection visit, we must use the original status of a report.
-    # This is because the report's elimination state should not affect what it was
-    # when it was first created.
-    status  = self.original_status
-    reports = self.location.reports
-    ls.identification_type = ls.calculate_identification_type_from_status_and_reports(status, reports)
-    ls.save
-
-    # Finally, associate the report with a particular visit.
-    # self.update_column(:visit_id, ls.id)
+    # At this point, we've identified a visit. Let's save it and create an
+    # inspection for the report.
+    Inspection.create(:visit_id => v.id, :report_id => self.id, :identification_type => self.original_status)
   end
 
   #----------------------------------------------------------------------------
@@ -378,29 +372,22 @@ class Report < ActiveRecord::Base
     return if self.completed_at.blank?
     return if self.eliminated_at.blank?
 
-    ls = Visit.where(:location_id => self.location_id)
-    ls = ls.where(:visit_type => Visit::Types::FOLLOWUP)
-    ls = ls.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
-    ls = ls.order("visited_at DESC").limit(1)
-    if ls.blank?
-      ls             = Visit.new
-      ls.location_id = self.location_id
-      ls.visit_type  = Visit::Types::FOLLOWUP
-      ls.visited_at  = self.eliminated_at
+    v = Visit.where(:location_id => self.location_id)
+    v = v.where("parent_visit_id IS NOT NULL")
+    v = v.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
+    v = v.order("visited_at DESC").limit(1)
+    if v.blank?
+      v             = Visit.new
+      v.location_id = self.location_id
+      v.parent_visit_id = self.initial_visit.id
+      v.visited_at  = self.eliminated_at
+      v.save
     else
-      ls = ls.first
+      v = v.first
     end
 
-    # When creating a follow-up visit, it's OK to include the elimination state
-    # in the calculation as the follow-up visit may very well eliminate some or all
-    # reports.
-    status  = self.status
-    reports = self.location.reports
-    ls.identification_type = ls.calculate_identification_type_from_status_and_reports(status, reports)
-    ls.save
-
-    # Finally, associate the report with a particular visit if it's not associated yet.
-    # self.update_column(:visit_id, ls.id) if self.visit_id.blank?
+    # At this point, we have a follow-up visit. Let's create an inspection for it.
+    Inspection.create(:visit_id => v.id, :report_id => self.id, :identification_type => self.status)
   end
 
   #----------------------------------------------------------------------------

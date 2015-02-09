@@ -31,8 +31,8 @@ class Visit < ActiveRecord::Base
   # Validators
 
   validates :location_id,         :presence => true
-  validates :identification_type, :presence => true
-  validates :visit_type,          :presence => true
+  # validates :identification_type, :presence => true
+  # validates :visit_type,          :presence => true
   validates :visited_at,          :presence => true
 
   has_many :inspections
