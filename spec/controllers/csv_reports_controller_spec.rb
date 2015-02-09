@@ -85,11 +85,11 @@ describe CsvReportsController do
       end
 
       it "creates 3 inspection visits" do
-        expect(Visit.where(:visit_type => Visit::Types::INSPECTION).count).to eq(3)
+        expect(Visit.where(:parent_visit_id => nil).count).to eq(3)
       end
 
       it "creates no follow-up visits" do
-        expect(Visit.where(:visit_type => Visit::Types::FOLLOWUP).count).to eq(0)
+        expect(Visit.where("parent_visit_id IS NOT NULL").count).to eq(0)
       end
 
       it "correctly sets inspection type" do
@@ -99,14 +99,14 @@ describe CsvReportsController do
         # NOTE: These should be positive since the above location status is positive,
         # and still hasn't been eliminated.
         ls = Visit.where("DATE(visited_at) = ?", "2014-12-31").first
-        expect(ls.identification_type).to eq(Report::Status::POSITIVE)
+        expect(ls.identification_type).to eq(Report::Status::POTENTIAL)
 
         # TODO: Perhaps we should instead think of Visit as Visits that
         # essentially categorize each visit as POSITIVE, POTENTIAL, or NEGATIVE.
         # The status of a location is then dependent on whether each visit resolved
         # its status... We would need to define what "resolved" means in this context.
         ls = Visit.where("DATE(visited_at) = ?", "2015-01-10").first
-        expect(ls.identification_type).to eq(Report::Status::POTENTIAL)
+        expect(ls.identification_type).to eq(Report::Status::NEGATIVE)
       end
 
       it "correctly sets the health report" do
@@ -197,7 +197,7 @@ describe CsvReportsController do
       cookies[:auth_token] = user.auth_token
     end
 
-    it "does " do
+    it "returns data that matches Harold's graphs" do
       neighborhood = Neighborhood.first
       Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|
         csv      = File.open(f)
@@ -211,9 +211,6 @@ describe CsvReportsController do
       reports = Report.where(:neighborhood_id => neighborhood.id)
       @visits = reports.includes(:location).map {|r| r.reload.location}.compact.uniq
 
-      cum_stats = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits)
-      puts "cum_stats = #{cum_stats}"
-
       daily_stats = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits)
       puts "daily_stats = #{daily_stats}"
 
@@ -222,6 +219,7 @@ describe CsvReportsController do
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-15"}
       expect(stat).to eq ({
+        :date => "2014-11-15",
         :positive => {:count=>1, :percent=>33},
         :potential => {:count=>1, :percent=>33},
         :negative => {:count=>1, :percent=>33},
@@ -231,7 +229,8 @@ describe CsvReportsController do
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-22"}
       expect(stat).to eq ({
-        :positive => {:count=>2, :percent=>66},
+        :date => "2014-11-22",
+        :positive => {:count=>2, :percent=>67},
         :potential => {:count=>1, :percent=>33},
         :negative => {:count=>0, :percent=>0},
         :total => {:count=>3}
@@ -239,6 +238,7 @@ describe CsvReportsController do
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-24"}
       expect(stat).to eq ({
+        :date => "2014-11-24",
         :positive => {:count=>0, :percent=>0},
         :potential => {:count=>1, :percent=>50},
         :negative => {:count=>1, :percent=>50},
@@ -247,6 +247,7 @@ describe CsvReportsController do
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-12-05"}
       expect(stat).to eq ({
+        :date => "2014-12-05",
         :positive => {:count=>1, :percent=>50},
         :potential => {:count=>1, :percent=>50},
         :negative => {:count=>0, :percent=>0},
@@ -255,6 +256,7 @@ describe CsvReportsController do
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-12-13"}
       expect(stat).to eq ({
+        :date => "2014-12-13",
         :positive => {:count=>0, :percent=>0},
         :potential => {:count=>2, :percent=>100},
         :negative => {:count=>0, :percent=>0},
@@ -263,17 +265,19 @@ describe CsvReportsController do
 
       stat = daily_stats.find {|ds| ds[:date] == "2015-01-10"}
       expect(stat).to eq ({
+        :date => "2015-01-10",
         :positive => {:count=>0, :percent=>0},
         :potential => {:count=>1, :percent=>33},
-        :negative => {:count=>2, :percent=>66},
+        :negative => {:count=>2, :percent=>67},
         :total => {:count=>3}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2015-01-21"}
       expect(stat).to eq ({
+        :date => "2015-01-21",
         :positive => {:count=>0, :percent=>0},
         :potential => {:count=>1, :percent=>33},
-        :negative => {:count=>2, :percent=>66},
+        :negative => {:count=>2, :percent=>67},
         :total => {:count=>3}
       })
 

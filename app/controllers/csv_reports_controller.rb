@@ -93,25 +93,17 @@ class CsvReportsController < NeighborhoodsBaseController
 
       # Let's begin by creating a visit, if applicable.
       # Let's parse the current visited at date.
+      # NOTE: If the last type is N then the location is clean (definition). However,
+      # we don't have to keep track of it in some "status" key. Why? Because the visit
+      # will have 0 reports, which is taken into account in visit.identification_type
+      # method! 
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at        = row_content[:visited_at]
         parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
 
-        # Now let's see if the location is clean.
-        # If the last type is n, then the location is clean (for now).
-        # If it's not the last row, then we simply label the status as a potential
-        # breeding site. The actual status will be updated when the associated
-        # report for the location is updated.
-        if row_index.to_i == spreadsheet.last_row.to_i && type.strip.downcase == "n"
-          status = Report::Status::NEGATIVE
-        else
-          status = Report::Status::POTENTIAL
-        end
-
         visits << {
           :visited_at    => parsed_current_visited_at,
-          :health_report => row_content[:health_report],
-          :status        => status
+          :health_report => row_content[:health_report]
         }
       end
 
@@ -203,7 +195,7 @@ class CsvReportsController < NeighborhoodsBaseController
     end
 
     #--------------------------------------------------------------------
-    # The above Report callbacks create a set of Visits. Here, we iterate
+    # The above Report callbacks create a set of visits and inspections. Here, we iterate
     # over our own set of visits, and either
     #
     # a) find existing visit with same date and set the health report,
@@ -214,15 +206,14 @@ class CsvReportsController < NeighborhoodsBaseController
       parsed_visited_at = visit[:visited_at]
 
       ls = Visit.where(:location_id => location.id)
-      ls = ls.where(:visit_type => Visit::Types::INSPECTION)
+      ls = ls.where(:parent_visit_id => nil)
       ls = ls.where(:visited_at => (parsed_visited_at.beginning_of_day..parsed_visited_at.end_of_day))
       ls = ls.order("visited_at DESC").limit(1)
       if ls.blank?
-        ls             = Visit.new
-        ls.visit_type  = Visit::Types::INSPECTION
-        ls.identification_type = visit[:status]
-        ls.location_id = location.id
-        ls.visited_at  = parsed_visited_at
+        ls                 = Visit.new
+        ls.parent_visit_id = nil
+        ls.location_id     = location.id
+        ls.visited_at      = parsed_visited_at
       else
         ls = ls.first
       end
