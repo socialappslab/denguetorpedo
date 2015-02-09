@@ -40,6 +40,15 @@ describe Report do
 		expect(report.errors.full_messages).to include("Fecha de inspección can't be in the future")
 	end
 
+	it "returns the correct initial visit" do
+		r = Report.create(:report => "Saw Report", :location_id => location.id, :reporter => user)
+		v1 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 100.days)
+		v2 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 3.days, :parent_visit_id => v1.id)
+
+		FactoryGirl.create(:inspection, :visit_id => v1.id, :report_id => r.id, :identification_type => Inspection::Types::POSITIVE)
+		expect(r.initial_visit.id).to eq(v1.id)
+	end
+
 	#-----------------------------------------------------------------------------
 
 	describe "associated visits", :after_commit => true do

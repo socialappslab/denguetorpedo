@@ -72,8 +72,8 @@ FactoryGirl.define do
   factory :report do
     report 					 "Description"
     before_photo 		 Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
-		breeding_site_id BreedingSite.first.id
-		neighborhood_id  Neighborhood.first.id
+		breeding_site_id { BreedingSite.first.id }
+		neighborhood_id  { Neighborhood.first.id }
 
 		factory :positive_report do
 			larvae true
@@ -88,6 +88,8 @@ FactoryGirl.define do
 			protected true
 		end
   end
+
+	factory :inspection
 
 	#-----------------------------------------------------------------------------
 

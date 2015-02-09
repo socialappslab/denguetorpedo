@@ -20,6 +20,12 @@ describe Visit do
       }.to change(Visit, :count).by(1)
     end
 
+    it "creates a new inspection instance" do
+      expect {
+        FactoryGirl.create(:report, :location_id => location.id, :reporter => user)
+      }.to change(Inspection, :count).by(1)
+    end
+
     it "sets the correct visit time" do
       report = FactoryGirl.create(:report, :location_id => location.id, :reporter => user, :created_at => created_at)
       v = Visit.first
@@ -40,19 +46,19 @@ describe Visit do
 
     it "sets the correct identification type on positive reports" do
       report = FactoryGirl.create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = Visit.first
-      expect(v.identification_type).to eq(Report::Status::POSITIVE)
+      ins = Inspection.last
+      expect(ins.identification_type).to eq(Report::Status::POSITIVE)
     end
 
     it "sets the correct identification type on potential reports" do
       report = FactoryGirl.create(:potential_report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = Visit.first
+      v = Inspection.last
       expect(v.identification_type).to eq(Report::Status::POTENTIAL)
     end
 
     it "sets the correct identification type on negative reports" do
       report = FactoryGirl.create(:negative_report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = Visit.first
+      v = Inspection.last
       expect(v.identification_type).to eq(Report::Status::NEGATIVE)
     end
 
