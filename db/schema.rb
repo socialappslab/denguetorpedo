@@ -46,12 +46,28 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
   add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
 
+  create_table "badges", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "prize_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "breeding_sites", :force => true do |t|
     t.string   "description_in_pt"
     t.string   "description_in_es"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "string_id"
+  end
+
+  create_table "buy_ins", :force => true do |t|
+    t.integer  "group_buy_in_id"
+    t.integer  "user_id"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.boolean  "accepted"
+    t.boolean  "expired",         :default => false, :null => false
   end
 
   create_table "cities", :force => true do |t|
@@ -162,7 +178,6 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
   create_table "feeds", :force => true do |t|
     t.string   "target_type"
     t.integer  "target_id"
-    t.string   "feed_type"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
     t.integer  "user_id"
@@ -170,10 +185,10 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
   end
 
   create_table "houses", :force => true do |t|
-    t.string   "address"
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
     t.string   "name"
+    t.integer  "featured_event_id"
     t.integer  "location_id"
     t.string   "profile_photo_file_name"
     t.string   "profile_photo_content_type"
@@ -201,6 +216,9 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], :name => "index_likes_on_user_id_and_likeable_id_and_likeable_type", :unique => true
 
   create_table "locations", :force => true do |t|
+    t.string   "nation"
+    t.string   "state"
+    t.string   "city"
     t.string   "address"
     t.float    "latitude"
     t.float    "longitude"
@@ -320,16 +338,11 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
   end
 
   create_table "reports", :force => true do |t|
-    t.string   "nation"
-    t.string   "state"
-    t.string   "city"
-    t.string   "address"
-    t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
-    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
+    t.integer  "status_cd"
     t.integer  "eliminator_id"
     t.integer  "location_id"
     t.string   "before_photo_file_name"
