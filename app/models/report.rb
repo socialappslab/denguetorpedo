@@ -356,7 +356,10 @@ class Report < ActiveRecord::Base
 
     # At this point, we've identified a visit. Let's save it and create an
     # inspection for the report.
-    Inspection.create(:visit_id => v.id, :report_id => self.id, :identification_type => self.original_status)
+    ins = Inspection.find_by_visit_id_and_report_id(v.id, self.id)
+    ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
+    ins.identification_type = self.original_status
+    ins.save
   end
 
   #----------------------------------------------------------------------------
@@ -391,7 +394,10 @@ class Report < ActiveRecord::Base
     end
 
     # At this point, we have a follow-up visit. Let's create an inspection for it.
-    Inspection.create(:visit_id => v.id, :report_id => self.id, :identification_type => self.status)
+    ins = Inspection.find_by_visit_id_and_report_id(v.id, self.id)
+    ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
+    ins.identification_type = self.status
+    ins.save
   end
 
   #----------------------------------------------------------------------------

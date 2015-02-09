@@ -59,6 +59,27 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def visit_type
+    return Types::FOLLOWUP if self.parent_visit_id.present?
+    return Types::INSPECTION
+  end
+
+  #----------------------------------------------------------------------------
+
+  def identification_type
+    id_grouping = self.inspections.select(:identification_type).group(:identification_type).count
+    if id_grouping[Inspection::Types::POSITIVE] && id_grouping[Inspection::Types::POSITIVE] >= 1
+      return Inspection::Types::POSITIVE
+    elsif id_grouping[Inspection::Types::POTENTIAL] && id_grouping[Inspection::Types::POTENTIAL] >= 1
+      return Inspection::Types::POTENTIAL
+    else
+      return Inspection::Types::NEGATIVE
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
+
   # The status of a visit depends on its identification_type, identified_at date
   # and cleaned_at date as follows:
   # * If cleaned_at is nil, then that means the site was identified but not
@@ -110,7 +131,7 @@ class Visit < ActiveRecord::Base
     # history of the locations. Instead, we do it at the end.
     location_ids = locations.map(&:id)
     visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
-    visits       = visits.select([:visited_at, :identification_type, :visit_type])
+    visits       = visits
     return [] if visits.blank?
 
     # NOTE: Why are we only focusing on visits as opposed to locations? Because
@@ -118,11 +139,10 @@ class Visit < ActiveRecord::Base
     # point for each day, we can map a visit on a particular day to a unique location
     # and (if a visit exists) the other way around.
     daily_stats = []
-    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
-    visits_by_date_and_type.each do |grouping, count|
-      visited_at_date     = grouping[0].to_s
-      identification_type = grouping[1].to_i
-      visit_type          = grouping[2].to_i
+    visits.each do |visit|
+      visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")
+      identification_type = visit.identification_type
+      visit_type          = visit.visit_type
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
@@ -139,13 +159,11 @@ class Visit < ActiveRecord::Base
 
 
       if visit_types.blank? || visit_types.include?(visit_type)
-        # Define the relative count for each identification type (and total, as well)
         key = Report.statuses_as_symbols[identification_type]
-        if visit_types.blank? || visit_types.include?(visit_type)
-          day_statistic[key][:count] += count
-        end
-        day_statistic[:total][:count] += count
+        day_statistic[key][:count]    += 1
+        day_statistic[:total][:count] += 1
       end
+
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
@@ -161,6 +179,68 @@ class Visit < ActiveRecord::Base
 
     return daily_stats
   end
+
+  #----------------------------------------------------------------------------
+
+
+
+  # # This calculates the daily percentage of houses that were visited on that day.
+  # def self.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, start_time = nil, visit_types = nil)
+  #   # NOTE: We *cannot* query by start_time here since we would be ignoring the full
+  #   # history of the locations. Instead, we do it at the end.
+  #   location_ids = locations.map(&:id)
+  #   visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
+  #   visits       = visits.select([:visited_at, :identification_type, :visit_type])
+  #   return [] if visits.blank?
+  #
+  #   # NOTE: Why are we only focusing on visits as opposed to locations? Because
+  #   # we're looking at daily data, and we know that each location has one data
+  #   # point for each day, we can map a visit on a particular day to a unique location
+  #   # and (if a visit exists) the other way around.
+  #   daily_stats = []
+  #   visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
+  #   visits_by_date_and_type.each do |grouping, count|
+  #     visited_at_date     = grouping[0].to_s
+  #     identification_type = grouping[1].to_i
+  #     visit_type          = grouping[2].to_i
+  #
+  #     day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
+  #     if day_statistic.blank?
+  #       day_statistic = {
+  #         :date       => visited_at_date,
+  #         :positive   => {:count => 0, :percent => 0},
+  #         :potential  => {:count => 0, :percent => 0},
+  #         :negative   => {:count => 0, :percent => 0},
+  #         :total      => {:count => 0}
+  #       }
+  #
+  #       daily_stats << day_statistic
+  #     end
+  #
+  #
+  #     if visit_types.blank? || visit_types.include?(visit_type)
+  #       # Define the relative count for each identification type (and total, as well)
+  #       key = Report.statuses_as_symbols[identification_type]
+  #       if visit_types.blank? || visit_types.include?(visit_type)
+  #         day_statistic[key][:count] += count
+  #       end
+  #       day_statistic[:total][:count] += count
+  #     end
+  #
+  #     # NOTE: We're not adding the hash here because there's a chance we simply
+  #     # modified an existing element. We're going to search for it again.
+  #     index              = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
+  #     daily_stats[index] = day_statistic
+  #   end
+  #
+  #   # Now, let's iterate over daily_stats, calculating percentage.
+  #   # Finally, let's include only those visit types that match the visit type.
+  #   # Now that the full history is captured, let's filter starting from the start_time
+  #   daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
+  #   daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
+  #
+  #   return daily_stats
+  # end
 
   #----------------------------------------------------------------------------
 
