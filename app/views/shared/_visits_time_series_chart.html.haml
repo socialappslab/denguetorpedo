@@ -73,16 +73,29 @@
     // Let's hide the columns corresponding to unchecked checkboxes.
     var view         = new google.visualization.DataView(data);
     var uncheckedIds = $("input:checkbox:not(:checked)").map(function(index,el) { return $(el).attr("id") });
-    if ( $.inArray("chart_positive_inspection", uncheckedIds) !== -1 && $.inArray("chart_positive_followup", uncheckedIds) !== -1 )
+
+    if ( $.inArray("chart_positive", uncheckedIds) !== -1)
     {
       view.hideColumns([1]);
       options.colors = ["#f1c40f"];
     }
-    else if ( $.inArray("chart_potential_inspection", uncheckedIds) !== -1 && $.inArray("chart_potential_followup", uncheckedIds) !== -1 )
+    else if ( $.inArray("chart_potential", uncheckedIds) !== -1)
     {
       view.hideColumns([2]);
       options.colors = ["#e74c3c"];
     }
+
+    // Old version when we were distinguishing between inspection and followup.
+    // if ( $.inArray("chart_positive_inspection", uncheckedIds) !== -1 && $.inArray("chart_positive_followup", uncheckedIds) !== -1 )
+    // {
+    //   view.hideColumns([1]);
+    //   options.colors = ["#f1c40f"];
+    // }
+    // else if ( $.inArray("chart_potential_inspection", uncheckedIds) !== -1 && $.inArray("chart_potential_followup", uncheckedIds) !== -1 )
+    // {
+    //   view.hideColumns([2]);
+    //   options.colors = ["#e74c3c"];
+    // }
 
     // Finally, let's draw the chart.
     chart.draw(view, options);

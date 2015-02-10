@@ -7,14 +7,14 @@
 
       %tr
         %td{:colspan => 2}
-          .radio
-            = label_tag do
-              = radio_button_tag "chart[percentages]", "cumulative", chart_cookies.blank? || [nil, "cumulative"].include?(chart_cookies["percentages"])
-              = I18n.t("views.statistics.chart.filters.percentages.cumulative")
+          -# .radio
+          -#   = label_tag do
+          -#     = radio_button_tag "chart[percentages]", "cumulative", chart_cookies.blank? || [nil, "cumulative"].include?(chart_cookies["percentages"])
+          -#     = I18n.t("views.statistics.chart.filters.percentages.cumulative")
 
           .radio
             = label_tag do
-              = radio_button_tag "chart[percentages]", "daily", chart_cookies["percentages"] == "daily"
+              = radio_button_tag "chart[percentages]", "daily", true
               = I18n.t("views.statistics.chart.filters.percentages.daily")
 
 
@@ -22,24 +22,34 @@
         %td
           .checkbox
             = label_tag do
-              = check_box_tag "chart[positive_inspection]", 1, chart_cookies.blank? || chart_cookies["positive_inspection"]
-              = I18n.t("views.statistics.chart.filters.positive_inspection")
+              = check_box_tag "chart[positive]", 1, chart_cookies.blank? || chart_cookies["positive"]
+              = "Positividad"
 
           .checkbox
             = label_tag do
-              = check_box_tag "chart[positive_followup]", 1, chart_cookies.blank? || chart_cookies["positive_followup"]
-              = I18n.t("views.statistics.chart.filters.positive_followup")
-
-          .checkbox
-            = label_tag do
-              = check_box_tag "chart[potential_inspection]", 1, chart_cookies.blank? || chart_cookies["potential_inspection"]
-              = I18n.t("views.statistics.chart.filters.potential_inspection")
-
-
-          .checkbox
-            = label_tag do
-              = check_box_tag "chart[potential_followup]", 1, chart_cookies.blank? || chart_cookies["potential_followup"]
-              = I18n.t("views.statistics.chart.filters.potential_followup")
+              = check_box_tag "chart[potential]", 1, chart_cookies.blank? || chart_cookies["potential"]
+              = "Potencialidad"
+              
+          -# .checkbox
+          -#   = label_tag do
+          -#     = check_box_tag "chart[positive_inspection]", 1, chart_cookies.blank? || chart_cookies["positive_inspection"]
+          -#     = I18n.t("views.statistics.chart.filters.positive_inspection")
+          -#
+          -# .checkbox
+          -#   = label_tag do
+          -#     = check_box_tag "chart[positive_followup]", 1, chart_cookies.blank? || chart_cookies["positive_followup"]
+          -#     = I18n.t("views.statistics.chart.filters.positive_followup")
+          -#
+          -# .checkbox
+          -#   = label_tag do
+          -#     = check_box_tag "chart[potential_inspection]", 1, chart_cookies.blank? || chart_cookies["potential_inspection"]
+          -#     = I18n.t("views.statistics.chart.filters.potential_inspection")
+          -#
+          -#
+          -# .checkbox
+          -#   = label_tag do
+          -#     = check_box_tag "chart[potential_followup]", 1, chart_cookies.blank? || chart_cookies["potential_followup"]
+          -#     = I18n.t("views.statistics.chart.filters.potential_followup")
 
 
         %td

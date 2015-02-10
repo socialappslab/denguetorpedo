@@ -96,6 +96,11 @@ class HomeController < ApplicationController
       ["positive_inspection", "potential_inspection", "positive_followup", "potential_followup"].each do |key|
         settings[key] = params["chart"][key]
       end
+
+
+      ["positive", "potential"].each do |key|
+        settings[key] = params["chart"][key]
+      end
     end
 
     cookies[:chart] = settings.to_json

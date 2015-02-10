@@ -55,28 +55,28 @@ class ApplicationController < ActionController::Base
       start_time = 3.months.ago if chart_settings["timeframe"] == "3"
       start_time = 6.months.ago if chart_settings["timeframe"] == "6"
 
-      if chart_settings["positive_inspection"].present? || chart_settings["potential_inspection"].present?
-        visit_types << Visit::Types::INSPECTION
-      end
-
-      if chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
-        visit_types << Visit::Types::FOLLOWUP
-      end
-
-      if chart_settings["percentages"].present? && chart_settings["percentages"] == "daily"
-        @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
-      end
+      # if chart_settings["positive_inspection"].present? || chart_settings["potential_inspection"].present?
+      #   visit_types << Visit::Types::INSPECTION
+      # end
+      #
+      # if chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
+      #   visit_types << Visit::Types::FOLLOWUP
+      # end
+      #
+      # if chart_settings["percentages"].present? && chart_settings["percentages"] == "daily"
+      #   @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
+      # end
     end
 
     # Calculate the statistics based on the start_time and visit_types only
     # if it hasn't been calculated yet.
-    if @statistics.blank?
-      @statistics = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
-    end
+    # if @statistics.blank?
+    #   @statistics = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visits, start_time, visit_types)
+    # end
 
-    # Daily for Nicaragua sample.
-    # @statistics = [{:date=>"2014-01-21", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-15", :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}, :total=>{:count=>3}}, {:date=>"2014-11-22", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-24", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-26", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}, {:date=>"2014-12-05", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-12-13", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2015-01-10", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-21", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}]
-
+    # NOTE: We're overriding whatever options the user has chosen to
+    # keep things agile for the time being.
+    @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits, start_time, [])
 
     # Format the data in a way that Google Charts can use.
     @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites')]]
