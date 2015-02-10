@@ -63,12 +63,12 @@ describe Report do
 			visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
 			expect(visits).to eq([
 				{
-					:date=>"2015-11-15",
+					:date=>"2014-11-15",
 					:positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
 					:total => {:count => 1}
 				},
 				{
-					:date=>"2015-11-20",
+					:date=>"2014-11-20",
 					:positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
 					:total => {:count => 1}
 				}
