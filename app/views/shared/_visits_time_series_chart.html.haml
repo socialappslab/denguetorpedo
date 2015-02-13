@@ -6,7 +6,7 @@
 - if @chart_statistics.present?
   .row
     .col-md-12
-      #chart{:style => "height: 350px; display: block;"}
+      #timeseries-chart{:style => "height: 350px; display: block;"}
 
 
   %div
@@ -19,84 +19,25 @@
     %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
     = I18n.t('views.statistics.chart.percent_of_potential_sites')
 
+  %div
+    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
+    = I18n.t('views.statistics.chart.percent_of_negative_sites')
+
+
+  %p{:style => "text-align: center; font-size: 10px; margin-top: 10px;"}
+    = I18n.t("views.statistics.chart.disclaimer")
+
 - else
   %h1{:style => "text-align: center; margin: 40px;"}
     = I18n.t("common_terms.no_data")
 
 
-
+= javascript_include_tag "chart-options"
 :javascript
-  google.load('visualization', '1', {packages: ['corechart']});
-  google.setOnLoadCallback(drawChart);
+  $(document).ready(function() {
+    var rawData = #{@chart_statistics.to_json};
 
 
-  var statistics = #{@chart_statistics.to_json};
-  var options = {
-    width: $("#chart").width(),
-    chartArea: {
-      left: 50,
-      right: 50,
-      top: 50,
-      bottom: 0,
-      width: "90%",
-      height: "70%"
-    },
-    vAxis: {
-      gridlines: {
-        color: "transparent"
-      },
-      format: "#\'%\'"
-    },
-    hAxis: {},
-    backgroundColor: '#eff0f3',
-    legend: {
-      position: "none",
-      alignment: "start",
-      textStyle: {
-        fontSize: "15"
-      }
-    },
-    colors: ["#e74c3c", "#f1c40f"]
-  };
-
-  function drawChart() {
-    // Initialize the critical variables.
-    var chart     = new google.visualization.ColumnChart(document.getElementById("chart"));
-    var data      = new google.visualization.arrayToDataTable(statistics);
-    var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
-    formatter.format(data, 1);
-    formatter.format(data, 2);
-
-    // Customize the options so we dont' fill up the horizontal axis.
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
-
-    // Let's hide the columns corresponding to unchecked checkboxes.
-    var view         = new google.visualization.DataView(data);
-    var uncheckedIds = $("input:checkbox:not(:checked)").map(function(index,el) { return $(el).attr("id") });
-
-    if ( $.inArray("chart_positive", uncheckedIds) !== -1)
-    {
-      view.hideColumns([1]);
-      options.colors = ["#f1c40f"];
-    }
-    else if ( $.inArray("chart_potential", uncheckedIds) !== -1)
-    {
-      view.hideColumns([2]);
-      options.colors = ["#e74c3c"];
-    }
-
-    // Old version when we were distinguishing between inspection and followup.
-    // if ( $.inArray("chart_positive_inspection", uncheckedIds) !== -1 && $.inArray("chart_positive_followup", uncheckedIds) !== -1 )
-    // {
-    //   view.hideColumns([1]);
-    //   options.colors = ["#f1c40f"];
-    // }
-    // else if ( $.inArray("chart_potential_inspection", uncheckedIds) !== -1 && $.inArray("chart_potential_followup", uncheckedIds) !== -1 )
-    // {
-    //   view.hideColumns([2]);
-    //   options.colors = ["#e74c3c"];
-    // }
-
-    // Finally, let's draw the chart.
-    chart.draw(view, options);
-  }
+    google.load('visualization', '1', {packages: ['corechart']});
+    google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
+  });
