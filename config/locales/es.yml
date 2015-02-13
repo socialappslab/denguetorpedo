@@ -549,11 +549,12 @@ es:
         positive_sites: Lugares con criaderos positivos
         potential_sites: Lugares con criaderos potenciales
       chart:
+        disclaimer: "Nota: Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales"
         title: Cambio en Riesgo en Tu Barrio de Dengue y Chikungunya
         time: Tiempo
-        percent_of_negative_sites: Porcentaje de lugares con criaderos eliminados o sin criaderos
-        percent_of_positive_sites: Porcentaje de lugares con criaderos positivos
-        percent_of_potential_sites: Porcentaje de lugares con criaderos potenciales
+        percent_of_negative_sites: Lugares sin criaderos
+        percent_of_positive_sites: Lugares con criaderos positivos
+        percent_of_potential_sites: Lugares con criaderos potenciales
         percent_of_green_sites: Porcentaje de lugares sin criaderos por mas de 14 dias
         filters:
           positive_inspection: "Positividad - inspección"
