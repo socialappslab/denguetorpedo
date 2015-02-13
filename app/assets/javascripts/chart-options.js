@@ -13,13 +13,13 @@ var googleChartOptions = function(chartID, data) {
       width: "90%",
       height: "70%"
     },
+    hAxis: {},
     vAxis: {
       gridlines: {
         color: "transparent"
       },
       format: "#\'%\'"
     },
-    hAxis: {},
     backgroundColor: '#eff0f3',
     legend: {
       position: "none",
@@ -33,7 +33,7 @@ var googleChartOptions = function(chartID, data) {
 
 
   // Customize the options so we dont' fill up the horizontal axis.
-  options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+  //
   // options.bar.groupWidth = "95%"
 
   if ( shouldHidePositive() )
@@ -42,6 +42,11 @@ var googleChartOptions = function(chartID, data) {
   if ( shouldHidePotential() )
     options.colors = ["#e74c3c"];
 
+
+  if ( shouldDisplayLineChart() )
+    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+  else
+    options.hAxis.slantedtextangle = 90;
 
   return options;
 }
