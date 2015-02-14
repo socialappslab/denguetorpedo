@@ -1,5 +1,7 @@
 class NeighborhoodsController < NeighborhoodsBaseController
-  before_filter :ensure_team_chosen, :only => [:show]
+  before_filter :ensure_team_chosen,               :only => [:show]
+  before_filter :calculate_ivars,                  :only => [:show]
+  before_filter :calculate_time_series_for_visits, :only => [:show]
 
 
   #----------------------------------------------------------------------------
@@ -7,40 +9,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
   def show
     @post = Post.new
-
-    # Load associations.
-    @neighborhood = Neighborhood.find(params[:id])
-    @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
-    @teams   = @neighborhood.teams.order("name ASC")
-    @reports = @neighborhood.reports
-    @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
-
-    # Calculate total visits to (different) locations.
-    @visits              = @reports.includes(:location).map {|r| r.location}.compact.uniq
-    @total_locations     = @visits.count
-
-    # start_time = Time.now - 3.months
-    # end_time   = Time.now
-    @statistics = LocationStatus.calculate_time_series_for_locations(@visits)
-    @chart_statistics = @statistics.map {|hash|
-      [
-        hash[:date],
-        hash[:positive][:percent],
-        hash[:potential][:percent],
-        hash[:negative][:percent],
-        hash[:clean][:percent]
-      ]
-    }
-
-    @last_statistics = []
-    legend = [I18n.t("views.statistics.table.positive_sites"), I18n.t("views.statistics.table.potential_sites"),
-    I18n.t("views.statistics.table.negative_sites"), I18n.t("views.statistics.table.clean_sites")]
-    if @statistics.present?
-      [:positive, :potential, :negative, :clean].each_with_index do |key, index|
-        @last_statistics << [legend[index], @statistics.last[key][:count]]
-      end
-    end
-
 
     # Calculate total metrics before we start filtering.
     @total_reports = @reports.count
@@ -66,7 +34,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
     end
   end
 
-
   #----------------------------------------------------------------------------
   # GET /neighborhoods/invitation
   #------------------------------
@@ -81,5 +48,17 @@ class NeighborhoodsController < NeighborhoodsBaseController
   private
 
   #----------------------------------------------------------------------------
+
+  def calculate_ivars
+    # Load associations.
+    @neighborhood = Neighborhood.find(params[:id])
+    @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
+    @teams   = @neighborhood.teams.order("name ASC")
+    @reports = @neighborhood.reports
+    @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
+
+    # Calculate total visits to (different) locations.
+    @visits = @reports.includes(:location).map {|r| r.location}.compact.uniq
+  end
 
 end

@@ -39,14 +39,6 @@ describe CsvReportsController do
       }.to change(Report, :count).by(3)
     end
 
-    it "creates 3 new location_statuses" do
-      expect {
-        post :create, :csv_report => { :csv => uploaded_csv },
-        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
-        :neighborhood_id => Neighborhood.first.id
-      }.to change(LocationStatus, :count).by(3)
-    end
-
 
     describe "the parsed Report attributes" do
       before(:each) do
@@ -85,38 +77,46 @@ describe CsvReportsController do
     end
 
 
-    describe "the parsed LocationStatus attributes", :after_commit => true do
+    describe "the parsed Visit attributes", :after_commit => true do
       before(:each) do
         post :create, :csv_report => { :csv => uploaded_csv },
         :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
         :neighborhood_id => Neighborhood.first.id
       end
 
-      it "correctly sets status" do
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-24").first
-        expect(ls.status).to eq(LocationStatus::Types::POSITIVE)
+      it "creates 3 inspection visits" do
+        expect(Visit.where(:parent_visit_id => nil).count).to eq(3)
+      end
+
+      it "creates no follow-up visits" do
+        expect(Visit.where("parent_visit_id IS NOT NULL").count).to eq(0)
+      end
+
+      it "correctly sets inspection type" do
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-24").first
+        expect(ls.reload.identification_type).to eq(Report::Status::POSITIVE)
 
         # NOTE: These should be positive since the above location status is positive,
         # and still hasn't been eliminated.
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-31").first
-        expect(ls.status).to eq(LocationStatus::Types::POSITIVE)
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-31").first
+        expect(ls.identification_type).to eq(Report::Status::POTENTIAL)
 
-        # TODO: Perhaps we should instead think of LocationStatus as Visits that
+        # TODO: Perhaps we should instead think of Visit as Visits that
         # essentially categorize each visit as POSITIVE, POTENTIAL, or NEGATIVE.
         # The status of a location is then dependent on whether each visit resolved
         # its status... We would need to define what "resolved" means in this context.
-        ls = LocationStatus.where("DATE(created_at) = ?", "2015-01-10").first
-        expect(ls.status).to eq(LocationStatus::Types::POTENTIAL)
+        ls = Visit.where("DATE(visited_at) = ?", "2015-01-10").first
+        expect(ls.identification_type).to eq(Report::Status::NEGATIVE)
       end
 
       it "correctly sets the health report" do
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-24").first
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-24").first
         expect(ls.health_report).to eq("3c5d")
 
-        ls = LocationStatus.where("DATE(created_at) = ?", "2014-12-31").first
+        ls = Visit.where("DATE(visited_at) = ?", "2014-12-31").first
         expect(ls.health_report).to eq("1c1d")
 
-        ls = LocationStatus.where("DATE(created_at) = ?", "2015-01-10").first
+        ls = Visit.where("DATE(visited_at) = ?", "2015-01-10").first
         expect(ls.health_report).to eq("0c0d")
       end
     end
@@ -129,7 +129,7 @@ describe CsvReportsController do
 
 
 
-  context "when uploading the same CSV" do
+  context "when uploading the same CSV", :after_commit => true do
     before(:each) do
       cookies[:auth_token] = user.auth_token
 
@@ -162,12 +162,12 @@ describe CsvReportsController do
       }.not_to change(Report, :count)
     end
 
-    it "does NOT create new LocationStatuses" do
+    it "does NOT create new Visit" do
       expect {
         post :create, :csv_report => { :csv => uploaded_csv },
         :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
         :neighborhood_id => Neighborhood.first.id
-      }.not_to change(LocationStatus, :count)
+      }.not_to change(Visit, :count)
     end
 
   end
@@ -188,6 +188,109 @@ describe CsvReportsController do
       }.to change(Report, :count).by(4)
     end
 
+  end
+
+  #-----------------------------------------------------------------------------
+
+  context "when uploading custom Nicaraguan CSV", :after_commit => true do
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+    end
+
+    it "returns data that matches Harold's graphs" do
+      neighborhood = Neighborhood.first
+      Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|
+        csv      = File.open(f)
+        csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+        post :create, :csv_report => { :csv => csv_file },
+        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+        :neighborhood_id => neighborhood.id
+      end
+
+      reports = Report.where(:neighborhood_id => neighborhood.id)
+      @visits = reports.includes(:location).map {|r| r.reload.location}.compact.uniq
+
+      daily_stats = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits)
+      puts "daily_stats = #{daily_stats}"
+
+      # cum_stats = [{:date=>"2014-01-21", :positive=>{:count=>2, :percent=>67}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-15", :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}, :total=>{:count=>3}}, {:date=>"2014-11-22", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-24", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-26", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-12-05", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-12-13", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-10", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-21", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}]
+      # daily_stats = [{:date=>"2014-01-21", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-15", :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33}, :total=>{:count=>3}}, {:date=>"2014-11-22", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2014-11-24", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-11-26", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}, {:date=>"2014-12-05", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2014-12-13", :positive=>{:count=>2, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>2}}, {:date=>"2015-01-10", :positive=>{:count=>3, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>3}}, {:date=>"2015-01-21", :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0}, :total=>{:count=>1}}]
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-15"}
+      expect(stat).to eq ({
+        :date => "2014-11-15",
+        :positive => {:count=>1, :percent=>33},
+        :potential => {:count=>1, :percent=>33},
+        :negative => {:count=>1, :percent=>33},
+        :total => {:count=>3}
+      })
+
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-22"}
+      expect(stat).to eq ({
+        :date => "2014-11-22",
+        :positive => {:count=>2, :percent=>67},
+        :potential => {:count=>2, :percent=>67},
+        :negative => {:count=>0, :percent=>0},
+        :total => {:count=>3}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-24"}
+      expect(stat).to eq ({
+        :date => "2014-11-24",
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>1, :percent=>50},
+        :negative => {:count=>1, :percent=>50},
+        :total => {:count=>2}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-26"}
+      expect(stat).to eq ({
+        :date => "2014-11-26",
+        :positive => {:count=>1, :percent=>100},
+        :potential => {:count=>1, :percent=>100},
+        :negative => {:count=>0, :percent=>0},
+        :total => {:count=>1}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-12-05"}
+      expect(stat).to eq ({
+        :date => "2014-12-05",
+        :positive => {:count=>1, :percent=>50},
+        :potential => {:count=>1, :percent=>50},
+        :negative => {:count=>0, :percent=>0},
+        :total => {:count=>2}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-12-13"}
+      expect(stat).to eq ({
+        :date => "2014-12-13",
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>2, :percent=>100},
+        :negative => {:count=>0, :percent=>0},
+        :total => {:count=>2}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2015-01-10"}
+      expect(stat).to eq ({
+        :date => "2015-01-10",
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>1, :percent=>33},
+        :negative => {:count=>2, :percent=>67},
+        :total => {:count=>3}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2015-01-21"}
+      expect(stat).to eq ({
+        :date => "2015-01-21",
+        :positive => {:count=>0, :percent=>0},
+        :potential => {:count=>1, :percent=>33},
+        :negative => {:count=>2, :percent=>67},
+        :total => {:count=>3}
+      })
+
+    end
   end
 
 end

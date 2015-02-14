@@ -51,6 +51,9 @@ class Report < ActiveRecord::Base
   has_many :likes,    :as => :likeable
   has_many :comments, :as => :commentable
 
+  has_many :inspections
+  has_many :visits, :through => :inspections
+
   # The following associations define all stakeholders in the reporting
   # process.
   belongs_to :reporter,          :class_name => "User"
@@ -102,33 +105,43 @@ class Report < ActiveRecord::Base
   # Callbacks
   #----------
 
-  # NOTE: We don't want to limit this to create/destroy because CSVReports also
-  # *update* the reports. As a result, any time a report gets updated, we add
-  # the location status. This is perfectly fine because a single report being
-  # updated can't affect the aggregate location status metric. Furthermore, when
-  # a report is eliminated, it is updated so update action must be accounted for.
-  after_commit :set_location_status,    :on => :create
-  after_commit :update_location_status, :on => :update
+  # Every time a report gets created/updated, conceptually a visit must take place
+  # at some location. Whether it's an identification or followup visit depends
+  # on how the report is created/updated and with what attributes.
+  after_commit :create_inspection_visit, :on => :create
+  after_commit :create_followup_visit,   :on => :update
+  # after_commit :destroy_visit,         :on => :destroy
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
 
-  def status
-    return Status::NEGATIVE if self.eliminated?
+  def initial_visit
+    return self.visits.where(:parent_visit_id => nil).first
+  end
 
+  # This method returns the report's original status, which is the status
+  # that the report had when it was first created.
+  def original_status
     return Report::Status::POSITIVE if (self.larvae || self.pupae)
     return Report::Status::NEGATIVE if (self.protected)
     return Report::Status::POTENTIAL
   end
 
+  # This is the authoritative method for the report's status since it also
+  # considers the report's elimination state.
+  def status
+    return Status::NEGATIVE if self.eliminated?
+    return self.original_status
+  end
+
   def eliminated?
-    return self.elimination_method_id.present?
+    return (self.eliminated_at.present? && self.elimination_method_id.present?)
   end
 
   # NOTE: Open does not mean active. An open report can be expired.
   def open?
-    return self.elimination_method_id.blank?
+    return (self.eliminated_at.blank? || self.elimination_method_id.blank?)
   end
 
   # TODO: Deprecate this in favor for incomplete?
@@ -291,6 +304,16 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def self.statuses_as_symbols
+    return {
+      Status::POSITIVE  => :positive,
+      Status::POTENTIAL => :potential,
+      Status::NEGATIVE  => :negative
+    }
+  end
+
+  #----------------------------------------------------------------------------
+
   def elimination_method_picture
     if self.after_photo_file_name.nil?
       return nil
@@ -301,53 +324,96 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # This method is run when the report is created. The purpose is to
-  # use created_at (not completed_at since a CSV-generated report may not have
-  # that set, and we don't want to assume members will fill in DengueChat reports
-  # immediately after CSV) to associate with a particular LocationStatus.
-  def set_location_status
+  # This method is run when the report is created. Each report essentially
+  # represents the identification type of a location.
+  #
+
+
+  # A new report offers conceptually implies a visit to some location.
+  # Specifically, the report tells us *what* was identified at the location,
+  # and *when* it was identified. The *what* depends on what other reports
+  # correspond to that location, so it will be calculated appropriately.
+  # Specifically, to update or set the identification_type based on the following information:
+  # * If report is status = POSITIVE, then the identification_type is POSITIVE
+  # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
+  #   of existing Visit does not equal POSITIVE.
+  def create_inspection_visit
     return if self.location_id.blank?
 
-    ls = LocationStatus.where(:location_id => self.location_id)
-    ls = ls.where(:created_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
-    if ls.blank?
-      ls            = LocationStatus.new(:location_id => self.location_id)
-      ls.created_at = self.created_at
+    v = Visit.where(:location_id => self.location_id)
+    # ls = ls.where(:visit_type => Visit::Types::INSPECTION)
+    v = v.where(:parent_visit_id => nil)
+    v = v.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
+    v = v.order("visited_at DESC").limit(1)
+    if v.blank?
+      v             = Visit.new
+      v.location_id = self.location_id
+      v.visited_at  = self.created_at
+      v.save
     else
-      ls = ls.first
+      v = v.first
     end
 
-    start_time = self.created_at - 4.weeks
-    end_time   = self.created_at
-    ls.status  = LocationStatus.calculate_status_using_report_and_times(self, start_time, end_time)
-
-    ls.save
+    # At this point, we've identified a visit. Let's save it and create an
+    # inspection for the report.
+    ins = Inspection.find_by_visit_id_and_report_id(v.id, self.id)
+    ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
+    ins.identification_type = self.original_status
+    ins.save
   end
 
   #----------------------------------------------------------------------------
 
-
-  # This method is run when the report is *eliminated*. The purpose is to
-  # use eliminated_at to associate with a particular LocationStatus.
-  def update_location_status
+  # This method is run when the report is *eliminated*. Again, the eliminated
+  # report gleams some insight into the state of the location. Whether the location
+  # is actually cleaned or not depends on all other reports, however. Therefore,
+  # we update cleaned_at ONLY IF all reports have been eliminated. We set cleaned_at
+  # to be the time of the incoming report's eliminated_at time.
+  #
+  # What Visit are we updating? The one whose identified_at corresponds
+  # to the report's created_at date. This ensures consistency between the
+  # create_visit method, and this method so we're working on the same
+  # Visit.
+  def create_followup_visit
     return if self.location_id.blank?
+    return if self.completed_at.blank?
     return if self.eliminated_at.blank?
 
-    ls = LocationStatus.where(:location_id => self.location_id)
-    ls = ls.where(:created_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
-    if ls.blank?
-      ls            = LocationStatus.new(:location_id => self.location_id)
-      ls.created_at = self.eliminated_at
+    v = Visit.where(:location_id => self.location_id)
+    v = v.where("parent_visit_id IS NOT NULL")
+    v = v.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
+    v = v.order("visited_at DESC").limit(1)
+    if v.blank?
+      v             = Visit.new
+      v.location_id = self.location_id
+      v.parent_visit_id = self.initial_visit.id
+      v.visited_at  = self.eliminated_at
+      v.save
     else
-      ls = ls.first
+      v = v.first
     end
 
-    start_time = self.eliminated_at - 4.weeks
-    end_time   = self.eliminated_at
-    ls.status  = LocationStatus.calculate_status_using_report_and_times(self, start_time, end_time)
-
-    ls.save
+    # At this point, we have a follow-up visit. Let's create an inspection for it.
+    ins = Inspection.find_by_visit_id_and_report_id(v.id, self.id)
+    ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
+    ins.identification_type = self.status
+    ins.save
   end
+
+  #----------------------------------------------------------------------------
+
+  # This method is run when the report is *destroyed*. We want to make sure that
+  # if this is the last report associated with the Visit, then make sure to
+  # destroy that visit.
+  # def destroy_visit
+  #   return if self.visit_id.blank?
+  #
+  #   remaining_reports_count = Report.where(:visit_id => self.visit_id).count
+  #   Visit.find(self.visit_id).destroy if remaining_reports_count == 0
+  # end
+
+  #----------------------------------------------------------------------------
+
 
   # NOTE: We have to use this hack (even though Paperclip handles base64 images)
   # because we want to explicitly specify the content type and filename. Some
@@ -367,7 +433,6 @@ class Report < ActiveRecord::Base
 
     return data
   end
-
 
   #----------------------------------------------------------------------------
 

@@ -14,14 +14,10 @@ describe Report do
 		}.to change(Report, :count).by(1)
 	end
 
-	it "validates reporter" do
-		report = Report.create
-		expect(report.errors.full_messages).to include("Reporter can't be blank")
-	end
-
 	it "does not require presence of location" do
-		r = FactoryGirl.build(:report, :neighborhood_id => Neighborhood.first.id, :reporter => user, :breeding_site_id => BreedingSite.first.id)
-		expect { r.save! }.to change(Report, :count).by(1)
+		expect {
+			FactoryGirl.create(:report, :reporter_id => user.id)
+		}.to change(Report, :count).by(1)
 	end
 
 	it "raises an error if elimination date is before creation date" do
@@ -44,7 +40,42 @@ describe Report do
 		expect(report.errors.full_messages).to include("Fecha de inspección can't be in the future")
 	end
 
+	it "returns the correct initial visit" do
+		r = Report.create(:report => "Saw Report", :location_id => location.id, :reporter => user)
+		v1 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 100.days)
+		v2 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 3.days, :parent_visit_id => v1.id)
+
+		FactoryGirl.create(:inspection, :visit_id => v1.id, :report_id => r.id, :identification_type => Inspection::Types::POSITIVE)
+		expect(r.initial_visit.id).to eq(v1.id)
+	end
+
 	#-----------------------------------------------------------------------------
 
+	describe "associated visits", :after_commit => true do
+		let(:locations) { [location] }
+		let!(:date1)    { DateTime.parse("2014-11-15 11:00") }
+		let!(:date2)    { DateTime.parse("2014-11-20 11:00") }
+
+		it "calculates identification type without consider past day's reports" do
+			FactoryGirl.create(:report, :reporter_id => user.id, :location_id => location.id, :larvae => true,    :created_at => date1)
+			FactoryGirl.create(:report, :reporter_id => user.id, :location_id => location.id, :protected => true, :created_at => date2)
+
+			visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+			expect(visits).to eq([
+				{
+					:date=>"2014-11-15",
+					:positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+					:total => {:count => 1}
+				},
+				{
+					:date=>"2014-11-20",
+					:positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
+					:total => {:count => 1}
+				}
+			])
+		end
+	end
+
+	#-----------------------------------------------------------------------------
 
 end

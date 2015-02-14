@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150127190857) do
+ActiveRecord::Schema.define(:version => 20150209062030) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -184,6 +184,12 @@ ActiveRecord::Schema.define(:version => 20150127190857) do
     t.integer  "neighborhood_id"
   end
 
+  create_table "inspections", :force => true do |t|
+    t.integer "visit_id"
+    t.integer "report_id"
+    t.integer "identification_type"
+  end
+
   create_table "likes", :force => true do |t|
     t.integer  "user_id"
     t.integer  "likeable_id"
@@ -193,16 +199,6 @@ ActiveRecord::Schema.define(:version => 20150127190857) do
   end
 
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], :name => "index_likes_on_user_id_and_likeable_id_and_likeable_type", :unique => true
-
-  create_table "location_statuses", :force => true do |t|
-    t.integer  "location_id"
-    t.integer  "status"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.integer  "dengue_count"
-    t.integer  "chik_count"
-    t.string   "health_report"
-  end
 
   create_table "locations", :force => true do |t|
     t.string   "address"
@@ -437,5 +433,14 @@ ActiveRecord::Schema.define(:version => 20150127190857) do
   end
 
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
+
+  create_table "visits", :force => true do |t|
+    t.integer  "location_id"
+    t.integer  "dengue_count"
+    t.integer  "chik_count"
+    t.string   "health_report"
+    t.datetime "visited_at"
+    t.integer  "parent_visit_id"
+  end
 
 end

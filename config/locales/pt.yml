@@ -200,6 +200,7 @@ pt:
   #----------------------------------
 
   common_terms:
+    no_data: Não existem dados
     saved: Atualizado
     yes_string: Sim
     no_html_string: <span>Não</span>
@@ -280,6 +281,7 @@ pt:
     percentage: Porcentagem
     positive: Positivo
     potential: Potencial
+    filter: Filtrar
 
 
   facebook:
@@ -543,12 +545,22 @@ pt:
         positive_sites: com focos positivos
         potential_sites: com focos potenciais
       chart:
+        disclaimer: "Nota: Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales"
         title: Mudança em Risco em Sua Comunidade de Dengue e Chikungunya
         time: Tempo
-        percent_of_negative_sites: Porcentagem de lugares com eliminados
-        percent_of_positive_sites: Porcentagem de lugares com focos positivos
-        percent_of_potential_sites: Porcentagem de lugares com focos potenciais
+        percent_of_negative_sites: Lugares sem focos
+        percent_of_positive_sites: Lugares com focos positivos
+        percent_of_potential_sites: Lugares com focos potenciais
         percent_of_green_sites: Porcentagem de lugares sem focos por mais de 14 dias
+        filters:
+          positive_inspection: "Positividad - inspección"
+          potential_inspection: "Potencialidad - inspección"
+          positive_followup: "Positividad - seguimiento"
+          potential_followup: "Potencialidad - seguimiento"
+          all_time: "Todo el tiempo"
+          months:
+            one: "1 mês"
+            other: "%{count} meses"
 
 
 

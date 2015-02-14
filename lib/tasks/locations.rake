@@ -22,19 +22,19 @@ namespace :locations do
 
       # Find today's location_status instance. If it doesn't exist, then
       # create it.
-      ls = LocationStatus.where(:location_id => report.location_id)
+      ls = Visit.where(:location_id => report.location_id)
       ls = ls.where(:created_at => (report.updated_at.beginning_of_day..report.updated_at.end_of_day))
       if ls.blank?
-        ls = LocationStatus.new(:location_id => report.location_id)
+        ls = Visit.new(:location_id => report.location_id)
         ls.created_at = report.created_at
       else
         ls = ls.first
       end
 
-      # TODO: We can do some optimizations here by comparing current LocationStatus
+      # TODO: We can do some optimizations here by comparing current Visit
       # status with the report status...
       if report.status == Report::Status::POSITIVE
-        ls.status = LocationStatus::Types::POSITIVE
+        ls.status = Visit::Cleaning::POSITIVE
       else
         reports         = report.location.reports
         positive_count  = reports.find_all {|r| r.status == Report::Status::POSITIVE}.count
@@ -43,26 +43,26 @@ namespace :locations do
 
 
         if positive_count > 0
-          ls.status = LocationStatus::Types::POSITIVE
+          ls.status = Visit::Cleaning::POSITIVE
         elsif potential_count > 0
-          ls.status = LocationStatus::Types::POTENTIAL
+          ls.status = Visit::Cleaning::POTENTIAL
         else
           # At this point, let's see if this location has been negative for 14 days.
           start = (report.updated_at - 2.weeks).beginning_of_day
-          history = LocationStatus.where(:location_id => report.location_id)
+          history = Visit.where(:location_id => report.location_id)
           history = history.order("created_at ASC")
           history = history.where(:created_at => (start..report.updated_at.end_of_day))
 
           # Ensure that the first record is in fact 2 weeks ago (at least)
           if history.first && history.first.created_at <= start
             history = history.pluck(:status)
-            if history.include?(LocationStatus::Types::POTENTIAL) || history.include?(LocationStatus::Types::POSITIVE)
-              ls.status = LocationStatus::Types::NEGATIVE
+            if history.include?(Visit::Cleaning::POTENTIAL) || history.include?(Visit::Cleaning::POSITIVE)
+              ls.status = Visit::Cleaning::NEGATIVE
             else
-              ls.status = LocationStatus::Types::CLEAN
+              ls.status = Visit::Cleaning::CLEAN
             end
           else
-            ls.status = LocationStatus::Types::NEGATIVE
+            ls.status = Visit::Cleaning::NEGATIVE
           end
 
         end

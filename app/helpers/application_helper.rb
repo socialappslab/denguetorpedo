@@ -1,5 +1,10 @@
 module ApplicationHelper
 
+  def chart_cookies
+    return {} if cookies[:chart].blank?
+    return JSON.parse(cookies[:chart])
+  end
+
   def logo_image
     if I18n.locale.to_s == User::Locales::PORTUGUESE
       image_tag("logo_pt.png", :id => "logo")

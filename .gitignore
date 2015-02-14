@@ -11,3 +11,5 @@ tmp/
 public/system/
 .idea
 .idea/*
+
+db/development.dump
