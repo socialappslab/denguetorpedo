@@ -231,7 +231,7 @@ describe CsvReportsController do
       expect(stat).to eq ({
         :date => "2014-11-22",
         :positive => {:count=>2, :percent=>67},
-        :potential => {:count=>1, :percent=>33},
+        :potential => {:count=>2, :percent=>67},
         :negative => {:count=>0, :percent=>0},
         :total => {:count=>3}
       })
@@ -243,6 +243,15 @@ describe CsvReportsController do
         :potential => {:count=>1, :percent=>50},
         :negative => {:count=>1, :percent=>50},
         :total => {:count=>2}
+      })
+
+      stat = daily_stats.find {|ds| ds[:date] == "2014-11-26"}
+      expect(stat).to eq ({
+        :date => "2014-11-26",
+        :positive => {:count=>1, :percent=>100},
+        :potential => {:count=>1, :percent=>100},
+        :negative => {:count=>0, :percent=>0},
+        :total => {:count=>1}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-12-05"}

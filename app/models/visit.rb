@@ -123,6 +123,16 @@ class Visit < ActiveRecord::Base
     return status
   end
 
+  def has_potential_report?
+    count = self.inspections.where(:identification_type => Inspection::Types::POTENTIAL).count
+    return (count > 0)
+  end
+
+  def has_positive_report?
+    count = self.inspections.where(:identification_type => Inspection::Types::POSITIVE).count
+    return (count > 0)
+  end
+
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
@@ -141,7 +151,6 @@ class Visit < ActiveRecord::Base
     daily_stats = []
     visits.each do |visit|
       visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")
-      identification_type = visit.identification_type
       visit_type          = visit.visit_type
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
@@ -159,8 +168,20 @@ class Visit < ActiveRecord::Base
 
 
       if visit_types.blank? || visit_types.include?(visit_type)
-        key = Report.statuses_as_symbols[identification_type]
-        day_statistic[key][:count]    += 1
+        # NOTE: the daily metric calculates number of visited houses
+        # that had at least one potential and/or at least one positive
+        # site. This means we need to ask if the house had a potential site,
+        # and if the house had a positive site.
+        pot_count = visit.has_potential_report?
+        pos_count = visit.has_positive_report?
+
+        day_statistic[:potential][:count] += 1 if pot_count
+        day_statistic[:positive][:count]  += 1 if pos_count
+
+        if pot_count == false && pos_count == false
+          day_statistic[:negative][:count] += 1
+        end
+
         day_statistic[:total][:count] += 1
       end
 

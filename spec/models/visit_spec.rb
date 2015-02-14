@@ -216,6 +216,7 @@ describe Visit do
       # :location_id => second_location.id, :visited_at => date2)
 
       pos_report = FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3)
+      FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3)
       # FactoryGirl.create(:visit,
       # :visit_type => Visit::Types::INSPECTION, :identification_type => Report::Status::POSITIVE,
       # :location_id => location.id, :visited_at => date3)
@@ -289,7 +290,7 @@ describe Visit do
           },
           {
             :date=>"2015-01-28",
-            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0},
+            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>2, :percent=>100}, :negative=>{:count=>0, :percent=>0},
             :total => {:count => 2}
           },
           {
