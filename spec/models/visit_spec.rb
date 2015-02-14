@@ -342,7 +342,7 @@ describe Visit do
           },
           {
             :date=>"2015-01-28",
-            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>0, :percent=>0},
+            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>2, :percent=>100}, :negative=>{:count=>0, :percent=>0},
             :total => {:count => 2}
           },
           {

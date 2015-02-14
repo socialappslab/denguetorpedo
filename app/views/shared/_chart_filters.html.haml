@@ -23,12 +23,17 @@
           .checkbox
             = label_tag do
               = check_box_tag "chart[positive]", 1, chart_cookies.blank? || chart_cookies["positive"]
-              = "Positividad"
+              = I18n.t('views.statistics.chart.percent_of_positive_sites')
 
           .checkbox
             = label_tag do
               = check_box_tag "chart[potential]", 1, chart_cookies.blank? || chart_cookies["potential"]
-              = "Potencialidad"
+              = I18n.t('views.statistics.chart.percent_of_potential_sites')
+
+          .checkbox
+            = label_tag do
+              = check_box_tag "chart[negative]", 1, chart_cookies.blank? || chart_cookies["negative"]
+              = I18n.t('views.statistics.chart.percent_of_negative_sites')
 
           -# .checkbox
           -#   = label_tag do

@@ -3,6 +3,18 @@
 var googleChartOptions = function(chartID, data) {
   var width = $(chartID).width();
 
+  var colors = []
+
+  if ( !shouldHidePositive() )
+    colors.push("#e74c3c");
+
+  if ( !shouldHidePotential() )
+    colors.push("#f1c40f")
+
+  if ( !shouldHideNegative() )
+    colors.push("#2ecc71")
+
+
   var options =  {
     width: width,
     chartArea: {
@@ -28,19 +40,8 @@ var googleChartOptions = function(chartID, data) {
         fontSize: "15"
       }
     },
-    colors: ["#e74c3c", "#f1c40f"]
+    colors: colors
   };
-
-
-  // Customize the options so we dont' fill up the horizontal axis.
-  //
-  // options.bar.groupWidth = "95%"
-
-  if ( shouldHidePositive() )
-    options.colors = ["#f1c40f"];
-
-  if ( shouldHidePotential() )
-    options.colors = ["#e74c3c"];
 
 
   if ( shouldDisplayLineChart() )
@@ -79,28 +80,30 @@ function shouldHidePotential() {
     return false;
 }
 
+function shouldHideNegative() {
+  var desiredTypes = $("input:checkbox:checked").map(function(index,el) { return $(el).attr("id") });
+  if ($.inArray("chart_negative", desiredTypes) === -1)
+    return true;
+  else
+    return false;
+}
+
 function googleDataView(data) {
   var view = new google.visualization.DataView(data);
   // Select the default display
-  view.setColumns(
-    [0, 1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"}, 2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"}]
-  );
 
-  if ( shouldHidePositive() )
-  {
-    view.setColumns(
-      [0, 2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"}]
-    );
-  }
+  var columns = [0];
 
-  if ( shouldHidePotential() )
-  {
-    view.setColumns(
-      [0, 2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"}]
-    );
-  }
+  if ( !shouldHidePositive() )
+    columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
 
+  if ( !shouldHidePotential() )
+    columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
 
+  if ( !shouldHideNegative() )
+    columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
+
+  view.setColumns(columns);
   return view;
 }
 
@@ -120,6 +123,7 @@ function drawChart(chartID, rawData) {
   var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
   formatter.format(data, 1);
   formatter.format(data, 2);
+  formatter.format(data, 3);
 
   // Let's hide the columns corresponding to unchecked checkboxes.
   var view    = googleDataView(data);

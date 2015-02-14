@@ -79,12 +79,13 @@ class ApplicationController < ActionController::Base
     @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visits, start_time, [])
 
     # Format the data in a way that Google Charts can use.
-    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites')]]
+    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')]]
     @statistics.each do |hash|
       @chart_statistics << [
         hash[:date],
         hash[:positive][:percent],
-        hash[:potential][:percent]
+        hash[:potential][:percent],
+        hash[:negative][:percent]
       ]
     end
   end
