@@ -96,7 +96,7 @@ class CsvReportsController < NeighborhoodsBaseController
       # NOTE: If the last type is N then the location is clean (definition). However,
       # we don't have to keep track of it in some "status" key. Why? Because the visit
       # will have 0 reports, which is taken into account in visit.identification_type
-      # method! 
+      # method!
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at        = row_content[:visited_at]
         parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
