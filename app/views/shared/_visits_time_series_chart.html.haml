@@ -3,40 +3,36 @@
   = I18n.t('views.statistics.chart.title')
 
 
-- if @chart_statistics.present?
+- if @statistics.present?
   .row
     .col-md-12
       #timeseries-chart{:style => "height: 350px; display: block;"}
-
-
-  %div
-    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
-    = I18n.t('views.statistics.chart.percent_of_positive_sites')
-
-
-
-  %div
-    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
-    = I18n.t('views.statistics.chart.percent_of_potential_sites')
-
-  %div
-    %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
-    = I18n.t('views.statistics.chart.percent_of_negative_sites')
-
-
-  %p{:style => "text-align: center; font-size: 10px; margin-top: 10px;"}
-    = I18n.t("views.statistics.chart.disclaimer")
-
 - else
-  %h1{:style => "text-align: center; margin: 40px;"}
+  %h3{:style => "text-align: center; margin: 40px; font-weight: bold;"}
     = I18n.t("common_terms.no_data")
+
+
+%div
+  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
+  = I18n.t('views.statistics.chart.percent_of_positive_sites')
+
+%div
+  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
+  = I18n.t('views.statistics.chart.percent_of_potential_sites')
+
+%div
+  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
+  = I18n.t('views.statistics.chart.percent_of_negative_sites')
+
+
+%p{:style => "text-align: center; font-size: 10px; margin-top: 10px;"}
+  = I18n.t("views.statistics.chart.disclaimer")
 
 
 = javascript_include_tag "chart-options"
 :javascript
   $(document).ready(function() {
     var rawData = #{@chart_statistics.to_json};
-
 
     google.load('visualization', '1', {packages: ['corechart']});
     google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
