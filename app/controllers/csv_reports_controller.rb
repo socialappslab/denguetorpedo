@@ -103,6 +103,12 @@ class CsvReportsController < NeighborhoodsBaseController
         current_visited_at        = row_content[:visited_at]
         parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
 
+        if parsed_current_visited_at.future?
+          flash[:alert] = I18n.t("views.csv_reports.flashes.inspection_date_in_future")
+          render "new" and return
+        end
+
+
         visits << {
           :visited_at    => parsed_current_visited_at,
           :health_report => row_content[:health_report]

@@ -197,7 +197,7 @@ describe CsvReportsController do
       cookies[:auth_token] = user.auth_token
     end
 
-    it "sets correct created_at for generated reports for a special CSV" do
+    it "sets correct created_at for generated reports" do
       neighborhood = Neighborhood.first
       csv      = File.open(Rails.root + "spec/support/weird_inspection_date_inconsistency.xlsx")
       csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
@@ -214,24 +214,7 @@ describe CsvReportsController do
       expect(Report.where("DATE(created_at) = '2015-01-12'").count).to eq(1)
     end
 
-    it "sets correct created_at for generated reports" do
-      neighborhood = Neighborhood.first
-      csv      = File.open(Rails.root + "spec/support/nicaragua_csv/N002001003.xlsx")
-      csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
 
-      post :create, :csv_report => { :csv => csv_file },
-      :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
-      :neighborhood_id => neighborhood.id
-
-      expect(Report.count).to eq(14)
-      expect(Report.where("DATE(created_at) = '2014-11-15'").count).to eq(1)
-      expect(Report.where("DATE(created_at) = '2014-11-22'").count).to eq(3)
-      expect(Report.where("DATE(created_at) = '2014-11-24'").count).to eq(2)
-      expect(Report.where("DATE(created_at) = '2014-12-05'").count).to eq(2)
-      expect(Report.where("DATE(created_at) = '2014-12-13'").count).to eq(2)
-      expect(Report.where("DATE(created_at) = '2015-01-10'").count).to eq(2)
-      expect(Report.where("DATE(created_at) = '2015-01-21'").count).to eq(2)
-    end
 
     it "returns data that matches Harold's graphs" do
       neighborhood = Neighborhood.first
