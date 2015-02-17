@@ -364,6 +364,11 @@ describe Visit do
         ])
       end
 
+      it "returns empty if time series contains no data since specified start time" do
+        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, DateTime.parse("2015-02-01 00:00"), [])
+        expect(visits).to eq([])
+      end
+
 
     end
 
