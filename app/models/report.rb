@@ -457,7 +457,7 @@ class Report < ActiveRecord::Base
 
   def inspected_in_the_past?
     return true if self.created_at.blank?
-    return true if self.created_at <= Time.now
+    return true if self.created_at.past?
 
     self.errors[:created_at] << "can't be in the future"
     return false

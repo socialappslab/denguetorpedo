@@ -30,6 +30,8 @@ class CsvReportsController < NeighborhoodsBaseController
   # If a report exists with the UUID, then we update that report instead of
   # creating a new one.
   def create
+    @csv_report = CsvReport.new
+
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
@@ -101,6 +103,12 @@ class CsvReportsController < NeighborhoodsBaseController
         current_visited_at        = row_content[:visited_at]
         parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
 
+        if parsed_current_visited_at.future?
+          flash[:alert] = I18n.t("views.csv_reports.flashes.inspection_date_in_future")
+          render "new" and return
+        end
+
+
         visits << {
           :visited_at    => parsed_current_visited_at,
           :health_report => row_content[:health_report]
@@ -131,6 +139,17 @@ class CsvReportsController < NeighborhoodsBaseController
       # Add to reports only if the code doesn't equal "negative" code.
       unless type == "n"
         eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+
+        # If the date of elimination is in the future or before visit date, then let's raise an error.
+        if eliminated_at.present? && eliminated_at.future?
+          flash[:alert] = I18n.t("views.csv_reports.flashes.elimination_date_in_future")
+          render "new" and return
+        end
+
+        if eliminated_at.present? && eliminated_at < parsed_current_visited_at
+          flash[:alert] = I18n.t("views.csv_reports.flashes.elimination_date_before_inspection_date")
+          render "new" and return
+        end
 
         reports << {
           :visited_at    => parsed_current_visited_at,
