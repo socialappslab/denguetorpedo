@@ -13,17 +13,10 @@
 
 = render :partial => "shared/flashes"
 
-
-- if @incomplete_reports.present?
-  .alert.alert-danger.alert-dismissable{:style => "background-color: #e74c3c; border-radius: 0px;"}
-    %h2{:style => "color: #ecf0f1; text-shadow: none; text-align: center;"}
-      = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
-      = link_to I18n.t("views.reports.index.complete_now_button"), edit_neighborhood_report_path(@current_user.neighborhood, @incomplete_reports.first), :class => "btn btn-default"
-
 /------------------------------------------------------------------------------
 
 .row
-  .col-md-8.col-md-offset-1
+  .col-md-8.col-md-offset-2{:style => "text-align: center;"}
     %h1{:style => "font-size: 36px;"}
       = I18n.t("reports_feed.title", :name => @neighborhood.name)
     %p.description
@@ -33,12 +26,17 @@
       dengue y chikungunya, haga click
       = link_to "aquí.", neighborhood_path(@neighborhood)
 
-  .col-md-2{:style => "float: right;"}
-    %div{:style => "margin-top: 10px;"}
-      = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
+    - if @incomplete_reports.present?
+      .alert.alert-danger.alert-dismissable{:style => "background-color: #e74c3c; border-radius: 0px;"}
+        %h2{:style => "color: #ecf0f1; text-shadow: none; text-align: center;"}
+          = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
+          = link_to I18n.t("views.reports.index.complete_now_button"), edit_neighborhood_report_path(@current_user.neighborhood, @incomplete_reports.first), :class => "btn btn-default"
 
-.row
-  .span#report_buttons{:style => "font-size:20px;"}
+-#
+-# .row
+-#   .col-md-2{:style => "float: right;"}
+-#     %div{:style => "margin-top: 10px;"}
+-#       = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
 
 /------------------------------------------------------------------------------
 
@@ -46,27 +44,22 @@
 
 - if @current_user && @current_user.neighborhood == @neighborhood
   .row{:style => "margin-bottom: 20px;"}
-    .col-md-2.col-md-offset-1{:style => "margin-top: 20px;"}
-      = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-large" do
+    .col-md-3.col-md-offset-2{:style => "margin-top: 20px;"}
+      = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
         %i.fa.fa-map-marker
         = I18n.t("common_terms.create_a_report")
 
-    .col-md-2{:style => "margin-top: 20px;"}
+    .col-md-3{:style => "margin-top: 20px;"}
       - if @neighborhood.spanish?
-        = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
+        = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
 
-    .col-md-2{:style => "margin-top: 20px;"}
+    .col-md-3{:style => "margin-top: 20px;"}
       - if @neighborhood.spanish?
-        = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info btn-large" do
+        = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info btn-lg" do
           %i.fa.fa-file
           = I18n.t("views.reports.index.view_csv")
-
-
-    .col-md-4
-      - if @report_count > @report_limit
-        = render :partial => "reports/pagination"
 
 
 /------------------------------------------------------------------------------
@@ -123,6 +116,15 @@
 /------------------------------------------------------------------------------
 / Social media
 /-------------
+
+
+
+.row
+  .col-md-4
+    - if @report_count > @report_limit
+      = render :partial => "reports/pagination"
+
+
 
 #fb-root
 
