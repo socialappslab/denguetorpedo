@@ -146,4 +146,65 @@ namespace :csv_reports do
 
     return spreadsheet
   end
+
+
+  task :destroy_incorrect_nicaragua_data => :environment do
+    csv_ids = []
+
+    start_time = Time.parse("2014-11-01").beginning_of_day
+    end_time   = Time.now.end_of_day
+    CsvReport.order("id ASC").where(:created_at => start_time..end_time).find_each do |csv|
+      # puts "csv.location_id.blank?: #{csv.location_id.blank?} | csv.location.neighborhood.blank?: #{csv.location.neighborhood.blank?} | csv.location.neighborhood.nicaraguan?: #{csv.location.neighborhood.nicaraguan?}"
+      next if csv.location_id.blank?
+      next if csv.location.neighborhood_id.blank?
+      neighborhood = Neighborhood.find(csv.location.neighborhood_id)
+      next unless neighborhood.nicaraguan?
+
+      # At this point, we only have a Nicaraguan CSV. Let's append it to our list.
+      csv_ids << csv.id
+    end
+    csv_ids.uniq!
+
+    # Let's identify all reports associated with the CSV ids.
+    report_ids = Report.order("id ASC").where(:csv_report_id => csv_ids).pluck(:id)
+    report_ids.uniq!
+
+    # Now let's iterate over all locations, identifying the locations whose reports are *all*
+    # in the set of identified reports. Otherwise, a location shouldn't be deleted.
+    location_ids = []
+    Location.order("id ASC").find_each do |l|
+      location_report_ids = l.reports.pluck(:id)
+
+      # If report_ids contains all ids of location_report_ids, then we know
+      # that this location's reports are all of the affected reports. Let's delete
+      # this location as well.
+      if (location_report_ids - report_ids).empty?
+        location_ids += location_report_ids
+      end
+    end
+
+    location_ids.uniq!
+
+    # Finally, let's identify visit that have the specified locations *and* occurred between
+    # November 1st and February 20th.
+    visit_ids = Visit.order("id ASC").where(:visited_at => start_time..end_time).where(:location_id => location_ids).pluck(:id)
+    visit_ids.uniq!
+
+    puts "\n" * 50
+    puts "-"  * 50
+    puts "Here is an array of CSV ids that are from Nicaragua (November 1st to February 20th): "
+    puts "csv_ids: #{csv_ids}"
+    puts "-"  * 50
+    puts "report_ids: #{report_ids}"
+    puts "-"  * 50
+    puts "location_ids: #{location_ids}"
+    puts "-"  * 50
+    puts "visit_ids: #{visit_ids}"
+    puts "\n" * 50
+    puts "Now, do the following:"
+    puts "* Destroy visits"
+    puts "* Destroy locations"
+    puts "* Destroy reports"
+    puts "* Destroy csvs"
+  end
 end
