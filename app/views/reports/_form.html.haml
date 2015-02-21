@@ -98,7 +98,7 @@
     = f.label :report, "5. " + I18n.t('activerecord.attributes.report.report')
     = f.text_field :report, :placeholder => I18n.t("views.reports.new.description_placeholder"), :class => "form-control", :disabled => @report.completed_at.present?
 
-  - if @report.completed_at.present? || @report.eliminated_at.present?
+  - if @report.completed_at.present?
     .form-group
       = f.label  :elimination_method_id, "6. " + I18n.t("activerecord.models.elimination_method")
       = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, @report.elimination_method_id), { :prompt => I18n.t("report.form.select_elimination_method") }, { :class=>"elimination_methods form-control"}
