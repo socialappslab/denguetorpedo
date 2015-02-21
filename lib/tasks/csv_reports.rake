@@ -148,6 +148,9 @@ namespace :csv_reports do
   end
 
 
+  #----------------------------------------------------------------------------
+
+
   task :destroy_incorrect_nicaragua_data => :environment do
     csv_ids = []
 
@@ -207,4 +210,264 @@ namespace :csv_reports do
     puts "* Destroy reports"
     puts "* Destroy csvs"
   end
+
+
+  #----------------------------------------------------------------------------
+
+  desc "[One-off task] Task that runs through the corrected CSV library, using a copy of CsvReportsController#create method to create CSV/Report/Location/Visit instances"
+  task :upload_correct_data => :environment do
+    user = User.find_by_username("hsuazo_laguna@hotmail.com")
+    errors = []
+
+    ["ariel_darce", "francisco_meza", "la_quinta"].each do |community_folder|
+      csv_folder  = Rails.root + "lib/tasks/corrected_csv_reports/#{community_folder}/".to_s
+      hood         = csv_folder.split[-1].to_s
+      neighborhood = Neighborhood.all.find {|n| n.name.downcase.gsub(" ", "_").strip == hood.strip}
+
+      raise "Neighborhood #{ neighborhood } not found!" if neighborhood.blank?
+      Dir[csv_folder + "*.xlsx"].each_with_index do |f, index|
+        puts "-" * 25
+        puts "[index=#{index}] Looking at file f = #{f.inspect}\n\n\n"
+        csv      = File.open(f)
+        csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+        params = {
+          :report_location_attributes_latitude => neighborhood.latitude.to_s,
+          :report_location_attributes_longitude => neighborhood.longitude.to_s,
+          :csv_report => {:csv => csv_file},
+          :neighborhood_id => neighborhood.id.to_s
+        }
+
+        begin
+          create_csv_report(params, user)
+        rescue Exception => e
+          errors << {"file" => f.to_s,"error" => e.to_s}
+        end
+
+        puts "Done with file."
+        puts "\n" * 5
+        # break
+      end
+    end
+
+    puts "\n" * 20
+    puts "Here are the errors:"
+    puts "errors: #{errors}"
+  end
+
+
+  #----------------------------------------------------------------------------
+
+
+  def create_csv_report(params, user)
+    @neighborhood = Neighborhood.find(params[:neighborhood_id])
+    @current_user = user
+
+    # Ensure that the location has been identified on the map.
+    lat  = params[:report_location_attributes_latitude]
+    long = params[:report_location_attributes_longitude]
+    if lat.blank? || long.blank?
+      raise I18n.t("views.csv_reports.flashes.missing_location")
+    end
+
+    # 2. Identify the file content type.
+    file        = params[:csv_report][:csv]
+    spreadsheet = CsvReport.load_spreadsheet( file )
+    unless spreadsheet
+      raise I18n.t("views.csv_reports.flashes.unknown_format")
+    end
+
+    # 3. Identify the start of the reports table in the CSV file.
+    # The first row is reserved for the house location/address.
+    # Second row is reserved for permission.
+    address = CsvReport.extract_address_from_spreadsheet(spreadsheet)
+    if address.blank?
+      raise I18n.t("views.csv_reports.flashes.missing_house")
+    end
+
+    # Error out if there are no reports extracted.
+    rows = CsvReport.extract_rows_from_spreadsheet(spreadsheet)
+    if rows.blank?
+      raise I18n.t("views.csv_reports.flashes.missing_visits")
+    end
+
+    # The start index is essentially the number of rows that are occupied by
+    # location metadata (including address, permission to record, etc)
+    header = CsvReport.extract_header_from_spreadsheet(spreadsheet)
+
+    #--------------------------------------------------------------------------
+    # At this point, we know that there is at least one row. Let's see if there
+    # are any incorrect breeding site codes.
+    rows.each do |row|
+      row_content = CsvReport.extract_content_from_row(row)
+      next if row_content[:breeding_site].blank?
+
+      type = row_content[:breeding_site].strip.downcase
+      if CsvReport.accepted_breeding_site_codes.exclude?(type)
+        raise I18n.t("views.csv_reports.flashes.unknown_code")
+      end
+    end
+
+
+    #-------------------------------------------------------------------
+    # At this point, we have a non-trivial CSV with valid breeding codes.
+    reports            = []
+    visits             = []
+    current_visited_at = nil
+    parsed_current_visited_at = nil
+    rows.each_with_index do |row, row_index|
+      puts "Looking at row: #{row}"
+      row_content = CsvReport.extract_content_from_row(row)
+      next if row_content[:breeding_site].blank?
+
+      # Let's begin by creating a visit, if applicable.
+      # Let's parse the current visited at date.
+      # NOTE: If the last type is N then the location is clean (definition). However,
+      # we don't have to keep track of it in some "status" key. Why? Because the visit
+      # will have 0 reports, which is taken into account in visit.identification_type
+      # method!
+      if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
+        current_visited_at        = row_content[:visited_at]
+        parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
+
+        if parsed_current_visited_at.future?
+          puts "current_visited_at: #{current_visited_at} | parsed_current_visited_at: #{parsed_current_visited_at}"
+          raise I18n.t("views.csv_reports.flashes.inspection_date_in_future")
+        end
+
+
+        visits << {
+          :visited_at    => parsed_current_visited_at,
+          :health_report => row_content[:health_report]
+        }
+      end
+
+
+      # Build report attributes.
+      uuid        = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)
+      description = CsvReport.generate_description_from_row_content(row_content)
+
+      type = row_content[:breeding_site].strip.downcase
+      if type == "a"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+      elsif type == "b"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+      elsif type == "l"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+      elsif type == "m"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+      elsif type == "p"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
+      elsif type == "t"
+        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+      end
+
+
+      # Add to reports only if the code doesn't equal "negative" code.
+      unless type == "n"
+        eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+
+        # If the date of elimination is in the future or before visit date, then let's raise an error.
+        if eliminated_at.present? && eliminated_at.future?
+          raise I18n.t("views.csv_reports.flashes.elimination_date_in_future")
+        end
+
+        if eliminated_at.present? && eliminated_at < parsed_current_visited_at
+          raise I18n.t("views.csv_reports.flashes.elimination_date_before_inspection_date")
+        end
+
+        reports << {
+          :visited_at    => parsed_current_visited_at,
+          :eliminated_at => eliminated_at,
+          :breeding_site => breeding_site,
+          :description   => description,
+          :protected     => row_content[:protected],
+          :chemically_treated => row_content[:chemical],
+          :larvae => row_content[:larvae],
+          :pupae => row_content[:pupae],
+          :csv_uuid => uuid
+        }
+      end
+    end
+
+    #--------------------------------
+    # Find and/or create the location.
+    location = Location.find_by_address(address)
+    if location.blank?
+      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
+    end
+
+
+    #-------------------------------
+    # Create or update the CSV file.
+    @csv_report = CsvReport.find_by_parsed_content(rows.to_json)
+    if @csv_report.blank?
+      @csv_report                = CsvReport.new
+      @csv_report.csv            = file
+      @csv_report.parsed_content = rows.to_json
+      @csv_report.user_id        = @current_user.id
+      @csv_report.location_id    = location.id
+      @csv_report.save
+    end
+
+
+    #------------------------------
+    # Create or update the reports.
+    reports.each do |report|
+      r = Report.find_by_csv_uuid(report[:csv_uuid])
+      if r.blank?
+        r            = Report.new
+        r.created_at = report[:visited_at] if report[:visited_at].present?
+      end
+
+      r.report             = report[:description]
+      r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
+      r.protected          = report[:protected]
+      r.chemically_treated = report[:chemically_treated]
+      r.larvae             = report[:larvae]
+      r.pupae              = report[:pupae]
+      r.location_id        = location.id
+      r.neighborhood_id    = @neighborhood.id
+      r.reporter_id        = @current_user.id
+      r.csv_report_id      = @csv_report.id
+      r.csv_uuid           = report[:csv_uuid]
+      r.eliminated_at      = report[:eliminated_at]
+      r.save(:validate => false)
+    end
+
+    #--------------------------------------------------------------------
+    # The above Report callbacks create a set of visits and inspections. Here, we iterate
+    # over our own set of visits, and either
+    #
+    # a) find existing visit with same date and set the health report,
+    # b) create new visit (e.g. if it's of code N with no associated reports)
+    #
+    # We *must* run this here just so we can let the callbacks do their job.
+    visits.each do |visit|
+      parsed_visited_at = visit[:visited_at]
+
+      ls = Visit.where(:location_id => location.id)
+      ls = ls.where(:parent_visit_id => nil)
+      ls = ls.where(:visited_at => (parsed_visited_at.beginning_of_day..parsed_visited_at.end_of_day))
+      ls = ls.order("visited_at DESC").limit(1)
+      if ls.blank?
+        ls                 = Visit.new
+        ls.parent_visit_id = nil
+        ls.location_id     = location.id
+        ls.visited_at      = parsed_visited_at
+      else
+        ls = ls.first
+      end
+
+      ls.health_report = visit[:health_report]
+      ls.save
+    end
+
+
+  end
+
+
+  #----------------------------------------------------------------------------
+
+
 end
