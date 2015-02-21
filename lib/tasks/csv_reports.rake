@@ -216,44 +216,43 @@ namespace :csv_reports do
 
   desc "[One-off task] Task that runs through the corrected CSV library, using a copy of CsvReportsController#create method to create CSV/Report/Location/Visit instances"
   task :upload_correct_data => :environment do
-    csv_folder = Rails.root + "lib/tasks/corrected_csv_reports/la_quinta/".to_s
-    hood = csv_folder.split[-1].to_s
-    neighborhood = Neighborhood.all.find {|n| n.name.downcase.gsub(" ", "_").strip == hood.strip}
-
-    raise "Neighborhood #{ neighborhood } not found!" if neighborhood.blank?
-
-    user = User.find_by_username("dmitri")
+    user = User.find_by_username("hsuazo_laguna@hotmail.com")
     errors = []
-    Dir[csv_folder + "*.xlsx"].each_with_index do |f, index|
-      puts "-" * 50
-      puts "[index=#{index}] Looking at file f = #{f.inspect}\n\n\n"
-      csv      = File.open(f)
-      csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
 
-      params = {
-        :report_location_attributes_latitude => neighborhood.latitude.to_s,
-        :report_location_attributes_longitude => neighborhood.longitude.to_s,
-        :csv_report => {:csv => csv_file},
-        :neighborhood_id => neighborhood.id.to_s
-      }
+    ["ariel_darce", "francisco_meza", "la_quinta"].each do |community_folder|
+      csv_folder  = Rails.root + "lib/tasks/corrected_csv_reports/#{community_folder}/".to_s
+      hood         = csv_folder.split[-1].to_s
+      neighborhood = Neighborhood.all.find {|n| n.name.downcase.gsub(" ", "_").strip == hood.strip}
 
-      # begin
-        create_csv_report(params, user)
-      # rescue Exception => e
-      #   errors << {"file" => f.to_s,"error" => e.to_s}
-      # end
+      raise "Neighborhood #{ neighborhood } not found!" if neighborhood.blank?
+      Dir[csv_folder + "*.xlsx"].each_with_index do |f, index|
+        puts "-" * 25
+        puts "[index=#{index}] Looking at file f = #{f.inspect}\n\n\n"
+        csv      = File.open(f)
+        csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
 
+        params = {
+          :report_location_attributes_latitude => neighborhood.latitude.to_s,
+          :report_location_attributes_longitude => neighborhood.longitude.to_s,
+          :csv_report => {:csv => csv_file},
+          :neighborhood_id => neighborhood.id.to_s
+        }
 
+        begin
+          create_csv_report(params, user)
+        rescue Exception => e
+          errors << {"file" => f.to_s,"error" => e.to_s}
+        end
 
-      puts "Done with file."
-      puts "\n" * 10
-      # break
+        puts "Done with file."
+        puts "\n" * 5
+        # break
+      end
     end
 
     puts "\n" * 20
     puts "Here are the errors:"
     puts "errors: #{errors}"
-
   end
 
 
