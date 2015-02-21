@@ -8,6 +8,19 @@
   margin-top: 10px;
 }
 
+.description {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  a {
+    color: blue;
+  }
+}
+
 .report {
   background-color: white;
   border-style: solid;
