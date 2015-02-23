@@ -26,7 +26,7 @@
       dengue y chikungunya, haga click
       = link_to "aquí.", neighborhood_path(@neighborhood)
 
-    - if @incomplete_reports.present?
+    - if @current_user && @current_user.neighborhood == @neighborhood && @incomplete_reports.present?
       .alert.alert-danger.alert-dismissable{:style => "background-color: #e74c3c; border-radius: 0px;"}
         %h2{:style => "color: #ecf0f1; text-shadow: none; text-align: center;"}
           = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
