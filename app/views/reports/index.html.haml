@@ -32,14 +32,6 @@
           = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
           = link_to I18n.t("views.reports.index.complete_now_button"), edit_neighborhood_report_path(@current_user.neighborhood, @incomplete_reports.first), :class => "btn btn-default"
 
--#
--# .row
--#   .col-md-2{:style => "float: right;"}
--#     %div{:style => "margin-top: 10px;"}
--#       = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
-
-/------------------------------------------------------------------------------
-
 /------------------------------------------------------------------------------
 
 - if @current_user && @current_user.neighborhood == @neighborhood

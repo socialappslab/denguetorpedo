@@ -31,7 +31,7 @@
         - else
           .row
             .col-md-6.col-md-offset-4
-              = link_to "Eliminate and earn up to " + report.breeding_site.elimination_methods.pluck(:points).max.to_s + " points", edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success btn-lg"
+              = link_to "Eliminate and earn up to " + report.breeding_site.elimination_methods.pluck(:points).max.to_s + " points", edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success btn-lg eliminate-report-button"
             -# = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
         %hr
