@@ -9,6 +9,64 @@
   margin-top: 10px;
   img {
     width: 50px;
+    margin-bottom: 10px;
+  }
+
+  .metadata {
+    text-align: right;
+    font-weight: bold;
+    font-size: 16px;
+
+    .positive {
+      color: #e74c3c;
+    }
+
+    .potential {
+      color: #e67e22;
+    }
+
+
+    .report-eliminated {
+      color: $dark-gray;
+    }
+
+    .timer {
+      display: inline-block;
+    }
+
+
+    .countdown {
+      color: $orange;
+    }
+
+    .report-open {
+      display: inline-block;
+      color: $orange;
+    }
+
+
+  }
+
+  .name {
+    vertical-align: middle;
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 10px;
+    width: 250px;
+
+    .feed-item-timestamp {
+      // margin-left: 10px;
+      width: 200px;
+      display: inline-block;
+    }
+
+  }
+
+
+  .label-success {
+    margin-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
   }
 }
 
@@ -78,6 +136,9 @@
   border: 1px #3498db solid;
   box-sizing: border-box;
   border-radius: 8px;
+  li {
+    width: 500px;
+  }
 
   a {
     // height: 50px;
@@ -315,19 +376,6 @@
 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;
-}
-
-.countdown {
-  color: $orange;
-}
-
-.report-open {
-  display: inline-block;
-  color: $orange;
-}
-
-.report-eliminated {
-  color: $dark-gray;
 }
 
 .mapa {
