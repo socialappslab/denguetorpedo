@@ -445,9 +445,11 @@ class Report < ActiveRecord::Base
     # If the report hasn't been created yet, then let's compare elimination time
     # to the current time. Otherwise, let's compare to the time of creation.
     if self.created_at.blank?
-      return true if self.eliminated_at > Time.now
+      return true if self.eliminated_at >= Time.now
     else
-      return true if self.eliminated_at > self.created_at
+      # NOTE: We need to check for equality in case some records had their dates
+      # set to beginning of day (before we were handling time of day).
+      return true if self.eliminated_at >= self.created_at
     end
 
     created_at = I18n.t("activerecord.attributes.report.created_at") || "inspection date"

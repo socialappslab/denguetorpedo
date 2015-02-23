@@ -110,6 +110,13 @@ class User < ActiveRecord::Base
     Report.where("reporter_id = ? OR eliminator_id = ?", self.id, self.id).order("updated_at DESC")
   end
 
+  def incomplete_reports
+    reports = Report.where("reporter_id = ? OR eliminator_id = ?", self.id, self.id)
+    reports = reports.order("created_at DESC").where("completed_at IS NULL")
+    reports = reports.where(:protected => [nil, false])
+    return reports
+  end
+
   #----------------------------------------------------------------------------
 
   # TODO: Deprecate this method...
