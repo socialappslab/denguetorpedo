@@ -73,12 +73,14 @@
 .report-actionbar {
   margin: 25px;
   color: #8899a6;
-  font-size: 20px;
+  font-size: 16px;
   margin-bottom: 10px;
+  margin-top: 10px;
+
 
   i, a {
     color: #8899a6;
-    margin-left:10px;
+
   }
 }
 
@@ -91,6 +93,7 @@
   }
 
   margin: 25px;
+  margin-bottom: 10px;
   font-size: 18px;
 
   h1 {
@@ -299,6 +302,9 @@
 
 #reports{
   display: block;
+  form {
+    margin-bottom: 0px;
+  }
 }
 
 #new_report{
