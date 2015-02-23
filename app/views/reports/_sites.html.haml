@@ -21,10 +21,10 @@
         - next if report.sms_incomplete? && @current_user && @current_user != report.reporter
 
         .report{ :class => (report.eliminated? ? "eliminated" : "open") }
-          = render :partial => "reports/metadata",   :locals => {:report => report}
-          = render :partial => "reports/attributes", :locals => {:report => report}
+          = render :partial => "reports/topbar",   :locals => {:report => report}
+          = render :partial => "reports/content", :locals => {:report => report}
           - unless report.sms_incomplete?
-            = render :partial => "reports/topbar",   :locals => {:report => report}
+            = render :partial => "reports/actionbar",   :locals => {:report => report}
 
 
 %hr{:style => "border-top: 1px solid #fff; margin-top: 40px;"}
