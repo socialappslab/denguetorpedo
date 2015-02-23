@@ -1,12 +1,55 @@
-// Place all the styles related to the Home controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-
 @import "variables";
 
-#report_status_bar {
+//-----------------------------------------------------------------------------
+// Report
+//-------
+
+.report-topbar {
+  margin: 25px;
   margin-top: 10px;
+  img {
+    width: 50px;
+  }
 }
+
+.report-actionbar {
+  margin: 25px;
+  color: #8899a6;
+  font-size: 20px;
+  margin-bottom: 10px;
+
+  i, a {
+    color: #8899a6;
+    margin-left:10px;
+  }
+}
+
+.report-content {
+  margin: 25px;
+  font-size: 18px;
+
+  h1 {
+    color: #8899a6;
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #000;
+  }
+
+  .invalid-report {
+    color:red;
+    display: inline-block;
+    margin-top: 30px;
+    font-size: 20px;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// General things
+//---------------
 
 .denguechat-tab-toggle {
   border: 1px #3498db solid;
@@ -234,19 +277,6 @@
 }
 
 
-// Action bar for each report
-.action-bar {
-  color: #8899a6;
-  // display: inline-block;
-  font-size: 20px;
-  margin-top: 20px;
-
-  i, a {
-    color: #8899a6;
-    // margin-right:10px;
-    margin-left:10px;
-  }
-}
 
 
 .report-metadata {
@@ -262,31 +292,6 @@
 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;
-}
-
-.report-content-area {
-  margin-top: 10px;
-  font-size: 18px;
-
-  h1 {
-    color: #8899a6;
-    font-size: 16px;
-    // font-family: "Lato", sans-serif;
-    // font-weight: 300;
-  }
-
-  p {
-    font-size: 18px;
-    color: #000;
-  }
-
-  .invalid-report {
-    color:red;
-    display: inline-block;
-    margin-top: 30px;
-    font-size: 20px;
-  }
-
 }
 
 .countdown {
