@@ -25,6 +25,13 @@
 }
 
 .report-content {
+  .control-label {
+    text-align: left;
+    font-family: "Lato" sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+  }
+
   margin: 25px;
   font-size: 18px;
 
@@ -46,6 +53,22 @@
   }
 }
 
+.report-photos {
+  .control-label {
+    margin-bottom: 10px;
+  }
+
+  .sidebar-entity-photo{
+    text-align: center;
+
+    img {
+      z-index: 1;
+      width: 200px;
+      height: 200px;
+      border: 1px solid $gray;
+    }
+  }
+}
 
 //-----------------------------------------------------------------------------
 // General things

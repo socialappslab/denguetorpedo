@@ -1,46 +1,53 @@
 .report-content
-  .row
-    .col-md-12
-      %h1
-        = I18n.t("activerecord.attributes.report.report")
-      %p
-        = report.report
+  = form_for([@neighborhood, report], :url => eliminate_neighborhood_report_path(@neighborhood, report), :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}) do |f|
 
+    .row
+      .col-md-12
 
-      - if report.breeding_site_id.present?
-        .row{:style => "margin-top: 15px;"}
-          .col-md-6
-            %h1
-              = I18n.t("activerecord.attributes.report.breeding_site_id")
-          .col-md-6
-            .pull-right
+        .form-group.form-group-lg
+          = f.label :report, :class => "col-sm-4 control-label"
+          .col-sm-6
+            %p
+              = report.report
+
+        %hr
+
+        - if report.breeding_site_id.present?
+          .form-group.form-group-lg
+            = f.label :breeding_site_id, :class => "col-sm-4 control-label"
+            .col-sm-6
+              %p
+                = report.breeding_site.description
               - if report.status == Report::Status::POSITIVE
                 %i.fa.fa-exclamation-circle{:style => "color: #e67e22"}
                   = I18n.t("common_terms.positive")
               - elsif report.status == Report::Status::POTENTIAL
                 %i.fa.fa-exclamation-circle{:style => "color: #e67e22"}
                   = I18n.t("common_terms.potential")
-        %p
-          = report.breeding_site.description
+
+        %hr
 
         - if report.eliminated?
-          %h1{:style => "margin-top: 15px;"}
-            = I18n.t("activerecord.models.elimination_method")
-          %p
-            = report.elimination_method.detailed_description
-          %br
+          .form-group.form-group-lg
+            = f.label :elimination_method_id, :class => "col-sm-4 control-label"
+            .col-sm-6
+              %p
+                = report.elimination_method.detailed_description
 
-        - elsif @current_user.present?
-          = render :partial => "reports/elimination_method_form", :locals => {:report => report}
+        - else
+          .row
+            .col-md-6.col-md-offset-4
+              = link_to "Eliminate and earn " + report.breeding_site.elimination_methods.pluck(:points).max.to_s + " points", edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success btn-lg"
+            -# = render :partial => "reports/elimination_method_form", :locals => {:report => report}
 
-      - elsif report.sms_incomplete? && @current_user.present? && @current_user.id == report.reporter_id
-        = link_to I18n.t("common_terms.complete_report"), edit_neighborhood_report_path(@neighborhood, report), class: "btn btn-info", :style => "width: 100%; margin-top: 20px;"
+        %hr
 
+        - if report.is_invalid?
+          %p.invalid-report
+            = I18n.t("report.form.problem_with_verification")
 
-      - if report.is_invalid?
-        %p.invalid-report
-          = I18n.t("report.form.problem_with_verification")
+    .row
+      .col-md-12
+        = render :partial => "reports/photos", :locals => {:report => report, :f => f}
 
-  .row
-    .col-md-12
-      = render :partial => "reports/photos", :locals => {:report => report}
+        %hr

@@ -85,7 +85,7 @@ pt:
         elimination_type: Tipo de foco
         breeding_site_id: Tipo de foco
         report: Descrição
-        after_photo: A foto do foco
+        after_photo: A foto do eliminação
         elimination_method_id: Método de eliminação
         eliminated_at: Data de eliminação
         protected: "Protegido"

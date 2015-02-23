@@ -90,7 +90,7 @@ es:
         breeding_site_id: Tipo de criadero
         eliminated_at: Fecha de eliminación
         report: Descripción
-        after_photo: Foto del criadero
+        after_photo: Foto de eliminación
         elimination_method_id: Método de eliminación
         protected: "Protegido"
         chemically_treated: "Abatizado"
