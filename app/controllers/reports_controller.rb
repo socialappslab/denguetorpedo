@@ -11,8 +11,15 @@ class ReportsController < NeighborhoodsBaseController
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
-    @reports = @reports.where(:protected => [nil, false]).order("updated_at DESC")
+    @reports = @reports.where(:protected => [nil, false])
+
+    # Make sure to prioritize ordering by *open* reports. Keep in mind that some reports
+    # will have eliminated_at already set (if it's via CSV) so we need only focus if there
+    # is an elimination method.
+    @reports = @reports.order("case when elimination_method_id is NULL then 0 else 1 end ASC")
+    @reports = @reports.order("updated_at DESC")
     @reports = @reports.where("completed_at IS NOT NULL")
+
     @report_count  = @reports.count
     @report_limit  = 10
     @report_offset = (params[:page] || 0).to_i * @report_limit
