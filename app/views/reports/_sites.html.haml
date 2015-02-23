@@ -1,0 +1,35 @@
+.row{:style => "margin-top: 20px;"}
+  .col-md-2.col-md-offset-4
+    %h2
+      = I18n.t("common_terms.order_by")
+  .col-md-6
+    %label.radio-inline{:style => "margin-top: 5px;"}
+      %input{:type => "radio", :name => "reports", :id => 'all_reports_button', :value => "points", :checked => params[:sort] != "name", :onclick => 'filter_reports(event,"all")'}
+      = I18n.t("common_terms.all")
+    %label.radio-inline{:style => "margin-top: 5px;"}
+      %input{:type => "radio", :name => "reports", :id => 'open_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"open")'}
+      = I18n.t("common_terms.open_reports")
+    %label.radio-inline{:style => "margin-top: 5px;"}
+      %input{:type => "radio", :name => "reports", :id => 'eliminated_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"eliminated")'}
+      = I18n.t("common_terms.eliminated_reports")
+
+
+.row{:style => "min-height: 600px;"}
+  .col-md-8.col-md-offset-2
+    #reports
+      - @reports.each do |report|
+        - next if report.sms_incomplete? && @current_user && @current_user != report.reporter
+
+        .report{ :class => (report.eliminated? ? "eliminated" : "open") }
+          = render :partial => "reports/metadata",   :locals => {:report => report}
+          = render :partial => "reports/attributes", :locals => {:report => report}
+          - unless report.sms_incomplete?
+            = render :partial => "reports/topbar",   :locals => {:report => report}
+
+
+%hr{:style => "border-top: 1px solid #fff; margin-top: 40px;"}
+
+.row
+  .col-md-12{:style => "text-align: center;"}
+    - if @report_count > @report_limit
+      = render :partial => "reports/pagination"

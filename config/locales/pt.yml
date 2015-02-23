@@ -200,6 +200,7 @@ pt:
   #----------------------------------
 
   common_terms:
+    map: Mapa
     no_data: Não existem dados
     saved: Atualizado
     yes_string: Sim

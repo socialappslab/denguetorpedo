@@ -64,72 +64,38 @@
 
 /------------------------------------------------------------------------------
 
--# .row
--#   .col-md-10.col-md-offset-1
--#     #report_buttons
--#       = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
--#         :onclick => 'filter_reports(event,"all")'
--#       = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
--#         :onclick => 'filter_reports(event,"open")'
--#       = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
--#         :onclick => 'filter_reports(event,"eliminated")'
-
-.row{:style => "margin-top: 20px;"}
-  .col-md-2.col-md-offset-1
-    %h2
-      = I18n.t("common_terms.order_by")
-  .col-md-6
-    %label.radio-inline{:style => "margin-top: 5px;"}
-      %input{:type => "radio", :name => "reports", :id => 'all_reports_button', :value => "points", :checked => params[:sort] != "name", :onclick => 'filter_reports(event,"all")'}
-      = I18n.t("common_terms.all")
-    %label.radio-inline{:style => "margin-top: 5px;"}
-      %input{:type => "radio", :name => "reports", :id => 'open_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"open")'}
-      = I18n.t("common_terms.open_reports")
-    %label.radio-inline{:style => "margin-top: 5px;"}
-      %input{:type => "radio", :name => "reports", :id => 'eliminated_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"eliminated")'}
-      = I18n.t("common_terms.eliminated_reports")
-
-
+.row{:style => "margin-top: 40px; margin-bottom: 40px;"}
+  .col-md-4.col-md-offset-4
+    %ul.nav.nav-pills.nav-justified.denguechat-tab-toggle
+      %li.active
+        = link_to "#report", :data => {:toggle => "tab"} do
+          %i.fa.fa-map-marker
+          &nbsp;
+          = I18n.t("activerecord.models.report", :count => 2)
+      %li
+        = link_to "#map", :data => {:toggle => "tab"} do
+          %i.fa.fa-globe
+          &nbsp;
+          = I18n.t("common_terms.map")
 
 /------------------------------------------------------------------------------
 
-.row{:style => "min-height: 600px;"}
-  .col-md-5.col-md-offset-1
-    #reports
-      - @reports.each do |report|
-        - next if report.sms_incomplete? && @current_user && @current_user != report.reporter
-
-        .report{ :class => (report.eliminated? ? "eliminated" : "open") }
-          = render :partial => "reports/metadata",   :locals => {:report => report}
-          = render :partial => "reports/attributes", :locals => {:report => report}
-          - unless report.sms_incomplete?
-            = render :partial => "reports/topbar",   :locals => {:report => report}
-
-  -# - if @neighborhood.name == Neighborhood::Names::MARE
-  -#   .col-md-7#map_div
-  -#     = render :partial => "reports/map"
-  -#   = render :partial => "reports/arcgis_map"
-  .col-md-5#map_div
+.tab-content
+  #report.tab-pane.active{:role => "tabpanel"}
+    = render :partial => "reports/sites"
+  #map.tab-pane{:role => "tabpanel"}
     = render :partial => "reports/google_map"
-  = javascript_include_tag "googlemap/map"
+
+
 
 /------------------------------------------------------------------------------
 / Social media
 /-------------
 
-
-%hr{:style => "border-top: 1px solid #fff; margin-top: 40px;"}
-
-.row
-  .col-md-12{:style => "text-align: center;"}
-    - if @report_count > @report_limit
-      = render :partial => "reports/pagination"
-
-
-
 #fb-root
 
 - content_for :scripts do
+  = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
   = javascript_include_tag "moment"
   = javascript_include_tag "bootstrap/datetimepicker"

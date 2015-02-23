@@ -204,6 +204,7 @@ es:
   #----------------------------------
 
   common_terms:
+    map: Mapa
     no_data: No hay datos
     saved: Actualizado
     yes_string: Si

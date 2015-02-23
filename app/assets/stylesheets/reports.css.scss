@@ -8,6 +8,20 @@
   margin-top: 10px;
 }
 
+.denguechat-tab-toggle {
+  border: 1px #3498db solid;
+  box-sizing: border-box;
+  border-radius: 8px;
+
+  a {
+    // height: 50px;
+    font-size: 24px;
+    padding-top: 10px;
+    padding-bottom: 7px;
+  }
+}
+
+
 .description {
   font-family: "Lato", sans-serif;
   font-weight: 300;
@@ -307,10 +321,12 @@
 
 
 #map_div {
-  position:absolute;
-  right:100px;
-  overflow-y:hidden;
-  overflow-x:hidden;
+  // position:absolute;
+  // right:100px;
+  // overflow-y:hidden;
+  // overflow-x:hidden;
+  height: 600px;
+  margin-bottom: 40px;
 
   #loading {
     z-index:100;
@@ -328,15 +344,12 @@
   }
 
 
-  #map-action-bar {
-    margin-bottom: 10px;
 
-    #map-error-description {
-      color: red;
-      font-weight: bold;
-      font-size: 10px;
-      display: none;
-    }
+  #map-error-description {
+    color: red;
+    font-weight: bold;
+    font-size: 10px;
+    display: none;
   }
 
   #map {
