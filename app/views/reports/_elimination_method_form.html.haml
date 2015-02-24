@@ -35,6 +35,6 @@
   .form-group
 
     - should_disable = ( @current_user && [User::Types::VERIFIER, User::Types::VISITOR].include?(@current_user.role) ) || report.isVerified == "f" || report.sms_incomplete?
-    = button_tag :type => "submit", :class => "report_submission btn btn-success submit-button", :disabled => should_disable, :onclick=>"setLocationVariablesUsingOSM(#{report.location.to_json},event);", :style => "width: 100%;" do
+    = button_tag :type => "submit", :class => "report_submission btn btn-success submit-button", :disabled => should_disable, :style => "width: 100%;" do
       %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
       = I18n.t("views.buttons.submit")

@@ -98,8 +98,8 @@
 
   :javascript
     $(document).ready(function(){
-      $(".report-filter").on("click", function() {
-        var reportType = $(".report-filter .active").find("input").data("type");
+      $(".report-filter label").on("click", function() {
+        var reportType = $(this).find("input").data("type");
         if (reportType === "all")
           $(".report").show()
         else {
