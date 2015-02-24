@@ -4,6 +4,22 @@
 // Report
 //-------
 
+.action-buttons {
+  margin-top: 20px;
+}
+
+.incomplete-reports-banner {
+  .alert {
+    background-color: #e74c3c;
+  }
+  h2 {
+    color: #ecf0f1;
+    text-shadow: none;
+    text-align: center;
+  }
+
+}
+
 .report-topbar {
   margin: 25px;
   margin-top: 10px;
@@ -55,7 +71,6 @@
     width: 250px;
 
     .feed-item-timestamp {
-      // margin-left: 10px;
       width: 200px;
       display: inline-block;
     }
@@ -136,18 +151,16 @@
 //---------------
 
 .denguechat-tab-toggle {
-  border: 1px #3498db solid;
-  box-sizing: border-box;
-  border-radius: 8px;
-  li {
-    width: 500px;
+  margin-top: 40px; margin-bottom: 20px;
+  ul {
+    border: 1px #3498db solid;
+    box-sizing: border-box;
+    border-radius: 5px;
   }
 
-  a {
-    // height: 50px;
-    font-size: 24px;
-    padding-top: 10px;
-    padding-bottom: 7px;
+  .active {
+    background-color: #5bc0de;
+    color: white;
   }
 }
 
@@ -246,17 +259,6 @@
   color: $dark-gray;
   background-color: #ffffff;
 }
-
-// .active {
-//   background-color: $orange;
-//   color: white;
-//   font-weight: bold;
-//   font-size: 20px;
-//
-//   &:hover{
-//     color: white;
-//   }
-// }
 
 
 .bttn  {
@@ -403,20 +405,12 @@
 
 
 #map_div {
-  // position:absolute;
-  // right:100px;
-  // overflow-y:hidden;
-  // overflow-x:hidden;
-  height: 600px;
+  height: 800px;
   margin-bottom: 40px;
+
 
   #loading {
     z-index:100;
-    // width: 50%;
-    // margin: auto;
-    position:absolute;
-    right:150;
-    top: 200;
     text-align: center;
 
     img {
@@ -434,19 +428,8 @@
     display: none;
   }
 
-  #map {
-    height: 500px;
-    position:relative;
-    overflow-y:hidden;
-  }
-
   #gmap{
-    height: 600px;
-    position:relative;
-    overflow-y:hidden;
-
-    /* to undo the above img hack */
-    img { max-width: none; }
+    height: 800px;
   }
 
   #OSMap {
