@@ -34,19 +34,16 @@
       .col-md-8.col-md-offset-2
 
         = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success", :style => "float: left; margin-right: 20px;" do
-          %i.fa.fa-map-marker
           = I18n.t("common_terms.create_a_report")
 
 
         - if @neighborhood.spanish?
           = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success" do
-            %i.fa.fa-file
             = I18n.t("views.buttons.upload_csv")
 
 
         - if @neighborhood.spanish?
           = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info", :style => "float: right;" do
-            %i.fa.fa-file
             = I18n.t("views.reports.index.view_csv")
 
 
@@ -90,7 +87,6 @@
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
   = javascript_include_tag "moment"
   = javascript_include_tag "bootstrap/datetimepicker"

@@ -19,3 +19,12 @@
   var communityLatitude   = #{@neighborhood.latitude}
   var communityLongitude  = #{@neighborhood.longitude}
   #{if @neighborhood.nicaraguan? then 'var no_address_lookup = true;' else 'var no_address_lookup = false;' end}
+
+  $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
+    var target = $(e.target).attr("href");
+    if (target == "#map")
+      google.maps.event.trigger(map, 'resize');
+  })
+
+
+= javascript_include_tag "googlemap/map"
