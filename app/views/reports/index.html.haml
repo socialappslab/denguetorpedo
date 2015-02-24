@@ -17,7 +17,7 @@
 
 .row
   .col-md-8.col-md-offset-2{:style => "text-align: center;"}
-    %h1{:style => "font-size: 36px;"}
+    %h1{:style => "font-size: 28px;"}
       = I18n.t("reports_feed.title", :name => @neighborhood.name)
     %p.description
       Esta página muestra reportes de criaderos potenciales o positivos en la
@@ -25,12 +25,6 @@
       Para ver cómo es que los criiaderos reportados aquí afectan el riesgo de
       dengue y chikungunya, haga click
       = link_to "aquí.", neighborhood_path(@neighborhood)
-
-    - if @current_user && @current_user.neighborhood == @neighborhood && @incomplete_reports.present?
-      .alert.alert-danger.alert-dismissable{:style => "background-color: #e74c3c; border-radius: 0px;"}
-        %h2{:style => "color: #ecf0f1; text-shadow: none; text-align: center;"}
-          = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
-          = link_to I18n.t("views.reports.index.complete_now_button"), edit_neighborhood_report_path(@current_user.neighborhood, @incomplete_reports.first), :class => "btn btn-default"
 
 /------------------------------------------------------------------------------
 
