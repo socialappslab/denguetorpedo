@@ -29,40 +29,54 @@
 /------------------------------------------------------------------------------
 
 - if @current_user && @current_user.neighborhood == @neighborhood
-  .row{:style => "margin-bottom: 20px;"}
-    .col-md-3.col-md-offset-2{:style => "margin-top: 20px;"}
-      = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
-        %i.fa.fa-map-marker
-        = I18n.t("common_terms.create_a_report")
+  .action-buttons
+    .row
+      .col-md-8.col-md-offset-2
 
-    .col-md-3{:style => "margin-top: 20px;"}
-      - if @neighborhood.spanish?
-        = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
-          %i.fa.fa-file
-          = I18n.t("views.buttons.upload_csv")
+        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success", :style => "float: left; margin-right: 20px;" do
+          %i.fa.fa-map-marker
+          = I18n.t("common_terms.create_a_report")
 
-    .col-md-3{:style => "margin-top: 20px;"}
-      - if @neighborhood.spanish?
-        = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info btn-lg" do
-          %i.fa.fa-file
-          = I18n.t("views.reports.index.view_csv")
+
+        - if @neighborhood.spanish?
+          = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success" do
+            %i.fa.fa-file
+            = I18n.t("views.buttons.upload_csv")
+
+
+        - if @neighborhood.spanish?
+          = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info", :style => "float: right;" do
+            %i.fa.fa-file
+            = I18n.t("views.reports.index.view_csv")
 
 
 /------------------------------------------------------------------------------
 
-.row{:style => "margin-top: 40px; margin-bottom: 40px;"}
-  .col-md-4.col-md-offset-4
-    %ul.nav.nav-pills.nav-justified.denguechat-tab-toggle
-      %li.active
-        = link_to "#report", :data => {:toggle => "tab"} do
-          %i.fa.fa-map-marker
-          &nbsp;
-          = I18n.t("activerecord.models.report", :count => 2)
-      %li
-        = link_to "#map", :data => {:toggle => "tab"} do
-          %i.fa.fa-globe
-          &nbsp;
-          = I18n.t("common_terms.map")
+.denguechat-tab-toggle
+  .row
+    .col-md-2.col-md-offset-2
+      %ul.nav.nav-pills.nav-justified
+        %li.active
+          = link_to "#report", :data => {:toggle => "tab"} do
+            %i.fa.fa-map-marker
+            = I18n.t("activerecord.models.report", :count => 2)
+        %li
+          = link_to "#map", :data => {:toggle => "tab"} do
+            %i.fa.fa-globe
+            = I18n.t("common_terms.map")
+
+    .col-md-6
+      .pull-right
+        .report-filter.btn-group{:data => {:toggle => "buttons"}}
+          %label.btn.btn-default.active
+            = radio_button_tag "reports", "all", true, :data => {:type => "all"}
+            = I18n.t("common_terms.all")
+          %label.btn.btn-default
+            = radio_button_tag "reports", "open", nil, :data => {:type => "open"}
+            = I18n.t("common_terms.open_reports")
+          %label.btn.btn-default
+            = radio_button_tag "reports", "eliminated", nil, :data => {:type => "eliminated"}
+            = I18n.t("common_terms.eliminated_reports")
 
 /------------------------------------------------------------------------------
 
