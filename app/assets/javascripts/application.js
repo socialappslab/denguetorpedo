@@ -12,7 +12,6 @@
 //= require_self
 //= require jquery.countdown.min
 //= require jquery.fancybox.pack
-//= require reports
 //= require bootstrap/bootstrap-min
 
 // TRANSITION
