@@ -12,12 +12,6 @@ gem 'magic_encoding'
 gem 'mime' # TODO: Possibly deprecate?
 
 #------------------------------------------------------------------------------
-# Maps
-
-gem 'geokit'
-gem 'leaflet-rails'
-
-#------------------------------------------------------------------------------
 # User management
 
 gem 'bcrypt-ruby', '~> 3.0.0'

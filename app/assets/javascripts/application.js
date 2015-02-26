@@ -7,7 +7,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
-//= require leaflet
 //= require active_admin
 //= require_self
 //= require jquery.countdown.min
