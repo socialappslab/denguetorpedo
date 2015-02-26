@@ -5,9 +5,6 @@
 // the compiled file.
 //
 //= require jquery
-//= require jquery_ujs
-//= require jquery.ui.all
-//= require active_admin
 //= require_self
 //= require jquery.countdown.min
 //= require jquery.fancybox.pack
