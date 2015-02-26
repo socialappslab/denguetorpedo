@@ -5,7 +5,11 @@
 //-------
 
 .action-buttons {
-  margin-top: 20px;
+  margin-top: 40px;
+  text-align: center;
+  a {
+    margin-right: 40px;
+  }
 }
 
 .incomplete-reports-banner {
@@ -151,11 +155,17 @@
 //---------------
 
 .denguechat-tab-toggle {
-  margin-top: 40px; margin-bottom: 20px;
+  margin-top: 60px;
   ul {
     border: 1px #3498db solid;
     box-sizing: border-box;
     border-radius: 5px;
+
+    li {
+      a {
+        padding: 7px;
+      }
+    }
   }
 
   .active {
@@ -407,6 +417,7 @@
 #map_div {
   height: 800px;
   margin-bottom: 40px;
+  margin-top: 20px;
 
 
   #loading {

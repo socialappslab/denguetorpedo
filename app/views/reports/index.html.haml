@@ -17,7 +17,7 @@
 
 .row
   .col-md-8.col-md-offset-2{:style => "text-align: center;"}
-    %h1{:style => "font-size: 28px;"}
+    %h1{:style => "font-size: 32px;"}
       = I18n.t("reports_feed.title", :name => @neighborhood.name)
     %p.description
       Esta página muestra reportes de criaderos potenciales o positivos en la
@@ -33,7 +33,7 @@
     .row
       .col-md-8.col-md-offset-2
 
-        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success", :style => "float: left; margin-right: 20px;" do
+        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success" do
           = I18n.t("common_terms.create_a_report")
 
 
@@ -43,7 +43,7 @@
 
 
         - if @neighborhood.spanish?
-          = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info", :style => "float: right;" do
+          = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.reports.index.view_csv")
 
 
