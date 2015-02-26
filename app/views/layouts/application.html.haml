@@ -12,14 +12,7 @@
       = I18n.t("views.app")
 
     // Load the stylesheets.
-    // NOTE: We *cannot* load jquery asynchronously since the application.js file
-    // depends on the namespace.
-    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"}
     = stylesheet_link_tag "application"
-
-    / Load JavaScript assets.
-    = javascript_include_tag "application"
-
 
     / Custom head definitions
     = yield :head if content_for(:head)
@@ -80,6 +73,10 @@
 
 
     / Scripts
+    // NOTE: We *cannot* load jquery asynchronously since the application.js file
+    // depends on the namespace.
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"}
+    = javascript_include_tag "application"
     %script{:src => "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js", :async => true}
 
     / Fonts

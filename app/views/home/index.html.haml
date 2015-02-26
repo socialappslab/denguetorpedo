@@ -61,20 +61,36 @@
 
 /------------------------------------------------------------------------------
 
+- content_for :scripts do
 
-:javascript
-  $(document).ready(function()
-  {
-    $("#search-neighborhoods").change(function() {
-      window.location.href = $(this).val()
-    });
-
-    $(".show-more-content-link").on("click", function(eventObj)
+  :javascript
+    $(document).ready(function()
     {
-        eventObj.preventDefault()
 
-        var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
-        hiddenContent.css("display", "inline")
-        $(eventObj.currentTarget).hide()
+      $(".fancybox-media").fancybox({
+        maxWidth  : 800,
+        maxHeight : 600,
+        fitToView : false,
+        width   : '70%',
+        height    : '70%',
+        autoSize  : false,
+        closeClick  : false,
+        openEffect  : 'none',
+        closeEffect : 'none'
+      });
+
+
+
+      $("#search-neighborhoods").change(function() {
+        window.location.href = $(this).val()
+      });
+
+      $(".show-more-content-link").on("click", function(eventObj)
+      {
+          eventObj.preventDefault()
+
+          var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+          hiddenContent.css("display", "inline")
+          $(eventObj.currentTarget).hide()
+      })
     })
-  })
