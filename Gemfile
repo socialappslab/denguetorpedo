@@ -33,7 +33,7 @@ gem "http_accept_language"
 # Front-end tools
 
 gem 'haml'
-gem 'jquery-rails'
+# gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dynamic_form'
 gem 'rails_autolink'

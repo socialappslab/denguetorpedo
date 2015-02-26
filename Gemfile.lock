@@ -323,7 +323,6 @@ DEPENDENCIES
   guard-rspec
   haml
   http_accept_language
-  jquery-rails
   jquery-ui-rails
   launchy
   magic_encoding
