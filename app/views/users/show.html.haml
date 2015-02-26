@@ -7,7 +7,7 @@
 
     .col-md-7.col-md-offset-1
       = render :partial => "users/main"
-    -#
-    -# .col-md-2{:style => "text-align: center; margin-left: -40px;"}
-    -#   - if @user.neighborhood.name  == Neighborhood::Names::MARE
-    -#     = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success btn-large", :style => "margin-top: 60px;"
+
+- content_for :scripts do
+  = javascript_include_tag "feed-interactions"
+  = javascript_include_tag "team-membership-delete"
