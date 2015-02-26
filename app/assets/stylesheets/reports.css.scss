@@ -5,7 +5,11 @@
 //-------
 
 .action-buttons {
-  margin-top: 20px;
+  margin-top: 40px;
+  text-align: center;
+  a {
+    margin-right: 40px;
+  }
 }
 
 .incomplete-reports-banner {
@@ -21,6 +25,9 @@
 }
 
 .report-topbar {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+
   margin: 25px;
   margin-top: 10px;
   img {
@@ -30,7 +37,6 @@
 
   .metadata {
     text-align: right;
-    font-weight: bold;
     font-size: 16px;
 
     .positive {
@@ -82,6 +88,10 @@
     margin-left: 10px;
     vertical-align: middle;
     display: inline-block;
+
+    a {
+      color: white;
+    }
   }
 }
 
@@ -95,8 +105,10 @@
 
   i, a {
     color: #8899a6;
-
   }
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
 }
 
 .report-content {
@@ -119,19 +131,21 @@
   p {
     font-size: 18px;
     color: #000;
+    font-family: "Lato" sans-serif;
+    font-weight: 400;
+    padding-top: 14.3px;
   }
 
   .invalid-report {
-    color:red;
-    display: inline-block;
-    margin-top: 30px;
+    color: red;
     font-size: 20px;
   }
 }
 
 .report-photos {
   .control-label {
-    margin-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
   }
 
   .sidebar-entity-photo{
@@ -151,11 +165,17 @@
 //---------------
 
 .denguechat-tab-toggle {
-  margin-top: 40px; margin-bottom: 20px;
+  margin-top: 60px;
   ul {
     border: 1px #3498db solid;
     box-sizing: border-box;
     border-radius: 5px;
+
+    li {
+      a {
+        padding: 7px;
+      }
+    }
   }
 
   .active {
@@ -407,6 +427,7 @@
 #map_div {
   height: 800px;
   margin-bottom: 40px;
+  margin-top: 20px;
 
 
   #loading {

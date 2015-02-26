@@ -498,10 +498,14 @@ pt:
         description_of_larvae: "Se responder que sim, é um foco positivo.  Se não, é um foco potencial."
         neighborhood_address: ""
         description_placeholder: "Descreva a localização e tipo do foco"
+      index:
+        eliminate_and_win_points: Eliminar e ganhar até %{points} pontos
       types:
         delete: Deletar
       edit:
         title: Completar o foco
+        prepare: Completar o foco
+        eliminate: Documentar o método de eliminação
     about:
       title: Dengue Torpedo
       description: Um aplicativo interativo de celular e web para o controle da dengue

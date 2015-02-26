@@ -15,16 +15,7 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  .col-md-8.col-md-offset-2{:style => "text-align: center;"}
-    %h1{:style => "font-size: 28px;"}
-      = I18n.t("reports_feed.title", :name => @neighborhood.name)
-    %p.description
-      Esta página muestra reportes de criaderos potenciales o positivos en la
-      comunidad. Los datos no incluyen lugares en los que no había criaderos.
-      Para ver cómo es que los criiaderos reportados aquí afectan el riesgo de
-      dengue y chikungunya, haga click
-      = link_to "aquí.", neighborhood_path(@neighborhood)
+= render :partial => "shared/title_banner", :locals => {:title => I18n.t("reports_feed.title", :name => @neighborhood.name), :description => "Esta página muestra reportes de criaderos potenciales o positivos en la comunidad. Los datos no incluyen lugares en los que no había criaderos. Para ver cómo es que los criiaderos reportados aquí afectan el riesgo de dengue y chikungunya, haga click #{link_to "aquí.", neighborhood_path(@neighborhood)}"}
 
 /------------------------------------------------------------------------------
 
@@ -33,7 +24,7 @@
     .row
       .col-md-8.col-md-offset-2
 
-        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success", :style => "float: left; margin-right: 20px;" do
+        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success" do
           = I18n.t("common_terms.create_a_report")
 
 
@@ -43,7 +34,7 @@
 
 
         - if @neighborhood.spanish?
-          = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info", :style => "float: right;" do
+          = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.reports.index.view_csv")
 
 

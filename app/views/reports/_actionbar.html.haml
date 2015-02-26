@@ -20,8 +20,7 @@
             %i.fa.fa-trash-o
 
         - if @current_user && @current_user.verifier?
-          - unless report.is_invalid? || report.is_valid?
-            = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-              %i.fa.fa-check.fa-2
-            = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-              %i.fa.fa-times.fa-2
+          = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+            %i.fa.fa-check.fa-2
+          = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+            %i.fa.fa-times.fa-2

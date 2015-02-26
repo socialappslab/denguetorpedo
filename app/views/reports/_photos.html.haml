@@ -1,17 +1,16 @@
 .report-photos
   .row
     .col-md-6
-      = f.label :before_photo, :class => "col-md-12 control-label", :style => "text-align: center;"
       .sidebar-entity-photo
         - if report.breeding_site_picture.present?
           = image_tag(report.breeding_site_picture, :class => "img-rounded")
         - else
           = link_to edit_neighborhood_report_path(@neighborhood, report) do
             .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
+      = f.label :before_photo, :class => "col-md-12 control-label"
 
     - if report.eliminated? && report.elimination_method_picture.present?
       .col-md-6
-        = f.label :after_photo, :class => "col-md-12 control-label", :style => "text-align: center;"
         .sidebar-entity-photo
           = image_tag(report.elimination_method_picture, :class => "img-rounded")
-          
+        = f.label :after_photo, :class => "col-md-12 control-label"

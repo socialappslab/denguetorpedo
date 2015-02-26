@@ -392,7 +392,7 @@ es:
         username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de Dengue Chat y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
     prizes:
       index:
-        how_to_win_prizes: "¿Cómo ganar puntos?  Haga clic aquí."
+        how_to_win_prizes: "¿Cómo ganar puntos? Haga clic aquí."
         header_non_logged_in: Puntos y Medallas
         badge_explanation: Todos ganan medallas en Dengue Chat por puntos acumulados.
         community_explanation: Cada comunidad de Dengue Chat determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
@@ -485,6 +485,7 @@ es:
           other: "Usted tiene %{count} reportes incompletos"
         complete_now_button: "Termine ahora"
         view_csv: Ver CSV formas cargadas
+        eliminate_and_win_points: Eliminar y ganar hasta %{points} puntos
       new:
         did_you_see_larvae: ¿Ve larvas o pupas de mosquito?
         description_of_larvae: "Si respondió que sí, es un criadero positivo. Si no, es un criadero potencial."
@@ -496,6 +497,9 @@ es:
         delete: Eliminar
       edit:
         title: Complete el marcado del criadero
+        prepare: Complete el marcado del criadero
+        eliminate: Documente el eliminación de criadero
+
     about:
       title: Dengue Chat
       description: Um aplicativo interativo de celular e web para o controle da dengue

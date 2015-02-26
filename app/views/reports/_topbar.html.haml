@@ -15,7 +15,8 @@
           = I18n.t("common_terms.reported")
           = timestamp_in_metadata(report.created_at)
       %span.label.label-success
-        = inspection_award_text(report)
+        = link_to prizes_path do
+          = inspection_award_text(report)
 
 
     .col-md-4.pull-right.metadata
