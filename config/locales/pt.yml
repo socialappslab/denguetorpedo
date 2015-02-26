@@ -504,6 +504,8 @@ pt:
         delete: Deletar
       edit:
         title: Completar o foco
+        prepare: Completar o foco
+        eliminate: Documentar o método de eliminação
     about:
       title: Dengue Torpedo
       description: Um aplicativo interativo de celular e web para o controle da dengue

@@ -497,6 +497,9 @@ es:
         delete: Eliminar
       edit:
         title: Complete el marcado del criadero
+        prepare: Complete el marcado del criadero
+        eliminate: Documente el eliminación de criadero
+
     about:
       title: Dengue Chat
       description: Um aplicativo interativo de celular e web para o controle da dengue
