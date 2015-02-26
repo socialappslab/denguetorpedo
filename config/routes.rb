@@ -4,8 +4,9 @@ Dengue::Application.routes.draw do
 
   namespace :api, :defaults => { :format => :json } do
     namespace :v0 do
-      resources :sessions, :only => [:create]
-      resources :reports,  :only => [:index, :create]
+      resources :sessions,    :only => [:create]
+      resources :reports,     :only => [:index, :create]
+      resources :csv_reports, :only => [:create]
     end
   end
 
