@@ -47,14 +47,19 @@
         .form-group
           = f.label :csv, "2. Cargue un CSV"
           = f.file_field :csv, :class => "form-control"
-
+          = hidden_field_tag "csv_report[parsed_csv]", nil, :class => "parsed_csv"
         .form-group
           = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
             %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
             = I18n.t("views.buttons.upload")
+
+        .form-group.form-errors
+          %p
+
 
 
 
 - content_for :scripts do
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
+  = javascript_include_tag "alertview"
