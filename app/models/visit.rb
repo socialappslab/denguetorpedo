@@ -123,16 +123,6 @@ class Visit < ActiveRecord::Base
     return status
   end
 
-  def has_potential_report?
-    count = self.inspections.where(:identification_type => Inspection::Types::POTENTIAL).count
-    return (count > 0)
-  end
-
-  def has_positive_report?
-    count = self.inspections.where(:identification_type => Inspection::Types::POSITIVE).count
-    return (count > 0)
-  end
-
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
@@ -141,8 +131,11 @@ class Visit < ActiveRecord::Base
     # history of the locations. Instead, we do it at the end.
     location_ids = locations.map(&:id)
     visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
-    visits       = visits
     return [] if visits.blank?
+
+    # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
+    visit_ids = visits.pluck(:id)
+    visit_identification_hash = Inspection.select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
 
     # NOTE: Why are we only focusing on visits as opposed to locations? Because
     # we're looking at daily data, and we know that each location has one data
@@ -172,17 +165,17 @@ class Visit < ActiveRecord::Base
         # that had at least one potential and/or at least one positive
         # site. This means we need to ask if the house had a potential site,
         # and if the house had a positive site.
-        pot_count = visit.has_potential_report?
-        pos_count = visit.has_positive_report?
+        # We do this by checking if there is an entry in the visit_identifaction_hash
+        pot_count = visit_identification_hash.find {|k, v| k == [visit.id, Inspection::Types::POTENTIAL]}
+        pot_count = pot_count[1] if pot_count
+        pos_count = visit_identification_hash.find {|k, v| k == [visit.id, Inspection::Types::POSITIVE]}
+        pos_count = pos_count[1] if pos_count
 
-        day_statistic[:potential][:count] += 1 if pot_count
-        day_statistic[:positive][:count]  += 1 if pos_count
 
-        if pot_count == false && pos_count == false
-          day_statistic[:negative][:count] += 1
-        end
-
-        day_statistic[:total][:count] += 1
+        day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
+        day_statistic[:positive][:count]  += 1 if pos_count && pos_count > 0
+        day_statistic[:negative][:count]  += 1 if pot_count.blank? && pos_count.blank?
+        day_statistic[:total][:count]     += 1
       end
 
 
