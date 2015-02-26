@@ -15,16 +15,7 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  .col-md-8.col-md-offset-2{:style => "text-align: center;"}
-    %h1{:style => "font-size: 32px;"}
-      = I18n.t("reports_feed.title", :name => @neighborhood.name)
-    %p.description
-      Esta página muestra reportes de criaderos potenciales o positivos en la
-      comunidad. Los datos no incluyen lugares en los que no había criaderos.
-      Para ver cómo es que los criiaderos reportados aquí afectan el riesgo de
-      dengue y chikungunya, haga click
-      = link_to "aquí.", neighborhood_path(@neighborhood)
+= render :partial => "shared/title_banner", :locals => {:title => I18n.t("reports_feed.title", :name => @neighborhood.name), :description => "Esta página muestra reportes de criaderos potenciales o positivos en la comunidad. Los datos no incluyen lugares en los que no había criaderos. Para ver cómo es que los criiaderos reportados aquí afectan el riesgo de dengue y chikungunya, haga click #{link_to "aquí.", neighborhood_path(@neighborhood)}"}
 
 /------------------------------------------------------------------------------
 
