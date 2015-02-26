@@ -25,6 +25,9 @@
 }
 
 .report-topbar {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+
   margin: 25px;
   margin-top: 10px;
   img {
@@ -34,7 +37,6 @@
 
   .metadata {
     text-align: right;
-    font-weight: bold;
     font-size: 16px;
 
     .positive {
@@ -86,6 +88,10 @@
     margin-left: 10px;
     vertical-align: middle;
     display: inline-block;
+
+    a {
+      color: white;
+    }
   }
 }
 
@@ -99,8 +105,10 @@
 
   i, a {
     color: #8899a6;
-
   }
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
 }
 
 .report-content {
@@ -123,6 +131,9 @@
   p {
     font-size: 18px;
     color: #000;
+    font-family: "Lato" sans-serif;
+    font-weight: 400;
+    padding-top: 14.3px;
   }
 
   .invalid-report {
@@ -135,7 +146,8 @@
 
 .report-photos {
   .control-label {
-    margin-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
   }
 
   .sidebar-entity-photo{
