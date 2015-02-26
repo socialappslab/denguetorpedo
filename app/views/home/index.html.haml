@@ -68,13 +68,13 @@
     $("#search-neighborhoods").change(function() {
       window.location.href = $(this).val()
     });
-  })
 
-  $(".show-more-content-link").on("click", function(eventObj)
-  {
-      eventObj.preventDefault()
+    $(".show-more-content-link").on("click", function(eventObj)
+    {
+        eventObj.preventDefault()
 
-      var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
-      hiddenContent.css("display", "inline")
-      $(eventObj.currentTarget).hide()
+        var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
+        hiddenContent.css("display", "inline")
+        $(eventObj.currentTarget).hide()
+    })
   })

@@ -12,7 +12,10 @@
       = I18n.t("views.app")
 
     // Load the stylesheets.
-    = stylesheet_link_tag    "application"
+    // NOTE: We *cannot* load jquery asynchronously since the application.js file
+    // depends on the namespace.
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"}
+    = stylesheet_link_tag "application"
 
     / Load JavaScript assets.
     = javascript_include_tag "application"
