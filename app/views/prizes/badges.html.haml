@@ -1,5 +1,5 @@
 .row
-  .col-md-12.col-md-offset-1
+  .col-md-10.col-md-offset-1
     .row#prize_name_and_photo
       .row#prize_info
         .col-md-12{style: "margin-left:40px;margin-top:10px;"}
@@ -11,6 +11,6 @@
               %p{:style => "font-size:18px;"}
                 Você não precisa utilizar seus pontos!
       .row
-        .col-md-12{style: "padding-left:30px;text-align:center;"}
+        .col-md-12{style: "text-align:center;"}
           - @badges.each do |badge|
             = image_tag("badges/#{badge}.png", width: 150, height: 150)

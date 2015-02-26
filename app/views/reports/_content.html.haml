@@ -6,7 +6,7 @@
 
         .form-group.form-group-lg
           = f.label :report, :class => "col-sm-4 control-label"
-          .col-sm-6
+          .col-sm-8
             %p
               = report.report
 
@@ -15,7 +15,7 @@
         - if report.breeding_site_id.present?
           .form-group.form-group-lg
             = f.label :breeding_site_id, :class => "col-sm-4 control-label"
-            .col-sm-6
+            .col-sm-8
               %p
                 = report.breeding_site.description
 
@@ -24,7 +24,7 @@
         - if report.eliminated?
           .form-group.form-group-lg
             = f.label :elimination_method_id, :class => "col-sm-4 control-label"
-            .col-sm-6
+            .col-sm-8
               %p
                 = report.elimination_method.detailed_description
 
