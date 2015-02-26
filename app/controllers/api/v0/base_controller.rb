@@ -35,7 +35,6 @@ class API::V0::BaseController < ApplicationController
 
 
   def render_json_with_exception(exception)
-    puts "Rendering error..."
     render :json => { :message => exception.message }, :status => exception.status_code
   end
 
