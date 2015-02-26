@@ -13,17 +13,11 @@
 
 = render :partial => "shared/flashes"
 
-- if @incomplete_reports.present?
-  .alert.alert-danger.alert-dismissable{:style => "background-color: #e74c3c; border-radius: 0px;"}
-    %h2{:style => "color: #ecf0f1; text-shadow: none; text-align: center;"}
-      = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
-      = link_to I18n.t("views.reports.index.complete_now_button"), edit_neighborhood_report_path(@current_user.neighborhood, @incomplete_reports.first), :class => "btn btn-default"
-
 /------------------------------------------------------------------------------
 
 .row
-  .col-md-8.col-md-offset-1
-    %h1{:style => "font-size: 36px;"}
+  .col-md-8.col-md-offset-2{:style => "text-align: center;"}
+    %h1{:style => "font-size: 28px;"}
       = I18n.t("reports_feed.title", :name => @neighborhood.name)
     %p.description
       Esta página muestra reportes de criaderos potenciales o positivos en la
@@ -32,130 +26,88 @@
       dengue y chikungunya, haga click
       = link_to "aquí.", neighborhood_path(@neighborhood)
 
-  .col-md-2{:style => "float: right;"}
-    %div{:style => "margin-top: 10px;"}
-      = render :partial => "shared/social_media_buttons", :locals => {:twitter_content => I18n.t("facebook.description")}
-
-.row
-  .span#report_buttons{:style => "font-size:20px;"}
-
-/------------------------------------------------------------------------------
-
 /------------------------------------------------------------------------------
 
 - if @current_user && @current_user.neighborhood == @neighborhood
-  .row{:style => "margin-bottom: 20px;"}
-    .col-md-2.col-md-offset-1{:style => "margin-top: 20px;"}
-      = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-large" do
-        %i.fa.fa-map-marker
-        = I18n.t("common_terms.create_a_report")
+  .action-buttons
+    .row
+      .col-md-8.col-md-offset-2
 
-    .col-md-2{:style => "margin-top: 20px;"}
-      - if @neighborhood.spanish?
-        = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large" do
-          %i.fa.fa-file
-          = I18n.t("views.buttons.upload_csv")
-
-    .col-md-2{:style => "margin-top: 20px;"}
-      - if @neighborhood.spanish?
-        = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info btn-large" do
-          %i.fa.fa-file
-          = I18n.t("views.reports.index.view_csv")
+        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success", :style => "float: left; margin-right: 20px;" do
+          = I18n.t("common_terms.create_a_report")
 
 
-    .col-md-4
-      - if @report_count > @report_limit
-        = render :partial => "reports/pagination"
+        - if @neighborhood.spanish?
+          = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success" do
+            = I18n.t("views.buttons.upload_csv")
+
+
+        - if @neighborhood.spanish?
+          = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-info", :style => "float: right;" do
+            = I18n.t("views.reports.index.view_csv")
 
 
 /------------------------------------------------------------------------------
 
--# .row
--#   .col-md-10.col-md-offset-1
--#     #report_buttons
--#       = link_to I18n.t("common_terms.all"), nil, :id => 'all_reports_button', :class=>'bttn reports_feed_button',
--#         :onclick => 'filter_reports(event,"all")'
--#       = link_to I18n.t("common_terms.open_reports"), nil, :id => 'open_reports_button', :class=>'bttn reports_open_button',
--#         :onclick => 'filter_reports(event,"open")'
--#       = link_to I18n.t("common_terms.eliminated_reports"), nil, :id => 'eliminated_reports_button', :class=>'bttn reports_resolved_button',
--#         :onclick => 'filter_reports(event,"eliminated")'
+.denguechat-tab-toggle
+  .row
+    .col-md-2.col-md-offset-2
+      %ul.nav.nav-pills.nav-justified
+        %li.active
+          = link_to "#report", :data => {:toggle => "tab"} do
+            %i.fa.fa-map-marker
+            = I18n.t("activerecord.models.report", :count => 2)
+        %li
+          = link_to "#map", :data => {:toggle => "tab"} do
+            %i.fa.fa-globe
+            = I18n.t("common_terms.map")
 
-.row{:style => "margin-top: 20px;"}
-  .col-md-2.col-md-offset-1
-    %h2
-      = I18n.t("common_terms.order_by")
-  .col-md-6
-    %label.radio-inline{:style => "margin-top: 5px;"}
-      %input{:type => "radio", :name => "reports", :id => 'all_reports_button', :value => "points", :checked => params[:sort] != "name", :onclick => 'filter_reports(event,"all")'}
-      = I18n.t("common_terms.all")
-    %label.radio-inline{:style => "margin-top: 5px;"}
-      %input{:type => "radio", :name => "reports", :id => 'open_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"open")'}
-      = I18n.t("common_terms.open_reports")
-    %label.radio-inline{:style => "margin-top: 5px;"}
-      %input{:type => "radio", :name => "reports", :id => 'eliminated_reports_button', :value => "name", :checked => params[:sort] == "name", :onclick => 'filter_reports(event,"eliminated")'}
-      = I18n.t("common_terms.eliminated_reports")
-
-
+    .col-md-6
+      .pull-right
+        .report-filter.btn-group{:data => {:toggle => "buttons"}}
+          %label.btn.btn-default.active
+            = radio_button_tag "reports", "all", true, :data => {:type => "all"}
+            = I18n.t("common_terms.all")
+          %label.btn.btn-default
+            = radio_button_tag "reports", "open", nil, :data => {:type => "open"}
+            = I18n.t("common_terms.open_reports")
+          %label.btn.btn-default
+            = radio_button_tag "reports", "eliminated", nil, :data => {:type => "eliminated"}
+            = I18n.t("common_terms.eliminated_reports")
 
 /------------------------------------------------------------------------------
 
-.row{:style => "min-height: 600px;"}
-  .col-md-5.col-md-offset-1
-    #reports
-      - @reports.each do |report|
-        - next if report.sms_incomplete? && @current_user && @current_user != report.reporter
-
-        .report{ :class => (report.eliminated? ? "eliminated" : "open") }
-          = render :partial => "reports/metadata",   :locals => {:report => report}
-          = render :partial => "reports/attributes", :locals => {:report => report}
-          - unless report.sms_incomplete?
-            = render :partial => "reports/topbar",   :locals => {:report => report}
-
-  -# - if @neighborhood.name == Neighborhood::Names::MARE
-  -#   .col-md-7#map_div
-  -#     = render :partial => "reports/map"
-  -#   = render :partial => "reports/arcgis_map"
-  .col-md-5#map_div
+.tab-content
+  #report.tab-pane.active{:role => "tabpanel"}
+    = render :partial => "reports/sites"
+  #map.tab-pane{:role => "tabpanel"}
     = render :partial => "reports/google_map"
-  = javascript_include_tag "googlemap/map"
+
 
 /------------------------------------------------------------------------------
-/ Social media
-/-------------
-
-#fb-root
 
 - content_for :scripts do
+  = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
   = javascript_include_tag "moment"
   = javascript_include_tag "bootstrap/datetimepicker"
   = javascript_include_tag "datepicker"
 
   :javascript
-
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/#{@facebook_locale}/all.js#xfbml=1&appId=1423593507909037&version=v2.0";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
+      var target = $(e.target).attr("href");
+      if (target == "#map")
+        google.maps.event.trigger(map, 'resize');
+    })
 
     $(document).ready(function(){
-      //show all reports on start
-      $('#new_report').css('display','none');
-
-      // keep the map on the page when scrolling
-      // $(window).scroll(function() {
-      //   var scrollAmount = $(window).scrollTop();
-      //   if (scrollAmount > 200) {
-      //       $("#map_div").css("margin-top", scrollAmount - 263);
-      //   } else {
-      //       $("#map_div").css("margin-top", 0);
-      //   }
-      // });
-
-
+      $(".report-filter label").on("click", function() {
+        var reportType = $(this).find("input").data("type");
+        if (reportType === "all")
+          $(".report").show()
+        else {
+          $(".report").hide()
+          $(".report." + reportType).show()
+        }
+      });
     })

@@ -1,12 +1,169 @@
-// Place all the styles related to the Home controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-
 @import "variables";
 
-#report_status_bar {
-  margin-top: 10px;
+//-----------------------------------------------------------------------------
+// Report
+//-------
+
+.action-buttons {
+  margin-top: 20px;
 }
+
+.incomplete-reports-banner {
+  .alert {
+    background-color: #e74c3c;
+  }
+  h2 {
+    color: #ecf0f1;
+    text-shadow: none;
+    text-align: center;
+  }
+
+}
+
+.report-topbar {
+  margin: 25px;
+  margin-top: 10px;
+  img {
+    width: 50px;
+    margin-bottom: 10px;
+  }
+
+  .metadata {
+    text-align: right;
+    font-weight: bold;
+    font-size: 16px;
+
+    .positive {
+      color: #e74c3c;
+    }
+
+    .potential {
+      color: #e67e22;
+    }
+
+
+    .report-eliminated {
+      color: $dark-gray;
+    }
+
+    .timer {
+      display: inline-block;
+    }
+
+
+    .countdown {
+      color: $orange;
+    }
+
+    .report-open {
+      display: inline-block;
+      color: $orange;
+    }
+
+
+  }
+
+  .name {
+    vertical-align: middle;
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 10px;
+    width: 250px;
+
+    .feed-item-timestamp {
+      width: 200px;
+      display: inline-block;
+    }
+
+  }
+
+
+  .label-success {
+    margin-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+}
+
+.report-actionbar {
+  margin: 25px;
+  color: #8899a6;
+  font-size: 16px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+
+
+  i, a {
+    color: #8899a6;
+
+  }
+}
+
+.report-content {
+  .control-label {
+    text-align: left;
+    font-family: "Lato" sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+  }
+
+  margin: 25px;
+  margin-bottom: 10px;
+  font-size: 18px;
+
+  h1 {
+    color: #8899a6;
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #000;
+  }
+
+  .invalid-report {
+    color:red;
+    display: inline-block;
+    margin-top: 30px;
+    font-size: 20px;
+  }
+}
+
+.report-photos {
+  .control-label {
+    margin-bottom: 10px;
+  }
+
+  .sidebar-entity-photo{
+    text-align: center;
+
+    img {
+      z-index: 1;
+      width: 200px;
+      height: 200px;
+      border: 1px solid $gray;
+    }
+  }
+}
+
+//-----------------------------------------------------------------------------
+// General things
+//---------------
+
+.denguechat-tab-toggle {
+  margin-top: 40px; margin-bottom: 20px;
+  ul {
+    border: 1px #3498db solid;
+    box-sizing: border-box;
+    border-radius: 5px;
+  }
+
+  .active {
+    background-color: #5bc0de;
+    color: white;
+  }
+}
+
 
 .description {
   font-family: "Lato", sans-serif;
@@ -74,13 +231,6 @@
   }
 }
 
-#report_buttons {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 12px;
-}
-
-
 .reports_open_button {
   color: $dark-gray;
   background-color: #ffffff;
@@ -109,17 +259,6 @@
   color: $dark-gray;
   background-color: #ffffff;
 }
-
-// .active {
-//   background-color: $orange;
-//   color: white;
-//   font-weight: bold;
-//   font-size: 20px;
-//
-//   &:hover{
-//     color: white;
-//   }
-// }
 
 
 .bttn  {
@@ -165,6 +304,9 @@
 
 #reports{
   display: block;
+  form {
+    margin-bottom: 0px;
+  }
 }
 
 #new_report{
@@ -227,19 +369,6 @@
 }
 
 
-// Action bar for each report
-.action-bar {
-  color: #8899a6;
-  // display: inline-block;
-  font-size: 20px;
-  margin-top: 20px;
-
-  i, a {
-    color: #8899a6;
-    // margin-right:10px;
-    margin-left:10px;
-  }
-}
 
 
 .report-metadata {
@@ -255,44 +384,6 @@
 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;
-}
-
-.report-content-area {
-  margin-top: 10px;
-  font-size: 18px;
-
-  h1 {
-    color: #8899a6;
-    font-size: 16px;
-    // font-family: "Lato", sans-serif;
-    // font-weight: 300;
-  }
-
-  p {
-    font-size: 18px;
-    color: #000;
-  }
-
-  .invalid-report {
-    color:red;
-    display: inline-block;
-    margin-top: 30px;
-    font-size: 20px;
-  }
-
-}
-
-.countdown {
-  color: $orange;
-}
-
-.report-open {
-  display: inline-block;
-  color: $orange;
-}
-
-.report-eliminated {
-  color: $dark-gray;
 }
 
 .mapa {
@@ -314,18 +405,12 @@
 
 
 #map_div {
-  position:absolute;
-  right:100px;
-  overflow-y:hidden;
-  overflow-x:hidden;
+  height: 800px;
+  margin-bottom: 40px;
+
 
   #loading {
     z-index:100;
-    // width: 50%;
-    // margin: auto;
-    position:absolute;
-    right:150;
-    top: 200;
     text-align: center;
 
     img {
@@ -335,30 +420,16 @@
   }
 
 
-  #map-action-bar {
-    margin-bottom: 10px;
 
-    #map-error-description {
-      color: red;
-      font-weight: bold;
-      font-size: 10px;
-      display: none;
-    }
-  }
-
-  #map {
-    height: 500px;
-    position:relative;
-    overflow-y:hidden;
+  #map-error-description {
+    color: red;
+    font-weight: bold;
+    font-size: 10px;
+    display: none;
   }
 
   #gmap{
-    height: 600px;
-    position:relative;
-    overflow-y:hidden;
-
-    /* to undo the above img hack */
-    img { max-width: none; }
+    height: 800px;
   }
 
   #OSMap {

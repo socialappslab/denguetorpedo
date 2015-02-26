@@ -18,39 +18,80 @@ describe "Reports", :type => :feature do
 
   #-----------------------------------------------------------------------------
 
-  context "when creating a report through the web app" do
+  describe "Visiting Reports page" do
     before(:each) do
       sign_in(user)
+
+      6.times do |index|
+        u = (index % 2 == 0 ? user : other_user)
+        r = FactoryGirl.build(:report, :report => "Report with index #{index}", :reporter_id => u.id, :completed_at => Time.now)
+        if index == 0
+          r.elimination_method_id = r.breeding_site.elimination_methods.first.id
+          r.eliminated_at = Time.now + 3.days
+          r.after_photo = Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+        end
+
+        r.save!
+      end
+
       visit neighborhood_reports_path(user.neighborhood)
-      click_link I18n.t("common_terms.create_a_report")
     end
 
-    it "notifies the user if report description is empty" do
-      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
-      page.find(".compressed_photo", :visible => false).set(base64_image)
-
-      select(elimination_type.description, :from => "report_breeding_site_id")
-      page.find(".submit-button").click
-      expect(page).to have_content("Descripción es obligatorio")
+    it "displays the description text" do
+      expect(page).to have_content("Esta página muestra reportes de criaderos potenciales o positivos en la comunidad")
     end
 
-    it "notifies the user if report before photo is empty" do
-      fill_in "report_report", :with => "This is a description"
-      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
-      select(elimination_type.description, :from => "report_breeding_site_id")
-      page.find(".submit-button").click
-      expect(page).to have_content("Foto del criadero es obligatorio")
+    it "displays Call-To-Action button for un-eliminated reports" do
+      expect( page.all(".eliminate-report-button").length ).to eq(5)
     end
 
-    it "notifies the user if identification type is empty" do
-      fill_in "report_report", :with => "This is a description"
-      fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
-      page.find(".compressed_photo", :visible => false).set(base64_image)
-      page.find(".submit-button").click
-      expect(page).to have_content("Tipo de criadero es obligatorio")
+    it "displays open reports first (ordered by last updated)" do
+      first_report = page.all(".report")[0]
+      last_report  = page.all(".report")[-1]
+
+      expect(first_report).to have_content("Report with index 5")
+      expect(last_report).to have_content("Report with index 0")
+    end
+  end
+
+  #-----------------------------------------------------------------------------
+
+  describe "Creating a report" do
+    before(:each) do
+      sign_in(user)
+      visit new_neighborhood_report_path(user.neighborhood)
     end
 
-    context "successfully" do
+    describe "with errors" do
+
+      it "notifies the user if report description is empty" do
+        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        page.find(".compressed_photo", :visible => false).set(base64_image)
+
+        select(elimination_type.description, :from => "report_breeding_site_id")
+        page.find(".submit-button").click
+        expect(page).to have_content("Descripción es obligatorio")
+      end
+
+      it "notifies the user if report before photo is empty" do
+        fill_in "report_report", :with => "This is a description"
+        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        select(elimination_type.description, :from => "report_breeding_site_id")
+        page.find(".submit-button").click
+        expect(page).to have_content("Foto del criadero es obligatorio")
+      end
+
+      it "notifies the user if identification type is empty" do
+        fill_in "report_report", :with => "This is a description"
+        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        page.find(".compressed_photo", :visible => false).set(base64_image)
+        page.find(".submit-button").click
+        expect(page).to have_content("Tipo de criadero es obligatorio")
+      end
+    end
+
+
+    describe "successfully" do
       before(:each) do
         fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
         fill_in "report_report", :with => "This is a description"
@@ -93,7 +134,7 @@ describe "Reports", :type => :feature do
   end
 
   #-----------------------------------------------------------------------------
-  context "when eliminating a report" do
+  describe "Eliminating a report" do
     let!(:report) { FactoryGirl.create(:report,
       :location_id => location.id,
       :completed_at => Time.now,
@@ -101,24 +142,29 @@ describe "Reports", :type => :feature do
 
     before(:each) do
       sign_in(user)
+      visit edit_neighborhood_report_path(user.neighborhood, report)
+    end
+
+    it "links to a page to eliminate reports" do
+      visit neighborhood_reports_path(user.neighborhood)
+      expect(page).to have_css(".eliminate-report-button")
     end
 
     it "allows users to eliminate a report" do
-      visit neighborhood_reports_path(user.neighborhood)
-
       method = elimination_type.elimination_methods.first
-      select(method.description + " (#{method.points} #{I18n.t("attributes.points").downcase})", :from => "report_elimination_method_id")
+      select(method.description, :from => "report_elimination_method_id")
       page.find(".compressed_photo", :visible => false).set(base64_image)
       page.find(".submit-button").click
 
       expect(page).to have_content("Eliminado")
       expect(page).to have_content(report.reporter.display_name)
+      expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq(Time.now.strftime("%Y-%m-%d"))
     end
 
     it "does not overwrite the reporter id when a different user eliminates report" do
       sign_out(user)
       sign_in(other_user)
-      visit neighborhood_reports_path(other_user.neighborhood)
+      visit edit_neighborhood_report_path(user.neighborhood, report)
 
       select(elimination_type.elimination_methods.first.description, :from => "report_elimination_method_id")
       page.find(".compressed_photo", :visible => false).set(base64_image)
@@ -131,10 +177,10 @@ describe "Reports", :type => :feature do
     it "sets the eliminator to be appropriate user" do
       sign_out(user)
       sign_in(other_user)
-      visit neighborhood_reports_path(other_user.neighborhood)
+      visit edit_neighborhood_report_path(user.neighborhood, report)
 
       method = elimination_type.elimination_methods.first
-      select(method.description + " (#{method.points} #{I18n.t("attributes.points").downcase})", :from => "report_elimination_method_id")
+      select(method.description, :from => "report_elimination_method_id")
 
       page.find(".compressed_photo", :visible => false).set(base64_image)
       page.find(".submit-button").click
@@ -144,8 +190,6 @@ describe "Reports", :type => :feature do
     end
 
     it "notifies user if elimination method isn't selected" do
-      visit neighborhood_reports_path(other_user.neighborhood)
-
       page.find(".compressed_photo", :visible => false).set(base64_image)
       page.find(".submit-button").click
 
@@ -153,13 +197,11 @@ describe "Reports", :type => :feature do
     end
 
     it "notifies user if after photo isn't selected" do
-      visit neighborhood_reports_path(other_user.neighborhood)
-
       method = elimination_type.elimination_methods.first
-      select(method.description + " (#{method.points} #{I18n.t("attributes.points").downcase})", :from => "report_elimination_method_id")
+      select(method.description, :from => "report_elimination_method_id")
       page.find(".submit-button").click
 
-      expect(page).to have_content("Foto del criadero es obligatorio")
+      expect(page).to have_content("Foto de eliminación es obligatorio")
     end
   end
 
@@ -197,7 +239,7 @@ describe "Reports", :type => :feature do
       select(elimination_type.description, :from => "report_breeding_site_id")
       page.find(".submit-button").click
 
-      expect(page).to have_content("Foto del criadero es obligatorio")
+      expect(page).to have_content("Foto de eliminación es obligatorio")
     end
 
     it "notifies the user if identification type is empty" do

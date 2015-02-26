@@ -42,8 +42,7 @@
         %b{style: "color:red;"}
           = I18n.t("report.form.attention")
 
-      #map_div{:style => "position: static;"}
-        = render :partial => "reports/google_map"
+      = render :partial => "reports/google_map"
 
     - else
       = f.label :location do

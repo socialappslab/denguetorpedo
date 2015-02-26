@@ -1,14 +1,16 @@
-.row#map-action-bar
-  .col-md-5
-    #map-error-description
-      = I18n.t("map.location_not_found")
+#map_div
+  .row
+    .col-md-8.col-md-offset-2
+      #map-error-description
+        = I18n.t("map.location_not_found")
 
-.row
-  #loading
-    = image_tag "loading.gif"
-    %p
-      = I18n.t("map.loading")
-  #gmap
+  .row
+    .col-md-8.col-md-offset-2
+      #loading
+        = image_tag "loading.gif"
+        %p
+          = I18n.t("map.loading")
+      #gmap
 
 
 :javascript

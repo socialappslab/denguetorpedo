@@ -1,7 +1,7 @@
 - last_offset    = (@report_count / @report_limit).to_i
 - current_offset = params[:page].to_i
 
-%ul.pagination.pull-right
+%ul.pagination.pagination-lg
   - if last_offset < 5
     - (0..last_offset).each do |offset|
       %li{:class => (offset == current_offset) ? "disabled" : ""}

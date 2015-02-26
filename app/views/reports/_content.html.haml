@@ -1,0 +1,47 @@
+.report-content
+  = form_for([@neighborhood, report], :url => eliminate_neighborhood_report_path(@neighborhood, report), :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}) do |f|
+
+    .row
+      .col-md-12
+
+        .form-group.form-group-lg
+          = f.label :report, :class => "col-sm-4 control-label"
+          .col-sm-6
+            %p
+              = report.report
+
+        %hr
+
+        - if report.breeding_site_id.present?
+          .form-group.form-group-lg
+            = f.label :breeding_site_id, :class => "col-sm-4 control-label"
+            .col-sm-6
+              %p
+                = report.breeding_site.description
+
+        %hr
+
+        - if report.eliminated?
+          .form-group.form-group-lg
+            = f.label :elimination_method_id, :class => "col-sm-4 control-label"
+            .col-sm-6
+              %p
+                = report.elimination_method.detailed_description
+
+        - else
+          .row
+            .col-md-6.col-md-offset-4
+              = link_to "Eliminate and earn up to " + report.breeding_site.elimination_methods.pluck(:points).max.to_s + " points", edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success btn-lg eliminate-report-button"
+            -# = render :partial => "reports/elimination_method_form", :locals => {:report => report}
+
+        %hr
+
+        - if report.is_invalid?
+          %p.invalid-report
+            = I18n.t("report.form.problem_with_verification")
+
+    .row
+      .col-md-12
+        = render :partial => "reports/photos", :locals => {:report => report, :f => f}
+
+        %hr
