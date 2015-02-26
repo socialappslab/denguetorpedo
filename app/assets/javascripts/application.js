@@ -280,10 +280,10 @@ $(document).ready(function()
   $(".submit-button").on("click", function(e)
   {
     var button = $(e.currentTarget);
-    button.find(".fa").show();
+    button.find(".fa-refresh").show();
     button.attr("disabled", true);
-
-    e.currentTarget.form.submit()
+    $(e.currentTarget.form).trigger("submit")
+    return true;
   });
 
   //---------------------------------------------------------------------------
