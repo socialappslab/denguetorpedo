@@ -12,6 +12,11 @@ end
 
 module Dengue
   class Application < Rails::Application
+
+    # Comress HTML and JS/CSS using gzip and deflate. See:
+    # https://robots.thoughtbot.com/content-compression-with-rack-deflater
+    config.middleware.use Rack::Deflater
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
