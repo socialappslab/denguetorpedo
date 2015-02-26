@@ -2,24 +2,8 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-$gridColumns: 16;
-$gridColumnWidth: 55px;
-$gridGutterWidth: 10px;
-$gridColumnWidthLarge: 60px;
-$gridGutterWidthLarge: 10px;
-$gridRowWidth: ($gridColumns * $gridColumnWidth) + ($gridGutterWidth * ($gridColumns - 1)) + 140;
-
 @import 'bootstrap';
 @import "variables";
-
-// html, body, button, input, select, textarea, label {
-//   font-family: Verdana, Geneva, sans-serif;
-//   font-color: #333333;
-//   font-size: 100%;
-//   font-size: 13px;
-//   -webkit-text-size-adjust: 100%;
-//   ms-text-size-adjust: 100%;
-// }
 
 label {
   font-size: 16px;
@@ -31,8 +15,6 @@ html {
 }
 
 body {
-  /*background:#FDFFE9;
-  background: #eeeeee;*/
   margin-top: 0px;
   height: 100%;
 }
@@ -127,7 +109,6 @@ body, #container {
 body > #container {
   height: auto;
   min-height: 100%;
-  // padding-bottom: 20px;
 }
 
 .image_placeholder {
