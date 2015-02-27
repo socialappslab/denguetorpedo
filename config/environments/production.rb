@@ -13,8 +13,9 @@ Dengue::Application.configure do
 
   #----------------------------------------------------------------------------
   # Asset Compression and Compilation (JavaScripts and CSS)
+  # NOTE: According to http://guides.rubyonrails.org/asset_pipeline.html,
+  # sass-rails gem is used for CSS compression as long as we don't set css_compressor here.
   config.assets.compress       = true
-  config.assets.css_compressor = :yui
   config.assets.js_compressor  = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
