@@ -29,11 +29,12 @@
   = I18n.t("views.statistics.chart.disclaimer")
 
 
-= javascript_include_tag "chart-options"
-:javascript
-  $(document).ready(function() {
-    var rawData = #{@chart_statistics.to_json};
+- content_for :scripts do
+  = javascript_include_tag "chart-options"
+  :javascript
+    $(document).ready(function() {
+      var rawData = #{@chart_statistics.to_json};
 
-    google.load('visualization', '1', {packages: ['corechart']});
-    google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
-  });
+      google.load('visualization', '1', {packages: ['corechart']});
+      google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
+    });

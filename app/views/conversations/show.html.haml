@@ -53,14 +53,14 @@
 
 
 
-
-:javascript
-  $(document).ready(function()
-  {
-    // Listener on new team button.
-    $("#create-new-message").on("click", function(e)
+- content_for :scripts do
+  :javascript
+    $(document).ready(function()
     {
-      e.preventDefault();
-      $("#new-message-form").toggle()
-    });
-  })
+      // Listener on new team button.
+      $("#create-new-message").on("click", function(e)
+      {
+        e.preventDefault();
+        $("#new-message-form").toggle()
+      });
+    })
