@@ -24,14 +24,6 @@ describe ReportsController do
 
 	#-----------------------------------------------------------------------------
 
-	it "returns unread notifications when accessing /reports/notifications" do
-		notification = FactoryGirl.create(:notification, :read => false)
-		get "notifications"
-		expect(JSON.parse(response.body).length).to eq(1)
-	end
-
-	#-----------------------------------------------------------------------------
-
 	context "when creating a report" do
 		before(:each) do
 			cookies[:auth_token] = user.auth_token

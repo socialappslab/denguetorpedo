@@ -12,12 +12,6 @@ gem 'magic_encoding'
 gem 'mime' # TODO: Possibly deprecate?
 
 #------------------------------------------------------------------------------
-# Maps
-
-gem 'geokit'
-gem 'leaflet-rails'
-
-#------------------------------------------------------------------------------
 # User management
 
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -39,7 +33,7 @@ gem "http_accept_language"
 # Front-end tools
 
 gem 'haml'
-gem 'jquery-rails'
+# gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dynamic_form'
 gem 'rails_autolink'
@@ -53,6 +47,7 @@ group :assets do
   gem 'bootstrap-sass', '~> 3.2.0'
   gem 'coffee-rails', "~> 3.2.1"
   gem 'uglifier', '>= 1.0.3'
+  gem "yuicompressor"
 end
 
 #------------------------------------------------------------------------------

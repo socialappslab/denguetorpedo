@@ -129,7 +129,6 @@ Dengue::Application.routes.draw do
   # changed the paths in socialappslab/SMSGateway.
 
   post '/reports/gateway'       => "reports#gateway"
-  get  "/reports/notifications" => "reports#notifications"
 
   #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive
