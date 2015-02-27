@@ -64,6 +64,7 @@ gem "roo"
 gem "puma"
 gem "foreman"
 gem "therubyracer"
+gem "rack-timeout"
 
 #------------------------------------------------------------------------------
 # Workers
