@@ -87,6 +87,7 @@ group :test do
   gem 'guard-rspec'
   gem 'database_cleaner'
   gem 'faker'
+  gem "poltergeist"
 end
 
 #------------------------------------------------------------------------------
