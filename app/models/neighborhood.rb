@@ -75,13 +75,7 @@ class Neighborhood < ActiveRecord::Base
       return "America/Sao_Paulo"
     end
   end
-
-  #----------------------------------------------------------------------------
-
-  def geographical_name
-    return "#{self.name}, #{self.city.name}"
-  end
-
+  
   #----------------------------------------------------------------------------
 
   # TODO: Deprecate this.
