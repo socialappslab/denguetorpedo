@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150303070705) do
+ActiveRecord::Schema.define(:version => 20150303083822) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -275,6 +275,7 @@ ActiveRecord::Schema.define(:version => 20150303070705) do
     t.integer  "wall_id"
     t.string   "wall_type"
     t.integer  "neighborhood_id"
+    t.integer  "likes_count",     :default => 0
   end
 
   add_index "posts", ["user_id"], :name => "index_posts_on_user_id"
@@ -363,6 +364,7 @@ ActiveRecord::Schema.define(:version => 20150303070705) do
     t.boolean  "chemically_treated"
     t.boolean  "larvae"
     t.boolean  "pupae"
+    t.integer  "likes_count",               :default => 0
   end
 
   create_table "reports_users", :id => false, :force => true do |t|
