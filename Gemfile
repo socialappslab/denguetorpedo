@@ -111,7 +111,8 @@ group :production, :staging do
 end
 
 #------------------------------------------------------------------------------
-# Analytics
+# Analytics & Profiling
 
 gem 'newrelic_rpm'
 gem "analytics-ruby", '~> 2.0.8'
+gem 'rack-mini-profiler', :require => false
