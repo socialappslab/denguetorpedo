@@ -21,7 +21,7 @@ class City < ActiveRecord::Base
   validates :time_zone,  :presence => true
 
   # TODO: Deprecate this after March 1st, 2015
-  validates :country_id, :presence => true
+  validates :country, :presence => true
 
   #----------------------------------------------------------------------------
 
