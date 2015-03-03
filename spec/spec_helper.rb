@@ -17,6 +17,9 @@ require 'sidekiq/testing/inline'
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
+  # DO NOT run performance tests by default.
+  config.filter_run_excluding :performance => true
+
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
