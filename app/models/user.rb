@@ -127,11 +127,7 @@ class User < ActiveRecord::Base
   def city
     return self.neighborhood.city
   end
-
-  def country
-    return self.city.country
-  end
-
+  
   #----------------------------------------------------------------------------
 
   def award_points_for_referring
