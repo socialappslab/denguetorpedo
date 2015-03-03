@@ -162,7 +162,10 @@ class ApplicationController < ActionController::Base
   def ensure_team_chosen
     return if @current_user.nil?
 
-    if @current_user.teams.count == 0
+    # Perform an efficient SQL query to check if the user belongs
+    # to some team. Redirect if no membership is found.
+    tm = TeamMembership.where(:user_id => @current_user.id).limit(1)
+    if tm.blank?
       flash[:notice] = I18n.t("views.teams.call_to_action_flash")
       redirect_to teams_path and return
     end
