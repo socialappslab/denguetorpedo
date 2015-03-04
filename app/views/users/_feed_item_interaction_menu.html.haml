@@ -1,9 +1,11 @@
-- is_liked = likeable.likes.map(&:user_id).include?(@current_user.id)
+// TODO: Improve this query.
+// is_liked = likeable.likes.map(&:user_id).include?(@current_user.id)
+- is_liked = false
 
-= link_to path, :class => "likes_button", "data-path" => path, "data-likes_count" => likeable.likes.count do
+= link_to path, :class => "likes_button", "data-path" => path, "data-likes_count" => likeable.likes_count do
   %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
   %span.likes_text
-    = likeable.likes.count
+    = likeable.likes_count
 
 &#183;
 

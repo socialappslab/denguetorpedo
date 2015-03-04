@@ -1,7 +1,16 @@
 class City < ActiveRecord::Base
-  attr_accessible :name, :photo, :state, :state_code, :country_id, :time_zone, :as => :admin
+  attr_accessible :name, :photo, :state, :state_code, :time_zone, :as => :admin
 
-  belongs_to :country
+  #----------------------------------------------------------------------------
+
+  module Countries
+    MEXICO    = "Mexico"
+    BRAZIL    = "Brazil"
+    NICARAGUA = "Nicaragua"
+  end
+
+  #----------------------------------------------------------------------------
+
   has_many   :neighborhoods
 
   #----------------------------------------------------------------------------
@@ -9,8 +18,10 @@ class City < ActiveRecord::Base
   validates :name,       :presence => true
   validates :state,      :presence => true
   validates :state_code, :presence => true
-  validates :country_id, :presence => true
   validates :time_zone,  :presence => true
+
+  # TODO: Deprecate this after March 1st, 2015
+  validates :country, :presence => true
 
   #----------------------------------------------------------------------------
 
@@ -20,9 +31,9 @@ class City < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def localized_country_name
-    if self.country.name == Country::Names::MEXICO
+    if self.country == Countries::MEXICO
       return I18n.t('countries.mexico')
-    elsif self.country.name == Country::Names::NICARAGUA
+    elsif self.country == Countries::NICARAGUA
       return I18n.t('countries.nicaragua')
     else
       return I18n.t('countries.brazil')

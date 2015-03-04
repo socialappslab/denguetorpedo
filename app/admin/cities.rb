@@ -6,7 +6,7 @@ ActiveAdmin.register City do
     column "name"
     column "state"
     column "state_code"
-    column "country_id"
+    column "country"
     column "photo"
     column "time_zone"
     default_actions
@@ -27,7 +27,7 @@ ActiveAdmin.register City do
       f.input "name"
       f.input "state"
       f.input "state_code"
-      f.input "country_id", :as => :select, :collection => Country.all.map {|c| [c.name, c.id]}
+      f.input "country", :as => :select, :collection => [City::Countries::BRAZIL, City::Countries::MEXICO, City::Countries::NICARAGUA]
       f.input "photo"
       f.input "time_zone", :as => :select, :collection => TZInfo::Timezone.all.map{ |tz| [tz.name, tz.name] };
     end

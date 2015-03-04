@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150209062030) do
+ActiveRecord::Schema.define(:version => 20150304080637) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
     t.string   "time_zone"
+    t.string   "country"
   end
 
   create_table "comments", :force => true do |t|
@@ -74,6 +75,8 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
   end
+
+  add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
 
   create_table "contacts", :force => true do |t|
     t.string   "title"
@@ -198,6 +201,7 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.datetime "updated_at",    :null => false
   end
 
+  add_index "likes", ["likeable_id", "likeable_type"], :name => "index_likes_on_likeable_id_and_likeable_type"
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], :name => "index_likes_on_user_id_and_likeable_id_and_likeable_type", :unique => true
 
   create_table "locations", :force => true do |t|
@@ -274,6 +278,7 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.integer  "wall_id"
     t.string   "wall_type"
     t.integer  "neighborhood_id"
+    t.integer  "likes_count",     :default => 0
   end
 
   add_index "posts", ["user_id"], :name => "index_posts_on_user_id"
@@ -362,7 +367,11 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.boolean  "chemically_treated"
     t.boolean  "larvae"
     t.boolean  "pupae"
+    t.integer  "likes_count",               :default => 0
   end
+
+  add_index "reports", ["eliminator_id"], :name => "index_reports_on_eliminator_id"
+  add_index "reports", ["reporter_id"], :name => "index_reports_on_reporter_id"
 
   create_table "reports_users", :id => false, :force => true do |t|
     t.integer "report_id"
@@ -376,6 +385,8 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "team_memberships", ["user_id", "team_id"], :name => "index_team_memberships_on_user_id_and_team_id", :unique => true
 
   create_table "teams", :force => true do |t|
     t.string   "name"
@@ -397,6 +408,8 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
   end
+
+  add_index "user_notifications", ["user_id"], :name => "index_user_notifications_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "username"
@@ -432,6 +445,7 @@ ActiveRecord::Schema.define(:version => 20150209062030) do
     t.string   "locale"
   end
 
+  add_index "users", ["auth_token"], :name => "index_users_on_auth_token"
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
   create_table "visits", :force => true do |t|

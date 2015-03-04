@@ -6,5 +6,3 @@
       = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.eliminator}
     - elsif item.is_a?(Report) && item.open? && item.is_public? && item.reporter
       = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.reporter}
-    - elsif item.is_a? Notice
-      = render :partial => 'notices/feed_item', :locals => {:notice => item}

@@ -255,7 +255,7 @@ class CsvReportsController < NeighborhoodsBaseController
 
   def calculate_ivars
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
-    @visits      = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
+    @visit_ids   = @csv_reports.includes(:location).map {|r| r.location}.compact.uniq
   end
 
   #----------------------------------------------------------------------------

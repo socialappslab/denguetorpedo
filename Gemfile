@@ -87,6 +87,7 @@ group :test do
   gem 'guard-rspec'
   gem 'database_cleaner'
   gem 'faker'
+  gem "poltergeist"
 end
 
 #------------------------------------------------------------------------------
@@ -111,7 +112,8 @@ group :production, :staging do
 end
 
 #------------------------------------------------------------------------------
-# Analytics
+# Analytics & Profiling
 
 gem 'newrelic_rpm'
 gem "analytics-ruby", '~> 2.0.8'
+gem 'rack-mini-profiler', :require => false
