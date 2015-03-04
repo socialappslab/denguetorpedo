@@ -126,11 +126,10 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
-  def self.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, start_time = nil, visit_types = nil)
+  def self.calculate_daily_time_series_for_locations_start_time_and_visit_types(location_ids, start_time = nil, visit_types = nil)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
-    location_ids = locations.map(&:id)
-    visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
+    visits       = Visit.select("id, visited_at, location_id, parent_visit_id").where(:location_id => location_ids).order("visited_at ASC")
     return [] if visits.blank?
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.

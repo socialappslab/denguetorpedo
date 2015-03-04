@@ -58,7 +58,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
 
     # Calculate total visits to (different) locations.
-    @visits = @reports.includes(:location).map {|r| r.location}.compact.uniq
+    @visit_ids = @reports.joins(:location).pluck("locations.id")
   end
 
 end
