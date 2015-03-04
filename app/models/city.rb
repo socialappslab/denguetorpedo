@@ -1,5 +1,5 @@
 class City < ActiveRecord::Base
-  attr_accessible :name, :photo, :state, :state_code, :time_zone, :as => :admin
+  attr_accessible :name, :photo, :state, :state_code, :country, :time_zone, :as => :admin
 
   #----------------------------------------------------------------------------
 
