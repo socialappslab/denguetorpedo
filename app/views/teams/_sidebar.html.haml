@@ -14,7 +14,7 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
 
-  - sidebar_height = (@team.users.count > 5 ? "500px;" : "280px")
+  - sidebar_height = (@users.count > 5 ? "500px;" : "280px")
   .row{:style => "margin-top: 20px; height: #{sidebar_height};"}
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => {:items => @team.users}
