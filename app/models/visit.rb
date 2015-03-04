@@ -1,29 +1,14 @@
-# NOTE: The associated Visit table's granularity is down to the *day*, meaning
-# that if several reports are created in a day, then we will simply update the
-# existing Visit entry.
-# This has two benefits:
-# a) statistics are *much* faster to calculate
-# b) there is no need for real-time visits.I went with real-time series before this,
-#    and it was a hassle to calculate daily trends (which is all what people care about).
-
-# A Visit is the correct real-world representation instead of Visit, as
-# we're tracking the health status of a location at a given time. This
-# "track" can be roughly thought of as a visit to that location.
+# A "Visit" instance is the real-world representation of a physical
+# visit to some location. A visit, naturally, has several inspections
+# throughout the house and over several dates. Each inspection creates
+# a report on the site.
 #
-# Armed with this thought process, it now becomes obvious to append
-# more properties to this model. For instance,
+# The following properties are defined on the model:
 # * dengue cases,
 # * chik cases,
 # * identification type (positive, potential, or negative/clean)
 # * time of visit
 # * type of visit
-#
-# Note that this model limits the number of actions a user can do: either
-# identify (and do nothing), or identify and clean the whole place.
-#
-# For our purposes, there are only *two* visits: an identification visit,
-# and a followup visit. The act of identifying and eliminating breeding sites
-# falls into one of the two classes.
 class Visit < ActiveRecord::Base
   attr_accessible :location_id, :identification_type, :identified_at, :cleaned_at, :health_report
 
@@ -79,28 +64,6 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-
-  # The status of a visit depends on its identification_type, identified_at date
-  # and cleaned_at date as follows:
-  # * If cleaned_at is nil, then that means the site was identified but not
-  #   cleaned since last reported report (note: this does not mean it was never
-  #   cleaned). We rely on identification_type to define the status.
-  # * If cleaned_at is present, then we compare it to the date of identified_at.
-  #   If they match, then we still report that location as whatever identification_type
-  #   has it set. If cleaned_at and identified_at dates do NOT match, then we
-  #   treat this location as cleaned.
-  # TODO: We don't implement CLEAN status for now since it requires heavy SQL
-  # queries into the history of Visits.
-  # def state
-  #   if self.cleaned_at.blank?
-  #     return self.identification_type
-  #   elsif self.cleaned_at.beginning_of_day == self.identified_at.beginning_of_day
-  #     return self.identification_type
-  #   else
-  #     return Visit::Cleaning::NEGATIVE
-  #   end
-  # end
-
   # We set the identification type to be the *worst* found type, meaning that
   # if the report is positive, we set the identification_type to positive. If
   # the report is positive and the identification_type is already positive, then
@@ -133,22 +96,18 @@ class Visit < ActiveRecord::Base
     return [] if visits.blank?
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
+    # NOTE: I've considered using SQL joins here, but:
+    # a) inner joining inspections on visits leads to problems when calculating
+    #    identification type since a visit has many inspections,
+    # b) inner joining visits on inspections leads to problems with accounting
+    #    for visits with no inspections (e.g. those that are N on CSV forms)
     visit_ids = visits.pluck(:id)
     visit_identification_hash = Inspection.where(:visit_id => visit_ids).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
 
-    # NOTE: Why are we only focusing on visits as opposed to locations? Because
-    # we're looking at daily data, and we know that each location has one data
-    # point for each day, we can map a visit on a particular day to a unique location
-    # and (if a visit exists) the other way around.
     daily_stats = []
-
-    start_time = Time.now
-
     visits.each do |visit|
       visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")
       visit_type          = visit.visit_type
-
-      start = Time.now
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
@@ -163,11 +122,8 @@ class Visit < ActiveRecord::Base
         daily_stats << day_statistic
       end
 
-      puts "#1 TIME DIFF: #{Time.now - start}\n\n\n\n"
-      start = Time.now
-
       if visit_types.blank? || visit_types.include?(visit_type)
-        # NOTE: the daily metric calculates number of visited houses
+        # The daily metric calculates number of visited houses
         # that had at least one potential and/or at least one positive
         # site. This means we need to ask if the house had a potential site,
         # and if the house had a positive site.
@@ -184,17 +140,11 @@ class Visit < ActiveRecord::Base
         day_statistic[:total][:count]     += 1
       end
 
-      puts "#2 TIME DIFF: #{Time.now - start}\n\n\n\n"
-
-
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
       index              = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
       daily_stats[index] = day_statistic
     end
-
-    # Slow query: TOTAL TIME: 0.440751,  0.683666, 0.463589
-    puts "TOTAL TIME: #{Time.now - start_time}\n\n\n"
 
     # Now, let's iterate over daily_stats, calculating percentage.
     # Finally, let's include only those visit types that match the visit type.
