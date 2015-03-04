@@ -116,11 +116,12 @@ class Visit < ActiveRecord::Base
         # site. This means we need to ask if the house had a potential site,
         # and if the house had a positive site.
         # We do this by checking if there is an entry in the visit_identifaction_hash
-        pot_count = visit_identification_hash.find {|k, v| k == [visit.id, Inspection::Types::POTENTIAL]}
-        pot_count = pot_count[1] if pot_count
-        pos_count = visit_identification_hash.find {|k, v| k == [visit.id, Inspection::Types::POSITIVE]}
-        pos_count = pos_count[1] if pos_count
-
+        # by narrowing the array size as fast as possible.
+        visit_counts = visit_identification_hash.find_all {|k, v| k[0] == visit.id}
+        pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
+        pot_count    = pot_count[1] if pot_count
+        pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
+        pos_count    = pos_count[1] if pos_count
 
         day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
         day_statistic[:positive][:count]  += 1 if pos_count && pos_count > 0
