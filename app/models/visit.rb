@@ -134,16 +134,21 @@ class Visit < ActiveRecord::Base
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
     visit_ids = visits.pluck(:id)
-    visit_identification_hash = Inspection.select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
+    visit_identification_hash = Inspection.where(:visit_id => visit_ids).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
 
     # NOTE: Why are we only focusing on visits as opposed to locations? Because
     # we're looking at daily data, and we know that each location has one data
     # point for each day, we can map a visit on a particular day to a unique location
     # and (if a visit exists) the other way around.
     daily_stats = []
+
+    start_time = Time.now
+
     visits.each do |visit|
       visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")
       visit_type          = visit.visit_type
+
+      start = Time.now
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
@@ -158,6 +163,8 @@ class Visit < ActiveRecord::Base
         daily_stats << day_statistic
       end
 
+      puts "#1 TIME DIFF: #{Time.now - start}\n\n\n\n"
+      start = Time.now
 
       if visit_types.blank? || visit_types.include?(visit_type)
         # NOTE: the daily metric calculates number of visited houses
@@ -177,12 +184,17 @@ class Visit < ActiveRecord::Base
         day_statistic[:total][:count]     += 1
       end
 
+      puts "#2 TIME DIFF: #{Time.now - start}\n\n\n\n"
+
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
       index              = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
       daily_stats[index] = day_statistic
     end
+
+    # Slow query: TOTAL TIME: 0.440751,  0.683666, 0.463589
+    puts "TOTAL TIME: #{Time.now - start_time}\n\n\n"
 
     # Now, let's iterate over daily_stats, calculating percentage.
     # Finally, let's include only those visit types that match the visit type.
