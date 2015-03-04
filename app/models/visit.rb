@@ -16,9 +16,10 @@ class Visit < ActiveRecord::Base
   # Validators
 
   validates :location_id,         :presence => true
-  # validates :identification_type, :presence => true
-  # validates :visit_type,          :presence => true
   validates :visited_at,          :presence => true
+
+  #----------------------------------------------------------------------------
+  # Associations
 
   has_many :inspections
   has_many :reports, :through => :inspections
@@ -26,23 +27,10 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
   # Constants
 
-  # The status of a location defines whether it's positive, potential, negative
-  # or clean. The first three are defined by the associated reports at that
-  # location, and the last one is separately set in the database. See the
-  # 'status' instance method.
-  module Cleaning
-    POSITIVE  = 0
-    POTENTIAL = 1
-    NEGATIVE  = 2
-    CLEAN     = 3
-  end
-
   module Types
     INSPECTION = 0
     FOLLOWUP   = 1
   end
-
-  #----------------------------------------------------------------------------
 
   def visit_type
     return Types::FOLLOWUP if self.parent_visit_id.present?
