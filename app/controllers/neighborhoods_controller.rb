@@ -1,7 +1,6 @@
 class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen,               :only => [:show]
   before_filter :calculate_ivars,                  :only => [:show]
-  before_filter :calculate_time_series_for_visits, :only => [:show]
 
 
   #----------------------------------------------------------------------------
@@ -56,9 +55,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @teams   = @neighborhood.teams.order("name ASC")
     @reports = @neighborhood.reports
     @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.now.beginning_of_day)
-
-    # Calculate total visits to (different) locations.
-    @visit_ids = @reports.joins(:location).pluck("locations.id")
   end
 
 end

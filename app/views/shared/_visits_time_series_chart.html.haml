@@ -33,8 +33,20 @@
   = javascript_include_tag "chart-options"
   :javascript
     $(document).ready(function() {
-      var rawData = #{@chart_statistics.to_json};
-
       google.load('visualization', '1', {packages: ['corechart']});
-      google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
+
+      $.ajax({
+        url: "#{chart_api_v0_neighborhood_path(@neighborhood)}",
+        type: "GET",
+        success : function(response){
+          var rawData = response;
+
+          if (response.length == 0) {
+            $(".fa-refresh").hide();
+            $(".empty-chart-disclaimer").show();
+          }
+          else
+            google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
+        }
+      });
     });
