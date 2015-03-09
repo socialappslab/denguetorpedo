@@ -41,4 +41,12 @@ Dengue::Application.configure do
 
   # Allow pass debug_assets=true as a query parameter to load pages with unpackaged assets
   config.assets.allow_debugging = true
+
+  # Paperclip gem: ImageMagic path
+  Paperclip.options[:command_path] = "/usr/local/bin/convert"
+
+  # S3 Credential
+  config.paperclip_defaults = {
+    :storage => :filesystem
+  }
 end

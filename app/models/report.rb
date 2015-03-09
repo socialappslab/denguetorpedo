@@ -7,6 +7,7 @@ class Report < ActiveRecord::Base
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
   :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
   :protected, :chemically_treated, :larvae
+  # attr_readonly :likes_count
 
   #----------------------------------------------------------------------------
   # Constants

@@ -1,4 +1,4 @@
-web: bundle exec puma  -t 0:16 -p $PORT -e ${RACK_ENV:-development}
+web: bundle exec puma -C config/puma.rb
 
 # TODO: We're turning this off until we're ready to pay
 # for Heroku's worker process. Until then, we're not

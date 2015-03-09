@@ -13,9 +13,10 @@ Dengue::Application.configure do
 
   #----------------------------------------------------------------------------
   # Asset Compression and Compilation (JavaScripts and CSS)
+  # NOTE: According to http://guides.rubyonrails.org/asset_pipeline.html,
+  # sass-rails gem is used for CSS compression as long as we don't set css_compressor here.
   config.assets.compress       = true
-  config.assets.css_compressor = :yui
-  config.assets.js_compressor  = :yui
+  config.assets.js_compressor  = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = false
@@ -46,7 +47,7 @@ Dengue::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( googlemap/* map.js bootstrap/* image-compression.js moment.js datepicker.js chart-options.js)
+  config.assets.precompile += %w( googlemap/* map.js bootstrap/* image-compression.js feed-interactions.js moment.js datepicker.js chart-options.js)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

@@ -12,11 +12,7 @@
       = I18n.t("views.app")
 
     // Load the stylesheets.
-    = stylesheet_link_tag    "application"
-
-    / Load JavaScript assets.
-    = javascript_include_tag "application"
-
+    = stylesheet_link_tag "application"
 
     / Custom head definitions
     = yield :head if content_for(:head)
@@ -75,6 +71,13 @@
         %li
           = link_to I18n.t("views.footer.about"), about_path
 
+
+    / Scripts
+    // NOTE: We *cannot* load jquery asynchronously since the application.js file
+    // depends on the namespace.
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"}
+    = javascript_include_tag "application"
+    %script{:src => "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js", :async => true}
 
     / Fonts
     %link{:href => "//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css", :rel => "stylesheet"}

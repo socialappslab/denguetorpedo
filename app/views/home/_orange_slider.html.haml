@@ -10,22 +10,3 @@
     = link_to @introductory_video_on_dengue, :id => "play_button", :class => "fancybox-media fancybox.iframe" do
       %i.fa.fa-play-circle{:style => "font-size: 24px; color: white;"}
       = I18n.t("views.home.video_description")
-
-
-
-
-:javascript
-  $(document).ready(function()
-  {
-    $(".fancybox-media").fancybox({
-      maxWidth  : 800,
-      maxHeight : 600,
-      fitToView : false,
-      width   : '70%',
-      height    : '70%',
-      autoSize  : false,
-      closeClick  : false,
-      openEffect  : 'none',
-      closeEffect : 'none'
-    });
-  })

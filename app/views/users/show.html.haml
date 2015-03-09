@@ -7,7 +7,27 @@
 
     .col-md-7.col-md-offset-1
       = render :partial => "users/main"
-    -#
-    -# .col-md-2{:style => "text-align: center; margin-left: -40px;"}
-    -#   - if @user.neighborhood.name  == Neighborhood::Names::MARE
-    -#     = link_to I18n.t("common_terms.free_sms"), free_sms_path, :class => "btn btn-success btn-large", :style => "margin-top: 60px;"
+
+- content_for :scripts do
+  = javascript_include_tag "feed-interactions"
+
+  :javascript
+    $(document).ready(function()
+    {
+      $(".leave-team-button").click(function(event){
+        event.preventDefault();
+
+        var choice = confirm($(this).data("confirm"));
+        if (choice == false)
+          return
+
+        // Trim the count of the text
+        $.ajax({
+          url: $(this).data("path"),
+          type: "POST",
+          success : function(data){
+            $(event.currentTarget).parents('.sidebar-list-item').remove()
+          }
+        })
+      });
+    })

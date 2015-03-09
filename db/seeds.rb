@@ -9,14 +9,6 @@ puts "[!] Seeding countries..."
 puts "\n" * 3
 
 countries = ["Brazil", "Mexico", "Nicaragua"]
-countries.each do |c_name|
-  c = Country.find_by_name(c_name)
-  if c.nil?
-    c = Country.new
-    c.name = c_name
-    c.save!
-  end
-end
 
 puts "-" * 80
 puts "[!] Seeding cities..."
@@ -37,7 +29,7 @@ cities.each do |c_hash|
     c.name = c_hash[:name]
     c.state = c_hash[:state]
     c.state_code = c_hash[:state_code]
-    c.country_id = Country.find_by_name( c_hash[:country_name] ).id
+    c.country = c_hash[:country_name]
     c.time_zone  = "Mexico City"
     c.save!
   end

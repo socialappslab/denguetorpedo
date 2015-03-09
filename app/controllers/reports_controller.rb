@@ -28,23 +28,12 @@ class ReportsController < NeighborhoodsBaseController
     # TODO: This iteration should be done in SQL!
     @open_locations       = []
     @eliminated_locations = []
-    @reports.each do |report|
-      # In the case that the location is missing, then let's skip it.
-      next if report.location.nil?
 
-      # TODO: Why the !!! are we using two types of columns to encode
-      # the same information (open versus eliminated). Get rid of one or the other.
-      if report.open?
-        @open_locations << report.location
-      elsif report.eliminated?
-        @eliminated_locations << report.location
-      else
-        @open_locations << report.location
-      end
-    end
-
-    @open_locations.compact!
-    @eliminated_locations.compact!
+    # Bypass method definitions for open/eliminated locations by directly
+    # chaining AR queries here.
+    reports_with_locs     = Report.joins(:location).where("location_id IS NOT NULL").select("latitude, longitude")
+    @open_locations       = reports_with_locs.where("eliminated_at IS NULL OR elimination_method_id IS NULL")
+    @eliminated_locations = reports_with_locs.where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL")
 
     # NOTE: We don't want to do this *before* we define @open_ and @eliminated_
     # locations because we want the heatmap to include all the data.
@@ -436,21 +425,6 @@ class ReportsController < NeighborhoodsBaseController
       Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
       render :json => { message: "Sponsors or verifiers" }, :status => 401
     end
-  end
-
-  #----------------------------------------------------------------------------
-  # GET /reports/notifications
-  # This is used by SMSGateway to fetch the latest notifications created in
-  # the 'gateway' action that will be sent out as SMS.
-
-  def notifications
-    @notifications = Notification.where(:read => false)
-    @notifications.each do |notification|
-      notification.read = true
-      notification.save
-    end
-
-    render :json => @notifications and return
   end
 
   #----------------------------------------------------------------------------

@@ -21,10 +21,7 @@
   .form-group
     = f.label :neighborhood_id, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
     .col-md-6
-      // TODO: CLEANUP.
-      - neighborhoods = []
-      - City.order(:name).includes(:neighborhoods).each{ |c| neighborhoods += c.neighborhoods.map {|n| [n.geographical_name, n.id] } }
-      = f.select :neighborhood_id, neighborhoods, { :prompt => "" }, :class => "form-control"
+      = f.select :neighborhood_id, @neighborhood_select, { :prompt => "" }, :class => "form-control"
 
   .form-group
     .col-md-6.col-md-offset-6

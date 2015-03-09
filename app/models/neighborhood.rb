@@ -45,19 +45,19 @@ class Neighborhood < ActiveRecord::Base
   #------------------
 
   def spanish?
-    return [Country::Names::MEXICO, Country::Names::NICARAGUA].include?(self.country.name)
+    return [City::Countries::MEXICO, City::Countries::NICARAGUA].include?(self.country)
   end
 
   def mexican?
-    return self.country.name == "Mexico"
+    return self.country == City::Countries::MEXICO
   end
 
   def brazilian?
-    return self.country.name == "Brazil"
+    return self.country == City::Countries::BRAZIL
   end
 
   def nicaraguan?
-    return self.country.name == "Nicaragua"
+    return self.country == City::Countries::NICARAGUA
   end
 
   def country
@@ -74,12 +74,6 @@ class Neighborhood < ActiveRecord::Base
     elsif brazilian?
       return "America/Sao_Paulo"
     end
-  end
-
-  #----------------------------------------------------------------------------
-
-  def geographical_name
-    return "#{self.name}, #{self.city.name}"
   end
 
   #----------------------------------------------------------------------------

@@ -3,13 +3,12 @@
   = I18n.t('views.statistics.chart.title')
 
 
-- if @statistics.present?
-  .row
-    .col-md-12
-      #timeseries-chart{:style => "height: 350px; display: block;"}
-- else
-  %h3{:style => "text-align: center; margin: 40px; font-weight: bold;"}
-    = I18n.t("common_terms.no_data")
+.row
+  .col-md-12
+    #timeseries-chart{:style => "height: 350px; display: block; text-align: center;"}
+      %i.fa.fa-refresh.fa-spin{:style => "font-size: 64px; position: relative; top: 100"}
+      %h3.empty-chart-disclaimer
+        = I18n.t("common_terms.no_data")
 
 
 %div
@@ -29,11 +28,24 @@
   = I18n.t("views.statistics.chart.disclaimer")
 
 
-= javascript_include_tag "chart-options"
-:javascript
-  $(document).ready(function() {
-    var rawData = #{@chart_statistics.to_json};
+- content_for :scripts do
+  = javascript_include_tag "chart-options"
+  :javascript
+    $(document).ready(function() {
+      google.load('visualization', '1', {packages: ['corechart']});
 
-    google.load('visualization', '1', {packages: ['corechart']});
-    google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
-  });
+      $.ajax({
+        url: "#{chart_api_v0_neighborhood_path(@neighborhood)}",
+        type: "GET",
+        success : function(response){
+          var rawData = response;
+
+          if (response.length == 0) {
+            $(".fa-refresh").hide();
+            $(".empty-chart-disclaimer").show();
+          }
+          else
+            google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
+        }
+      });
+    });

@@ -12,12 +12,6 @@ gem 'magic_encoding'
 gem 'mime' # TODO: Possibly deprecate?
 
 #------------------------------------------------------------------------------
-# Maps
-
-gem 'geokit'
-gem 'leaflet-rails'
-
-#------------------------------------------------------------------------------
 # User management
 
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -39,7 +33,7 @@ gem "http_accept_language"
 # Front-end tools
 
 gem 'haml'
-gem 'jquery-rails'
+# gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dynamic_form'
 gem 'rails_autolink'
@@ -53,6 +47,7 @@ group :assets do
   gem 'bootstrap-sass', '~> 3.2.0'
   gem 'coffee-rails', "~> 3.2.1"
   gem 'uglifier', '>= 1.0.3'
+  gem "yuicompressor"
 end
 
 #------------------------------------------------------------------------------
@@ -69,6 +64,7 @@ gem "roo"
 gem "puma"
 gem "foreman"
 gem "therubyracer"
+gem "rack-timeout"
 
 #------------------------------------------------------------------------------
 # Workers
@@ -91,6 +87,7 @@ group :test do
   gem 'guard-rspec'
   gem 'database_cleaner'
   gem 'faker'
+  gem "poltergeist"
 end
 
 #------------------------------------------------------------------------------
@@ -115,7 +112,8 @@ group :production, :staging do
 end
 
 #------------------------------------------------------------------------------
-# Analytics
+# Analytics & Profiling
 
 gem 'newrelic_rpm'
 gem "analytics-ruby", '~> 2.0.8'
+gem 'rack-mini-profiler', :require => false

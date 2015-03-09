@@ -17,6 +17,9 @@ require 'sidekiq/testing/inline'
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
+
+
+
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -29,18 +32,6 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = false
-
-  # NOTE: This must be on the top of RSpec declaration, above any other config.before
-  # declaration.
-  config.before(:suite) do
-    # Before starting the suite, wipe the DB clean, then seed it.
-    DatabaseCleaner.clean_with(:truncation)
-    load Rails.root.join("db", "seeds.rb")
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
-  end
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -55,8 +46,21 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 
+
+  # NOTE: This must be on the top of RSpec declaration, above any other config.before
+  # declaration.
+  config.before(:suite) do
+    # Before starting the suite, wipe the DB clean, then seed it.
+    DatabaseCleaner.clean_with(:truncation)
+    load Rails.root.join("db", "seeds.rb")
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
   config.before(:each, :after_commit => true) do
-    DatabaseCleaner.strategy = :truncation, { :except => %w[breeding_sites countries cities elimination_methods neighborhoods] }
+    DatabaseCleaner.strategy = :truncation, { :except => %w[breeding_sites cities elimination_methods neighborhoods] }
   end
 
 

@@ -33,18 +33,26 @@ class TeamsController < ApplicationController
     @post    = Post.new
 
     # Load associations.
+    # NOTE: We're going to bypass ActiveRecord association methods and instead
+    # use custom AR chaining because we want to
+    # a) control what kind of content shows up in the feed,
+    # b) avoid existing inefficiencies in User model (e.g. see reports method in user.rb)
     @team    = Team.find(params[:id])
-    @users   = @team.users.includes(:posts)
-    @reports = @users.map {|u| u.reports.where("completed_at IS NOT NULL").where(:protected => [nil, false]).order("updated_at DESC")}.flatten
+    @users   = @team.users
+    user_ids = @users.pluck(:id)
+
+    @reports = Report.where("reporter_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids)
+    @reports = @reports.where("completed_at IS NOT NULL").where(:protected => [nil, false])
+    @reports = @reports.order("updated_at DESC")
+
+    @posts = Post.where(:user_id => user_ids).order("updated_at DESC").includes(:comments)
 
     @total_reports = @reports.count
     @total_points  = @team.points
 
-    if params[:feed].to_s == "1"
-      @posts = @users.map {|u| u.posts}.flatten
-    else
-      @posts   = @users.map {|u| u.posts.order("updated_at DESC").limit(3)}.flatten
-      @reports = @reports[0..5]
+    unless params[:feed].to_s == "1"
+      @posts   = @posts.limit(5)
+      @reports = @reports.limit(5)
     end
 
     @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }

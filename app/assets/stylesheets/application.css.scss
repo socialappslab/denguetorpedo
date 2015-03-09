@@ -3,9 +3,13 @@
 * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
 * the top of the compiled file, but it's generally better to create a new file per style scope.
 *= require_self
-*= require jquery.ui.all
-*= require_tree .
-= require leaflet
+*= require home
+*= require jquery.countdown
+*= require jquery.fancybox
+*= require layout
+*= require prizes
+*= require reports
+*= require users
 */
 
 @import "variables";
@@ -14,6 +18,10 @@
   color: $color;
 }
 
+
+.push_down {
+  height: 60px;
+}
 
 
 #logo {
@@ -285,4 +293,8 @@ div {
     font-weight: 400;
     font-size: 20px;
   }
+}
+
+.empty-chart-disclaimer {
+  text-align: center; position: relative; font-weight: bold; font-size: 24px; display: none;
 }
