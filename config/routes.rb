@@ -6,6 +6,14 @@ Dengue::Application.routes.draw do
     namespace :v0 do
       resources :sessions, :only => [:create]
       resources :reports,  :only => [:index, :create]
+
+      resources :neighborhoods, :only => [] do
+
+        member do
+          get "chart"
+        end
+
+      end
     end
   end
 

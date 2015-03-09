@@ -44,56 +44,6 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
-  # This is a *heavy* method that returns time series for visits over different
-  # timeframes (inferred through cookies).
-  def calculate_time_series_for_visits
-    start_time  = nil
-    visit_types = []
-    if cookies[:chart].present?
-      chart_settings = JSON.parse(cookies[:chart])
-      start_time = 1.month.ago  if chart_settings["timeframe"] == "1"
-      start_time = 3.months.ago if chart_settings["timeframe"] == "3"
-      start_time = 6.months.ago if chart_settings["timeframe"] == "6"
-
-      # if chart_settings["positive_inspection"].present? || chart_settings["potential_inspection"].present?
-      #   visit_types << Visit::Types::INSPECTION
-      # end
-      #
-      # if chart_settings["positive_followup"].present? || chart_settings["potential_followup"].present?
-      #   visit_types << Visit::Types::FOLLOWUP
-      # end
-      #
-      # if chart_settings["percentages"].present? && chart_settings["percentages"] == "daily"
-      #   @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, visit_types)
-      # end
-    end
-
-    # Calculate the statistics based on the start_time and visit_types only
-    # if it hasn't been calculated yet.
-    # if @statistics.blank?
-    #   @statistics = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, visit_types)
-    # end
-
-    # NOTE: We're overriding whatever options the user has chosen to
-    # keep things agile for the time being.
-
-    start = Time.now
-    @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, [])
-
-    # Format the data in a way that Google Charts can use.
-    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')]]
-    @statistics.each do |hash|
-      @chart_statistics << [
-        hash[:date],
-        hash[:positive][:percent],
-        hash[:potential][:percent],
-        hash[:negative][:percent]
-      ]
-    end
-  end
-
-  #----------------------------------------------------------------------------
-
 
   def require_login
     @current_user ||= User.find_by_auth_token( params[:auth_token] )
