@@ -11,7 +11,7 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.notice").capitalize
 
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; max-height: 500px;"}
+  .row.sidebar-row
     .col-md-12
       - @notices.each do |notice|
         .feed-item
@@ -49,7 +49,7 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("activerecord.models.team", :count => 2).capitalize
 
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; max-height: 500px;"}
+  .row.sidebar-row
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
@@ -58,6 +58,6 @@
   %h1{:style => "text-align: center; color: #333;"}
     = I18n.t("common_terms.participants").capitalize
 
-  .row{:style => "margin-top: 20px; overflow-y: scroll; overflow-x: hidden; max-height: 500px;"}
+  .row.sidebar-row
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => { :items => @users }

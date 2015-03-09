@@ -305,6 +305,10 @@ ul#user_right_panel {
 .feed-item-bar {
   margin-bottom: 15px;
   font-size: 14px;
+
+  span {
+    font-weight: bold;
+  }
 }
 
 .feed-item-timestamp {
