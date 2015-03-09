@@ -5,8 +5,6 @@
 // the compiled file.
 //
 //= require_self
-//= require jquery.countdown.min
-//= require jquery.fancybox.pack
 
 $(document).ready(function()
 {
