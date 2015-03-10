@@ -18,6 +18,24 @@
   color: $color;
 }
 
+#dashboard_bar {
+  background-color: white;
+  height: 85px;
+  border-width: 0px 0px 3px 0px;
+  border-style: solid;
+  border-color: #FF6600;
+  font-size: 20px;
+}
+
+#dashboard_bar a {
+  line-height: 50px;
+}
+
+#dashboard_bar .dashboard-item {
+  text-align: center;
+  margin-top: 15px;
+}
+
 
 .push_down {
   height: 60px;
@@ -396,7 +414,6 @@ div {
 // Sidebar customizations
 
 .denguechat-sidebar {
-  display: none;
   margin-left: 30px;
   margin-right: 30px;
 
@@ -443,4 +460,14 @@ div {
 
 .feed-item-content {
   margin-bottom: 20px;
+}
+
+
+
+.master-detail-layout {
+  min-height:700px;
+
+  .detail-border {
+    border-right: 1px solid #ccc;
+  }
 }
