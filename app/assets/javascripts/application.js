@@ -5,6 +5,7 @@
 // the compiled file.
 //
 //= require_self
+//= require "feed-interactions"
 
 $(document).ready(function()
 {
