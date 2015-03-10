@@ -410,10 +410,19 @@ div {
   }
 }
 
+.more-feed-link {
+  text-align: center;
+  margin: 20px;
 
-.newsfeed {
+  a {
+    color: #6655ee !important;
+    font-size: 32px !important;
+  }
+}
+
+#newsfeed {
   margin-top: 10px;
-  display: none;
+  // display: none;
 }
 
 

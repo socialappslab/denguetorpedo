@@ -9,3 +9,10 @@
           = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.eliminator}
         - elsif item.is_a?(Report) && item.open? && item.is_public? && item.reporter
           = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.reporter}
+
+
+      - if @activity_feed.present? && params[:feed].blank?
+        .more-feed-link
+          = link_to url_for(:only_path => true, :feed => 1) do
+            %i.fa.fa-chevron-down
+            = I18n.t("common_terms.more")
