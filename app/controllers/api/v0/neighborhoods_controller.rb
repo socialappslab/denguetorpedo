@@ -1,15 +1,10 @@
 class API::V0::NeighborhoodsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token, :only => [:chart]
-  before_filter :current_user
 
   #----------------------------------------------------------------------------
   # GET /api/v0/neighborhoods/:id/chart
 
   def chart
-    if @current_user.blank?
-      raise API::V0::Error.new("Access denied", 401) and return
-    end
-
     @neighborhood = Neighborhood.find(params[:id])
     @reports      = @neighborhood.reports
     @visit_ids    = @reports.joins(:location).pluck("locations.id")
