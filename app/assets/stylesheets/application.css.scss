@@ -144,6 +144,11 @@ div {
 
 .sidebar-list-item {
   margin-bottom: 3px;
+
+  img {
+    width: 50px; height: 50px;
+  }
+
 }
 
 
@@ -358,6 +363,75 @@ div {
 .sidebar-row {
   margin-top: 20px;
   overflow-y: scroll;
-  overflow-x: hidden;
+  // overflow-x: hidden;
   max-height: 500px;
+}
+
+
+
+.leave-team-button {
+  display: inline;
+
+  button {
+    background-color: inherit !important; float: right; padding: 0px;
+  }
+
+  i {
+    color: #d9534f; line-height: 50px;
+  }
+}
+
+.notice {
+
+  i {
+    margin-top: 5px;
+  }
+
+  p {
+    color: #6655ee;
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Sidebar customizations
+
+.denguechat-sidebar {
+  display: none;
+  margin-left: 30px;
+  margin-right: 30px;
+
+  hr {
+    border-bottom: 1px solid #ccc;
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+}
+
+
+.newsfeed {
+  margin-top: 10px;
+  display: none;
+}
+
+
+.point-progress {
+  margin-bottom: 30px; margin-top: 50px;
+
+  h1 {
+    font-size: 50px; display: inline;
+  }
+
+  p {
+    margin-top: 10px; display: inline; font-size: 15px;
+  }
+}
+
+
+
+
+.feed-item-content {
+  margin-bottom: 20px;
 }

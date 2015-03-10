@@ -1,5 +1,5 @@
 
-%div{:style => "margin-left: 30px; margin-right: 30px;"}
+.denguechat-sidebar
   .sidebar-entity-photo
     = image_tag(@neighborhood.picture, :class => "img-rounded")
     .sidebar-entity-name
@@ -7,18 +7,18 @@
     .sidebar-entity-name
       = "#{@neighborhood.city.localized_country_name}"
 
-  %hr{:style => "border-bottom: 1px solid #ccc;"}
-  %h1{:style => "text-align: center; color: #333;"}
+  %hr
+  %h1
     = I18n.t("activerecord.models.notice").capitalize
 
   .row.sidebar-row
     .col-md-12
       - @notices.each do |notice|
-        .feed-item
+        .feed-item.notice
           .user_activity_item
             .row.feed-item-bar
               .col-md-12
-                %b{:style => "color: #6655ee;"}
+                %p
                   = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
                 .feed-item-timestamp
                   %i.fa.fa-clock-o
@@ -29,33 +29,31 @@
                 - if notice.title.present?
                   = notice.title
 
+              .col-md-12
                 - if notice.summary.present?
-                  %div{:style => "margin-top: 5px;"}
-                    %i.fa.fa-info-circle
-                    = notice.summary
+                  %i.fa.fa-info-circle
+                  = notice.summary
 
+              .col-md-12
                 - if notice.location.present?
-                  %div{:style => "margin-top: 5px;"}
-                    %i.fa.fa-bank
-                    = notice.location
+                  %i.fa.fa-bank
+                  = notice.location
 
-                %div{:style => "margin-top: 5px;"}
-                  %i.fa.fa-calendar
-                  = format_timestamp(notice.date)
-
+              .col-md-12
+                %i.fa.fa-calendar
+                = format_timestamp(notice.date)
 
 
-  %hr{:style => "border-bottom: 1px solid #ccc;"}
-  %h1{:style => "text-align: center; color: #333;"}
+  %hr
+  %h1
     = I18n.t("activerecord.models.team", :count => 2).capitalize
 
   .row.sidebar-row
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
-
-  %hr{:style => "border-bottom: 1px solid #ccc;"}
-  %h1{:style => "text-align: center; color: #333;"}
+  %hr
+  %h1
     = I18n.t("common_terms.participants").capitalize
 
   .row.sidebar-row

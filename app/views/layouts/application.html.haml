@@ -26,8 +26,8 @@
 
   /-----------------------------------------------------------------------------
 
-  %body{:class => [params[:controller].parameterize, params[:action].parameterize]}
-    #container{style: "overflow-y: auto;overflow:hidden;"}
+  %body
+    #container
       = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
 
 

@@ -109,6 +109,8 @@ body, #container {
 body > #container {
   height: auto;
   min-height: 100%;
+  overflow-y: auto;
+  overflow:hidden;
 }
 
 .image_placeholder {

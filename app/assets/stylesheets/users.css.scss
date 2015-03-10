@@ -50,10 +50,6 @@ ul#user_right_panel {
 
 }
 
-#user_reports {
-  margin-top: 10px;
-}
-
 .user_report_time {
   text-align: right;
   margin-left: 50px;
@@ -307,6 +303,10 @@ ul#user_right_panel {
   font-size: 14px;
 
   span {
+    font-weight: bold;
+  }
+
+  .username {
     font-weight: bold;
   }
 }

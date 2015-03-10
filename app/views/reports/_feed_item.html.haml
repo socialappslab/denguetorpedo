@@ -19,7 +19,7 @@
     .row.feed-item-report-photo
       .col-md-12
 
-        .row{:style => "margin-top: 20px;"}
+        .row
           .col-md-5.col-md-offset-2
             = link_to neighborhood_reports_path(report.neighborhood) do
               - if report.before_photo_file_name.present?
@@ -39,7 +39,6 @@
                 .feed-item-elimination-incentive
                   %p
                     = I18n.t("common_terms.eliminate_and_gain_points")
-
               - else
                 = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
 
