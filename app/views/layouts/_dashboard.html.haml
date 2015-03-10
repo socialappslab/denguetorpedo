@@ -1,23 +1,25 @@
-:css
-  #dashboard_bar {
-    background-color: white;
-    height: 85px;
-    border-width: 0px 0px 3px 0px;
-    border-style: solid;
-    border-color: #FF6600;
-    font-size: 20px;
-  }
+- content_for :head do
+  :css
+    #dashboard_bar {
+      background-color: white;
+      height: 85px;
+      border-width: 0px 0px 3px 0px;
+      border-style: solid;
+      border-color: #FF6600;
+      font-size: 20px;
+    }
 
-  #dashboard_bar a {
-    line-height: 50px;
-  }
+    #dashboard_bar a {
+      line-height: 50px;
+    }
 
-  #dashboard_bar .dashboard-item {
-    text-align: center;
-    margin-top: 15px;
-  }
+    #dashboard_bar .dashboard-item {
+      text-align: center;
+      margin-top: 15px;
+    }
 
-- dashboard_item_width = @current_user && @current_user.neighborhood.spanish? ? '275px' : '275px'
+/*---------------------------------------------------------------------------*/
+
 .row#dashboard_bar
   .col-md-2.col-md-offset-1.dashboard-item
     - header_styling = current_page?(:controller => "users", :action => "show") ? "font-weight:bold;" : ""
