@@ -3,15 +3,12 @@
     .row
       .col-md-2.feed-item-profile-photo
         = link_to user_path(owner) do
-          - if owner.profile_photo_file_name.nil?
-            = image_tag("default_images/user_default_alt.png")
-          - else
-            = image_tag(owner.profile_photo.url(:small))
+          = image_tag(owner.picture)
 
       .col-md-9
         = render :partial => "users/feed_item_metadata", :locals => {:item => report, :user => owner, :path => user_path(owner)}
 
-        .row.feed-item-content{:style => "margin-bottom: 20px;"}
+        .row.feed-item-content
           .col-md-12
             = report.report
 
