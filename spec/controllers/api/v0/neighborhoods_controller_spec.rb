@@ -4,12 +4,6 @@ describe API::V0::NeighborhoodsController do
   let(:neighborhood)   { Neighborhood.first }
   let(:user)           { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
 
-  it "allows only authenticated users" do
-    get :chart, :id => neighborhood.id
-    expect(JSON.parse(response.body)["message"] ).to eq("Access denied")
-    expect(response.status).to eq(401)
-  end
-
   describe "Request for charts", :after_commit => true do
     let(:location)       { FactoryGirl.create(:location, :address => "Test address")}
     let!(:second_location)       { FactoryGirl.create(:location, :address => "New Test address")}
