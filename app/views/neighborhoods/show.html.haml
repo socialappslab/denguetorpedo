@@ -9,5 +9,4 @@
       = render :partial => "neighborhoods/main"
 
 - content_for :scripts do
-  %script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
   = javascript_include_tag "feed-interactions"

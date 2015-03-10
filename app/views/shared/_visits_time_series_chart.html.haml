@@ -26,11 +26,11 @@
 
 
 - content_for :scripts do
+  %script{:src => "https://www.google.com/jsapi", :type => "text/javascript", :async => true}
   = javascript_include_tag "chart-options"
+
   :javascript
     $(document).ready(function() {
-      google.load('visualization', '1', {packages: ['corechart']});
-
       $.ajax({
         url: "#{chart_api_v0_neighborhood_path(@neighborhood)}",
         type: "GET",
@@ -40,9 +40,9 @@
           if (response.length == 0) {
             $(".fa-refresh").hide();
             $(".empty-chart-disclaimer").show();
+          } else {
+            google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", rawData) } } );
           }
-          else
-            google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
         }
       });
     });
