@@ -67,6 +67,15 @@ gem "therubyracer"
 gem "rack-timeout"
 
 #------------------------------------------------------------------------------
+# Caching
+# See: https://devcenter.heroku.com/articles/rack-cache-memcached-rails31
+
+gem 'rack-cache'
+gem 'dalli'
+gem 'kgio'
+gem "memcachier"
+
+#------------------------------------------------------------------------------
 # Workers
 
 gem "sidekiq"

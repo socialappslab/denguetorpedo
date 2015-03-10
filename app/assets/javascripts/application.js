@@ -5,8 +5,7 @@
 // the compiled file.
 //
 //= require_self
-//= require jquery.countdown.min
-//= require jquery.fancybox.pack
+//= require "feed-interactions"
 
 $(document).ready(function()
 {

@@ -1,6 +1,6 @@
 .row.feed-item-bar
-  .col-md-12
-    = link_to user.display_name, user_path(user), :style => "font-weight: bold;"
+  .col-md-12.username
+    = link_to user.display_name, user_path(user)
     .feed-item-timestamp
       %i.fa.fa-clock-o
       = timestamp_in_metadata(item.created_at)

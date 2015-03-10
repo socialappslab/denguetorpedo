@@ -20,7 +20,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Limit the amount of records we show.
     unless params[:feed].to_s == "1"
-      @posts   = @posts.limit(15)
+      @posts   = @posts.limit(5)
       @reports = @reports.limit(5)
     end
 

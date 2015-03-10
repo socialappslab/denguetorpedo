@@ -1,7 +1,4 @@
 
-%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
-
--# = @statistics.find{|s| s[:date] == "2015-01-09"}.inspect
 /------------------------------------------------------------------------------
 
 .row{:style => "margin-bottom: 20px;"}
@@ -20,28 +17,28 @@
 
 
 
-.row{:style => "margin-bottom: 30px; margin-top: 50px;"}
+.row.point-progress
   .col-md-5
     - if @total_points == 0
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
-    %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
+    %h1{:style => "color: #{num_of_reports_color};"}
       = @total_points
-    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
+    %p
       = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
 
 
-  .col-md-4{:style => "text-align: right;"}
+  .col-md-4.text-right
     - if @total_reports == 0
       - num_of_reports_color = "#d9534f";
     - else
       - num_of_reports_color = "#5cb85c";
 
-    %h1{:style => "color: #{num_of_reports_color}; font-size: 50px; display: inline;"}
+    %h1{:style => "color: #{num_of_reports_color};"}
       = @total_reports
-    %p{:style => "margin-top: 10px; display: inline; font-size: 15px;"}
+    %p
       = I18n.t("dashboard.reports")
 
 /------------------------------------------------------------------------------
@@ -50,9 +47,6 @@
   .row{:style => "margin-top:40px;"}
     = render :partial => 'posts/new'
 
-.row
-  = render :partial => "shared/news_feed"
-
-= render :partial => "shared/full_feed_button"
+= render :partial => "shared/news_feed"
 
 /------------------------------------------------------------------------------
