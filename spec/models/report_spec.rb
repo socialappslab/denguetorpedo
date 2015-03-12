@@ -30,7 +30,7 @@ describe Report do
 		expect(report.errors.full_messages).to include("Fecha de eliminación can't be before fecha de inspección")
 	end
 
-	it "raises an error if elimination date is before creation date" do
+	it "raises an error if creation date is in the future" do
 		I18n.locale = "es"
 
 		report = Report.create(:report => "Saw Report",
@@ -38,6 +38,16 @@ describe Report do
 		:reporter => user, :breeding_site_id => BreedingSite.first.id, :created_at => Time.now + 1.minute)
 
 		expect(report.errors.full_messages).to include("Fecha de inspección can't be in the future")
+	end
+
+	it "raises an error if elimination date is in the future" do
+		I18n.locale = "es"
+
+		report = Report.create(:report => "Saw Report",
+		:location_id => location.id, :neighborhood_id => Neighborhood.first.id,
+		:reporter => user, :breeding_site_id => BreedingSite.first.id, :eliminated_at => Time.now + 3.minutes)
+
+		expect(report.errors.full_messages).to include("Fecha de eliminación can't be in the future")
 	end
 
 	it "returns the correct initial visit" do

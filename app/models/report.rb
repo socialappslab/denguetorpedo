@@ -95,6 +95,7 @@ class Report < ActiveRecord::Base
 
   validate :eliminated_at, :eliminated_after_creation?
   validate :created_at,    :inspected_in_the_past?
+  validate :eliminated_at, :eliminated_in_the_past?
 
   #----------------------------------------------------------------------------
 
@@ -463,6 +464,14 @@ class Report < ActiveRecord::Base
     return true if self.created_at.past?
 
     self.errors[:created_at] << "can't be in the future"
+    return false
+  end
+
+  def eliminated_in_the_past?
+    return true if self.eliminated_at.blank?
+    return true if self.eliminated_at.past?
+
+    self.errors[:eliminated_at] << "can't be in the future"
     return false
   end
 
