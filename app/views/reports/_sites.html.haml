@@ -1,4 +1,4 @@
-.row{:style => "min-height: 600px;"}
+.row
   .col-md-8.col-md-offset-2
     #reports
       - if @current_user && @current_user.neighborhood == @neighborhood && @incomplete_reports.present?
@@ -17,7 +17,7 @@
             = render :partial => "reports/actionbar",   :locals => {:report => report}
 
 
-%hr{:style => "border-top: 1px solid #fff; margin-top: 40px;"}
+%hr
 
 .row
   .col-md-12{:style => "text-align: center;"}

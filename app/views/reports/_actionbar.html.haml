@@ -2,11 +2,11 @@
   .row
     .col-md-6
       - if @current_user
-        - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
-        = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes.count do
-          %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
+        -# - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
+        = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes_count do
+          %i.fa.fa-thumbs-up.like-icon
             %span.likes_text
-              = report.likes.count
+              = report.likes_count
       - else
         &nbsp;
 

@@ -7,7 +7,6 @@
   %meta{:property => "og:url",         :content => @locale_specific_url}
   %meta{:property => "og:title",       :content => I18n.t("views.app")}
   %meta{:property => "og:description", :content => I18n.t("facebook.description")}
-  = javascript_include_tag "map"
 
 /------------------------------------------------------------------------------
 
@@ -31,9 +30,7 @@
         - if @neighborhood.spanish?
           = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.buttons.upload_csv")
-
-
-        - if @neighborhood.spanish?
+            
           = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.reports.index.view_csv")
 
@@ -78,6 +75,7 @@
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
+  = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
   = javascript_include_tag "moment"
