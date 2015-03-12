@@ -26,7 +26,6 @@ window.maps.populateGoogleMaps = function(locations, map, locationType) {
 
 //set up a heatmap
 window.maps.setupHeatMap = function(locations, map){
-  console.log("setting up heatmap now");
   var heatmapData = Array(locations.length);
   for(var i = 0; i < locations.length; i++) {
     var latitude  = locations[i].latitude;
@@ -127,18 +126,16 @@ window.maps.initializeGoogleMaps = function(){
     center: new google.maps.LatLng(communityLatitude, communityLongitude)
     };
   // Initialize the map, and add the geographical layer to it.
-  map = new google.maps.Map(document.getElementById('gmap'),
-      mapOptions);
+  map = new google.maps.Map(document.getElementById('gmap'), mapOptions);
   window.maps.hideLoading();
 
-  //see if lat and long are set, if so, this is an error page, and we should set
+  // See if lat and long are set, if so, this is an error page, and we should set
   //the marker
-  var oldlat = $("#new_report #report_location_attributes_latitude").val();
+  var oldlat  = $("#new_report #report_location_attributes_latitude").val();
   var oldlong = $("#new_report #report_location_attributes_longitude").val();
-  if (oldlat != "" && oldlong != ""){
-    //we want none of them to be blank
+  if (oldlat != "" && oldlong != "")
+  {
     var markerLoc = new google.maps.LatLng(oldlat, oldlong);
-    console.log("setting up stored marker at "+ markerLoc);
     createOrUpdateNewMarker(markerLoc);
   }
 
@@ -151,8 +148,6 @@ window.maps.initializeGoogleMaps = function(){
 //    window.maps.populateGoogleMaps(eliminatedLocations, map, "eliminated");
     window.maps.setupHeatMap(openLocations, map);
 
-  }
-
-   //initialize the geocoder
-   geocoder = new google.maps.Geocoder();
+  // Initialize the geocoder.
+  geocoder = new google.maps.Geocoder();
 }

@@ -30,7 +30,7 @@
         - if @neighborhood.spanish?
           = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.buttons.upload_csv")
-            
+
           = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.reports.index.view_csv")
 
