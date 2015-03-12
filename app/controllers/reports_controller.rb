@@ -31,7 +31,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Bypass method definitions for open/eliminated locations by directly
     # chaining AR queries here.
-    reports_with_locs     = Report.joins(:location).where("location_id IS NOT NULL").select("latitude, longitude")
+    reports_with_locs     = Report.joins(:location).select("latitude, longitude")
     @open_locations       = reports_with_locs.where("eliminated_at IS NULL OR elimination_method_id IS NULL")
     @eliminated_locations = reports_with_locs.where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL")
 
