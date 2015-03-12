@@ -18,7 +18,7 @@ describe API::V0::NeighborhoodsController do
 
     before(:each) do
       cookies[:auth_token] = user.auth_token
-      I18n.locale          = :es
+      I18n.locale          = "es"
 
       # The distribution of houses is as follows:
       # First date had 2 visits to 2 (first and second) locations (first negative, second potential)

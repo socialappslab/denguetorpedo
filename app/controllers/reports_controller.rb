@@ -137,7 +137,6 @@ class ReportsController < NeighborhoodsBaseController
     params[:report].delete(:eliminated_at)
     @report.eliminated_at = eliminated_time
 
-
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
