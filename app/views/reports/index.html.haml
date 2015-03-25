@@ -52,16 +52,14 @@
 
     .col-md-6
       .pull-right
-        .report-filter.btn-group{:data => {:toggle => "buttons"}}
+        .report-filter.btn-group
           %label.btn.btn-default.active
-            = radio_button_tag "reports", "all", true, :data => {:type => "all"}
-            = I18n.t("common_terms.all")
+            = link_to I18n.t("common_terms.all"), neighborhood_reports_path(@neighborhood)
           %label.btn.btn-default
-            = radio_button_tag "reports", "open", nil, :data => {:type => "open"}
-            = I18n.t("common_terms.open_reports")
+            = link_to I18n.t("common_terms.open_reports"), "?reports=open"
           %label.btn.btn-default
-            = radio_button_tag "reports", "eliminated", nil, :data => {:type => "eliminated"}
-            = I18n.t("common_terms.eliminated_reports")
+            = link_to I18n.t("common_terms.eliminated_reports"), "?reports=eliminated"
+
 
 /------------------------------------------------------------------------------
 
@@ -81,7 +79,6 @@
   = javascript_include_tag "moment"
   = javascript_include_tag "bootstrap/datetimepicker"
   = javascript_include_tag "datepicker"
-  = javascript_include_tag "jquery/countdown"
 
   :javascript
     $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
@@ -91,13 +88,14 @@
     })
 
     $(document).ready(function(){
-      $(".report-filter label").on("click", function() {
-        var reportType = $(this).find("input").data("type");
-        if (reportType === "all")
-          $(".report").show()
-        else {
-          $(".report").hide()
-          $(".report." + reportType).show()
-        }
-      });
+      var reportType = window.location.href.split("?reports=")[1]
+      if (reportType)
+      {
+        $(".report-filter label").removeClass("active")
+        if (reportType === "open")
+          $( $(".report-filter label")[1] ).addClass("active")
+        else if (reportType === "eliminated")
+          $( $(".report-filter label")[2] ).addClass("active")
+
+      }
     })

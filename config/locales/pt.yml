@@ -499,7 +499,7 @@ pt:
         neighborhood_address: ""
         description_placeholder: "Descreva a localização e tipo do foco"
       index:
-        eliminate_and_win_points: Eliminar e ganhar até %{points} pontos
+        eliminate_and_win_points: Elimina e ganha até %{points} pontos
       types:
         delete: Deletar
       edit:

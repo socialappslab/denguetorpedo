@@ -19,8 +19,8 @@
           = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
             %i.fa.fa-trash-o
 
-        - if @current_user && @current_user.verifier?
-          = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-            %i.fa.fa-check.fa-2
-          = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-            %i.fa.fa-times.fa-2
+        -# - if @current_user && @current_user.verifier?
+        -#   = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+        -#     %i.fa.fa-check.fa-2
+        -#   = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+        -#     %i.fa.fa-times.fa-2

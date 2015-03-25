@@ -10,17 +10,17 @@ module ReportsHelper
   #----------------------------------------------------------------------------
   # Prize methods
   def inspection_award_text(report)
-    return "+ #{User::Points::REPORT_SUBMITTED.to_s} points"
+    return "+ #{User::Points::REPORT_SUBMITTED.to_s} " + I18n.t("attributes.points").downcase
   end
 
 
   def elimination_award_text(report)
     return "+0 points" if report.elimination_method.blank?
-    return "+ #{report.elimination_method.points.to_s} points"
+    return "+ #{report.elimination_method.points.to_s} " + I18n.t("attributes.points").downcase
   end
 
   def verification_award_text(report)
-    return "+ #{User::Points::REPORT_VERIFIED.to_s} points"
+    return "+ #{User::Points::REPORT_VERIFIED.to_s} " + I18n.t("attributes.points").downcase
   end
 
 
