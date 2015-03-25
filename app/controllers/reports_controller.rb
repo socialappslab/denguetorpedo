@@ -16,7 +16,6 @@ class ReportsController < NeighborhoodsBaseController
     # Make sure to prioritize ordering by *open* reports. Keep in mind that some reports
     # will have eliminated_at already set (if it's via CSV) so we need only focus if there
     # is an elimination method.
-    @reports = @reports.order("case when elimination_method_id is NULL then 0 else 1 end ASC")
     @reports = @reports.order("updated_at DESC")
     @reports = @reports.where("completed_at IS NOT NULL")
 
