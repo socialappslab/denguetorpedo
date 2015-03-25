@@ -50,6 +50,16 @@ describe Report do
 		expect(report.errors.full_messages).to include("Fecha de eliminación can't be in the future")
 	end
 
+	it "validates on inspection date being after 2014" do
+		I18n.locale = "es"
+
+		report = Report.create(:report => "Saw Report",
+		:location_id => location.id, :neighborhood_id => Neighborhood.first.id,
+		:reporter => user, :breeding_site_id => BreedingSite.first.id, :created_at => Time.parse("0014-10-10"))
+
+		expect(report.errors.full_messages).to include("Fecha de inspección can't be before 2014")
+	end
+
 	it "returns the correct initial visit" do
 		r = Report.create(:report => "Saw Report", :location_id => location.id, :reporter => user)
 		v1 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 100.days)
