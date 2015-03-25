@@ -120,10 +120,6 @@ describe "Reports", :type => :feature do
         expect(page).to have_content(Report.last.reporter.display_name)
       end
 
-      it "displays report as open" do
-        expect(page).to have_content("Abierto por")
-      end
-
       it "appears in the public reports list" do
         sign_out(user)
         sign_in(other_user)

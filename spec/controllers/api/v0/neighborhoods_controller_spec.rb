@@ -75,9 +75,7 @@ describe API::V0::NeighborhoodsController do
     it "returns empty if time series contains no data since specified start time" do
       request.cookies[:chart] = '{"timeframe":"1","percentages":"daily","positive":"1","potential":"1","negative":"1"}'
       get :chart, :id => neighborhood.id
-      expect(JSON.parse(response.body) ).to eq(
-        [ ["Tiempo", "Lugares con criaderos positivos", "Lugares con criaderos potenciales", "Lugares sin criaderos"] ]
-      )
+      expect( JSON.parse(response.body).count ).to eq(1)
     end
 
 
