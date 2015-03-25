@@ -21,7 +21,7 @@ class ReportsController < NeighborhoodsBaseController
     @reports = @reports.where("completed_at IS NOT NULL")
 
     @report_count  = @reports.count
-    @report_limit  = 10
+    @report_limit  = 20
     @report_offset = (params[:page] || 0).to_i * @report_limit
 
     # Generate the different types of locations based on report.
