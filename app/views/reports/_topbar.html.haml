@@ -31,13 +31,6 @@
       - if report.eliminated?
         .report-eliminated
           = I18n.t("common_terms.eliminated")
-      - elsif report.expired?
-        = I18n.t("common_terms.time_expired")
-      - elsif report.open?
-        .report-open
-          = I18n.t("common_terms.open_for")
-        .countdown.countdownHolder.timer{:data => {:report => report.to_json(:only => [], :methods => [:expire_date])} }
-
 
   - if report.eliminated? && report.eliminator
     .row
@@ -76,16 +69,3 @@
             = timestamp_in_metadata(report.verified_at)
         %span.label.label-success
           = verification_award_text(report)
-
-
-
-- content_for :scripts do
-  :javascript
-    $(document).ready(function()
-    {
-      $(".countdown").each(function()
-      {
-        var expiration = $(this).data("report")["expire_date"]
-        $(this).countdown({until: new Date(expiration), format: 'HMS', compact: 'true'});
-      })
-    })
