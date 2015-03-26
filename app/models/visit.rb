@@ -188,23 +188,26 @@ class Visit < ActiveRecord::Base
       end
 
       # Calculate the status type of this location.
-      # The daily metric calculates number of visited houses
+      # The cumulative metric calculates number of visited houses
       # that had at least one potential and/or at least one positive
       # site. This means we need to ask if the house had a potential site,
       # and if the house had a positive site.
       # We do this by checking if there is an entry in the visit_identifaction_hash
       # by narrowing the array size as fast as possible.
-      # TODO: This defines a single status for a location: either potential or positive,
-      # but not both. Let's see if we can later extend this to both.
+      # If there is an entry in both, then we set the identification type to both
+      # statuses.
       visit_counts = visit_identification_hash.find_all {|k, v| k[0] == visit.id}
       pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
       pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
-      if pos_count && pos_count[1] > 0
-        identification_type = Report::Status::POSITIVE
+
+      if pos_count && pos_count[1] > 0 && pot_count && pot_count[1] > 0
+        identification_type = [Report::Status::POSITIVE, Report::Status::POTENTIAL]
+      elsif pos_count && pos_count[1] > 0
+        identification_type = [Report::Status::POSITIVE]
       elsif pot_count && pot_count[1] > 0
-        identification_type = Report::Status::POTENTIAL
+        identification_type = [Report::Status::POTENTIAL]
       else
-        identification_type = Report::Status::NEGATIVE
+        identification_type = [Report::Status::NEGATIVE]
       end
 
       # Memoize the location with the latest status.
@@ -218,9 +221,10 @@ class Visit < ActiveRecord::Base
       memoized_locations[index] = location
 
       # Use the updated memoized_locations to set the distribution of positive,
-      # potential and negative statuses.
+      # potential and negative statuses. Note that each location can potentially
+      # have several statuses (e.g. positive and potential).
       Report.statuses_as_symbols.each do |key, value|
-        key_count = memoized_locations.find_all {|loc| loc[:status] == key}.count
+        key_count = memoized_locations.find_all {|loc| loc[:status].include?(key) }.count
         day_statistic[value][:count] = key_count
       end
 
