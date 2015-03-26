@@ -165,6 +165,10 @@ class Visit < ActiveRecord::Base
     # correctly update the total positive/potential/negative count.
     memoized_locations = []
 
+    # Limit the location ids to those that we have visits for (the method argument
+    # refers to all locations in a neighborhood).
+    location_ids = visits.pluck(:location_id).uniq
+
     daily_stats = []
     visits.each do |visit|
       visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")

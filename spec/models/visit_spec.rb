@@ -387,23 +387,23 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>25}, :negative=>{:count=>1, :percent=>25},
-            :total => {:count => 4}
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33},
+            :total => {:count => 3}
           },
           {
             :date=>"2015-01-19",
-            :positive=>{:count=>1, :percent=>25}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>25},
-            :total => {:count => 4}
+            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>33},
+            :total => {:count => 3}
           },
           {
             :date=>"2015-01-28",
-            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>1, :percent=>25}, :negative=>{:count=> 0, :percent=>0},
-            :total => {:count => 4}
+            :positive=>{:count=>2, :percent=>67}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=> 0, :percent=>0},
+            :total => {:count => 3}
           },
           {
             :date=>"2015-01-29",
-            :positive=>{:count=>1, :percent=> 25}, :potential=>{:count=>1, :percent=> 25}, :negative=>{:count=>1, :percent=> 25},
-            :total => {:count => 4}
+            :positive=>{:count=>1, :percent=> 33}, :potential=>{:count=>1, :percent=> 33}, :negative=>{:count=>1, :percent=> 33},
+            :total => {:count => 3}
           }
         ])
       end
@@ -413,8 +413,8 @@ describe Visit do
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
-            :positive=>{:count=>1, :percent=> 25}, :potential=>{:count=>1, :percent=> 25}, :negative=>{:count=>1, :percent=> 25},
-            :total => {:count => 4}
+            :positive=>{:count=>1, :percent=> 33}, :potential=>{:count=>1, :percent=> 33}, :negative=>{:count=>1, :percent=> 33},
+            :total => {:count => 3}
           }
         ])
       end
