@@ -146,121 +146,84 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-
-
-  # # This calculates the daily percentage of houses that were visited on that day.
-  # def self.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, start_time = nil, visit_types = nil)
-  #   # NOTE: We *cannot* query by start_time here since we would be ignoring the full
-  #   # history of the locations. Instead, we do it at the end.
-  #   location_ids = locations.map(&:id)
-  #   visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
-  #   visits       = visits.select([:visited_at, :identification_type, :visit_type])
-  #   return [] if visits.blank?
-  #
-  #   # NOTE: Why are we only focusing on visits as opposed to locations? Because
-  #   # we're looking at daily data, and we know that each location has one data
-  #   # point for each day, we can map a visit on a particular day to a unique location
-  #   # and (if a visit exists) the other way around.
-  #   daily_stats = []
-  #   visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type).count
-  #   visits_by_date_and_type.each do |grouping, count|
-  #     visited_at_date     = grouping[0].to_s
-  #     identification_type = grouping[1].to_i
-  #     visit_type          = grouping[2].to_i
-  #
-  #     day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
-  #     if day_statistic.blank?
-  #       day_statistic = {
-  #         :date       => visited_at_date,
-  #         :positive   => {:count => 0, :percent => 0},
-  #         :potential  => {:count => 0, :percent => 0},
-  #         :negative   => {:count => 0, :percent => 0},
-  #         :total      => {:count => 0}
-  #       }
-  #
-  #       daily_stats << day_statistic
-  #     end
-  #
-  #
-  #     if visit_types.blank? || visit_types.include?(visit_type)
-  #       # Define the relative count for each identification type (and total, as well)
-  #       key = Report.statuses_as_symbols[identification_type]
-  #       if visit_types.blank? || visit_types.include?(visit_type)
-  #         day_statistic[key][:count] += count
-  #       end
-  #       day_statistic[:total][:count] += count
-  #     end
-  #
-  #     # NOTE: We're not adding the hash here because there's a chance we simply
-  #     # modified an existing element. We're going to search for it again.
-  #     index              = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
-  #     daily_stats[index] = day_statistic
-  #   end
-  #
-  #   # Now, let's iterate over daily_stats, calculating percentage.
-  #   # Finally, let's include only those visit types that match the visit type.
-  #   # Now that the full history is captured, let's filter starting from the start_time
-  #   daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-  #   daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
-  #
-  #   return daily_stats
-  # end
-
-  #----------------------------------------------------------------------------
-
-  def self.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations, start_time = nil, visit_types = nil)
-    # raise "visit_types: #{visit_types}"
+  def self.calculate_cumulative_time_series_for_locations_and_start_time(location_ids, start_time = nil)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
-    location_ids = locations.map(&:id)
-    visits       = Visit.where(:location_id => location_ids).order("DATE(visited_at) ASC")
-    visits       = visits.select([:location_id, :visited_at, :identification_type, :visit_type])
+    visits       = Visit.select("id, visited_at, location_id, parent_visit_id").where(:location_id => location_ids).order("visited_at ASC")
     return [] if visits.blank?
 
-    daily_stats        = []
+    # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
+    # NOTE: I've considered using SQL joins here, but:
+    # a) inner joining inspections on visits leads to problems when calculating
+    #    identification type since a visit has many inspections,
+    # b) inner joining visits on inspections leads to problems with accounting
+    #    for visits with no inspections (e.g. those that are N on CSV forms)
+    visit_ids = visits.pluck(:id)
+    visit_identification_hash = Inspection.where(:visit_id => visit_ids).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
+
+    # We're going to memoize the last known status of each location in order to
+    # correctly update the total positive/potential/negative count.
     memoized_locations = []
-    visits_by_date_and_type = visits.group("DATE(visited_at)", :identification_type, :visit_type, :location_id).count
-    visits_by_date_and_type.each do |grouping, count|
-      visited_at_date     = grouping[0].to_s
-      identification_type = grouping[1].to_i
-      visit_type          = grouping[2].to_i
-      location_id         = grouping[3].to_i
+
+    daily_stats = []
+    visits.each do |visit|
+      visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")
+      visit_type          = visit.visit_type
+      location_id         = visit.location_id
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
-
         day_statistic = {
           :date       => visited_at_date,
           :positive   => {:count => 0, :percent => 0},
           :potential  => {:count => 0, :percent => 0},
           :negative   => {:count => 0, :percent => 0},
-          :total      => {:count => location_ids.length}
+          :total      => {:count => location_ids.count}
         }
-
         daily_stats << day_statistic
       end
 
-
-      if visit_types.blank? || visit_types.include?(visit_type)
-        # Memoize the location with the latest status.
-        location = memoized_locations.find {|loc| loc[:id] == location_id}
-        if location.blank?
-          location = {:id => location_id}
-          memoized_locations << location
-        end
-        location[:status] = identification_type
-        index = memoized_locations.find_index {|stat| stat[:id] == location_id}
-        memoized_locations[index] = location
-
-        Report.statuses_as_symbols.each do |key, value|
-          key_count = memoized_locations.find_all {|loc| loc[:status] == key}.count
-          day_statistic[value][:count] = key_count
-        end
+      # Calculate the status type of this location.
+      # The daily metric calculates number of visited houses
+      # that had at least one potential and/or at least one positive
+      # site. This means we need to ask if the house had a potential site,
+      # and if the house had a positive site.
+      # We do this by checking if there is an entry in the visit_identifaction_hash
+      # by narrowing the array size as fast as possible.
+      # TODO: This defines a single status for a location: either potential or positive,
+      # but not both. Let's see if we can later extend this to both.
+      visit_counts = visit_identification_hash.find_all {|k, v| k[0] == visit.id}
+      pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
+      pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
+      if pos_count && pos_count[1] > 0
+        identification_type = Report::Status::POSITIVE
+      elsif pot_count && pot_count[1] > 0
+        identification_type = Report::Status::POTENTIAL
+      else
+        identification_type = Report::Status::NEGATIVE
       end
+
+      # Memoize the location with the latest status.
+      location = memoized_locations.find {|loc| loc[:id] == location_id}
+      if location.blank?
+        location = {:id => location_id}
+        memoized_locations << location
+      end
+      location[:status] = identification_type
+      index = memoized_locations.find_index {|stat| stat[:id] == location_id}
+      memoized_locations[index] = location
+
+      # Use the updated memoized_locations to set the distribution of positive,
+      # potential and negative statuses.
+      Report.statuses_as_symbols.each do |key, value|
+        key_count = memoized_locations.find_all {|loc| loc[:status] == key}.count
+        day_statistic[value][:count] = key_count
+      end
+
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
-      index = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
+      index              = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
       daily_stats[index] = day_statistic
     end
 
