@@ -62,6 +62,7 @@ describe API::V0::NeighborhoodsController do
     end
 
     it "returns the correct time-series" do
+      request.cookies[:chart] = '{"percentages":"daily","positive":"1","potential":"1","negative":"1"}'
       get :chart, :id => neighborhood.id
       visits = JSON.parse(response.body)
       expect(visits[1..-1]).to eq([

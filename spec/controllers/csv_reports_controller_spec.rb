@@ -214,8 +214,6 @@ describe CsvReportsController do
       expect(Report.where("DATE(created_at) = '2015-01-12'").count).to eq(1)
     end
 
-
-
     it "returns data that matches Harold's graphs" do
       neighborhood = Neighborhood.first
       Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|

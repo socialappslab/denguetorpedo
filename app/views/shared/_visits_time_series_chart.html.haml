@@ -31,8 +31,11 @@
 
   :javascript
     $(document).ready(function() {
+      var baseURL = "#{chart_api_v0_neighborhood_path(@neighborhood)}";
+      var serializedAttrs = $("#chart-filters").serialize();
+
       $.ajax({
-        url: "#{chart_api_v0_neighborhood_path(@neighborhood)}",
+        url: baseURL + "?" + serializedAttrs,
         type: "GET",
         success : function(response){
           var rawData = response;
