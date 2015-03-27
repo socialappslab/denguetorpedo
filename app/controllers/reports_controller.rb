@@ -11,27 +11,26 @@ class ReportsController < NeighborhoodsBaseController
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
-    @reports = @reports.where(:protected => [nil, false])
-
-    # Make sure to prioritize ordering by *open* reports. Keep in mind that some reports
-    # will have eliminated_at already set (if it's via CSV) so we need only focus if there
-    # is an elimination method.
-    @reports = @reports.order("case when elimination_method_id is NULL then 0 else 1 end ASC")
+    @reports = @reports.where(:protected => [nil, false]).where("completed_at IS NOT NULL")
     @reports = @reports.order("updated_at DESC")
-    @reports = @reports.where("completed_at IS NOT NULL")
 
+    # Now, let's filter by type of report chosen.
+    if params[:reports].present?
+      if params[:reports].strip.downcase == "open"
+        @reports = @reports.where("eliminated_at IS NULL OR elimination_method_id IS NULL")
+      elsif params[:reports].strip.downcase == "eliminated"
+        @reports = @reports.where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL")
+      end
+    end
+
+    # At this point, we can start limiting the number of reports we return.
     @report_count  = @reports.count
-    @report_limit  = 10
+    @report_limit  = 20
     @report_offset = (params[:page] || 0).to_i * @report_limit
-
-    # Generate the different types of locations based on report.
-    # TODO: This iteration should be done in SQL!
-    @open_locations       = []
-    @eliminated_locations = []
 
     # Bypass method definitions for open/eliminated locations by directly
     # chaining AR queries here.
-    reports_with_locs     = Report.joins(:location).where("location_id IS NOT NULL").select("latitude, longitude")
+    reports_with_locs     = Report.joins(:location).select("latitude, longitude")
     @open_locations       = reports_with_locs.where("eliminated_at IS NULL OR elimination_method_id IS NULL")
     @eliminated_locations = reports_with_locs.where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL")
 
@@ -136,7 +135,6 @@ class ReportsController < NeighborhoodsBaseController
     eliminated_time = Time.now if eliminated_time.blank?
     params[:report].delete(:eliminated_at)
     @report.eliminated_at = eliminated_time
-
 
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?

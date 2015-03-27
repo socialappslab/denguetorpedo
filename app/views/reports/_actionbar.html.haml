@@ -2,11 +2,11 @@
   .row
     .col-md-6
       - if @current_user
-        - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
-        = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes.count do
-          %i.fa.fa-thumbs-up.like-icon{:style => "color: #{is_liked ? '#3498db' : '#bdc3c7'}"}
+        -# - is_liked = report.likes.map(&:user_id).include?(@current_user.id)
+        = link_to like_neighborhood_report_path(@neighborhood, report), :class => "likes_button", "data-path" => like_neighborhood_report_path(@neighborhood, report), "data-likes_count" => report.likes_count do
+          %i.fa.fa-thumbs-up.like-icon
             %span.likes_text
-              = report.likes.count
+              = report.likes_count
       - else
         &nbsp;
 
@@ -19,8 +19,8 @@
           = link_to neighborhood_report_path(@neighborhood, report), :id=>'user_report_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
             %i.fa.fa-trash-o
 
-        - if @current_user && @current_user.verifier?
-          = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-            %i.fa.fa-check.fa-2
-          = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-            %i.fa.fa-times.fa-2
+        -# - if @current_user && @current_user.verifier?
+        -#   = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+        -#     %i.fa.fa-check.fa-2
+        -#   = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
+        -#     %i.fa.fa-times.fa-2

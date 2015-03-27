@@ -170,7 +170,8 @@ describe ReportsController do
 
  	context "when eliminating a report" do
 		let(:location) { FactoryGirl.create(:location) }
-		let(:report) 	 { FactoryGirl.create(:report, :completed_at => Time.now, :location_id => location.id, :reporter_id => user.id) }
+		let(:inspection_time) { Time.parse("2015-01-01 12:00") }
+		let(:report) 	 { FactoryGirl.create(:report, :created_at => inspection_time, :completed_at => inspection_time, :location_id => location.id, :reporter_id => user.id) }
 
 		before(:each) do
 			cookies[:auth_token] = user.auth_token
@@ -193,10 +194,10 @@ describe ReportsController do
 			post :eliminate, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:compressed_photo => base64_image,
 				:elimination_method_id => BreedingSite.first.elimination_methods.first.id,
-				:eliminated_at => "2015-12-25 15:00"
+				:eliminated_at => "2015-02-27 15:00"
 			}
 
-			expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-12-25")
+			expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-02-27")
 			expect(report.eliminated_at.strftime("%H:%M")).to eq("15:00")
 		end
 
@@ -204,10 +205,10 @@ describe ReportsController do
 			post :eliminate, :neighborhood_id => Neighborhood.first.id, :id => report.id, :report => {
 				:compressed_photo => base64_image,
 				:elimination_method_id => BreedingSite.first.elimination_methods.first.id,
-				:eliminated_at => "2015-12-25 15:00"
+				:eliminated_at => "2015-02-27 15:00"
 			}
 
-			expect(Visit.last.visit_type).to eq(Visit::Types::FOLLOWUP)
+			expect(Visit.order("visited_at ASC").last.visit_type).to eq(Visit::Types::FOLLOWUP)
 		end
 
 		it "awards the eliminating user" do

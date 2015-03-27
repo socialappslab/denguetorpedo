@@ -485,7 +485,7 @@ es:
           other: "Usted tiene %{count} reportes incompletos"
         complete_now_button: "Termine ahora"
         view_csv: Ver CSV formas cargadas
-        eliminate_and_win_points: Eliminar y ganar hasta %{points} puntos
+        eliminate_and_win_points: Elimina y gana hasta %{points} puntos
       new:
         did_you_see_larvae: ¿Ve larvas o pupas de mosquito?
         description_of_larvae: "Si respondió que sí, es un criadero positivo. Si no, es un criadero potencial."

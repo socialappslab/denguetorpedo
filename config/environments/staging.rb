@@ -4,12 +4,8 @@ Dengue::Application.configure do
   # Code is not reloaded between requests
   config.cache_classes = true
 
-  # Full error reports are disabled and caching is turned on
+  # Full error reports are disabled.
   config.consider_all_requests_local       = false
-  config.action_controller.perform_caching = false
-
-  # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = true
 
   #----------------------------------------------------------------------------
   # Asset Compression and Compilation (JavaScripts and CSS)
@@ -20,9 +16,6 @@ Dengue::Application.configure do
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = false
-
-  # Generate digests for assets URLs
-  config.assets.digest = true
 
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
@@ -40,14 +33,27 @@ Dengue::Application.configure do
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
 
-  # Use a different cache store in production
-  # config.cache_store = :mem_cache_store
+  # Generate digests for assets URLs
+  config.assets.digest                     = true
+  config.static_cache_control              = "public, max-age=2592000"
+  config.serve_static_assets               = true
+  config.action_controller.perform_caching = true
 
-  # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  # config.action_controller.asset_host = "http://assets.example.com"
+  # Configure Rack::Cache to use Dalli Memcached client.
+  client = Dalli::Client.new((ENV["MEMCACHIER_SERVERS"] || "").split(","),
+                             :username => ENV["MEMCACHIER_USERNAME"],
+                             :password => ENV["MEMCACHIER_PASSWORD"],
+                             :failover => true,
+                             :socket_timeout => 1.5,
+                             :socket_failure_delay => 0.2,
+                             :value_max_bytes => 10485760)
+  config.action_dispatch.rack_cache = {
+    :metastore    => client,
+    :entitystore  => client
+  }
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( googlemap/* map.js bootstrap/* image-compression.js feed-interactions.js moment.js datepicker.js chart-options.js)
+  config.assets.precompile += %w(jquery/* googlemap/* map.js bootstrap/* image-compression.js moment.js datepicker.js chart-options.js)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

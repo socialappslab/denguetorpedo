@@ -82,6 +82,7 @@ GEM
       execjs
     coffee-script-source (1.6.3)
     connection_pool (1.2.0)
+    dalli (2.7.2)
     database_cleaner (1.2.0)
     devise (3.2.4)
       bcrypt (~> 3.0)
@@ -140,6 +141,7 @@ GEM
     kaminari (0.16.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    kgio (2.8.1)
     launchy (2.3.0)
       addressable (~> 2.3)
     libv8 (3.16.14.3)
@@ -152,6 +154,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    memcachier (0.0.2)
     meta_search (1.1.3)
       actionpack (~> 3.1)
       activerecord (~> 3.1)
@@ -326,6 +329,7 @@ DEPENDENCIES
   cancan
   capybara
   coffee-rails (~> 3.2.1)
+  dalli
   database_cleaner
   devise-i18n
   dynamic_form
@@ -336,14 +340,17 @@ DEPENDENCIES
   haml
   http_accept_language
   jquery-ui-rails
+  kgio
   launchy
   magic_encoding
+  memcachier
   mime
   newrelic_rpm
   paperclip (~> 4.2.0)
   pg
   poltergeist
   puma
+  rack-cache
   rack-mini-profiler
   rack-timeout
   rails (~> 3.2.18)

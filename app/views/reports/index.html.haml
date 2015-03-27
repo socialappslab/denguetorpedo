@@ -7,7 +7,6 @@
   %meta{:property => "og:url",         :content => @locale_specific_url}
   %meta{:property => "og:title",       :content => I18n.t("views.app")}
   %meta{:property => "og:description", :content => I18n.t("facebook.description")}
-  = javascript_include_tag "map"
 
 /------------------------------------------------------------------------------
 
@@ -32,8 +31,6 @@
           = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.buttons.upload_csv")
 
-
-        - if @neighborhood.spanish?
           = link_to neighborhood_csv_reports_path(@neighborhood), :class => "btn btn-success" do
             = I18n.t("views.reports.index.view_csv")
 
@@ -55,16 +52,14 @@
 
     .col-md-6
       .pull-right
-        .report-filter.btn-group{:data => {:toggle => "buttons"}}
+        .report-filter.btn-group
           %label.btn.btn-default.active
-            = radio_button_tag "reports", "all", true, :data => {:type => "all"}
-            = I18n.t("common_terms.all")
+            = link_to I18n.t("common_terms.all"), neighborhood_reports_path(@neighborhood)
           %label.btn.btn-default
-            = radio_button_tag "reports", "open", nil, :data => {:type => "open"}
-            = I18n.t("common_terms.open_reports")
+            = link_to I18n.t("common_terms.open_reports"), "?reports=open"
           %label.btn.btn-default
-            = radio_button_tag "reports", "eliminated", nil, :data => {:type => "eliminated"}
-            = I18n.t("common_terms.eliminated_reports")
+            = link_to I18n.t("common_terms.eliminated_reports"), "?reports=eliminated"
+
 
 /------------------------------------------------------------------------------
 
@@ -78,6 +73,7 @@
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
+  = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
   = javascript_include_tag "moment"
@@ -92,13 +88,14 @@
     })
 
     $(document).ready(function(){
-      $(".report-filter label").on("click", function() {
-        var reportType = $(this).find("input").data("type");
-        if (reportType === "all")
-          $(".report").show()
-        else {
-          $(".report").hide()
-          $(".report." + reportType).show()
-        }
-      });
+      var reportType = window.location.href.split("?reports=")[1]
+      if (reportType)
+      {
+        $(".report-filter label").removeClass("active")
+        if (reportType === "open")
+          $( $(".report-filter label")[1] ).addClass("active")
+        else if (reportType === "eliminated")
+          $( $(".report-filter label")[2] ).addClass("active")
+
+      }
     })

@@ -1,41 +1,41 @@
 
-%h3{:style => "font-size: 18px; margin-top: 20px; text-align: center;"}
+%h3.chart-title
   = I18n.t('views.statistics.chart.title')
 
 
 .row
   .col-md-12
-    #timeseries-chart{:style => "height: 350px; display: block; text-align: center;"}
-      %i.fa.fa-refresh.fa-spin{:style => "font-size: 64px; position: relative; top: 100"}
+    #timeseries-chart
+      %i.fa.fa-refresh.fa-spin
       %h3.empty-chart-disclaimer
         = I18n.t("common_terms.no_data")
 
 
-%div
-  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #e74c3c; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_positive_sites')
-
-%div
-  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #f1c40f; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_potential_sites')
-
-%div
-  %div{:style => "margin-top: 10px; width: 10px; height: 10px; background-color: #2ecc71; display: inline-block;"}
-  = I18n.t('views.statistics.chart.percent_of_negative_sites')
+.chart-legend.red
+= I18n.t('views.statistics.chart.percent_of_positive_sites')
+%br
+.chart-legend.yellow
+= I18n.t('views.statistics.chart.percent_of_potential_sites')
+%br
+.chart-legend.green
+= I18n.t('views.statistics.chart.percent_of_negative_sites')
 
 
-%p{:style => "text-align: center; font-size: 10px; margin-top: 10px;"}
+%p.chart-disclaimer
   = I18n.t("views.statistics.chart.disclaimer")
 
 
 - content_for :scripts do
+  %script{:src => "https://www.google.com/jsapi", :type => "text/javascript", :async => true}
   = javascript_include_tag "chart-options"
+
   :javascript
     $(document).ready(function() {
-      google.load('visualization', '1', {packages: ['corechart']});
+      var baseURL = "#{chart_api_v0_neighborhood_path(@neighborhood)}";
+      var serializedAttrs = $("#chart-filters").serialize();
 
       $.ajax({
-        url: "#{chart_api_v0_neighborhood_path(@neighborhood)}",
+        url: baseURL + "?" + serializedAttrs,
         type: "GET",
         success : function(response){
           var rawData = response;
@@ -43,9 +43,9 @@
           if (response.length == 0) {
             $(".fa-refresh").hide();
             $(".empty-chart-disclaimer").show();
+          } else {
+            google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", rawData) } } );
           }
-          else
-            google.setOnLoadCallback( drawChart("timeseries-chart", rawData) );
         }
       });
     });

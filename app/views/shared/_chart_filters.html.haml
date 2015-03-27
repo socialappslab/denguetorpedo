@@ -1,4 +1,4 @@
-= form_tag time_series_settings_path, :method => "POST" do
+= form_tag time_series_settings_path, :method => "POST", :id => "chart-filters" do
   %table.table.table-bordered{:style => "margin-top: 20px;"}
     %tbody
       %tr{:style => "text-align: center;"}
@@ -7,14 +7,14 @@
 
       %tr
         %td{:colspan => 2}
-          -# .radio
-          -#   = label_tag do
-          -#     = radio_button_tag "chart[percentages]", "cumulative", chart_cookies.blank? || [nil, "cumulative"].include?(chart_cookies["percentages"])
-          -#     = I18n.t("views.statistics.chart.filters.percentages.cumulative")
+          .radio
+            = label_tag do
+              = radio_button_tag "chart[percentages]", "cumulative", chart_cookies.blank? || [nil, "cumulative"].include?(chart_cookies["percentages"])
+              = I18n.t("views.statistics.chart.filters.percentages.cumulative")
 
           .radio
             = label_tag do
-              = radio_button_tag "chart[percentages]", "daily", true
+              = radio_button_tag "chart[percentages]", "daily", chart_cookies["percentages"] == "daily"
               = I18n.t("views.statistics.chart.filters.percentages.daily")
 
 
@@ -34,28 +34,6 @@
             = label_tag do
               = check_box_tag "chart[negative]", 1, chart_cookies.blank? || chart_cookies["negative"]
               = I18n.t('views.statistics.chart.percent_of_negative_sites')
-
-          -# .checkbox
-          -#   = label_tag do
-          -#     = check_box_tag "chart[positive_inspection]", 1, chart_cookies.blank? || chart_cookies["positive_inspection"]
-          -#     = I18n.t("views.statistics.chart.filters.positive_inspection")
-          -#
-          -# .checkbox
-          -#   = label_tag do
-          -#     = check_box_tag "chart[positive_followup]", 1, chart_cookies.blank? || chart_cookies["positive_followup"]
-          -#     = I18n.t("views.statistics.chart.filters.positive_followup")
-          -#
-          -# .checkbox
-          -#   = label_tag do
-          -#     = check_box_tag "chart[potential_inspection]", 1, chart_cookies.blank? || chart_cookies["potential_inspection"]
-          -#     = I18n.t("views.statistics.chart.filters.potential_inspection")
-          -#
-          -#
-          -# .checkbox
-          -#   = label_tag do
-          -#     = check_box_tag "chart[potential_followup]", 1, chart_cookies.blank? || chart_cookies["potential_followup"]
-          -#     = I18n.t("views.statistics.chart.filters.potential_followup")
-
 
         %td#timeframe-filter
           - [1, 3, 6].each do |month|

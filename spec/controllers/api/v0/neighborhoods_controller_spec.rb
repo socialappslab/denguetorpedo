@@ -4,12 +4,6 @@ describe API::V0::NeighborhoodsController do
   let(:neighborhood)   { Neighborhood.first }
   let(:user)           { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
 
-  it "allows only authenticated users" do
-    get :chart, :id => neighborhood.id
-    expect(JSON.parse(response.body)["message"] ).to eq("Access denied")
-    expect(response.status).to eq(401)
-  end
-
   describe "Request for charts", :after_commit => true do
     let(:location)       { FactoryGirl.create(:location, :address => "Test address")}
     let!(:second_location)       { FactoryGirl.create(:location, :address => "New Test address")}
@@ -24,7 +18,7 @@ describe API::V0::NeighborhoodsController do
 
     before(:each) do
       cookies[:auth_token] = user.auth_token
-      I18n.locale          = :es
+      I18n.locale          = "es"
 
       # The distribution of houses is as follows:
       # First date had 2 visits to 2 (first and second) locations (first negative, second potential)
@@ -68,6 +62,7 @@ describe API::V0::NeighborhoodsController do
     end
 
     it "returns the correct time-series" do
+      request.cookies[:chart] = '{"percentages":"daily","positive":"1","potential":"1","negative":"1"}'
       get :chart, :id => neighborhood.id
       visits = JSON.parse(response.body)
       expect(visits[1..-1]).to eq([
@@ -81,9 +76,7 @@ describe API::V0::NeighborhoodsController do
     it "returns empty if time series contains no data since specified start time" do
       request.cookies[:chart] = '{"timeframe":"1","percentages":"daily","positive":"1","potential":"1","negative":"1"}'
       get :chart, :id => neighborhood.id
-      expect(JSON.parse(response.body) ).to eq(
-        [ ["Tiempo", "Lugares con criaderos positivos", "Lugares con criaderos potenciales", "Lugares sin criaderos"] ]
-      )
+      expect( JSON.parse(response.body).count ).to eq(1)
     end
 
 

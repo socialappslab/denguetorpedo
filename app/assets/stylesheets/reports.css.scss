@@ -324,6 +324,8 @@
 
 #reports{
   display: block;
+  min-height: 600px;
+
   form {
     margin-bottom: 0px;
   }
@@ -415,6 +417,12 @@
 }
 
 
+.report-filter {
+  .active a {
+    color: white;
+  }
+}
+
 //-----------------------------------------------------------------------------
 // ESRI map-related customization
 
@@ -433,6 +441,10 @@
   #loading {
     z-index:100;
     text-align: center;
+
+    .fa-refresh {
+      font-size: 64px;
+    }
 
     img {
       width:50px;
