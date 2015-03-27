@@ -62,4 +62,10 @@
 - content_for :scripts do
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
-  = javascript_include_tag "alertview"
+  = javascript_include_tag "csv-ajax"
+
+  :javascript
+    window.denguechat.responseCallback = function(response) {
+      window.alert("Success!");
+      window.location.href = response.redirect_path;
+    }

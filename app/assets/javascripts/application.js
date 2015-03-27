@@ -7,6 +7,8 @@
 //= require_self
 //= require "feed-interactions"
 
+window.denguechat = {};
+
 $(document).ready(function()
 {
   $(".submit-button").on("click", function(e)
