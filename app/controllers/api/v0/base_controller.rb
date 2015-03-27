@@ -1,5 +1,6 @@
 class API::V0::BaseController < ApplicationController
   before_filter :authenticate_user_via_device_token
+  before_filter :set_locale
 
   #----------------------------------------------------------------------------
 

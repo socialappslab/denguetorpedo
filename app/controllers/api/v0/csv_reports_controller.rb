@@ -1,6 +1,7 @@
 class API::V0::CsvReportsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
   before_filter :current_user
+  before_filter :set_locale
 
   #----------------------------------------------------------------------------
   # POST /api/v0/csv_reports
