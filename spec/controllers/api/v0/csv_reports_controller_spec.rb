@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe CsvReportsController do
+describe API::V0::CsvReportsController do
   let(:user) 						{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
   let(:csv) 			      { File.open("spec/support/forma_csv_examples.xlsx") }
   let(:uploaded_csv)    { ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv)) }

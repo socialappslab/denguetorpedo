@@ -9,21 +9,21 @@ describe "CsvReports", :type => :feature do
 
   before(:each) do
     FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
-    I18n.default_locale = User::Locales::SPANISH
+    I18n.locale = User::Locales::SPANISH
     sign_in(user)
   end
 
   #---------------------------------------------------------------------------
 
-  describe "uploading CSVs with errors" do
+  describe "uploading CSVs with errors", :js => true do
     before(:each) do
       visit new_neighborhood_csv_report_path(Neighborhood.first)
     end
 
     it "notifies user that location is missing" do
-      # page.find("#csv_report_csv").set(csv)
       attach_file "csv_report_csv", csv
       page.find(".submit-button").click
+      sleep 0.2
       expect(page).to have_content( I18n.t("views.csv_reports.flashes.missing_location") )
     end
 
