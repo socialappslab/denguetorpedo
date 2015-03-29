@@ -133,7 +133,7 @@ class ApplicationController < ActionController::Base
     # 2b. If not present, and cookies are not set, then set it to
     #     browser's default language.
     # 2c. Fallback to I18n.default_locale if all else fails.
-    available = [User::Locales::PORTUGUESE, User::Locales::SPANISH]
+    available = [User::Locales::SPANISH, User::Locales::PORTUGUESE]
     if @current_user.present? && available.include?(@current_user.locale)
       I18n.locale = @current_user.locale
     else

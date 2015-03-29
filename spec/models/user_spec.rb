@@ -7,14 +7,14 @@ describe User do
 	let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
 	before(:each) do
-		I18n.default_locale = User::Locales::PORTUGUESE
+		I18n.default_locale = User::Locales::SPANISH
 	end
 
 	it "validates presence of neighborhood" do
 		I18n.locale = I18n.default_locale
 		user.neighborhood_id = nil
 		user.save
-		expect(user.errors.full_messages).to include("Comunidade é obrigatório")
+		expect(user.errors.full_messages).to include("Comunidad es obligatorio")
 	end
 
 	describe "abilities" do

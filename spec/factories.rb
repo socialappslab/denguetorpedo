@@ -9,6 +9,7 @@ FactoryGirl.define do
 		password 						 "denguewarrior"
 		password_confirmation "denguewarrior"
 		role 			 							 User::Types::RESIDENT
+		locale User::Locales::SPANISH
 
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
