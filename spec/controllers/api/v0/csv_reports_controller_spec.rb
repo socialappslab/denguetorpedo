@@ -31,6 +31,15 @@ describe API::V0::CsvReportsController do
       }.to change(CsvReport, :count).by(1)
     end
 
+    it "associates the CSV with the user" do
+      post :create, :csv_report => { :csv => uploaded_csv },
+      :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+      :neighborhood_id => Neighborhood.first.id
+
+      csv = CsvReport.last
+      expect(csv.user_id).to eq(user.id)
+    end
+
     it "creates 3 new reports" do
       expect {
         post :create, :csv_report => { :csv => uploaded_csv },
