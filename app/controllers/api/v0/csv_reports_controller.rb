@@ -226,7 +226,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       redirect_path = edit_neighborhood_report_path(@neighborhood, report)
     else
       notice = I18n.t("activerecord.success.report.create")
-      redirect_to neighborhood_reports_path(@neighborhood)
+      redirect_path = neighborhood_reports_path(@neighborhood)
     end
 
     render :json => {:message => notice, :redirect_path => redirect_path}, :status => 200 and return
