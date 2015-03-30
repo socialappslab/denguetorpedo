@@ -5,7 +5,7 @@ describe UsersController do
 	render_views
 
 	before(:each) do
-		I18n.default_locale = User::Locales::PORTUGUESE
+		I18n.locale = User::Locales::SPANISH
 	end
 
 	#-----------------------------------------------------------------------------
@@ -32,9 +32,9 @@ describe UsersController do
 				fill_in "user_password", 						 :with => "abcdefg"
 				fill_in "user_password_confirmation", :with => "abcdefg"
 
-				n = Neighborhood.first
+				n = Neighborhood.last
 				select("#{n.name}, #{n.city.name}", :from => "user_neighborhood_id")
-				click_button "Cadastre-se"
+				page.find(".submit-button").click
 
 				expect(current_path).to eq( teams_path )
 			end
@@ -46,8 +46,8 @@ describe UsersController do
 			fill_in "user_username", 		 			  :with => "test"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
-			select(Neighborhood.first.name, :from => "user_neighborhood_id")
-			click_button "Cadastre-se"
+			select(Neighborhood.last.name, :from => "user_neighborhood_id")
+			page.find(".submit-button").click
 
 			expect(page).to have_content( I18n.t("views.users.create_success_flash") )
 		end
@@ -59,8 +59,8 @@ describe UsersController do
 			fill_in "user_username", 		 			  :with => "test"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
-			select(Neighborhood.first.name, :from => "user_neighborhood_id")
-			click_button "Cadastre-se"
+			select(Neighborhood.last.name, :from => "user_neighborhood_id")
+			page.find(".submit-button").click
 
 			expect(page).to have_content( I18n.t("activerecord.errors.messages.taken") )
 		end

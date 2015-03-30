@@ -34,7 +34,7 @@
       -#   %button.btn.btn-success.btn-large.submit-button{:style => "width: 210px;", :type => "submit"}
       -#     %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
       -#     = I18n.t("views.buttons.submit")
-      = form_for [@neighborhood, @csv_report], :multipart => true do |f|
+      = form_for [@neighborhood, @csv_report], :url => api_v0_csv_reports_path, :html => {:method => "POST", :multipart => true} do |f|
         #new_report
           = hidden_field_tag "report_location_attributes_latitude"
           = hidden_field_tag "report_location_attributes_longitude"
@@ -47,14 +47,24 @@
         .form-group
           = f.label :csv, "2. Cargue un CSV"
           = f.file_field :csv, :class => "form-control"
-
         .form-group
           = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
             %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
             = I18n.t("views.buttons.upload")
+
+        .form-group.form-errors
+          %p
+
 
 
 
 - content_for :scripts do
   = javascript_include_tag "map"
   = javascript_include_tag "googlemap/map-csv"
+  = javascript_include_tag "csv-ajax"
+
+  :javascript
+    window.denguechat.responseCallback = function(response) {
+      window.alert("Success!");
+      window.location.href = response.redirect_path;
+    }

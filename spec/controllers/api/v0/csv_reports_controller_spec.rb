@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe CsvReportsController do
+describe API::V0::CsvReportsController do
   let(:user) 						{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
   let(:csv) 			      { File.open("spec/support/forma_csv_examples.xlsx") }
   let(:uploaded_csv)    { ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv)) }
@@ -29,6 +29,15 @@ describe CsvReportsController do
         :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
         :neighborhood_id => Neighborhood.first.id
       }.to change(CsvReport, :count).by(1)
+    end
+
+    it "associates the CSV with the user" do
+      post :create, :csv_report => { :csv => uploaded_csv },
+      :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+      :neighborhood_id => Neighborhood.first.id
+
+      csv = CsvReport.last
+      expect(csv.user_id).to eq(user.id)
     end
 
     it "creates 3 new reports" do

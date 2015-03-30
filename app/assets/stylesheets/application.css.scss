@@ -305,6 +305,18 @@ div {
 }
 
 
+// Error handling
+.form-errors {
+  text-align: center;
+  display: none;
+  p {
+    color: #e74c3c;
+    font-family: "Lato" sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+  }
+}
+
 .empty-chart-disclaimer {
   text-align: center; position: relative; font-weight: bold; font-size: 24px; display: none;
 }

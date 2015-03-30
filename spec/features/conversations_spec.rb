@@ -12,10 +12,7 @@ describe "Conversations", :type => :feature do
     sign_in(user)
     conversation.users += [user, other_user]
     conversation.save
-
     FactoryGirl.create(:team_membership, :user_id => user.id, :team_id => team.id)
-
-    I18n.default_locale = User::Locales::PORTUGUESE
   end
 
   context "when visiting /conversations" do
@@ -64,7 +61,7 @@ describe "Conversations", :type => :feature do
     it "notifies if user forgot body" do
       visit user_conversation_path(user, conversation)
       click_button("Enviar")
-      expect(page).to have_content( I18n.t("attributes.body") + " é obrigatório" )
+      expect(page).to have_content( "es obligatorio" )
     end
 
     it "notifies the user of successful message" do
