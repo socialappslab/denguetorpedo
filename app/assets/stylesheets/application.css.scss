@@ -8,6 +8,7 @@
 *= require layout
 *= require prizes
 *= require reports
+*= require neighborhoods
 *= require users
 */
 
@@ -351,42 +352,6 @@ div {
   }
 }
 
-.chart-legend {
-  margin-top: 10px;
-  width: 10px;
-  height: 10px;
-  display: inline-block;
-
-  &.red {
-    background-color: #e74c3c;
-  }
-
-  &.yellow {
-    background-color: #f1c40f;
-  }
-
-  &.green {
-    background-color: #2ecc71;
-  }
-}
-
-
-.chart-title {
-  font-size: 18px; margin-top: 20px; text-align: center;
-}
-#timeseries-chart {
-  height: 350px;
-  display: block;
-  text-align: center;
-
-  i {
-    font-size: 64px; position: relative; top: 100;
-  }
-}
-
-.chart-disclaimer {
-  text-align: center; font-size: 10px; margin-top: 10px;
-}
 
 
 .sidebar-row {

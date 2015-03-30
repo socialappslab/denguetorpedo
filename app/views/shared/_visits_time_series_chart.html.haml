@@ -2,7 +2,6 @@
 %h3.chart-title
   = I18n.t('views.statistics.chart.title')
 
-
 .row
   .col-md-12
     #timeseries-chart
@@ -12,13 +11,16 @@
 
 
 .chart-legend.red
-= I18n.t('views.statistics.chart.percent_of_positive_sites')
+.chart-label
+  = I18n.t('views.statistics.chart.percent_of_positive_sites')
 %br
 .chart-legend.yellow
-= I18n.t('views.statistics.chart.percent_of_potential_sites')
+.chart-label
+  = I18n.t('views.statistics.chart.percent_of_potential_sites')
 %br
 .chart-legend.green
-= I18n.t('views.statistics.chart.percent_of_negative_sites')
+.chart-label
+  = I18n.t('views.statistics.chart.percent_of_negative_sites')
 
 
 %p.chart-disclaimer
