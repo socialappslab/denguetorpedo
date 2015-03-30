@@ -51,6 +51,14 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /neighborhoods/:neighborhood_id/reports/:id
+
+  def show
+    @report = @neighborhood.reports.find_by_id( params[:id] )
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /neighborhoods/:id/reports/new
 
   def new
     @report = Report.new
