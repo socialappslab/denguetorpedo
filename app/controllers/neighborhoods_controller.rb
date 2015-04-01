@@ -20,11 +20,11 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Limit the amount of records we show.
     unless params[:feed].to_s == "1"
-      @posts   = @posts.limit(5)
-      @reports = @reports.limit(5)
+      @posts   = @posts.limit(20)
+      @reports = @reports.limit(10)
     end
 
-    @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @activity_feed = @posts.to_a
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
