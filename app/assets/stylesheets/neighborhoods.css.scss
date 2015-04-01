@@ -1,3 +1,5 @@
+@import "variables";
+
 .chart-title {
   font-size: 20px;
   margin-top: 20px;
@@ -51,4 +53,112 @@
   label {
     font-size: 18px;
   }
+}
+
+
+
+.report-sidebar {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+
+  .user-image {
+    img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .metadata {
+    text-align: right;
+    font-size: 16px;
+
+    .positive {
+      color: #e74c3c;
+    }
+
+    .potential {
+      color: #e67e22;
+    }
+
+
+    .report-eliminated {
+      color: $dark-gray;
+    }
+
+    .timer {
+      display: inline-block;
+    }
+
+
+    .countdown {
+      color: $orange;
+    }
+
+    .report-open {
+      display: inline-block;
+      color: $orange;
+    }
+
+
+  }
+
+  .name {
+    vertical-align: middle;
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 10px;
+    width: 250px;
+
+    .feed-item-timestamp {
+      width: 200px;
+      display: inline-block;
+    }
+
+  }
+
+
+  .label-success {
+    margin-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
+
+    a {
+      color: white;
+    }
+  }
+}
+
+
+
+.sidebar-reports {
+  margin-top: 20px;
+
+  .name {
+    vertical-align: top;
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 10px;
+    width: 100px;
+
+    .feed-item-timestamp {
+      display: inline-block;
+    }
+  }
+
+  .report-photo {
+    img {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+
+    i {
+      font-size: 48px;
+      position: absolute;
+      z-index: 1;
+      right: 60;
+      top: -20;
+    }
+  }
+
 }

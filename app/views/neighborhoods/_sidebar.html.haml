@@ -59,3 +59,36 @@
   .row.sidebar-row
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => { :items => @users }
+
+  %hr
+  %h1
+    = I18n.t("activerecord.models.report", :count => 2).capitalize
+
+  .row.sidebar-reports
+    .col-md-12
+      - @reports.each do |r|
+        - owner     = (r.eliminated? ? r.eliminator : r.reporter)
+        - timestamp = (r.eliminated? ? r.eliminated_at : r.created_at)
+        .user_activity_item
+          .report-sidebar
+            .row
+              .col-md-12
+                = link_to user_path(owner), :class => "user-image" do
+                  = image_tag(owner.picture)
+                %span.name
+                  = link_to owner.display_name, user_path(owner)
+                  .feed-item-timestamp
+                    %i.fa.fa-clock-o
+                    = r.eliminated? ? I18n.t("common_terms.eliminated") : I18n.t("common_terms.reported")
+                    = timestamp_in_metadata(timestamp)
+
+            .row.report-photo
+              .col-md-12.text-center
+                = link_to neighborhood_report_path(@neighborhood, r) do
+                  %i.fa{:class => "#{r.eliminated? ? 'fa-check text-success' : 'fa-eye text-warning'}"}
+                  = image_tag(r.before_photo, :class => "img-rounded")
+
+
+
+                - unless r.eliminated?
+                  = link_to I18n.t("common_terms.eliminate_and_gain_points"), edit_neighborhood_report_path(@neighborhood, r), :class => "btn btn-success btn-block"
