@@ -311,6 +311,13 @@ ul#user_right_panel {
 
   .username {
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 250px;
+
+    a {
+      white-space: nowrap;
+    }
   }
 
   .feed-item-timestamp {
