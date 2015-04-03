@@ -1,9 +1,18 @@
 module ApplicationHelper
+  #----------------------------------------------------------------------------
 
   def chart_cookies
     return {} if cookies[:chart].blank?
     return JSON.parse(cookies[:chart])
   end
+
+  #----------------------------------------------------------------------------
+
+  def blog_post_award_text
+    return "+ #{User::Points::POST_CREATED.to_s} " + I18n.t("attributes.points").downcase
+  end
+
+  #----------------------------------------------------------------------------
 
   def logo_image
     if I18n.locale.to_s == User::Locales::PORTUGUESE

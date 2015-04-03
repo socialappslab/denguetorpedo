@@ -11,3 +11,7 @@
     - if @current_user && @current_user == user && item.class == Post
       = link_to path, :id => 'user_post_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
         %i.fa.fa-trash-o
+
+%span.label.label-success
+  = link_to prizes_path do
+    = blog_post_award_text
