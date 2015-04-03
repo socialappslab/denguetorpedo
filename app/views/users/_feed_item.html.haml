@@ -15,9 +15,8 @@
       = auto_link(post.content)
 
     - if @current_user
-      .row.feed-item-interaction-menu
-        .col-md-12
-          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
+      .feed-item-interaction-menu
+        = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
 
 
   = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

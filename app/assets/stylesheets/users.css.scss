@@ -254,8 +254,8 @@ ul#user_right_panel {
 //-----------------------------------------------------------------------------
 .feed-item-profile-photo {
   display: inline-block;
-  margin-left: 10px;
-  margin-top: 10px;
+  margin-left: 20px;
+  margin-top: 20px;
 }
 
 .feed-item-profile-photo img {
@@ -300,9 +300,10 @@ ul#user_right_panel {
 }
 
 .feed-item-bar {
-  margin-bottom: 15px;
-  font-size: 14px;
+  font-size: 16px;
   display:inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
 
   span {
     font-weight: bold;
@@ -310,6 +311,10 @@ ul#user_right_panel {
 
   .username {
     font-weight: bold;
+  }
+
+  .feed-item-timestamp {
+    display: inline-block;
   }
 }
 
@@ -323,7 +328,7 @@ ul#user_right_panel {
 .user_activity_item {
   min-height: 60px;
   background: #fff;
-  padding: 10px;
+  // padding: 10px;
   // padding-bottom: 20px;
   margin-bottom: 10px;
 
@@ -355,14 +360,28 @@ ul#user_right_panel {
     bottom: 0px;
     right: 0px;
   }
+
+  .label-success {
+    margin-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
+
+    a {
+      color: white;
+    }
+  }
+
+
 }
 
 .feed-item-interaction-menu {
-  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 10px;
   color: #8899a6;
 
   a {
     color: #8899a6;
+    text-decoration: none;
   }
 }
 

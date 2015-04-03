@@ -1,14 +1,7 @@
 .row
-  .col-md-9.col-md-offset-2
-    .row.feed-item-bar
-      .col-md-12
-        %span
-          = @current_user.display_name
-
-    .row
-      .col-md-12
-        = form_tag path, :class => "feed-item-comment-form" do
-          = text_area_tag "comment[content]", nil, :class => "form-control"
-          = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button" do
-            %i.fa.fa-refresh.fa-spin
-            = I18n.t("views.buttons.publish")
+  .col-md-12
+    = form_tag path, :class => "feed-item-comment-form" do
+      = text_area_tag "comment[content]", nil, :class => "form-control"
+      = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button" do
+        %i.fa.fa-refresh.fa-spin
+        = I18n.t("views.buttons.publish")
