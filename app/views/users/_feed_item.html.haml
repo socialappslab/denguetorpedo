@@ -1,7 +1,5 @@
 .feed-item
   .user_activity_item
-    .feed-item-profile-photo
-      = link_to image_tag(owner.picture), user_path(owner)
     = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => post_path(post)}
 
       .col-md-9

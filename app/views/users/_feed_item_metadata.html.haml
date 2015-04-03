@@ -1,3 +1,6 @@
+.feed-item-profile-photo
+  = link_to image_tag(user.picture), user_path(user)
+  
 .feed-item-bar
   .username
     = link_to user.display_name, user_path(user)
