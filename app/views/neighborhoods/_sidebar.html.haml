@@ -83,12 +83,12 @@
                     = timestamp_in_metadata(timestamp)
 
             .row.report-photo
-              .col-md-12.text-center
+              .col-md-10.col-md-offset-1.text-center
                 = link_to neighborhood_report_path(@neighborhood, r) do
                   %i.fa{:class => "#{r.eliminated? ? 'fa-check text-success' : 'fa-eye text-warning'}"}
                   = image_tag(r.before_photo, :class => "img-rounded")
 
 
-
-                - unless r.eliminated?
-                  = link_to I18n.t("common_terms.eliminate_and_gain_points"), edit_neighborhood_report_path(@neighborhood, r), :class => "btn btn-success btn-block"
+                .call-to-action
+                  - unless r.eliminated?
+                    = link_to I18n.t("common_terms.eliminate_and_gain_points"), edit_neighborhood_report_path(@neighborhood, r), :class => "btn btn-success btn-block"
