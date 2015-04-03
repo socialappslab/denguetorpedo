@@ -1,12 +1,8 @@
 .feed-item
   .user_activity_item
-    .row
-      .col-md-2.feed-item-profile-photo
-        = link_to user_path(owner) do
-          - if owner.profile_photo_file_name.nil?
-            = image_tag("default_images/user_default_alt.png")
-          - else
-            = image_tag(owner.profile_photo.url(:small))
+    .feed-item-profile-photo
+      = link_to image_tag(owner.picture), user_path(owner)
+    = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => post_path(post)}
 
       .col-md-9
         = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => post_path(post)}

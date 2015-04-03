@@ -253,15 +253,17 @@ ul#user_right_panel {
 // Feed-related customizations
 //-----------------------------------------------------------------------------
 .feed-item-profile-photo {
-  // margin-right: 20px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 
 .feed-item-profile-photo img {
+  width:  75px;
+  height: 75px;
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
           border-radius: 4px;
-  width: 60px;
-  height: 60px;
 }
 
 
@@ -279,7 +281,6 @@ ul#user_right_panel {
 
   height: 175px;
   width: 175px;
-  // background-color: #E9EAED;
   background-image: image-url("phone-prize.png");
 
   display: table-cell;
@@ -301,6 +302,7 @@ ul#user_right_panel {
 .feed-item-bar {
   margin-bottom: 15px;
   font-size: 14px;
+  display:inline-block;
 
   span {
     font-weight: bold;

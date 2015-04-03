@@ -1,9 +1,9 @@
-.row.feed-item-bar
-  .col-md-12.username
+.feed-item-bar
+  .username
     = link_to user.display_name, user_path(user)
-    .feed-item-timestamp
-      %i.fa.fa-clock-o
-      = timestamp_in_metadata(item.created_at)
+  .feed-item-timestamp
+    %i.fa.fa-clock-o
+    = timestamp_in_metadata(item.created_at)
 
     - if @current_user && @current_user == user && item.class == Post
       = link_to path, :id => 'user_post_delete', :confirm => I18n.t("views.alerts.confirm"), :method => :delete do
