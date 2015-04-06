@@ -34,13 +34,7 @@
               %p
                 = report.elimination_method.detailed_description
 
-        - else
-          .row
-            .col-md-6.col-md-offset-4
-              - points = report.breeding_site.elimination_methods.pluck(:points).max
-              = link_to I18n.t("views.reports.index.eliminate_and_win_points", :points => points), edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success btn-lg eliminate-report-button"
-
-        %hr
+          %hr
 
     .row
       .col-md-12
