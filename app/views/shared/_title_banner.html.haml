@@ -1,7 +1,24 @@
 .row
   .col-md-8.col-md-offset-2
-    .page-banner
+    .col-md-2.page-navigation
+      %h1.pull-left
+        - if parent_navigation_path.present? && parent_navigation_title.present?
+          = link_to parent_navigation_path do
+            %i.fa.fa-chevron-left
+            = parent_navigation_title
+    .col-md-8.page-banner
       %h1
         = title
+
+    .col-md-2.page-navigation
+      %h1.pull-right
+        - if child_navigation_path.present? && child_navigation_title.present?
+          = link_to child_navigation_path do
+            = child_navigation_title
+            %i.fa.fa-chevron-right
+
+.row
+  .col-md-8.col-md-offset-2
+    .page-banner
       %p.description
         = description.html_safe

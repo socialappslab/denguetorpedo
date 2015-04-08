@@ -476,9 +476,14 @@ div {
 
 .page-navigation {
   h1 {
-    font-size: 32px;
+    font-size: 18px;
     display: inline;
     margin-bottom: 20px;
+  }
+
+  a {
+    line-height: 35px;
+    text-decoration: none;
   }
 }
 
