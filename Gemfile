@@ -33,15 +33,14 @@ gem "http_accept_language"
 # Front-end tools
 
 gem 'haml'
-# gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'dynamic_form'
 gem 'rails_autolink'
+gem 'ckeditor'
 
 #------------------------------------------------------------------------------
 # Assets
 
-gem 'yui-compressor'
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
   gem 'bootstrap-sass', '~> 3.2.0'
