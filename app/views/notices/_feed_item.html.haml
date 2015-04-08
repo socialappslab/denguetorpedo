@@ -1,46 +1,21 @@
 .feed-item
-  .user_activity_item
-    .row
-      .col-md-1.feed-item-profile-photo
-        = link_to notice_path(notice) do
-          - if notice.photo_file_name.nil?
-            = image_tag("default_images/user_default_alt.png")
-          - else
-            = image_tag(notice.photo.url(:small))
+  .user_activity_item.notice-feed-item
+    = render :partial => "notices/feed_item_metadata", :locals => {:notice => notice, :user => notice.user}
 
-      .col-md-7
-        .row.feed-item-bar
-          .col-md-7
-            %b{:style => "color: #6655ee;"}
-              = notice.institution_name.present? ? notice.institution_name : I18n.t("activerecord.models.notice")
-            .feed-item-timestamp
-              %i.fa.fa-clock-o
-              = timestamp_in_metadata(notice.created_at)
+    .feed-item-content
+      - if notice.title.present?
+        = link_to notice.title, notice_path(notice)
 
-        .row.feed-item-content
-          .col-md-7
-            - if notice.title.present?
-              = link_to notice.title, notice_path(notice)
+      - if notice.summary.present?
+        %div{:style => "margin-top: 5px;"}
+          %i.fa.fa-info-circle
+          = notice.summary
 
-            - if notice.summary.present?
-              %div{:style => "margin-top: 5px;"}
-                %i.fa.fa-info-circle
-                = notice.summary
+      - if notice.location.present?
+        %div{:style => "margin-top: 5px;"}
+          %i.fa.fa-bank
+          = notice.location
 
-            - if notice.location.present?
-              %div{:style => "margin-top: 5px;"}
-                %i.fa.fa-bank
-                = notice.location
-
-            %div{:style => "margin-top: 5px;"}
-              %i.fa.fa-calendar
-              = notice.date.strftime("%H:%M, %d/%m/%Y")
-
-    - if @current_user
-      .row.feed-item-interaction-menu
-        .col-md-7
-          -# TODO: The Notice model needs a likes_count column to adhere to counter_cache.
-          -# = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => notice, :path => like_notice_path(notice)}
-
-
-  = render :partial => "users/comments", :locals => {:commentable => notice, :path => comment_notice_path(notice)}
+      %div{:style => "margin-top: 5px;"}
+        %i.fa.fa-calendar
+        = format_timestamp(notice.date)

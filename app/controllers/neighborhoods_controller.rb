@@ -24,7 +24,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
       @reports = @reports.limit(10)
     end
 
-    @activity_feed = @posts.to_a
+    @activity_feed = @notices.to_a + @posts.to_a
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
