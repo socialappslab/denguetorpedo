@@ -69,11 +69,6 @@ class HomeController < ApplicationController
         settings["percentages"] = params["chart"]["percentages"]
       end
 
-      # ["positive_inspection", "potential_inspection", "positive_followup", "potential_followup"].each do |key|
-      #   settings[key] = params["chart"][key]
-      # end
-
-
       ["positive", "potential", "negative"].each do |key|
         settings[key] = params["chart"][key]
       end

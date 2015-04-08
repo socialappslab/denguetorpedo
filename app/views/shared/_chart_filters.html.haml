@@ -40,7 +40,7 @@
             - [1, 3, 6].each do |month|
               .radio
                 = label_tag do
-                  = radio_button_tag "chart[timeframe]", month.to_s, chart_cookies.blank? || chart_cookies["timeframe"] == month.to_s
+                  = radio_button_tag "chart[timeframe]", month.to_s, (chart_cookies.blank? && month == 3) || chart_cookies["timeframe"] == month.to_s
                   = I18n.t("views.statistics.chart.filters.months", :count => month)
 
             .radio
