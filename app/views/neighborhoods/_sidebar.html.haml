@@ -48,7 +48,7 @@
             .row.report-photo
               .col-md-10.col-md-offset-1.text-center
                 = link_to neighborhood_report_path(@neighborhood, r) do
-                  %i.fa{:class => "#{r.eliminated? ? 'fa-check text-success' : 'fa-eye text-warning'}"}
+                  %i.fa{:class => "#{r.eliminated? ? 'fa-check text-success-light' : 'fa-eye text-primary-light'}"}
                   = image_tag(r.before_photo, :class => "img-rounded")
 
 
