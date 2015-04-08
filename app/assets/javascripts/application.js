@@ -6,6 +6,8 @@
 //
 //= require_self
 //= require "feed-interactions"
+//= require ckeditor/init
+//= require ckeditor/config
 
 window.denguechat = {};
 

@@ -1,6 +1,6 @@
 .col-md-9
   = form_for @post do |f|
-    = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :style => "width: 100%;", :class => "form-control"
+    = f.cktext_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :style => "width: 100%;", :class => "form-control", :ckeditor => {:toolbar => 'mini'}
     = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "float: right; margin-top: 10px; margin-bottom: 20px;" do
       %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
       = I18n.t("views.buttons.publish")
