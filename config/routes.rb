@@ -1,4 +1,6 @@
 Dengue::Application.routes.draw do
+  mount Ckeditor::Engine => '/ckeditor'
+
   #----------------------------------------------------------------------------
   # API routes.
 
