@@ -42,7 +42,7 @@
         success : function(response){
           var rawData = response;
 
-          if (response.length == 0) {
+          if (response.length <= 1) {
             $(".fa-refresh").hide();
             $(".empty-chart-disclaimer").show();
           } else {
