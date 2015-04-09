@@ -2,7 +2,12 @@
   .new-post
     = form_for @post do |f|
       = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
-      .text-right
-        = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button" do
-          %i.fa.fa-refresh.fa-spin
-          = I18n.t("views.buttons.publish")
+      .row
+        .col-md-4
+          %i.text-left.fa.fa-camera.add-photo
+            Add photo
+        .col-md-8
+          .text-right
+            = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button" do
+              %i.fa.fa-refresh.fa-spin
+              = I18n.t("views.buttons.publish")
