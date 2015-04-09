@@ -32,14 +32,3 @@
       = I18n.t("dashboard.reports")
 
 /------------------------------------------------------------------------------
-
-- if @current_user && @users.include?(@current_user)
-  .row.new-post
-    .col-md-9
-      = render :partial => 'posts/new'
-
-.row
-  .col-md-9
-    = render :partial => "shared/news_feed"
-
-/------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 = form_for @post do |f|
   = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
-  = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button" do
+  = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button" do
     %i.fa.fa-refresh.fa-spin
     = I18n.t("views.buttons.publish")

@@ -493,9 +493,14 @@ div {
 }
 
 
+.page-divider {
+  border: 1px solid #ccc;
+}
+
+
 
 .new-post {
-  margin-top: 60px;
+  margin-top: 20px;
 
   button {
     float: right; margin-top: 10px; margin-bottom: 20px;
