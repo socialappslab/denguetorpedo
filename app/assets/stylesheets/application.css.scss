@@ -491,3 +491,25 @@ div {
     font-size: 32px;
   }
 }
+
+
+
+.new-post {
+  padding: 20px;
+  background-color: white;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+
+  .fa-spin {
+    display: none;
+  }
+
+  form {
+    margin-bottom: 0px;
+  }
+
+  button {
+    margin-top: 20px;
+  }
+}
