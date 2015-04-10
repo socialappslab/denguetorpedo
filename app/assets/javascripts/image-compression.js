@@ -33,8 +33,8 @@ window.compression.compressFileFromHTMLInput = function(element) {
 compressImageOntoCanvas = function(image, canvas) {
   var width  = image.width;
   var height = image.height;
-  var maxWidth  = 300;
-  var maxHeight = 300;
+  var maxWidth  = 517;
+  var maxHeight = 600;
 
   if (width > height) {
     if (width > maxWidth) {
@@ -57,7 +57,7 @@ compressImageOntoCanvas = function(image, canvas) {
 
   // NOTE: We're using 0.75 JPEG quality per this article:
   // http://www.html5rocks.com/en/tutorials/speed/img-compression/
-  return canvas.toDataURL("image/jpeg", 0.75);
+  return canvas.toDataURL("image/jpeg", 1.0);
 }
 
 $(document).ready(function()
