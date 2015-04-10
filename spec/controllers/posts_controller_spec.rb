@@ -35,16 +35,22 @@ describe PostsController do
     it "awards points to the team" do
       before_points = team.points
       before_points_for_other_team = other_team.points
-      post "create", :post => {:title => "Hello", :content => "Testing"}
+      post "create", :post => {:content => "Testing"}
       expect(team.reload.points).to eq(before_points + User::Points::POST_CREATED)
       expect(other_team.reload.points).to eq(before_points_for_other_team + User::Points::POST_CREATED)
+    end
+
+    it "associates a photo" do
+      post "create", :post => {:title => "Hello", :content => "Testing", :compressed_photo => base64_image_string}
+      p = Post.last
+      expect(p.photo_file_size).not_to eq(nil)
     end
   end
 
   #---------------------------------------------------------------------------
 
   context "when destroying a post" do
-    let!(:post) { FactoryGirl.create(:post, :title => "Created post", :content => "Hello", :user_id => user.id) }
+    let!(:post) { FactoryGirl.create(:post, :content => "Hello", :user_id => user.id) }
     it "remove points from the user" do
       before_points = user.total_points
       delete "destroy", :id => post.id

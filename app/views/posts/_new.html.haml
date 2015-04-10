@@ -3,7 +3,7 @@
     = form_for @post do |f|
       = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
 
-      = file_field_tag nil, :class => "upload_photo"
+      = f.file_field :photo, :class => "upload_photo"
       .row
         .pull-left
           %img.preview
