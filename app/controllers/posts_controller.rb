@@ -30,29 +30,6 @@ class PostsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # DELETE /posts/1
-
-  def destroy
-    post = Post.find( params[:id] )
-
-    unless (post.user_id == @current_user.id || @current_user.coordinator?)
-      flash[:alert] = I18n.t("views.application.permission_required")
-      redirect_to root_path and return
-    end
-
-    if post.destroy
-      points = @current_user.total_points || 0
-      @current_user.update_column(:total_points, points - User::Points::POST_CREATED)
-      @current_user.teams.each do |team|
-        team.update_column(:points, team.points - User::Points::POST_CREATED)
-      end
-
-      flash[:notice] = I18n.t("activerecord.success.post.delete")
-      redirect_to :back and return
-    end
-  end
-
-  #----------------------------------------------------------------------------
   # POST /posts/1/like
 
   def like
