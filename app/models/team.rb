@@ -4,10 +4,9 @@ class Team < ActiveRecord::Base
   attr_accessible :name, :blocked, :profile_photo, :neighborhood_id, :points
 
   has_attached_file :profile_photo, :styles => {
-    :small => "60x60>",
-    :medium => "150x150>" ,
+    :small => ["150x150>", :jpg],
     :large => ["300x300>", :jpg]
-  }
+  }, :convert_options => { :small => "-quality 75 -strip", :large => "-quality 75 -strip" }
   validates_attachment :profile_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
   has_many :team_memberships, :dependent => :destroy
