@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150304080637) do
+ActiveRecord::Schema.define(:version => 20150410044810) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -269,16 +269,14 @@ ActiveRecord::Schema.define(:version => 20150304080637) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "content"
-    t.integer  "type_cd"
-    t.integer  "parent_id"
-    t.integer  "lft"
-    t.integer  "rgt"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-    t.integer  "wall_id"
-    t.string   "wall_type"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.integer  "neighborhood_id"
-    t.integer  "likes_count",     :default => 0
+    t.integer  "likes_count",        :default => 0
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
   end
 
   add_index "posts", ["user_id"], :name => "index_posts_on_user_id"

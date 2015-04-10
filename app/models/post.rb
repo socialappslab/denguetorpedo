@@ -13,8 +13,15 @@ class Post < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  has_attached_file :photo, :styles => {
+    :large => ["517x400>", :jpg]
+  }, :convert_options => { :large => "-quality 75 -strip" }
+
+  #----------------------------------------------------------------------------
+
   validates :user_id, :presence => true
   validates :content, :presence => true, :length => {:minimum => 1}
+  validates_attachment :photo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
   #----------------------------------------------------------------------------
 
