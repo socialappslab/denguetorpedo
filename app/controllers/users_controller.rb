@@ -2,10 +2,10 @@
 # encoding: utf-8
 
 class UsersController < ApplicationController
-  before_filter :require_login,             :only => [:edit, :update, :index, :show]
+  before_filter :require_login,             :only => [:edit, :update, :index, :show, :destroy]
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
-  before_filter :ensure_proper_permissions, :only => [:index, :phones]
+  before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
 
   #----------------------------------------------------------------------------
   # GET /users/
