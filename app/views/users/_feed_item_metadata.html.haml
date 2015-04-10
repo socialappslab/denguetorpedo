@@ -6,5 +6,5 @@
       = timestamp_in_metadata(item.created_at)
 
     - if @current_user && @current_user == user && item.class == Post
-      = link_to api_v0_post_path(item), :class => "delete-post-button", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => api_v0_post_path(item) do
+      = link_to path, :class => "delete-post-button", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => path do
         %i.fa.fa-trash-o
