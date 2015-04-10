@@ -49,20 +49,4 @@ describe PostsController do
 
   #---------------------------------------------------------------------------
 
-  context "when destroying a post" do
-    let!(:post) { FactoryGirl.create(:post, :content => "Hello", :user_id => user.id) }
-    it "remove points from the user" do
-      before_points = user.total_points
-      delete "destroy", :id => post.id
-      expect(user.reload.total_points).to eq(before_points - User::Points::POST_CREATED)
-    end
-
-    it "remove points from team" do
-      before_points = team.points
-      before_points_for_other_team = other_team.points
-      delete "destroy", :id => post.id
-      expect(team.reload.points).to eq(before_points - User::Points::POST_CREATED)
-      expect(other_team.reload.points).to eq(before_points_for_other_team - User::Points::POST_CREATED)
-    end
-  end
 end
