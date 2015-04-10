@@ -82,4 +82,23 @@ $(document).ready(function()
 
   //---------------------------------------------------------------------------
 
+  $(".delete-post-button").click(function(event){
+    event.preventDefault();
+
+    var choice = confirm($(this).data("confirm"));
+    if (choice == false)
+      return
+
+    // Trim the count of the text
+    $.ajax({
+      url: $(this).data("path"),
+      type: "DELETE",
+      success : function(data){
+        $(event.currentTarget).parents('.feed-item').remove()
+      }
+    })
+  });
+
+  //---------------------------------------------------------------------------
+
 })
