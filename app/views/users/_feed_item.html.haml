@@ -24,8 +24,8 @@
             - else
               = auto_link(post.content)
 
-    - if post.photo
-      .row
+    - if post.photo.present?
+      .row.post-photo
         .col-md-12
           = image_tag(post.photo.url(:large), :class => "img-rounded")
 

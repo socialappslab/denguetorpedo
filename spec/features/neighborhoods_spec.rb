@@ -9,6 +9,8 @@ describe "Neighborhoods", :type => :feature do
 
   before(:each) do
     FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
+    sign_in(user)
+    visit neighborhood_path(n)
   end
 
   describe "index page" do
@@ -16,9 +18,6 @@ describe "Neighborhoods", :type => :feature do
 
     before(:each) do
       pending "Getting odd [GET] errors"
-      FactoryGirl.create(:team_membership, :user_id => user.id, :team_id => team.id)
-      sign_in(user)
-      visit neighborhood_path(n)
     end
 
     context "when liking a post", :js => true do
@@ -29,6 +28,14 @@ describe "Neighborhoods", :type => :feature do
       end
     end
 
+  end
+
+  describe "when creating a post" do
+    it "doesn't display a missing image" do
+      fill_in "post_content", :with => "Test"
+      page.find(".submit-button").click
+      expect(page).not_to have_css(".post-photo")
+    end
   end
 
   #---------------------------------------------------------------------------
