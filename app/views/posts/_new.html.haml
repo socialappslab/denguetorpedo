@@ -4,9 +4,11 @@
       = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
 
       = file_field_tag nil, :class => "upload_photo"
-      %img.preview{:style => "display: block;"}
-      %canvas
-      = hidden_field_tag "compressed_photo", nil, :class => "compressed_photo"
+      .row
+        .pull-left
+          %img.preview
+        %canvas
+        = hidden_field_tag "post[compressed_photo]", nil, :class => "compressed_photo"
 
       .row
         .col-md-4

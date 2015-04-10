@@ -24,6 +24,11 @@
             - else
               = auto_link(post.content)
 
+    - if post.photo
+      .row
+        .col-md-12
+          = image_tag(post.photo.url(:large), :class => "img-rounded")
+
     - if @current_user
       .row.feed-item-interaction-menu
         .col-md-12
