@@ -2,6 +2,12 @@
   .new-post
     = form_for @post do |f|
       = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
+
+      = file_field_tag nil, :class => "upload_photo"
+      %img.preview{:style => "display: block;"}
+      %canvas
+      = hidden_field_tag "compressed_photo", nil, :class => "compressed_photo"
+
       .row
         .col-md-4
           %i.text-left.fa.fa-camera.add-photo
@@ -11,3 +17,14 @@
             = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button" do
               %i.fa.fa-refresh.fa-spin
               = I18n.t("views.buttons.publish")
+
+- content_for :scripts do
+  :javascript
+    $(document).ready(function()
+    {
+      $(".add-photo").on("click", function()
+      {
+        $("input[type='file']").trigger("click")
+      })
+    })
+  = javascript_include_tag "image-compression"
