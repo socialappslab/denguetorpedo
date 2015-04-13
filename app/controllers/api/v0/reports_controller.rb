@@ -1,4 +1,7 @@
 class API::V0::ReportsController < API::V0::BaseController
+  skip_before_filter :authenticate_user_via_device_token, :only => [:destroy]
+  before_filter :current_user, :only => [:destroy]
+
   #----------------------------------------------------------------------------
   # GET /api/v0/reports
 
@@ -44,6 +47,27 @@ class API::V0::ReportsController < API::V0::BaseController
     else
       raise API::V0::Error.new(@report.errors.full_messages[0], 403)
     end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def destroy
+    if @current_user.coordinator? || @current_user.created_reports.find_by_id(params[:id])
+      @report = Report.find(params[:id])
+      @report.destroy
+
+      render :json => @report.as_json(:only => [:id, :report],
+      :methods => [:formatted_created_at],
+      :include => {
+        :location => {:only => [:address]},
+        :breeding_site => {
+          :only => [:id, :description_in_es, :description_in_pt]
+        }
+      }), :status => 200 and return
+
+    end
+
+    raise API::V0::Error.new(I18n.t("views.application.permission_denied"), 403)
   end
 
   #----------------------------------------------------------------------------

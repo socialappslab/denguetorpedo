@@ -218,7 +218,8 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def formatted_created_at
-    return self.created_at.strftime("%k:%M %Y-%m-%d")
+    return "" if self.created_at.blank?
+    return self.created_at.strftime("%Y-%m-%d %H:%M")
   end
 
   def self.create_from_user(report_content, params)

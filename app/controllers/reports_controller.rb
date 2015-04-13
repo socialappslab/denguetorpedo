@@ -326,18 +326,6 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
-
-  def destroy
-    if @current_user.coordinator? or @current_user.created_reports.find_by_id(params[:id])
-      @report = Report.find(params[:id])
-      @report.destroy
-      flash[:notice] = I18n.t("activerecord.success.report.delete")
-    end
-
-    redirect_to neighborhood_reports_path(@neighborhood) and return
-  end
-
-  #----------------------------------------------------------------------------
   # POST /neighborhoods/:neighborhood_id/reports/verify
 
   def verify

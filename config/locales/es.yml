@@ -350,6 +350,7 @@ es:
       devise_errors: "%{num_errors} errores impidieron que el usuario fuera salvado:"
       login_required: "Regístrese para jugar en Dengue Chat o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
+      permission_denied: Usted no tiene permiso
       user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con Dengue Chat."
       email_invalid: "Correo electrónico incorrecta"
     alerts:
