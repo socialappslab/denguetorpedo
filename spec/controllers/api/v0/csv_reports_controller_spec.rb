@@ -131,13 +131,6 @@ describe API::V0::CsvReportsController do
     end
   end
 
-
-
-
-
-
-
-
   context "when uploading the same CSV", :after_commit => true do
     before(:each) do
       cookies[:auth_token] = user.auth_token
@@ -178,7 +171,46 @@ describe API::V0::CsvReportsController do
         :neighborhood_id => Neighborhood.first.id
       }.not_to change(Visit, :count)
     end
+  end
 
+  context "when uploading the same but updated CSV", :after_commit => true do
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+
+      csv = "spec/support/updating_csv/initial_visit.xlsx"
+      initial_csv = ActionDispatch::Http::UploadedFile.new(:tempfile => File.open(csv), :filename => File.basename(csv))
+
+      post :create, :csv_report => { :csv => initial_csv },
+      :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+      :neighborhood_id => user.neighborhood.id
+
+      csv = "spec/support/updating_csv/subsequent_visit.xlsx"
+      @subsequent_csv = ActionDispatch::Http::UploadedFile.new(:tempfile => File.open(csv), :filename => File.basename(csv))
+    end
+
+    it "reuses the same location" do
+      expect {
+        post :create, :csv_report => { :csv => @subsequent_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.not_to change(Location, :count)
+    end
+
+    it "creates only 1 report" do
+      expect {
+        post :create, :csv_report => { :csv => @subsequent_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.to change(Report, :count).by(1)
+    end
+
+    it "create a new inspection Visit" do
+      expect {
+        post :create, :csv_report => { :csv => @subsequent_csv },
+        :report_location_attributes_latitude => 12, :report_location_attributes_longitude => -86,
+        :neighborhood_id => Neighborhood.first.id
+      }.to change(Visit, :count).by(1)
+    end
   end
 
 
