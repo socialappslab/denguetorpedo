@@ -513,6 +513,31 @@ div {
      -moz-border-radius: 3px;
           border-radius: 3px;
 
+
+  ::-webkit-input-placeholder {
+     font-size: 18px;
+     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+     font-weight: 200;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+    font-size: 18px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 200;
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+    font-size: 18px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 200;
+  }
+
+  :-ms-input-placeholder {
+    font-size: 18px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 200;
+  }
+
   .fa-spin {
     display: none;
   }

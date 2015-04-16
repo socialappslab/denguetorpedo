@@ -428,6 +428,7 @@ es:
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
     post:
+      feed: Blog comunitario
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Chat!"
     home:
       login:

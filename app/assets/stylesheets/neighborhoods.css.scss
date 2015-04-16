@@ -1,7 +1,7 @@
 @import "variables";
 
 .chart-title {
-  font-size: 22px;
+  font-size: 23px;
   margin-top: 20px;
   text-align: center;
 }
@@ -153,19 +153,18 @@
   }
 
   .report-photo {
+    text-align: center;
     img {
-      width: 100px;
+      width: 200px;
+      margin-top: 20px;
       margin-bottom: 20px;
-      margin-left: 20px;
-      margin-right: 20px;
     }
 
     i {
-      font-size: 48px;
-      position: relative;
+      position: absolute;
       z-index: 1;
-      left: 150;
-      top: -70;
+      right: 50;
+      // top: -70;
     }
 
     .call-to-action {

@@ -13,7 +13,6 @@
   %hr.page-divider
 
   .col-md-4.col-md-offset-1
-    %hr
     %h1.text-center
       = I18n.t("activerecord.models.report", :count => 2).capitalize
 
@@ -37,23 +36,26 @@
                   = timestamp_in_metadata(timestamp)
 
 
-              .row.report-photo
-                .col-md-10.col-md-offset-1.text-center
-                  = link_to neighborhood_report_path(@neighborhood, r) do
-                    %i.fa{:class => "#{r.eliminated? ? 'fa-check text-success-light' : 'fa-eye text-primary-light'}"}
-                    = image_tag(r.before_photo, :class => "img-rounded")
+              .report-photo
+
+                = link_to neighborhood_report_path(@neighborhood, r) do
+                  %i.fa.fa-5x{:class => "#{r.eliminated? ? 'fa-check text-success-light' : 'fa-eye text-primary-light'}"}
+
+                  = image_tag(r.before_photo, :class => "img-rounded")
 
 
-                  .call-to-action
-                    - unless r.eliminated?
-                      = link_to I18n.t("common_terms.eliminate_and_gain_points"), edit_neighborhood_report_path(@neighborhood, r), :class => "btn btn-success btn-block"
+                .call-to-action
+                  - unless r.eliminated?
+                    = link_to I18n.t("common_terms.eliminate_and_gain_points"), edit_neighborhood_report_path(@neighborhood, r), :class => "btn btn-success btn-block"
 
-  .col-md-6.col-md-offset-1
+  .col-md-5.col-md-offset-1
+    %h1.text-center
+      = I18n.t("views.post.feed")
 
     - if @current_user && @users.include?(@current_user)
       .row
-        .col-md-10
+        .col-md-12
           = render :partial => 'posts/new'
     .row
-      .col-md-10
+      .col-md-12
         = render :partial => "shared/news_feed"

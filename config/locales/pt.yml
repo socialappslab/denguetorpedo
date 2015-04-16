@@ -424,6 +424,7 @@ pt:
       delete:  Deletar
       upload:  Cahegar
     post:
+      feed: Blog comunitario
       text_placeholder: "Compartilhe suas ideias com a turma do Dengue Torpedo!"
     home:
       login:
