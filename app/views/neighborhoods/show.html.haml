@@ -22,7 +22,7 @@
         - @reports.each do |r|
           - owner     = (r.eliminated? ? r.eliminator : r.reporter)
           - timestamp = (r.eliminated? ? r.eliminated_at : r.created_at)
-          .user_activity_item
+          .feed-item
             .report-sidebar
               .row
                 .col-md-12

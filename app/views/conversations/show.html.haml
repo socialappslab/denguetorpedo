@@ -11,7 +11,7 @@
     .row{:style => "margin-top: 20px;"}
       .col-md-12
         - @messages.each do |m|
-          .user_activity_item
+          .feed-item
             .row
               .col-md-1.feed-item-profile-photo
                 = link_to user_path(m.user) do
@@ -28,7 +28,7 @@
                   .col-md-7
                     = m.body
 
-        .user_activity_item
+        .feed-item
           .row
             .col-md-1.feed-item-profile-photo
               = image_tag(@current_user.picture)

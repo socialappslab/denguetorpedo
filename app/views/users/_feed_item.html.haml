@@ -1,17 +1,16 @@
 .feed-item
-  .user_activity_item
-    = render :partial => "shared/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
+  = render :partial => "shared/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
 
-    .feed-item-content
-      = auto_link(post.content)
+  .feed-item-content
+    = auto_link(post.content)
 
-      - if post.photo.present?
-        .post-photo
-          = image_tag(post.photo.url(:large), :class => "img-rounded")
+    - if post.photo.present?
+      .post-photo
+        = image_tag(post.photo.url(:large), :class => "img-rounded")
 
-    - if @current_user
-      .feed-item-interaction-menu
-        = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
+  - if @current_user
+    .feed-item-interaction-menu
+      = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
 
 
-  = render :partial => "shared/comments", :locals => {:commentable => post, :path => comment_post_path(post)}
+= render :partial => "shared/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

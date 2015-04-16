@@ -1,44 +1,43 @@
 .feed-item
-  .user_activity_item
-    = render :partial => "shared/feed_item_metadata", :locals => {:item => report, :user => owner, :path => user_path(owner)}
+  = render :partial => "shared/feed_item_metadata", :locals => {:item => report, :user => owner, :path => user_path(owner)}
 
-    .feed-item-content
-      = report.report
-
-
-    .feed-item-report-photo
-      .col-md-5.col-md-offset-1
-        = link_to neighborhood_reports_path(report.neighborhood) do
-          - if report.before_photo_file_name.present?
-            = image_tag(report.before_photo.url(:thumb), :class => "img-rounded")
-          - else
-            = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
-
-        %div
-          %i.fa.fa-eye
-          = report.breeding_site.description
-
-      .col-md-5.col-md-offset-1
-        = link_to neighborhood_reports_path(report.neighborhood) do
-          - if report.eliminated? && report.after_photo_file_name.present?
-            = image_tag(report.after_photo.url(:thumb), :class => "img-rounded")
-          - elsif report.open?
-            .feed-item-elimination-incentive
-              %p
-                = I18n.t("common_terms.eliminate_and_gain_points")
-          - else
-            = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
-
-        %div
-          - if report.eliminated? && report.elimination_method.present?
-            %i.fa.fa-ban
-            = report.elimination_method.description
-
-    - if @current_user
-      .row.feed-item-interaction-menu
-        .col-md-7
-          = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
+  .feed-item-content
+    = report.report
 
 
+  .feed-item-report-photo
+    .col-md-5.col-md-offset-1
+      = link_to neighborhood_reports_path(report.neighborhood) do
+        - if report.before_photo_file_name.present?
+          = image_tag(report.before_photo.url(:thumb), :class => "img-rounded")
+        - else
+          = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
 
-  = render :partial => "shared/comments", :locals => {:commentable => report, :path => comment_neighborhood_report_path(report.neighborhood, report)}
+      %div
+        %i.fa.fa-eye
+        = report.breeding_site.description
+
+    .col-md-5.col-md-offset-1
+      = link_to neighborhood_reports_path(report.neighborhood) do
+        - if report.eliminated? && report.after_photo_file_name.present?
+          = image_tag(report.after_photo.url(:thumb), :class => "img-rounded")
+        - elsif report.open?
+          .feed-item-elimination-incentive
+            %p
+              = I18n.t("common_terms.eliminate_and_gain_points")
+        - else
+          = image_tag("default_images/report_before_photo.png", :class => "img-rounded")
+
+      %div
+        - if report.eliminated? && report.elimination_method.present?
+          %i.fa.fa-ban
+          = report.elimination_method.description
+
+  - if @current_user
+    .row.feed-item-interaction-menu
+      .col-md-7
+        = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
+
+
+
+= render :partial => "shared/comments", :locals => {:commentable => report, :path => comment_neighborhood_report_path(report.neighborhood, report)}

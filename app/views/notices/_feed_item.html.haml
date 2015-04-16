@@ -1,21 +1,20 @@
-.feed-item
-  .user_activity_item.notice-feed-item
-    = render :partial => "notices/feed_item_metadata", :locals => {:notice => notice, :user => notice.user}
+.feed-item.notice-feed-item
+  = render :partial => "notices/feed_item_metadata", :locals => {:notice => notice, :user => notice.user}
 
-    .feed-item-content
-      - if notice.title.present?
-        = link_to notice.title, notice_path(notice)
+  .feed-item-content
+    - if notice.title.present?
+      = link_to notice.title, notice_path(notice)
 
-      - if notice.summary.present?
-        %div{:style => "margin-top: 5px;"}
-          %i.fa.fa-info-circle
-          = notice.summary
-
-      - if notice.location.present?
-        %div{:style => "margin-top: 5px;"}
-          %i.fa.fa-bank
-          = notice.location
-
+    - if notice.summary.present?
       %div{:style => "margin-top: 5px;"}
-        %i.fa.fa-calendar
-        = format_timestamp(notice.date)
+        %i.fa.fa-info-circle
+        = notice.summary
+
+    - if notice.location.present?
+      %div{:style => "margin-top: 5px;"}
+        %i.fa.fa-bank
+        = notice.location
+
+    %div{:style => "margin-top: 5px;"}
+      %i.fa.fa-calendar
+      = format_timestamp(notice.date)

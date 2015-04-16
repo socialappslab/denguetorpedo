@@ -524,11 +524,8 @@ div {
 
   .add-photo {
     font-size: 24px;
-    margin-top: 20px;
     color: #337ab7;
     line-height: 45px;
-
-
     cursor: pointer;
     cursor: hand;
   }
@@ -537,7 +534,7 @@ div {
   margin-top: 20px;
 
   button {
-    float: right; margin-top: 10px; margin-bottom: 20px;
+    float: right;
   }
 
 
@@ -545,9 +542,6 @@ div {
     margin-bottom: 0px;
   }
 
-  button {
-    margin-top: 20px;
-  }
 
   canvas {
     display: none;
