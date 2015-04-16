@@ -24,16 +24,18 @@
           - timestamp = (r.eliminated? ? r.eliminated_at : r.created_at)
           .feed-item
             .report-sidebar
-              .row
-                .col-md-12
-                  = link_to user_path(owner), :class => "user-image" do
-                    = image_tag(owner.picture)
-                  %span.name
-                    = link_to owner.display_name, user_path(owner)
-                    .feed-item-timestamp
-                      %i.fa.fa-clock-o
-                      = r.eliminated? ? I18n.t("common_terms.eliminated") : I18n.t("common_terms.reported")
-                      = timestamp_in_metadata(timestamp)
+              .feed-item-profile-photo
+                = link_to user_path(owner), :class => "user-image" do
+                  = image_tag(owner.picture)
+
+              .feed-item-bar
+                .username
+                  = link_to owner.display_name, user_path(owner)
+                .feed-item-timestamp
+                  %i.fa.fa-clock-o
+                  = r.eliminated? ? I18n.t("common_terms.eliminated") : I18n.t("common_terms.reported")
+                  = timestamp_in_metadata(timestamp)
+
 
               .row.report-photo
                 .col-md-10.col-md-offset-1.text-center

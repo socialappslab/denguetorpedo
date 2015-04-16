@@ -4,11 +4,6 @@
       = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
     - elsif item.is_a? Notice
       = render :partial => 'notices/feed_item', :locals => {:notice => item, :owner => item.user}
-    - elsif item.is_a?(Report) && item.eliminated? && item.is_public? && item.eliminator
-      = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.eliminator}
-    - elsif item.is_a?(Report) && item.open? && item.is_public? && item.reporter
-      = render :partial => "reports/feed_item", :locals => {:report => item, :owner => item.reporter}
-
 
   - if @activity_feed.present? && params[:feed].blank?
     .more-feed-link

@@ -417,7 +417,7 @@ es:
       update:
         success: "La contraseña fue cambiada"
     buttons:
-      publish: "Publicar"
+      publish: "Chat"
       confirm: "Confirmar"
       search:  "Buscar"
       submit:  "Enviar"

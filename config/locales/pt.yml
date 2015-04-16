@@ -414,7 +414,7 @@ pt:
       update:
         success: "A senha foi alterada!"
     buttons:
-      publish: "Publicar"
+      publish: "Chat"
       confirm: "Confirmar"
       search:  "Busca"
       submit:  "Enviar"
