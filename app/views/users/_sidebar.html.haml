@@ -21,7 +21,7 @@
 
 
   %hr
-  %h1
+  %h1.text-center
     = I18n.t("activerecord.models.team", :count => 2).capitalize
 
   .row.sidebar-row
@@ -30,7 +30,7 @@
 
 
   %hr
-  %h1
+  %h1.text-center
     = I18n.t("common_terms.badges").capitalize
 
   - if @user.total_points >= 100

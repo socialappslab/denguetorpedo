@@ -8,7 +8,7 @@
       = "#{@neighborhood.city.localized_country_name}"
 
   %hr
-  %h1
+  %h1.text-center
     = I18n.t("activerecord.models.team", :count => 2).capitalize
 
   .row.sidebar-row
@@ -16,11 +16,9 @@
       = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
   %hr
-  %h1
+  %h1.text-center
     = I18n.t("common_terms.participants").capitalize
 
   .row.sidebar-row
     .col-md-12
       = render :partial => "shared/sidebar_list", :locals => { :items => @users }
-
-  
