@@ -88,7 +88,6 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'capybara'         # lets Cucumber pretend to be a web browser
-  gem 'launchy'          # a useful debugging aid for user stories
   gem 'sqlite3'
 end
 

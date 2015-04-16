@@ -121,9 +121,8 @@ class CsvReport < ActiveRecord::Base
     chemical   = row_content[:chemical].to_s
     larvae     = row_content[:larvae].to_s
     pupae      = row_content[:pupae].to_s
-    comments   = row_content[:comments]
 
-    uuid = (row_index.to_s + address + visited_at + room + type + prot + pupae + larvae + chemical + comments)
+    uuid = (row_index.to_s + address + visited_at + room + type + prot + pupae + larvae + chemical)
     uuid = uuid.strip.downcase.underscore
     return uuid
   end

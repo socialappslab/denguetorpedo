@@ -49,9 +49,9 @@
   .col-md-6.col-md-offset-1
 
     - if @current_user && @users.include?(@current_user)
-      .row.new-post
-        .col-md-10
-          = render :partial => 'posts/new'
       .row
         .col-md-10
-          = render :partial => "shared/news_feed"
+          = render :partial => 'posts/new'
+    .row
+      .col-md-10
+        = render :partial => "shared/news_feed"

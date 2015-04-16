@@ -11,8 +11,13 @@ describe UsersController do
 	#-----------------------------------------------------------------------------
 
 	context "Deleting a user" do
-		let!(:user)  			{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)  }
-		let!(:second_user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+		let!(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id, :role => User::Types::COORDINATOR)  }
+		let(:team) { FactoryGirl.create(:team, :name => "Team", :neighborhood_id => Neighborhood.first.id) }
+
+		before(:each) do
+			cookies[:auth_token] = user.auth_token
+			FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
+		end
 
 		it "deletes the user from the database" do
 			expect {

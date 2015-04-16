@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
   EMAIL_REGEX = /[a-z0-9!$#%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!$#%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
   has_secure_password
-  has_attached_file :profile_photo, :styles => { :small => "60x60>", :large => "150x150>" }, :default_url => 'default_images/profile_default_image.png'#, :storage => STORAGE, :s3_credentials => S3_CREDENTIALS
+  has_attached_file :profile_photo, :styles => { :small => ["150x150>", :jpg], :large => ["300x300>", :jpg] }, :convert_options => { :small => "-quality 75 -strip", :large => "-quality 75 -strip" }
   validates_attachment :profile_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
   #----------------------------------------------------------------------------

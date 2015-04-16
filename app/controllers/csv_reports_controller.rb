@@ -12,7 +12,6 @@ class CsvReportsController < NeighborhoodsBaseController
   def index
   end
 
-
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1/csv_reports/new
 

@@ -2,7 +2,7 @@
 # * https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server
 # * http://blog.codeship.com/puma-vs-unicorn/#comment-1743800292
 workers Integer(ENV['PUMA_WORKERS'] || 3)
-threads Integer(ENV['MIN_THREADS']  || 1), Integer(ENV['MAX_THREADS'] || 16)
+threads Integer(ENV['MIN_THREADS']  || 1), Integer(ENV['MAX_THREADS'] || 8)
 
 preload_app!
 

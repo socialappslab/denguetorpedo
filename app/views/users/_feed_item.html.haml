@@ -1,18 +1,13 @@
 .feed-item
   .user_activity_item
-    = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => post_path(post)}
+    = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
 
     .feed-item-content
-      -# - if post.content.length >= Post::CHARACTER_LIMIT
-      -#   = auto_link(post.content[0..Post::CHARACTER_LIMIT - 1])
-      -#   #hidden-post-content{:style => "display: none;"}
-      -#     = auto_link(post.content[Post::CHARACTER_LIMIT..-1])
-      -#   .show-more-content-link{:style => "display: block;"}
-      -#     = link_to "", :style => "color: #6655ee;" do
-      -#       %i.fa.fa-chevron-down
-      -#       = I18n.t("common_terms.more")
-      -# - else
       = auto_link(post.content)
+
+      - if post.photo.present?
+        .post-photo
+          = image_tag(post.photo.url(:large), :class => "img-rounded")
 
     - if @current_user
       .feed-item-interaction-menu

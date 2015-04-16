@@ -28,18 +28,18 @@ class Report < ActiveRecord::Base
 
   has_attached_file :before_photo,
   :default_url => 'default_images/report_before_photo.png', :styles => {
-    :large => ["300x300>", :jpg],
-    :medium => "150x150>",
-    :thumb => "100x100>"
-  }
+    :large => ["450x450>", :jpg],
+    :medium => "300x300>"
+  }, :convert_options => { :medium => "-quality 75 -strip", :large => "-quality 75 -strip" }
+
   has_attached_file :after_photo,
   :default_url => 'default_images/report_after_photo.png', :styles => {
-    :large => ["300x300>", :jpg],
-    :medium => "150x150>",
-    :thumb => "100x100>"
-  }
+    :large => ["450x450>", :jpg],
+    :medium => "300x300>"
+  }, :convert_options => { :medium => "-quality 75 -strip", :large => "-quality 75 -strip" }
+
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates_attachment :after_photo, content_type:  { content_type: /\Aimage\/.*\Z/ }
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
 
   #----------------------------------------------------------------------------
   # Associations
@@ -218,7 +218,8 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def formatted_created_at
-    return self.created_at.strftime("%k:%M %Y-%m-%d")
+    return "" if self.created_at.blank?
+    return self.created_at.strftime("%Y-%m-%d %H:%M")
   end
 
   def self.create_from_user(report_content, params)

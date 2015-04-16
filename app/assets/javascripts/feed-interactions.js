@@ -75,7 +75,7 @@ $(document).ready(function()
       url: $(this).data("path"),
       type: "POST",
       success : function(data){
-        $(event.currentTarget).parents('.sidebar-list-item').remove()
+        $(event.currentTarget).parents('.sidebar-list-item').remove();
       }
     })
   });
