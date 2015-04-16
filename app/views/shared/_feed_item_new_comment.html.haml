@@ -1,7 +1,0 @@
-.row
-  .col-md-12
-    = form_tag path, :class => "feed-item-comment-form" do
-      = text_area_tag "comment[content]", nil, :class => "form-control"
-      = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button" do
-        %i.fa.fa-refresh.fa-spin
-        = I18n.t("views.buttons.publish")
