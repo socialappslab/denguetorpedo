@@ -1,38 +1,16 @@
 .feed-item
-  .user_activity_item
-    .row
-      .col-md-2.feed-item-profile-photo
-        = link_to user_path(owner) do
-          - if owner.profile_photo_file_name.nil?
-            = image_tag("default_images/user_default_alt.png")
-          - else
-            = image_tag(owner.profile_photo.url(:small))
+  = render :partial => "shared/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
 
-      .col-md-9
-        = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
-
-        .row.feed-item-content
-          .col-md-12
-            - if post.content.length >= Post::CHARACTER_LIMIT
-              = auto_link(post.content[0..Post::CHARACTER_LIMIT - 1])
-              #hidden-post-content{:style => "display: none;"}
-                = auto_link(post.content[Post::CHARACTER_LIMIT..-1])
-              .show-more-content-link{:style => "display: block;"}
-                = link_to "", :style => "color: #6655ee;" do
-                  %i.fa.fa-chevron-down
-                  = I18n.t("common_terms.more")
-            - else
-              = auto_link(post.content)
+  .feed-item-content
+    = auto_link(post.content)
 
     - if post.photo.present?
-      .row.post-photo
-        .col-md-12
-          = image_tag(post.photo.url(:large), :class => "img-rounded")
+      .post-photo
+        = image_tag(post.photo.url(:large), :class => "img-rounded")
 
-    - if @current_user
-      .row.feed-item-interaction-menu
-        .col-md-12
-          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
+  - if @current_user
+    .feed-item-interaction-menu
+      = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
 
 
-  = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_post_path(post)}
+= render :partial => "shared/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

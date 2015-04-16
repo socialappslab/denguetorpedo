@@ -10,7 +10,7 @@
 - else
   - title = I18n.t("views.reports.edit.eliminate")
 
-= render :partial => "shared/title_banner", :locals => {:title => title, :description => ""}
+= render :partial => "shared/title_banner", :locals => default_navigation_hash.merge(:title => title, :parent_navigation_path => neighborhood_reports_path(@neighborhood), :parent_navigation_title => @neighborhood.name)
 
 .row
   .col-md-6.col-md-offset-3.well

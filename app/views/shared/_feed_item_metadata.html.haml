@@ -1,9 +1,12 @@
-.row.feed-item-bar
-  .col-md-12.username
+.feed-item-profile-photo
+  = link_to image_tag(user.picture), user_path(user)
+
+.feed-item-bar
+  .username
     = link_to user.display_name, user_path(user)
-    .feed-item-timestamp
-      %i.fa.fa-clock-o
-      = timestamp_in_metadata(item.created_at)
+  .feed-item-timestamp
+    %i.fa.fa-clock-o
+    = timestamp_in_metadata(item.created_at)
 
     - if @current_user && @current_user == user && item.class == Post
       = link_to path, :class => "delete-resource-button", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => path do

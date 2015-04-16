@@ -1,24 +1,24 @@
-.col-md-9
-  .new-post
-    = form_for @post do |f|
-      = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
 
-      = f.file_field :photo, :class => "upload_photo"
-      .row
-        .pull-left
-          %img.preview
-        %canvas
-        = hidden_field_tag "post[compressed_photo]", nil, :class => "compressed_photo"
+.new-post
+  = form_for @post do |f|
+    = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
 
-      .row
-        .col-md-4
-          %i.text-left.fa.fa-camera.add-photo
-            Add photo
-        .col-md-8
-          .text-right
-            = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button" do
-              %i.fa.fa-refresh.fa-spin
-              = I18n.t("views.buttons.publish")
+    = f.file_field :photo, :class => "upload_photo"
+    .row
+      .pull-left
+        %img.preview
+      %canvas
+      = hidden_field_tag "post[compressed_photo]", nil, :class => "compressed_photo"
+
+    .row
+      .col-md-4
+        %i.text-left.fa.fa-camera.add-photo
+          Add photo
+      .col-md-8
+        .text-right
+          = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button" do
+            %i.fa.fa-refresh.fa-spin
+            = I18n.t("views.buttons.publish")
 
 - content_for :scripts do
   :javascript

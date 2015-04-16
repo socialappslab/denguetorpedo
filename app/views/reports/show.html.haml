@@ -1,0 +1,16 @@
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/flashes"
+
+= render :partial => "shared/title_banner", :locals => default_navigation_hash.merge(:parent_navigation_path => neighborhood_path(@neighborhood), :parent_navigation_title => @neighborhood.name, :child_navigation_path => neighborhood_reports_path(@neighborhood), :child_navigation_title => I18n.t("activerecord.models.report", :count => 2))
+
+/------------------------------------------------------------------------------
+
+.row
+  .col-md-8.col-md-offset-2
+    .report
+      = render :partial => "reports/topbar",   :locals => {:report => @report}
+      = render :partial => "reports/content", :locals => {:report => @report}
+      = render :partial => "reports/actionbar",   :locals => {:report => @report}
+
+/------------------------------------------------------------------------------

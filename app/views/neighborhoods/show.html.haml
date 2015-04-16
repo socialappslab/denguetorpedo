@@ -7,3 +7,55 @@
 
     .col-md-7.col-md-offset-1
       = render :partial => "neighborhoods/main"
+
+
+.row
+  %hr.page-divider
+
+  .col-md-4.col-md-offset-1
+    %h1.text-center
+      = I18n.t("activerecord.models.report", :count => 2).capitalize
+
+    .row.sidebar-reports
+      .col-md-12
+        - @reports.each do |r|
+          - owner     = (r.eliminated? ? r.eliminator : r.reporter)
+          - timestamp = (r.eliminated? ? r.eliminated_at : r.created_at)
+          .feed-item
+            .report-sidebar
+              .feed-item-profile-photo
+                = link_to user_path(owner), :class => "user-image" do
+                  = image_tag(owner.picture)
+
+              .feed-item-bar
+                .username
+                  = link_to owner.display_name, user_path(owner)
+                .feed-item-timestamp
+                  %i.fa.fa-clock-o
+                  = r.eliminated? ? I18n.t("common_terms.eliminated") : I18n.t("common_terms.reported")
+                  = timestamp_in_metadata(timestamp)
+
+
+              .report-photo
+
+                = link_to neighborhood_report_path(@neighborhood, r) do
+                  %i.fa.fa-5x{:class => "#{r.eliminated? ? 'fa-check text-success-light' : 'fa-eye text-primary-light'}"}
+
+                  = image_tag(r.before_photo, :class => "img-rounded")
+
+
+                .call-to-action
+                  - unless r.eliminated?
+                    = link_to I18n.t("common_terms.eliminate_and_gain_points"), edit_neighborhood_report_path(@neighborhood, r), :class => "btn btn-success btn-block"
+
+  .col-md-5.col-md-offset-1
+    %h1.text-center
+      = I18n.t("views.post.feed")
+
+    - if @current_user && @users.include?(@current_user)
+      .row
+        .col-md-12
+          = render :partial => 'posts/new'
+    .row
+      .col-md-12
+        = render :partial => "shared/news_feed"

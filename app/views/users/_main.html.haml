@@ -60,10 +60,13 @@
 -# ----------------------------------------------------------------------------
 
 - if (@current_user && @user == @current_user)
-  .row{:style => "margin-top:60px;"}
-    = render :partial => 'posts/new'
+  .row
+    .col-md-9
+      = render :partial => 'posts/new'
 
 
-= render :partial => "shared/news_feed"
+.row
+  .col-md-9
+    = render :partial => "shared/news_feed"
 
 -# ----------------------------------------------------------------------------

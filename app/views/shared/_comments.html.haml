@@ -1,0 +1,34 @@
+- commentable.comments.order("created_at ASC").each do |comment|
+  .feed-item-comment
+    - user = comment.user
+    .feed-item-profile-photo
+      = link_to user_path(user) do
+        - if user.profile_photo_file_name.nil?
+          = image_tag("default_images/user_default_alt.png")
+        - else
+          = image_tag(user.profile_photo.url(:small))
+
+    .feed-item-bar
+      .username
+        = link_to user.display_name, user_path(user)
+      .feed-item-timestamp
+        %i.fa.fa-clock-o
+        = timestamp_in_metadata(comment.created_at)
+      - if @current_user && @current_user == user
+        = form_tag comment_path(comment), :method => "delete", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => comment_path(comment), :class => "comment-delete-button" do
+          = button_tag(:type => "submit") do
+            %i.fa.fa-trash-o
+
+    .feed-item-content
+      = comment.content
+
+
+- if @current_user
+  .feed-item-comment.feed-item-new-comment
+    .row
+      .col-md-12
+        = form_tag path, :class => "feed-item-comment-form" do
+          = text_area_tag "comment[content]", nil, :class => "form-control"
+          = button_tag :type => "submit", :class => "btn btn-success btn-right submit-button" do
+            %i.fa.fa-refresh.fa-spin
+            = I18n.t("views.buttons.publish")

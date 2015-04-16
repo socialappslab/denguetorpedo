@@ -1,40 +1,35 @@
-.row.col-md-offset-1
-	- if flash[:notice]
-		.row#flash_dat_notice
-			#flashNotice
-				%p
-					= flash[:notice]
-.row.col-md-offset-1
-	%h1 #{@notice.title}
-.row.col-md-offset-1
-	.col-md-1.neighborhood_news_thumb{:style => "width:250px;height:250px;margin-top:10px;"}
-		- if @notice.photo_file_name
-			= image_tag(@notice.photo.url(:large), width: 250, height: 250)
-		- else
-			= image_tag("default_images/house_default_image.png", width: 250, height: 250)
-	.col-md-8{:style => "width: 200px;"}
-		.row.col-md-8
-			%h2 Instituição
-			.col-md-8
-				= @notice.institution_name
-		.row.col-md-8
-			%h2 Descrição resumida
-			.col-md-8{style: "word-wrap:breakword;"}
-				= @notice.summary
-		.row.col-md-8
-			%h2 Descrição da atividade
-			.col-md-8{style: "word-wrap: break-word;"}
-				= simple_format(@notice.description)
-		.row.col-md-8
-			%h2 Endereço da atividade
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/flashes"
+
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/title_banner", :locals => default_navigation_hash.merge(:title => @notice.title, :parent_navigation_path => neighborhood_path(@notice.neighborhood), :parent_navigation_title => @notice.neighborhood.name)
+
+
+.row
+	.col-md-4.col-md-offset-3.neighborhood_news_thumb{:style => "width:250px;height:250px;margin-top:10px;"}
+		= image_tag(@notice.picture(:large))
+
+	.col-md-6
+
+		%h2 Instituição
+		%p
+			= @notice.institution_name
+
+		%h2 Descrição da atividade
+		%p
+			= simple_format(@notice.description)
+
+		%h2 Endereço da atividade
+		%p
 			= @notice.location
-		.row.col-md-8
-			%h2 Data da atividade
-			= @notice.date.strftime("%d/%m/%Y")
-		.row.col-md-8
-			%h2 Hora da atividade
-			= @notice.date.strftime("%H:%M")
-.row.col-md-offset-1
-	- if @current_user && @current_user.coordinator?
-		= link_to "Editar", edit_notice_path(@notice), :style => "font-size:15px;"
-		= link_to "Deletar", @notice, method: :delete, style: "font-size:15px;", data: { :confirm => I18n.t("views.alerts.confirm") }
+
+		%h2 Data da atividade
+		%p
+			= format_timestamp(@notice.date)
+
+- if @current_user && @current_user.coordinator?
+	.row.col-md-offset-1
+		= link_to "Editar", edit_notice_path(@notice)
+		= link_to "Deletar", @notice, method: :delete, data: { :confirm => I18n.t("views.alerts.confirm") }

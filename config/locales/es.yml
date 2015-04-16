@@ -250,7 +250,7 @@ es:
     like: Me gusta
     redeemed_prizes: Premios adquiridos
     go_to_reports: "Ir a criaderos marcados"
-    eliminate_and_gain_points: Eliminar y ganar puntos
+    eliminate_and_gain_points: Elimina y gana puntos
     comment: "Comentar"
     sponsor: Patrocinador
     sponsors: Patrocinadores
@@ -417,7 +417,7 @@ es:
       update:
         success: "La contraseña fue cambiada"
     buttons:
-      publish: "Publicar"
+      publish: "Chat"
       confirm: "Confirmar"
       search:  "Buscar"
       submit:  "Enviar"
@@ -428,6 +428,7 @@ es:
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
     post:
+      feed: Blog comunitario
       text_placeholder: "¡Comparta sus ideas con el equipo de Dengue Chat!"
     home:
       login:

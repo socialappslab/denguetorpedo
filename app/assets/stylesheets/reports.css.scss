@@ -31,7 +31,8 @@
   margin: 25px;
   margin-top: 10px;
   img {
-    width: 50px;
+    width: 75px;
+    height: 75px;
     margin-bottom: 10px;
   }
 
@@ -74,7 +75,8 @@
     display: inline-block;
     font-weight: bold;
     margin-left: 10px;
-    width: 250px;
+    width: 350px;
+    font-size: 16px;
 
     .feed-item-timestamp {
       width: 200px;
@@ -140,6 +142,11 @@
     color: red;
     font-size: 20px;
   }
+
+  .eliminate-report-button {
+    margin-top: 75px;
+  }
+
 }
 
 .report-photos {
