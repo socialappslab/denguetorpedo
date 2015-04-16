@@ -1,6 +1,6 @@
 .feed-item
   .user_activity_item
-    = render :partial => "users/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
+    = render :partial => "shared/feed_item_metadata", :locals => {:item => post, :user => owner, :path => api_v0_post_path(post)}
 
     .feed-item-content
       = auto_link(post.content)
@@ -11,7 +11,7 @@
 
     - if @current_user
       .feed-item-interaction-menu
-        = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
+        = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
 
 
-  = render :partial => "users/comments", :locals => {:commentable => post, :path => comment_post_path(post)}
+  = render :partial => "shared/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

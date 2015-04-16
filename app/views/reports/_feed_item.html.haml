@@ -1,6 +1,6 @@
 .feed-item
   .user_activity_item
-    = render :partial => "users/feed_item_metadata", :locals => {:item => report, :user => owner, :path => user_path(owner)}
+    = render :partial => "shared/feed_item_metadata", :locals => {:item => report, :user => owner, :path => user_path(owner)}
 
     .feed-item-content
       = report.report
@@ -37,8 +37,8 @@
     - if @current_user
       .row.feed-item-interaction-menu
         .col-md-7
-          = render :partial => "users/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
+          = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => report, :path => like_neighborhood_report_path(report.neighborhood, report)}
 
 
 
-  = render :partial => "users/comments", :locals => {:commentable => report, :path => comment_neighborhood_report_path(report.neighborhood, report)}
+  = render :partial => "shared/comments", :locals => {:commentable => report, :path => comment_neighborhood_report_path(report.neighborhood, report)}
