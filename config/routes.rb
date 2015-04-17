@@ -7,7 +7,12 @@ Dengue::Application.routes.draw do
       resources :sessions,    :only => [:create]
       resources :reports,     :only => [:index, :create, :destroy]
       resources :csv_reports, :only => [:create]
-      resources :posts,       :only => [:destroy]
+      resources :posts,       :only => [:destroy] do
+        member do
+          post "like"
+          post "comment"
+        end
+      end
 
       resources :neighborhoods, :only => [] do
         member do
@@ -121,10 +126,7 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Posts
 
-  resources :posts, :only => [:create] do
-    post "like",    :on => :member
-    post "comment", :on => :member
-  end
+  resources :posts, :only => [:create]
 
   #----------------------------------------------------------------------------
   # Comments
