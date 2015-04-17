@@ -307,15 +307,31 @@ ul#user_right_panel {
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 250px;
+    max-width: 200px;
+    display: inline-block;
+
 
     a {
+      text-decoration: none;
+      white-space: nowrap;
+    }
+  }
+
+  .location {
+    font-weight: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    display: inline-block;
+
+    a {
+      text-decoration: none;
       white-space: nowrap;
     }
   }
 
   .feed-item-timestamp {
-    display: inline-block;
+    display: block;
   }
 }
 

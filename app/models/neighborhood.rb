@@ -66,6 +66,10 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def geographical_display_name
+    return self.name + ", " + self.city.name
+  end
+
   def time_zone
     if self.mexican?
       return "America/Mexico_City"

@@ -4,9 +4,14 @@
 .feed-item-bar
   .username
     = link_to user.display_name, user_path(user)
+  .location
+    = link_to neighborhood_path(user.neighborhood) do
+      ·
+      = user.neighborhood.geographical_display_name
   .feed-item-timestamp
     %i.fa.fa-clock-o
     = timestamp_in_metadata(item.created_at)
+
 
     - if @current_user && @current_user == user && item.class == Post
       = link_to path, :class => "delete-resource-button", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => path do
