@@ -6,7 +6,8 @@
     = link_to user.display_name, user_path(user)
   .location
     = link_to neighborhood_path(user.neighborhood) do
-      ·
+      %span.muted
+        de
       = user.neighborhood.geographical_display_name
   .feed-item-timestamp
     %i.fa.fa-clock-o

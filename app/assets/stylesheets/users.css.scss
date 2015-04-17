@@ -321,8 +321,13 @@ ul#user_right_panel {
     font-weight: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 250px;
     display: inline-block;
+
+    .muted {
+      color: #8899a6;
+      font-weight: 200;
+    }
 
     a {
       text-decoration: none;
