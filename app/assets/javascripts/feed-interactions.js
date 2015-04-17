@@ -63,6 +63,60 @@ $(document).ready(function()
 
   //---------------------------------------------------------------------------
 
+  $(".feed-item-comment-form").on("submit", function(event)
+  {
+    // Make a copy of the new comment form.
+    var currentCommentDiv = $(event.currentTarget).parents(".feed-item-new-comment");
+    var newCommentHTMLdiv = currentCommentDiv.clone().wrap('<div>').parent().html();
+    console.log(newCommentHTMLdiv);
+
+    window.newDiv = newCommentHTMLdiv;
+
+    window.currentTarget = event.currentTarget;
+
+    $(currentCommentDiv).removeClass("feed-item-new-comment");
+
+    window.divs = currentCommentDiv;
+
+
+
+    event.preventDefault();
+    $.ajax({
+      url: event.currentTarget.action,
+      data: $(event.currentTarget).serialize(),
+      type: "POST",
+      success : function(data){
+        window.data = data;
+        alert("Success!");
+        currentCommentDiv.find(".feed-item-timestamp").text(data.formatted_timestamp);
+        currentCommentDiv.find(".feed-item-content").text(data.content);
+        currentCommentDiv.parent().append(newCommentHTMLdiv)
+      },
+      error: function(response) {
+        window.error = response;
+        console.log(response)
+        if (response.responseText != "")
+        {
+          error = JSON.parse(response.responseText);
+          alert(error.message);
+        }
+        else
+          window.alert("Something went wrong on our end. Please try again.")
+      },
+
+      complete: function(response) {
+        var button = $(event.target).find(":submit");
+        button.find(".fa-refresh").hide();
+        button.attr("disabled", false);
+      }
+
+    });
+
+    return false;
+  })
+
+  //---------------------------------------------------------------------------
+
   $(".leave-team-button").click(function(event){
     event.preventDefault();
 
