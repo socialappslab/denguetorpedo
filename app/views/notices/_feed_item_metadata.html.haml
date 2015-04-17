@@ -5,5 +5,4 @@
   .username
     = link_to notice.display_name, notice_path(notice)
   .feed-item-timestamp
-    %i.fa.fa-clock-o
     = timestamp_in_metadata(notice.created_at)
