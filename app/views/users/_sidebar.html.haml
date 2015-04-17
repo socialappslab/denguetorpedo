@@ -15,9 +15,9 @@
 
       - if @user.neighborhood.present?
         .sidebar-entity-name.text-left
-          = link_to neighborhood_path(@user.neighborhood) do
+          = link_to neighborhood_path(@neighborhood) do
             %i.fa.fa-users.fa-2
-            = "#{@neighborhood.name}" + ", " + "#{@neighborhood.city.name}"
+            = @neighborhood.geographical_display_name
 
 
   %hr
