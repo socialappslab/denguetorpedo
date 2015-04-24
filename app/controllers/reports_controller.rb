@@ -422,6 +422,18 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /reports/notifications
+  # This is used by SMSGateway to fetch the latest notifications created in
+  # the 'gateway' action that will be sent out as SMS.
+  # NOTE: Do not remove this unless you've removed the HTTP requests from the
+  # Android app. I believe the frequent requests are causing memory issues for us.
+  # For now, this action is a trivial action that returns an empty array.
+
+  def notifications
+    render :json => [] and return
+  end
+
+  #----------------------------------------------------------------------------
 
 
   def creditar

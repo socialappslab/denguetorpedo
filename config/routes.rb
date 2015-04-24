@@ -134,9 +134,11 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Legacy SMS routes.
   # NOTE: Do not change these unless you've also
-  # changed the paths in socialappslab/SMSGateway.
+  # changed the paths in socialappslab/SMSGateway Android app.
 
   post '/reports/gateway'       => "reports#gateway"
+  get  "/reports/notifications" => "reports#notifications"
+
 
   #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive
