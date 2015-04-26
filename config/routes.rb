@@ -34,12 +34,6 @@ Dengue::Application.routes.draw do
   post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
 
   #----------------------------------------------------------------------------
-  # Sidekiq monitoring
-
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
-
-  #----------------------------------------------------------------------------
 
   # TODO: Do we really need these routes? They are used in reports/types.html
   # but their implementation is not intuitive.

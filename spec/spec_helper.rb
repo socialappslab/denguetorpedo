@@ -7,7 +7,6 @@ require 'rspec/autorun'
 require 'capybara/rspec'
 require 'database_cleaner'
 require "rake"
-require 'sidekiq/testing/inline'
 require 'capybara/poltergeist'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
