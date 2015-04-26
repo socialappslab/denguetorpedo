@@ -79,21 +79,6 @@ class Neighborhood < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # TODO: Deprecate this.
-  def total_reports
-    return self.reports.to_a
-  end
-
-  def open_reports
-    return self.reports.find_all{ |r| r.open? }
-  end
-
-  def eliminated_reports
-    return self.reports.find_all{ |r| r.eliminated? }
-  end
-
-  #----------------------------------------------------------------------------
-
   def total_points
     self.teams.sum(:points)
   end
