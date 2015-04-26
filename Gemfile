@@ -5,6 +5,13 @@ gem 'rails', '~> 3.2.18'
 
 gem 'pg'
 
+# File management and manipulation
+gem 'aws-sdk'
+gem 'rmagick'
+gem 'paperclip', '~> 4.2.0'
+
+gem "roo", :require => false
+
 #------------------------------------------------------------------------------
 
 group :development do
@@ -35,10 +42,12 @@ gem "http_accept_language"
 # Front-end tools
 
 gem 'haml'
-# gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'dynamic_form'
 gem 'rails_autolink'
+
+# TODO: Deprecate?
+gem 'dynamic_form'
+
 
 #------------------------------------------------------------------------------
 # Assets
@@ -51,14 +60,6 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem "yuicompressor"
 end
-
-#------------------------------------------------------------------------------
-# File management
-
-gem 'aws-sdk'
-gem 'rmagick'
-gem 'paperclip', '~> 4.2.0'
-gem "roo"
 
 #------------------------------------------------------------------------------
 # Server Management
