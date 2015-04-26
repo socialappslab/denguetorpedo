@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemoveIdentifiedAtCleanedAtStatusColumnsFromVisit < ActiveRecord::Migration
   def up
     remove_column :visits, :identified_at

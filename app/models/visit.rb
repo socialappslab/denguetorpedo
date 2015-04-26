@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # A "Visit" instance is the real-world representation of a physical
 # visit to some location. A visit, naturally, has several inspections
 # throughout the house and over several dates. Each inspection creates

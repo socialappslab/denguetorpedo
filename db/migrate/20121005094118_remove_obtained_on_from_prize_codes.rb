@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemoveObtainedOnFromPrizeCodes < ActiveRecord::Migration
   def up
     remove_column :prize_codes, :obtained_on

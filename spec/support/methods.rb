@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 
 def sign_in(user)
   visit root_path

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class NeighborhoodsBaseController < ApplicationController
   before_filter :identify_neighborhood
 

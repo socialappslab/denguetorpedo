@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CleanupPosts < ActiveRecord::Migration
   def up
     remove_column :posts, :type_cd

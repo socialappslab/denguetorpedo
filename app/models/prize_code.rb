@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # A PrizeCode instance is a coupon for a prize.
 # It allows the user to redeem the prize by using the
 # code associated with the coupon.

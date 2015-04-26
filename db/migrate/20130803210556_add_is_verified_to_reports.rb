@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddIsVerifiedToReports < ActiveRecord::Migration
   def change
     add_column :reports, :isVerified, :string

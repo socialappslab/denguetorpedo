@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # TODO: We want to deprecate this model in place of BreedingSite.
 class EliminationType < ActiveRecord::Base
   # attr_accessible :title, :body

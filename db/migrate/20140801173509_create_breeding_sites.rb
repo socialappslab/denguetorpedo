@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateBreedingSites < ActiveRecord::Migration
   def up
     create_table "breeding_sites", :force => true do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateLikes < ActiveRecord::Migration
   def up
     create_table :likes do |t|

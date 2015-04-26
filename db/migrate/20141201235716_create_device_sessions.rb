@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDeviceSessions < ActiveRecord::Migration
   def up
     create_table :device_sessions do |t|

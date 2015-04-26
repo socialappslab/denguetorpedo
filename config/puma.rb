@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # See:
 # * https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server
 # * http://blog.codeship.com/puma-vs-unicorn/#comment-1743800292

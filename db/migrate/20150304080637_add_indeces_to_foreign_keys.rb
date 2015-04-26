@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddIndecesToForeignKeys < ActiveRecord::Migration
   def change
     # Add index on the polymorphic associations.

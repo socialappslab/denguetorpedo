@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ReportsHelper
   def random_sponsors
     random_sponsors = []

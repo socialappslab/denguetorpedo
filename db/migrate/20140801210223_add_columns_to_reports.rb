@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddColumnsToReports < ActiveRecord::Migration
   def change
     add_column :reports, :breeding_site_id, :integer

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UpdateEliminationData < ActiveRecord::Migration
   def up
     EliminationType.order(:id).each do |et|

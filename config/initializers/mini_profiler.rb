@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 if Rails.env.development?
   require 'rack-mini-profiler'
 

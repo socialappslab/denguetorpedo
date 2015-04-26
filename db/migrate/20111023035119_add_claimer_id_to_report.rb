@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddClaimerIdToReport < ActiveRecord::Migration
   def change
     add_column :reports, :claimer_id, :integer

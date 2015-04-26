@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateTeamMemberships < ActiveRecord::Migration
   def up
     create_table :team_memberships do |t|

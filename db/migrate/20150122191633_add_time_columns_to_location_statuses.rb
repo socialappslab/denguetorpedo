@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddTimeColumnsToLocationStatuses < ActiveRecord::Migration
   def change
     add_column :location_statuses, :identification_type, :integer

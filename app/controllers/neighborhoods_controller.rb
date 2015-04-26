@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen,               :only => [:show]
   before_filter :calculate_ivars,                  :only => [:show]

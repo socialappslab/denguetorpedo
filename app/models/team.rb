@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# -*- encoding : utf-8 -*-
 
 class Team < ActiveRecord::Base
   attr_accessible :name, :blocked, :profile_photo, :neighborhood_id, :points

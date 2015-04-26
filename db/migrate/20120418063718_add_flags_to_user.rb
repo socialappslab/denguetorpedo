@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddFlagsToUser < ActiveRecord::Migration
   def change
     add_column :users, :is_fully_registered, :boolean, :default => false

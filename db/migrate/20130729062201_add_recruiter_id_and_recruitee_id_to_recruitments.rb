@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddRecruiterIdAndRecruiteeIdToRecruitments < ActiveRecord::Migration
   def change
     add_column :recruitments, :recruiter_id, :integer

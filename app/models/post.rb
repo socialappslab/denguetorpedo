@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Post < ActiveRecord::Base
   attr_accessible :content, :title, :user_id, :parent_id, :neighborhood_id
   # attr_readonly   :likes_count

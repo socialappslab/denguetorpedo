@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # API routes.

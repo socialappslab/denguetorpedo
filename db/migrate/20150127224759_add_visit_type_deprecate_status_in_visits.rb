@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddVisitTypeDeprecateStatusInVisits < ActiveRecord::Migration
   def up
     add_column    :visits, :visit_type, :integer
