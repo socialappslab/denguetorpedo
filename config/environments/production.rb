@@ -77,13 +77,13 @@ Dengue::Application.configure do
 
   # Gmail SMTP server setup
   config.action_mailer.smtp_settings = {
-    :address => "smtp.gmail.com",
-    :enable_starttls_auto => true,
+    :user_name => ENV['SENDGRID_USERNAME'],
+    :password => ENV['SENDGRID_PASSWORD'],
+    :domain => 'denguechat.org',
+    :address => 'smtp.sendgrid.net',
     :port => 587,
-    :domain => 'reportdengue@gmail.com',
     :authentication => :plain,
-    :user_name => 'reportdengue',
-    :password => 'dengue@!$'
+    :enable_starttls_auto => true
   }
 
   # Paperclip gem: ImageMagic path
