@@ -3,7 +3,6 @@ source 'http://rubygems.org'
 ruby "2.0.0"
 gem 'rails', '~> 3.2.18'
 
-
 # Server Management
 gem "pg"
 gem "puma"
@@ -20,13 +19,43 @@ gem 'paperclip', '~> 4.2.0'
 
 gem "roo", :require => false
 
-c = 0; ObjectSpace.each_object { c += 1}; puts "[1] Objects = #{c}"
-
 # Administration
 gem "activeadmin"
 
 # Analytics
 gem "analytics-ruby", '~> 2.0.8', :require => false
+
+# Internationalization
+gem 'rails-i18n'
+gem "devise-i18n"
+gem "http_accept_language"
+
+# Front-end tools
+gem 'haml'
+gem 'jquery-ui-rails'
+gem 'rails_autolink'
+
+# Encoding support
+gem 'magic_encoding'
+
+# User management
+gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'cancan'
+
+# TODO: Deprecate?
+gem 'dynamic_form'
+gem 'mime' # TODO: Possibly deprecate?
+
+#------------------------------------------------------------------------------
+
+group :development, :staging, :production do
+  # Caching
+  # See: https://devcenter.heroku.com/articles/rack-cache-memcached-rails31
+  gem 'rack-cache'
+  gem 'dalli'
+  gem 'kgio'
+  gem "memcachier"
+end
 
 #------------------------------------------------------------------------------
 
@@ -34,8 +63,6 @@ group :development do
   gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git", :require => false
   gem 'rack-mini-profiler', :require => false
 end
-
-c = 0; ObjectSpace.each_object { c += 1}; puts "[2] Objects = #{c}"
 
 #------------------------------------------------------------------------------
 
@@ -58,39 +85,6 @@ group :production, :staging do
 end
 
 #------------------------------------------------------------------------------
-# Encoding support
-
-gem 'magic_encoding'
-gem 'mime' # TODO: Possibly deprecate?
-
-#------------------------------------------------------------------------------
-# User management
-
-gem 'bcrypt-ruby', '~> 3.0.0'
-gem 'cancan'
-
-#------------------------------------------------------------------------------
-# Internationalization
-
-gem 'rails-i18n'
-gem "devise-i18n"
-gem "http_accept_language"
-
-#------------------------------------------------------------------------------
-# Front-end tools
-
-gem 'haml'
-gem 'jquery-ui-rails'
-gem 'rails_autolink'
-
-# TODO: Deprecate?
-gem 'dynamic_form'
-
-c = 0; ObjectSpace.each_object { c += 1}; puts "[6] Objects = #{c}"
-
-
-#------------------------------------------------------------------------------
-# Assets
 
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
@@ -101,18 +95,3 @@ group :assets do
 end
 
 #------------------------------------------------------------------------------
-# Server Management
-
-
-c = 0; ObjectSpace.each_object { c += 1}; puts "[8] Objects = #{c}"
-
-#------------------------------------------------------------------------------
-# Caching
-# See: https://devcenter.heroku.com/articles/rack-cache-memcached-rails31
-
-gem 'rack-cache'
-gem 'dalli'
-gem 'kgio'
-gem "memcachier"
-
-c = 0; ObjectSpace.each_object { c += 1}; puts "[9] Objects = #{c}"
