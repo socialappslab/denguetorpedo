@@ -12,7 +12,7 @@ class ReportsController < NeighborhoodsBaseController
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
     @reports = @reports.where(:protected => [nil, false]).where("completed_at IS NOT NULL")
-    @reports = @reports.order("updated_at DESC")
+    @reports = @reports.order("created_at DESC")
 
     # Now, let's filter by type of report chosen.
     if params[:reports].present?

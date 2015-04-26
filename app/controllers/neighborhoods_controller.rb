@@ -15,7 +15,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Limit the activity feed to *current* neighborhood members.
     user_ids = @users.pluck(:id)
-    @reports = @reports.where(:protected => [nil, false]).order("updated_at DESC").where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
+    @reports = @reports.where(:protected => [nil, false]).order("created_at DESC").where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
     @posts   = @neighborhood.posts.where(:user_id => user_ids).order("updated_at DESC").includes(:comments)
 
     # Limit the amount of records we show.
