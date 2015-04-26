@@ -37,8 +37,7 @@ describe UsersController do
 				fill_in "user_password", 						 :with => "abcdefg"
 				fill_in "user_password_confirmation", :with => "abcdefg"
 
-				n = Neighborhood.last
-				select("#{n.name}, #{n.city.name}", :from => "user_neighborhood_id")
+				select("Ariel Darce, Managua", :from => "user_neighborhood_id")
 				page.find(".submit-button").click
 
 				expect(current_path).to eq( teams_path )
@@ -51,7 +50,7 @@ describe UsersController do
 			fill_in "user_username", 		 			  :with => "test"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
-			select(Neighborhood.last.name, :from => "user_neighborhood_id")
+			select("Ariel Darce, Managua", :from => "user_neighborhood_id")
 			page.find(".submit-button").click
 
 			expect(page).to have_content( I18n.t("views.users.create_success_flash") )
@@ -64,7 +63,7 @@ describe UsersController do
 			fill_in "user_username", 		 			  :with => "test"
 			fill_in "user_password", 						 :with => "abcdefg"
 			fill_in "user_password_confirmation", :with => "abcdefg"
-			select(Neighborhood.last.name, :from => "user_neighborhood_id")
+			select("Ariel Darce, Managua", :from => "user_neighborhood_id")
 			page.find(".submit-button").click
 
 			expect(page).to have_content( I18n.t("activerecord.errors.messages.taken") )

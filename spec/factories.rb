@@ -10,6 +10,7 @@ FactoryGirl.define do
 		password_confirmation "denguewarrior"
 		role 			 							 User::Types::RESIDENT
 		locale User::Locales::SPANISH
+		association :neighborhood
 
 		profile_photo_file_name "File name"
 		profile_photo_content_type "image/png"
@@ -70,11 +71,40 @@ FactoryGirl.define do
 
 	#-----------------------------------------------------------------------------
 
+	factory :city do
+		name "San Francisco"
+		state "San Francisco"
+		state_code "SF"
+		time_zone "America/Guatemala"
+		country "United States"
+	end
+
+	factory :neighborhood do
+		name "Test neighborhood"
+		association :city
+	end
+
+	factory :elimination_method do
+		description_in_pt "Eliminated Test"
+		description_in_es "Eliminated Test"
+		points 10
+	end
+
+	factory :breeding_site do
+		description_in_pt "Test"
+		description_in_es "Test"
+
+		after(:create) do |site|
+			create_list(:elimination_method, 1, :breeding_site_id => site.id)
+		end
+	end
+
+
   factory :report do
-    report 					 "Description"
-    before_photo 		 Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
-		breeding_site_id { BreedingSite.first.id }
-		neighborhood_id  { Neighborhood.first.id }
+    report 			 "Description"
+    before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+		association  :breeding_site
+		association  :neighborhood
 
 		factory :positive_report do
 			larvae true
@@ -87,6 +117,11 @@ FactoryGirl.define do
 
 		factory :negative_report do
 			protected true
+		end
+
+		factory :full_report do
+			created_at Time.now
+			association :reporter, :factory => :user
 		end
   end
 

@@ -2,9 +2,10 @@
 require 'spec_helper'
 
 describe ReportsController do
-	let(:user) 						 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
-	let(:other_user) 			 { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
-	let(:elimination_type) { BreedingSite.first }
+	let!(:neighborhood)    { FactoryGirl.create(:neighborhood) }
+	let(:user) 						 { FactoryGirl.create(:user) }
+	let(:other_user) 			 { FactoryGirl.create(:user) }
+	let(:elimination_type) { FactoryGirl.create(:breeding_site) }
 	let(:location_hash) 	 {
 		{
 			:street_type => "Rua", :street_name => "Darci Vargas",

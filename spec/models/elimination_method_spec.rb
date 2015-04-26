@@ -4,7 +4,7 @@ require 'spec_helper'
 describe EliminationMethod do
   it "validates presence of points" do
     expect {
-      FactoryGirl.create(:elimination_method)
+      FactoryGirl.create(:elimination_method, :points => nil)
     }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
