@@ -39,9 +39,6 @@ gem 'rails_autolink'
 gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'cancan'
 
-# TODO: Deprecate?
-gem 'dynamic_form'
-
 #------------------------------------------------------------------------------
 
 group :development, :staging, :production do
