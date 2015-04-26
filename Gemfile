@@ -6,6 +6,13 @@ gem 'rails', '~> 3.2.18'
 gem 'pg'
 
 #------------------------------------------------------------------------------
+
+group :development do
+  gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git"
+  gem 'rack-mini-profiler', :require => false
+end
+
+#------------------------------------------------------------------------------
 # Encoding support
 
 gem 'magic_encoding'
@@ -125,4 +132,3 @@ end
 
 gem 'newrelic_rpm'
 gem "analytics-ruby", '~> 2.0.8'
-gem 'rack-mini-profiler', :require => false
