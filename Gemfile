@@ -35,16 +35,12 @@ gem 'haml'
 gem 'jquery-ui-rails'
 gem 'rails_autolink'
 
-# Encoding support
-gem 'magic_encoding'
-
 # User management
 gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'cancan'
 
 # TODO: Deprecate?
 gem 'dynamic_form'
-gem 'mime' # TODO: Possibly deprecate?
 
 #------------------------------------------------------------------------------
 

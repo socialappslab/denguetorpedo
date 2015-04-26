@@ -160,7 +160,6 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     lumberjack (1.0.4)
-    magic_encoding (0.0.2)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -172,7 +171,6 @@ GEM
       activesupport (~> 3.1)
       polyamorous (~> 0.5.0)
     method_source (0.8.2)
-    mime (0.1)
     mime-types (1.25.1)
     mini_portile (0.5.1)
     multi_json (1.10.1)
@@ -329,9 +327,7 @@ DEPENDENCIES
   jquery-ui-rails
   kgio
   launchy
-  magic_encoding
   memcachier
-  mime
   newrelic_rpm
   paperclip (~> 4.2.0)
   pg
