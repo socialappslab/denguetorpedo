@@ -3,7 +3,15 @@ source 'http://rubygems.org'
 ruby "2.0.0"
 gem 'rails', '~> 3.2.18'
 
-gem 'pg'
+
+# Server Management
+gem "pg"
+gem "puma"
+gem "foreman"
+gem "therubyracer"
+
+# Middleware hacks
+gem "rack-timeout"
 
 # File management and manipulation
 gem 'aws-sdk'
@@ -12,11 +20,41 @@ gem 'paperclip', '~> 4.2.0'
 
 gem "roo", :require => false
 
+c = 0; ObjectSpace.each_object { c += 1}; puts "[1] Objects = #{c}"
+
+# Administration
+gem "activeadmin"
+
+# Analytics
+gem "analytics-ruby", '~> 2.0.8', :require => false
+
 #------------------------------------------------------------------------------
 
 group :development do
-  gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git"
+  gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git", :require => false
   gem 'rack-mini-profiler', :require => false
+end
+
+c = 0; ObjectSpace.each_object { c += 1}; puts "[2] Objects = #{c}"
+
+#------------------------------------------------------------------------------
+
+group :test do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'guard-rspec'
+  gem 'database_cleaner'
+  gem 'faker'
+  gem 'launchy'
+  gem "poltergeist"
+end
+
+#------------------------------------------------------------------------------
+
+group :production, :staging do
+  gem "rails_12factor"
+  gem "newrelic_rpm"
 end
 
 #------------------------------------------------------------------------------
@@ -48,11 +86,12 @@ gem 'rails_autolink'
 # TODO: Deprecate?
 gem 'dynamic_form'
 
+c = 0; ObjectSpace.each_object { c += 1}; puts "[6] Objects = #{c}"
+
 
 #------------------------------------------------------------------------------
 # Assets
 
-gem 'yui-compressor'
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
   gem 'bootstrap-sass', '~> 3.2.0'
@@ -64,10 +103,8 @@ end
 #------------------------------------------------------------------------------
 # Server Management
 
-gem "puma"
-gem "foreman"
-gem "therubyracer"
-gem "rack-timeout"
+
+c = 0; ObjectSpace.each_object { c += 1}; puts "[8] Objects = #{c}"
 
 #------------------------------------------------------------------------------
 # Caching
