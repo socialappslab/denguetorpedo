@@ -103,6 +103,9 @@ class Report < ActiveRecord::Base
   accepts_nested_attributes_for :location
 
   scope :sms, where(sms: true).order(:created_at)
+  scope :displayable, -> { where("((larvae = ? OR pupae = ?) AND protected = ?) OR protected = ? OR protected IS NULL", true, true, true, false) }
+  scope :completed,   -> { where("completed_at IS NOT NULL") }
+
 
   #----------------------------------------------------------------------------
   # Callbacks

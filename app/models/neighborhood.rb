@@ -22,13 +22,10 @@ class Neighborhood < ActiveRecord::Base
   has_many :teams
   has_many :members, :class_name => "User"
   has_many :users
-  has_many :reports, :conditions => "completed_at IS NOT NULL"
+  has_many :reports
   has_many :notices
   belongs_to :coordinator, :class_name => "User"
   has_many :posts
-
-  # TODO: We no longer have houses so we may have to deprecate this.
-  # has_many :health_agents, :through => :houses, :source => "members", :conditions => "is_health_agent = 1"
 
   #----------------------------------------------------------------------------
 
