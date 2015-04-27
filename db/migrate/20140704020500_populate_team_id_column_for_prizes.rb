@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PopulateTeamIdColumnForPrizes < ActiveRecord::Migration
   def up
     Prize.find_each do |p|

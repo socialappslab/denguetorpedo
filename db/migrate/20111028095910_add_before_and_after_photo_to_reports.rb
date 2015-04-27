@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddBeforeAndAfterPhotoToReports < ActiveRecord::Migration
   def change
     add_column :reports, :before_photo_file_name, :string

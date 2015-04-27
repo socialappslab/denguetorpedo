@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SponsorsController < ApplicationController
 	def show
 		@sponsor = User.find(params[:id])

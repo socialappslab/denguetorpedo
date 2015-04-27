@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BreedingSitesController < ApplicationController
 	before_filter :ensure_proper_permissions
 

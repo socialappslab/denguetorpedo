@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddStreetTypeAndStreetNameAndStreetNumberToLocation < ActiveRecord::Migration
   def change
     add_column :locations, :street_type, :string, :default => ""

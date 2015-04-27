@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # API routes.
@@ -32,12 +33,6 @@ Dengue::Application.routes.draw do
   get "credit"    => 'home#credit'
   get "free-sms"  => "home#free_sms", :as => :free_sms
   post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
-
-  #----------------------------------------------------------------------------
-  # Sidekiq monitoring
-
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
 
   #----------------------------------------------------------------------------
 

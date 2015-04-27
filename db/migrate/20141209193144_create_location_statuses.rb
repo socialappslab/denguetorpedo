@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateLocationStatuses < ActiveRecord::Migration
   def up
     create_table :location_statuses do |t|

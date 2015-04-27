@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DocumentationSection < ActiveRecord::Base
   attr_accessible :title, :content, :title_in_es, :content_in_es
 

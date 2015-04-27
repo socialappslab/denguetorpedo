@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddCountryToCities < ActiveRecord::Migration
   def change
     add_column :cities, :country, :string

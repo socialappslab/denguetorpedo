@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CleanupTables < ActiveRecord::Migration
   def up
     remove_column :reports, :elimination_type

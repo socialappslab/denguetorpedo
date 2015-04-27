@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class API::V0::PostsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
   before_filter :current_user

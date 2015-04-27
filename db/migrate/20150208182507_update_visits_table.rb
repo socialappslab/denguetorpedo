@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UpdateVisitsTable < ActiveRecord::Migration
   def up
     add_column :visits, :parent_visit_id, :integer

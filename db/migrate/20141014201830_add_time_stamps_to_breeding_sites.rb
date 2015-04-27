@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddTimeStampsToBreedingSites < ActiveRecord::Migration
   def change
     add_column    :breeding_sites, :created_at, :datetime

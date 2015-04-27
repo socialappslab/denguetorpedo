@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddColumnsToEliminationMethods < ActiveRecord::Migration
   def change
     add_column :elimination_methods, :breeding_site_id,  :integer

@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- encoding : utf-8 -*-
 
 class Report < ActiveRecord::Base
   attr_accessible :report, :created_at, :neighborhood_id, :breeding_site_id,

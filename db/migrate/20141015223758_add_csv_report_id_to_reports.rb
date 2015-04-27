@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddCsvReportIdToReports < ActiveRecord::Migration
   def change
     add_column :reports, :csv_report_id, :integer

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UpdateVisitsAndReports < ActiveRecord::Migration
   def up
     # Update the reports table.

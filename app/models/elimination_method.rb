@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class EliminationMethod < ActiveRecord::Base
   belongs_to :breeding_site
 

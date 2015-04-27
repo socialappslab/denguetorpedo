@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RenameLocationStatusToVisit < ActiveRecord::Migration
   def up
     rename_table :location_statuses, :visits

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RenameTypeToNameInEliminationTypes < ActiveRecord::Migration
   def up
   	rename_column :elimination_types, :type, :name

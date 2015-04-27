@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddManyFieldsToReport < ActiveRecord::Migration
   def change
     add_column :reports, :eliminator_id, :integer

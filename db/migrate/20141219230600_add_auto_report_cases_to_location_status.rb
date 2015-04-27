@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddAutoReportCasesToLocationStatus < ActiveRecord::Migration
   def change
     add_column :location_statuses, :dengue_count, :integer

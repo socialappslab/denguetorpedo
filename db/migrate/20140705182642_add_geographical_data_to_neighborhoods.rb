@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddGeographicalDataToNeighborhoods < ActiveRecord::Migration
   def up
     add_column :neighborhoods, :country_string_id, :string

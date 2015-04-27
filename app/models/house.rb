@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# -*- encoding : utf-8 -*-
 
 class House < ActiveRecord::Base
   attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes, :neighborhood_id

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddNeighborhoodToLocations < ActiveRecord::Migration
   def change
     # NOTE: This is distinct from neighborhood_id in the sense that

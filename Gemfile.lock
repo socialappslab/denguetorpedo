@@ -1,3 +1,14 @@
+GIT
+  remote: git@github.com:schneems/derailed_benchmarks.git
+  revision: 36fd32239808ec31f1a08dc1ad28a9c6ee573647
+  specs:
+    derailed_benchmarks (0.0.0)
+      benchmark-ips (~> 2)
+      get_process_mem (~> 0)
+      memory_profiler (~> 0)
+      rack (~> 1)
+      rake (~> 10.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -45,14 +56,13 @@ GEM
     arbre (1.0.1)
       activesupport (>= 3.0.0)
     arel (3.0.3)
-    awesome_nested_set (2.1.6)
-      activerecord (>= 3.0.0)
     aws-sdk (1.11.1)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
     bcrypt (3.1.7)
     bcrypt-ruby (3.0.1)
+    benchmark-ips (2.1.1)
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bourbon (3.2.3)
@@ -81,7 +91,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
-    connection_pool (1.2.0)
     dalli (2.7.2)
     database_cleaner (1.2.0)
     devise (3.2.4)
@@ -93,7 +102,6 @@ GEM
     devise-i18n (0.11.0)
     diff-lcs (1.2.4)
     dotenv (0.9.0)
-    dynamic_form (1.1.4)
     erubis (2.7.0)
     execjs (2.0.2)
     factory_girl (4.2.0)
@@ -111,6 +119,7 @@ GEM
     formatador (0.2.4)
     formtastic (2.2.1)
       actionpack (>= 3.0)
+    get_process_mem (0.2.0)
     guard (2.1.0)
       formatador (>= 0.2.4)
       listen (~> 2.1)
@@ -150,18 +159,17 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     lumberjack (1.0.4)
-    magic_encoding (0.0.2)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     memcachier (0.0.2)
+    memory_profiler (0.9.0)
     meta_search (1.1.3)
       actionpack (~> 3.1)
       activerecord (~> 3.1)
       activesupport (~> 3.1)
       polyamorous (~> 0.5.0)
     method_source (0.8.2)
-    mime (0.1)
     mime-types (1.25.1)
     mini_portile (0.5.1)
     multi_json (1.10.1)
@@ -194,8 +202,6 @@ GEM
       rack (>= 0.4)
     rack-mini-profiler (0.9.3)
       rack (>= 1.1.3)
-    rack-protection (1.5.2)
-      rack
     rack-ssl (1.3.4)
       rack
     rack-test (0.6.2)
@@ -226,15 +232,12 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
-    rake (10.3.2)
+    rake (10.4.2)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.2)
       ffi (>= 0.5.0)
     rdoc (3.12.2)
       json (~> 1.4)
-    redis (3.0.7)
-    redis-namespace (1.4.1)
-      redis (~> 3.0.4)
     ref (1.0.5)
     responders (1.1.0)
       railties (>= 3.2, < 5)
@@ -258,10 +261,6 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
-    ruby-gmail (0.3.0)
-      mail (>= 2.2.1)
-      mime (>= 0.1)
-      shared-mime-info
     ruby-ole (1.2.11.7)
     rubyzip (1.1.6)
     sass (3.2.12)
@@ -269,19 +268,6 @@ GEM
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    shared-mime-info (0.2.5)
-    sidekiq (2.17.5)
-      celluloid (>= 0.15.2)
-      connection_pool (>= 1.0.0)
-      json
-      redis (>= 3.0.6)
-      redis-namespace (>= 1.3.1)
-    simple_enum (1.6.7)
-      activesupport (>= 3.0.0)
-    sinatra (1.4.4)
-      rack (~> 1.4)
-      rack-protection (~> 1.4)
-      tilt (~> 1.3, >= 1.3.4)
     slop (3.4.6)
     spreadsheet (1.0.0)
       ruby-ole (>= 1.0)
@@ -290,7 +276,6 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sqlite3 (1.3.8)
     therubyracer (0.12.0)
       libv8 (~> 3.16.14.0)
       ref
@@ -313,7 +298,6 @@ GEM
     websocket-extensions (0.1.1)
     xpath (2.0.0)
       nokogiri (~> 1.3)
-    yui-compressor (0.12.0)
     yuicompressor (1.3.3)
 
 PLATFORMS
@@ -322,7 +306,6 @@ PLATFORMS
 DEPENDENCIES
   activeadmin
   analytics-ruby (~> 2.0.8)
-  awesome_nested_set
   aws-sdk
   bcrypt-ruby (~> 3.0.0)
   bootstrap-sass (~> 3.2.0)
@@ -331,8 +314,8 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   dalli
   database_cleaner
+  derailed_benchmarks!
   devise-i18n
-  dynamic_form
   factory_girl_rails
   faker
   foreman
@@ -342,9 +325,7 @@ DEPENDENCIES
   jquery-ui-rails
   kgio
   launchy
-  magic_encoding
   memcachier
-  mime
   newrelic_rpm
   paperclip (~> 4.2.0)
   pg
@@ -360,13 +341,7 @@ DEPENDENCIES
   rmagick
   roo
   rspec-rails
-  ruby-gmail
   sass-rails (~> 3.2.3)
-  sidekiq
-  simple_enum
-  sinatra (>= 1.3.0)
-  sqlite3
   therubyracer
   uglifier (>= 1.0.3)
-  yui-compressor
   yuicompressor

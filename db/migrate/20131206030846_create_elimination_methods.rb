@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateEliminationMethods < ActiveRecord::Migration
   def change
     create_table :elimination_methods do |t|
