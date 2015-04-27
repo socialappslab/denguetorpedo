@@ -37,6 +37,9 @@ gem 'rails_autolink'
 
 # User management
 gem 'bcrypt-ruby', '~> 3.0.0'
+
+# TODO: Should we deprecate this? The only place where we use CanCan is when
+# initializing a user.
 gem 'cancan'
 
 #------------------------------------------------------------------------------
