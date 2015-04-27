@@ -31,7 +31,6 @@
                 .username
                   = link_to owner.display_name, user_path(owner)
                 .feed-item-timestamp
-                  %i.fa.fa-clock-o
                   = r.eliminated? ? I18n.t("common_terms.eliminated") : I18n.t("common_terms.reported")
                   = timestamp_in_metadata(timestamp)
 

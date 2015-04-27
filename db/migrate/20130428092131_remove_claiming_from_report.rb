@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemoveClaimingFromReport < ActiveRecord::Migration
   def up
     remove_column :reports, :claimed_at

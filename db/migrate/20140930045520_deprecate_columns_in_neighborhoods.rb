@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DeprecateColumnsInNeighborhoods < ActiveRecord::Migration
   def up
     remove_column :neighborhoods, :country_string_id

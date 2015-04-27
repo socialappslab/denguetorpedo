@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 #!/bin/env ruby
 # encoding: utf-8
 
@@ -12,7 +13,7 @@ class ReportsController < NeighborhoodsBaseController
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
     @reports = @reports.where(:protected => [nil, false]).where("completed_at IS NOT NULL")
-    @reports = @reports.order("updated_at DESC")
+    @reports = @reports.order("created_at DESC")
 
     # Now, let's filter by type of report chosen.
     if params[:reports].present?
@@ -419,6 +420,18 @@ class ReportsController < NeighborhoodsBaseController
       Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
       render :json => { message: "Sponsors or verifiers" }, :status => 401
     end
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /reports/notifications
+  # This is used by SMSGateway to fetch the latest notifications created in
+  # the 'gateway' action that will be sent out as SMS.
+  # NOTE: Do not remove this unless you've removed the HTTP requests from the
+  # Android app. I believe the frequent requests are causing memory issues for us.
+  # For now, this action is a trivial action that returns an empty array.
+
+  def notifications
+    render :json => [] and return
   end
 
   #----------------------------------------------------------------------------

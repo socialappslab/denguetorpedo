@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateCsvReports < ActiveRecord::Migration
   def up
     create_table :csv_reports do |t|

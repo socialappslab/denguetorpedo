@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SeedStatusCdIntoStatus < ActiveRecord::Migration
   def up
     Report.find_each do |r|

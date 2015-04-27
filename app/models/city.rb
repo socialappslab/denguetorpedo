@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class City < ActiveRecord::Base
   attr_accessible :name, :photo, :state, :state_code, :country, :time_zone, :as => :admin
 

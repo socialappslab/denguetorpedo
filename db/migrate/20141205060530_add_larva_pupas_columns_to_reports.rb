@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddLarvaPupasColumnsToReports < ActiveRecord::Migration
   def change
     add_column :reports, :protected, :boolean

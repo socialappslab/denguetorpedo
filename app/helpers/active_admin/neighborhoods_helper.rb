@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ActiveAdmin::NeighborhoodsHelper
   # def available_countries
   #   return Country.all.find_all {|name, id| ["Brazil", "Mexico"].include?(name)}

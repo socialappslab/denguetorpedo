@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddVerifierIdAndVerifiedAtToReport < ActiveRecord::Migration
   def change
     add_column :reports, :verifier_id, :integer

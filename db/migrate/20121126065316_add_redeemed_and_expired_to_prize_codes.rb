@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddRedeemedAndExpiredToPrizeCodes < ActiveRecord::Migration
   def change
     add_column :prize_codes, :redeemed, :boolean, :null => false, :default => false

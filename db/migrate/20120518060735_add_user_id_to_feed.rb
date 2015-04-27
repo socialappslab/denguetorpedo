@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddUserIdToFeed < ActiveRecord::Migration
   def self.up
     add_column :feeds, :user_id, :integer

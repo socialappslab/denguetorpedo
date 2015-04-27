@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UseLocation < ActiveRecord::Migration
   def up
     add_column :reports, :location_id, :integer

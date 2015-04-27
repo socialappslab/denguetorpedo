@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UserNotification < ActiveRecord::Base
   attr_accessible :user_id, :notification_type, :viewed
 

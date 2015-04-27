@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# -*- encoding : utf-8 -*-
 
 class CommentsController < ApplicationController
   before_filter :require_login

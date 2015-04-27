@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # An inspection is a conceptual connection between a visit and an individual report.
 # In other words, a visit has many reports though some inspection. Conversely,
 # a report has many visits through several inspections.

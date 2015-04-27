@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DeviceSession < ActiveRecord::Base
   attr_accessible :user_id, :token
 

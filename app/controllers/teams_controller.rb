@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- encoding : utf-8 -*-
 class TeamsController < ApplicationController
   before_filter :require_login
   before_filter :identify_neighborhood,            :except => [:administer]

@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require "roo"
 
 #------
 # NOTE: This is a one-time rake task that will place all

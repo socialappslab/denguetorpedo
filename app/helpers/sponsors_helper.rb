@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module SponsorsHelper
 	def telephone_format(number)
 		if number.size == 10

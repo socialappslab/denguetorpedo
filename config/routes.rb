@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # API routes.
@@ -32,12 +33,6 @@ Dengue::Application.routes.draw do
   get "credit"    => 'home#credit'
   get "free-sms"  => "home#free_sms", :as => :free_sms
   post "neighborhood-search" => "home#neighborhood_search", :as => :neighborhood_search
-
-  #----------------------------------------------------------------------------
-  # Sidekiq monitoring
-
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
 
   #----------------------------------------------------------------------------
 
@@ -134,9 +129,11 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Legacy SMS routes.
   # NOTE: Do not change these unless you've also
-  # changed the paths in socialappslab/SMSGateway.
+  # changed the paths in socialappslab/SMSGateway Android app.
 
   post '/reports/gateway'       => "reports#gateway"
+  get  "/reports/notifications" => "reports#notifications"
+
 
   #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive

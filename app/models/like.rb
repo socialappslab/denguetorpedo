@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# -*- encoding : utf-8 -*-
 
 class Like < ActiveRecord::Base
   attr_accessible :user_id, :likeable_id, :likeable_type

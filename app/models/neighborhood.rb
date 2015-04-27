@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- encoding : utf-8 -*-
 
 class Neighborhood < ActiveRecord::Base
   attr_accessible :name, :photo, :city_id, :latitude, :longitude, :as => :admin

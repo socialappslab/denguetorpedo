@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- encoding : utf-8 -*-
+require "roo"
 
 class CsvReport < ActiveRecord::Base
   attr_accessible :csv

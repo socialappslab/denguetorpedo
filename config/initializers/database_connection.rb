@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # The pool configuration is set to 20 *per process*
 # because that's what the basic plan allows on Heroku.
 # As long as we run Puma and Sidekiq in 2 separate processes,

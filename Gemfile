@@ -1,47 +1,87 @@
 source 'http://rubygems.org'
 
-ruby "1.9.3"
+ruby "2.0.0"
 gem 'rails', '~> 3.2.18'
 
-gem 'pg'
+# Server Management
+gem "pg"
+gem "puma"
+gem "foreman"
+gem "therubyracer"
 
-#------------------------------------------------------------------------------
-# Encoding support
+# Middleware hacks
+gem "rack-timeout"
 
-gem 'magic_encoding'
-gem 'mime' # TODO: Possibly deprecate?
+# File management and manipulation
+gem 'aws-sdk'
+gem 'rmagick'
+gem 'paperclip', '~> 4.2.0'
 
-#------------------------------------------------------------------------------
-# User management
+gem "roo", :require => false
 
-gem 'bcrypt-ruby', '~> 3.0.0'
-gem 'cancan'
+# Administration
+gem "activeadmin"
 
-#------------------------------------------------------------------------------
-# Email communication
+# Analytics
+gem "analytics-ruby", '~> 2.0.8', :require => false
 
-gem 'ruby-gmail'
-
-#------------------------------------------------------------------------------
 # Internationalization
-
 gem 'rails-i18n'
 gem "devise-i18n"
 gem "http_accept_language"
 
-#------------------------------------------------------------------------------
 # Front-end tools
-
 gem 'haml'
-# gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'dynamic_form'
 gem 'rails_autolink'
 
-#------------------------------------------------------------------------------
-# Assets
+# User management
+gem 'bcrypt-ruby', '~> 3.0.0'
 
-gem 'yui-compressor'
+# TODO: Should we deprecate this? The only place where we use CanCan is when
+# initializing a user.
+gem 'cancan'
+
+#------------------------------------------------------------------------------
+
+group :development, :staging, :production do
+  # Caching
+  # See: https://devcenter.heroku.com/articles/rack-cache-memcached-rails31
+  gem 'rack-cache'
+  gem 'dalli'
+  gem 'kgio'
+  gem "memcachier"
+end
+
+#------------------------------------------------------------------------------
+
+group :development do
+  gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git", :require => false
+  gem 'rack-mini-profiler', :require => false
+end
+
+#------------------------------------------------------------------------------
+
+group :test do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'guard-rspec'
+  gem 'database_cleaner'
+  gem 'faker'
+  gem 'launchy'
+  gem "poltergeist"
+end
+
+#------------------------------------------------------------------------------
+
+group :production, :staging do
+  gem "rails_12factor"
+  gem "newrelic_rpm"
+end
+
+#------------------------------------------------------------------------------
+
 group :assets do
   gem 'sass-rails', "~> 3.2.3"
   gem 'bootstrap-sass', '~> 3.2.0'
@@ -51,78 +91,3 @@ group :assets do
 end
 
 #------------------------------------------------------------------------------
-# File management
-
-gem 'aws-sdk'
-gem 'rmagick'
-gem 'paperclip', '~> 4.2.0'
-gem "roo"
-
-#------------------------------------------------------------------------------
-# Server Management
-
-gem "puma"
-gem "foreman"
-gem "therubyracer"
-gem "rack-timeout"
-
-#------------------------------------------------------------------------------
-# Caching
-# See: https://devcenter.heroku.com/articles/rack-cache-memcached-rails31
-
-gem 'rack-cache'
-gem 'dalli'
-gem 'kgio'
-gem "memcachier"
-
-#------------------------------------------------------------------------------
-# Workers
-
-gem "sidekiq"
-gem 'sinatra', '>= 1.3.0', :require => nil
-
-#------------------------------------------------------------------------------
-# Testing
-
-group :test, :development do
-  gem 'rspec-rails'
-  gem 'factory_girl_rails'
-  gem 'capybara'         # lets Cucumber pretend to be a web browser
-  gem 'sqlite3'
-end
-
-group :test do
-  gem 'guard-rspec'
-  gem 'database_cleaner'
-  gem 'faker'
-  gem 'launchy'
-  gem "poltergeist"
-end
-
-#------------------------------------------------------------------------------
-# Administration
-
-gem "activeadmin"
-
-#------------------------------------------------------------------------------
-# TODO
-
-# TODO: Deprecate after refactoring Post model.
-gem 'awesome_nested_set'
-
-# TODO: Deprecate after refactoring Feed model.
-gem 'simple_enum'
-
-#------------------------------------------------------------------------------
-# Heroku-specific gems
-
-group :production, :staging do
-  gem "rails_12factor"
-end
-
-#------------------------------------------------------------------------------
-# Analytics & Profiling
-
-gem 'newrelic_rpm'
-gem "analytics-ruby", '~> 2.0.8'
-gem 'rack-mini-profiler', :require => false

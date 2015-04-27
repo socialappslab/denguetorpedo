@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class LocationReferenceNeigborhood < ActiveRecord::Migration
   def up
     remove_column :locations, :neighborhood

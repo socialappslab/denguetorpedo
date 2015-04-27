@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- encoding : utf-8 -*-
 
 class User < ActiveRecord::Base
   attr_accessible :locale, :first_name, :reporter,
@@ -289,7 +289,7 @@ class User < ActiveRecord::Base
       return "default_images/profile_default_image.png"
     end
 
-    return self.profile_photo.url(:small)
+    return self.profile_photo.url(:large)
   end
 
   #----------------------------------------------------------------------------

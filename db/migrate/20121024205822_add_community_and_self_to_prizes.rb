@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddCommunityAndSelfToPrizes < ActiveRecord::Migration
   def change
     add_column :prizes, :community_prize, :boolean, :null => false, :default => false

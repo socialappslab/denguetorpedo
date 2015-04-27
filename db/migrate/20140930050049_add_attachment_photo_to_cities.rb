@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddAttachmentPhotoToCities < ActiveRecord::Migration
   def self.up
     change_table :cities do |t|

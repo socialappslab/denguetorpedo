@@ -12,7 +12,6 @@
       .username
         = link_to user.display_name, user_path(user)
       .feed-item-timestamp
-        %i.fa.fa-clock-o
         = timestamp_in_metadata(comment.created_at)
         - if @current_user && @current_user == user
           = form_tag comment_path(comment), :method => "delete", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => comment_path(comment), :class => "comment-delete-button" do

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddReporterNameAndEliminatorNameAndVerifierNameToReports < ActiveRecord::Migration
   def change
     add_column :reports, :reporter_name, :string, default: ""

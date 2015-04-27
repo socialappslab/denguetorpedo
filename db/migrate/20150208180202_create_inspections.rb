@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateInspections < ActiveRecord::Migration
   def up
     create_table :inspections do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Copied from http://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets
 # This code block compiles all assets needed for environments that
 # have config.assets.compile set to false (no lazy loading).

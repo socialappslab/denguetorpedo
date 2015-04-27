@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 
 ENV["RAILS_ENV"] ||= 'test'
@@ -7,7 +8,6 @@ require 'rspec/autorun'
 require 'capybara/rspec'
 require 'database_cleaner'
 require "rake"
-require 'sidekiq/testing/inline'
 require 'capybara/poltergeist'
 
 # Requires supporting ruby files with custom matchers and macros, etc,

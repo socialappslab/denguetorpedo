@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddLikesCountToReports < ActiveRecord::Migration
   def change
     add_column :reports, :likes_count, :integer, :default => 0

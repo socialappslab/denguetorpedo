@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDocumentationSectionsTable < ActiveRecord::Migration
   def up
     create_table :documentation_sections do |t|
