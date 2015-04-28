@@ -8,7 +8,9 @@ Dengue::Application.routes.draw do
       resources :sessions,    :only => [:create]
       resources :reports,     :only => [:index, :create, :destroy]
       resources :csv_reports, :only => [:create]
-      resources :posts,       :only => [:destroy]
+      resources :posts,       :only => [:destroy] do
+        post "like", :on => :member
+      end
 
       resources :neighborhoods, :only => [] do
         member do
@@ -17,7 +19,6 @@ Dengue::Application.routes.draw do
       end
     end
   end
-
 
   #----------------------------------------------------------------------------
   # Landing Pages routes.
@@ -81,6 +82,7 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # Cities
+
   resources :cities, :only => [:show]
 
   #----------------------------------------------------------------------------
@@ -109,7 +111,6 @@ Dengue::Application.routes.draw do
       end
     end
 
-
     resources :csv_reports, :only => [:new, :create, :index]
   end
 
@@ -117,7 +118,6 @@ Dengue::Application.routes.draw do
   # Posts
 
   resources :posts, :only => [:create] do
-    post "like",    :on => :member
     post "comment", :on => :member
   end
 
@@ -210,9 +210,7 @@ Dengue::Application.routes.draw do
   resources :buy_ins, :only => [:new, :create, :destroy]
   resources :group_buy_ins, :only => [:new, :create, :destroy]
 
-
   post "time-series-settings", :controller => "home", :action => :time_series_settings, :as => :time_series_settings
-
 
   #----------------------------------------------------------------------------
   # Active Admin
@@ -221,5 +219,4 @@ Dengue::Application.routes.draw do
   ActiveAdmin.routes(self)
 
   #----------------------------------------------------------------------------
-
 end

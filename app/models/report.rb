@@ -106,9 +106,10 @@ class Report < ActiveRecord::Base
   scope :displayable, -> { where("larvae = ? OR pupae = ? OR protected = ? OR protected IS NULL", true, true, false) }
   scope :completed,   -> { where("completed_at IS NOT NULL") }
   scope :incomplete,  -> { where("completed_at IS NULL") }
-  scope :open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
   scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
-
+  # NOTE: This scope is awkwardly named because we get the following warning:
+  # Creating scope :open. Overwriting existing method Report.open.
+  scope :is_open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
 
   #----------------------------------------------------------------------------
   # Callbacks

@@ -11,7 +11,7 @@
 
     - if @current_user
       .feed-item-interaction-menu
-        = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_post_path(post)}
+        = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_api_v0_post_path(post)}
 
 
   = render :partial => "shared/comments", :locals => {:commentable => post, :path => comment_post_path(post)}

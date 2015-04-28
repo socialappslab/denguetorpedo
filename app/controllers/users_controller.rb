@@ -50,16 +50,11 @@ class UsersController < ApplicationController
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
     # Build a feed depending on params.
-    @posts           = @user.posts.order("updated_at DESC").includes(:comments)
-    @reports         = @user.reports.where("completed_at IS NOT NULL").order("updated_at DESC").includes(:comments)
-    @reports_by_user = @reports
+    @posts        = @user.posts.order("created_at DESC").includes(:comments)
+    @report_count = @user.reports.completed.count
 
-    unless params[:feed].to_s == "1"
-      @posts   = @posts.limit(5)
-      @reports = @reports.limit(5)
-    end
-
-    @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @posts = @posts.limit(20) unless params[:feed].to_s == "1"
+    @activity_feed = @posts.to_a
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
