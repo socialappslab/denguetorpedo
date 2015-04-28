@@ -15,7 +15,7 @@
             .row
               .col-md-1.feed-item-profile-photo
                 = link_to user_path(m.user) do
-                  = image_tag(m.user.picture)
+                  = image_tag(asset_path(m.user.picture))
 
               .col-md-6
                 .row.feed-item-bar
@@ -31,7 +31,7 @@
         .feed-item
           .row
             .col-md-1.feed-item-profile-photo
-              = image_tag(@current_user.picture)
+              = image_tag(asset_path(@current_user.picture))
             .col-md-11
               .row.feed-item-bar
                 .col-md-6

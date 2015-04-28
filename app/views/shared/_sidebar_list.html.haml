@@ -8,7 +8,7 @@
 
   .row.sidebar-list-item
     .col-md-4
-      = link_to image_tag(item.picture, :class => "img-rounded"), item_path
+      = link_to image_tag(asset_path(item.picture), :class => "img-rounded"), item_path
     .col-md-6.username
       = link_to link_name, item_path
 

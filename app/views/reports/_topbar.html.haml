@@ -1,7 +1,7 @@
 .report-topbar
   .row
     .col-md-8
-      = link_to image_tag(report.reporter.picture), user_path(report.reporter)
+      = link_to image_tag(asset_path(report.reporter.picture)), user_path(report.reporter)
 
       .name
         = link_to report.reporter.display_name, user_path(report.reporter)
@@ -30,7 +30,7 @@
   - if report.eliminated? && report.eliminator
     .row
       .col-md-8
-        = link_to image_tag(report.eliminator.picture), user_path(report.reporter)
+        = link_to image_tag(asset_path(report.eliminator.picture)), user_path(report.reporter)
 
         .name
           = link_to report.eliminator.display_name, user_path(report.eliminator)
@@ -44,13 +44,7 @@
   - if report.verifier
     .row
       .col-md-8
-        = link_to user_path(report.reporter) do
-          - owner = report.reporter
-          - if owner.profile_photo_file_name.nil?
-            = image_tag("default_images/user_default_alt.png")
-          - else
-            = image_tag(owner.profile_photo.url(:small))
-
+        = link_to image_tag(asset_path(report.verifier.picture)), user_path(report.reporter)
         .name
           = link_to report.verifier.display_name, user_path(report.verifier), :style => "font-weight: bold;"
           .feed-item-timestamp

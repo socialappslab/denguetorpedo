@@ -9,7 +9,7 @@
 
 .row
 	.col-md-4.col-md-offset-3.neighborhood_news_thumb{:style => "width:250px;height:250px;margin-top:10px;"}
-		= image_tag(@notice.picture(:large))
+		= image_tag(asset_path(@notice.picture(:large)))
 
 	.col-md-6
 

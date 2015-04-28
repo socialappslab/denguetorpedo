@@ -46,12 +46,12 @@ describe "Reports", :type => :feature do
       expect( page.all(".eliminate-report-button").length ).to eq(5)
     end
 
-    it "displays open reports first (ordered by last updated)" do
+    it "displays open reports first (ordered by last created)" do
       first_report = page.all(".report")[0]
       last_report  = page.all(".report")[-1]
 
-      expect(first_report).to have_content("Report with index 5")
-      expect(last_report).to have_content("Report with index 0")
+      expect(first_report).to have_content("Report with index 0")
+      expect(last_report).to have_content("Report with index 5")
     end
   end
 

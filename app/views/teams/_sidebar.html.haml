@@ -1,7 +1,7 @@
 
 %div{:style => "margin-left: 30px; margin-right: 30px;"}
   .sidebar-entity-photo
-    = image_tag(@team.picture, :class => "img-rounded")
+    = image_tag(asset_path(@team.picture), :class => "img-rounded")
     .sidebar-entity-name
       = @team.descriptive_name
 
