@@ -1,7 +1,7 @@
 
 .denguechat-sidebar
   .sidebar-entity-photo
-    = image_tag(@user.picture, :class => "img-rounded")
+    = image_tag(asset_path(@user.picture), :class => "img-rounded")
     .sidebar-entity-name
       = @user.display_name
 

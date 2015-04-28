@@ -24,7 +24,7 @@
         = index + 1
     .col-md-1
       = link_to neighborhood_path(neighborhood) do
-        - image_tag(neighborhood.picture, :class => "img-rounded", :style => "height: 100px; width: 100px;")
+        - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
 
     .col-md-2
       .row

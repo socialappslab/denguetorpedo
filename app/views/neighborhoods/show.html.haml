@@ -25,7 +25,7 @@
             .report-sidebar
               .feed-item-profile-photo
                 = link_to user_path(owner), :class => "user-image" do
-                  = image_tag(owner.picture)
+                  = image_tag(asset_path(owner.picture))
 
               .feed-item-bar
                 .username

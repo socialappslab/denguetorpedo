@@ -1,7 +1,7 @@
 
 .denguechat-sidebar
   .sidebar-entity-photo
-    = image_tag(@neighborhood.picture, :class => "img-rounded")
+    = image_tag(asset_path(@neighborhood.picture), :class => "img-rounded")
     .sidebar-entity-name
       = "#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code}"
     .sidebar-entity-name
