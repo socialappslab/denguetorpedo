@@ -186,7 +186,7 @@ describe ReportsController do
 				:elimination_method_id => BreedingSite.first.elimination_methods.first.id
 			}
 
-			expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq(Time.now.strftime("%Y-%m-%d"))
+			expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq(Time.zone.now.strftime("%Y-%m-%d"))
 		end
 
 		it "sets report's eliminated_at attribute to correct time zone" do

@@ -32,7 +32,7 @@
           = "1. " + I18n.t("report.form.address")
 
       = f.fields_for :location, @report.location || Location.new do |location_fields|
-        - if @neighborhood.mexican? || @neighborhood.brazilian?
+        - unless @neighborhood.nicaraguan?
           = location_fields.text_field :address, :placeholder => I18n.t("attributes.address"), style: "width:500px;", class: 'address_field'
         = location_fields.hidden_field :latitude
         = location_fields.hidden_field :longitude
