@@ -112,8 +112,7 @@ class User < ActiveRecord::Base
 
   def incomplete_reports
     reports = Report.where("reporter_id = ? OR eliminator_id = ?", self.id, self.id)
-    reports = reports.order("created_at DESC").where("completed_at IS NULL")
-    reports = reports.where(:protected => [nil, false])
+    reports = reports.order("created_at DESC").incomplete.displayable
     return reports
   end
 
