@@ -42,20 +42,15 @@ class TeamsController < ApplicationController
     user_ids = @users.pluck(:id)
 
     @reports = Report.where("reporter_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids)
-    @reports = @reports.where("completed_at IS NOT NULL").where(:protected => [nil, false])
-    @reports = @reports.order("updated_at DESC")
+    @reports = @reports.displayable.completed
 
-    @posts = Post.where(:user_id => user_ids).order("updated_at DESC").includes(:comments)
+    @posts = Post.where(:user_id => user_ids).order("created_at DESC").includes(:comments)
 
     @total_reports = @reports.count
     @total_points  = @team.points
 
-    unless params[:feed].to_s == "1"
-      @posts   = @posts.limit(5)
-      @reports = @reports.limit(5)
-    end
-
-    @activity_feed = (@posts.to_a + @reports.to_a).sort{|a,b| b.created_at <=> a.created_at }
+    @posts = @posts.limit(20) unless params[:feed].to_s == "1"
+    @activity_feed = @posts.to_a
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?

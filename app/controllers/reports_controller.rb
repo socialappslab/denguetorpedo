@@ -18,9 +18,9 @@ class ReportsController < NeighborhoodsBaseController
     # Now, let's filter by type of report chosen.
     if params[:reports].present?
       if params[:reports].strip.downcase == "open"
-        @reports = @reports.where("eliminated_at IS NULL OR elimination_method_id IS NULL")
+        @reports = @reports.open
       elsif params[:reports].strip.downcase == "eliminated"
-        @reports = @reports.where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL")
+        @reports = @reports.eliminated
       end
     end
 
@@ -32,8 +32,8 @@ class ReportsController < NeighborhoodsBaseController
     # Bypass method definitions for open/eliminated locations by directly
     # chaining AR queries here.
     reports_with_locs     = Report.joins(:location).select("latitude, longitude")
-    @open_locations       = reports_with_locs.where("eliminated_at IS NULL OR elimination_method_id IS NULL")
-    @eliminated_locations = reports_with_locs.where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL")
+    @open_locations       = reports_with_locs.open
+    @eliminated_locations = reports_with_locs.eliminated
 
     # NOTE: We don't want to do this *before* we define @open_ and @eliminated_
     # locations because we want the heatmap to include all the data.
