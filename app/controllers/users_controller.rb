@@ -6,12 +6,20 @@ class UsersController < ApplicationController
   before_filter :require_login,             :only => [:edit, :update, :index, :show, :destroy]
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
-  before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
+  before_filter :ensure_proper_permissions, :only => [:all, :phones, :destroy]
 
   #----------------------------------------------------------------------------
   # GET /users/
 
   def index
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+    @users        = @neighborhood.users.order("username ASC")
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /users/all
+
+  def all
     authorize! :assign_roles, User
 
     @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
@@ -181,12 +189,12 @@ class UsersController < ApplicationController
     @user.is_blocked = !@user.is_blocked
     if @user.save
       if @user.is_blocked
-        redirect_to users_path, notice: "Usuário bloqueado com sucesso."
+        redirect_to all_users_path, notice: "Usuário bloqueado com sucesso."
       else
-        redirect_to users_path, notice: "Usuário desbloqueado com sucesso."
+        redirect_to all_users_path, notice: "Usuário desbloqueado com sucesso."
       end
     else
-      redirect_to users_path, notice: "There was an error blocking the user"
+      redirect_to all_users_path, notice: "There was an error blocking the user"
     end
   end
 

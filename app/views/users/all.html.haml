@@ -1,0 +1,31 @@
+= render :partial => "shared/flashes"
+
+
+= render :partial => "shared/filter_by_community"
+
+.row.col-md-offset-1
+	.col-md-12
+		%h2
+			= I18n.t("views.admin.edit_user")
+		.row
+			%table.users_table.col-md-12{border: 1}
+				%thead
+					%th
+						= I18n.t("activerecord.attributes.user.username")
+					%th
+						= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
+					%th
+						= I18n.t("attributes.created_at")
+				- @users.each do |user|
+					%tr
+						%td
+							= link_to user.username, edit_user_path(user)
+						%td
+							= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_users_path(:id => user.id), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+						%td
+							= user.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
+	%br
+
+	-#----------------------------------------------------------------------------
+
+	-#----------------------------------------------------------------------------

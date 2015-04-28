@@ -74,6 +74,7 @@ Dengue::Application.routes.draw do
     resources :messages,      :only => [:create]
 
     collection do
+      get "all"
       get 'special_new', :as => :coordinator_create
       post 'special_create'
       put 'block'
