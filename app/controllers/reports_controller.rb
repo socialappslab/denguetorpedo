@@ -18,7 +18,7 @@ class ReportsController < NeighborhoodsBaseController
     # Now, let's filter by type of report chosen.
     if params[:reports].present?
       if params[:reports].strip.downcase == "open"
-        @reports = @reports.open
+        @reports = @reports.is_open
       elsif params[:reports].strip.downcase == "eliminated"
         @reports = @reports.eliminated
       end
@@ -32,7 +32,7 @@ class ReportsController < NeighborhoodsBaseController
     # Bypass method definitions for open/eliminated locations by directly
     # chaining AR queries here.
     reports_with_locs     = Report.joins(:location).select("latitude, longitude")
-    @open_locations       = reports_with_locs.open
+    @open_locations       = reports_with_locs.is_open
     @eliminated_locations = reports_with_locs.eliminated
 
     # NOTE: We don't want to do this *before* we define @open_ and @eliminated_
