@@ -2,8 +2,9 @@
 require 'spec_helper'
 
 describe API::V0::NeighborhoodsController do
-  let(:neighborhood)   { Neighborhood.first }
-  let(:user)           { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
+  let(:neighborhood)  { FactoryGirl.create(:neighborhood) }
+  let(:breeding_site) { FactoryGirl.create(:breeding_site) }
+  let(:user)          { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
 
   describe "Request for charts", :after_commit => true do
     let(:location)       { FactoryGirl.create(:location, :address => "Test address")}
@@ -54,7 +55,7 @@ describe API::V0::NeighborhoodsController do
 
       pos_report.completed_at  = date4
       pos_report.eliminated_at = date4
-      pos_report.elimination_method_id = BreedingSite.first.elimination_methods.first.id
+      pos_report.elimination_method_id = breeding_site.elimination_methods.first.id
       pos_report.save(:validate => false)
 
       Report.find_each do |r|
