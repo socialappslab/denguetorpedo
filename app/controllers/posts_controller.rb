@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   def create
     @post                 = Post.new(params[:post])
     @post.user_id         = @current_user.id
-    @post.neighborhood_id = @current_user.neighborhood_id
+    @post.neighborhood_id = Neighborhood.find(params[:post][:neighborhood_id]).id
 
     base64_image = params[:post][:compressed_photo]
     if base64_image.present?

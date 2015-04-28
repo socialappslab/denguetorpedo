@@ -136,6 +136,7 @@ FactoryGirl.define do
 	#-----------------------------------------------------------------------------
 
 	factory :team do
+		association :neighborhood
 	end
 
 	factory :team_membership do
