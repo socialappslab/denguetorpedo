@@ -90,6 +90,16 @@ Dengue::Application.routes.draw do
 
   get "neighborhoods/invitation" => "neighborhoods#invitation", :as => :neighborhood_invitation
   resources :neighborhoods, :only => [:show] do
+    resources :teams do
+      post "join",  :on => :member
+      post "leave", :on => :member
+      put "block", :on => :member
+
+      get "administer", :on => :collection
+    end
+
+    resources :users, :only => [:index]
+
     resources :reports, :except => [:update, :destroy] do
       collection do
         put 'update'

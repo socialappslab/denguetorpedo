@@ -8,17 +8,28 @@
       = "#{@neighborhood.city.localized_country_name}"
 
   %hr
-  %h1.text-center
-    = I18n.t("activerecord.models.team", :count => 2).capitalize
+  .row
+    .col-md-6
+      %h1.text-center
+        = I18n.t("activerecord.models.team", :count => 2).capitalize
+    .col-md-6
+      %p.text-right
+        = link_to "See all", neighborhood_teams_path(@neighborhood)
 
   .row.sidebar-row
     .col-md-12
-      = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
+      = render :partial => "shared/sidebar_list", :locals => { :items => @teams[0..8] }
 
   %hr
-  %h1.text-center
-    = I18n.t("common_terms.participants").capitalize
+
+  .row
+    .col-md-6
+      %h1.text-center
+        = I18n.t("common_terms.participants").capitalize
+    .col-md-6
+      %p.text-right
+        = link_to "See all", neighborhood_users_path(@neighborhood)
 
   .row.sidebar-row
     .col-md-12
-      = render :partial => "shared/sidebar_list", :locals => { :items => @users }
+      = render :partial => "shared/sidebar_list", :locals => { :items => @users[0..8] }

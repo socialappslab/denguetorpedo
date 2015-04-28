@@ -1,19 +1,17 @@
-- items.each do |item|
-  - if item.is_a?(Team)
-    - item_path = team_path(item)
-    - link_name = item.name
-  - elsif item.is_a?(User)
-    - item_path = user_path(item)
-    - link_name = item.display_name
-
+- items.each_slice(3) do |item_group|
   .row.sidebar-list-item
-    .col-md-4
-      = link_to image_tag(asset_path(item.picture), :class => "img-rounded"), item_path
-    .col-md-6.username
-      = link_to link_name, item_path
+    - item_group.each do |item|
+      - if item.is_a?(Team)
+        - item_path = team_path(item)
+      - elsif item.is_a?(User)
+        - item_path = user_path(item)
+      .col-md-4
+        = link_to image_tag(asset_path(item.picture), :class => "img-rounded"), item_path
+    -# .col-md-6.username
+    -#   = link_to link_name, item_path
 
-    .col-md-1
-      - if @current_user && @current_user == @user && item.is_a?(Team)
-        = form_tag leave_team_path(item), :method => "post", "data-confirm" => I18n.t("views.alerts.confirm_leave_team"), "data-path" => leave_team_path(item), :class => "leave-team-button" do
-          = button_tag(:type => "submit") do
-            %i.fa.fa-times
+    -# .col-md-1
+    -#   - if @current_user && @current_user == @user && item.is_a?(Team)
+    -#     = form_tag leave_team_path(item), :method => "post", "data-confirm" => I18n.t("views.alerts.confirm_leave_team"), "data-path" => leave_team_path(item), :class => "leave-team-button" do
+    -#       = button_tag(:type => "submit") do
+    -#         %i.fa.fa-times
