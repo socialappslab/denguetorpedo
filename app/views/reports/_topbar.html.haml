@@ -44,7 +44,7 @@
   - if report.verifier
     .row
       .col-md-8
-        = link_to image_tag(asset_path(report.verifier.picture)) user_path(report.reporter)
+        = link_to image_tag(asset_path(report.verifier.picture)), user_path(report.reporter)
         .name
           = link_to report.verifier.display_name, user_path(report.verifier), :style => "font-weight: bold;"
           .feed-item-timestamp
