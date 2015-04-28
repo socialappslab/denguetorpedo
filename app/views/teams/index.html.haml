@@ -85,12 +85,15 @@
             %div{:style => "display: table; height: 100px; width: 100%; float: left;"}
               %div{:style => "display: table-cell; vertical-align: middle;"}
                 - if team.team_memberships.map(&:user_id).include?(@current_user.id)
-                  = link_to nil, :class => "btn btn-success btn-large disabled", :style => "width: 100%;" do
+                  = link_to nil, :class => "btn btn-success btn-lg disabled" do
                     %i{:class => "fa fa-check"}
                     = I18n.t("views.teams.my_team")
+
+                  = link_to "Leave", leave_team_path(team), :class => "btn btn-danger btn-lg leave-team-button", "data-confirm" => I18n.t("views.alerts.confirm_leave_team"), "data-path" => leave_team_path(team)
+
                 - else
                   = form_tag join_team_path(team), :method => "POST" do
-                    = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-info btn-large", :style => "float: right; width: 100%; white-space: normal;"
+                    = submit_tag "+ " + I18n.t("views.teams.join"), :class => "btn btn-info btn-lg", :style => "float: right; width: 100%; white-space: normal;"
 
         .row
           .col-md-10
@@ -101,6 +104,26 @@
   = javascript_include_tag "image-compression"
 
   :javascript
+
+    $(".leave-team-button").click(function(event){
+      event.preventDefault();
+
+      var choice = confirm($(this).data("confirm"));
+      if (choice == false)
+        return
+
+      // Trim the count of the text
+      $.ajax({
+        url: $(this).data("path"),
+        type: "POST",
+        success : function(data){
+          // $(event.currentTarget).parents('.sidebar-list-item').remove();
+          document.location.reload(true);
+        }
+      })
+    });
+
+
     $(document).ready(function()
     {
       // Listener on new team button.
