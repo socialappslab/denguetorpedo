@@ -20,7 +20,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @reports = @reports.where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
     @reports = @reports.order("created_at DESC")
 
-    @posts   = @neighborhood.posts.where(:user_id => user_ids).order("updated_at DESC").includes(:comments)
+    @posts   = @neighborhood.posts.order("created_at DESC").includes(:comments)
 
     # Limit the amount of records we show.
     unless params[:feed].to_s == "1"
