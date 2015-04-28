@@ -30,34 +30,6 @@ class PostsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # POST /posts/1/like
-
-  def like
-    count = params[:count].to_i
-
-    # Return immediately if the news instance can't be found or the user is
-    # not logged in.
-    render :nothing => true, :status => 400 if (@post.blank? || @current_user.blank?)
-
-    # If the user already liked the news, and has clicked like, then
-    # remove their like. Otherwise, add a like.
-    existing_like = @post.likes.find {|like| like.user_id == @current_user.id }
-    if existing_like.present?
-      existing_like.destroy
-      count -= 1
-      liekd  = false
-    else
-      Like.create(:user_id => @current_user.id, :likeable_id => @post.id, :likeable_type => Post.name)
-      count += 1
-      liked  = true
-
-      Analytics.track( :user_id => @current_user.id, :event => "Liked a post", :properties => {:post => @post.id}) if Rails.env.production?
-    end
-
-    render :json => {'count' => count.to_s, "liked" => liked} and return
-  end
-
-  #----------------------------------------------------------------------------
   # POST /posts/1/comment
 
   def comment
