@@ -4,6 +4,38 @@ class API::V0::PostsController < API::V0::BaseController
   before_filter :current_user
 
   #----------------------------------------------------------------------------
+  # GET /api/v0/posts
+
+  def index
+    @posts = @current_user.posts.order("created_at DESC")
+    render :json => {:posts => @posts.as_json(
+      :only => [:content, :likes_count],
+      :include => [
+        :comments => {
+          :only => [:content],
+          :include => {
+            :user => {:only => [:username], :include => {:neighborhood => {:only => [:name]}}}
+          },
+          :methods => [:formatted_created_at]
+        }
+      ]
+    )}, :status => 200 and return
+
+    if @post.destroy
+      points = @current_user.total_points || 0
+      @current_user.update_column(:total_points, points - User::Points::POST_CREATED)
+      @current_user.teams.each do |team|
+        team.update_column(:points, team.points - User::Points::POST_CREATED)
+      end
+
+      render :json => @post.as_json, :status => 200 and return
+    else
+      raise API::V0::Error.new(@post.errors.full_messages[0], 422)
+    end
+  end
+
+
+  #----------------------------------------------------------------------------
   # DELETE /api/v0/posts/:id
 
   def destroy

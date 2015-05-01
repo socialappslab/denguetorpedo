@@ -8,7 +8,7 @@ Dengue::Application.routes.draw do
       resources :sessions,    :only => [:create]
       resources :reports,     :only => [:index, :create, :destroy]
       resources :csv_reports, :only => [:create]
-      resources :posts,       :only => [:destroy] do
+      resources :posts,       :only => [:index, :destroy] do
         post "like", :on => :member
       end
 
