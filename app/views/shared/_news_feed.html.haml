@@ -1,12 +1,28 @@
-#newsfeed
-  - for item in @activity_feed
-    - if item.is_a? Post
-      = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
-    - elsif item.is_a? Notice
-      = render :partial => 'notices/feed_item', :locals => {:notice => item, :owner => item.user}
+#newsfeed{"ng-controller" => "PostListCtrl"}
+  .error-message
+    %p
+      Algo salió mal. Por favor, intente nuevamente.
 
-  - if @activity_feed.present? && params[:feed].blank?
-    .more-feed-link
-      = link_to url_for(:only_path => true, :feed => 1) do
-        %i.fa.fa-chevron-down
-        = I18n.t("common_terms.more")
+  .loading-spinner
+    %i.fa.fa-refresh.fa-spin
+  .angular-feed-items{"ng-view" => true}
+
+-#
+-# #newsfeed
+-#   - for item in @activity_feed
+-#     - if item.is_a? Post
+-#       = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
+-#     - elsif item.is_a? Notice
+-#       = render :partial => 'notices/feed_item', :locals => {:notice => item, :owner => item.user}
+-#
+-#   - if @activity_feed.present? && params[:feed].blank?
+-#     .more-feed-link
+-#       = link_to url_for(:only_path => true, :feed => 1) do
+-#         %i.fa.fa-chevron-down
+-#         = I18n.t("common_terms.more")
+
+
+-#
+-# <div ng-controller="UserController" ng-init="user = <%= @user.to_json(include: { profile: { except: [:created_at, :updated_at ]}}, except: [:created_at, :updated_at]) %>">
+-#   <profile-form user="user" profile="user.profile"></profile-form>
+-# </div>
