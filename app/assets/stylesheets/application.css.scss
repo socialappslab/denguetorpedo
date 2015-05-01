@@ -14,6 +14,8 @@
 
 @import "variables";
 
+
+
 @mixin colored_text($color) {
   color: $color;
 }
@@ -425,6 +427,23 @@ div {
 #newsfeed {
   margin-top: 10px;
   // display: none;
+
+  .loading-spinner {
+    text-align: center;
+    font-size: 64px;
+  }
+
+  .error-message {
+    p {
+      font-size: 32px;
+      color: #d9534f;
+      text-align: center;
+    }
+  }
+
+  .error-message {
+    display: none;
+  }
 }
 
 

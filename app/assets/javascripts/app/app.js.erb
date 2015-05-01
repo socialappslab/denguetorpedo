@@ -1,0 +1,14 @@
+var dengueChatApp = angular.module('dengueChatApp', ["ngRoute", "PostListCtrl"]);
+
+dengueChatApp.config(['$routeProvider', function($routeProvider) {
+
+  // TODO: For some reason, Angular.JS doesn't recognize our /users/:userID path.
+  // It should, per this article:
+  // http://fdietz.github.io/recipes-with-angular-js/backend-integration-with-ruby-on-rails/implementing-client-side-routing.html
+  // and
+  // https://github.com/fdietz/recipes-with-angular-js-examples/blob/master/chapter9/recipe1/contacts/app/assets/javascripts/angular/app.js.erb
+  $routeProvider.when('/', {
+    templateUrl: "<%= asset_path('posts/show.html') %>",
+    controller: 'PostListCtrl'
+  });
+}]);

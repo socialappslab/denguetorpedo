@@ -9,6 +9,8 @@ gem "puma"
 gem "foreman"
 gem "therubyracer"
 
+gem 'angularjs-rails'
+
 # Middleware hacks
 gem "rack-timeout"
 
