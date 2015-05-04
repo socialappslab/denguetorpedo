@@ -21,6 +21,16 @@ Dengue::Application.routes.draw do
   end
 
   #----------------------------------------------------------------------------
+  # Dashboard routes.
+
+  namespace :dashboard do
+    resources :csv, :controller => "csv_reports", :only => [:index]
+    resources :locations, :only => [:index]
+    resources :reports, :only => [:index]
+  end
+
+
+  #----------------------------------------------------------------------------
   # Landing Pages routes.
 
   match "home/:id" => "home#index", :as => "Home"
