@@ -1,8 +1,8 @@
 # -*- encoding : utf-8 -*-
 
-class Dashboard::CsvReportsController < Dashboard::BaseController
+class Dashboard::ReportsController < Dashboard::BaseController
   #----------------------------------------------------------------------------
-  # GET /dashboard/csv_reports
+  # GET /dashboard/reports
 
   def index
   end
