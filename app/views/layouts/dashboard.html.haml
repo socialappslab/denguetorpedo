@@ -1,0 +1,22 @@
+!!!
+%html{:itemscope => "", :itemtype => "http://schema.org/Product", :lang => "en"}
+  %head
+    %title
+      DengueChat | Dashboard
+    = render :partial => "shared/head"
+
+  %body
+    #wrap
+      .master-detail-split-view
+        = render :partial => "shared/master_detail_navigation_bar"
+
+        .content-view
+          .row
+            .col-md-3.master
+              = render :partial => "shared/master_detail_navigation_menu"
+            .col-md-9.detail    
+              - if content_for :dashboard_content
+                = yield :dashboard_content
+      #push
+
+    = render :partial => "shared/footer"
