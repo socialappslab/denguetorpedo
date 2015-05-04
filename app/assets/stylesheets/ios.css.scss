@@ -263,6 +263,9 @@
 
   // Define CSS directives for the header of split view.
   .header-view {
+    a {
+      color: #337ab7;
+    }
     .row {
       height: inherit;
     }

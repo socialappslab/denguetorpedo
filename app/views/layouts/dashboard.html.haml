@@ -14,9 +14,23 @@
           .row
             .col-md-3.master
               = render :partial => "shared/master_detail_navigation_menu"
-            .col-md-9.detail    
+            .col-md-9.detail
               - if content_for :dashboard_content
                 = yield :dashboard_content
       #push
 
-    = render :partial => "shared/footer"
+    %footer.bs-docs-footer{:role => "contentinfo"}
+      .container
+        %p
+          = link_to I18n.t("views.footer.creator"), credit_path
+        %p
+          2014-2015 © Regents of the University of California
+
+      / Scripts
+      // NOTE: We *cannot* load jquery asynchronously since the application.js file
+      // depends on the namespace.
+      = javascript_include_tag "application"
+      %script{:src => "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js", :async => true}
+
+      / Yield page-specific scripts.
+      = yield :scripts
