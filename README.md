@@ -25,3 +25,7 @@ After `git clone` or `git checkout`, you need to do the following:
 * `bundle exec rake db:migrate`
 * `bundle exec rake db:development:prepare`
 * `bundle exec foreman start`
+
+
+## Database Architecture
+Conceptually, a `Visit` instance to some `Location` instance will generate many breeding site `Report`s. A `Report` instance defines the evolution of a breeding site and so will change over several `Visit`s. The `Inspection` instance defines the state of the breeding site at any given time by associating the `Report` with a `Visit` (and vice versa).

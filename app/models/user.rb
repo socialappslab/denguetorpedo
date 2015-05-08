@@ -254,20 +254,6 @@ class User < ActiveRecord::Base
     req
   end
 
-
-
-  #----------------------------------------------------------------------------
-
-  def build_report_via_sms(params)
-    body = params[:body].force_encoding('Windows-1252').encode('UTF-8')
-
-    location = Location.create
-    location.update_column(:neighborhood_id, self.neighborhood_id)
-
-    report = Report.new(reporter: self, :sms => true, :report => body, :neighborhood_id => self.neighborhood_id, :location => location)
-    return report
-  end
-
   #----------------------------------------------------------------------------
 
   def total_torpedos

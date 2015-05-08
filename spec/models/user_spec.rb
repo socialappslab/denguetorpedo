@@ -34,29 +34,6 @@ describe User do
 		end
 	end
 
-	context "when sends an sms by phone" do
-		before(:each) do
-			@report = user.build_report_via_sms({
-        :from => user.phone_number, :body => "Rua Tatajuba 50"
-      })
-		end
-
-		it "sms field should be true" do
-			@report.sms.should be_true
-		end
-
-		it "should report successfully" do
-			@report.should be_valid
-		end
-
-		it "should belong to the user" do
-			@report.reporter.should equal(user)
-		end
-		it "reports should have right description" do
-			@report.report.should == "Rua Tatajuba 50"
-		end
-	end
-
 	describe "when destroying a user" do
 		let!(:notification) { FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)}
 

@@ -8,8 +8,7 @@ describe ReportsController do
 	let(:elimination_type) { FactoryGirl.create(:breeding_site) }
 	let(:location_hash) 	 {
 		{
-			:street_type => "Rua", :street_name => "Darci Vargas",
-			:street_number => "45", :latitude => "50.0", :longitude => "40.0"
+			:address => "Rua Darci Vargas 45", :latitude => "50.0", :longitude => "40.0"
 		}
 	}
 	let(:location) 					{ FactoryGirl.create(:location, :address => "Test address") }
@@ -101,9 +100,7 @@ describe ReportsController do
 			it "saves the location attributes" do
 				report 	= Report.last
 				location = report.location
-				expect(location.street_type).to eq("Rua")
-				expect(location.street_name).to eq("Darci Vargas")
-				expect(location.street_number).to eq("45")
+				expect(location.address).to eq("Rua Darci Vargas 45")
 			end
 
 
@@ -158,9 +155,7 @@ describe ReportsController do
 			}
 
 			location = report.location.reload
-			expect(location.reload.street_type).to eq("Rua")
-			expect(location.reload.street_name).to eq("Darci Vargas")
-			expect(location.reload.street_number).to eq("45")
+			expect(location.reload.address).to eq("Rua Darci Vargas 45")
 			expect(location.reload.neighborhood_id).to eq(Neighborhood.first.id)
 			expect(location.reload.latitude).to  eq(50.0)
 			expect(location.longitude).to eq(40.0)
