@@ -6,9 +6,11 @@ class CsvReport < ActiveRecord::Base
   has_attached_file :csv
   do_not_validate_attachment_file_type :csv
 
-  has_many :reports
   belongs_to :user
   belongs_to :location
+
+  has_many :reports
+  has_many :visits, :through => :reports
 
   # The header of the data must include "fecha de visita" text so we iterate
   # over the rows until we find it.

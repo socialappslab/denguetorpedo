@@ -1,0 +1,51 @@
+- content_for :dashboard_content do
+  .row
+    .col-md-12
+
+      %p{:style => "font-size: 16px;margin-bottom: 20px;"}
+        Nota: use el mismo CSV para múltiples visitas.
+        Cada renglón en el archivo CSV debe corresponder a un criadero en el lugar
+        especificado. Si el sitio es eliminado, use la misma fila para actualizar
+        el registro con la fecha de eliminación y un comentario.
+        %br
+        %br
+        ¿Necesita usted una forma como modelo a seguir?
+        %br
+        = link_to "Haga clic aquí para bajar una forma CSV", "/assets/forma_csv.xlsx", :style => "font-weight: bold; color: #3a9bdc;"
+
+
+      #upload_csv{:style => "display: block;"}
+        = form_for [@neighborhood, @csv_report], :url => api_v0_csv_reports_path, :html => {:method => "POST", :multipart => true} do |f|
+          #new_report
+            = hidden_field_tag "report_location_attributes_latitude"
+            = hidden_field_tag "report_location_attributes_longitude"
+
+          .form-group
+            = f.label :location, "1. Haga click y mueva el marcador donde encontró el foco"
+            #map_div{:style => "position: static;"}
+              = render :partial => "reports/google_map"
+
+          .form-group
+            = f.label :csv, "2. Cargue un CSV"
+            = f.file_field :csv, :class => "form-control"
+          .form-group
+            = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
+              %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+              = I18n.t("views.buttons.upload")
+
+          .form-group.form-errors
+            %p
+
+
+
+
+- content_for :scripts do
+  = javascript_include_tag "map"
+  = javascript_include_tag "googlemap/map-csv"
+  = javascript_include_tag "csv-ajax"
+
+  :javascript
+    window.denguechat.responseCallback = function(response) {
+      window.alert("Success!");
+      window.location.href = response.redirect_path;
+    }

@@ -1,6 +1,12 @@
 # -*- encoding : utf-8 -*-
 module ApplicationHelper
 
+  def color_for_inspection_status(status)
+    return "#e74c3c" if status == Inspection::Types::POSITIVE
+    return "#f1c40f" if status == Inspection::Types::POTENTIAL
+    return "#2ecc71"
+  end
+
   def default_navigation_hash
     return {:title => "", :description => "", :parent_navigation_path => nil, :parent_navigation_title => nil, :child_navigation_path => nil, :child_navigation_title => nil}
   end
@@ -45,6 +51,13 @@ module ApplicationHelper
     else
       return timestamp.strftime("%Y-%m-%d %H:%M")
     end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def format_csv_timestamp(timestamp)
+    return "" if timestamp.blank?
+    return timestamp.strftime("%H:%M %Y-%m-%d")
   end
 
   #----------------------------------------------------------------------------

@@ -24,7 +24,7 @@ Dengue::Application.routes.draw do
   # Dashboard routes.
 
   namespace :dashboard do
-    resources :csv, :controller => "csv_reports", :only => [:index]
+    resources :csv, :controller => "csv_reports", :only => [:index, :new]
     resources :locations, :only => [:index]
     resources :reports, :only => [:index]
   end

@@ -1,2 +1,22 @@
 - content_for :dashboard_content do
-  Hello world!
+  .row{:style => "margin-top: 40px;"}
+    .col-md-12
+      %table.table.table-bordered.table-hover{:style => "text-align: center;"}
+        %thead
+          %th
+            Location
+          %th
+            Status
+        %tbody
+          - @locations.each do |loc|
+            %tr
+              - num_visits = loc.visits.count
+              %td{:rowspan => [num_visits + 1, 1].max}
+                = "Loc: #{loc.id}"
+              - if num_visits == 0
+                %td
+              - else
+                - loc.visits.order("visited_at ASC").includes(:inspections).each do |visit|
+                  %tr
+                    %td{:style => "background-color: #{color_for_inspection_status(visit.identification_type)}"}
+                      H

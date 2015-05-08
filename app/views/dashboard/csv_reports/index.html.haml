@@ -1,2 +1,26 @@
 - content_for :dashboard_content do
-  Hello world!
+  .row
+    .col-md-12
+      %table.table.table-bordered.table-hover{:style => "text-align: center;"}
+        %thead
+          %th.text-center
+            File
+          %th.text-center
+            Address
+          %th.text-center
+            Visit time
+        %tbody
+          - @csvs.each do |csv|
+            %tr
+              %td{:rowspan => (csv.visits.count + 1) }
+                = link_to csv.csv_file_name, csv.csv.url
+              %td{:rowspan => (csv.visits.count + 1) }
+                = csv.location.
+
+              - if csv.visits.length == 0
+                %td
+              - else
+                - csv.visits.order("visited_at ASC").includes(:inspections).each do |visit|
+                  %tr
+                    %td
+                      = format_csv_timestamp(visit.visited_at)
