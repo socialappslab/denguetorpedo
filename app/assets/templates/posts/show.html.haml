@@ -14,10 +14,12 @@
             de
           {{post.user.neighborhood.geographical_display_name}}
       .feed-item-timestamp
-        -# = timestamp_in_metadata(item.created_at)
+        {{post.timestamp}}
         -# - if @current_user && @current_user == user && item.class == Post
-        -#   = link_to path, :class => "delete-resource-button", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => path do
-        -#     %i.fa.fa-trash-o
+        // TODO: This needs to be shown/hidden based on current user.
+        // TODO: The jQuery doesn't bind to .delete-resource-button!
+        %a.delete-resource-button{"ng-href" => "{{post.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{post.delete_path}}"}
+          %i.fa.fa-trash-o
 
     .feed-item-content
       {{post.content}}
@@ -27,8 +29,44 @@
 
 
     -# - if @current_user
-    -#   .feed-item-interaction-menu
-    -#     = render :partial => "shared/feed_item_interaction_menu", :locals => {:likeable => post, :path => like_api_v0_post_path(post)}
+    .feed-item-interaction-menu
+      %a.likes_button{"ng-href" => "{{post.like_path}}", "data-path" => "{{post.like_path}}", "data-likes_count" => "{{post.likes_count}}"}
+        %i.fa.fa-thumbs-up.like-icon
+        %span.likes_text
+          {{post.likes_count}}
+
+      &#183;
+      %a.comment-button{"ng-href" => ""}
+        = I18n.t("common_terms.comment")
 
 
-  // Render comments here
+  .feed-item-comment{"ng-repeat" => "comment in post.comments"}
+    .feed-item-profile-photo
+      %a{"ng-href" => "{{comment.user.user_path}}"}
+        %img{"ng-src" => "{{comment.user.image_path}}"}
+    .feed-item-bar
+      .username
+        %a{"ng-href" => "{{comment.user.user_path}}"}
+          {{comment.user.display_name}}
+      .feed-item-timestamp
+        {{comment.timestamp}}
+        -# - if @current_user && @current_user == user && item.class == Post
+        // TODO: This needs to be shown/hidden based on current user.
+        // TODO: The jQuery doesn't bind to .delete-resource-button!
+        %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
+          %i.fa.fa-trash-o
+    .feed-item-content
+      {{post.comment.content}}
+
+  -# - if @current_user
+  .feed-item-comment.feed-item-new-comment
+    .row
+      .col-md-12
+        %form.feed-item-comment-form{"accept-charset" => "UTF-8", :action => "{{comment.post_path}}", :method => "post"}
+          %div{:style => "margin:0;padding:0;display:inline"}
+            %input{:name => "utf8", :type => "hidden", :value => "✓"}/
+            %input{:name => "authenticity_token", :type => "hidden", :value => "1vnH4l6Pdoo2Pyph7qRD0rU5T2obW8S0WQ4koO+Jg5w="}/
+          %textarea#comment_content.form-control{:name => "comment[content]"}
+          %button.btn.btn-success.btn-right.submit-button{:type => "submit"}
+            %i.fa.fa-refresh.fa-spin
+            = I18n.t("views.buttons.publish")

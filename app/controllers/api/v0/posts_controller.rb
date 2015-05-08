@@ -7,6 +7,7 @@ class API::V0::PostsController < API::V0::BaseController
   # GET /api/v0/posts
 
   def index
+    # TODO: You're loading only your own posts!
     @posts = @current_user.posts.order("created_at DESC")
 
     user_hash = {
@@ -20,12 +21,13 @@ class API::V0::PostsController < API::V0::BaseController
       }
     }
 
+    # TODO: The comments are not ordered.
     posts_json = @posts.as_json(
       :only => [:id, :content, :likes_count],
       :include => [
         :user     => user_hash,
         :comments => {
-          :only    => [:content],
+          :only    => [:id, :content, :created_at],
           :methods => [:formatted_created_at],
           :include => { :user => user_hash }
         }
@@ -41,9 +43,29 @@ class API::V0::PostsController < API::V0::BaseController
         pjson["image_path"] = post.photo.url(:large)
       end
 
+      pjson["delete_path"] = api_v0_post_path(post)
+      pjson["like_path"]   = like_api_v0_post_path(post)
+
+      pjson["timestamp"] = view_context.timestamp_in_metadata(post.created_at)
+
       pjson[:user].merge!("image_path" => ActionController::Base.helpers.asset_path(user.picture) )
       pjson[:user].merge!("user_path"    => user_path(user))
       pjson[:user].merge!("neighborhood_path"    => neighborhood_path(user.neighborhood))
+
+      if pjson[:comments].present?
+        pjson[:comments].each do |cjson|
+          comment = Comment.find(cjson["id"])
+          cuser   = comment.user
+
+          cjson["post_path"] = comment_post_path(comment)
+
+          cjson["timestamp"] = view_context.timestamp_in_metadata(comment.created_at)
+          cjson[:user].merge!("image_path" => ActionController::Base.helpers.asset_path(cuser.picture) )
+          cjson[:user].merge!("user_path"    => user_path(cuser))
+          cjson[:user].merge!("neighborhood_path"    => neighborhood_path(cuser.neighborhood))
+        end
+      end
+
     end
 
     render :json => {:posts => posts_json}, :status => 200 and return
