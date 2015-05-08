@@ -149,7 +149,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # Find and/or create the location.
     location = Location.find_by_address(address)
     if location.blank?
-      location = Location.create!(:latitude => lat, :longitude => long, :address => address)
+      location = Location.create!(:latitude => lat, :longitude => long, :address => address, :neighborhood_id => @neighborhood.id)
     end
 
 
