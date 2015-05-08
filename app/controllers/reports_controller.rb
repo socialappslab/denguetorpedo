@@ -156,6 +156,10 @@ class ReportsController < NeighborhoodsBaseController
     @report.after_photo = data
     params[:report].delete(:compressed_photo)
 
+    if params[:report] && params[:report][:location_attributes]
+      params[:report][:location_attributes].merge!(:neighborhood_id => @neighborhood.id)
+    end
+
     @report.eliminator_id = @current_user.id
     if @report.update_attributes(params[:report])
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
@@ -177,8 +181,12 @@ class ReportsController < NeighborhoodsBaseController
   # a breeding site or before photo present. This can occur if you create
   # reports from SMS or CSV.
   def prepare
-    address = params[:report][:location_attributes].slice(:street_name,:street_number,:street_type)
-    address.each{ |k,v| address[k] = v.downcase.titleize}
+    # TODO: Refactor this.
+    if params[:report] && params[:report][:location_attributes]
+      params[:report][:location_attributes].merge!(:neighborhood_id => @neighborhood.id)
+    end
+
+    address  = params[:report][:location_attributes].slice(:address)
 
     # Update the location.
     if @report.location.present?
@@ -186,11 +194,11 @@ class ReportsController < NeighborhoodsBaseController
       location.update_attributes(address)
     else
       # for whatever reason if location doesn't exist create a new one
-      location = Location.find_or_create_by_street_type_and_street_name_and_street_number(address)
+      location = Location.find_or_create_by_address(address)
     end
 
-    location.latitude     = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
-    location.longitude    = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
+    location.latitude        = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
+    location.longitude       = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
     location.neighborhood_id = @neighborhood.id
     location.save
 

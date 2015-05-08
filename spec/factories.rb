@@ -51,9 +51,8 @@ FactoryGirl.define do
 	end
 
 	factory :location do
-		street_type 		"Rua"
-		street_name 		"Tatajuba"
-		street_number 	"50"
+		address 		"Rua Tatajuba 50"
+		association :neighborhood
 	end
 
 	factory :notice do
