@@ -8,30 +8,45 @@ class API::V0::PostsController < API::V0::BaseController
 
   def index
     @posts = @current_user.posts.order("created_at DESC")
-    render :json => {:posts => @posts.as_json(
-      :only => [:content, :likes_count],
+
+    user_hash = {
+      :only    => [:id],
+      :methods => [:display_name],
+      :include => {
+        :neighborhood => {
+          :only => [],
+          :methods => [:geographical_display_name]
+        }
+      }
+    }
+
+    posts_json = @posts.as_json(
+      :only => [:id, :content, :likes_count],
       :include => [
+        :user     => user_hash,
         :comments => {
-          :only => [:content],
-          :include => {
-            :user => {:only => [:username], :include => {:neighborhood => {:only => [:name]}}}
-          },
-          :methods => [:formatted_created_at]
+          :only    => [:content],
+          :methods => [:formatted_created_at],
+          :include => { :user => user_hash }
         }
       ]
-    )}, :status => 200 and return
+    )
 
-    if @post.destroy
-      points = @current_user.total_points || 0
-      @current_user.update_column(:total_points, points - User::Points::POST_CREATED)
-      @current_user.teams.each do |team|
-        team.update_column(:points, team.points - User::Points::POST_CREATED)
+    posts_json.each_with_index do |pjson, index|
+      post = Post.find(pjson["id"])
+      user = post.user
+      next if pjson[:user].blank?
+
+      if post.photo.present?
+        pjson["image_path"] = post.photo.url(:large)
       end
 
-      render :json => @post.as_json, :status => 200 and return
-    else
-      raise API::V0::Error.new(@post.errors.full_messages[0], 422)
+      pjson[:user].merge!("image_path" => ActionController::Base.helpers.asset_path(user.picture) )
+      pjson[:user].merge!("user_path"    => user_path(user))
+      pjson[:user].merge!("neighborhood_path"    => neighborhood_path(user.neighborhood))
     end
+
+    render :json => {:posts => posts_json}, :status => 200 and return
   end
 
 
