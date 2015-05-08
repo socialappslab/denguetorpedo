@@ -15,6 +15,6 @@
 
     .col-sm-3.detail
       .child-view-button
-        = link_to logout_path, :class => "transition-link" do
+        = link_to @navigation["child"]["path"], :class => "transition-link" do
           .parent-view-name
-            = I18n.t("views.buttons.logout")
+            = @navigation["child"]["name"]
