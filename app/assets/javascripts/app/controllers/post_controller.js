@@ -4,15 +4,12 @@ var postListCtrl = function ($scope, $http) {
   ajax.success(function(data) {
     $scope.posts = data.posts;
   });
-
-  // TODO
-  // ajax.error(function(response) {
-  //   $("#newsfeed .error-message").show();
-  // })
-  //
-  // ajax.then(function() {
-  //   $("#newsfeed .loading-spinner").hide();
-  // })
+  ajax.error(function(response) {
+    $("#newsfeed .error-message").show();
+  })
+  ajax.then(function() {
+    $("#newsfeed .loading-spinner").hide();
+  })
 };
 
 
