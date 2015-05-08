@@ -73,7 +73,6 @@ def populate_data
         :eliminated_at => Time.now)
     end
 
-    report = u.build_report_via_sms({ :body => "SMS report" })
     report.save!
   end
 

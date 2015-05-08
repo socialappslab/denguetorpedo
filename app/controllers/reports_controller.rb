@@ -397,37 +397,9 @@ class ReportsController < NeighborhoodsBaseController
   # the SMSGateway receives an SMS. It expects a JSON response which it
   # will display on the phone as a Toast (see
   # http://developer.android.com/reference/android/widget/Toast.html for more).
+  # TODO: We will deprecate this once the Android device in Brazil stops sending requests.
   def gateway
-    # Verify phone number minimum length and placeholder, otherwise ignore
-    if params[:from] == User::PHONE_NUMBER_PLACEHOLDER || params[:from].to_s.length < User::MIN_PHONE_LENGTH
-      render :nothing => true, :status => 400 and return
-    end
-
-    # Now let's try to identify the user.
-    user = User.find_by_phone_number(params[:from]) if params[:from].present?
-    if user.nil?
-      Notification.create(board: "5521981865344", phone: params[:from], text: "Você ainda não tem uma conta. Registre-se no site do Dengue Torpedo.")
-      render :json => { message: "There is no registered user with the given phone number." }, :status => 404 and return
-    end
-
-    # At this point, we're guaranteed for the user to exist.
-    # Now, check if user is morador, admin, or coordenador. If they are,
-    # then they're setup for SMS. Otherwise, they're not.
-    if user.residents?
-      @report = user.build_report_via_sms(params)
-
-      # NOTE: We will not award points here because we do this in ReportsController#update.
-      if @report.save!
-        Notification.create(board: "5521981865344", phone: params[:from], text: "Parabéns! O seu relato foi recebido e adicionado ao Dengue Torpedo.")
-        render :json => { message: "success", report: @report}
-      else
-        Notification.create(board: "5521981865344", phone: params[:from], text: "Nós não pudemos adicionar o seu relato porque houve um erro no nosso sistema.")
-        render :json => { message: @report.errors.full_messages }, :status => 401
-      end
-    else
-      Notification.create(board: "5521981865344", phone: params[:from], text: "O seu perfil não está habilitado para o envio do Dengue Torpedo.")
-      render :json => { message: "Sponsors or verifiers" }, :status => 401
-    end
+    ender :nothing => true, :status => 400 and return
   end
 
   #----------------------------------------------------------------------------
