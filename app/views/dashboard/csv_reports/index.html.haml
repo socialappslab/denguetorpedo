@@ -42,9 +42,9 @@
               // tr as well.
               - csv_row_span = csv.visits.map {|v| v.inspections.count + 1}.sum
               %td{:rowspan => (csv_row_span + 1) }
-                = link_to csv.csv_file_name, csv.csv.url
+                = link_to csv.csv_file_name, dashboard_locations_path
               %td{:rowspan => (csv_row_span + 1) }
-                = csv.location.address
+                = link_to csv.location.address, dashboard_locations_path
               %td{:rowspan => (csv_row_span + 1) }
                 = csv.user.username
 
