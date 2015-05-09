@@ -20,6 +20,16 @@ class UsersController < ApplicationController
     @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
   end
 
+
+  #----------------------------------------------------------------------------
+  # POST /users/cookies
+
+  # This action is responsible for setting cookie settings for a user.
+  def set_cookies
+    cookies[:neighborhood_id] = params[:neighborhood_id] if params[:neighborhood_id].present?
+    redirect_to dashboard_csv_index_path and return
+  end
+
   #----------------------------------------------------------------------------
   # GET /phones
 

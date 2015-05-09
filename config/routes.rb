@@ -87,6 +87,7 @@ Dengue::Application.routes.draw do
       get 'special_new', :as => :coordinator_create
       post 'special_create'
       put 'block'
+      post "set-cookies", :action => "set_cookies", :as => :set_cookies
     end
   end
 

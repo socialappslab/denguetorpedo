@@ -7,7 +7,14 @@ class Dashboard::CsvReportsController < Dashboard::BaseController
   def index
     @navigation["child"] = {"name" => "Upload CSV", "path" => new_dashboard_csv_path}
 
-    @csvs = @current_user.csv_reports.includes(:visits)
+    # Identify the neighborhood that the user is interested in.
+    neighborhood_id = cookies[:neighborhood_id] || @current_user.neighborhood_id
+    @neighborhood = Neighborhood.find_by_id(neighborhood_id)
+
+    @csvs = CsvReport.joins(:location).where("locations.neighborhood_id = ?", neighborhood_id)
+    @csvs = @csvs.includes(:visits)
+
+    @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
   end
 
   #----------------------------------------------------------------------------

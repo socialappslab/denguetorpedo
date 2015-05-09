@@ -1,4 +1,18 @@
 - content_for :dashboard_content do
+  .table-header-view
+
+    .row
+      .col-md-12.text-center
+
+        = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
+          .form-group
+            %p.form-control-static
+              = I18n.t("attributes.neighborhood_id")
+          .form-group
+            = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
+          = submit_tag "Submit", :class => "btn btn-success"
+
+
   .row
     .col-md-12
       %table.table.table-bordered.table-hover{:style => "text-align: center;"}
