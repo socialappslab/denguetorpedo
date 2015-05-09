@@ -9,7 +9,7 @@ class Dashboard::CsvReportsController < Dashboard::BaseController
   def index
     @navigation["child"] = {"name" => "Upload CSV", "path" => new_dashboard_csv_path}
 
-    @csvs = CsvReport.joins(:location).where("locations.neighborhood_id = ?", neighborhood_id)
+    @csvs = CsvReport.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
     @csvs = @csvs.includes(:visits)
 
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
