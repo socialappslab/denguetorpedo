@@ -19,6 +19,7 @@ class Dashboard::CsvReportsController < Dashboard::BaseController
   # GET /dashboard/csv_reports/new
 
   def new
+    @navigation["parent"] = {"name" => "Back", "path" => dashboard_csv_index_path}
     @navigation["child"] = {"name" => "Cancel", "path" => dashboard_csv_index_path}
 
     @csv_report = CsvReport.new
