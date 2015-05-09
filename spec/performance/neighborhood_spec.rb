@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 # # encoding: utf-8
 # require 'action_controller'
-# require 'spec_helper'
+# require "rails_helper"
 #
 # describe NeighborhoodsController, :type => :controller, :performance => true do
 # 	render_views

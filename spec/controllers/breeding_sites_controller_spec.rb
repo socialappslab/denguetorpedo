@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe BreedingSitesController do
   let(:user)              { FactoryGirl.create(:user, :role => User::Types::COORDINATOR, :neighborhood_id => Neighborhood.first.id) }

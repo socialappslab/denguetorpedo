@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe "Contact Form for Future Communities", :type => :feature do
   before(:each) do

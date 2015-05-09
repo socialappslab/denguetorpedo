@@ -1,6 +1,5 @@
 source 'http://rubygems.org'
 
-ruby "1.9.3"
 gem 'rails', '~> 3.2.18'
 
 # Server Management
@@ -63,13 +62,13 @@ end
 #------------------------------------------------------------------------------
 
 group :test do
-  gem 'rspec-rails'
+  gem 'rspec-rails', "~> 3.2"
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'guard-rspec'
   gem 'database_cleaner'
   gem 'faker'
-  gem 'launchy'
+  gem 'launchy', :require => false
   gem "poltergeist"
 end
 
