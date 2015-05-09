@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe API::V0::PostsController do
   let(:user)  { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }

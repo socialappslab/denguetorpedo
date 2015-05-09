@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-require 'spec_helper'
+require "rails_helper"
 
 describe Visit do
   let!(:created_at)    { Time.now - 100.days }

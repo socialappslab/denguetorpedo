@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe "Neighborhoods", :type => :feature do
   let(:n)           { Neighborhood.first}

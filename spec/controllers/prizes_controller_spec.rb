@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe PrizesController do
   let(:team) { FactoryGirl.create(:team, :name => "Test Team", :neighborhood_id => Neighborhood.first.id)}

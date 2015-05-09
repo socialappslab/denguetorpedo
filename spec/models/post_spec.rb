@@ -17,7 +17,7 @@
 #  wall_type  :string(255)
 #
 
-require 'spec_helper'
+require "rails_helper"
 
 describe Post do
   it "can create simple posts" do
