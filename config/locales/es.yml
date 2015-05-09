@@ -95,6 +95,7 @@ es:
         protected: "Protegido"
         chemically_treated: "Abatizado"
         larvae: "Larvas"
+        pupae: "Pupas"
       documentation_section:
         title: Contenido en portugués
         title_in_es: Contenido en Español
@@ -418,14 +419,15 @@ es:
         success: "La contraseña fue cambiada"
     buttons:
       add_photo: "Añadir foto"
-      publish: "Chat"
       confirm: "Confirmar"
+      create:  "Crear"
+      delete:  Eliminar
+      edit:    "Editar"
+      logout: Salir
+      publish: "Chat"
       search:  "Buscar"
       submit:  "Enviar"
       update:  "Actualizar"
-      create:  "Crear"
-      edit:    "Editar"
-      delete:  Eliminar
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
     post:

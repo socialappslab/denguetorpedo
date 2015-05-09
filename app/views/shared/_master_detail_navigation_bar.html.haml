@@ -1,0 +1,20 @@
+.header-view
+  .row
+    .col-sm-3.master
+    .col-sm-3.detail
+      .parent-view-button
+        - if @navigation["parent"]["path"].present?
+          = link_to @navigation["parent"]["path"], :class => "transition-link" do
+            %i.fa{:class => "fa-chevron-left" }
+            .parent-view-name
+              =  @navigation["parent"]["name"]
+
+    .col-sm-3.detail
+      %p.light-font.text-center
+        = @navigation["current"]["name"]
+
+    .col-sm-3.detail
+      .child-view-button
+        = link_to @navigation["child"]["path"], :class => "transition-link" do
+          .parent-view-name
+            = @navigation["child"]["name"]

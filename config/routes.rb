@@ -21,6 +21,16 @@ Dengue::Application.routes.draw do
   end
 
   #----------------------------------------------------------------------------
+  # Dashboard routes.
+
+  namespace :dashboard do
+    resources :csv, :controller => "csv_reports", :only => [:index, :new]
+    resources :locations, :only => [:index]
+    resources :reports, :only => [:index]
+  end
+
+
+  #----------------------------------------------------------------------------
   # Landing Pages routes.
 
   match "home/:id" => "home#index", :as => "Home"
@@ -77,6 +87,7 @@ Dengue::Application.routes.draw do
       get 'special_new', :as => :coordinator_create
       post 'special_create'
       put 'block'
+      post "set-cookies", :action => "set_cookies", :as => :set_cookies
     end
   end
 
