@@ -34,8 +34,6 @@
               - row_span = loc.visits.count + 1
               %td{:rowspan => row_span }
                 = loc.address
-                = loc.inspect
-
               - if loc.visits.count == 0
                 %td
                 %td
