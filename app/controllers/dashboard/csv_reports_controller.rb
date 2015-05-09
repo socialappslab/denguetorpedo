@@ -1,15 +1,13 @@
 # -*- encoding : utf-8 -*-
 
 class Dashboard::CsvReportsController < Dashboard::BaseController
+  before_filter :identify_neighborhood, :only => [:index]
+
   #----------------------------------------------------------------------------
   # GET /dashboard/csv_reports
 
   def index
     @navigation["child"] = {"name" => "Upload CSV", "path" => new_dashboard_csv_path}
-
-    # Identify the neighborhood that the user is interested in.
-    neighborhood_id = cookies[:neighborhood_id] || @current_user.neighborhood_id
-    @neighborhood = Neighborhood.find_by_id(neighborhood_id)
 
     @csvs = CsvReport.joins(:location).where("locations.neighborhood_id = ?", neighborhood_id)
     @csvs = @csvs.includes(:visits)
