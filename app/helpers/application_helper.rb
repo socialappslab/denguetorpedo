@@ -7,6 +7,12 @@ module ApplicationHelper
     return "#2ecc71"
   end
 
+  def class_for_status(status)
+    return "danger" if status == Inspection::Types::POSITIVE
+    return "warning" if status == Inspection::Types::POTENTIAL
+    return "success"
+  end
+
   def default_navigation_hash
     return {:title => "", :description => "", :parent_navigation_path => nil, :parent_navigation_title => nil, :child_navigation_path => nil, :child_navigation_title => nil}
   end
@@ -57,7 +63,7 @@ module ApplicationHelper
 
   def format_csv_timestamp(timestamp)
     return "" if timestamp.blank?
-    return timestamp.strftime("%H:%M %Y-%m-%d")
+    return timestamp.strftime("%Y-%m-%d")
   end
 
   #----------------------------------------------------------------------------

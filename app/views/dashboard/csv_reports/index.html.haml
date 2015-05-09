@@ -15,16 +15,26 @@
 
   .row
     .col-md-12
-      %table.table.table-bordered.table-hover{:style => "text-align: center;"}
+      %table.table.table-bordered.table-hover.text-center.statistics-table
         %thead
           %th.text-center
-            File
+            CSV
           %th.text-center
-            Address
+            = I18n.t("activerecord.attributes.report.location_id")
+          %th.text-center
+            = I18n.t("activerecord.attributes.user.username")
           %th.text-center
             Visit time
           %th.text-center
-            Status
+            = I18n.t("activerecord.attributes.report.breeding_site_id")
+          %th.text-center
+            = I18n.t("activerecord.attributes.report.protected")
+          %th.text-center
+            = I18n.t("activerecord.attributes.report.larvae")
+          %th.text-center
+            = I18n.t("activerecord.attributes.report.pupae")
+          %th.text-center
+            = I18n.t("activerecord.attributes.report.chemically_treated")
         %tbody
           - @csvs.each do |csv|
             %tr
@@ -35,6 +45,9 @@
                 = link_to csv.csv_file_name, csv.csv.url
               %td{:rowspan => (csv_row_span + 1) }
                 = csv.location.address
+              %td{:rowspan => (csv_row_span + 1) }
+                = csv.user.username
+
               - if csv.visits.length == 0
                 %td
               - else
@@ -43,7 +56,16 @@
                     %td{:rowspan => (visit.inspections.count + 1)}
                       = format_csv_timestamp(visit.visited_at)
 
-                    - visit.inspections.each do |inspection|
-                      %tr
-                        %td{:style => "background-color:#{color_for_inspection_status(inspection.identification_type)}"}
-                          = inspection.id
+                    - visit.inspections.includes(:report).order("id ASC").each do |inspection|
+                      %tr{:class => class_for_status(inspection.identification_type)}
+                        - report = inspection.report
+                        %td
+                          = report.breeding_site.code if report.present?
+                        %td
+                          = display_as_icon(report.protected) if report.present?
+                        %td
+                          = display_as_icon(report.larvae) if report.present?
+                        %td
+                          = display_as_icon(report.pupae) if report.present?
+                        %td
+                          = display_as_icon(report.chemically_treated) if report.present?
