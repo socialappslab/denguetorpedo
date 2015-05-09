@@ -11,7 +11,7 @@ describe PrizesController do
 
   before(:each) do
     @user     = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
-    controller.stub(:require_login).and_return(true)
+    allow(controller).to receive(:require_login).and_return(true)
   end
 
   def valid_attributes
@@ -31,12 +31,12 @@ describe PrizesController do
     end
     it "should be successful" do
       get :index, {}, valid_session
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "assigns all prizes as @prizes" do
       get :index, {}, valid_session
-      assigns(:prizes).should eq([@prize])
+      expect(assigns(:prizes)).to eq([@prize])
     end
   end
 
@@ -47,18 +47,18 @@ describe PrizesController do
 
     it "should be successful" do
       get :show, id: @prize.id
-      response.should be_success
+      expect(response).to be_success
     end
     it "assigns the requested prize as @prize" do
       get :show, id: @prize.id
-      assigns(:prize).should eq(@prize)
+      expect(assigns(:prize)).to eq(@prize)
     end
   end
 
   describe "GET new" do
     it "assigns a new prize as @prize" do
       get :new
-      assigns(:prize).should be_a_new(Prize)
+      expect(assigns(:prize)).to be_a_new(Prize)
     end
   end
 
@@ -68,7 +68,7 @@ describe PrizesController do
     it "assigns the requested prize as @prize" do
       prize = FactoryGirl.create(:prize, valid_attributes)
       get :edit, {:id => prize.id}, valid_session
-      assigns(:prize).should eq(prize)
+      expect(assigns(:prize)).to eq(prize)
     end
   end
 
@@ -108,29 +108,29 @@ describe PrizesController do
 
       it "assigns a newly created prize as @prize" do
         post :create, {:prize => valid_attributes}, valid_session
-        assigns(:prize).should be_a(Prize)
-        assigns(:prize).should be_persisted
+        expect(assigns(:prize)).to be_a(Prize)
+        expect(assigns(:prize)).to be_persisted
       end
 
       it "redirects to the created prize" do
         post :create, {:prize => valid_attributes}, valid_session
-        response.should redirect_to(Prize.last)
+        expect(response).to redirect_to(Prize.last)
       end
     end
 
     describe "with invalid params" do
       it "assigns a newly created but unsaved prize as @prize" do
         # Trigger the behavior that occurs when invalid params are submitted
-        Prize.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Prize).to receive(:save).and_return(false)
         post :create, {:prize => {}}, valid_session
-        assigns(:prize).should be_a_new(Prize)
+        expect(assigns(:prize)).to be_a_new(Prize)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
-        Prize.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Prize).to receive(:save).and_return(false)
         post :create, {:prize => {}}, valid_session
-        response.should render_template("new")
+        expect(response).to render_template("new")
       end
     end
   end
@@ -146,20 +146,20 @@ describe PrizesController do
         # specifies that the Prize created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        Prize.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
+        expect_any_instance_of(Prize).to receive(:update_attributes).with({'these' => 'params'})
         put :update, {:id => prize.to_param, :prize => {'these' => 'params'}}, valid_session
       end
 
       it "assigns the requested prize as @prize" do
         prize = Prize.create! valid_attributes
         put :update, {:id => prize.to_param, :prize => valid_attributes}, valid_session
-        assigns(:prize).should eq(prize)
+        expect(assigns(:prize)).to eq(prize)
       end
 
       it "redirects to the prize" do
         prize = FactoryGirl.create(:prize, valid_attributes)
         put :update, {:id => prize.to_param, :prize => valid_attributes}, valid_session
-        response.should redirect_to(prize)
+        expect(response).to redirect_to(prize)
       end
     end
 
@@ -167,17 +167,17 @@ describe PrizesController do
       it "assigns the prize as @prize" do
         prize = FactoryGirl.create(:prize, valid_attributes)
         # Trigger the behavior that occurs when invalid params are submitted
-        Prize.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Prize).to receive(:save).and_return(false)
         put :update, {:id => prize.to_param, :prize => {}}, valid_session
-        assigns(:prize).should eq(prize)
+        expect(assigns(:prize)).to eq(prize)
       end
 
       it "re-renders the 'edit' template" do
         prize = FactoryGirl.create(:prize, valid_attributes)
         # Trigger the behavior that occurs when invalid params are submitted
-        Prize.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Prize).to receive(:save).and_return(false)
         put :update, {:id => prize.to_param, :prize => {}}, valid_session
-        response.should render_template("edit")
+        expect(response).to render_template("edit")
       end
     end
   end
@@ -195,7 +195,7 @@ describe PrizesController do
 
     it "redirects to the prizes list" do
       delete :destroy, {:id => @prize.id}, valid_session
-      response.should redirect_to(prizes_url)
+      expect(response).to redirect_to(prizes_url)
     end
   end
 

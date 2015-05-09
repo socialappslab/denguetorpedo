@@ -27,9 +27,9 @@ describe Post do
     p3 = Post.create!(:content => "testing2", :user_id => u1.id, :title => "Title3")
     p4 = Post.create!(:content => "testing3", :user_id => u1.id, :title => "Title4")
 
-    Post.count.should == 4
+    expect(Post.count).to eq(4)
     for p in Post.all
-      p.user.should == u1
+      expect(p.user).to eq(u1)
     end
   end
 
@@ -45,7 +45,7 @@ describe Post do
 
     [p1, p2, p3, p4, p5, p6].each do |p|
       p.reload
-      p.user.should == u1
+      expect(p.user).to eq(u1)
     end
   end
 
@@ -53,12 +53,12 @@ describe Post do
     u1 = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
 
     p = Post.create :content => "asdfsdf"
-    p.valid?.should be_false
+    expect(p.valid?).to be_falsey
 
     p = Post.create :user_id => 1
-    p.valid?.should be_false
+    expect(p.valid?).to be_falsey
 
     p = Post.create :content => "sfsdf", :user_id => u1.id, :title => "With title"
-    p.valid?.should be_true
+    expect(p.valid?).to be_truthy
   end
 end

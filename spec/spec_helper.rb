@@ -45,7 +45,7 @@ RSpec.configure do |config|
 
   # This option ensures that we fail fast. It mimicks the hooks.rb behavior for our Cucumber suite.
   config.fail_fast     = true
-  config.color_enabled = true
+  config.color = true
 
   # NOTE: This must be on the top of RSpec declaration, above any other config.before
   # declaration.
@@ -84,4 +84,15 @@ RSpec.configure do |config|
   # To debug an order dependency, use the seed, printed after each run.
   #     --seed 1234
   config.order = "random"
+
+  # rspec-rails 3 will no longer automatically infer an example group's spec type
+  # from the file location. You can explicitly opt-in to the feature using this
+  # config option.
+  # To explicitly tag specs without using automatic inference, set the `:type`
+  # metadata manually:
+  #
+  #     describe ThingsController, :type => :controller do
+  #       # Equivalent to being in spec/controllers
+  #     end
+  config.infer_spec_type_from_file_location!
 end

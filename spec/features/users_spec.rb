@@ -17,8 +17,8 @@ describe "Users", :type => :feature do
         fill_in :user_phone_number, :with => "000000000000"
         fill_in :user_carrier, :with => "xxx"
         click_button I18n.t("views.buttons.update")
-        find_field("user_carrier").value.should eq "xxx"
-        find_field("user_phone_number").value.should eq "000000000000"
+        expect(find_field("user_carrier").value).to eq "xxx"
+        expect(find_field("user_phone_number").value).to eq "000000000000"
       end
 
       it "keeps gender information" do

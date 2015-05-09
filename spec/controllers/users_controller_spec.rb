@@ -125,7 +125,7 @@ describe UsersController do
 		context "when user inputs valid information" do
 			it "updates the user's neighborhood" do
 				# TODO: Pending until we introduce a second neighborhood
-				pending
+				skip
 
 				expect(user.neighborhood_id).to eq(Neighborhood.first.id)
 
@@ -150,7 +150,7 @@ describe UsersController do
 
 		context "when editing recruiter information" do
 			it "updates the recruiter id when user selects a recruiter" do
-				pending "Until we figure how to test jQuery Autocomplete"
+				skip "Until we figure how to test jQuery Autocomplete"
 				recruiter = FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id)
 
 				visit edit_user_path(user)
