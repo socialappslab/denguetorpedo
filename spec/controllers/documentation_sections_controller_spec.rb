@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe DocumentationSectionsController do
   before(:each) do
-    pending
+    skip
   end
   let(:user) { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id) }
 

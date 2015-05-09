@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe PasswordResetsController do
   let(:user) { FactoryGirl.create(:user, :email => "test@mailinator.com", :neighborhood_id => Neighborhood.first.id) }

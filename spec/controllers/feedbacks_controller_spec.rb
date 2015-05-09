@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe FeedbacksController do
 
@@ -17,7 +17,7 @@ describe FeedbacksController do
     it "assigns all feedbacks as @feedbacks" do
       feedback = Feedback.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:feedbacks).should eq([feedback])
+      expect(assigns(:feedbacks)).to eq([feedback])
     end
   end
 
@@ -25,14 +25,14 @@ describe FeedbacksController do
     it "assigns the requested feedback as @feedback" do
       feedback = Feedback.create! valid_attributes
       get :show, {:id => feedback.to_param}, valid_session
-      assigns(:feedback).should eq(feedback)
+      expect(assigns(:feedback)).to eq(feedback)
     end
   end
 
   describe "GET new" do
     it "assigns a new feedback as @feedback" do
       get :new, {}, valid_session
-      assigns(:feedback).should be_a_new(Feedback)
+      expect(assigns(:feedback)).to be_a_new(Feedback)
     end
   end
 
@@ -40,7 +40,7 @@ describe FeedbacksController do
     it "assigns the requested feedback as @feedback" do
       feedback = Feedback.create! valid_attributes
       get :edit, {:id => feedback.to_param}, valid_session
-      assigns(:feedback).should eq(feedback)
+      expect(assigns(:feedback)).to eq(feedback)
     end
   end
 
@@ -54,13 +54,13 @@ describe FeedbacksController do
 
       it "assigns a newly created feedback as @feedback" do
         post :create, {:feedback => valid_attributes}, valid_session
-        assigns(:feedback).should be_a(Feedback)
-        assigns(:feedback).should be_persisted
+        expect(assigns(:feedback)).to be_a(Feedback)
+        expect(assigns(:feedback)).to be_persisted
       end
 
       it "redirects to the home page" do
         post :create, {:feedback => valid_attributes}, valid_session
-        response.should redirect_to(root_path)
+        expect(response).to redirect_to(root_path)
       end
     end
 
@@ -89,20 +89,20 @@ describe FeedbacksController do
         # specifies that the Feedback created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        Feedback.any_instance.should_receive(:update_attributes).with({ "title" => "MyString" })
+        expect_any_instance_of(Feedback).to receive(:update_attributes).with({ "title" => "MyString" })
         put :update, {:id => feedback.to_param, :feedback => { "title" => "MyString" }}, valid_session
       end
 
       it "assigns the requested feedback as @feedback" do
         feedback = Feedback.create! valid_attributes
         put :update, {:id => feedback.to_param, :feedback => valid_attributes}, valid_session
-        assigns(:feedback).should eq(feedback)
+        expect(assigns(:feedback)).to eq(feedback)
       end
 
       it "redirects to the feedback" do
         feedback = Feedback.create! valid_attributes
         put :update, {:id => feedback.to_param, :feedback => valid_attributes}, valid_session
-        response.should redirect_to(feedback)
+        expect(response).to redirect_to(feedback)
       end
     end
 
@@ -110,17 +110,17 @@ describe FeedbacksController do
       it "assigns the feedback as @feedback" do
         feedback = Feedback.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
-        Feedback.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Feedback).to receive(:save).and_return(false)
         put :update, {:id => feedback.to_param, :feedback => { "title" => "invalid value" }}, valid_session
-        assigns(:feedback).should eq(feedback)
+        expect(assigns(:feedback)).to eq(feedback)
       end
 
       it "re-renders the 'edit' template" do
         feedback = Feedback.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
-        Feedback.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Feedback).to receive(:save).and_return(false)
         put :update, {:id => feedback.to_param, :feedback => { "title" => "invalid value" }}, valid_session
-        response.should render_template("edit")
+        expect(response).to render_template("edit")
       end
     end
   end
@@ -136,7 +136,7 @@ describe FeedbacksController do
     it "redirects to the feedbacks list" do
       feedback = Feedback.create! valid_attributes
       delete :destroy, {:id => feedback.to_param}, valid_session
-      response.should redirect_to(feedbacks_url)
+      expect(response).to redirect_to(feedbacks_url)
     end
   end
 

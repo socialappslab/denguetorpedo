@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-require 'spec_helper'
+require "rails_helper"
 require "cancan/matchers"
 
 describe User do
@@ -19,18 +19,18 @@ describe User do
 
 	describe "abilities" do
     before(:each) do
-      pending "Fix CanCan roles"
+      skip "Fix CanCan roles"
     end
 
 		context "when user is a coordinator" do
 			let(:user) { FactoryGirl.create(:coordinator, :neighborhood_id => Neighborhood.first.id) }
-			it { should be_able_to(:assign_roles, user)}
-			it { should be_able_to(:edit, user)}
+			it { is_expected.to be_able_to(:assign_roles, user)}
+			it { is_expected.to be_able_to(:edit, user)}
 		end
 
 		context "when user is a resident" do
-			it { should_not be_able_to(:assign_roles, user)}
-			it { should_not be_able_to(:edit, user) }
+			it { is_expected.not_to be_able_to(:assign_roles, user)}
+			it { is_expected.not_to be_able_to(:edit, user) }
 		end
 	end
 
