@@ -27,34 +27,38 @@
           %th.text-center
             Visit time
           %th.text-center
+            Status
+          %th.text-center
             Number of positive sites
           %th.text-center
             Number of potential sites
-          %th.text-center
-            Status
         %tbody
           - @locations.each do |loc|
             %tr.thick-border{:data => {"location_id" => loc.id}}
               // NOTE: rowspan should always be +1 since it's counting its own
               // tr as well.
-              - row_span = loc.visits.count + 1
+              - visits = loc.visits.order("visited_at ASC").includes(:inspections)
+              - num_visits = visits.count
+              - row_span = num_visits + 1
               %td{:rowspan => row_span, :data => {:location => loc.address} }
                 = loc.address
-              - if loc.visits.count == 0
+              - if num_visits == 0
                 %td
                 %td
                 %td
                 %td
               - else
-                - loc.visits.order("visited_at ASC").includes(:inspections).each do |visit|
+                - visits.each do |visit|
                   %tr{:data => {"location_id" => loc.id}}
+                    - inspections = visit.inspections
                     %td{:data => {:visit => format_csv_timestamp(visit.visited_at)}}
                       = format_csv_timestamp(visit.visited_at)
-                    %td
-                      = visit.inspections.where(:identification_type => Inspection::Types::POSITIVE).count
-                    %td
-                      = visit.inspections.where(:identification_type => Inspection::Types::POTENTIAL).count
                     %td{:class => class_for_status(visit.identification_type)}
+                    %td
+                      = inspections.find_all {|ins| ins.identification_type == Inspection::Types::POSITIVE}.count
+                    %td
+                      = inspections.find_all {|ins| ins.identification_type == Inspection::Types::POTENTIAL}.count
+
 
 
 - content_for :scripts do

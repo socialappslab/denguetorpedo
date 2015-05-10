@@ -7,7 +7,7 @@ class Dashboard::LocationsController < Dashboard::BaseController
   # GET /dashboard/locations
 
   def index
-    @locations = @neighborhood.locations
+    @locations = @neighborhood.locations.order("address ASC")
 
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
   end
