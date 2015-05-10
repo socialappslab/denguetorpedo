@@ -60,7 +60,7 @@
                       %tr{:class => class_for_status(inspection.identification_type)}
                         - report = inspection.report
                         %td
-                          = report.breeding_site.code if report.present?
+                          = report.breeding_site.code if report.present? && report.breeding_site.present?
                         %td
                           = display_as_icon(report.protected) if report.present?
                         %td
