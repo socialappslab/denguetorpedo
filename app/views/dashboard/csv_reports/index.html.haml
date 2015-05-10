@@ -2,7 +2,7 @@
   .table-header-view
 
     .row
-      .col-md-12.text-center
+      .col-md-6
 
         = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
           .form-group
@@ -11,6 +11,11 @@
           .form-group
             = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
           = submit_tag "Submit", :class => "btn btn-success"
+
+      .col-md-6
+        .pull-right
+          = render :partial => "shared/pagination"
+
 
   .input-group.input-group-lg
     %span.input-group-addon
