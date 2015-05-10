@@ -2,7 +2,7 @@
   .table-header-view
 
     .row
-      .col-md-12.text-center
+      .col-md-6
         = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
           .form-group
             %p.form-control-static
@@ -10,6 +10,16 @@
           .form-group
             = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
           = submit_tag "Submit", :class => "btn btn-success"
+
+      .col-md-6
+        .pull-right
+          = render :partial => "shared/pagination"
+
+
+  .input-group.input-group-lg
+    %span.input-group-addon
+      .fa.fa-search
+    %input#search-filter.form-control{:placeholder => "Search by location or visit date", :type => "text"}/
 
 
   .row
@@ -21,31 +31,64 @@
           %th.text-center
             Visit time
           %th.text-center
+            Status
+          %th.text-center
             Number of positive sites
           %th.text-center
             Number of potential sites
-          %th.text-center
-            Status
         %tbody
           - @locations.each do |loc|
-            %tr.thick-border
+            %tr.thick-border{:data => {"location_id" => loc.id}}
               // NOTE: rowspan should always be +1 since it's counting its own
               // tr as well.
-              - row_span = loc.visits.count + 1
-              %td{:rowspan => row_span }
+              - visits = loc.visits.order("visited_at ASC").includes(:inspections)
+              - num_visits = visits.count
+              - row_span = num_visits + 1
+              %td{:rowspan => row_span, :data => {:location => loc.address} }
                 = loc.address
-              - if loc.visits.count == 0
+              - if num_visits == 0
                 %td
                 %td
                 %td
                 %td
               - else
-                - loc.visits.order("visited_at ASC").includes(:inspections).each do |visit|
-                  %tr
-                    %td
+                - visits.each do |visit|
+                  %tr{:data => {"location_id" => loc.id}}
+                    - inspections = visit.inspections
+                    %td{:data => {:visit => format_csv_timestamp(visit.visited_at)}}
                       = format_csv_timestamp(visit.visited_at)
-                    %td
-                      = visit.inspections.where(:identification_type => Inspection::Types::POSITIVE).count
-                    %td
-                      = visit.inspections.where(:identification_type => Inspection::Types::POTENTIAL).count
                     %td{:class => class_for_status(visit.identification_type)}
+                    %td
+                      = inspections.find_all {|ins| ins.identification_type == Inspection::Types::POSITIVE}.count
+                    %td
+                      = inspections.find_all {|ins| ins.identification_type == Inspection::Types::POTENTIAL}.count
+
+
+
+- content_for :scripts do
+  :javascript
+    $(document).ready(function () {
+      $('#search-filter').keyup(function () {
+        var rex = new RegExp($(this).val(), 'i');
+        $('.statistics-table tbody tr').hide();
+
+        var matchingIds = [];
+        $('.statistics-table tbody tr').each(function() {
+          var columns = $(this).find("td");
+
+          // Iterate over all columns, matching the data attributes against the
+          // regular expression.
+          for (var i = 0; i < columns.length; i++)
+          {
+            var column = $(columns[i]);
+            if ( rex.test(column.data("location")) || rex.test(column.data("visit")) )
+              matchingIds.push( $(this).data("locationId") )
+          }
+        })
+
+        // Iterate over all rows that match the CSV ID and display them.
+        $(".statistics-table tbody tr").filter(function() {
+          return matchingIds.indexOf($(this).data("locationId")) != -1
+        }).show();
+      })
+    });

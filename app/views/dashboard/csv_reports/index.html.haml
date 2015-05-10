@@ -2,7 +2,7 @@
   .table-header-view
 
     .row
-      .col-md-12.text-center
+      .col-md-6
 
         = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
           .form-group
@@ -11,6 +11,16 @@
           .form-group
             = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
           = submit_tag "Submit", :class => "btn btn-success"
+
+      .col-md-6
+        .pull-right
+          = render :partial => "shared/pagination"
+
+
+  .input-group.input-group-lg
+    %span.input-group-addon
+      .fa.fa-search
+    %input#search-filter.form-control{:placeholder => "Search by CSV, location, username or visit date", :type => "text"}/
 
 
   .row
@@ -37,30 +47,34 @@
             = I18n.t("activerecord.attributes.report.chemically_treated")
         %tbody
           - @csvs.each do |csv|
-            %tr
+            %tr{:data => {"csv_id" => csv.id}}
               // NOTE: rowspan should always be +1 since it's counting its own
               // tr as well.
-              - csv_row_span = csv.visits.map {|v| v.inspections.count + 1}.sum
-              %td{:rowspan => (csv_row_span + 1) }
-                = link_to csv.csv_file_name, dashboard_locations_path
-              %td{:rowspan => (csv_row_span + 1) }
+              - visits = csv.visits.order("visited_at ASC").includes(:inspections)
+              - visits_row_span = visits.map {|v| v.inspections.count + 1}
+              - csv_row_span    = visits_row_span.sum
+              %td{:rowspan => (csv_row_span + 1), :data => {:csv => csv.csv_file_name} }
+                = link_to csv.csv_file_name, csv.csv.url
+              %td{:rowspan => (csv_row_span + 1), :data => {:location => csv.location.address} }
                 = link_to csv.location.address, dashboard_locations_path
-              %td{:rowspan => (csv_row_span + 1) }
+              %td{:rowspan => (csv_row_span + 1), :data => {:user => csv.user.username} }
                 = csv.user.username
 
               - if csv.visits.length == 0
                 %td
               - else
-                - csv.visits.order("visited_at ASC").includes(:inspections).each do |visit|
-                  %tr
-                    %td{:rowspan => (visit.inspections.count + 1)}
+                - visits.each_with_index do |visit, index|
+                  - row_span = visits_row_span[index]
+                  %tr{:data => {"csv_id" => csv.id}}
+                    %td{:rowspan => row_span, :data => {:visit => format_csv_timestamp(visit.visited_at)}}
                       = format_csv_timestamp(visit.visited_at)
 
                     - visit.inspections.includes(:report).order("id ASC").each do |inspection|
-                      %tr{:class => class_for_status(inspection.identification_type)}
+                      %tr{:class => class_for_status(inspection.identification_type), :data => {"csv_id" => csv.id}}
                         - report = inspection.report
                         %td
-                          = report.breeding_site.code if report.present? && report.breeding_site.present?
+                          - site = report.breeding_site
+                          = site.code if report.present? && site.present?
                         %td
                           = display_as_icon(report.protected) if report.present?
                         %td
@@ -69,3 +83,33 @@
                           = display_as_icon(report.pupae) if report.present?
                         %td
                           = display_as_icon(report.chemically_treated) if report.present?
+
+
+
+- content_for :scripts do
+  :javascript
+    $(document).ready(function () {
+      $('#search-filter').keyup(function () {
+        var rex = new RegExp($(this).val(), 'i');
+        $('.statistics-table tbody tr').hide();
+
+        var matchingCSVID = [];
+        $('.statistics-table tbody tr').each(function() {
+          var columns = $(this).find("td");
+
+          // Iterate over all columns, matching the data attributes against the
+          // regular expression.
+          for (var i = 0; i < columns.length; i++)
+          {
+            var column = $(columns[i]);
+            if ( rex.test(column.data("csv")) || rex.test(column.data("location")) || rex.test(column.data("user")) || rex.test(column.data("visit")) )
+              matchingCSVID.push( $(this).data("csvId") )
+          }
+        })
+
+        // Iterate over all rows that match the CSV ID and display them.
+        $(".statistics-table tbody tr").filter(function() {
+          return matchingCSVID.indexOf($(this).data("csvId")) != -1
+        }).show();
+      })
+    });

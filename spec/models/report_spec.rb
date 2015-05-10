@@ -51,6 +51,29 @@ describe Report do
 		expect(r.initial_visit.id).to eq(v1.id)
 	end
 
+	it "destroys associated inspection if report is destroyed", :after_commit => true do
+		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		expect {
+			r.destroy
+		}.to change(Inspection, :count).by(-1)
+	end
+
+	it "destroys associated likes if report is destroyed", :after_commit => true do
+		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		FactoryGirl.create(:like, :user_id => user.id, :likeable_id => r.id, :likeable_type => "Report")
+		expect {
+			r.destroy
+		}.to change(Like, :count).by(-1)
+	end
+
+	it "destroys associated commentss if report is destroyed", :after_commit => true do
+		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		FactoryGirl.create(:comment, :content => "Test", :user_id => user.id, :commentable_id => r.id, :commentable_type => "Report")
+		expect {
+			r.destroy
+		}.to change(Comment, :count).by(-1)
+	end
+
 	#-----------------------------------------------------------------------------
 
 	describe "Displayable Scope" do
