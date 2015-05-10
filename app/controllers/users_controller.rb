@@ -27,7 +27,7 @@ class UsersController < ApplicationController
   # This action is responsible for setting cookie settings for a user.
   def set_cookies
     cookies[:neighborhood_id] = params[:neighborhood_id] if params[:neighborhood_id].present?
-    redirect_to dashboard_csv_index_path and return
+    redirect_to :back and return
   end
 
   #----------------------------------------------------------------------------
