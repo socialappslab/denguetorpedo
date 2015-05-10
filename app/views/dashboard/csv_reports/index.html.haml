@@ -12,6 +12,11 @@
             = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
           = submit_tag "Submit", :class => "btn btn-success"
 
+  .input-group.input-group-lg
+    %span.input-group-addon
+      .fa.fa-search
+    %input#search-filter.form-control{:placeholder => "Search by CSV, location, username or visit date", :type => "text"}/
+
 
   .row
     .col-md-12
@@ -73,3 +78,33 @@
                           = display_as_icon(report.pupae) if report.present?
                         %td
                           = display_as_icon(report.chemically_treated) if report.present?
+
+
+
+- content_for :scripts do
+  :javascript
+    $(document).ready(function () {
+      $('#search-filter').keyup(function () {
+        var rex = new RegExp($(this).val(), 'i');
+        $('.statistics-table tbody tr').hide();
+
+        var matchingCSVID = [];
+        $('.statistics-table tbody tr').each(function() {
+          var columns = $(this).find("td");
+
+          // Iterate over all columns, matching the data attributes against the
+          // regular expression.
+          for (var i = 0; i < columns.length; i++)
+          {
+            var column = $(columns[i]);
+            if ( rex.test(column.data("csv")) || rex.test(column.data("location")) || rex.test(column.data("user")) || rex.test(column.data("visit")) )
+              matchingCSVID.push( $(this).data("csvId") )
+          }
+        })
+
+        // Iterate over all rows that match the CSV ID and display them.
+        $(".statistics-table tbody tr").filter(function() {
+          return matchingCSVID.indexOf($(this).data("csvId")) != -1
+        }).show();
+      })
+    });

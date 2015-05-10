@@ -12,6 +12,12 @@
           = submit_tag "Submit", :class => "btn btn-success"
 
 
+  .input-group.input-group-lg
+    %span.input-group-addon
+      .fa.fa-search
+    %input#search-filter.form-control{:placeholder => "Search by location or visit date", :type => "text"}/
+
+
   .row
     .col-md-12
       %table.table.table-bordered.table-hover.text-center.statistics-table
@@ -28,11 +34,11 @@
             Status
         %tbody
           - @locations.each do |loc|
-            %tr.thick-border
+            %tr.thick-border{:data => {"location_id" => loc.id}}
               // NOTE: rowspan should always be +1 since it's counting its own
               // tr as well.
               - row_span = loc.visits.count + 1
-              %td{:rowspan => row_span }
+              %td{:rowspan => row_span, :data => {:location => loc.address} }
                 = loc.address
               - if loc.visits.count == 0
                 %td
@@ -41,11 +47,40 @@
                 %td
               - else
                 - loc.visits.order("visited_at ASC").includes(:inspections).each do |visit|
-                  %tr
-                    %td
+                  %tr{:data => {"location_id" => loc.id}}
+                    %td{:data => {:visit => format_csv_timestamp(visit.visited_at)}}
                       = format_csv_timestamp(visit.visited_at)
                     %td
                       = visit.inspections.where(:identification_type => Inspection::Types::POSITIVE).count
                     %td
                       = visit.inspections.where(:identification_type => Inspection::Types::POTENTIAL).count
                     %td{:class => class_for_status(visit.identification_type)}
+
+
+- content_for :scripts do
+  :javascript
+    $(document).ready(function () {
+      $('#search-filter').keyup(function () {
+        var rex = new RegExp($(this).val(), 'i');
+        $('.statistics-table tbody tr').hide();
+
+        var matchingIds = [];
+        $('.statistics-table tbody tr').each(function() {
+          var columns = $(this).find("td");
+
+          // Iterate over all columns, matching the data attributes against the
+          // regular expression.
+          for (var i = 0; i < columns.length; i++)
+          {
+            var column = $(columns[i]);
+            if ( rex.test(column.data("location")) || rex.test(column.data("visit")) )
+              matchingIds.push( $(this).data("locationId") )
+          }
+        })
+
+        // Iterate over all rows that match the CSV ID and display them.
+        $(".statistics-table tbody tr").filter(function() {
+          return matchingIds.indexOf($(this).data("locationId")) != -1
+        }).show();
+      })
+    });
