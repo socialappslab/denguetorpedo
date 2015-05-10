@@ -35,6 +35,9 @@ FactoryGirl.define do
 		end
 	end
 
+	factory :like
+	factory :comment
+
 	factory :notification
 
 	factory :documentation_section

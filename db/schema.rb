@@ -54,7 +54,6 @@ ActiveRecord::Schema.define(:version => 20150509204048) do
     t.string   "string_id"
     t.string   "code"
   end
-  end
 
   create_table "cities", :force => true do |t|
     t.string   "name"
