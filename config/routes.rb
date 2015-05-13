@@ -17,6 +17,10 @@ Dengue::Application.routes.draw do
           get "chart"
         end
       end
+
+      resource :graph, :only => [] do
+        get "locations"
+      end
     end
   end
 
