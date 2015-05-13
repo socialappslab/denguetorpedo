@@ -22,6 +22,10 @@ class Report < ActiveRecord::Base
     NEGATIVE  = 2
   end
 
+  # This is the minimum time threshold that we allow between created_at and
+  # eliminated_at.
+  ELIMINATION_THRESHOLD = 1.minute
+
   #----------------------------------------------------------------------------
   # PaperClip configurations
   #-------------------------
@@ -93,9 +97,9 @@ class Report < ActiveRecord::Base
   validates :breeding_site_id, :presence => {:on => :update, :if => :incomplete? }
   validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
 
-  validate :eliminated_at, :eliminated_after_creation?
   validate :created_at,    :inspected_in_the_past?
   validate :created_at,    :inspected_after_two_thousand_fourteen?
+  validate :eliminated_at, :eliminated_after_creation?
   validate :eliminated_at, :eliminated_in_the_past?
 
   #----------------------------------------------------------------------------
@@ -114,6 +118,10 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
   # Callbacks
   #----------
+
+  # This callback will change the minimum difference between created_at and
+  # eliminated_at to be 1 second, if they equal.
+  before_save :set_elimination_threshold
 
   # Every time a report gets created/updated, conceptually a visit must take place
   # at some location. Whether it's an identification or followup visit depends
@@ -395,10 +403,11 @@ class Report < ActiveRecord::Base
     v = v.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
     v = v.order("visited_at DESC").limit(1)
     if v.blank?
-      v             = Visit.new
-      v.location_id = self.location_id
+      v                 = Visit.new
+      v.location_id     = self.location_id
       v.parent_visit_id = self.initial_visit.id
-      v.visited_at  = self.eliminated_at
+      v.visited_at      = self.eliminated_at
+
       v.save
     else
       v = v.first
@@ -449,6 +458,18 @@ class Report < ActiveRecord::Base
 
   private
 
+  # Since the CSV report doesn't encode the *time of day*, we
+  # end up with a situation where an initial report and an elimination report
+  # will have the same 'created_at/eliminated_at' timestamp. To remedy this, we will
+  # check to see if the 2 columns match. If they do, then we will
+  # set the difference to be the threshold.
+  def set_elimination_threshold
+    return true if self.created_at.blank?
+    return true if self.eliminated_at.blank?
+
+    self.eliminated_at += ELIMINATION_THRESHOLD if (self.created_at - self.eliminated_at).abs < ELIMINATION_THRESHOLD
+  end
+
   # Validator that ensures that eliminated_at is after created_at.
   def eliminated_after_creation?
     return true if self.eliminated_at.blank?
@@ -456,7 +477,7 @@ class Report < ActiveRecord::Base
     # If the report hasn't been created yet, then let's compare elimination time
     # to the current time. Otherwise, let's compare to the time of creation.
     if self.created_at.blank?
-      return true if self.eliminated_at >= Time.now
+      return true if self.eliminated_at >= Time.zone.now
     else
       # NOTE: We need to check for equality in case some records had their dates
       # set to beginning of day (before we were handling time of day).

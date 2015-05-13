@@ -18,6 +18,18 @@ describe Report do
 		}.to change(Report, :count).by(1)
 	end
 
+	it "changes eliminated_at to at least 1 minute if created_at is within threshold" do
+		t 		 = Time.zone.now
+		r = FactoryGirl.create(:full_report, :created_at => t)
+
+		r.after_photo 					= Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+		r.elimination_method_id = 1
+		r.eliminated_at 				= t
+		r.save!
+
+		expect(r.eliminated_at).to eq(r.created_at + Report::ELIMINATION_THRESHOLD)
+	end
+
 	it "raises an error if elimination date is before creation date" do
 		report = FactoryGirl.build(:full_report, :eliminated_at => Time.now - 3.minutes)
 		report.save
@@ -87,6 +99,25 @@ describe Report do
 		it "includes only completed reports" do
 			r = FactoryGirl.create(:full_report, :completed_at => nil)
 			expect(Report.completed).not_to include(r)
+		end
+	end
+
+	#-----------------------------------------------------------------------------
+
+	describe "Creating Visits" do
+		it "sets visited_at to be at least 1 minute", :after_commit => true do
+			t = Time.zone.now
+			r = FactoryGirl.create(:full_report, :completed_at => t, :created_at => t, :location => location)
+
+			r.after_photo 	= Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+			r.elimination_method_id = 1
+			r.eliminated_at = t
+			r.save!
+
+			original_visit 	 = r.initial_visit
+			subsequent_visit = Visit.where("parent_visit_id IS NOT NULL").first
+			expect(original_visit.visited_at).to eq(t)
+			expect(subsequent_visit.visited_at).to eq(t + Report::ELIMINATION_THRESHOLD)
 		end
 	end
 

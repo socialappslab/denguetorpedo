@@ -73,7 +73,7 @@ describe Visit do
   #-----------------------------------------------------------------------------
 
   context "When an existing report is eliminated", :after_commit => true do
-    let!(:eliminated_at) { Time.now - 3.days }
+    let!(:eliminated_at) { Time.zone.now - 3.days }
     let(:report) { FactoryGirl.create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at) }
 
     before(:each) do
@@ -96,8 +96,7 @@ describe Visit do
 
     it "sets the correct visit time" do
       report.save
-      v = Visit.last
-      expect(v.visited_at).to eq(eliminated_at)
+      expect(Visit.last.visited_at).to eq(report.eliminated_at)
     end
 
     it "sets the correct visit type" do
