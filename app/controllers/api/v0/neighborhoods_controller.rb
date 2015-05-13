@@ -30,7 +30,11 @@ class API::V0::NeighborhoodsController < API::V0::BaseController
       start_time = 3.months.ago if chart_settings["timeframe"] == "3"
       start_time = 6.months.ago if chart_settings["timeframe"] == "6"
 
-      @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, [])
+      if chart_settings["percentages"] == "cumulative"
+        @statistics = Visit.calculate_cumulative_time_series_for_locations_and_start_time(@visit_ids, start_time)
+      else
+        @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time)
+      end
     end
 
 
