@@ -34,7 +34,9 @@
           %th.text-center
             = I18n.t("activerecord.attributes.user.username")
           %th.text-center
-            Visit time
+            = I18n.t("activerecord.attributes.visit.visited_at")
+          %th.text-center
+            = I18n.t("activerecord.attributes.visit.health_report")
           %th.text-center
             = I18n.t("activerecord.attributes.report.breeding_site_id")
           %th.text-center
@@ -62,15 +64,18 @@
 
               - if csv.visits.length == 0
                 %td
+                %td
               - else
                 - visits.each_with_index do |visit, index|
                   - row_span = visits_row_span[index]
                   %tr{:data => {"csv_id" => csv.id}}
                     %td{:rowspan => row_span, :data => {:visit => format_csv_timestamp(visit.visited_at)}}
                       = format_csv_timestamp(visit.visited_at)
+                    %td{:rowspan => row_span}
+                      = visit.health_report.to_i if visit.health_report.present?
 
                     - visit.inspections.includes(:report).order("id ASC").each do |inspection|
-                      %tr{:class => class_for_status(inspection.identification_type), :data => {"csv_id" => csv.id}}
+                      %tr{:data => {"csv_id" => csv.id}}
                         - report = inspection.report
                         %td
                           - site = report.breeding_site

@@ -113,6 +113,9 @@ es:
         name: Nombre del equipo
       locations:
         neighborhood: Barrio
+      visit:
+        health_report: Auto-reporte dengue/chik
+        visited_at: Fecha de inspección
 
     errors:
       template:
