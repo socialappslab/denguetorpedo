@@ -12,9 +12,9 @@
 
         .content-view
           .row
-            .col-md-3.master
+            .col-md-2.master
               = render :partial => "shared/master_detail_navigation_menu"
-            .col-md-9.detail
+            .col-md-10.detail
               - if content_for :dashboard_content
                 = yield :dashboard_content
       #push

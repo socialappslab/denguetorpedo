@@ -1,6 +1,6 @@
 .header-view
   .row
-    .col-sm-3.master
+    .col-sm-2.master
     .col-sm-3.detail
       .parent-view-button
         - if @navigation["parent"]["path"].present?
@@ -9,7 +9,7 @@
             .parent-view-name
               =  @navigation["parent"]["name"]
 
-    .col-sm-3.detail
+    .col-sm-4.detail
       %p.light-font.text-center
         = @navigation["current"]["name"]
 
