@@ -12,7 +12,9 @@ gem "therubyracer"
 gem "rack-timeout"
 
 # File management and manipulation
-gem 'aws-sdk'
+# TODO: Update AWS to handle new versions
+# See: http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
+gem 'aws-sdk', '< 2.0'
 gem 'rmagick'
 gem 'paperclip', '~> 4.2.0'
 
