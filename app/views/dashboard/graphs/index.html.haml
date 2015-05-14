@@ -13,12 +13,12 @@
 
       .col-md-8
         .pull-right
-          = form_tag locations_api_v0_graph_path, :method => "GET", :id => "set-locations", :class => "form-inline" do
+          = form_tag locations_api_v0_graph_path, :method => "POST", :id => "set-locations", :class => "form-inline" do
             .form-group
               %p.form-control-static
                 = I18n.t("activerecord.models.location")
             .form-group
-              = select_tag "location_ids", options_for_select( @locations.map{|l| [l.address, l.id] }, :selected => -1), :multiple => "multiple"
+              = select_tag "location_ids[]", options_for_select( @locations.map{|l| [l.address, l.id] }, :selected => -1), :multiple => "multiple"
             = submit_tag "Submit", :class => "btn btn-success"
 
   .row
@@ -36,40 +36,36 @@
   = stylesheet_link_tag "bootstrap/bootstrap-multiselect"
 
   :javascript
-    $(document).ready(function() {
-        $("#location_ids").multiselect({
-          maxHeight: 500,
-          buttonWidth: 400,
-          // selectAllText: "#{I18n.t('common_terms.all')}",
-          // includeSelectAllOption: true,
-          // selectAllValue: -1,
-          enableFiltering: true,
-          filterBehavior: "text",
-          enableCaseInsensitiveFiltering: true
-        });
+    $("#location_ids_").multiselect({
+      maxHeight: 500,
+      buttonWidth: 400,
+      enableFiltering: true,
+      filterBehavior: "text",
+      enableCaseInsensitiveFiltering: true,
+      selectAllText: "#{I18n.t('common_terms.all')}",
+      includeSelectAllOption: true,
+      selectAllValue: -1
     });
 
-    // $(document).ready(function() {
-    //   $("#set-locations").on("submit", function(event)
-    //   {
-    //     var baseURL = "#{locations_api_v0_graph_path}";
-    //     var location_ids    = $("#location_ids").serialize();
-    //     var serializedAttrs = $("#chart-filters").serialize();
-    //
-    //     $.ajax({
-    //       url: baseURL + "?" + location_ids + "&" + serializedAttrs,
-    //       type: "GET",
-    //       success : function(response){
-    //         var rawData = response;
-    //         console.log(rawData)
-    //
-    //         if (response.length <= 1) {
-    //           $(".fa-refresh").hide();
-    //           $(".empty-chart-disclaimer").show();
-    //         } else {
-    //           google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", rawData) } } );
-    //         }
-    //       }
-    //   }
-    //
-    // });
+
+    $("#set-locations").on("submit", function(event) {
+      event.preventDefault();
+      var baseURL = "#{locations_api_v0_graph_path}";
+      var location_ids    = $("#location_ids_").serialize();
+
+      $.ajax({
+        url: baseURL + "?" + location_ids,
+        type: "GET",
+        success : function(response){
+          var rawData = response;
+          console.log(rawData)
+
+          if (response.length <= 1) {
+            $(".fa-refresh").hide();
+            $(".empty-chart-disclaimer").show();
+          } else {
+            google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", rawData) } } );
+          }
+        }
+      })
+    });
