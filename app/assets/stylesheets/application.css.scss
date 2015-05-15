@@ -16,6 +16,10 @@
 @import "variables";
 
 
+[ng-click] {
+    cursor: pointer;
+}
+
 
 @mixin colored_text($color) {
   color: $color;
