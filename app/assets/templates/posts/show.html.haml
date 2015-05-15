@@ -1,15 +1,15 @@
 .feed-item-complete{"ng-repeat" => "post in posts"}
   .feed-item
     .feed-item-profile-photo
-      %a{"ng-href" => "{{post.user.user_path}}"}
-        %img{"ng-src" => "{{post.user.image_path}}"}
+      %a{"ng-href" => "{{post.user.url}}"}
+        %img{"ng-src" => "{{post.user.photo}}"}
 
     .feed-item-bar
       .username
-        %a{"ng-href" => "{{post.user.user_path}}"}
+        %a{"ng-href" => "{{post.user.url}}"}
           {{post.user.display_name}}
       .location
-        %a{"ng-href" => "{{post.user.neighborhood_path}}"}
+        %a{"ng-href" => "{{post.user.neighborhood.url}}"}
           %span.muted
             de
           {{post.user.neighborhood.geographical_display_name}}
@@ -18,19 +18,19 @@
         -# - if @current_user && @current_user == user && item.class == Post
         // TODO: This needs to be shown/hidden based on current user.
         // TODO: The jQuery doesn't bind to .delete-resource-button!
-        %a.delete-resource-button{"ng-href" => "{{post.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{post.delete_path}}"}
+        %a.delete-resource-button{"ng-href" => "{{post.actions.delete}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{post.actions.delete}}"}
           %i.fa.fa-trash-o
 
     .feed-item-content
       {{post.content}}
 
-      .post-photo{"ng-hide" => "{{post.image_path == null}}"}
-        %img.img-rounded{"ng-src" => "{{post.image_path}}"}
+      .post-photo{"ng-hide" => "{{post.photo == null}}"}
+        %img.img-rounded{"ng-src" => "{{post.photo}}"}
 
 
     -# - if @current_user
     .feed-item-interaction-menu
-      %a.likes_button{"ng-href" => "{{post.like_path}}", "data-path" => "{{post.like_path}}", "data-likes_count" => "{{post.likes_count}}"}
+      %a.likes_button{"ng-href" => "{{post.actions.like}}", "data-path" => "{{post.actions.like}}", "data-likes_count" => "{{post.likes_count}}"}
         %i.fa.fa-thumbs-up.like-icon
         %span.likes_text
           {{post.likes_count}}
@@ -42,11 +42,11 @@
 
   .feed-item-comment{"ng-repeat" => "comment in post.comments"}
     .feed-item-profile-photo
-      %a{"ng-href" => "{{comment.user.user_path}}"}
-        %img{"ng-src" => "{{comment.user.image_path}}"}
+      %a{"ng-href" => "{{comment.user.url}}"}
+        %img{"ng-src" => "{{comment.user.photo}}"}
     .feed-item-bar
       .username
-        %a{"ng-href" => "{{comment.user.user_path}}"}
+        %a{"ng-href" => "{{comment.user.url}}"}
           {{comment.user.display_name}}
       .feed-item-timestamp
         {{comment.timestamp}}
@@ -62,7 +62,7 @@
   .feed-item-comment.feed-item-new-comment
     .row
       .col-md-12
-        %form.feed-item-comment-form{"accept-charset" => "UTF-8", :action => "{{comment.post_path}}", :method => "post"}
+        %form.feed-item-comment-form{"accept-charset" => "UTF-8", :action => "{{post.actions.create_comment}}", :method => "post"}
           %div{:style => "margin:0;padding:0;display:inline"}
             %input{:name => "utf8", :type => "hidden", :value => "✓"}/
             %input{:name => "authenticity_token", :type => "hidden", :value => "1vnH4l6Pdoo2Pyph7qRD0rU5T2obW8S0WQ4koO+Jg5w="}/
