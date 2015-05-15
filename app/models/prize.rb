@@ -28,7 +28,7 @@ class Prize < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def expired?
-    return self.stock == 0 || (self.expire_on.present? && self.expire_on < Time.now)
+    return self.stock == 0 || (self.expire_on.present? && self.expire_on < Time.zone.now)
   end
 
   def available?

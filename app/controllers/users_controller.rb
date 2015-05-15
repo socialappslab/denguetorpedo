@@ -56,7 +56,7 @@ class UsersController < ApplicationController
     @badges            = @user.badges
     @teams             = @user.teams
     @neighborhood      = @user.neighborhood
-    @prizes            = Prize.where('stock > 0').where(:is_badge => false).where('expire_on >= ? OR expire_on is NULL', Time.now)
+    @prizes            = Prize.where('stock > 0').where(:is_badge => false).where('expire_on >= ? OR expire_on is NULL', Time.zone.now)
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
     # Build a feed depending on params.

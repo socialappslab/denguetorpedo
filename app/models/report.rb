@@ -191,7 +191,7 @@ class Report < ActiveRecord::Base
 
   def expired?
     return false if self.eliminated?
-    return Time.now > self.expire_date
+    return Time.zone.now > self.expire_date
   end
 
   # A valid report is a report that is
@@ -264,13 +264,13 @@ class Report < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def credit
-    update_attributes(is_credited: true, credited_at: Time.now)
+    update_attributes(is_credited: true, credited_at: Time.zone.now)
   end
 
   #----------------------------------------------------------------------------
 
   def discredit
-    update_attributes(is_credited: false, credited_at: Time.now)
+    update_attributes(is_credited: false, credited_at: Time.zone.now)
   end
 
 

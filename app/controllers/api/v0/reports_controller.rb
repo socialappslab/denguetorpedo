@@ -28,7 +28,7 @@ class API::V0::ReportsController < API::V0::BaseController
     @report                 = Report.new(params[:report])
     @report.reporter_id     = @user.id
     @report.neighborhood_id = @user.neighborhood_id
-    @report.completed_at    = Time.now
+    @report.completed_at    = Time.zone.now
     @report.before_photo    = paperclip_image
 
     if params[:report][:address].present?

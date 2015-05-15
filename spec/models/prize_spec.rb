@@ -11,7 +11,7 @@ describe Prize do
   end
 
   it "identifies expired timestamp" do
-    prize.update_attribute(:expire_on, Time.now - 7.days)
+    prize.update_attribute(:expire_on, Time.zone.now - 7.days)
     expect(prize.reload.expired?).to eq(true)
   end
 

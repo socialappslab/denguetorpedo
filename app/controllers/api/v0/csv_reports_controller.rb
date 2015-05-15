@@ -85,7 +85,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       # method!
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at        = row_content[:visited_at]
-        parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
+        parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
 
         if parsed_current_visited_at.future?
           raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.inspection_date_in_future"), 422)

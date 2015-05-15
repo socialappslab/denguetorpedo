@@ -31,19 +31,19 @@ describe Report do
 	end
 
 	it "raises an error if elimination date is before creation date" do
-		report = FactoryGirl.build(:full_report, :eliminated_at => Time.now - 3.minutes)
+		report = FactoryGirl.build(:full_report, :eliminated_at => Time.zone.now - 3.minutes)
 		report.save
 		expect(report.errors.full_messages).to include("Fecha de eliminación can't be before fecha de inspección")
 	end
 
 	it "raises an error if creation date is in the future" do
-		report = FactoryGirl.build(:full_report, :created_at => Time.now + 1.minute)
+		report = FactoryGirl.build(:full_report, :created_at => Time.zone.now + 1.minute)
 		report.save
 		expect(report.errors.full_messages).to include("Fecha de inspección can't be in the future")
 	end
 
 	it "raises an error if elimination date is in the future" do
-		report = FactoryGirl.build(:full_report, :eliminated_at => Time.now + 3.minutes)
+		report = FactoryGirl.build(:full_report, :eliminated_at => Time.zone.now + 3.minutes)
 		report.save
 		expect(report.errors.full_messages).to include("Fecha de eliminación can't be in the future")
 	end
@@ -56,8 +56,8 @@ describe Report do
 
 	it "returns the correct initial visit" do
 		r  = FactoryGirl.create(:full_report, :reporter => user)
-		v1 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 100.days)
-		v2 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.now - 3.days, :parent_visit_id => v1.id)
+		v1 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.zone.now - 100.days)
+		v2 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.zone.now - 3.days, :parent_visit_id => v1.id)
 
 		FactoryGirl.create(:inspection, :visit_id => v1.id, :report_id => r.id, :identification_type => Inspection::Types::POSITIVE)
 		expect(r.initial_visit.id).to eq(v1.id)

@@ -101,7 +101,7 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     if @report.save
-      @report.update_column(:completed_at, Time.now)
+      @report.update_column(:completed_at, Time.zone.now)
 
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
@@ -141,7 +141,7 @@ class ReportsController < NeighborhoodsBaseController
     # Parse the eliminated_at param or set to current time. Make sure to
     # remove the param from params[:report] to avoid updating it in update_attributes.
     eliminated_time = Time.zone.parse(params[:report][:eliminated_at]) if params[:report][:eliminated_at].present?
-    eliminated_time = Time.now if eliminated_time.blank?
+    eliminated_time = Time.zone.now if eliminated_time.blank?
     params[:report].delete(:eliminated_at)
     @report.eliminated_at = eliminated_time
 
@@ -220,7 +220,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Verify report saves and form submission is valid
     if @report.update_attributes(params[:report])
-      @report.update_column(:completed_at, Time.now)
+      @report.update_column(:completed_at, Time.zone.now)
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
@@ -265,19 +265,19 @@ class ReportsController < NeighborhoodsBaseController
 
     # Parse the created_at column.
     created_at = Time.zone.parse(params[:report][:created_at])
-    created_at = Time.now if created_at.blank?
+    created_at = Time.zone.now if created_at.blank?
     @report.created_at = created_at
     params[:report].delete(:created_at)
 
     # Parse the completed_at column.
     completed_at = Time.zone.parse(params[:report][:completed_at])
-    completed_at = Time.now if completed_at.blank?
+    completed_at = Time.zone.now if completed_at.blank?
     @report.completed_at = completed_at
     params[:report].delete(:completed_at)
 
     # Parse the eliminated_at column.
     eliminated_at = Time.zone.parse(params[:report][:eliminated_at])
-    eliminated_at = Time.now if eliminated_at.blank?
+    eliminated_at = Time.zone.now if eliminated_at.blank?
     @report.eliminated_at = eliminated_at
     params[:report].delete(:eliminated_at)
 
@@ -350,7 +350,7 @@ class ReportsController < NeighborhoodsBaseController
 
     @report.isVerified  = "t"
     @report.verifier_id = @current_user.id
-    @report.verified_at = Time.now
+    @report.verified_at = Time.zone.now
 
     if @report.save(:validate => false)
       @current_user.award_points_for_verifying(@report)
@@ -373,7 +373,7 @@ class ReportsController < NeighborhoodsBaseController
     # Now update the report.
     @report.isVerified  = "f"
     @report.verifier_id = @current_user.id
-    @report.verified_at = Time.now
+    @report.verified_at = Time.zone.now
 
     if @report.save(:validate => false)
       flash[:notice] = I18n.t("activerecord.success.report.verify")
