@@ -28,7 +28,6 @@
         %img.img-rounded{"ng-src" => "{{post.photo}}"}
 
 
-    -# - if @current_user
     .feed-item-interaction-menu
       %a.likes_button{"ng-click" => "updateLikesCounter(post)", "ng-style" => "{color: post.likeColor}"}
         %i.fa.fa-thumbs-up.like-icon
@@ -39,11 +38,9 @@
       %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
         = I18n.t("common_terms.comment")
 
-
+  // Enumerate all comments.
   %post-comment{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
 
-  -#
-  -# -# - if @current_user
   .feed-item-comment{"ng-show" => "showNewComment"}
     .row
       .col-md-12
