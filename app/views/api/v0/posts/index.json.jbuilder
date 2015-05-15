@@ -1,6 +1,12 @@
 json.posts @posts do |post|
   json.(post, :id, :content, :likes_count)
-  json.photo     post.photo.url(:large)
+
+  if post.photo_file_name.present?
+    json.photo     post.photo.url(:large)
+  else
+    json.photo nil
+  end
+
   json.timestamp timestamp_in_metadata(post.created_at)
 
   #-------------
