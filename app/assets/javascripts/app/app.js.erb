@@ -1,4 +1,4 @@
-var dengueChatApp = angular.module('dengueChatApp', ["ngRoute", "PostListCtrl"]);
+var dengueChatApp = angular.module('dengueChatApp', ["ngRoute", "DCPostListCtrl"]);
 
 dengueChatApp.config(['$routeProvider', function($routeProvider) {
 
@@ -9,6 +9,6 @@ dengueChatApp.config(['$routeProvider', function($routeProvider) {
   // https://github.com/fdietz/recipes-with-angular-js-examples/blob/master/chapter9/recipe1/contacts/app/assets/javascripts/angular/app.js.erb
   $routeProvider.when('/', {
     templateUrl: "<%= asset_path('posts/index.html') %>",
-    controller: 'PostListCtrl'
+    controller: 'DCPostListCtrl'
   });
 }]);

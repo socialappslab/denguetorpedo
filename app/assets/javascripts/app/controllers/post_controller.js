@@ -16,6 +16,6 @@ var postListCtrl = function ($scope, $http) {
 // We use inline annotation to declare services in order to bypass
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
-var postsController = angular.module('PostListCtrl', []);
+var postsController = angular.module('DCPostListCtrl', []);
 
-postsController.controller("PostListCtrl", ["$scope", "$http", postListCtrl]);
+postsController.controller("DCPostListCtrl", ["$scope", "$http", postListCtrl]);
