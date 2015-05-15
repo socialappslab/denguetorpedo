@@ -56,7 +56,7 @@
         %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
           %i.fa.fa-trash-o
     .feed-item-content
-      {{post.comment.content}}
+      {{comment.content}}
 
   -# - if @current_user
   .feed-item-comment.feed-item-new-comment
