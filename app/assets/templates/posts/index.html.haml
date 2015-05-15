@@ -36,7 +36,7 @@
           {{post.likes_count}}
 
       &#183;
-      %a.comment-button{"ng-href" => ""}
+      %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
         = I18n.t("common_terms.comment")
 
 
@@ -44,7 +44,7 @@
 
   -#
   -# -# - if @current_user
-  .feed-item-comment.feed-item-new-comment
+  .feed-item-comment{"ng-show" => "showNewComment"}
     .row
       .col-md-12
         %form.feed-item-comment-form{"accept-charset" => "UTF-8", :action => "{{post.actions.create_comment}}", :method => "post"}
