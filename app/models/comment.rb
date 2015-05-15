@@ -11,4 +11,10 @@ class Comment < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   validates :content, :presence => true
+
+  def formatted_created_at
+    return "" if self.created_at.blank?
+    return self.created_at.strftime("%Y-%m-%d %H:%M")
+  end
+
 end
