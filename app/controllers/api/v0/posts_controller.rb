@@ -48,7 +48,7 @@ class API::V0::PostsController < API::V0::BaseController
     if existing_like.present?
       existing_like.destroy
       count -= 1
-      liekd  = false
+      liked  = false
     else
       Like.create(:user_id => @current_user.id, :likeable_id => @post.id, :likeable_type => Post.name)
       count += 1

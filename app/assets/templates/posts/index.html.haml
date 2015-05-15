@@ -30,7 +30,7 @@
 
     -# - if @current_user
     .feed-item-interaction-menu
-      %a.likes_button{"ng-href" => "{{post.actions.like}}", "data-path" => "{{post.actions.like}}", "data-likes_count" => "{{post.likes_count}}"}
+      %a.likes_button{"ng-click" => "updateLikesCounter(post)", "ng-style" => "{color: post.likeColor}"}
         %i.fa.fa-thumbs-up.like-icon
         %span.likes_text
           {{post.likes_count}}

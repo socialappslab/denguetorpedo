@@ -10,6 +10,22 @@ var postListCtrl = function ($scope, $http) {
   ajax.then(function() {
     $("#newsfeed .loading-spinner").hide();
   })
+
+  $scope.updateLikesCounter = function(post)
+  {
+    // TODO: Use Rails routes.
+    var ajax = $http.post("/api/v0/posts/" + post.id + "/like", {"count": post.likes_count});
+    ajax.success(function(data) {
+      post.likes_count = data.count;
+
+      // TODO: Think of a better way to represent likeColor outside of the Post model.
+      if (data.liked)
+        post.likeColor = "#3498db"
+      else
+        post.likeColor = "#8899a6"
+
+    })
+  }
 };
 
 var commentDirective = function () {
