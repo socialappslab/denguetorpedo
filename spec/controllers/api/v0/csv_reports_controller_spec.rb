@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe API::V0::CsvReportsController do
   let(:user) 						{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
@@ -59,17 +59,17 @@ describe API::V0::CsvReportsController do
 
       it "correctly sets inspection date" do
         r = Report.order("id").first
-        r.created_at.strftime("%Y-%m-%d").should eq("2014-12-24")
+        expect(r.created_at.strftime("%Y-%m-%d")).to eq("2014-12-24")
       end
 
       it "correctly sets elimination date" do
         r = Report.order("id")[1]
-        r.eliminated_at.strftime("%Y-%m-%d").should eq("2014-12-26")
+        expect(r.eliminated_at.strftime("%Y-%m-%d")).to eq("2014-12-26")
       end
 
       it "doesn't set completion date" do
         Report.find_each do |r|
-          r.completed_at.should eq(nil)
+          expect(r.completed_at).to eq(nil)
         end
       end
 

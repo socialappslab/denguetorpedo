@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-require 'spec_helper'
+require "rails_helper"
 require 'rack/test'
 
 describe Report do
@@ -16,6 +16,18 @@ describe Report do
 		expect {
 			FactoryGirl.create(:report, :reporter_id => user.id)
 		}.to change(Report, :count).by(1)
+	end
+
+	it "changes eliminated_at to at least 1 minute if created_at is within threshold" do
+		t 		 = Time.zone.now
+		r = FactoryGirl.create(:full_report, :created_at => t)
+
+		r.after_photo 					= Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+		r.elimination_method_id = 1
+		r.eliminated_at 				= t
+		r.save!
+
+		expect(r.eliminated_at).to eq(r.created_at + Report::ELIMINATION_THRESHOLD)
 	end
 
 	it "raises an error if elimination date is before creation date" do
@@ -51,6 +63,29 @@ describe Report do
 		expect(r.initial_visit.id).to eq(v1.id)
 	end
 
+	it "destroys associated inspection if report is destroyed", :after_commit => true do
+		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		expect {
+			r.destroy
+		}.to change(Inspection, :count).by(-1)
+	end
+
+	it "destroys associated likes if report is destroyed", :after_commit => true do
+		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		FactoryGirl.create(:like, :user_id => user.id, :likeable_id => r.id, :likeable_type => "Report")
+		expect {
+			r.destroy
+		}.to change(Like, :count).by(-1)
+	end
+
+	it "destroys associated commentss if report is destroyed", :after_commit => true do
+		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		FactoryGirl.create(:comment, :content => "Test", :user_id => user.id, :commentable_id => r.id, :commentable_type => "Report")
+		expect {
+			r.destroy
+		}.to change(Comment, :count).by(-1)
+	end
+
 	#-----------------------------------------------------------------------------
 
 	describe "Displayable Scope" do
@@ -64,6 +99,25 @@ describe Report do
 		it "includes only completed reports" do
 			r = FactoryGirl.create(:full_report, :completed_at => nil)
 			expect(Report.completed).not_to include(r)
+		end
+	end
+
+	#-----------------------------------------------------------------------------
+
+	describe "Creating Visits" do
+		it "sets visited_at to be at least 1 minute", :after_commit => true do
+			t = Time.zone.now
+			r = FactoryGirl.create(:full_report, :completed_at => t, :created_at => t, :location => location)
+
+			r.after_photo 	= Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+			r.elimination_method_id = 1
+			r.eliminated_at = t
+			r.save!
+
+			original_visit 	 = r.initial_visit
+			subsequent_visit = Visit.where("parent_visit_id IS NOT NULL").first
+			expect(original_visit.visited_at).to eq(t)
+			expect(subsequent_visit.visited_at).to eq(t + Report::ELIMINATION_THRESHOLD)
 		end
 	end
 

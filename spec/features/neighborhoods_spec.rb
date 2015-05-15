@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe "Neighborhoods", :type => :feature do
   let(:n)           { Neighborhood.first}
@@ -17,7 +17,7 @@ describe "Neighborhoods", :type => :feature do
     let(:team) { FactoryGirl.create(:team, :name => "Test", :neighborhood_id => n.id) }
 
     before(:each) do
-      pending "Getting odd [GET] errors"
+      skip "Getting odd [GET] errors"
     end
 
     context "when liking a post", :js => true do

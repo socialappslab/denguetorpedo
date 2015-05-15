@@ -1,0 +1,355 @@
+@import "variables";
+
+//-----------------------------------------------------------------------------
+// Navigation bar
+//---------------
+.ios-navbar {
+  .row {
+    margin-left: 0px; margin-right: 0px;
+  }
+
+  font-family: 'Helvetica Neue', sans-serif;
+  background: $ioswhite;
+  height: 54px !important;
+  color: $iosblue;
+  // position: fixed;
+  // top: 0;
+  width: 100%;
+  z-index: 100;
+
+  a:hover, a:focus {
+    text-decoration: none;
+  }
+
+  .current-view-title {
+    font-size: 24px;
+    color: $iosblack;
+    text-align: center;
+    line-height: 50px;
+  }
+}
+
+
+
+.parent-view-button {
+  margin-left: 10px;
+  a {
+    line-height: 50px;
+  }
+
+  .parent-view-name {
+    font-family: "Helvetica Neue", sans-serif;
+    margin-left: 10px;
+    display: inline;
+    font-weight: 200;
+    font-size: 24px;
+  }
+
+  i {
+    font-size: 24px;
+  }
+}
+
+
+.child-view-button {
+  margin-right: 10px;
+  float: right;
+
+  .parent-view-name {
+    font-family: "Helvetica Neue", sans-serif;
+    margin-left: 10px;
+    display: inline;
+    font-weight: 200;
+    font-size: 24px;
+  }
+
+  a {
+    line-height: 50px;
+  }
+
+  i {
+    font-size: 24px;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// Table-related cells
+//--------------------
+
+.table-view-cell {
+  :hover {
+    background-color: $jordy-blue;
+
+    .disclosure-indicator {
+      color: $white;
+    }
+  }
+
+  &.compact {
+    .table-view-content {
+      height: auto !important;
+    }
+  }
+}
+
+
+.table-header-view {
+
+  form {
+    line-height: 50px;
+  }
+
+  color: #333;
+  height: 100px;
+  padding: 15px;
+  padding-left: 40px;
+  background: white;
+  border-bottom: 1px $iosgrey solid;
+}
+
+
+.table-view-content {
+  color: #333;
+  height: 100px;
+  padding: 15px;
+  padding-left: 40px;
+  background: white;
+  border-bottom: 1px $iosgrey solid;
+
+  .title {
+    font-size: 32px;
+  }
+
+  .description {
+    color: $iosdarkgrey;
+    font-size: 16px;
+  }
+
+  .minor-offset {
+    margin-left: 3%;
+  }
+
+  .disclosure-indicator {
+    text-align: right;
+    line-height: 70px;
+
+    font-size: 18px;
+    color: #428bca;
+  }
+}
+
+
+.table-heading {
+  text-align: center;
+  height: 100px;
+  padding: 15px;
+  border-bottom: 1px $iosgrey solid;
+}
+
+
+
+
+//-----------------------------------------------------------------------------
+// Segmented control
+//------------------
+.segmented-control {
+  a {
+    font-size: 24px;
+    border-radius: 0;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// Forms
+//-------------
+
+.btn-group {
+  .active {
+    background-color: $bootstrap-info;
+    color: $ioswhite;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// Miscellaneous
+//--------------
+
+.muted {
+  border-bottom: 1px solid $iosgrey;
+  margin-top: 10px;
+}
+
+.light-font {
+  font-family: "Lato" sans-serif;
+  font-weight: 300;
+}
+
+.light-header {
+  font-family: "Lato" sans-serif;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+
+.light-description {
+  font-family: "Lato" sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.badge-chart-legend {
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+
+.well {
+  margin-top: 40px;
+  background-color: white;
+
+
+  .errors {
+    li {
+      font-size: 18px;
+      font-family: "Lato" sans-serif;
+      font-weight: 300;
+    }
+  }
+
+  .btn {
+    margin-top: 40px;
+  }
+
+}
+
+
+//  TODO: Does this belong in ios.css
+.edit-event {
+  float: right;
+  padding-top: 20px;
+}
+
+.show-event {
+  padding: 0 20px 0 20px;
+}
+
+.participant-count {
+  text-align: center;
+  border-right: 1px solid $iosgrey;
+}
+
+.master-detail-split-view {
+  font-family: 'Helvetica Neue', sans-serif;
+  width: 100%;
+  z-index: 100;
+  border-top: 1px $silver solid;
+
+  .row {
+    min-height: inherit;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
+  div[class*="col-md-"] {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  a:hover, a:focus {
+    text-decoration: none;
+  }
+
+  // Define CSS directives for the header of split view.
+  .header-view {
+    a {
+      color: #337ab7;
+    }
+    .row {
+      height: inherit;
+    }
+
+    background: $ioswhite;
+    height: 54px !important;
+    line-height: 50px;
+
+    border-bottom: 1px $silver solid;
+
+    p {
+      font-size: 24px;
+    }
+
+    .master {
+      height: inherit;
+      border-right: 1px $silver solid;
+    }
+
+    .detail {
+      height: inherit;
+    }
+
+    .parent-view-button {
+      margin-left: 10px;
+    }
+
+    .parent-view-name {
+      font-family: "Helvetica Neue", sans-serif;
+      margin-left: 10px;
+      display: inline;
+      font-weight: 200;
+      font-size: 24px;
+    }
+  }
+
+  // Define CSS directives for the content of split view.
+  .content-view {
+    min-height: 700px;
+
+    .master {
+      min-height: inherit;
+      border-right: 1px $iosdarkgrey solid;
+    }
+
+
+    // Define CSS directives for master view.
+    .master-view-cell {
+      a {
+        line-height: 50px;
+        color: $iosblack;
+      }
+
+
+      height: 50px;
+      background: white;
+      border-bottom: 1px $silver solid;
+
+      color: #333;
+      font-family: "Lato" sans-serif;
+      font-weight: 300;
+
+
+      &.active {
+        background-color: $jordy-blue;
+      }
+
+
+      :hover {
+        background-color: $jordy-blue;
+      }
+
+
+      div {
+        font-size: 20px;
+      }
+    }
+
+  }
+
+
+}

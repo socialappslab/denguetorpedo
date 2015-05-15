@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 # # encoding: utf-8
-# require 'spec_helper'
+# require "rails_helper"
 #
 # describe "Minha Casa", :type => :feature do
 #   let!(:house)  { FactoryGirl.create(:house, :name => "User House") }

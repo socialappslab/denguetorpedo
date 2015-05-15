@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe AdminUser do
-  pending "add some examples to (or delete) #{__FILE__}"
+  skip "add some examples to (or delete) #{__FILE__}"
 end

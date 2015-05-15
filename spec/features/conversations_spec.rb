@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe "Conversations", :type => :feature do
   let(:team)         { FactoryGirl.create(:team, :neighborhood_id => Neighborhood.first.id, :name => "Test Team") }

@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'spec_helper'
+require "rails_helper"
 
 describe NoticesController do
   let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
@@ -14,7 +14,7 @@ describe NoticesController do
     it "assigns all notices as @notices" do
       notice = Notice.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:notices).should eq([notice])
+      expect(assigns(:notices)).to eq([notice])
     end
   end
 
@@ -22,7 +22,7 @@ describe NoticesController do
     it "assigns the requested notice as @notice" do
       notice = Notice.create! valid_attributes
       get :show, {:id => notice.to_param}, valid_session
-      assigns(:notice).should eq(notice)
+      expect(assigns(:notice)).to eq(notice)
     end
   end
 
@@ -30,7 +30,7 @@ describe NoticesController do
     it "assigns the requested notice as @notice" do
       notice = Notice.create! valid_attributes
       get :edit, {:id => notice.to_param}, valid_session
-      assigns(:notice).should eq(notice)
+      expect(assigns(:notice)).to eq(notice)
     end
   end
 
@@ -44,29 +44,29 @@ describe NoticesController do
 
       it "assigns a newly created notice as @notice" do
         post :create, {:notice => valid_attributes}, valid_session
-        assigns(:notice).should be_a(Notice)
-        assigns(:notice).should be_persisted
+        expect(assigns(:notice)).to be_a(Notice)
+        expect(assigns(:notice)).to be_persisted
       end
 
       it "redirects to the created notice" do
         post :create, {:notice => valid_attributes}, valid_session
-        response.should redirect_to(Notice.last)
+        expect(response).to redirect_to(Notice.last)
       end
     end
 
     describe "with invalid params" do
       it "assigns a newly created but unsaved notice as @notice" do
         # Trigger the behavior that occurs when invalid params are submitted
-        Notice.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Notice).to receive(:save).and_return(false)
         post :create, {:notice => { "title" => "invalid value" }}, valid_session
-        assigns(:notice).should be_a_new(Notice)
+        expect(assigns(:notice)).to be_a_new(Notice)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
-        Notice.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Notice).to receive(:save).and_return(false)
         post :create, {:notice => { "title" => "invalid value" }}, valid_session
-        response.should render_template("new")
+        expect(response).to render_template("new")
       end
     end
   end
@@ -79,20 +79,20 @@ describe NoticesController do
         # specifies that the Notice created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        Notice.any_instance.should_receive(:update_attributes).with({ "title" => "MyString" })
+        expect_any_instance_of(Notice).to receive(:update_attributes).with({ "title" => "MyString" })
         put :update, {:id => notice.to_param, :notice => { "title" => "MyString" }}, valid_session
       end
 
       it "assigns the requested notice as @notice" do
         notice = Notice.create! valid_attributes
         put :update, {:id => notice.to_param, :notice => valid_attributes}, valid_session
-        assigns(:notice).should eq(notice)
+        expect(assigns(:notice)).to eq(notice)
       end
 
       it "redirects to the notice" do
         notice = Notice.create! valid_attributes
         put :update, {:id => notice.to_param, :notice => valid_attributes}, valid_session
-        response.should redirect_to(notice)
+        expect(response).to redirect_to(notice)
       end
     end
 
@@ -100,17 +100,17 @@ describe NoticesController do
       it "assigns the notice as @notice" do
         notice = Notice.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
-        Notice.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Notice).to receive(:save).and_return(false)
         put :update, {:id => notice.to_param, :notice => { "title" => "invalid value" }}, valid_session
-        assigns(:notice).should eq(notice)
+        expect(assigns(:notice)).to eq(notice)
       end
 
       it "re-renders the 'edit' template" do
         notice = Notice.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
-        Notice.any_instance.stub(:save).and_return(false)
+        allow_any_instance_of(Notice).to receive(:save).and_return(false)
         put :update, {:id => notice.to_param, :notice => { "title" => "invalid value" }}, valid_session
-        response.should render_template("edit")
+        expect(response).to render_template("edit")
       end
     end
   end
@@ -126,7 +126,7 @@ describe NoticesController do
     it "redirects to the notices list" do
       notice = Notice.create! valid_attributes
       delete :destroy, {:id => notice.to_param}, valid_session
-      response.should redirect_to(root_url)
+      expect(response).to redirect_to(root_url)
     end
   end
 

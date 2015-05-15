@@ -1,6 +1,5 @@
 source 'http://rubygems.org'
 
-ruby "1.9.3"
 gem 'rails', '~> 3.2.18'
 
 # Server Management
@@ -15,7 +14,9 @@ gem 'angularjs-rails'
 gem "rack-timeout"
 
 # File management and manipulation
-gem 'aws-sdk'
+# TODO: Update AWS to handle new versions
+# See: http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
+gem 'aws-sdk', '< 2.0'
 gem 'rmagick'
 gem 'paperclip', '~> 4.2.0'
 
@@ -65,13 +66,13 @@ end
 #------------------------------------------------------------------------------
 
 group :test do
-  gem 'rspec-rails'
+  gem 'rspec-rails', "~> 3.2"
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'guard-rspec'
   gem 'database_cleaner'
   gem 'faker'
-  gem 'launchy'
+  gem 'launchy', :require => false
   gem "poltergeist"
 end
 
