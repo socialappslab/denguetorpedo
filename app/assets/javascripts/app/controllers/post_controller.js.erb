@@ -41,8 +41,6 @@ var commentDirective = function () {
 // We use inline annotation to declare services in order to bypass
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
-
-// TODO: Ideally, we refactor the directive into its own directory.
-var postController = angular.module('DCPostListCtrl', []);
-postController.controller("DCPostListCtrl", ["$scope", "$http", postListCtrl]);
+var postController = angular.module('dengueChatApp');
+postController.controller("DCPostListCtrl", ["$scope", "$http", "$routeParams", postListCtrl]);
 postController.directive("postComment", commentDirective);
