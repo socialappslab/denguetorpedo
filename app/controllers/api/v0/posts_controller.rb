@@ -4,15 +4,6 @@ class API::V0::PostsController < API::V0::BaseController
   before_filter :current_user
 
   #----------------------------------------------------------------------------
-  # GET /api/v0/posts
-
-  def index
-    # TODO: You're loading only your own posts!
-    @posts = @current_user.posts.order("created_at DESC")
-  end
-
-
-  #----------------------------------------------------------------------------
   # DELETE /api/v0/posts/:id
 
   def destroy

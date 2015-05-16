@@ -1,5 +1,5 @@
-var postListCtrl = function ($scope, $http) {
-  var ajax = $http.get("/api/v0/posts.json");
+var postListCtrl = function ($scope, $http, $routeParams) {
+  var ajax = $http.get("/api/v0/users/" + $routeParams["userID"] + "/posts.json");
 
   ajax.success(function(data) {
     $scope.posts = data.posts;
