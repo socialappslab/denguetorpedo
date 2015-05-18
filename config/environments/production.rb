@@ -61,6 +61,9 @@ Dengue::Application.configure do
   config.assets.precompile += %w( *.png *.jpg )
   config.assets.precompile += %w( app/* dashboard.css bootstrap/*.css )
 
+  config.assets.paths << Rails.root.join("app", "assets", "templates")
+
+
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
 
