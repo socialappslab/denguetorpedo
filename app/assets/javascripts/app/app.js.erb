@@ -1,4 +1,4 @@
-var dengueChatApp = angular.module('dengueChatApp', []);
+var dengueChatApp = angular.module('dengueChatApp', ["sessionService"]);
 
 // dengueChatApp.config(['$routeProvider', "$locationProvider", function($routeProvider, $locationProvider) {
 //   $routeProvider.when('/users/:userID', {
@@ -11,3 +11,26 @@ var dengueChatApp = angular.module('dengueChatApp', []);
 //     requireBase: false
 //   });
 // }]);
+
+angular.module("sessionService", []).factory('session', function($location, $http, $q) {
+  var service = {
+    currentUser: null,
+
+    requestCurrentUser: function() {
+      if (service.isAuthenticated()) {
+        return $q.when(service.currentUser);
+      } else {
+        return $http.get("/api/v0/sessions/current").then(function(response) {
+          service.currentUser = response.data.user;
+          return service.currentUser;
+        });
+      }
+    },
+
+    isAuthenticated: function(){
+      return !!service.currentUser;
+    }
+  };
+
+  return service;
+});

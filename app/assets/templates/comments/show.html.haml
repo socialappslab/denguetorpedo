@@ -11,7 +11,7 @@
       -# - if @current_user && @current_user == user && item.class == Post
       // TODO: This needs to be shown/hidden based on current user.
       // TODO: The jQuery doesn't bind to .delete-resource-button!
-      %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
-        %i.fa.fa-trash-o
+      -# %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
+      -#   %i.fa.fa-trash-o
   .feed-item-content
     {{comment.content}}
