@@ -36,7 +36,7 @@
 
     &#183;
     %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
-      = I18n.t("common_terms.comment")
+      Comentar
 
 // Enumerate all comments.
 %post-comment{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
@@ -51,4 +51,4 @@
         %textarea#comment_content.form-control{:name => "comment[content]"}
         %button.btn.btn-success.btn-right.submit-button{:type => "submit"}
           %i.fa.fa-refresh.fa-spin
-          = I18n.t("views.buttons.publish")
+          Chat
