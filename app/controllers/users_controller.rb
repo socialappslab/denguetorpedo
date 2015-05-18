@@ -60,10 +60,8 @@ class UsersController < ApplicationController
     @redeemable_prizes = @prizes.where("cost <= ?", @user.total_points).shuffle
 
     # Build a feed depending on params.
-    @posts        = @user.posts.order("created_at DESC").includes(:comments)
     @report_count = @user.reports.completed.count
 
-    @posts = @posts.limit(20) unless params[:feed].to_s == "1"
     @activity_feed = @posts.to_a
 
     if @current_user.present?
