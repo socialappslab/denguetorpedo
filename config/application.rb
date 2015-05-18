@@ -68,5 +68,23 @@ module Dengue
         request_specs: false
       g.fixture_replacement :factory_girl, dir: "spec/factories"
     end
+
+
+    # Required code to make HAML templates work with Rails 3.2 asset compilation.
+    # See http://stackoverflow.com/questions/7770327/adding-haml-to-the-rails-asset-pipeline
+    config.assets.paths << Rails.root.join("app", "assets", "templates")
+
+    class HamlTemplate < Tilt::HamlTemplate
+      def prepare
+        @options = @options.merge :format => :html5
+        super
+      end
+    end
+
+    config.before_initialize do |app|
+      require 'sprockets'
+      Sprockets::Engines #force autoloading
+      Sprockets.register_engine '.haml', HamlTemplate
+    end
   end
 end

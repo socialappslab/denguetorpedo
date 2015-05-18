@@ -7,7 +7,8 @@
 //= require_self
 //= require "feed-interactions"
 //= require angular
-
+//= require "app/app"
+//= require "app/controllers/post_controller"
 
 
 window.denguechat = {};
