@@ -7,10 +7,10 @@ var postListCtrl = function ($scope, $http) {
   });
   ajax.error(function(response) {
     $("#newsfeed .error-message").show();
-  })
+  });
   ajax.then(function() {
     $("#newsfeed .loading-spinner").hide();
-  })
+  });
 
   $scope.updateLikesCounter = function(post)
   {
@@ -24,21 +24,24 @@ var postListCtrl = function ($scope, $http) {
         post.likeColor = "#3498db"
       else
         post.likeColor = "#8899a6"
-
     })
   }
 };
 
+// NOTE: We're not specifying isolate scope here since we'll *ONLY* use this
+// directive on the PostListCtrl. As such, we will use 'post' and all other
+// methods from the parent scope (e.g. the controller). If we ever introduce
+// scope here, we have to make sure that the ng-click events bubble up to the
+// parent scope.
 var feedItemDirective = function(){
   return {
     restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
-    scope: {
-      "post": "=" // This is equivalent to the "=post" scope.
-    },
     templateUrl: "<%= asset_path('posts/show.html') %>"
   }
 }
 
+// NOTE: Technically, we don't need to have isolate scope here, but we're using it
+// as a good starting point for understanding AngularJS.
 var commentDirective = function () {
   return {
     restrict: "E", // Restrict the template to being called only when using <post-comment> HTML element.
