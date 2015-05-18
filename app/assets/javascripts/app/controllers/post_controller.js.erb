@@ -1,5 +1,6 @@
-var postListCtrl = function ($scope, $http, $routeParams) {
-  var ajax = $http.get("/api/v0/users/" + $routeParams["userID"] + "/posts.json");
+var postListCtrl = function ($scope, $http, session) {
+  var pathName = window.location.pathname;
+  var ajax   = $http.get("/api/v0/" + pathName + "/posts.json");
 
   ajax.success(function(data) {
     $scope.posts = data.posts;
@@ -28,9 +29,19 @@ var postListCtrl = function ($scope, $http, $routeParams) {
   }
 };
 
+var feedItemDirective = function(){
+  return {
+    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
+    scope: {
+      "post": "=" // This is equivalent to the "=post" scope.
+    },
+    templateUrl: "<%= asset_path('posts/show.html') %>"
+  }
+}
+
 var commentDirective = function () {
   return {
-    restrict: "E", // Restrict the template to being called only when using <comment> HTML element.
+    restrict: "E", // Restrict the template to being called only when using <post-comment> HTML element.
     scope: {
       "comment": "=" // This is equivalent to the "=comment" scope.
     },
@@ -42,5 +53,8 @@ var commentDirective = function () {
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
 var postController = angular.module('dengueChatApp');
-postController.controller("DCPostListCtrl", ["$scope", "$http", "$routeParams", postListCtrl]);
+postController.controller("DCPostListCtrl", ["$scope", "$http", "session", postListCtrl]);
+
+// Define the directives on the controller.
 postController.directive("postComment", commentDirective);
+postController.directive("feedItem", feedItemDirective);

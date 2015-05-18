@@ -1,13 +1,13 @@
-var dengueChatApp = angular.module('dengueChatApp', ["ngRoute"]);
+var dengueChatApp = angular.module('dengueChatApp', []);
 
-dengueChatApp.config(['$routeProvider', "$locationProvider", function($routeProvider, $locationProvider) {
-  $routeProvider.when('/users/:userID', {
-    templateUrl: "<%= asset_path('posts/index.html') %>",
-    controller: 'DCPostListCtrl'
-  });
-
-  $locationProvider.html5Mode({
-    enabled: true,
-    requireBase: false
-  });
-}]);
+// dengueChatApp.config(['$routeProvider', "$locationProvider", function($routeProvider, $locationProvider) {
+//   $routeProvider.when('/users/:userID', {
+//     templateUrl: "<%= asset_path('posts/index.html') %>",
+//     controller: 'DCPostListCtrl'
+//   });
+//
+//   $locationProvider.html5Mode({
+//     enabled: true,
+//     requireBase: false
+//   });
+// }]);
