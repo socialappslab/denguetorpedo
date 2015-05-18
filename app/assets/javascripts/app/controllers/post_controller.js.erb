@@ -1,4 +1,4 @@
-var postListCtrl = function ($scope, $http, session) {
+var postListCtrl = function ($scope, $http) {
   var pathName = window.location.pathname;
   var ajax   = $http.get("/api/v0/" + pathName + "/posts.json");
 
@@ -53,7 +53,7 @@ var commentDirective = function () {
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
 var postController = angular.module('dengueChatApp');
-postController.controller("DCPostListCtrl", ["$scope", "$http", "session", postListCtrl]);
+postController.controller("DCPostListCtrl", ["$scope", "$http", postListCtrl]);
 
 // Define the directives on the controller.
 postController.directive("postComment", commentDirective);
