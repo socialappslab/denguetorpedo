@@ -7,7 +7,6 @@
 //= require_self
 //= require "feed-interactions"
 //= require angular
-//= require angular-route
 
 
 
