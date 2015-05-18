@@ -8,8 +8,13 @@ gem "puma"
 gem "foreman"
 gem "therubyracer"
 
+gem 'angularjs-rails'
+
 # Middleware hacks
 gem "rack-timeout"
+
+# JSON
+gem "jbuilder"
 
 # File management and manipulation
 # TODO: Update AWS to handle new versions

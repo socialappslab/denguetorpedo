@@ -3,8 +3,8 @@
 require "rails_helper"
 
 describe Visit do
-  let!(:created_at)    { Time.now - 100.days }
-  let!(:eliminated_at) { Time.now - 3.days }
+  let!(:created_at)    { Time.zone.now - 100.days }
+  let!(:eliminated_at) { Time.zone.now - 3.days }
   let(:photo)          { Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg') }
   let(:location)       { FactoryGirl.create(:location, :address => "Test address")}
   let(:user)           { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
@@ -83,7 +83,7 @@ describe Visit do
       # This eliminates the report.
       report.after_photo   				 = photo
       report.elimination_method_id = report.breeding_site.elimination_methods.first.id
-      report.completed_at          = Time.now
+      report.completed_at          = Time.zone.now
       report.eliminator_id 				 = user.id
       report.eliminated_at 				 = eliminated_at
     end

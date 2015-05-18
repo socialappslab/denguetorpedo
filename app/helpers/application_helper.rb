@@ -52,7 +52,7 @@ module ApplicationHelper
 
   def timestamp_in_metadata(timestamp)
     return "" if timestamp.blank?
-    if (timestamp - Time.now).abs < 3.days
+    if (timestamp - Time.zone.now).abs < 3.days
       time_ago_in_words(timestamp) + " " + I18n.t("common_terms.ago")
     else
       return timestamp.strftime("%Y-%m-%d %H:%M")

@@ -156,7 +156,7 @@ namespace :csv_reports do
     csv_ids = []
 
     start_time = Time.parse("2014-11-01").beginning_of_day
-    end_time   = Time.now.end_of_day
+    end_time   = Time.zone.now.end_of_day
     CsvReport.order("id ASC").where(:created_at => start_time..end_time).find_each do |csv|
       # puts "csv.location_id.blank?: #{csv.location_id.blank?} | csv.location.neighborhood.blank?: #{csv.location.neighborhood.blank?} | csv.location.neighborhood.nicaraguan?: #{csv.location.neighborhood.nicaraguan?}"
       next if csv.location_id.blank?
@@ -329,7 +329,7 @@ namespace :csv_reports do
       # method!
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at        = row_content[:visited_at]
-        parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.now
+        parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
 
         if parsed_current_visited_at.future?
           puts "current_visited_at: #{current_visited_at} | parsed_current_visited_at: #{parsed_current_visited_at}"

@@ -1,0 +1,17 @@
+.feed-item-comment
+  .feed-item-profile-photo
+    %a{"ng-href" => "{{comment.user.url}}"}
+      %img{"ng-src" => "{{comment.user.photo}}"}
+  .feed-item-bar
+    .username
+      %a{"ng-href" => "{{comment.user.url}}"}
+        {{comment.user.display_name}}
+    .feed-item-timestamp
+      {{comment.timestamp}}
+      -# - if @current_user && @current_user == user && item.class == Post
+      // TODO: This needs to be shown/hidden based on current user.
+      // TODO: The jQuery doesn't bind to .delete-resource-button!
+      -# %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
+      -#   %i.fa.fa-trash-o
+  .feed-item-content
+    {{comment.content}}

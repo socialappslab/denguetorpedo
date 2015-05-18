@@ -48,6 +48,46 @@ describe API::V0::CsvReportsController do
       }.to change(Report, :count).by(3)
     end
 
+    #--------------------------------------------------------------------------
+
+    describe "with Errors" do
+      render_views
+
+      it "notifies user that inspection date is in the future" do
+        csv      = File.open("spec/support/csv/inspection_date_in_future.xlsx")
+        file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+        post :create, :csv_report => { :csv => file_csv },
+        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+        :neighborhood_id => Neighborhood.first.id
+
+        expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.inspection_date_in_future") )
+      end
+
+      it "notifies user that elimination date is in the future" do
+        csv      = File.open("spec/support/csv/elimination_date_in_future.xlsx")
+        file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+        post :create, :csv_report => { :csv => file_csv },
+        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+        :neighborhood_id => Neighborhood.first.id
+
+        expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.elimination_date_in_future") )
+      end
+
+      it "notifies user that elimination date is before inspection date" do
+        csv      = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
+        file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+        post :create, :csv_report => { :csv => file_csv },
+        :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+        :neighborhood_id => Neighborhood.first.id
+
+        expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.elimination_date_before_inspection_date") )
+      end
+    end
+
+    #--------------------------------------------------------------------------
 
     describe "the parsed Report attributes" do
       before(:each) do
@@ -85,6 +125,7 @@ describe API::V0::CsvReportsController do
       end
     end
 
+    #--------------------------------------------------------------------------
 
     describe "the parsed Visit attributes", :after_commit => true do
       before(:each) do

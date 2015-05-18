@@ -135,7 +135,7 @@ describe "Reports", :type => :feature do
     let!(:report) { FactoryGirl.create(:report,
       :location_id => location.id,
       :neighborhood_id => neighborhood.id,
-      :completed_at => Time.now,
+      :completed_at => Time.zone.now,
       :reporter_id => user.id) }
 
     before(:each) do

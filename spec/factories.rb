@@ -63,7 +63,7 @@ FactoryGirl.define do
 		description "Description"
 		summary "Summary"
 		location "DT Headquarter"
-		date Time.now
+		date Time.zone.now
 	end
 
 	factory :post do
@@ -123,7 +123,7 @@ FactoryGirl.define do
 		end
 
 		factory :full_report do
-			created_at Time.now
+			created_at Time.zone.now
 			association :reporter, :factory => :user
 		end
   end

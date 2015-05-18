@@ -5,14 +5,23 @@ Dengue::Application.routes.draw do
 
   namespace :api, :defaults => { :format => :json } do
     namespace :v0 do
-      resources :sessions,    :only => [:create]
+      resources :sessions,    :only => [:create] do
+        collection do
+          get "current"
+        end
+      end
       resources :reports,     :only => [:index, :create, :destroy]
       resources :csv_reports, :only => [:create]
       resources :posts,       :only => [:destroy] do
         post "like", :on => :member
       end
 
+      resources :users, :only => [] do
+        resources :posts, :controller => "users/posts", :only => [:index]
+      end
+
       resources :neighborhoods, :only => [] do
+        resources :posts, :controller => "neighborhoods/posts", :only => [:index]
         member do
           get "chart"
         end
