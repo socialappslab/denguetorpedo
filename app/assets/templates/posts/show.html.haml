@@ -31,7 +31,7 @@
   .feed-item-interaction-menu
     %a.likes_button{"ng-click" => "updateLikesCounter(post)", "ng-style" => "{color: post.likeColor}"}
       %i.fa.fa-thumbs-up.like-icon
-      %span.likes_text
+      %span
         {{post.likes_count}}
 
     &#183;

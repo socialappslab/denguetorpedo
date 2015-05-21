@@ -25,7 +25,7 @@
       .feed-item-interaction-menu
         = link_to like_api_v0_comment_path(comment), :class => "likes_button", "data-path" => like_api_v0_comment_path(comment), "data-likes_count" => comment.likes_count do
           %i.fa.fa-thumbs-up.like-icon
-          %span.likes_text
+          %span
             = comment.likes_count
 
 
