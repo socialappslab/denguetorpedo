@@ -15,3 +15,9 @@
       -#   %i.fa.fa-trash-o
   .feed-item-content
     {{comment.content}}
+
+  .feed-item-interaction-menu
+    %a.likes_button{"ng-click" => "updateCommentLikesCounter(comment)", "ng-style" => "{color: comment.likeColor}"}
+      %i.fa.fa-thumbs-up.like-icon
+      %span.likes_text
+        {{comment.likes_count}}
