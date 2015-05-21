@@ -30,14 +30,14 @@ $(document).ready(function()
       type: "POST",
       data: {"count" : $(this).data("likes_count")},
       success : function(report){
-        $(event.currentTarget).find('.likes_text').text(report.count.toString());
+        $(event.currentTarget).find('span').text(report.count.toString());
         $(event.currentTarget).data("likes_count", report.count.toString());
 
-        likeIcon = $(event.currentTarget).find('.like-icon')
+        likeIcon = $(event.currentTarget).find('span')
         if (report.liked == true)
           likeIcon.css("color", "#3498db")
         else
-          likeIcon.css("color", "#bdc3c7")
+          likeIcon.css("color", "#8899a6")
       }
     })
   });
