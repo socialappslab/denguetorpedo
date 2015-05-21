@@ -21,6 +21,13 @@
     .feed-item-content
       = comment.content
 
+    - if @current_user
+      .feed-item-interaction-menu
+        = link_to like_api_v0_comment_path(comment), :class => "likes_button", "data-path" => like_api_v0_comment_path(comment), "data-likes_count" => comment.likes_count do
+          %i.fa.fa-thumbs-up.like-icon
+          %span.likes_text
+            = comment.likes_count
+
 
 - if @current_user
   .feed-item-comment.feed-item-new-comment
