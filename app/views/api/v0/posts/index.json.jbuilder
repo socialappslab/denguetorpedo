@@ -17,7 +17,7 @@ json.posts @posts do |post|
   end
 
   json.comments post.comments.order("created_at ASC") do |comment|
-    json.(comment, :id, :content)
+    json.(comment, :id, :content, :likes_count)
     json.timestamp timestamp_in_metadata(comment.created_at)
 
     json.user do

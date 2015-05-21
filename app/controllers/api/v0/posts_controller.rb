@@ -31,7 +31,7 @@ class API::V0::PostsController < API::V0::BaseController
 
     # Return immediately if the news instance can't be found or the user is
     # not logged in.
-    render :nothing => true, :status => 400 if (@post.blank? || @current_user.blank?)
+    render :nothing => true, :status => 400 and return if (@post.blank? || @current_user.blank?)
 
     # If the user already liked the news, and has clicked like, then
     # remove their like. Otherwise, add a like.
