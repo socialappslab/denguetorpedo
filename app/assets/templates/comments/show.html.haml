@@ -6,6 +6,11 @@
     .username
       %a{"ng-href" => "{{comment.user.url}}"}
         {{comment.user.display_name}}
+    .location
+      %a{"ng-href" => "{{post.user.neighborhood.url}}"}
+        %span.muted
+          de
+        {{comment.user.neighborhood.geographical_display_name}}
     .feed-item-timestamp
       {{comment.timestamp}}
       -# - if @current_user && @current_user == user && item.class == Post

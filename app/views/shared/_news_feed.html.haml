@@ -4,9 +4,3 @@
       = render :partial => 'users/feed_item', :locals => {:post => item, :owner => item.user}
     - elsif item.is_a? Notice
       = render :partial => 'notices/feed_item', :locals => {:notice => item, :owner => item.user}
-
-  - if @activity_feed.present? && params[:feed].blank?
-    .more-feed-link
-      = link_to url_for(:only_path => true, :feed => 1) do
-        %i.fa.fa-chevron-down
-        = I18n.t("common_terms.more")

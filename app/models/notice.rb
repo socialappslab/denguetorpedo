@@ -18,6 +18,10 @@ class Notice < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  scope :upcoming, -> { where("date > ?", Time.zone.now.beginning_of_day) }
+
+  #----------------------------------------------------------------------------
+
   def display_name
     return self.institution_name.present? ? self.institution_name : I18n.t("activerecord.models.notice")
   end

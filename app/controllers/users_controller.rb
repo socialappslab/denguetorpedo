@@ -62,8 +62,6 @@ class UsersController < ApplicationController
     # Build a feed depending on params.
     @report_count = @user.reports.completed.count
 
-    @activity_feed = @posts.to_a
-
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
     else

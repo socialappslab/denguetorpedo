@@ -1,14 +1,15 @@
 var postListCtrl = function ($scope, $http) {
   var pathName = window.location.pathname;
-  var ajax   = $http.get("/api/v0/" + pathName + "/posts.json");
+  var ajax   = $http.get("/api/v0" + pathName + "/posts.json");
 
   ajax.success(function(data) {
     $scope.posts = data.posts;
   });
   ajax.error(function(response) {
     $("#newsfeed .error-message").show();
+    $("#newsfeed .loading-spinner").hide();
   });
-  ajax.then(function() {
+  ajax.then(function(response) {
     $("#newsfeed .loading-spinner").hide();
   });
 
