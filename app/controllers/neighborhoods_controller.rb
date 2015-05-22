@@ -50,12 +50,11 @@ class NeighborhoodsController < NeighborhoodsBaseController
   #----------------------------------------------------------------------------
 
   def calculate_ivars
-    # Load associations.
     @neighborhood = Neighborhood.find(params[:id])
     @users   = @neighborhood.users.where(:is_blocked => false).order("first_name ASC")
     @teams   = @neighborhood.teams.order("name ASC")
     @reports = @neighborhood.reports
-    @notices = @neighborhood.notices.order("updated_at DESC").where("date > ?", Time.zone.now.beginning_of_day)
+    @notices = @neighborhood.notices.order("updated_at DESC").upcoming
   end
 
 end
