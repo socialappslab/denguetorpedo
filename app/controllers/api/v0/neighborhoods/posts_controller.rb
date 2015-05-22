@@ -8,6 +8,7 @@ class API::V0::Neighborhoods::PostsController < API::V0::BaseController
   #------------------------------------
 
   def index
+    @neighborhood = Neighborhood.find(params[:neighborhood_id])
     @posts = @neighborhood.posts.order("created_at DESC").includes(:comments)
     render "api/v0/posts/index" and return
   end

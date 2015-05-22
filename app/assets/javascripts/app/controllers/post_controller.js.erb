@@ -1,6 +1,6 @@
 var postListCtrl = function ($scope, $http) {
   var pathName = window.location.pathname;
-  var ajax   = $http.get("/api/v0/" + pathName + "/posts.json");
+  var ajax   = $http.get("/api/v0" + pathName + "/posts.json");
 
   ajax.success(function(data) {
     $scope.posts = data.posts;

@@ -64,3 +64,13 @@
     .row
       .col-md-12
         = render :partial => "shared/news_feed"
+
+        #newsfeed{"ng-controller" => "DCPostListCtrl"}
+          .error-message
+            %p
+              Algo salió mal. Por favor, intente nuevamente.
+
+          .loading-spinner
+            %i.fa.fa-refresh.fa-spin
+          .feed-item-complete
+            %feed-item{"post" => "post", "ng-repeat" => "post in posts"}

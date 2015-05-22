@@ -20,15 +20,12 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @reports = @reports.where("reporter_id IN (?) OR verifier_id IN (?) OR resolved_verifier_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids, user_ids, user_ids)
     @reports = @reports.order("created_at DESC")
 
-    @posts   = @neighborhood.posts.order("created_at DESC").includes(:comments)
-
     # Limit the amount of records we show.
     unless params[:feed].to_s == "1"
-      @posts   = @posts.limit(20)
       @reports = @reports.limit(10)
     end
 
-    @activity_feed = @notices.to_a + @posts.to_a
+    @activity_feed = @notices
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
