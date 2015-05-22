@@ -1,4 +1,4 @@
-var postListCtrl = function ($scope, $http) {
+var postListCtrl = function ($scope, $http, $attrs) {
   var pathName = window.location.pathname;
   var ajax   = $http.get("/api/v0" + pathName + "/posts.json");
 
@@ -12,6 +12,16 @@ var postListCtrl = function ($scope, $http) {
   ajax.then(function(response) {
     $("#newsfeed .loading-spinner").hide();
   });
+
+  $scope.createPost = function(post)
+  {
+    post["neighborhood_id"] = $attrs.neighborhoodId
+    var ajax = $http.post("/api/v0/posts/", {"post": post});
+    ajax.success(function(data) {
+      post.content = ""
+      $scope.posts.unshift(data)
+    })
+  }
 
   $scope.updateLikesCounter = function(post)
   {
@@ -82,7 +92,7 @@ var commentDirective = function () {
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
 var postController = angular.module('dengueChatApp');
-postController.controller("DCPostListCtrl", ["$scope", "$http", postListCtrl]);
+postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postListCtrl]);
 
 // Define the directives on the controller.
 postController.directive("postComment", commentDirective);
