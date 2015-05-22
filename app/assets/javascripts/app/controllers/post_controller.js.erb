@@ -20,8 +20,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
     var ajax = $http.post("/api/v0/posts/", {"post": post});
     ajax.success(function(data) {
       post.content = ""
-      $(".preview").removeAttr("src")
-      $(".preview").removeAttr("title")
+      $(".preview").parent().html("<img class='preview'>")
       $(".compressed_photo").val("")
       $scope.posts.unshift(data)
     })
