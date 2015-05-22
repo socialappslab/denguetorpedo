@@ -53,19 +53,19 @@
 
 
 
-  .col-md-5.col-md-offset-1
+  .col-md-5.col-md-offset-1{"ng-controller" => "DCPostListCtrl", "neighborhood_id" => @neighborhood.id}
     %h1.text-center
       = I18n.t("views.post.feed")
 
     - if @current_user
       .row
         .col-md-12
-          = render :partial => 'posts/new'
+          %new-post
     .row
       .col-md-12
         = render :partial => "shared/news_feed"
 
-        #newsfeed{"ng-controller" => "DCPostListCtrl"}
+        #newsfeed
           .error-message
             %p
               Algo salió mal. Por favor, intente nuevamente.
