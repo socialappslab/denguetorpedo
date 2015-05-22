@@ -58,24 +58,25 @@
           %i{:class => "fa fa-chevron-right", :style => "font-size: 24px; line-height: 100px; color: #8899a6;"}
 
 -# ----------------------------------------------------------------------------
+%div{"ng-controller" => "DCPostListCtrl", "neighborhood_id" => @neighborhood.id}
+  - if (@current_user && @user == @current_user)
+    .row
+      .col-md-9
+        -# = render :partial => 'posts/new'
+        %new-post
 
-- if (@current_user && @user == @current_user)
+
   .row
     .col-md-9
-      = render :partial => 'posts/new'
+      #newsfeed
+        .error-message
+          %p
+            Algo salió mal. Por favor, intente nuevamente.
 
-
-.row
-  .col-md-9
-    #newsfeed{"ng-controller" => "DCPostListCtrl"}
-      .error-message
-        %p
-          Algo salió mal. Por favor, intente nuevamente.
-
-      .loading-spinner
-        %i.fa.fa-refresh.fa-spin
-      .feed-item-complete
-        %feed-item{"post" => "post", "ng-repeat" => "post in posts"}
+        .loading-spinner
+          %i.fa.fa-refresh.fa-spin
+        .feed-item-complete
+          %feed-item{"post" => "post", "ng-repeat" => "post in posts track by $index"}
 
 
 
