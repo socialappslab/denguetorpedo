@@ -16,12 +16,7 @@ json.user do
 end
 
 json.comments post.comments.order("created_at ASC") do |comment|
-  json.(comment, :id, :content, :likes_count)
-  json.timestamp timestamp_in_metadata(comment.created_at)
-
-  json.user do
-    json.partial! "api/v0/users/user", user: comment.user
-  end
+  json.partial! "api/v0/comments/comment", comment: comment
 end
 
 #--------

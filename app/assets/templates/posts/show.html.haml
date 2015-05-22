@@ -41,14 +41,5 @@
 // Enumerate all comments.
 %post-comment{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
 
-.feed-item-comment{"ng-show" => "showNewComment"}
-  .row
-    .col-md-12
-      %form.feed-item-comment-form{"accept-charset" => "UTF-8", :action => "{{post.actions.create_comment}}", :method => "post"}
-        %div{:style => "margin:0;padding:0;display:inline"}
-          %input{:name => "utf8", :type => "hidden", :value => "✓"}/
-          %input{:name => "authenticity_token", :type => "hidden", :value => "1vnH4l6Pdoo2Pyph7qRD0rU5T2obW8S0WQ4koO+Jg5w="}/
-        %textarea#comment_content.form-control{:name => "comment[content]"}
-        %button.btn.btn-success.btn-right.submit-button{:type => "submit"}
-          %i.fa.fa-refresh.fa-spin
-          Chat
+
+%new-comment{"post" => "post", "ng-show" => "showNewComment"}

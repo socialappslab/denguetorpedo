@@ -19,6 +19,8 @@ Dengue::Application.routes.draw do
       resources :csv_reports, :only => [:create]
       resources :posts,       :only => [:create, :destroy] do
         post "like", :on => :member
+
+        resources :comments, :controller => "posts/comments", :only => [:create]
       end
 
       #-------------------------------------------------------------------------

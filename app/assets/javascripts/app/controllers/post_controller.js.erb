@@ -34,6 +34,25 @@ var postListCtrl = function ($scope, $http, $attrs) {
     })
   }
 
+  $scope.createComment = function(post, comment)
+  {
+    console.log(post)
+    // Disable the submit button for new-post directive.
+    $scope.submitButtonCommentDisabled = true;
+
+    var ajax = $http.post("/api/v0/posts/" + post.id + "/comments", {"comment": comment});
+    ajax.success(function(data) {
+      comment.content = ""
+      // $scope.submitButtonCommentDisabled = false;
+      post.comments.push(data)
+    })
+
+    ajax.error(function(data) {
+      // $scope.submitButtonCommentDisabled = false;
+    })
+  }
+
+
   // TODO: This is a bit confusing as it triggers the file upload, which has
   // an attribute directive defined on change event. Confusing code!
   $scope.triggerFileInput = function()
@@ -78,6 +97,16 @@ var newPostDirective = function(){
     templateUrl: "<%= asset_path('posts/new.html') %>",
     link: function(scope, element, attrs) {
       scope.submitButtonDisabled = false;
+    }
+  }
+}
+
+var newCommentDirective = function(){
+  return {
+    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
+    templateUrl: "<%= asset_path('comments/new.html') %>",
+    link: function(scope, element, attrs) {
+      scope.submitButtonCommentDisabled = false;
     }
   }
 }
@@ -131,6 +160,7 @@ postController.directive("postComment", commentDirective);
 postController.directive("feedItem", feedItemDirective);
 postController.directive("newPost", newPostDirective);
 postController.directive("fileUpload", fileUploadDirective);
+postController.directive("newComment", newCommentDirective);
 
 
 
