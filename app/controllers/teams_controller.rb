@@ -30,7 +30,7 @@ class TeamsController < ApplicationController
   # GET /teams/1
 
   def show
-    @post    = Post.new
+    @post = Post.new
 
     # Load associations.
     # NOTE: We're going to bypass ActiveRecord association methods and instead
@@ -44,13 +44,8 @@ class TeamsController < ApplicationController
     @reports = Report.where("reporter_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids)
     @reports = @reports.displayable.completed
 
-    @posts = Post.where(:user_id => user_ids).order("created_at DESC").includes(:comments)
-
     @total_reports = @reports.count
     @total_points  = @team.points
-
-    @posts = @posts.limit(20) unless params[:feed].to_s == "1"
-    @activity_feed = @posts.to_a
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?
