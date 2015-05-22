@@ -15,6 +15,9 @@ var postListCtrl = function ($scope, $http, $attrs) {
 
   $scope.createPost = function(post)
   {
+    // Disable the submit button for new-post directive.
+    $scope.submitButtonDisabled = true;
+
     post["compressed_photo"] = $(".compressed_photo").val();
     post["neighborhood_id"] = $attrs.neighborhoodId;
     var ajax = $http.post("/api/v0/posts/", {"post": post});
@@ -22,7 +25,12 @@ var postListCtrl = function ($scope, $http, $attrs) {
       post.content = ""
       $(".preview").parent().html("<img class='preview'>")
       $(".compressed_photo").val("")
+      $scope.submitButtonDisabled = false;
       $scope.posts.unshift(data)
+    })
+
+    ajax.error(function(data) {
+      $scope.submitButtonDisabled = false;
     })
   }
 
@@ -67,7 +75,10 @@ var postListCtrl = function ($scope, $http, $attrs) {
 var newPostDirective = function(){
   return {
     restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
-    templateUrl: "<%= asset_path('posts/new.html') %>"
+    templateUrl: "<%= asset_path('posts/new.html') %>",
+    link: function(scope, element, attrs) {
+      scope.submitButtonDisabled = false;
+    }
   }
 }
 

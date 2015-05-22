@@ -14,7 +14,7 @@
           Añadir foto
       .col-sm-3
         .text-right
-          %button.btn.btn-success.btn-lg.submit-button{:type => "submit"}
+          %button.btn.btn-success.btn-lg.submit-button{:type => "submit", "ng-class" => "{disabled: submitButtonDisabled}" }
             %i.fa.fa-refresh.fa-spin
             Chat
 
