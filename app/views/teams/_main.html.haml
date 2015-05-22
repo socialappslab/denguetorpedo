@@ -32,22 +32,23 @@
 
 /------------------------------------------------------------------------------
 
-- if @current_user && @users.include?(@current_user)
+%div{"ng-controller" => "DCPostListCtrl", "neighborhood_id" => @neighborhood.id}
+  - if @current_user && @users.include?(@current_user)
+    .row
+      .col-md-9
+        %new-post
+
   .row
     .col-md-9
-      = render :partial => 'posts/new'
+      #newsfeed
+        .error-message
+          %p
+            Algo salió mal. Por favor, intente nuevamente.
 
-.row
-  .col-md-9
-    #newsfeed{"ng-controller" => "DCPostListCtrl"}
-      .error-message
-        %p
-          Algo salió mal. Por favor, intente nuevamente.
-
-      .loading-spinner
-        %i.fa.fa-refresh.fa-spin
-      .feed-item-complete
-        %feed-item{"post" => "post", "ng-repeat" => "post in posts"}
+        .loading-spinner
+          %i.fa.fa-refresh.fa-spin
+        .feed-item-complete
+          %feed-item{"post" => "post", "ng-repeat" => "post in posts"}
 
 
 

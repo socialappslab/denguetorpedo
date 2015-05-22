@@ -1,6 +1,6 @@
 
 .new-post
-  = form_for @post do |f|
+  = form_for @post, "ng-submit" => "createPost" do |f|
     = hidden_field_tag "post[neighborhood_id]", @neighborhood.id
     = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
 

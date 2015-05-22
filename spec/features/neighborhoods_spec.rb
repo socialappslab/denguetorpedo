@@ -30,7 +30,7 @@ describe "Neighborhoods", :type => :feature do
 
   end
 
-  describe "when creating a post" do
+  describe "when creating a post", :js => true do
     it "doesn't display a missing image" do
       fill_in "post_content", :with => "Test"
       page.find(".submit-button").click
