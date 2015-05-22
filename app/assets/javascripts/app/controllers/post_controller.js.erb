@@ -15,12 +15,23 @@ var postListCtrl = function ($scope, $http, $attrs) {
 
   $scope.createPost = function(post)
   {
-    post["neighborhood_id"] = $attrs.neighborhoodId
+    post["compressed_photo"] = $(".compressed_photo").val();
+    post["neighborhood_id"] = $attrs.neighborhoodId;
     var ajax = $http.post("/api/v0/posts/", {"post": post});
     ajax.success(function(data) {
       post.content = ""
+      $(".preview").removeAttr("src")
+      $(".preview").removeAttr("title")
+      $(".compressed_photo").val("")
       $scope.posts.unshift(data)
     })
+  }
+
+  // TODO: This is a bit confusing as it triggers the file upload, which has
+  // an attribute directive defined on change event. Confusing code!
+  $scope.triggerFileInput = function()
+  {
+    $("input[type='file']").trigger("click")
   }
 
   $scope.updateLikesCounter = function(post)
@@ -88,6 +99,17 @@ var commentDirective = function () {
   }
 };
 
+var fileUploadDirective = function() {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attr) {
+      element.bind('change', function (event) {
+        window.compression.compressFileFromHTMLInput(event.target);
+      });
+    }
+  }
+}
+
 // We use inline annotation to declare services in order to bypass
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
@@ -98,3 +120,68 @@ postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postLi
 postController.directive("postComment", commentDirective);
 postController.directive("feedItem", feedItemDirective);
 postController.directive("newPost", newPostDirective);
+postController.directive("fileUpload", fileUploadDirective);
+
+
+
+
+// TODO: Refactor this into its own directive.
+window.compression = {}
+window.compression.compressFileFromHTMLInput = function(element) {
+  window.test = element;
+  var canvas     = $(element).parent().find("canvas")[0];
+  var preview    = $(element).parent().find(".preview");
+  var file       = element.files[0];
+  var compressedHTMLInput = $(element).parent().find(".compressed_photo")
+
+  if (!file.type.match('image.*'))
+    return;
+
+  var reader = new FileReader();
+  reader.onload = (function(file) {
+    return function(e) {
+      var image = new Image();
+      image.src = e.target.result;
+
+      image.onload = function () {
+        var compressedImage = compressImageOntoCanvas(image, canvas)
+        $(preview).attr({src: compressedImage, title: escape(file.name)});
+        $(element).val("");
+        $(compressedHTMLInput).val(compressedImage)
+      };
+    };
+  })(file);
+
+  reader.readAsDataURL(file);
+}
+
+
+compressImageOntoCanvas = function(image, canvas) {
+  var width  = image.width;
+  var height = image.height;
+  var maxWidth  = 517;
+  var maxHeight = 600;
+
+  if (width > height) {
+    if (width > maxWidth) {
+      height *= maxWidth / width;
+      width = maxWidth;
+    }
+  }
+  else {
+    if (height > maxHeight) {
+      width *= maxHeight / height;
+      height = maxHeight;
+    }
+  }
+
+  // Draw the canvas image with new dimensions, and append.
+  canvas.height = height;
+  canvas.width  = width;
+  var ctx = canvas.getContext("2d");
+  ctx.drawImage(image, 0, 0, width, height);
+
+  // NOTE: We're using 0.75 JPEG quality per this article:
+  // http://www.html5rocks.com/en/tutorials/speed/img-compression/
+  return canvas.toDataURL("image/jpeg", 1.0);
+}
