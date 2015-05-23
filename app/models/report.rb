@@ -6,7 +6,7 @@ class Report < ActiveRecord::Base
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
   :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
-  :protected, :chemically_treated, :larvae
+  :protected, :chemically_treated, :larvae, :field_identifier
   # attr_readonly :likes_count
 
   #----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ class Report < ActiveRecord::Base
   # at some location. Whether it's an identification or followup visit depends
   # on how the report is created/updated and with what attributes.
   after_commit :create_inspection_visit, :on => :create
-  after_commit :create_followup_visit,   :on => :update
+  after_commit :create_elimination_visit,   :on => :update
   # after_commit :destroy_visit,         :on => :destroy
 
   #----------------------------------------------------------------------------
@@ -393,7 +393,7 @@ class Report < ActiveRecord::Base
   # to the report's created_at date. This ensures consistency between the
   # create_visit method, and this method so we're working on the same
   # Visit.
-  def create_followup_visit
+  def create_elimination_visit
     return if self.location_id.blank?
     return if self.completed_at.blank?
     return if self.eliminated_at.blank?

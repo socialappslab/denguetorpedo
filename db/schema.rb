@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150520173606) do
+ActiveRecord::Schema.define(:version => 20150523160925) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -368,6 +368,7 @@ ActiveRecord::Schema.define(:version => 20150520173606) do
     t.boolean  "larvae"
     t.boolean  "pupae"
     t.integer  "likes_count",               :default => 0
+    t.string   "field_identifier"
   end
 
   add_index "reports", ["eliminator_id"], :name => "index_reports_on_eliminator_id"

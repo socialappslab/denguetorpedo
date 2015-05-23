@@ -61,7 +61,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       next if row_content[:breeding_site].blank?
 
       type = row_content[:breeding_site].strip.downcase
-      if CsvReport.accepted_breeding_site_codes.exclude?(type)
+      if CsvReport.accepted_breeding_site_codes.exclude?(type[0])
         raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_code"), 422)
       end
     end
@@ -103,20 +103,24 @@ class API::V0::CsvReportsController < API::V0::BaseController
       description = CsvReport.generate_description_from_row_content(row_content)
 
       type = row_content[:breeding_site].strip.downcase
-      if type == "a"
+      if type.include?("a")
         breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-      elsif type == "b"
+      elsif type.include?("b")
         breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
-      elsif type == "l"
+      elsif type.include?("l")
         breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
-      elsif type == "m"
+      elsif type.include?("m")
         breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-      elsif type == "p"
+      elsif type.include?("p")
         breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::LARGE_CONTAINER)
-      elsif type == "t"
+      elsif type.include?("t")
         breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
       end
 
+      # We say that the report has a field identifier if the breeding site CSV column
+      # also has an integer associated with it.
+      field_identifier = nil
+      field_identifier = type if type =~ /\d/
 
       # Add to reports only if the code doesn't equal "negative" code.
       unless type == "n"
@@ -135,6 +139,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
           :visited_at    => parsed_current_visited_at,
           :eliminated_at => eliminated_at,
           :breeding_site => breeding_site,
+          :field_identifier => field_identifier,
           :description   => description,
           :protected     => row_content[:protected],
           :chemically_treated => row_content[:chemical],
@@ -169,15 +174,33 @@ class API::V0::CsvReportsController < API::V0::BaseController
 
 
     #------------------------------
-    # Create or update the reports.
+    # Create or update the reports
+    # We create a new report if the following is true:
+    # * It's a new visit AND
+    # * The "breeding site" column has an identifier (e.g. B3) different
+    #   than any previous report.
     reports.each do |report|
-      r = Report.find_by_csv_uuid(report[:csv_uuid])
+      # TODO: Horrible way of checking whether we have a new report and thereby
+      # creating Visit instance.
+      new_report = false
+      already_exists_report = nil
+      r = Report.find_by_field_identifier(report[:field_identifier]) if report[:field_identifier].present?
+
+      # TODO: Refactor this cluster fuck.
       if r.blank?
-        r            = Report.new
-        r.created_at = report[:visited_at] if report[:visited_at].present?
-        Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
+        already_exists_report = Report.find_by_csv_uuid(report[:csv_uuid])
+        if already_exists_report.present?
+          r = already_exists_report
+        else
+          new_report   = true
+          r            = Report.new
+          r.field_identifier = report[:field_identifier]
+          r.created_at = report[:visited_at] if report[:visited_at].present?
+          Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
+        end
       end
 
+      # Let's update the report and save.
       r.report             = report[:description]
       r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
       r.protected          = report[:protected]
@@ -191,6 +214,29 @@ class API::V0::CsvReportsController < API::V0::BaseController
       r.csv_uuid           = report[:csv_uuid]
       r.eliminated_at      = report[:eliminated_at]
       r.save(:validate => false)
+
+      # We create an inspection for this report if we know the report to be present,
+      # and it's not eliminated yet.
+      if new_report == false && already_exists_report.blank? && report[:eliminated_at].blank?
+        v = Visit.where(:location_id => location.id)
+        v = v.where("parent_visit_id IS NOT NULL")
+        v = v.where(:visited_at => (report[:visited_at].beginning_of_day..report[:visited_at].end_of_day))
+        v = v.order("visited_at DESC").limit(1)
+        if v.blank?
+          v                 = Visit.new
+          v.location_id     = location.id
+          v.parent_visit_id = r.initial_visit.id if r.initial_visit.present? # TODO: We're not really using this column I think.
+          v.visited_at      = report[:visited_at]
+          v.save
+        else
+          v = v.first
+        end
+
+        ins = Inspection.find_by_visit_id_and_report_id(v.id, r.id)
+        ins = Inspection.new(:visit_id => v.id, :report_id => r.id) if ins.blank?
+        ins.identification_type = r.status
+        ins.save
+      end
     end
 
     #--------------------------------------------------------------------
