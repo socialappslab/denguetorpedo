@@ -129,7 +129,7 @@ class CsvReport < ActiveRecord::Base
     uuid = uuid.strip.downcase.underscore
     return uuid
   end
-
+  
   #----------------------------------------------------------------------------
 
   def self.load_spreadsheet(file)

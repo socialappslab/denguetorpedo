@@ -388,4 +388,66 @@ describe API::V0::CsvReportsController do
     end
   end
 
+  #----------------------------------------------------------------------------
+
+  context "when uploading custom CSV with labels", :after_commit => true do
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+
+      neighborhood = Neighborhood.first
+      csv      = File.open(Rails.root + "spec/support/barrel_labeling.xlsx")
+      csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+      post :create, :csv_report => { :csv => csv_file },
+      :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+      :neighborhood_id => neighborhood.id
+    end
+
+    it "doesn't create duplicate reports" do
+      expect(Report.count).to eq(3)
+    end
+
+    it "creates Report instances with correct attributes" do
+    end
+
+    it "creates additional Inspection instances for same report" do
+      r = Report.find_by_field_identifier("b3")
+      r.completed_at = Time.zone.now
+      r.save(:validate => false)
+      inspections = Inspection.where(:report_id => r.id)
+      expect(inspections.count).to eq(4)
+    end
+
+    it "creates Inspection instances with correct attributes" do
+      r = Report.find_by_field_identifier("b3")
+      r.completed_at = Time.zone.now
+      r.save(:validate => false)
+      inspections = Inspection.where(:report_id => r.id).joins(:visit).order("visits.visited_at ASC")
+      expect(inspections[0].identification_type).to eq(Inspection::Types::POTENTIAL)
+      expect(inspections[1].identification_type).to eq(Inspection::Types::POTENTIAL)
+      expect(inspections[2].identification_type).to eq(Inspection::Types::POSITIVE)
+      expect(inspections[3].identification_type).to eq(Inspection::Types::NEGATIVE)
+    end
+
+    it "creates additional Visit instances for same report" do
+      r = Report.find_by_field_identifier("b3")
+      r.completed_at = Time.zone.now
+      r.save(:validate => false)
+      expect(r.visits.count).to eq(4)
+    end
+
+    it "creates Visit instances with correct attributes" do
+      r = Report.find_by_field_identifier("b3")
+      r.completed_at = Time.zone.now
+      r.save(:validate => false)
+      visits = r.visits.order("visited_at ASC")
+
+      # NOTE: We're expecting 4 but the last one will not be created until it's "completed"!
+      expect(visits[0].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-01")
+      expect(visits[1].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-03")
+      expect(visits[2].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-05")
+      expect(visits[3].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-07")
+
+    end
+  end
 end
