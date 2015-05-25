@@ -15,17 +15,20 @@
 
 
     .col-md-4.pull-right.metadata
-      %div
-        - if report.status == Report::Status::POSITIVE
-          %i.fa.fa-exclamation-circle.positive
-            = I18n.t("common_terms.positive")
-        - elsif report.status == Report::Status::POTENTIAL
-          %i.fa.fa-exclamation-circle.potential
-            = I18n.t("common_terms.potential")
+      // TODO: Optimize this inefficient query.
+      %ul.list-unstyled
+        - report.inspections.joins(:visit).order("visits.visited_at ASC").each do |ins|
+          %li
+            - if ins.identification_type == Inspection::Types::POSITIVE
+              %span.label.label-danger
+                = ins.visit.visited_at.strftime("%Y-%m-%d")
+            - elsif ins.identification_type == Inspection::Types::POTENTIAL
+              %span.label.label-warning
+                = ins.visit.visited_at.strftime("%Y-%m-%d")
+            - else
+              %span.label.label-success
+                = ins.visit.visited_at.strftime("%Y-%m-%d")
 
-      - if report.eliminated?
-        .report-eliminated
-          = I18n.t("common_terms.eliminated")
 
   - if report.eliminated? && report.eliminator
     .row
