@@ -9,7 +9,9 @@
   .form-group
     = f.label :username, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
     .col-md-6
-      = f.text_field :username, :class => "form-control"
+      .input-group
+        %span.input-group-addon @
+        = f.text_field :username, :class => "form-control"
 
   .form-group
     = f.label :password, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
