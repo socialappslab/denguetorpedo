@@ -1,12 +1,11 @@
 # -*- encoding : utf-8 -*-
 
 class User < ActiveRecord::Base
-  attr_accessible :locale, :first_name, :reporter,
-  :neighborhood_id, :last_name, :middle_name, :nickname, :email, :username,
+  attr_accessible :locale, :neighborhood_id, :email, :username,
   :password, :password_confirmation, :auth_token, :phone_number,
   :phone_number_confirmation, :profile_photo, :is_verifier,
   :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked,
-  :carrier, :prepaid, :points, :total_points
+  :carrier, :prepaid, :points, :total_points, :name
 
   #----------------------------------------------------------------------------
 
@@ -55,15 +54,12 @@ class User < ActiveRecord::Base
   # Validators
   #-----------
 
+  validates :name,     :presence => true
   validates :username, :presence => true
   validates :username, :uniqueness => true
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
-  # validates :first_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
-  # validates :last_name, presence: true, :length => { :minimum => 2, :maximum => 16 }
   validates :neighborhood_id, :presence => true
-
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_blank => true
-
   validates :points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :total_points, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0}
 
