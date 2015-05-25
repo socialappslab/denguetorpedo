@@ -67,6 +67,7 @@ class User < ActiveRecord::Base
   # Filters
   #--------
   before_create { generate_token(:auth_token) }
+  before_save :clean_username
 
   #----------------------------------------------------------------------------
   # Associations
@@ -272,6 +273,15 @@ class User < ActiveRecord::Base
 
     return self.profile_photo.url(:large)
   end
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  def clean_username
+    self.username = self.username.strip.downcase if self.username.present?
+  end
+
 
   #----------------------------------------------------------------------------
 
