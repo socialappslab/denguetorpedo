@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
     PORTUGUESE = "pt"
   end
 
-  EMAIL_REGEX = /[a-z0-9!$#%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!$#%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+  EMAIL_REGEX    = /[a-z0-9!$#%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!$#%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
   has_secure_password
   has_attached_file :profile_photo, :styles => { :small => ["150x150>", :jpg], :large => ["300x300>", :jpg] }, :convert_options => { :small => "-quality 75 -strip", :large => "-quality 75 -strip" }
