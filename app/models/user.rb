@@ -288,7 +288,7 @@ class User < ActiveRecord::Base
   def has_proper_username?
     return true if self.username.blank?
 
-    if (self.username =~ /\A\p{Alnum}+_{Alnum}+\z/).nil?
+    if (self.username =~ /^(\w)+$/).nil?
       self.errors.add(:username, I18n.t("activerecord.errors.users.invalid_username"))
       return false
     end
