@@ -1,5 +1,10 @@
 
 = form_for(@user, html: {name: "registration_form", :class => "form-horizontal" }) do |f|
+  .form-group
+    = f.label :name, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
+    .col-md-6
+      = f.text_field :name, :class => "form-control"
+
 
   .form-group
     = f.label :username, :class => "control-label col-md-6", :style => "font-size: 14px; font-weight: normal;"
