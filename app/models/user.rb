@@ -55,8 +55,11 @@ class User < ActiveRecord::Base
   #-----------
 
   validates :name,     :presence => true
+
   validates :username, :presence => true
   validates :username, :uniqueness => true
+  validate  :username, :has_proper_username?
+
   validates :password, :length => { :minimum => 4}, :if => "id.nil? || password"
   validates :neighborhood_id, :presence => true
   validates :email, :format => { :with => EMAIL_REGEX }, :allow_blank => true
@@ -282,6 +285,16 @@ class User < ActiveRecord::Base
     self.username = self.username.strip.downcase if self.username.present?
   end
 
+  def has_proper_username?
+    return true if self.username.blank?
+
+    if (self.username =~ /\A\p{Alnum}+_{Alnum}+\z/).nil?
+      self.errors.add(:username, I18n.t("activerecord.errors.users.invalid_username"))
+      return false
+    end
+
+    return true
+  end
 
   #----------------------------------------------------------------------------
 
