@@ -112,7 +112,9 @@
 
 
   .form-group
-    = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
+    = link_to I18n.t("common_terms.cancel"), neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg"
+
+    = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button pull-right" do
       %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
       = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")
 
