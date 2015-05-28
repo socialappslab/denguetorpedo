@@ -89,8 +89,6 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   def create
-    params[:user].each{|key,val| params[:user][key] = params[:user][key].strip}
-
     @user = User.new(params[:user])
     if @user.save
 

@@ -13,6 +13,10 @@ class SessionsController < ApplicationController
     # used to require login by email, but moved over to usernames.
     user = User.find_by_email( params[:username] ) if user.nil?
 
+    # Try to identify the user by name if username/email fails. This is because
+    # we moved to using Twitter-like usernames.
+    user = User.find_by_name( params[:username] ) if user.nil?
+
     if user && user.authenticate(params[:password])
       if user.is_blocked == true
         redirect_to root_url, :alert => I18n.t("views.application.user_blocked") and return
