@@ -21,12 +21,15 @@
           %li
             - if ins.identification_type == Inspection::Types::POSITIVE
               %span.label.label-danger
+                = I18n.t("common_terms.positive")
                 = ins.visit.visited_at.strftime("%Y-%m-%d")
             - elsif ins.identification_type == Inspection::Types::POTENTIAL
               %span.label.label-warning
+                = I18n.t("common_terms.potential")
                 = ins.visit.visited_at.strftime("%Y-%m-%d")
             - else
               %span.label.label-success
+                = I18n.t("common_terms.eliminated")
                 = ins.visit.visited_at.strftime("%Y-%m-%d")
 
 
