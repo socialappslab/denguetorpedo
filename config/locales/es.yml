@@ -134,6 +134,8 @@ es:
         not_a_number: "no es un número"
       comments:
         blank: "es obligatorio"
+      users:
+        invalid_username: no válido. Solo caracteres alfanuméricos.
     success:
       report:
         create: Criadero marcado exitosamente

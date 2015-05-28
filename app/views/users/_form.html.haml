@@ -4,14 +4,18 @@
     = I18n.t("common_terms.configuration")
   %br
 
+  .form-group
+    = f.label :name, :class => "control-label col-md-6"
+    .col-md-6
+      = f.text_field :name, :class => "form-control"
+
 
   .form-group
-    = f.label :username, :class => "control-label col-md-6" do
-      = I18n.t("activerecord.attributes.user.username")
-      %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
-        *
+    = f.label :username, :class => "control-label col-md-6"
     .col-md-6
-      = f.text_field :username, :class => "form-control"
+      .input-group
+        %span.input-group-addon @
+        = f.text_field :username, :class => "form-control"
 
 
   .form-group
@@ -20,28 +24,15 @@
       = f.text_field :email, :class => "form-control"
 
 
-  .form-group
-    = f.label :first_name, :class => "control-label col-md-6", :style => "position: relative" do
-      = I18n.t("activerecord.attributes.user.first_name")
-
-    .col-md-6
-      = f.text_field :first_name, :class => "form-control"
-
-  .form-group
-    = f.label :last_name, :class => "control-label col-md-6", :style => "position: relative" do
-      = I18n.t("activerecord.attributes.user.last_name")
-    .col-md-6
-      = f.text_field :last_name, :class => "form-control"
-
   .form-group{:style => "text-align: left; font-size: 12px;"}
     = I18n.t("views.users.edit.username_notice")
 
   .form-group
     = f.label :gender, :class => "control-label col-md-6"
     .col-md-6
-      = f.radio_button :gender, "true", :checked => (@user.gender == true), :class => "inline"
+      = f.radio_button :gender, "true", :checked => (@user.gender == true), :class => "radio-inline"
       = I18n.t("common_terms.male")
-      = f.radio_button :gender, "false", :checked => (@user.gender == false), :class => "inline"
+      = f.radio_button :gender, "false", :checked => (@user.gender == false), :class => "radio-inline"
       = I18n.t("common_terms.female")
 
   .form-group

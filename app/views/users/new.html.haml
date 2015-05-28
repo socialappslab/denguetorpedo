@@ -7,11 +7,19 @@
       = I18n.t("common_terms.register")
     %br
     = form_for(@user, :html => {:class => "form-horizontal"}) do |f|
+      .form-group
+        = f.label :name, :class => "control-label col-md-6"
+        .col-md-6
+          = f.text_field :name, :class => "form-control"
+
 
       .form-group
         = f.label :username, :class => "control-label col-md-6"
         .col-md-6
-          = f.text_field :username, :class => "form-control"
+          .input-group
+            %span.input-group-addon @
+            = f.text_field :username, :class => "form-control"
+
 
       .form-group
         = f.label :password, :class => "control-label col-md-6"

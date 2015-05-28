@@ -3,14 +3,12 @@ require 'rack/test'
 
 FactoryGirl.define do
 	factory :user do |user|
-		first_name 	{ Faker::Name.first_name }
-		last_name 	 { Faker::Name.last_name }
-		username		 { Faker::Internet.user_name }
-		phone_number { Faker::PhoneNumber.phone_number[0..19] }
-		password 						 "denguewarrior"
+		name 		 { Faker::Name.first_name }
+		username { Faker::Internet.user_name.gsub(" ", "").gsub(".", "") }
+		password "denguewarrior"
 		password_confirmation "denguewarrior"
-		role 			 							 User::Types::RESIDENT
-		locale User::Locales::SPANISH
+		role 		 User::Types::RESIDENT
+		locale 	 User::Locales::SPANISH
 		association :neighborhood
 
 		profile_photo_file_name "File name"

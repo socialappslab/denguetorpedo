@@ -10,12 +10,53 @@ describe User do
 		I18n.default_locale = User::Locales::SPANISH
 	end
 
+	#-----------------------------------------------------------------------------
+
 	it "validates presence of neighborhood" do
 		I18n.locale = I18n.default_locale
 		user.neighborhood_id = nil
 		user.save
 		expect(user.errors.full_messages).to include("Comunidad es obligatorio")
 	end
+
+	#-----------------------------------------------------------------------------
+
+	describe "Validations" do
+
+		describe "on Username" do
+		it "disallows spaces" do
+				user = FactoryGirl.build(:user, :username => "Dmitri S")
+				user.save
+				expect(user.errors.messages[:username]).to include( I18n.t("activerecord.errors.users.invalid_username") )
+			end
+
+			it "disallows @" do
+				user = FactoryGirl.build(:user, :username => "@dmitri")
+				user.save
+				expect(user.errors.messages[:username]).to include( I18n.t("activerecord.errors.users.invalid_username") )
+			end
+
+			it "disallows ." do
+				user = FactoryGirl.build(:user, :username => "dmitri.skj")
+				user.save
+				expect(user.errors.messages[:username]).to include(I18n.t("activerecord.errors.users.invalid_username"))
+			end
+
+			it "allows underscores" do
+				user = FactoryGirl.build(:user, :username => "dmitri_skj")
+				user.save
+				expect(user.errors.messages[:username]).to eq(nil)
+			end
+
+			it "allows normal susernames" do
+				user = FactoryGirl.build(:user, :username => "dmitri")
+				user.save
+				expect(user.errors.messages[:username]).to eq(nil)
+			end
+		end
+	end
+
+	#-----------------------------------------------------------------------------
 
 	describe "abilities" do
     before(:each) do

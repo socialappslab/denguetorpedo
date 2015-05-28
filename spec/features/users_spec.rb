@@ -73,7 +73,7 @@ describe "Users", :type => :feature do
   #-----------------------------------------------------------------------------
 
   context "Logging a user in" do
-    let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+    let(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id, :email => "test@mailinator.com", :name => "Dmitri", :username => "dmitri") }
 
     before(:each) do
       visit root_path
@@ -95,15 +95,40 @@ describe "Users", :type => :feature do
 
       expect(page).not_to have_content("Signed in")
     end
+
+		it "allows login by email" do
+			fill_in "username", :with => user.email
+      fill_in "password", :with => user.password
+      click_button "Entrar"
+
+			expect(current_path).to eq(teams_path)
+		end
+
+		it "allows login by username" do
+			fill_in "username", :with => user.username
+      fill_in "password", :with => user.password
+      click_button "Entrar"
+
+			expect(current_path).to eq(teams_path)
+		end
+
+		it "allows login by name" do
+			fill_in "username", :with => user.name
+      fill_in "password", :with => user.password
+      click_button "Entrar"
+
+			expect(current_path).to eq(teams_path)
+		end
   end
 
   #-----------------------------------------------------------------------------
 
   context "Registering a user" do
     context "when user inputs valid information" do
-      it "redirects them to their edit page" do
+      it "redirects them to the teams page" do
         visit root_path
 
+				fill_in "user_name", 		 				:with => "test"
         fill_in "user_username", 		 				:with => "test"
         fill_in "user_password", 						 :with => "abcdefg"
         fill_in "user_password_confirmation", :with => "abcdefg"
@@ -115,22 +140,11 @@ describe "Users", :type => :feature do
       end
     end
 
-    it "allows them to fully register seamlessly" do
-      visit root_path
-
-      fill_in "user_username", 		 			  :with => "test"
-      fill_in "user_password", 						 :with => "abcdefg"
-      fill_in "user_password_confirmation", :with => "abcdefg"
-      select("Ariel Darce, Managua", :from => "user_neighborhood_id")
-      page.find(".submit-button").click
-
-      expect(page).to have_content( I18n.t("views.users.create_success_flash") )
-    end
-
-    it "notifies them of existing username" do
+    it "displays errors" do
       FactoryGirl.create(:user, :username => "test", :neighborhood_id => Neighborhood.first.id)
       visit root_path
 
+			fill_in "user_name", 		 			  		:with => "test"
       fill_in "user_username", 		 			  :with => "test"
       fill_in "user_password", 						 :with => "abcdefg"
       fill_in "user_password_confirmation", :with => "abcdefg"
@@ -168,17 +182,10 @@ describe "Users", :type => :feature do
         expect(page).to have_css("#user_gender_false[checked='checked']")
       end
 
-      it "keeps first name information" do
-        fill_in :user_first_name, :with => "I AM TESTER"
+      it "keeps name information" do
+        fill_in :user_name, :with => "I AM TESTER"
         click_button I18n.t("views.buttons.update")
-        expect(find_field("user_first_name").value).to eq("I AM TESTER")
-      end
-
-
-      it "keeps last name information" do
-        fill_in :user_last_name, :with => "I AM TESTER"
-        click_button I18n.t("views.buttons.update")
-        expect(find_field("user_last_name").value).to eq("I AM TESTER")
+        expect(find_field("user_name").value).to eq("I AM TESTER")
       end
     end
 
