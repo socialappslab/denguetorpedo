@@ -22,34 +22,37 @@ describe User do
 	#-----------------------------------------------------------------------------
 
 	describe "Validations" do
-		it "validates on spaces in username" do
-			user = FactoryGirl.build(:user, :username => "Dmitri S")
-			user.save
-			expect(user.errors.messages[:username]).to include( I18n.t("activerecord.errors.users.invalid_username") )
-		end
 
-		it "validates on special characters in username" do
-			user = FactoryGirl.build(:user, :username => "@dmitri")
-			user.save
-			expect(user.errors.messages[:username]).to include( I18n.t("activerecord.errors.users.invalid_username") )
-		end
+		describe "on Username" do
+		it "disallows spaces" do
+				user = FactoryGirl.build(:user, :username => "Dmitri S")
+				user.save
+				expect(user.errors.messages[:username]).to include( I18n.t("activerecord.errors.users.invalid_username") )
+			end
 
-		it "allows underscores" do
-			user = FactoryGirl.build(:user, :username => "dmitri_skj")
-			user.save
-			expect(user.errors.messages[:username]).to eq(nil)
-		end
+			it "disallows @" do
+				user = FactoryGirl.build(:user, :username => "@dmitri")
+				user.save
+				expect(user.errors.messages[:username]).to include( I18n.t("activerecord.errors.users.invalid_username") )
+			end
 
-		it "validates on presence of period in username" do
-			user = FactoryGirl.build(:user, :username => "dmitri.skj")
-			user.save
-			expect(user.errors.messages[:username]).to include(I18n.t("activerecord.errors.users.invalid_username"))
-		end
+			it "disallows ." do
+				user = FactoryGirl.build(:user, :username => "dmitri.skj")
+				user.save
+				expect(user.errors.messages[:username]).to include(I18n.t("activerecord.errors.users.invalid_username"))
+			end
 
-		it "allows expected usernames" do
-			user = FactoryGirl.build(:user, :username => "dmitri")
-			user.save
-			expect(user.errors.messages[:username]).to eq(nil)
+			it "allows underscores" do
+				user = FactoryGirl.build(:user, :username => "dmitri_skj")
+				user.save
+				expect(user.errors.messages[:username]).to eq(nil)
+			end
+
+			it "allows normal susernames" do
+				user = FactoryGirl.build(:user, :username => "dmitri")
+				user.save
+				expect(user.errors.messages[:username]).to eq(nil)
+			end
 		end
 	end
 

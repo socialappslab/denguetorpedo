@@ -4,7 +4,7 @@ require 'rack/test'
 FactoryGirl.define do
 	factory :user do |user|
 		name 		 { Faker::Name.first_name }
-		username { Faker::Internet.user_name + Faker::Internet.user_name }
+		username { Faker::Internet.user_name.gsub(" ", "").gsub(".", "") }
 		password "denguewarrior"
 		password_confirmation "denguewarrior"
 		role 		 User::Types::RESIDENT
