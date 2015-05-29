@@ -53,7 +53,7 @@
 
 
 
-  .col-md-5.col-md-offset-1{"ng-controller" => "DCPostListCtrl", "neighborhood_id" => @neighborhood.id}
+  .col-md-5.col-md-offset-1{"ng-controller" => "DCPostListCtrl", "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
     %h1.text-center
       = I18n.t("views.post.feed")
 

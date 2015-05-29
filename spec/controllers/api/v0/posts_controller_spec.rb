@@ -2,10 +2,29 @@
 require "rails_helper"
 
 describe API::V0::PostsController do
-  let(:user)  { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:user)  { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id, :username => "dmitri") }
   let!(:blog_post) { FactoryGirl.create(:post, :content => "Test", :user_id => user.id)}
   let(:team)  { FactoryGirl.create(:team, :name => "Team", :neighborhood_id => Neighborhood.first.id) }
   let(:other_team) { FactoryGirl.create(:team, :name => "Other team", :neighborhood_id => Neighborhood.first.id) }
+
+  #----------------------------------------------------------------------------
+
+  describe "Creating a post" do
+    render_views
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+    end
+
+    it "wraps mentions in <a> tag" do
+      post :create, :format => :json, :post => {:neighborhood_id => user.neighborhood_id, :content => "Hello world, @dmitri!"}
+      expect(Post.last.content).to include("<a href='#{user_path(user)}'>@#{user.username}</a>")
+    end
+
+    it "leaves unidentified user mentions as is" do
+      post :create, :format => :json, :post => {:neighborhood_id => user.neighborhood_id, :content => "Hello world, @hahaha!"}
+      expect(Post.last.content).not_to include("<a href='#{user_path(user)}'>@#{user.username}</a>")
+    end
+  end
 
   #----------------------------------------------------------------------------
 

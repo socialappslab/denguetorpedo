@@ -36,7 +36,7 @@ module ApplicationHelper
     if I18n.locale.to_s == User::Locales::PORTUGUESE
       image_tag("logo_pt.png", :id => "logo")
     else
-      image_tag("logo_es.png", :id => "logo")
+      image_tag("denguechat_logo.jpg", :class => "img-rounded", :id => "logo")
     end
   end
 

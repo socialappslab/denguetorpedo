@@ -7,8 +7,11 @@
 //= require_self
 //= require "feed-interactions"
 //= require angular
+//= require angular-sanitize
 //= require "app/app"
 //= require "app/controllers/post_controller"
+//= require "jquery/caret-min"
+//= require "jquery/atwho-min"
 
 
 window.denguechat = {};

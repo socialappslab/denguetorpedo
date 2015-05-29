@@ -21,8 +21,8 @@
       -# %a.delete-resource-button{"ng-href" => "{{post.actions.delete}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{post.actions.delete}}"}
       -#   %i.fa.fa-trash-o
 
-  .feed-item-content
-    {{post.content}}
+  .feed-item-content{"ng-bind-html" => "post.content"}
+
 
     .post-photo{"ng-hide" => "{{post.photo == null}}"}
       %img.img-rounded{"ng-src" => "{{post.photo}}"}

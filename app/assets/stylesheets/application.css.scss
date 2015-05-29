@@ -11,6 +11,7 @@
 *= require neighborhoods
 *= require users
 *= require "ios"
+*= require "jquery/atwho-min"
 */
 
 @import "variables";
@@ -66,7 +67,8 @@
   position: absolute;
   left: 25px;
   z-index: 3;
-  width: 100px;
+  height: 70px;
+  top: 5px;
 }
 
 #white_spacer {
@@ -484,6 +486,10 @@ div {
   font-weight: 200;
   font-size: 18px;
   line-height: 22px;
+
+  a {
+    color: rgb(51, 122, 183);
+  }
 }
 
 

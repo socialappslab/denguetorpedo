@@ -47,6 +47,17 @@ class API::V0::PostsController < API::V0::BaseController
       @post.photo = paperclip_image
     end
 
+    # Iterate over the content, identifying mentions by @, and then wrapping
+    # the valid usernames with <a> HTML tag.
+    @post.content.scan(/@\w*/).each do |mention|
+      u = User.find_by_username( mention.gsub("@","") )
+
+      # TODO: Create a notification here.
+      if u.present?
+        @post.content.gsub!(mention, "<a href='#{user_path(u)}'>#{mention}</a>")
+      end
+    end
+
     if @post.save
       render "api/v0/posts/show" and return
     else

@@ -13,6 +13,8 @@ var postListCtrl = function ($scope, $http, $attrs) {
     $("#newsfeed .loading-spinner").hide();
   });
 
+  $scope.usernames = angular.fromJson( $attrs.usernames );
+
   $scope.createPost = function(post)
   {
     // Disable the submit button for new-post directive.
@@ -36,7 +38,6 @@ var postListCtrl = function ($scope, $http, $attrs) {
 
   $scope.createComment = function(post, comment)
   {
-    console.log(post)
     // Disable the submit button for new-post directive.
     $scope.submitButtonCommentDisabled = true;
 
@@ -97,6 +98,12 @@ var newPostDirective = function(){
     templateUrl: "<%= asset_path('posts/new.html') %>",
     link: function(scope, element, attrs) {
       scope.submitButtonDisabled = false;
+
+      angular.element(element).find("textarea").atwho({
+        at: "@",
+        data: scope.usernames,
+        limit: 5
+      })
     }
   }
 }
@@ -107,6 +114,12 @@ var newCommentDirective = function(){
     templateUrl: "<%= asset_path('comments/new.html') %>",
     link: function(scope, element, attrs) {
       scope.submitButtonCommentDisabled = false;
+
+      angular.element(element).find("textarea").atwho({
+        at: "@",
+        data: scope.usernames,
+        limit: 5
+      })
     }
   }
 }

@@ -17,6 +17,15 @@ class API::V0::Posts::CommentsController < API::V0::BaseController
     @comment.commentable_type = @post.class.name
     @comment.user_id = @current_user.id
 
+    @comment.content.scan(/@\w*/).each do |mention|
+      u = User.find_by_username( mention.gsub("@","") )
+
+      # TODO: Create a notification here.
+      if u.present?
+        @comment.content.gsub!(mention, "<a href='#{user_path(u)}'>#{mention}</a>")
+      end
+    end
+
     if @comment.save
       render "api/v0/comments/show" and return
     else

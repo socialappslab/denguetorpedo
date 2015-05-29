@@ -18,8 +18,7 @@
       // TODO: The jQuery doesn't bind to .delete-resource-button!
       -# %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
       -#   %i.fa.fa-trash-o
-  .feed-item-content
-    {{comment.content}}
+  .feed-item-content{"ng-bind-html" => "comment.content"}
 
   .feed-item-interaction-menu
     %a.likes_button{"ng-click" => "updateCommentLikesCounter(comment)", "ng-style" => "{color: comment.likeColor}"}
