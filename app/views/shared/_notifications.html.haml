@@ -2,7 +2,7 @@
   - @notifications.each do |n|
     %li
       - if n.notification_type == "Message"
-        = link_to conversations_path do
+        = link_to user_conversations_path(n.user) do
           Usted tiene un nuevo mensaje!
       - elsif n.notification_type == "Post"
         = link_to post_path(Post.find(n.notification_id)) do
