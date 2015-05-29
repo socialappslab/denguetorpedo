@@ -1,0 +1,4 @@
+.row
+  .col-md-5.col-md-offset-4
+    #newsfeed
+      = render :partial => 'users/feed_item', :locals => {:post => @post, :owner => @post.user}

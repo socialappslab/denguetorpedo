@@ -167,14 +167,14 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Posts
 
-  resources :posts, :only => [:create] do
+  resources :posts, :only => [:create, :show] do
     post "comment", :on => :member
   end
 
   #----------------------------------------------------------------------------
   # Comments
 
-  resources :comments, :only => :destroy
+  resources :comments, :only => [:destroy]
 
   #----------------------------------------------------------------------------
   # Legacy SMS routes.
