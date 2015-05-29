@@ -32,7 +32,7 @@
 
 /------------------------------------------------------------------------------
 
-%div{"ng-controller" => "DCPostListCtrl", "neighborhood_id" => @neighborhood.id}
+%div{"ng-controller" => "DCPostListCtrl", "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
   - if @current_user && @users.include?(@current_user)
     .row
       .col-md-9
