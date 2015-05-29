@@ -33,6 +33,14 @@ class API::V0::PostsController < API::V0::BaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /api/v0/posts/:id
+
+  def show
+    @post = Post.find(params[:id])
+    render "api/v0/posts/show" and return
+  end
+
+  #----------------------------------------------------------------------------
   # POST /api/v0/posts
 
   def create
