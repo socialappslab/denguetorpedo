@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150525021301) do
+ActiveRecord::Schema.define(:version => 20150529044839) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -404,12 +404,14 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
 
   create_table "user_notifications", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "notification_type"
-    t.boolean  "viewed"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.string   "notification_type"
+    t.integer  "notification_id"
+    t.datetime "notified_at"
+    t.datetime "seen_at"
+    t.integer  "medium"
   end
 
+  add_index "user_notifications", ["seen_at"], :name => "index_user_notifications_on_seen_at"
   add_index "user_notifications", ["user_id"], :name => "index_user_notifications_on_user_id"
 
   create_table "users", :force => true do |t|
