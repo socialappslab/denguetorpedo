@@ -1,14 +1,8 @@
 # -*- encoding : utf-8 -*-
 class UserNotification < ActiveRecord::Base
-  attr_accessible :user_id, :notification_id, :notification_type, :seen_at, :notified_at
+  attr_accessible :user_id, :notification_id, :notification_type, :medium, :seen_at, :notified_at
 
   #----------------------------------------------------------------------------
-
-  module Types
-    MESSAGE = 0
-    POST    = 1
-    COMMENT = 2
-  end
 
   module Mediums
     WEB   = 0

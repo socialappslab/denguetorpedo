@@ -24,6 +24,22 @@ describe API::V0::PostsController do
       post :create, :format => :json, :post => {:neighborhood_id => user.neighborhood_id, :content => "Hello world, @hahaha!"}
       expect(Post.last.content).not_to include("<a href='#{user_path(user)}'>@#{user.username}</a>")
     end
+
+    it "creates a UserNotification" do
+      expect {
+        post :create, :format => :json, :post => {:neighborhood_id => user.neighborhood_id, :content => "Hello world, @dmitri!"}
+      }.to change(UserNotification, :count).by(1)
+    end
+
+    it "creates UserNotification with correct attributes" do
+      post :create, :format => :json, :post => {:neighborhood_id => user.neighborhood_id, :content => "Hello world, @dmitri!"}
+      un = UserNotification.last
+      expect(un.user_id).to eq(user.id)
+      expect(un.notification_id).to eq(Post.last.id)
+      expect(un.notification_type).to eq("Post")
+      expect(un.medium).to eq(UserNotification::Mediums::WEB)
+      expect(un.notified_at.strftime("%Y-%M-%D")).to eq(Time.zone.now.strftime("%Y-%M-%D"))
+    end
   end
 
   #----------------------------------------------------------------------------

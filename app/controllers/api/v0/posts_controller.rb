@@ -49,17 +49,23 @@ class API::V0::PostsController < API::V0::BaseController
 
     # Iterate over the content, identifying mentions by @, and then wrapping
     # the valid usernames with <a> HTML tag.
+    mentioned_users = []
     @post.content.scan(/@\w*/).each do |mention|
       u = User.find_by_username( mention.gsub("@","") )
 
       if u.present?
         @post.content.gsub!(mention, "<a href='#{user_path(u)}'>#{mention}</a>")
-
-        UserNotification.create(:user_id => u.id, :notification_id => @post.id, :notification_type => UserNotification::Types::POST, :notified_at => Time.zone.now, :medium => UserNotification::Types::WEB)
+        mentioned_users << u
       end
     end
 
     if @post.save
+      # Now that we know the post is valid, let's go ahead and notify the mentioned
+      # users.
+      mentioned_users.each do |u|
+        un = UserNotification.create(:user_id => u.id, :notification_id => @post.id, :notification_type => "Post", :notified_at => Time.zone.now, :medium => UserNotification::Mediums::WEB)
+      end
+
       render "api/v0/posts/show" and return
     else
       raise API::V0::Error.new(@post.errors.full_messages[0], 422)
