@@ -20,12 +20,12 @@ class ConversationsController < ApplicationController
   private
 
   def clear_new_notifications
-    @message_notifications.each do |mn|
-      mn.update_column(:viewed, true)
+    @notifications.where(:notification_type => "Message").each do |mn|
+      mn.update_column(:seen_at, Time.zone.now)
     end
 
     # Now, set message_notifications to [] to not display 0 in
     # nagging-badge.
-    @message_notifications = []
+    @notifications = []
   end
 end

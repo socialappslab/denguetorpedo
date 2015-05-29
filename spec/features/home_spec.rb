@@ -10,7 +10,7 @@ describe "Landing Page", :type => :feature do
     end
 
     it "displays notifications if user has any" do
-      FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)
+      FactoryGirl.create(:user_notification, :user_id => user.id, :notification_id => 1, :notification_type => "Message", :medium => UserNotification::Mediums::WEB, :notified_at => Time.zone.now)
       visit "/"
       expect(page).to have_css(".badge")
     end

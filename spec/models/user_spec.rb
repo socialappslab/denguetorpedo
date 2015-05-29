@@ -76,7 +76,7 @@ describe User do
 	end
 
 	describe "when destroying a user" do
-		let!(:notification) { FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)}
+		let!(:notification) { FactoryGirl.create(:message_notification, :user_id => user.id, :notification_id => 1) }
 
 		it "destroys all associated notifications" do
 			expect {

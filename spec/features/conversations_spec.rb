@@ -17,7 +17,7 @@ describe "Conversations", :type => :feature do
 
   context "when visiting /conversations" do
     it "clears all notifications" do
-      un = FactoryGirl.create(:user_notification, :user_id => user.id, :notification_type => UserNotification::Types::MESSAGE)
+      un = FactoryGirl.create(:message_notification, :user_id => user.id, :notification_id => 1)
       visit user_conversations_path(user)
       expect(page).not_to have_css(".badge")
     end

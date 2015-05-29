@@ -70,7 +70,7 @@ class MessagesController < ApplicationController
       # the creator.
       @conversation.users.each do |u|
         next if @current_user == u
-        UserNotification.create(:user_id => u.id, :notification_type => UserNotification::Types::MESSAGE, :viewed => false)
+        UserNotification.create(:user_id => u.id, :notification_id => @message.id, :notification_type => "Message", :notified_at => Time.zone.now, :medium => UserNotification::Mediums::WEB)
       end
 
       Analytics.track( :user_id => @current_user.id, :event => "Created a new message") if Rails.env.production?
