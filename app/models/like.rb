@@ -5,15 +5,6 @@ class Like < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  module Types
-    POST    = Post.name
-    REPORT  = Report.name
-    NOTICE  = Notice.name
-    COMMENT = Comment.name 
-  end
-
-  #----------------------------------------------------------------------------
-
   belongs_to :likeable, :polymorphic => true, :counter_cache => true
 
   #----------------------------------------------------------------------------

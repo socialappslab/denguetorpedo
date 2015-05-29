@@ -1,3 +1,73 @@
+var postCtrl = function ($scope, $http, $attrs) {
+  var pathName = window.location.pathname;
+  var ajax   = $http.get("/api/v0" + pathName + ".json");
+
+  ajax.success(function(data) {
+    console.log(data)
+    $scope.post = data;
+  });
+  ajax.error(function(response) {
+    $("#newsfeed .error-message").show();
+    $("#newsfeed .loading-spinner").hide();
+  });
+  ajax.then(function(response) {
+    $("#newsfeed .loading-spinner").hide();
+  });
+
+  $scope.usernames = angular.fromJson( $attrs.usernames );
+
+  $scope.createComment = function(post, comment)
+  {
+    // Disable the submit button for new-post directive.
+    $scope.submitButtonCommentDisabled = true;
+
+    var ajax = $http.post("/api/v0/posts/" + post.id + "/comments", {"comment": comment});
+    ajax.success(function(data) {
+      comment.content = ""
+      // $scope.submitButtonCommentDisabled = false;
+      post.comments.push(data)
+    })
+
+    ajax.error(function(data) {
+      // $scope.submitButtonCommentDisabled = false;
+    })
+  }
+
+  $scope.updateLikesCounter = function(post)
+  {
+    // TODO: Use Rails routes.
+    var ajax = $http.post("/api/v0/posts/" + post.id + "/like", {"count": post.likes_count});
+    ajax.success(function(data) {
+      post.likes_count = data.count;
+
+      // TODO: Think of a better way to represent likeColor outside of the Post model.
+      if (data.liked)
+        post.likeColor = "#3498db"
+      else
+        post.likeColor = "#8899a6"
+    })
+  }
+
+  $scope.updateCommentLikesCounter = function(comment)
+  {
+    // TODO: Use Rails routes.
+    var ajax = $http.post("/api/v0/comments/" + comment.id + "/like", {"count": comment.likes_count});
+    ajax.success(function(data) {
+      comment.likes_count = data.count;
+
+      // TODO: Think of a better way to represent likeColor outside of the Post model.
+      if (data.liked)
+        comment.likeColor = "#3498db"
+      else
+        comment.likeColor = "#8899a6"
+    })
+  }
+};
+
+
+
+
+
 var postListCtrl = function ($scope, $http, $attrs) {
   var pathName = window.location.pathname;
   var ajax   = $http.get("/api/v0" + pathName + "/posts.json");
@@ -167,6 +237,8 @@ var fileUploadDirective = function() {
 // https://docs.angularjs.org/tutorial/step_05
 var postController = angular.module('dengueChatApp');
 postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postListCtrl]);
+postController.controller("DCPostCtrl", ["$scope", "$http", "$attrs", postCtrl]);
+
 
 // Define the directives on the controller.
 postController.directive("postComment", commentDirective);

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150525021301) do
+ActiveRecord::Schema.define(:version => 20150529044839) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -46,6 +46,13 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
   add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
 
+  create_table "badges", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "prize_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "breeding_sites", :force => true do |t|
     t.string   "description_in_pt"
     t.string   "description_in_es"
@@ -53,6 +60,15 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
     t.datetime "updated_at"
     t.string   "string_id"
     t.string   "code"
+  end
+
+  create_table "buy_ins", :force => true do |t|
+    t.integer  "group_buy_in_id"
+    t.integer  "user_id"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.boolean  "accepted"
+    t.boolean  "expired",         :default => false, :null => false
   end
 
   create_table "cities", :force => true do |t|
@@ -67,6 +83,22 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
     t.string   "time_zone"
     t.string   "country"
   end
+
+  create_table "ckeditor_assets", :force => true do |t|
+    t.string   "data_file_name",                  :null => false
+    t.string   "data_content_type"
+    t.integer  "data_file_size"
+    t.integer  "assetable_id"
+    t.string   "assetable_type",    :limit => 30
+    t.string   "type",              :limit => 30
+    t.integer  "width"
+    t.integer  "height"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
+  add_index "ckeditor_assets", ["assetable_type", "assetable_id"], :name => "idx_ckeditor_assetable"
+  add_index "ckeditor_assets", ["assetable_type", "type", "assetable_id"], :name => "idx_ckeditor_assetable_type"
 
   create_table "comments", :force => true do |t|
     t.integer  "user_id"
@@ -167,7 +199,6 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
   create_table "feeds", :force => true do |t|
     t.string   "target_type"
     t.integer  "target_id"
-    t.string   "feed_type"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
     t.integer  "user_id"
@@ -175,10 +206,10 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
   end
 
   create_table "houses", :force => true do |t|
-    t.string   "address"
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
     t.string   "name"
+    t.integer  "featured_event_id"
     t.integer  "location_id"
     t.string   "profile_photo_file_name"
     t.string   "profile_photo_content_type"
@@ -206,18 +237,30 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
   add_index "likes", ["likeable_id", "likeable_type"], :name => "index_likes_on_likeable_id_and_likeable_type"
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], :name => "index_likes_on_user_id_and_likeable_id_and_likeable_type", :unique => true
 
+  create_table "location_statuses", :id => false, :force => true do |t|
+    t.integer  "id",                  :null => false
+    t.integer  "location_id"
+    t.integer  "status"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "dengue_count"
+    t.integer  "chik_count"
+    t.string   "health_report"
+    t.integer  "identification_type"
+    t.datetime "identified_at"
+    t.datetime "cleaned_at"
+  end
+
   create_table "locations", :force => true do |t|
     t.string   "address"
     t.float    "latitude"
     t.float    "longitude"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.integer  "neighborhood_id"
     t.string   "street_type",     :default => ""
     t.string   "street_name",     :default => ""
     t.string   "street_number",   :default => ""
-    t.string   "neighborhood"
-    t.boolean  "cleaned",         :default => false
   end
 
   create_table "messages", :force => true do |t|
@@ -325,16 +368,11 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
   end
 
   create_table "reports", :force => true do |t|
-    t.string   "nation"
-    t.string   "state"
-    t.string   "city"
-    t.string   "address"
-    t.string   "neighborhood"
     t.text     "report"
     t.integer  "reporter_id"
-    t.integer  "status_cd"
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
+    t.integer  "status_cd"
     t.integer  "eliminator_id"
     t.integer  "location_id"
     t.string   "before_photo_file_name"
@@ -404,12 +442,14 @@ ActiveRecord::Schema.define(:version => 20150525021301) do
 
   create_table "user_notifications", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "notification_type"
-    t.boolean  "viewed"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.string   "notification_type"
+    t.integer  "notification_id"
+    t.datetime "notified_at"
+    t.datetime "seen_at"
+    t.integer  "medium"
   end
 
+  add_index "user_notifications", ["seen_at"], :name => "index_user_notifications_on_seen_at"
   add_index "user_notifications", ["user_id"], :name => "index_user_notifications_on_user_id"
 
   create_table "users", :force => true do |t|

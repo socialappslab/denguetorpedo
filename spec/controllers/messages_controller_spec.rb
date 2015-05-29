@@ -86,8 +86,8 @@ describe MessagesController do
         post "create", params
         n = UserNotification.last
         expect(n.user_id).to eq(other_user.id)
-        expect(n.notification_type).to eq(UserNotification::Types::MESSAGE)
-        expect(n.viewed).to eq(false)
+        expect(n.notification_type).to eq("Message")
+        expect(n.seen_at).to eq(nil)
       end
 
       it "creates a message with correct attributes" do

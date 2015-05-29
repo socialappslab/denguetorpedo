@@ -26,17 +26,20 @@
       = I18n.t("dashboard.reports")
 
   .col-md-2.dashboard-item
-    - header_styling = current_page?(:controller => "conversations", :action => "index") ? "font-weight:bold; text-align: center;" : ""
-    - if @message_notifications.blank?
-      = link_to user_conversations_path(@current_user), :style => header_styling do
-        %i.fa.fa-envelope
-        = I18n.t("activerecord.models.conversation", :count => 2)
+    - if @notifications.blank?
+      %a{:href => "#"}
+        %i.fa.fa-bell
+        &nbsp;
     - else
-      %div.badge.badge-important{:style => "width: 25px; position: relative; top: 10; left: 25"}
-        = @message_notifications.count
-      = link_to user_conversations_path(@current_user), :style => header_styling do
-        %i.fa.fa-envelope
-        = I18n.t("activerecord.models.conversation", :count => 2)
+      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
+        %a{:href => "#"}
+          %i.fa.fa-bell
+          %span.label.label-danger
+            = @notifications.count if @notifications.present?
+          &nbsp;
+
+      = render :partial => "shared/notifications"
+
 
 
   .col-md-1.dashboard-item.pull-right

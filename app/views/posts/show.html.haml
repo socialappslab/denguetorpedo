@@ -1,0 +1,9 @@
+.row
+  .col-md-5.col-md-offset-4
+    %div{"ng-controller" => "DCPostCtrl", "usernames" => User.pluck(:username)}
+
+      #newsfeed
+        .loading-spinner
+          %i.fa.fa-refresh.fa-spin
+        .feed-item-complete
+          %feed-item{"post" => "post"}

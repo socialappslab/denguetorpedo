@@ -17,7 +17,7 @@ Dengue::Application.routes.draw do
 
       resources :reports,     :only => [:index, :create, :destroy]
       resources :csv_reports, :only => [:create]
-      resources :posts,       :only => [:create, :destroy] do
+      resources :posts,       :only => [:create, :show, :destroy] do
         post "like", :on => :member
 
         resources :comments, :controller => "posts/comments", :only => [:create]
@@ -167,14 +167,14 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Posts
 
-  resources :posts, :only => [:create] do
+  resources :posts, :only => [:create, :show] do
     post "comment", :on => :member
   end
 
   #----------------------------------------------------------------------------
   # Comments
 
-  resources :comments, :only => :destroy
+  resources :comments, :only => [:destroy]
 
   #----------------------------------------------------------------------------
   # Legacy SMS routes.

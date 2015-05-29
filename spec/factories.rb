@@ -146,6 +146,20 @@ FactoryGirl.define do
 	end
 
 	factory :user_notification do
+		medium UserNotification::Mediums::WEB
+		notified_at { Time.zone.now }
+
+		factory :message_notification do
+			notification_type "Message"
+		end
+
+		factory :post_notification do
+			notification_type "Post"
+		end
+
+		factory :comment_notification do
+			notification_type "Comment"
+		end
 	end
 
 end

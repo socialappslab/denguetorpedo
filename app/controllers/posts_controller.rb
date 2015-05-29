@@ -5,6 +5,23 @@ class PostsController < ApplicationController
   before_filter :find_by_id,   :only => [:like, :comment]
 
   #----------------------------------------------------------------------------
+  # GET /posts/:id
+
+  def show
+    @post = Post.find(params[:id])
+
+    # Remove the specific notification from the array of @notifications!
+    notification = @notifications.where(:notification_type => "Post").where(:notification_id => @post.id).pop
+    notification.update_column(:seen_at, Time.zone.now) if notification.present?
+
+    # NOTE: For now, we're clearing both comments and posts if they visit the post.
+    # This may hold true for a long time.
+    @notifications.where(:notification_type => "Comment").each do |n|
+      n.update_column(:seen_at, Time.zone.now)
+    end
+  end
+
+  #----------------------------------------------------------------------------
   # POST /posts/
 
   def create

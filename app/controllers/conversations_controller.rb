@@ -2,14 +2,27 @@
 
 class ConversationsController < ApplicationController
   before_filter :require_login
-  before_filter :clear_new_notifications, :only => [:index]
+
+  #----------------------------------------------------------------------------
+  # GET /users/:user_id/conversations
+  #----------------------------------
 
   def index
     @conversations  = @current_user.conversations.order("updated_at DESC")
     @conversation   = Conversation.new
     @message        = Message.new
     @users          = User.pluck(:username).to_json
+
+    @notifications.where(:notification_type => "Message").each do |mn|
+      mn.update_column(:seen_at, Time.zone.now)
+    end
+
+    @notifications = []
   end
+
+  #----------------------------------------------------------------------------
+  # GET /users/:user_id
+  #----------------------------------
 
   def show
     @conversation = @current_user.conversations.find_by_id(params[:id])
@@ -17,15 +30,5 @@ class ConversationsController < ApplicationController
     @message      = Message.new
   end
 
-  private
-
-  def clear_new_notifications
-    @message_notifications.each do |mn|
-      mn.update_column(:viewed, true)
-    end
-
-    # Now, set message_notifications to [] to not display 0 in
-    # nagging-badge.
-    @message_notifications = []
-  end
+  #----------------------------------------------------------------------------
 end

@@ -19,6 +19,32 @@ describe PostsController do
 
   #---------------------------------------------------------------------------
 
+  context "when visiting a post" do
+    it "sets all Post notifications to seen" do
+      @post = FactoryGirl.create(:post, :content => "Test", :user_id => user.id)
+      c = FactoryGirl.create(:comment, :content => "Test", :commentable_id => @post.id, :commentable_type => "Post", :user_id => user.id)
+
+      FactoryGirl.create(:post_notification, :user_id => user.id, :notification_id => @post.id)
+      FactoryGirl.create(:comment_notification, :user_id => user.id, :notification_id => c.id)
+
+      get "show", :id => @post.id
+      expect(user.new_notifications.where(:notification_type => "Post").count).to eq(0)
+    end
+
+    it "sets all Comment notifications to seen" do
+      @post = FactoryGirl.create(:post, :content => "Test", :user_id => user.id)
+      c = FactoryGirl.create(:comment, :content => "Test", :commentable_id => @post.id, :commentable_type => "Post", :user_id => user.id)
+
+      FactoryGirl.create(:post_notification, :user_id => user.id, :notification_id => @post.id)
+      FactoryGirl.create(:comment_notification, :user_id => user.id, :notification_id => c.id)
+
+      get "show", :id => @post.id
+      expect(user.new_notifications.where(:notification_type => "Comment").count).to eq(0)
+    end
+  end
+
+  #---------------------------------------------------------------------------
+
   context "when creating a post" do
     it "awards points to the user" do
       before_points = user.total_points

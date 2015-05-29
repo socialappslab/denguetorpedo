@@ -55,6 +55,15 @@
   a {
     text-decoration: none;
   }
+
+  .label {
+    border-radius: 1em;
+    width: 25px;
+    font-size: 12px;
+    position: relative;
+    top: -20px;
+    right: 20px;
+  }
 }
 
 
