@@ -52,9 +52,10 @@ class API::V0::PostsController < API::V0::BaseController
     @post.content.scan(/@\w*/).each do |mention|
       u = User.find_by_username( mention.gsub("@","") )
 
-      # TODO: Create a notification here.
       if u.present?
         @post.content.gsub!(mention, "<a href='#{user_path(u)}'>#{mention}</a>")
+
+        UserNotification.create(:user_id => u.id, :notification_id => @post.id, :notification_type => UserNotification::Types::POST, :notified_at => Time.zone.now, :medium => UserNotification::Types::WEB)
       end
     end
 
