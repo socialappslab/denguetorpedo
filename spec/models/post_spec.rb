@@ -1,22 +1,3 @@
-# -*- encoding : utf-8 -*-
-# == Schema Information
-#
-# Table name: posts
-#
-#  id         :integer          not null, primary key
-#  user_id    :integer
-#  title      :string(255)
-#  content    :text
-#  type_cd    :integer
-#  parent_id  :integer
-#  lft        :integer
-#  rgt        :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  wall_id    :integer
-#  wall_type  :string(255)
-#
-
 require "rails_helper"
 
 describe Post do
@@ -60,5 +41,24 @@ describe Post do
 
     p = Post.create :content => "sfsdf", :user_id => u1.id, :title => "With title"
     expect(p.valid?).to be_truthy
+  end
+
+  it "destroys associated comments when a post is deleted" do
+    u = FactoryGirl.create(:user)
+    p = FactoryGirl.create(:post, :content => "test", :user_id => u.id)
+    FactoryGirl.create(:comment, :user_id => u.id, :content => "test", :commentable_id => p.id, :commentable_type => "Post")
+    expect {
+      p.destroy
+    }.to change(Comment, :count).by(-1)
+  end
+
+  it "destroys associated likes when a post is deleted" do
+    u = FactoryGirl.create(:user)
+    p = FactoryGirl.create(:post, :content => "test", :user_id => u.id)
+    FactoryGirl.create(:like, :user_id => u.id, :likeable_id => p.id, :likeable_type => "Post")
+    expect {
+      p.destroy
+    }.to change(Like, :count).by(-1)
+
   end
 end

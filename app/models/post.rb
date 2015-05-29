@@ -7,8 +7,8 @@ class Post < ActiveRecord::Base
   belongs_to :neighborhood
   belongs_to :user
 
-  has_many :likes,    :as => :likeable
-  has_many :comments, :as => :commentable
+  has_many :likes,    :as => :likeable,    :dependent => :destroy
+  has_many :comments, :as => :commentable, :dependent => :destroy
 
   #----------------------------------------------------------------------------
 
