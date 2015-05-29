@@ -73,7 +73,7 @@ class ApplicationController < ActionController::Base
 
   def get_new_notifications
     return if @current_user.blank?
-    @notifications = @current_user.notifications.where(:seen_at => nil)
+    @notifications = @current_user.new_notifications
   end
 
   #----------------------------------------------------------------------------

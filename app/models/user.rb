@@ -94,8 +94,10 @@ class User < ActiveRecord::Base
 
   scope :residents, where("role = 'morador' OR role = 'coordenador'")
 
+
   has_many :team_memberships, :dependent => :destroy
   has_many :teams, :through => :team_memberships
+
   has_many :notifications, :dependent => :destroy, :class_name => "UserNotification"
   has_many :csv_reports, :dependent => :destroy
 
@@ -125,6 +127,10 @@ class User < ActiveRecord::Base
 
   def city
     return self.neighborhood.city
+  end
+
+  def new_notifications
+    return self.notifications.where(:seen_at => nil)
   end
 
   #----------------------------------------------------------------------------
