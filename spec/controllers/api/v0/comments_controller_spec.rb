@@ -2,7 +2,7 @@
 require "rails_helper"
 
 describe API::V0::CommentsController do
-  let(:user)  { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:user)  { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id, :username => "dmitri") }
   let!(:blog_post) { FactoryGirl.create(:post, :content => "Test", :user_id => user.id)}
   let!(:comment) { FactoryGirl.create(:comment, :user_id => user.id, :content => "Nice", :commentable_id => blog_post.id, :commentable_type => "Post")}
   let(:team) { FactoryGirl.create(:team, :name => "Team", :neighborhood_id => Neighborhood.first.id) }
