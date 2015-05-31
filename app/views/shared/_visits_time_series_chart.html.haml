@@ -29,25 +29,3 @@
 
 - content_for :scripts do
   %script{:src => "https://www.google.com/jsapi", :type => "text/javascript", :async => true}
-  = javascript_include_tag "chart-options"
-
-  :javascript
-    $(document).ready(function() {
-      var baseURL = "#{chart_api_v0_neighborhood_path(@neighborhood)}";
-      var serializedAttrs = $("#chart-filters").serialize();
-
-      $.ajax({
-        url: baseURL + "?" + serializedAttrs,
-        type: "GET",
-        success : function(response){
-          var rawData = response;
-
-          if (response.length <= 1) {
-            $(".fa-refresh").hide();
-            $(".empty-chart-disclaimer").show();
-          } else {
-            google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", rawData) } } );
-          }
-        }
-      });
-    });
