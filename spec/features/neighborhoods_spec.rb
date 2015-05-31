@@ -27,6 +27,15 @@ describe "Neighborhoods", :type => :feature do
       it "and reloading, it displays the correct like" do
       end
     end
+  end
+
+  describe "Viewing the feed", :js => true do
+    it "displays a post photo" do
+      p = FactoryGirl.create(:post, :neighborhood_id => n.id, :user => user, :content => "Haha", :photo => Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg'))
+      visit neighborhood_path(n)
+      expect(page).to have_content(p.content)
+      expect(page).to have_css(".post-photo img")
+    end
 
   end
 
