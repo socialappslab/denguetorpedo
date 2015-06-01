@@ -8,6 +8,7 @@
 //= require "feed-interactions"
 //= require angular
 //= require angular-sanitize
+//= require angular-cookies
 //= require "app/app"
 //= require "app/controllers/post_controller"
 //= require "app/controllers/chart_controller"

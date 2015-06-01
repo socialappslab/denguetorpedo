@@ -1,16 +1,11 @@
-var chartCtrl = function ($scope, $http, $attrs) {
-  var pathName = window.location.pathname;
-  var ajax   = $http.get("/api/v0" + pathName + "/chart.json");
+var chartCtrl = function ($scope, $http, $cookies, $attrs) {
+  console.log($cookies["chart"])
+  $scope.chartOptions = JSON.parse($cookies["chart"]);
+  var ajax            = fetchData($scope, $http);
 
   ajax.success(function(response) {
-    // var serializedAttrs = angular.element("#chart-filters").serialize() //$("#chart-filters").serialize();
-    if (response.length <= 1) {
-      $(".fa-refresh").hide();
-      $(".empty-chart-disclaimer").show();
-    } else {
-      google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response) } } );
-    }
-
+    console.log(response)
+    refreshChartWithData($scope, response);
   });
   ajax.error(function(response) {
     $(".error-message").show();
@@ -19,10 +14,25 @@ var chartCtrl = function ($scope, $http, $attrs) {
   ajax.then(function(response) {
     $(".loading-spinner").hide();
   });
-
-
 };
 
+
+function fetchData($scope, $http) {
+  console.log($scope.chartOptions)
+  var pathName = window.location.pathname;
+  var ajax     = $http({url: "/api/v0" + pathName + "/chart.json", method: "GET", params: $scope.chartOptions});
+  return ajax;
+}
+
+function refreshChartWithData($scope, response) {
+  if (response.length <= 1) {
+    $(".fa-refresh").hide();
+    $(".empty-chart-disclaimer").show();
+  } else {
+    google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response, $scope.chartOptions) } } );
+  }
+
+}
 
 
 
@@ -30,24 +40,25 @@ var chartCtrl = function ($scope, $http, $attrs) {
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
 var app = angular.module('dengueChatApp');
-app.controller("chartCtrl", ["$scope", "$http", "$attrs", chartCtrl]);
+app.controller("chartCtrl", ["$scope", "$http", "$cookies", "$attrs", chartCtrl]);
 
 
 
 
-var googleChartOptions = function(chartID, data) {
+var googleChartOptions = function(chartID, data, chartOptions) {
   var width = $(chartID).width();
 
   var colors = []
 
-  if ( !shouldHidePositive() )
+  if ( chartOptions.status.positive != null )
     colors.push("#e74c3c");
 
-  if ( !shouldHidePotential() )
+  if ( chartOptions.status.potential != null )
     colors.push("#f1c40f")
 
-  if ( !shouldHideNegative() )
+  if ( chartOptions.status.negative != null )
     colors.push("#2ecc71")
+
 
 
   var options =  {
@@ -79,7 +90,7 @@ var googleChartOptions = function(chartID, data) {
   };
 
 
-  if ( shouldDisplayLineChart() )
+  if ( shouldDisplayLineChart(chartOptions) )
     options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
   else
     options.hAxis.slantedtextangle = 90;
@@ -91,62 +102,48 @@ var googleChartOptions = function(chartID, data) {
 // Checks the selected timeframe radio button and returns the appropriate
 // graph.
 // Scope: A helper function.
-function shouldDisplayLineChart() {
-  var timeline = $("#timeframe-filter input:radio:checked").map(function(index, el) { return $(el).val() });
-  if (timeline[0] == "-1" || timeline[0] == "6")
-    return true
-  else
-    return false
+function shouldDisplayLineChart(options) {
+  // var timeline = $("#timeframe-filter input:radio:checked").map(function(index, el) { return $(el).val() });
+  // if (timeline[0] == "-1" || timeline[0] == "6")
+  //   return true
+  // else
+  //   return false
+  console.log(options.timeframe)
+  var timeframe = parseInt(options.timeframe)
+  return (timeframe == -1 || timeframe == 6)
 }
 
-function shouldHidePositive() {
-  var desiredTypes = $("input:checkbox:checked").map(function(index,el) { return $(el).attr("id") });
-  if ($.inArray("chart_positive", desiredTypes) === -1)
-    return true;
-  else
-    return false;
-}
-
-function shouldHidePotential() {
-  var desiredTypes = $("input:checkbox:checked").map(function(index,el) { return $(el).attr("id") });
-  if ($.inArray("chart_potential", desiredTypes) === -1)
-    return true;
-  else
-    return false;
-}
-
-function shouldHideNegative() {
-  var desiredTypes = $("input:checkbox:checked").map(function(index,el) { return $(el).attr("id") });
-  if ($.inArray("chart_negative", desiredTypes) === -1)
-    return true;
-  else
-    return false;
-}
-
-function googleDataView(data) {
+function googleDataView(data, chartOptions) {
   var view = new google.visualization.DataView(data);
   // Select the default display
 
   var columns = [0];
+  var index = 1;
+  for (var key in chartOptions.status)
+  {
+    if (chartOptions.status[key] != null)
+      columns.push(index, {calc: "stringify", sourceColumn: index, type: "string", role: "annotation"})
+    index += 1;
+  }
 
-  if ( !shouldHidePositive() )
-    columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
-
-  if ( !shouldHidePotential() )
-    columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
-
-  if ( !shouldHideNegative() )
-    columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
+  // if ( !shouldHidePositive() )
+  //   columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
+  //
+  // if ( !shouldHidePotential() )
+  //   columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
+  //
+  // if ( !shouldHideNegative() )
+  //   columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
 
   view.setColumns(columns);
   return view;
 }
 
 
-function drawChart(chartID, rawData) {
+function drawChart(chartID, rawData, options) {
   var chartHTMLElement = document.getElementById(chartID)
 
-  if (shouldDisplayLineChart() == true)
+  if (shouldDisplayLineChart(options) == true)
     chart = new google.visualization.LineChart(chartHTMLElement);
   else
     chart = new google.visualization.ColumnChart(chartHTMLElement);
@@ -161,7 +158,7 @@ function drawChart(chartID, rawData) {
   formatter.format(data, 3);
 
   // Let's hide the columns corresponding to unchecked checkboxes.
-  var view    = googleDataView(data);
-  var options = googleChartOptions(chartID, data)
+  var view    = googleDataView(data, options);
+  var options = googleChartOptions(chartID, data, options)
   chart.draw(view, options);
 }
