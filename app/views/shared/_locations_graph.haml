@@ -4,10 +4,11 @@
 
 .row
   .col-md-12
-    #timeseries-chart
-      %i.fa.fa-refresh.fa-spin
-      %h3.empty-chart-disclaimer
+    #timeseries
+      %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+      %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
         = I18n.t("common_terms.no_data")
+      #timeseries-chart{"ng-hide" => "chartLoading"}
 
 
 .chart-legend.red

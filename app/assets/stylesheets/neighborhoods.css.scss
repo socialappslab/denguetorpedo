@@ -6,13 +6,22 @@
   text-align: center;
 }
 
-#timeseries-chart {
+#timeseries {
   height: 350px;
   display: block;
   text-align: center;
 
+  .empty-chart-disclaimer {
+    text-align: center;
+    font-weight: bold; font-size: 24px;
+  }
+
   i {
-    font-size: 64px; position: relative; top: 100;
+    font-size: 64px;
+  }
+
+  #timeseries-chart {
+    height: 350px;
   }
 }
 
