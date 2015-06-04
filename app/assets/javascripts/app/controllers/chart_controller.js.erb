@@ -1,14 +1,15 @@
 var chartCtrl = function ($scope, $http, $cookies, $attrs) {
-  $scope.chartOptions = JSON.parse($cookies["chart"]);
+  $scope.chartOptions = JSON.parse($cookies.chart);
 
   $scope.refreshChart = function() {
     var pathName = window.location.pathname;
 
     var params = {};
+    console.log($scope.chartOptions)
     params.timeframe = $scope.chartOptions.timeframe;
-    params.positive  = $scope.chartOptions.status.positive;
-    params.potential = $scope.chartOptions.status.potential;
-    params.negative  = $scope.chartOptions.status.negative;
+    params.positive  = $scope.chartOptions.positive;
+    params.potential = $scope.chartOptions.potential;
+    params.negative  = $scope.chartOptions.negative;
     params.percentages = $scope.chartOptions.percentages;
 
     var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
@@ -61,13 +62,13 @@ var googleChartOptions = function(chartID, data, chartOptions) {
 
   var colors = []
 
-  if ( chartOptions.status.positive != null )
+  if ( chartOptions.positive != null )
     colors.push("#e74c3c");
 
-  if ( chartOptions.status.potential != null )
+  if ( chartOptions.potential != null )
     colors.push("#f1c40f")
 
-  if ( chartOptions.status.negative != null )
+  if ( chartOptions.negative != null )
     colors.push("#2ecc71")
 
 

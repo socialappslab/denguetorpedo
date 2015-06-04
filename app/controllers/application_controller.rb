@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :identify_for_segmentio
   before_filter :get_locale_specific_url
+  before_filter :set_cookies
 
   # TODO: Work through this some other time. As of 2014-12-18, we should
   # focus on other efforts.
@@ -15,6 +16,10 @@ class ApplicationController < ActionController::Base
   around_filter :set_time_zone
 
   #-------------------------------------------------------------------------------------------------
+
+  def set_cookies
+    cookies[:chart] = {"timeframe" => 3, "positive" => 1, "potential" => 1, "negative" => 1, "percentages" => "cumulative"}.to_json
+  end
 
   def set_time_zone(&block)
     if current_user
