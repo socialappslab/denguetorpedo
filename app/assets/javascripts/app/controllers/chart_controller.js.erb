@@ -18,9 +18,8 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs) {
       if (response.length <= 1) {
         $(".fa-refresh").hide();
         $(".empty-chart-disclaimer").show();
-      } else {
+      } else
         google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response, $scope.chartOptions) } } );
-      }
     });
     ajax.error(function(response) {
       $(".error-message").show();
@@ -31,16 +30,40 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs) {
     });
   }
 
-
   $scope.refreshChart();
 
   $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
   {
+    if (newValue === oldValue)
+      return;
     $scope.refreshChart();
   });
 
   $scope.$watch("chartOptions.timeframe", function(newValue, oldValue)
   {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChart();
+  });
+
+  $scope.$watch("chartOptions.positive", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChart();
+  });
+
+  $scope.$watch("chartOptions.potential", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChart();
+  });
+
+  $scope.$watch("chartOptions.negative", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
     $scope.refreshChart();
   });
 
@@ -62,13 +85,13 @@ var googleChartOptions = function(chartID, data, chartOptions) {
 
   var colors = []
 
-  if ( chartOptions.positive != null )
+  if ( chartOptions.positive )
     colors.push("#e74c3c");
 
-  if ( chartOptions.potential != null )
+  if ( chartOptions.potential )
     colors.push("#f1c40f")
 
-  if ( chartOptions.negative != null )
+  if ( chartOptions.negative )
     colors.push("#2ecc71")
 
 
@@ -123,13 +146,15 @@ function googleDataView(data, chartOptions) {
   // Select the default display
 
   var columns = [0];
-  var index = 1;
-  for (var key in chartOptions.status)
-  {
-    if (chartOptions.status[key] != null)
-      columns.push(index, {calc: "stringify", sourceColumn: index, type: "string", role: "annotation"})
-    index += 1;
-  }
+
+  if ( chartOptions.positive )
+    columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
+
+  if ( chartOptions.potential )
+    columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
+
+  if ( chartOptions.negative )
+    columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
 
   view.setColumns(columns);
   return view;
