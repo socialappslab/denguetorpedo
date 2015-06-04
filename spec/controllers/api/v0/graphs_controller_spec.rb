@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require "rails_helper"
 
-describe API::V0::NeighborhoodsController do
+describe API::V0::GraphsController do
   let(:neighborhood)  { FactoryGirl.create(:neighborhood) }
   let(:breeding_site) { FactoryGirl.create(:breeding_site) }
   let(:user)          { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
@@ -64,8 +64,7 @@ describe API::V0::NeighborhoodsController do
     end
 
     it "returns the correct time-series" do
-      request.cookies[:chart] = '{"percentages":"daily","positive":"1","potential":"1","negative":"1"}'
-      get :chart, :id => neighborhood.id
+      get :locations, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
       visits = JSON.parse(response.body)
       expect(visits[1..-1]).to eq([
         ["2014-10-21", 0, 50, 50],
@@ -76,8 +75,7 @@ describe API::V0::NeighborhoodsController do
     end
 
     it "returns empty if time series contains no data since specified start time" do
-      request.cookies[:chart] = '{"timeframe":"1","percentages":"daily","positive":"1","potential":"1","negative":"1"}'
-      get :chart, :id => neighborhood.id
+      get :locations, :timeframe => "1", "percentages" => "daily", "positive" => "1","potential" => "1","negative" => "1"
       expect( JSON.parse(response.body).count ).to eq(1)
     end
 
