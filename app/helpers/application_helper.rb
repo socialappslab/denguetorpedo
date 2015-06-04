@@ -20,7 +20,6 @@ module ApplicationHelper
   #----------------------------------------------------------------------------
 
   def chart_cookies
-    return {} if cookies[:chart].blank?
     return JSON.parse(cookies[:chart])
   end
 

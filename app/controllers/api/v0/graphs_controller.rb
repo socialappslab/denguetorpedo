@@ -3,35 +3,45 @@ class API::V0::GraphsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
 
   #----------------------------------------------------------------------------
-  # GET /api/v0/graph/locations?location_ids=
+  # GET /api/v0/graph/locations
+  # Parameters:
+  # * timeframe (required),
+  # * percentages (required),
+  # * neighborhood_id (optional).
 
   def locations
-    # TODO
-    neighborhood_id = cookies[:neighborhood_id] || @current_user.neighborhood_id
-    @neighborhood   = Neighborhood.find_by_id(neighborhood_id)
+    neighborhood_id = cookies[:neighborhood_id] || params[:neighborhood_id] || @current_user.neighborhood_id
+    @neighborhood = Neighborhood.find_by_id(neighborhood_id)
 
-    if params[:location_ids].include?("-1")
-      # TODO: Right now, we're counting locations that are associated with a report.
-      # Ideally, we could do something as simple as counting the locations
-      # associated with a *neighborhood*. The problem here, however, is that
-      # we may end up with an incongruity to Harold.
-      @visit_ids = @neighborhood.locations.order("address ASC").pluck(:id)
+    # TODO: The visit_ids should be based on the actual association between locations
+    # and neighborhood; not via the reports.
+    @reports      = @neighborhood.reports
+    @visit_ids    = @reports.joins(:location).pluck("locations.id")
+
+    # TODO: Customize for Data Dashboard.
+    # if params[:location_ids].include?("-1")
+    #   # TODO: Right now, we're counting locations that are associated with a report.
+    #   # Ideally, we could do something as simple as counting the locations
+    #   # associated with a *neighborhood*. The problem here, however, is that
+    #   # we may end up with an incongruity to Harold.
+    #   @visit_ids = @neighborhood.locations.order("address ASC").pluck(:id)
+    # else
+    #   @visit_ids = params[:location_ids]
+    # end
+
+    timeframe   = params[:timeframe]
+    percentages = params[:percentages]
+
+    if timeframe.nil? || timeframe == "-1"
+      start_time = nil
     else
-      @visit_ids = params[:location_ids]
+      start_time = timeframe.to_i.months.ago
     end
 
-    # Extract the chart settings from the cookies.
-    chart_settings = JSON.parse(cookies[:chart])
-
-    start_time = nil
-    start_time = 1.month.ago  if chart_settings["timeframe"] == "1"
-    start_time = 3.months.ago if chart_settings["timeframe"] == "3"
-    start_time = 6.months.ago if chart_settings["timeframe"] == "6"
-
-    if chart_settings["percentages"] == "cumulative"
+    if percentages == "cumulative"
       @statistics = Visit.calculate_cumulative_time_series_for_locations_and_start_time(@visit_ids, start_time)
     else
-      @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time)
+      @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, [])
     end
 
     # Format the data in a way that Google Charts can use.

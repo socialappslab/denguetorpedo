@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   # POST /users/cookies
 
   # This action is responsible for setting cookie settings for a user.
-  def set_cookies
+  def set_neighborhood_cookie
     cookies[:neighborhood_id] = params[:neighborhood_id] if params[:neighborhood_id].present?
     redirect_to :back and return
   end

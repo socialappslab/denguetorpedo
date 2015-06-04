@@ -1,0 +1,32 @@
+
+%h3.chart-title
+  = I18n.t('views.statistics.chart.title')
+
+.row
+  .col-md-12
+    #timeseries
+      %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+      %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+        = I18n.t("common_terms.no_data")
+      #timeseries-chart{"ng-hide" => "chartLoading"}
+
+
+.chart-legend.red
+.chart-label
+  = I18n.t('views.statistics.chart.percent_of_positive_sites')
+%br
+.chart-legend.yellow
+.chart-label
+  = I18n.t('views.statistics.chart.percent_of_potential_sites')
+%br
+.chart-legend.green
+.chart-label
+  = I18n.t('views.statistics.chart.percent_of_negative_sites')
+
+
+%p.chart-disclaimer
+  = I18n.t("views.statistics.chart.disclaimer")
+
+
+- content_for :scripts do
+  %script{:src => "https://www.google.com/jsapi", :type => "text/javascript", :async => true}
