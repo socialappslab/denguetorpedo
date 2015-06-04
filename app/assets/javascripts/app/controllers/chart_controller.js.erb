@@ -6,8 +6,10 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs) {
   $scope.refreshChart = function() {
     $scope.chartLoading = true;
     var pathName = window.location.pathname;
+    var neighborhood = pathName.split("/").pop()
 
     var params       = {};
+    params.neighborhood_id = neighborhood;
     params.timeframe = $scope.chartOptions.timeframe;
     params.positive  = $scope.chartOptions.positive;
     params.potential = $scope.chartOptions.potential;

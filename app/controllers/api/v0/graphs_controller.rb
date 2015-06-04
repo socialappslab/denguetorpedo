@@ -10,7 +10,7 @@ class API::V0::GraphsController < API::V0::BaseController
   # * neighborhood_id (optional).
 
   def locations
-    neighborhood_id = cookies[:neighborhood_id] || @current_user.neighborhood_id
+    neighborhood_id = cookies[:neighborhood_id] || params[:neighborhood_id] || @current_user.neighborhood_id
     @neighborhood = Neighborhood.find_by_id(neighborhood_id)
 
     # TODO: The visit_ids should be based on the actual association between locations
