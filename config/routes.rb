@@ -39,9 +39,6 @@ Dengue::Application.routes.draw do
 
       resources :neighborhoods, :only => [] do
         resources :posts, :controller => "neighborhoods/posts", :only => [:index]
-        member do
-          get "chart"
-        end
       end
 
       #-------------------------------------------------------------------------
