@@ -23,24 +23,24 @@
           %td
             .checkbox
               = label_tag do
-                = check_box_tag "chart[positive]", 1, nil, "ng-model" => "chartOptions.status.positive", "ng-checked" => "{{chartOptions.status.positive === '1'}}"
+                = check_box_tag "chart[positive]", 1, chart_cookies["positive"].to_s == "1", "ng-model" => "chartOptions.positive", "ng-checked" => "chartOptions.positive === '1'"
                 = I18n.t('views.statistics.chart.percent_of_positive_sites')
 
             .checkbox
               = label_tag do
-                = check_box_tag "chart[potential]", 1, nil, "ng-model" => "chartOptions.status.potential", "ng-checked" => "{{chartOptions.status.potential === '1'}}"
+                = check_box_tag "chart[potential]", 1, chart_cookies["potential"].to_s == "1", "ng-model" => "chartOptions.potential", "ng-checked" => "chartOptions.potential === '1'"
                 = I18n.t('views.statistics.chart.percent_of_potential_sites')
 
             .checkbox
               = label_tag do
-                = check_box_tag "chart[negative]", 1, nil, "ng-model" => "chartOptions.status.negative", "ng-checked" => "{{chartOptions.status.negative === '1'}}"
+                = check_box_tag "chart[negative]", 1, chart_cookies["negative"].to_s == "1", "ng-model" => "chartOptions.negative", "ng-checked" => "chartOptions.negative === '1'"
                 = I18n.t('views.statistics.chart.percent_of_negative_sites')
 
           %td#timeframe-filter
             - [1, 3, 6].each do |month|
               .radio
                 = label_tag do
-                  = radio_button_tag "chart[timeframe]", month.to_s, (chart_cookies.blank? && month == 3) || chart_cookies["timeframe"] == month.to_s, "ng-model" => "chartOptions.timeframe"
+                  = radio_button_tag "chart[timeframe]", month.to_s, chart_cookies["timeframe"] == month.to_s, "ng-model" => "chartOptions.timeframe"
                   = I18n.t("views.statistics.chart.filters.months", :count => month)
 
             .radio
