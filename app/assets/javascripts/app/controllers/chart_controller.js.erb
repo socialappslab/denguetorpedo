@@ -1,38 +1,49 @@
 var chartCtrl = function ($scope, $http, $cookies, $attrs) {
-  console.log($cookies["chart"])
   $scope.chartOptions = JSON.parse($cookies["chart"]);
-  var ajax            = fetchData($scope, $http);
 
-  ajax.success(function(response) {
-    console.log(response)
-    refreshChartWithData($scope, response);
-  });
-  ajax.error(function(response) {
-    $(".error-message").show();
-    $(".loading-spinner").hide();
-  });
-  ajax.then(function(response) {
-    $(".loading-spinner").hide();
-  });
-};
+  $scope.refreshChart = function() {
+    var pathName = window.location.pathname;
 
+    var params = {};
+    params.timeframe = $scope.chartOptions.timeframe;
+    params.positive  = $scope.chartOptions.status.positive;
+    params.potential = $scope.chartOptions.status.potential;
+    params.negative  = $scope.chartOptions.status.negative;
+    params.percentages = $scope.chartOptions.percentages;
 
-function fetchData($scope, $http) {
-  console.log($scope.chartOptions)
-  var pathName = window.location.pathname;
-  var ajax     = $http({url: "/api/v0" + pathName + "/chart.json", method: "GET", params: $scope.chartOptions});
-  return ajax;
-}
+    var ajax = $http({url: "/api/v0" + pathName + "/chart.json", method: "GET", params: params });
 
-function refreshChartWithData($scope, response) {
-  if (response.length <= 1) {
-    $(".fa-refresh").hide();
-    $(".empty-chart-disclaimer").show();
-  } else {
-    google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response, $scope.chartOptions) } } );
+    ajax.success(function(response) {
+      if (response.length <= 1) {
+        $(".fa-refresh").hide();
+        $(".empty-chart-disclaimer").show();
+      } else {
+        google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response, $scope.chartOptions) } } );
+      }
+    });
+    ajax.error(function(response) {
+      $(".error-message").show();
+      $(".loading-spinner").hide();
+    });
+    ajax.then(function(response) {
+      $(".loading-spinner").hide();
+    });
   }
 
-}
+
+  $scope.refreshChart();
+
+  $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
+  {
+    $scope.refreshChart();
+  });
+
+  $scope.$watch("chartOptions.timeframe", function(newValue, oldValue)
+  {
+    $scope.refreshChart();
+  });
+
+};
 
 
 
@@ -58,7 +69,6 @@ var googleChartOptions = function(chartID, data, chartOptions) {
 
   if ( chartOptions.status.negative != null )
     colors.push("#2ecc71")
-
 
 
   var options =  {
@@ -103,12 +113,6 @@ var googleChartOptions = function(chartID, data, chartOptions) {
 // graph.
 // Scope: A helper function.
 function shouldDisplayLineChart(options) {
-  // var timeline = $("#timeframe-filter input:radio:checked").map(function(index, el) { return $(el).val() });
-  // if (timeline[0] == "-1" || timeline[0] == "6")
-  //   return true
-  // else
-  //   return false
-  console.log(options.timeframe)
   var timeframe = parseInt(options.timeframe)
   return (timeframe == -1 || timeframe == 6)
 }
@@ -125,15 +129,6 @@ function googleDataView(data, chartOptions) {
       columns.push(index, {calc: "stringify", sourceColumn: index, type: "string", role: "annotation"})
     index += 1;
   }
-
-  // if ( !shouldHidePositive() )
-  //   columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
-  //
-  // if ( !shouldHidePotential() )
-  //   columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
-  //
-  // if ( !shouldHideNegative() )
-  //   columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
 
   view.setColumns(columns);
   return view;
