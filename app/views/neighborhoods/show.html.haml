@@ -5,7 +5,7 @@
     .col-md-3.col-md-offset-1.detail-border
       = render :partial => "neighborhoods/sidebar"
 
-    .col-md-7.col-md-offset-1{"ng-controller" => "chartCtrl"}
+    .col-md-7.col-md-offset-1{"ng-controller" => "chartCtrl", "neighborhood" => @neighborhood.to_json}
       = render :partial => "neighborhoods/main"
 
 
