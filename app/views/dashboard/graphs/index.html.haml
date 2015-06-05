@@ -22,13 +22,12 @@
             = submit_tag "Submit", :class => "btn btn-success"
 
   .row
-    .col-md-10.col-md-offset-1
+    .col-md-10.col-md-offset-1{"ng-controller" => "chartCtrl", "locations" => @locations.to_json, "neighborhood" => @neighborhood.to_json}
+      %h3.chart-title
+        Cambio en Riesgo de Dengue y Chikungunya
+
       = render :partial => "shared/locations_graph"
 
-
-  .row
-    .col-md-10.col-md-offset-1
-      = render :partial => "shared/locations_filters"
 
 
 - content_for :scripts do
