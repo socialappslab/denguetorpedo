@@ -15,10 +15,8 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     angular.forEach($scope.locations, function(loc) { return loc.selected = false; })
   }
 
-
   if ($scope.locations)
     $scope.checkAllLocations();
-
 
 
   $scope.refreshChartWithParams = function(params) {
@@ -95,9 +93,13 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
   $scope.refreshChartWithSelectedLocations = function() {
     var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
+    if (selectedLocations.length === $scope.locations.length)
+      $scope.refreshChartWithParams({})
+    else {
+      var location_ids = selectedLocations.map(function(loc) { return loc.id });
+      $scope.refreshChartWithParams({"location_ids": location_ids})
+    }
 
-    var location_ids = selectedLocations.map(function(loc) { return loc.id });
-    $scope.refreshChartWithParams({"location_ids": location_ids})
   }
 
   $scope.selectedLocationsText = function() {
