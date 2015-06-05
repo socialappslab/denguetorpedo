@@ -7,6 +7,20 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   $scope.locations    = angular.fromJson($attrs.locations);
 
 
+  $scope.checkAllLocations = function() {
+    angular.forEach($scope.locations, function(loc) { return loc.selected = true; })
+  }
+
+  $scope.uncheckAllLocations = function() {
+    angular.forEach($scope.locations, function(loc) { return loc.selected = false; })
+  }
+
+
+  if ($scope.locations)
+    $scope.checkAllLocations();
+
+
+
   $scope.refreshChartWithParams = function(params) {
     $scope.chartLoading = true;
     var pathName = window.location.pathname;

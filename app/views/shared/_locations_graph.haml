@@ -77,9 +77,15 @@
                   %input{"type" => "checkbox", "ng-model" => "location.selected"}
                   {{location.address}}
 
-            .text-center
-              %a.btn.btn-success{"href" => "#", "ng-click" => "refreshChartWithSelectedLocations()"}
-                = I18n.t("common_terms.filter")
+
+
+            %a.btn.btn-default{"ng-click" => "checkAllLocations()"}
+              Check all
+            %a.btn.btn-default{"ng-click" => "uncheckAllLocations()"}
+              Uncheck all
+
+            %a.btn.btn-success{"href" => "#", "ng-click" => "refreshChartWithSelectedLocations()"}
+              = I18n.t("common_terms.filter")
 
         %td{"style" => "width: 70%;"}
           #timeseries
