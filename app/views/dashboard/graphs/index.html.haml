@@ -1,7 +1,7 @@
 - content_for :dashboard_content do
   .table-header-view
     .row
-      .col-md-4
+      .col-md-12
         = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
           .form-group
             %p.form-control-static
@@ -10,61 +10,9 @@
             = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
           = submit_tag "Submit", :class => "btn btn-success"
 
-
-      .col-md-8
-        .pull-right
-          = form_tag locations_api_v0_graph_path, :method => "POST", :id => "set-locations", :class => "form-inline" do
-            .form-group
-              %p.form-control-static
-                = I18n.t("activerecord.models.location")
-            .form-group
-              = select_tag "location_ids[]", options_for_select( @locations.map{|l| [l.address, l.id] }, :selected => -1), :multiple => "multiple"
-            = submit_tag "Submit", :class => "btn btn-success"
-
   .row
     .col-md-10.col-md-offset-1{"ng-controller" => "chartCtrl", "locations" => @locations.to_json, "neighborhood" => @neighborhood.to_json}
       %h3.chart-title
         Cambio en Riesgo de Dengue y Chikungunya
 
       = render :partial => "shared/locations_graph"
-
-
-
-- content_for :scripts do
-  = javascript_include_tag "bootstrap/bootstrap-multiselect"
-  = stylesheet_link_tag "bootstrap/bootstrap-multiselect"
-
-  :javascript
-    $("#location_ids_").multiselect({
-      maxHeight: 500,
-      buttonWidth: 400,
-      enableFiltering: true,
-      filterBehavior: "text",
-      enableCaseInsensitiveFiltering: true,
-      selectAllText: "#{I18n.t('common_terms.all')}",
-      includeSelectAllOption: true,
-      selectAllValue: -1
-    });
-
-
-    $("#set-locations").on("submit", function(event) {
-      event.preventDefault();
-      var baseURL = "#{locations_api_v0_graph_path}";
-      var location_ids    = $("#location_ids_").serialize();
-
-      $.ajax({
-        url: baseURL + "?" + location_ids,
-        type: "GET",
-        success : function(response){
-          var rawData = response;
-          console.log(rawData)
-
-          if (response.length <= 1) {
-            $(".fa-refresh").hide();
-            $(".empty-chart-disclaimer").show();
-          } else {
-            google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", rawData) } } );
-          }
-        }
-      })
-    });
