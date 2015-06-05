@@ -7,3 +7,23 @@
     border-bottom: 1px #bdc3c7 solid !important;
   }
 }
+
+
+
+.location-filter {
+  h2 {
+    color: #888888;
+    margin-bottom: 20px;
+  }
+
+  .locations {
+
+    max-height: 400px;
+    overflow: scroll;
+  }
+
+  a {
+    margin-top: 20px;
+  }
+
+}

@@ -18,6 +18,10 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     params.negative  = $scope.chartOptions.negative;
     params.percentages = $scope.chartOptions.percentages;
 
+    if (params.location_ids)
+      params.location_ids = JSON.stringify(params.location_ids)
+
+    console.log(params)
     var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
 
     ajax.success(function(response) {
@@ -36,42 +40,62 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     });
   }
 
-  $scope.refreshChart();
+  $scope.refreshChartWithParams({});
 
   $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
   {
     if (newValue === oldValue)
       return;
-    $scope.refreshChart();
+    $scope.refreshChartWithParams({});
   });
 
   $scope.$watch("chartOptions.timeframe", function(newValue, oldValue)
   {
     if (newValue === oldValue)
       return;
-    $scope.refreshChart();
+    $scope.refreshChartWithParams({});
   });
 
   $scope.$watch("chartOptions.positive", function(newValue, oldValue)
   {
     if (newValue === oldValue)
       return;
-    $scope.refreshChart();
+    $scope.refreshChartWithParams({});
   });
 
   $scope.$watch("chartOptions.potential", function(newValue, oldValue)
   {
     if (newValue === oldValue)
       return;
-    $scope.refreshChart();
+    $scope.refreshChartWithParams({});
   });
 
   $scope.$watch("chartOptions.negative", function(newValue, oldValue)
   {
     if (newValue === oldValue)
       return;
-    $scope.refreshChart();
+    $scope.refreshChartWithParams({});
   });
+
+
+
+  $scope.refreshChartWithSelectedLocations = function() {
+    var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
+
+    var location_ids = selectedLocations.map(function(loc) { return loc.id });
+    $scope.refreshChartWithParams({"location_ids": location_ids})
+  }
+
+  $scope.selectedLocationsText = function() {
+    var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true })
+
+    // If all locations are selected, then let's return a descriptive message.
+    if (selectedLocations.length === $scope.locations.length)
+      return "Todos"
+
+    var addresses = selectedLocations.map(function(loc) { return loc.address });
+    return addresses.join(", ");
+  }
 
 };
 
@@ -81,9 +105,7 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
 var app = angular.module('dengueChatApp');
-app.controller("chartCtrl", ["$scope", "$http", "$cookies", "$attrs", chartCtrl]);
-
-
+var controller = app.controller("chartCtrl", ["$scope", "$http", "$cookies", "$attrs", "filterFilter", chartCtrl]);
 
 
 var googleChartOptions = function(chartID, data, chartOptions) {

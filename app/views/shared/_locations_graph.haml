@@ -61,25 +61,66 @@
 
 
 
+  - if request.path.include?("dashboard/graphs")
+    %table.table.table-bordered
+      %tr
+        %td{"style" => "width: 30%;"}
+          .location-filter
+            %h2
+              Locations
+            {{ selectedLocationsText() }}
 
-  #timeseries
-    %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
-    %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
-      = I18n.t("common_terms.no_data")
-    #timeseries-chart{"ng-hide" => "chartLoading"}
+            %input.form-control{"type" => "text", "ng-model" => "search.address"}
+            .locations
+              .checkbox{"ng-repeat" => "location in locations | filter:search"}
+                %label
+                  %input{"type" => "checkbox", "ng-model" => "location.selected"}
+                  {{location.address}}
 
-  .legend
-    .chart-legend.red
-    .chart-label
-      = I18n.t('views.statistics.chart.percent_of_positive_sites')
-    %br
-    .chart-legend.yellow
-    .chart-label
-      = I18n.t('views.statistics.chart.percent_of_potential_sites')
-    %br
-    .chart-legend.green
-    .chart-label
-      = I18n.t('views.statistics.chart.percent_of_negative_sites')
+            .text-center
+              %a.btn.btn-success{"href" => "#", "ng-click" => "refreshChartWithSelectedLocations()"}
+                = I18n.t("common_terms.filter")
+
+        %td{"style" => "width: 70%;"}
+          #timeseries
+            %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+            %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+              = I18n.t("common_terms.no_data")
+            #timeseries-chart{"ng-hide" => "chartLoading"}
+
+          .legend
+            .chart-legend.red
+            .chart-label
+              = I18n.t('views.statistics.chart.percent_of_positive_sites')
+            %br
+            .chart-legend.yellow
+            .chart-label
+              = I18n.t('views.statistics.chart.percent_of_potential_sites')
+            %br
+            .chart-legend.green
+            .chart-label
+              = I18n.t('views.statistics.chart.percent_of_negative_sites')
+
+
+  - else
+    #timeseries
+      %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+      %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+        = I18n.t("common_terms.no_data")
+      #timeseries-chart{"ng-hide" => "chartLoading"}
+
+    .legend
+      .chart-legend.red
+      .chart-label
+        = I18n.t('views.statistics.chart.percent_of_positive_sites')
+      %br
+      .chart-legend.yellow
+      .chart-label
+        = I18n.t('views.statistics.chart.percent_of_potential_sites')
+      %br
+      .chart-legend.green
+      .chart-label
+        = I18n.t('views.statistics.chart.percent_of_negative_sites')
 
 
 - content_for :scripts do
