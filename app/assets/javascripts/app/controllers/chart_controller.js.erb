@@ -20,20 +20,24 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
 
   $scope.refreshChartWithParams = function(params) {
+
+    if ($scope.locations)
+    {
+      var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
+      if (selectedLocations.length !== $scope.locations.length)
+        params.location_ids = JSON.stringify(selectedLocations.map(function(loc) { return loc.id }));
+    }
+
     $scope.chartLoading = true;
     var pathName = window.location.pathname;
 
     params.neighborhood_id = $scope.neighborhood.id;
-    params.timeframe = $scope.chartOptions.timeframe;
-    params.positive  = $scope.chartOptions.positive;
-    params.potential = $scope.chartOptions.potential;
-    params.negative  = $scope.chartOptions.negative;
-    params.percentages = $scope.chartOptions.percentages;
+    params.timeframe    = $scope.chartOptions.timeframe;
+    params.positive     = $scope.chartOptions.positive;
+    params.potential    = $scope.chartOptions.potential;
+    params.negative     = $scope.chartOptions.negative;
+    params.percentages  = $scope.chartOptions.percentages;
 
-    if (params.location_ids)
-      params.location_ids = JSON.stringify(params.location_ids)
-
-    console.log(params)
     var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
 
     ajax.success(function(response) {
