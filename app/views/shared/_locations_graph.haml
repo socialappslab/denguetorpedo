@@ -88,55 +88,11 @@
               = I18n.t("common_terms.filter")
 
         %td{"style" => "width: 70%;"}
-          #timeseries
-            .btn-group{"ng-hide" => "noChartData || chartLoading"}
-              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.type === 'bar'}"  do
-                = radio_button_tag "chart[type]", "bar", checked, "ng-model" => "chartOptions.type"
-                Bar chart
-              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.type === 'line'}" do
-                = radio_button_tag "chart[type]", "line", checked, "ng-model" => "chartOptions.type"
-                Line chart
-
-
-
-            %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
-            %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
-              = I18n.t("common_terms.no_data")
-            #timeseries-chart{"ng-hide" => "chartLoading"}
-
-          .legend
-            .chart-legend.red
-            .chart-label
-              = I18n.t('views.statistics.chart.percent_of_positive_sites')
-            %br
-            .chart-legend.yellow
-            .chart-label
-              = I18n.t('views.statistics.chart.percent_of_potential_sites')
-            %br
-            .chart-legend.green
-            .chart-label
-              = I18n.t('views.statistics.chart.percent_of_negative_sites')
+          = render :partial => "shared/google_chart"
 
 
   - else
-    #timeseries
-      %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
-      %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
-        = I18n.t("common_terms.no_data")
-      #timeseries-chart{"ng-hide" => "chartLoading"}
-
-    .legend
-      .chart-legend.red
-      .chart-label
-        = I18n.t('views.statistics.chart.percent_of_positive_sites')
-      %br
-      .chart-legend.yellow
-      .chart-label
-        = I18n.t('views.statistics.chart.percent_of_potential_sites')
-      %br
-      .chart-legend.green
-      .chart-label
-        = I18n.t('views.statistics.chart.percent_of_negative_sites')
+    = render :partial => "shared/google_chart"
 
 
 - content_for :scripts do
