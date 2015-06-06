@@ -1,11 +1,11 @@
 var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   $scope.chartOptions = JSON.parse($cookies.chart);
+  $scope.chartOptions.type = "bar"
   $scope.chartLoading = false;
   $scope.noChartData  = false;
 
   $scope.neighborhood = angular.fromJson($attrs.neighborhood);
   $scope.locations    = angular.fromJson($attrs.locations);
-
 
   $scope.checkAllLocations = function() {
     angular.forEach($scope.locations, function(loc) { return loc.selected = true; })
@@ -89,18 +89,12 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     $scope.refreshChartWithParams({});
   });
 
-
-
-  $scope.refreshChartWithSelectedLocations = function() {
-    var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
-    if (selectedLocations.length === $scope.locations.length)
-      $scope.refreshChartWithParams({})
-    else {
-      var location_ids = selectedLocations.map(function(loc) { return loc.id });
-      $scope.refreshChartWithParams({"location_ids": location_ids})
-    }
-
-  }
+  $scope.$watch("chartOptions.type", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChartWithParams({});
+  });
 
   $scope.selectedLocationsText = function() {
     var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true })
@@ -168,7 +162,7 @@ var googleChartOptions = function(chartID, data, chartOptions) {
   };
 
 
-  if ( shouldDisplayLineChart(chartOptions) )
+  if ( chartOptions.timeframe <= 3 )
     options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
   else
     options.hAxis.slantedtextangle = 90;
@@ -176,14 +170,6 @@ var googleChartOptions = function(chartID, data, chartOptions) {
   return options;
 }
 
-
-// Checks the selected timeframe radio button and returns the appropriate
-// graph.
-// Scope: A helper function.
-function shouldDisplayLineChart(options) {
-  var timeframe = parseInt(options.timeframe)
-  return (timeframe == -1 || timeframe == 6)
-}
 
 function googleDataView(data, chartOptions) {
   var view = new google.visualization.DataView(data);
@@ -208,7 +194,7 @@ function googleDataView(data, chartOptions) {
 function drawChart(chartID, rawData, options) {
   var chartHTMLElement = document.getElementById(chartID)
 
-  if (shouldDisplayLineChart(options) == true)
+  if (options.type === "line")
     chart = new google.visualization.LineChart(chartHTMLElement);
   else
     chart = new google.visualization.ColumnChart(chartHTMLElement);

@@ -16,6 +16,10 @@
 }
 
 #timeseries {
+  input[type="radio"]{
+    display: none;
+  }
+
   height: 350px;
   display: block;
   text-align: center;

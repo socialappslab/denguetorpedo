@@ -89,6 +89,16 @@
 
         %td{"style" => "width: 70%;"}
           #timeseries
+            .btn-group{"ng-hide" => "noChartData || chartLoading"}
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.type === 'bar'}"  do
+                = radio_button_tag "chart[type]", "bar", checked, "ng-model" => "chartOptions.type"
+                Bar chart
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.type === 'line'}" do
+                = radio_button_tag "chart[type]", "line", checked, "ng-model" => "chartOptions.type"
+                Line chart
+
+
+
             %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
             %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
               = I18n.t("common_terms.no_data")
