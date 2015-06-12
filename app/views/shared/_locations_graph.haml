@@ -7,17 +7,8 @@
             %h2
               = I18n.t("common_terms.percentage")
             .btn-group
-              - checked = (chart_cookies.blank? || [nil, "cumulative"].include?(chart_cookies["percentages"]))
-              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.percentages === 'cumulative'}"  do
-                = radio_button_tag "chart[percentages]", "cumulative", checked, "ng-model" => "chartOptions.percentages"
-                -# = I18n.t("views.statistics.chart.filters.percentages.cumulative")
-                Acumulado
-
-
-              - checked = (chart_cookies["percentages"] == "daily")
-              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.percentages === 'daily'}" do
-                = radio_button_tag "chart[percentages]", "daily", checked, "ng-model" => "chartOptions.percentages"
-                -# = I18n.t("views.statistics.chart.filters.percentages.daily")
+              = label_tag nil, :class => "btn btn-default btn-xs active" do
+                = radio_button_tag "chart[percentages]", "daily", true, "ng-model" => "chartOptions.percentages"
                 En un dia
 
           %td{"style" => "width: 30%;"}

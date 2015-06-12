@@ -126,63 +126,6 @@ describe Visit do
 
   #-----------------------------------------------------------------------------
 
-  describe "Calculating identification type", :after_commit => true do
-    let(:positive_report)  { FactoryGirl.create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at)}
-    let(:potential_report) { FactoryGirl.create(:potential_report, :location_id => location.id, :reporter => user, :created_at => created_at)}
-    let(:negative_report)  { FactoryGirl.create(:negative_report, :location_id => location.id, :reporter => user, :created_at => created_at)}
-
-    it "returns positive if report is positive" do
-      v = Visit.new
-      status  = positive_report.original_status
-      reports = positive_report.location.reports
-      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POSITIVE)
-    end
-
-    it "returns potential if report is potential" do
-      v = Visit.new
-
-      status  = potential_report.original_status
-      reports = potential_report.location.reports
-      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POTENTIAL)
-    end
-
-    it "returns negative if report is negative" do
-      v = Visit.new
-
-      status  = negative_report.original_status
-      reports = negative_report.location.reports
-      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::NEGATIVE)
-    end
-
-    it "returns positive if at least one report is positive" do
-      positive_report.save
-      v = Visit.last
-
-      status  = negative_report.original_status
-      reports = negative_report.location.reports
-      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POSITIVE)
-    end
-
-    it "returns potential if no positives and at least one report is potential" do
-      potential_report.save
-      v = Visit.last
-
-      status  = negative_report.original_status
-      reports = negative_report.location.reports
-      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::POTENTIAL)
-    end
-
-    it "returns negative if no positives and no potential" do
-      v = Visit.new
-
-      status  = negative_report.original_status
-      reports = negative_report.location.reports
-      expect(v.calculate_identification_type_from_status_and_reports(status, reports)).to eq(Report::Status::NEGATIVE)
-    end
-  end
-
-  #-----------------------------------------------------------------------------
-
   # These tests test for very special cases that can be called "gotchas".
   #
   describe "Special cases for calculating time-series", :after_commit => true do
@@ -212,24 +155,6 @@ describe Visit do
       ])
     end
 
-    it "does not include future data of inspections before a certain date for cumulative percentages" do
-      FactoryGirl.create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
-      FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date2)
-
-      visits = Visit.calculate_cumulative_time_series_for_locations_and_start_time([location])
-      expect(visits).to eq([
-        {
-          :date=>"2014-10-21",
-          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
-          :total => {:count => 1}
-        },
-        {
-          :date=>"2015-01-19",
-          :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-          :total => {:count => 1}
-        }
-      ])
-    end
 
   end
 
@@ -425,59 +350,6 @@ describe Visit do
 
 
     #--------------------------------------------------------------------------
-
-    # The distribution of houses is as follows:
-    # First date had 2 visits to 2 (first and second) locations (first negative, second potential)
-    # Second date had 1 visit to second location (second positive)
-    # Third date had 2 visits to 2 (first and third) locations (first positive/potential and third potential)
-    # Fourth date had 1 visit to first location (first negative)
-
-    describe "for Cumulative percentage relative to all houses visited" do
-      it "returns the correct time-series" do
-        visits = Visit.calculate_cumulative_time_series_for_locations_and_start_time(locations)
-        expect(visits).to eq([
-          {
-            :date=>"2014-10-21",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>33}, :negative=>{:count=>1, :percent=>33},
-            :total => {:count => 3}
-          },
-          {
-            :date=>"2015-01-19",
-            :positive=>{:count=>1, :percent=>33}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>33},
-            :total => {:count => 3}
-          },
-          {
-            :date=>"2015-01-28",
-            :positive=>{:count=>2, :percent=>67}, :potential=>{:count=>2, :percent=>67}, :negative=>{:count=> 0, :percent=>0},
-            :total => {:count => 3}
-          },
-          {
-            :date=>"2015-01-29",
-            :positive=>{:count=>1, :percent=> 33}, :potential=>{:count=>1, :percent=> 33}, :negative=>{:count=>1, :percent=> 33},
-            :total => {:count => 3}
-          }
-        ])
-      end
-
-      it "returns truncated time series when start time is set" do
-        visits = Visit.calculate_cumulative_time_series_for_locations_and_start_time(locations, DateTime.parse("2015-01-29 00:00"))
-        expect(visits).to eq([
-          {
-            :date=>"2015-01-29",
-            :positive=>{:count=>1, :percent=> 33}, :potential=>{:count=>1, :percent=> 33}, :negative=>{:count=>1, :percent=> 33},
-            :total => {:count => 3}
-          }
-        ])
-      end
-
-
-      it "returns empty if time series contains no data since specified start time" do
-        visits = Visit.calculate_cumulative_time_series_for_locations_and_start_time(locations, DateTime.parse("2015-02-01 00:00"))
-        expect(visits).to eq([])
-      end
-    end
-
-    #-----------------------------------------------------------------------------
 
   end
 

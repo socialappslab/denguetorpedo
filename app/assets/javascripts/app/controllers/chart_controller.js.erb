@@ -4,6 +4,9 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   $scope.chartLoading = false;
   $scope.noChartData  = false;
 
+  // Note: we're deprecating cumulative percentages completely.
+  $scope.chartOptions.percentages = "daily"
+
   $scope.neighborhood = angular.fromJson($attrs.neighborhood);
   $scope.locations    = angular.fromJson($attrs.locations);
 
