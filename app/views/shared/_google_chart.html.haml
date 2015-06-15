@@ -12,7 +12,7 @@
   %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
   %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
     = I18n.t("common_terms.no_data")
-  #timeseries-chart{"ng-hide" => "chartLoading"}
+  #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
 
 .legend
   .chart-legend.red
