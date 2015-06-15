@@ -25,6 +25,11 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
+      resources :locations, :only => [:index] do
+      end
+
+      #-------------------------------------------------------------------------
+
       resources :comments,       :only => [] do
         post "like", :on => :member
       end
