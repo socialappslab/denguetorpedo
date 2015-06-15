@@ -27,6 +27,7 @@ class BreedingSite < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   module Types
+    BARREL          = "barrel"
     DISH            = "dish"
     LARGE_CONTAINER = "large-containers"
     SMALL_CONTAINER = "small-containers"
