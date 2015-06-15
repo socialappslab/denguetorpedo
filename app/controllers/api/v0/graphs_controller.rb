@@ -47,6 +47,20 @@ class API::V0::GraphsController < API::V0::BaseController
       ]
     end
 
+    # Update the cookies.
+    if cookies[:chart].present?
+      settings = JSON.parse(cookies[:chart])
+      settings = params.slice(:timeframe, :percentages, :type, :positive, :potential, :negative)
+      settings[:timeframe]   ||= "3"
+      settings[:percentages] ||= "daily"
+      settings[:type]        ||= "bar"
+      settings[:positive]    ||= "1"
+      settings[:potential]   ||= "1"
+      settings[:negative]    ||= "1"
+
+      cookies[:chart] = settings.to_json
+    end
+
     render :json => @chart_statistics.as_json, :status => 200 and return
   end
 end
