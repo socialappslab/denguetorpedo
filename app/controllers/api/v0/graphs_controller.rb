@@ -34,7 +34,11 @@ class API::V0::GraphsController < API::V0::BaseController
       start_time = timeframe.to_i.months.ago
     end
 
-    @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, [])
+    if percentages == "daily"
+      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time)
+    else
+      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, "monthly")
+    end
 
     # Format the data in a way that Google Charts can use.
     @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')]]
@@ -45,6 +49,20 @@ class API::V0::GraphsController < API::V0::BaseController
         hash[:potential][:percent],
         hash[:negative][:percent]
       ]
+    end
+
+    # Update the cookies.
+    if cookies[:chart].present?
+      settings = JSON.parse(cookies[:chart])
+      settings = params.slice(:timeframe, :percentages, :type, :positive, :potential, :negative)
+      settings[:timeframe]   ||= "3"
+      settings[:percentages] ||= "daily"
+      settings[:type]        ||= "bar"
+      settings[:positive]    ||= "1"
+      settings[:potential]   ||= "1"
+      settings[:negative]    ||= "1"
+
+      cookies[:chart] = settings.to_json
     end
 
     render :json => @chart_statistics.as_json, :status => 200 and return

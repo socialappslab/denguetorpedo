@@ -54,7 +54,7 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
-  def self.calculate_daily_time_series_for_locations_start_time_and_visit_types(location_ids, start_time = nil, visit_types = nil)
+  def self.calculate_status_distribution_for_locations(location_ids, start_time = nil, percentages = nil)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     visits       = Visit.select("id, visited_at, location_id, parent_visit_id").where(:location_id => location_ids).order("visited_at ASC")
@@ -71,8 +71,8 @@ class Visit < ActiveRecord::Base
 
     daily_stats = []
     visits.each do |visit|
-      visited_at_date     = visit.visited_at.strftime("%Y-%m-%d")
-      visit_type          = visit.visit_type
+      visited_at_date = (percentages == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+      visit_type      = visit.visit_type
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?
@@ -87,24 +87,22 @@ class Visit < ActiveRecord::Base
         daily_stats << day_statistic
       end
 
-      if visit_types.blank? || visit_types.include?(visit_type)
-        # The daily metric calculates number of visited houses
-        # that had at least one potential and/or at least one positive
-        # site. This means we need to ask if the house had a potential site,
-        # and if the house had a positive site.
-        # We do this by checking if there is an entry in the visit_identifaction_hash
-        # by narrowing the array size as fast as possible.
-        visit_counts = visit_identification_hash.find_all {|k, v| k[0] == visit.id}
-        pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
-        pot_count    = pot_count[1] if pot_count
-        pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
-        pos_count    = pos_count[1] if pos_count
+      # The daily metric calculates number of visited houses
+      # that had at least one potential and/or at least one positive
+      # site. This means we need to ask if the house had a potential site,
+      # and if the house had a positive site.
+      # We do this by checking if there is an entry in the visit_identifaction_hash
+      # by narrowing the array size as fast as possible.
+      visit_counts = visit_identification_hash.find_all {|k, v| k[0] == visit.id}
+      pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
+      pot_count    = pot_count[1] if pot_count
+      pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
+      pos_count    = pos_count[1] if pos_count
 
-        day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
-        day_statistic[:positive][:count]  += 1 if pos_count && pos_count > 0
-        day_statistic[:negative][:count]  += 1 if pot_count.blank? && pos_count.blank?
-        day_statistic[:total][:count]     += 1
-      end
+      day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
+      day_statistic[:positive][:count]  += 1 if pos_count && pos_count > 0
+      day_statistic[:negative][:count]  += 1 if pot_count.blank? && pos_count.blank?
+      day_statistic[:total][:count]     += 1
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
@@ -116,11 +114,15 @@ class Visit < ActiveRecord::Base
     # Finally, let's include only those visit types that match the visit type.
     # Now that the full history is captured, let's filter starting from the start_time
     daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-    daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
+    
+    if percentages == "monthly"
+      daily_stats = Visit.filter_time_series_from_date_by_month(daily_stats, start_time)
+    else
+      daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
+    end
 
     return daily_stats
   end
-
 
   #----------------------------------------------------------------------------
 
@@ -147,6 +149,23 @@ class Visit < ActiveRecord::Base
     if start_time.present?
       parsed_start_time = start_time.strftime("%Y-%m-%d")
       first_index = daily_stats.find_index { |day_stat| Time.parse(day_stat[:date]) >= Time.parse(parsed_start_time) }
+
+      if first_index.present?
+        daily_stats = daily_stats[first_index..-1]
+      else
+        daily_stats = []
+      end
+    end
+
+    return daily_stats
+  end
+
+  #----------------------------------------------------------------------------
+
+  def self.filter_time_series_from_date_by_month(daily_stats, start_time)
+    if start_time.present?
+      parsed_start_time = start_time.strftime("%Y-%m")
+      first_index = daily_stats.find_index { |day_stat| day_stat[:date] >= parsed_start_time }
 
       if first_index.present?
         daily_stats = daily_stats[first_index..-1]

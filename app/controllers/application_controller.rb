@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 
   def set_cookies
     if cookies[:chart].blank?
-      cookies[:chart] = {"timeframe" => "3", "positive" => "1", "potential" => "1", "negative" => "1", "percentages" => "cumulative"}.to_json
+      cookies[:chart] = {"timeframe" => "3", "positive" => "1", "potential" => "1", "negative" => "1", "percentages" => "daily"}.to_json
     end
   end
 
