@@ -351,6 +351,44 @@ describe Visit do
 
     #--------------------------------------------------------------------------
 
+    describe "for Monthly percentage relative to houses visited on a date" do
+      it "returns the correct time-series" do
+        visits = Visit.calculate_monthly_time_series_for_locations_start_time(locations)
+        expect(visits).to eq([
+          {
+            :date=>"2014-10",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+            :total => {:count => 2}
+          },
+          {
+            :date=>"2015-01",
+            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>2, :percent=>50}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
+          }
+        ])
+      end
+
+      it "returns truncated time series when start time is set" do
+        visits = Visit.calculate_monthly_time_series_for_locations_start_time(locations, DateTime.parse("2015-01-29 00:00"))
+        expect(visits).to eq([
+          {
+            :date=>"2015-01",
+            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>2, :percent=>50}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
+          }
+        ])
+      end
+
+      it "returns empty if time series contains no data since specified start time" do
+        visits = Visit.calculate_monthly_time_series_for_locations_start_time(locations, DateTime.parse("2015-02-01 00:00"))
+        expect(visits).to eq([])
+      end
+
+
+    end
+
+
+
   end
 
   #-----------------------------------------------------------------------------
