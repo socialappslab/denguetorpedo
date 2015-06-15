@@ -132,7 +132,7 @@ describe Report do
 			FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :larvae => true,    :created_at => date1)
 			FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :protected => true, :created_at => date2)
 
-			visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+			visits = Visit.calculate_daily_time_series_for_locations_start_time(locations)
 			expect(visits).to eq([
 				{
 					:date=>"2014-11-15",

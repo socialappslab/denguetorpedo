@@ -35,7 +35,7 @@ class API::V0::GraphsController < API::V0::BaseController
     end
 
     if percentages == "daily"
-      @statistics = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids, start_time, [])
+      @statistics = Visit.calculate_daily_time_series_for_locations_start_time(@visit_ids, start_time)
     else
       @statistics = Visit.calculate_monthly_time_series_for_locations_start_time(@visit_ids, start_time)
     end
