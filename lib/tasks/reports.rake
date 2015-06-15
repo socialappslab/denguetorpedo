@@ -78,5 +78,35 @@ namespace :reports do
 
   #----------------------------------------------------------------------------
 
+  # This is a one-off task that was created to change all reports created from
+  # CSV that have breeding site P to check that they are indeed P or if they may
+  # be the new breeding site B.
+  task :separate_barrels_from_large_containers => :environment do
+
+    # Some reports use an outdated CSV format which we have to go through manually.
+    outdated_csv_uuids = []
+
+    Report.find_each do |r|
+      next if r.breeding_site_id.blank?
+      next if r.csv_report_id.blank?
+
+      # At this point, this report is associated with a CSV *and* its breeding
+      # site is P. Let's check the corresponding row, and see if it's actually
+      # P or B.
+      matches = r.csv_uuid.match(/.*([a-z])[0-1][0-1][0-1][0-1]/i)
+
+      if matches.nil?
+        outdated_csv_uuids << "Report id (id=#{r.id}) has outdated format (csv uuid = #{r.csv_uuid})"
+      elsif matches[1].downcase.strip == "b"
+        bs = BreedingSite.find_by_code("B")
+        r.update_column(:breeding_site_id, bs.id)
+      end
+    end
+
+    puts "\n\n\noutdated_csv_uuids = #{outdated_csv_uuids}\n\n\n"
+  end
+
+  #----------------------------------------------------------------------------
+
 
 end
