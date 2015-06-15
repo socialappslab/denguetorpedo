@@ -7,9 +7,12 @@
             %h2
               = I18n.t("common_terms.percentage")
             .btn-group
-              = label_tag nil, :class => "btn btn-default btn-xs active" do
-                = radio_button_tag "chart[percentages]", "daily", true, "ng-model" => "chartOptions.percentages"
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'daily'}" do
+                = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "chartOptions.percentages"
                 En un dia
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'monthly'}" do
+                = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "chartOptions.percentages"
+                En un mes
 
           %td{"style" => "width: 30%;"}
             %h2
