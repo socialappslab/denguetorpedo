@@ -16,3 +16,7 @@
         Cambio en Riesgo de Dengue y Chikungunya
 
       = render :partial => "shared/locations_graph"
+
+
+- content_for :scripts do
+  = stylesheet_link_tag "graphs", :media => :print

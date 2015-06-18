@@ -1,0 +1,55 @@
+.header-view {
+  display: none;
+}
+
+.content-view {
+  .master {
+    display: none;
+  }
+}
+
+.table-header-view {
+  input {
+    display: none;
+  }
+}
+
+.location-filter {
+  input {
+    display: none;
+  }
+  .locations {
+    display: none;
+  }
+
+  a {
+    display: none;
+  }
+}
+
+
+#timeseries {
+  .btn-group {
+    display: none;
+  }
+}
+
+.chart-filters {
+  input[type="radio"]{
+    display: none;
+  }
+
+  .btn-group {
+    label {
+      opacity: 0.3;
+    }
+    .active {
+      opacity: 1.0;
+    }
+  }
+
+}
+
+footer {
+  display: none;
+}
