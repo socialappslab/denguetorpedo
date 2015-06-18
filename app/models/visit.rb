@@ -114,7 +114,7 @@ class Visit < ActiveRecord::Base
     # Finally, let's include only those visit types that match the visit type.
     # Now that the full history is captured, let's filter starting from the start_time
     daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-    
+
     if percentages == "monthly"
       daily_stats = Visit.filter_time_series_from_date_by_month(daily_stats, start_time)
     else
