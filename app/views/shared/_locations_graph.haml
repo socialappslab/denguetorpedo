@@ -39,15 +39,24 @@
               = I18n.t("views.statistics.chart.time")
             .btn-group
               - [1, 3, 6].each do |month|
-
-                = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.timeframe === '#{month}'}" do
+                = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.timeframe === '#{month}' && !customDateRange}" do
                   = radio_button_tag "chart[timeframe]", month.to_s, chart_cookies["timeframe"] == month.to_s, "ng-model" => "chartOptions.timeframe"
                   = I18n.t("views.statistics.chart.filters.months", :count => month)
-
-
-              = label_tag  nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.timeframe === '-1'}" do
+              = label_tag  nil, :class => "btn btn-default btn-xs", "ng-class" => "{active: chartOptions.timeframe === '-1' && !customDateRange}" do
                 = radio_button_tag "chart[timeframe]", "-1", chart_cookies["timeframe"] == "-1", "ng-model" => "chartOptions.timeframe"
                 Todo
+              = label_tag  nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': customDateRange}" do
+                = radio_button_tag "", true, false, "ng-model" => "customDateRange", "ng-value" => "true"
+                Custom
+
+            .text-center{"ng-show" => "customDateRange", "style" => "margin-top: 20px;"}
+              = select_tag "chart[custom_start_month]", options_for_select( (1..12).map {|i| [i, i]} ), "ng-model" => "chartOptions.customStartMonth"
+              = select_tag "chart[custom_start_year]", options_for_select( (2010..Time.zone.now.year).map {|i| [i, i]} ), "ng-model" => "chartOptions.customStartYear"
+              to
+              = select_tag "chart[custom_end_month]", options_for_select( (1..12).map {|i| [i, i]} ), "ng-model" => "chartOptions.customEndMonth"
+              = select_tag "chart[custom_end_year]", options_for_select( (2010..Time.zone.now.year).map {|i| [i, i]} ), "ng-model" => "chartOptions.customEndYear"
+
+
         %tr
           %td{"colspan" => 3}
             %p.chart-disclaimer
