@@ -114,7 +114,6 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
   $scope.$watch("chartOptions.customStartMonth", function(newValue, oldValue)
   {
-    console.log("Custom start month called!");
     if (newValue === oldValue)
       return;
     $scope.refreshChartWithParams({});
@@ -122,7 +121,6 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
   $scope.$watch("chartOptions.customStartYear", function(newValue, oldValue)
   {
-    console.log("Custom start year called!");
     if (newValue === oldValue)
       return;
     $scope.refreshChartWithParams({});
@@ -130,7 +128,6 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
   $scope.$watch("chartOptions.customEndMonth", function(newValue, oldValue)
   {
-    console.log("Custom end month called!");
     if (newValue === oldValue)
       return;
     $scope.refreshChartWithParams({});
@@ -138,7 +135,6 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
   $scope.$watch("chartOptions.customEndYear", function(newValue, oldValue)
   {
-    console.log("Custom end year called!");
     if (newValue === oldValue)
       return;
     $scope.refreshChartWithParams({});

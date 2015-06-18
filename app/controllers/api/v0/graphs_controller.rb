@@ -17,23 +17,22 @@ class API::V0::GraphsController < API::V0::BaseController
     if params[:custom_start_month].present? || params[:custom_start_year].present?
       start_month = params[:custom_start_month] || "01"
       start_year  = params[:custom_start_year]  || "2010"
-
-      start_time  = Date.parse(start_year + "-" + start_month + "-" + "01")
+      start_time  = Time.zone.parse("#{start_year}-#{start_month}-01")
     end
 
-    # if params[:custom_end_month].present? || params[:custom_end_year].present?
-    #   end_month = params[:custom_end_month] || "12"
-    #   end_year  = params[:custom_end_year]  || Time.zone.now.year
-    #
-    #   end_time  = Date.parse(end_year + "-" + end_month + "-" + Time.zone.now.day.to_s)
-    # end
+    if params[:custom_end_month].present? || params[:custom_end_year].present?
+      end_month = params[:custom_end_month] || "12"
+      end_year  = params[:custom_end_year]  || Time.zone.now.year
+      end_days  = Time.days_in_month(end_month.to_i)
+      end_time  = Time.zone.parse("#{end_year}-#{end_month}-#{end_days}")
+    end
 
     # In case there were no custom start ranges, then let's rely on timeframe.
     if start_time.blank?
       if params[:timeframe].nil? || params[:timeframe] == "-1"
         start_time = nil
       else
-        start_time = params[:timeframe].to_i.months.ago.strftime("%Y-%m-%d")
+        start_time = params[:timeframe].to_i.months.ago
       end
     end
 
@@ -52,9 +51,9 @@ class API::V0::GraphsController < API::V0::BaseController
     end
 
     if params[:percentages] == "daily"
-      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time)
+      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "daily")
     else
-      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, "monthly")
+      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "monthly")
     end
 
     # Format the data in a way that Google Charts can use.

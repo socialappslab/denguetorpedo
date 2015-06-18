@@ -54,7 +54,7 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
-  def self.calculate_status_distribution_for_locations(location_ids, start_time = nil, percentages = nil)
+  def self.calculate_status_distribution_for_locations(location_ids, start_time, end_time, scale)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     visits       = Visit.select("id, visited_at, location_id, parent_visit_id").where(:location_id => location_ids).order("visited_at ASC")
@@ -71,7 +71,7 @@ class Visit < ActiveRecord::Base
 
     daily_stats = []
     visits.each do |visit|
-      visited_at_date = (percentages == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+      visited_at_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
       visit_type      = visit.visit_type
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
@@ -114,12 +114,7 @@ class Visit < ActiveRecord::Base
     # Finally, let's include only those visit types that match the visit type.
     # Now that the full history is captured, let's filter starting from the start_time
     daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-
-    if percentages == "monthly"
-      daily_stats = Visit.filter_time_series_from_date_by_month(daily_stats, start_time)
-    else
-      daily_stats = Visit.filter_time_series_by_range(daily_stats, start_time)
-    end
+    daily_stats = Visit.filter_time_series_by_range(daily_stats, start_time, end_time, scale)
 
     return daily_stats
   end
@@ -145,29 +140,32 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def self.filter_time_series_by_range(daily_stats, start_time_string, end_time_string = nil)
-    if start_time_string.present?
-      daily_stats.select! {|stat| Time.zone.parse(stat[:date]) >= Time.zone.parse(start_time_string) }
-    end
-
-    if end_time_string.present?
-      daily_stats.select! {|stat| Time.zone.parse(stat[:date]) <= Time.zone.parse(end_time_string) }
-    end
-
-    return daily_stats
-  end
-
-  #----------------------------------------------------------------------------
-
-  def self.filter_time_series_from_date_by_month(daily_stats, start_time)
+  def self.filter_time_series_by_range(daily_stats, start_time, end_time, scale)
     if start_time.present?
-      parsed_start_time = start_time.strftime("%Y-%m")
-      first_index = daily_stats.find_index { |day_stat| day_stat[:date] >= parsed_start_time }
+      daily_stats.select! do |stat|
+        year  = stat[:date].split("-")[0].to_i
+        month = stat[:date].split("-")[1].to_i
+        day   = stat[:date].split("-")[2].to_i
 
-      if first_index.present?
-        daily_stats = daily_stats[first_index..-1]
-      else
-        daily_stats = []
+        if scale == "daily"
+          (year > start_time.year) || (year == start_time.year && month > start_time.month) || (year == start_time.year && month == start_time.month && day >= start_time.day)
+        else
+          (year > start_time.year) || (year == start_time.year && month >= start_time.month)
+        end
+      end
+    end
+
+    if end_time.present?
+      daily_stats.select! do |stat|
+        year  = stat[:date].split("-")[0].to_i
+        month = stat[:date].split("-")[1].to_i
+        day   = stat[:date].split("-")[2].to_i
+
+        if scale == "daily"
+          (year < end_time.year) || (year == end_time.year && month < end_time.month) || (year == end_time.year && month == end_time.month && day <= end_time.day)
+        else
+          (year < end_time.year) || (year == end_time.year && month <= end_time.month)
+        end
       end
     end
 
