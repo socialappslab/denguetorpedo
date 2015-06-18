@@ -11,6 +11,27 @@ describe Visit do
   let(:report)         { FactoryGirl.create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at)}
 
 
+  describe "filter_time_series_from_date" do
+    let(:daily_stats) {[
+      {:date=>"2014-02-24"},
+      {:date=>"2014-03-01"},
+      {:date=>"2015-01-01"}
+    ]}
+
+
+    it "returns original daily stats if no start_time is passed" do
+      result = Visit.filter_time_series_from_date(daily_stats, nil)
+      expect(result.count).to eq(3)
+    end
+
+    it "returns truncated daily stats" do
+      result = Visit.filter_time_series_from_date(daily_stats, "2014-02-26")
+      expect(result.count).to eq(2)
+    end
+
+
+  end
+
   #-----------------------------------------------------------------------------
 
   context "when a new report is created", :after_commit => true do

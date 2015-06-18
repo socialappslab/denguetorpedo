@@ -145,16 +145,9 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def self.filter_time_series_from_date(daily_stats, start_time)
-    if start_time.present?
-      parsed_start_time = start_time.strftime("%Y-%m-%d")
-      first_index = daily_stats.find_index { |day_stat| Time.parse(day_stat[:date]) >= Time.parse(parsed_start_time) }
-
-      if first_index.present?
-        daily_stats = daily_stats[first_index..-1]
-      else
-        daily_stats = []
-      end
+  def self.filter_time_series_from_date(daily_stats, start_time_string)
+    if start_time_string.present?
+      daily_stats.select! {|stat| Time.parse(stat[:date]) >= Time.parse(start_time_string) }
     end
 
     return daily_stats
