@@ -20,13 +20,18 @@ describe Visit do
 
 
     it "returns original daily stats if no start_time is passed" do
-      result = Visit.filter_time_series_from_date(daily_stats, nil)
+      result = Visit.filter_time_series_by_range(daily_stats, nil)
       expect(result.count).to eq(3)
     end
 
-    it "returns truncated daily stats" do
-      result = Visit.filter_time_series_from_date(daily_stats, "2014-02-26")
+    it "returns truncated daily stats for valid start time" do
+      result = Visit.filter_time_series_by_range(daily_stats, "2014-02-26")
       expect(result.count).to eq(2)
+    end
+
+    it "returns truncated daily stats for valid end time" do
+      result = Visit.filter_time_series_by_range(daily_stats, "2014-02-26", "2014-12-31")
+      expect(result.count).to eq(1)
     end
 
 
@@ -299,7 +304,7 @@ describe Visit do
       end
 
       it "returns truncated time series when start time is set" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, DateTime.parse("2015-01-29 00:00"))
+        visits = Visit.calculate_status_distribution_for_locations(locations, "2015-01-29")
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
@@ -310,7 +315,7 @@ describe Visit do
       end
 
       it "returns empty if time series contains no data since specified start time" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, DateTime.parse("2015-02-01 00:00"))
+        visits = Visit.calculate_status_distribution_for_locations(locations, "2015-02-01")
         expect(visits).to eq([])
       end
 

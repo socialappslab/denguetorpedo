@@ -118,7 +118,7 @@ class Visit < ActiveRecord::Base
     if percentages == "monthly"
       daily_stats = Visit.filter_time_series_from_date_by_month(daily_stats, start_time)
     else
-      daily_stats = Visit.filter_time_series_from_date(daily_stats, start_time)
+      daily_stats = Visit.filter_time_series_by_range(daily_stats, start_time)
     end
 
     return daily_stats
@@ -145,9 +145,13 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def self.filter_time_series_from_date(daily_stats, start_time_string)
+  def self.filter_time_series_by_range(daily_stats, start_time_string, end_time_string = nil)
     if start_time_string.present?
-      daily_stats.select! {|stat| Time.parse(stat[:date]) >= Time.parse(start_time_string) }
+      daily_stats.select! {|stat| Time.zone.parse(stat[:date]) >= Time.zone.parse(start_time_string) }
+    end
+
+    if end_time_string.present?
+      daily_stats.select! {|stat| Time.zone.parse(stat[:date]) <= Time.zone.parse(end_time_string) }
     end
 
     return daily_stats

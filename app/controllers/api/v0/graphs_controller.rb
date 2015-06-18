@@ -33,7 +33,7 @@ class API::V0::GraphsController < API::V0::BaseController
       if params[:timeframe].nil? || params[:timeframe] == "-1"
         start_time = nil
       else
-        start_time = params[:timeframe].to_i.months.ago
+        start_time = params[:timeframe].to_i.months.ago.strftime("%Y-%m-%d")
       end
     end
 
