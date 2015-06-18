@@ -13,6 +13,30 @@ class API::V0::GraphsController < API::V0::BaseController
     neighborhood_id = cookies[:neighborhood_id] || params[:neighborhood_id] || @current_user.neighborhood_id
     @neighborhood = Neighborhood.find_by_id(neighborhood_id)
 
+    # Determine the timeframe based on timeframe OR custom date ranges.
+    if params[:custom_start_month].present? || params[:custom_start_year].present?
+      start_month = params[:custom_start_month] || "01"
+      start_year  = params[:custom_start_year]  || "2010"
+      start_time  = Time.zone.parse("#{start_year}-#{start_month}-01")
+    end
+
+    if params[:custom_end_month].present? || params[:custom_end_year].present?
+      end_month = params[:custom_end_month] || "12"
+      end_year  = params[:custom_end_year]  || Time.zone.now.year
+      end_days  = Time.days_in_month(end_month.to_i)
+      end_time  = Time.zone.parse("#{end_year}-#{end_month}-#{end_days}")
+    end
+
+    # In case there were no custom start ranges, then let's rely on timeframe.
+    if start_time.blank?
+      if params[:timeframe].nil? || params[:timeframe] == "-1"
+        start_time = nil
+      else
+        start_time = params[:timeframe].to_i.months.ago
+      end
+    end
+
+
     # TODO: The visit_ids should be based on the actual association between locations
     # and neighborhood; not via the reports.
     # TODO: Right now, we're counting locations that are associated with a report.
@@ -26,18 +50,10 @@ class API::V0::GraphsController < API::V0::BaseController
       @visit_ids = @reports.joins(:location).pluck("locations.id")
     end
 
-    timeframe   = params[:timeframe]
-    percentages = params[:percentages]
-    if timeframe.nil? || timeframe == "-1"
-      start_time = nil
+    if params[:percentages] == "daily"
+      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "daily")
     else
-      start_time = timeframe.to_i.months.ago
-    end
-
-    if percentages == "daily"
-      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time)
-    else
-      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, "monthly")
+      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "monthly")
     end
 
     # Format the data in a way that Google Charts can use.
