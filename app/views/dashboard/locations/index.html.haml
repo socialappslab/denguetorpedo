@@ -40,17 +40,45 @@
             %th.text-center
               = I18n.t("activerecord.attributes.report.location_id")
             %th.text-center
+              Barrel summary
+            %th.text-center
+              Visit summary
+            %th.text-center
               Visit time
             %th.text-center
               Status
             %th.text-center
-              Number of positive sites
+              Positive sites
             %th.text-center
-              Number of potential sites
+              Potential sites
           %tbody
             %tr.thick-border{"ng-repeat-start" => "location in locations"}
               %td{:rowspan => "{{location.visits.length + 1}}"}
                 {{ location.address }}
+              %td{:rowspan => "{{location.visits.length + 1}}"}
+                %ul
+                  %li
+                    %span.label.label-danger
+
+                  %li
+                    %span.label.label-warning
+
+
+                    %span.label.label-success
+
+                  %li
+                    %span.label.label-default
+                      {{ location.visits.length }} total
+              %td{:rowspan => "{{location.visits.length + 1}}"}
+                .progress
+                  .progress-bar.progress-bar-danger{"style" => "width: 33%;"}
+                    {{ (location.visits | filter:{identification_type:0}).length }}
+                  .progress-bar.progress-bar-warning{"style" => "width: 34%;"}
+                    {{ (location.visits | filter:{identification_type:1}).length }}
+                  .progress-bar.progress-bar-success{"style" => "width: 33%;"}
+                    {{ (location.visits | filter:{identification_type:2}).length }}
+
+
               %td{"ng-if" => "location.visits.length === 0"}
               %td{"ng-if" => "location.visits.length === 0"}
               %td{"ng-if" => "location.visits.length === 0"}
