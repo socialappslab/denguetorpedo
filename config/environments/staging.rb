@@ -54,7 +54,9 @@ Dengue::Application.configure do
   }
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w(jquery/* googlemap/* map.js csv-ajax.js bootstrap/* image-compression.js moment.js datepicker.js)
+  config.assets.precompile += %w( jquery/* googlemap/* bootstrap/* map.js csv-ajax.js image-compression.js moment.js datepicker.js)
+  config.assets.precompile += %w( *.png *.jpg )
+  config.assets.precompile += %w( app/* dashboard.css bootstrap/*.css jquery/*.css graphs.css )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
