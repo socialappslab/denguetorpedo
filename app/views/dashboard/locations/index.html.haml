@@ -58,17 +58,28 @@
               %td{:rowspan => "{{location.visits.length + 1}}"}
                 %ul
                   %li
-                    %span.label.label-danger
+                    %span
+                      {{location.barrel_reports.length}} total reports
 
                   %li
-                    %span.label.label-warning
-
-
-                    %span.label.label-success
+                    %span
+                      {{ (location.barrel_reports | filter:{protected:true}).length }}
+                      = I18n.t("activerecord.attributes.report.protected")
+                  %li
+                    %span
+                      {{ (location.barrel_reports | filter:{larvae:true}).length }}
+                      = I18n.t("activerecord.attributes.report.larvae")
+                  %li
+                    %span
+                      {{ (location.barrel_reports | filter:{pupae:true}).length }}
+                      = I18n.t("activerecord.attributes.report.pupae")
 
                   %li
-                    %span.label.label-default
-                      {{ location.visits.length }} total
+                    %span
+                      {{ (location.barrel_reports | filter:{chemically_treated:true}).length }}
+                      = I18n.t("activerecord.attributes.report.chemically_treated")
+
+
               %td{:rowspan => "{{location.visits.length + 1}}"}
                 .progress
                   .progress-bar.progress-bar-danger{"style" => "width: 33%;"}
