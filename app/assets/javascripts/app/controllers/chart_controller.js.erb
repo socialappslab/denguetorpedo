@@ -1,4 +1,8 @@
 var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
+  // By default, we load only CSV data. If Harold wants to graph non-CSV
+  // data, say from DengueChat, then we can let him do it.
+  $scope.dataOptions = {"csvOnly": "1"};
+
   $scope.chartOptions = JSON.parse($cookies.chart);
   $scope.chartOptions.type = "bar"
   $scope.chartLoading = false;
@@ -38,6 +42,7 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     params.negative     = $scope.chartOptions.negative;
     params.percentages  = $scope.chartOptions.percentages;
     params.type         = $scope.chartOptions.type;
+    params.csv_only     = $scope.dataOptions.csvOnly;
 
     params.custom_start_month = $scope.chartOptions.customStartMonth;
     params.custom_start_year  = $scope.chartOptions.customStartYear;
@@ -139,6 +144,14 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
       return;
     $scope.refreshChartWithParams({});
   });
+
+  $scope.$watch("dataOptions.csvOnly", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChartWithParams({});
+  });
+
 
   $scope.selectedLocationsText = function() {
     var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true })

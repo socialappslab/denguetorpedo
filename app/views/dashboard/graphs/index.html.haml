@@ -1,27 +1,36 @@
 - content_for :dashboard_content do
-  .table-header-view
-    .row
-      .col-md-12
-        = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
-          .form-group
-            %p.form-control-static
-              = I18n.t("attributes.neighborhood_id")
-          .form-group
-            = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
-          = submit_tag "Submit", :class => "btn btn-success"
-
-  .row
-    .col-md-10.col-md-offset-1{"ng-controller" => "chartCtrl", "locations" => @locations.to_json, "neighborhood" => @neighborhood.to_json}
+  %div{"ng-controller" => "chartCtrl", "locations" => @locations.to_json, "neighborhood" => @neighborhood.to_json}
+    .table-header-view
       .row
-        .col-md-8
-          %h3.chart-title
-            Cambio en Riesgo de Dengue y Chikungunya
-        .col-md-4
-          = link_to "Print", "#", "onclick" => "window.print();", :class => "pull-right btn btn-warning print-button", :style => "margin-top: 20px;"
+        .col-md-6
+          = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
+            .form-group
+              %p.form-control-static
+                = I18n.t("attributes.neighborhood_id")
+            .form-group
+              = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
+            = submit_tag "Submit", :class => "btn btn-success"
+
+        .col-md-6
+          .pull-right
+            .checkbox{"style" => "margin-top: 20px;"}
+              = label_tag do
+                = check_box_tag "options[csv_only]", "1", true, "ng-model" => "dataOptions.csvOnly", "ng-true-value" => "'1'", "ng-false-value" => "null"
+                CSV data only
+
+
+    .row
+      .col-md-10.col-md-offset-1
+        .row
+          .col-md-8
+            %h3.chart-title
+              Cambio en Riesgo de Dengue y Chikungunya
+          .col-md-4
+            = link_to "Print", "#", "onclick" => "window.print();", :class => "pull-right btn btn-warning print-button", :style => "margin-top: 20px;"
 
 
 
-      = render :partial => "shared/locations_graph"
+        = render :partial => "shared/locations_graph"
 
 - content_for :scripts do
   = stylesheet_link_tag "graphs", :media => :print
