@@ -1,94 +1,69 @@
 - content_for :dashboard_content do
-  .table-header-view
+  %div{"ng-controller" => "locationListCtrl", "neighborhood" => @neighborhood.to_json(:only => [:id])}
+    .table-header-view
+
+      .row
+        .col-md-6
+          = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
+            .form-group
+              %p.form-control-static
+                = I18n.t("attributes.neighborhood_id")
+            .form-group
+              = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
+            = submit_tag "Submit", :class => "btn btn-success"
+
+        .col-md-6
+          .pull-right
+            .checkbox{"style" => "margin-top: 20px;"}
+              = label_tag do
+                = check_box_tag "options[csv_only]", "1", true, "ng-model" => "dataOptions.csvOnly", "ng-true-value" => "'1'", "ng-false-value" => "null"
+                CSV data only
+
+
+    -# .input-group.input-group-lg
+    -#   %span.input-group-addon
+    -#     .fa.fa-search
+    -#   %input#search-filter.form-control{:placeholder => "Search by location or visit date", :type => "text", "ng-model" => "searchText"}/
+
 
     .row
-      .col-md-6
-        = form_tag set_cookies_users_path, :method => "POST", :class => "form-inline" do
-          .form-group
-            %p.form-control-static
-              = I18n.t("attributes.neighborhood_id")
-          .form-group
-            = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
-          = submit_tag "Submit", :class => "btn btn-success"
+      .col-md-12
+        .error-message{"ng-show" => "serverError"}
+          %p.text-center.text-warning
+            Algo salió mal. Por favor, intente nuevamente.
 
-      .col-md-6
-        .pull-right
-          = render :partial => "shared/pagination"
+        %h1.text-center{"ng-show" => "loading"}
+          %i.fa.fa-refresh.fa-spin
 
-
-  .input-group.input-group-lg
-    %span.input-group-addon
-      .fa.fa-search
-    %input#search-filter.form-control{:placeholder => "Search by location or visit date", :type => "text"}/
-
-
-  .row
-    .col-md-12
-      %table.table.table-bordered.table-hover.text-center.statistics-table
-        %thead
-          %th.text-center
-            = I18n.t("activerecord.attributes.report.location_id")
-          %th.text-center
-            Visit time
-          %th.text-center
-            Status
-          %th.text-center
-            Number of positive sites
-          %th.text-center
-            Number of potential sites
-        %tbody
-          - @locations.each do |loc|
-            %tr.thick-border{:data => {"location_id" => loc.id}}
-              // NOTE: rowspan should always be +1 since it's counting its own
-              // tr as well.
-              - visits = loc.visits.order("visited_at ASC").includes(:inspections)
-              - num_visits = visits.count
-              - row_span = num_visits + 1
-              %td{:rowspan => row_span, :data => {:location => loc.address} }
-                = loc.address
-              - if num_visits == 0
+        %table.table.table-bordered.table-hover.text-center.statistics-table{"ng-hide" => "loading"}
+          %thead
+            %th.text-center
+              = I18n.t("activerecord.attributes.report.location_id")
+            %th.text-center
+              Visit time
+            %th.text-center
+              Status
+            %th.text-center
+              Number of positive sites
+            %th.text-center
+              Number of potential sites
+          %tbody
+            %tr.thick-border{"ng-repeat-start" => "location in locations"}
+              %td{:rowspan => "{{location.visits.length + 1}}"}
+                {{ location.address }}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %tr{"ng-repeat" => "visit in location.visits", "ng-if" => "location.visits.length !== 0"}
                 %td
+                  {{visit.timestamp}}
+                %td{"class" => "{{visit.class}}"}
                 %td
+                  {{ (visit.inspections | filter:{identification_type:0}).length }}
                 %td
-                %td
-              - else
-                - visits.each do |visit|
-                  %tr{:data => {"location_id" => loc.id}}
-                    - inspections = visit.inspections
-                    %td{:data => {:visit => format_csv_timestamp(visit.visited_at)}}
-                      = format_csv_timestamp(visit.visited_at)
-                    %td{:class => class_for_status(visit.identification_type)}
-                    %td
-                      = inspections.find_all {|ins| ins.identification_type == Inspection::Types::POSITIVE}.count
-                    %td
-                      = inspections.find_all {|ins| ins.identification_type == Inspection::Types::POTENTIAL}.count
+                  {{ (visit.inspections | filter:{identification_type:1}).length }}
+            %tr{"ng-repeat-end" => true}
 
-
-
-- content_for :scripts do
-  :javascript
-    $(document).ready(function () {
-      $('#search-filter').keyup(function () {
-        var rex = new RegExp($(this).val(), 'i');
-        $('.statistics-table tbody tr').hide();
-
-        var matchingIds = [];
-        $('.statistics-table tbody tr').each(function() {
-          var columns = $(this).find("td");
-
-          // Iterate over all columns, matching the data attributes against the
-          // regular expression.
-          for (var i = 0; i < columns.length; i++)
-          {
-            var column = $(columns[i]);
-            if ( rex.test(column.data("location")) || rex.test(column.data("visit")) )
-              matchingIds.push( $(this).data("locationId") )
-          }
-        })
-
-        // Iterate over all rows that match the CSV ID and display them.
-        $(".statistics-table tbody tr").filter(function() {
-          return matchingIds.indexOf($(this).data("locationId")) != -1
-        }).show();
-      })
-    });
+  - content_for :scripts do
+    = javascript_include_tag "application"

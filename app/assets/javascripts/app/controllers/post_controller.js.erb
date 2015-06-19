@@ -3,7 +3,6 @@ var postCtrl = function ($scope, $http, $attrs) {
   var ajax   = $http.get("/api/v0" + pathName + ".json");
 
   ajax.success(function(data) {
-    console.log(data)
     $scope.post = data;
   });
   ajax.error(function(response) {

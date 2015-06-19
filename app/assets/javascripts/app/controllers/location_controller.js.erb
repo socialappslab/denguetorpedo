@@ -1,0 +1,46 @@
+var locationListCtrl = function ($scope, $http, $attrs) {
+  // By default, we load only CSV data. If Harold wants to graph non-CSV
+  // data, say from DengueChat, then we can let him do it.
+  $scope.dataOptions = {"csvOnly": "1"};
+  $scope.neighborhood = angular.fromJson($attrs.neighborhood);
+
+  $scope.refreshTable = function() {
+    $scope.loading     = true;
+    $scope.serverError = false;
+
+    var ajax   = $http({url: "/api/v0/locations.json", method: "GET", params: {"neighborhood_id": $scope.neighborhood.id, "csv_only": $scope.dataOptions.csvOnly}});
+
+    ajax.success(function(data) {
+      $scope.loading = true;
+      $scope.locations = data.locations;
+    });
+    ajax.error(function(response) {
+      $scope.serverError = true;
+      $scope.loading     = false;
+    });
+    ajax.then(function(response) {
+      $scope.serverError = false;
+      $scope.loading     = false;
+    });
+  };
+
+
+  $scope.$watch("dataOptions.csvOnly", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshTable();
+  });
+
+
+
+  $scope.refreshTable();
+
+};
+
+
+// We use inline annotation to declare services in order to bypass
+// errors when JS gets minified:
+// https://docs.angularjs.org/tutorial/step_05
+var app = angular.module('dengueChatApp');
+app.controller("locationListCtrl", ["$scope", "$http", "$attrs", locationListCtrl]);
