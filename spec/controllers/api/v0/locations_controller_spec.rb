@@ -3,7 +3,7 @@ require "rails_helper"
 
 describe API::V0::LocationsController do
   let(:neighborhood)  { FactoryGirl.create(:neighborhood) }
-  let(:breeding_site) { FactoryGirl.create(:breeding_site) }
+  let!(:breeding_site) { FactoryGirl.create(:breeding_site, :code => "B") }
   let(:user)          { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
 
   describe "Requesting CSV only data" do
