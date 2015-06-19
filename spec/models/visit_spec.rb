@@ -11,6 +11,49 @@ describe Visit do
   let(:report)         { FactoryGirl.create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at)}
 
 
+  describe "filter_time_series_from_date" do
+    let(:daily_stats) {[
+      {:date=>"2014-02-24"},
+      {:date=>"2014-03-01"},
+      {:date=>"2015-01-01"},
+      {:date=>"2015-01-15"}
+    ]}
+
+
+    it "returns original daily stats if no start_time is passed" do
+      result = Visit.filter_time_series_by_range(daily_stats, nil, nil, "daily")
+      expect(result.count).to eq(4)
+    end
+
+    it "returns truncated daily stats for valid start time" do
+      result = Visit.filter_time_series_by_range(daily_stats, Time.zone.parse("2014-02-26"), nil, "daily")
+      expect(result.count).to eq(3)
+    end
+
+    it "returns truncated daily stats for valid end time" do
+      result = Visit.filter_time_series_by_range(daily_stats, Time.zone.parse("2014-02-26"), Time.zone.parse("2014-12-31"), "daily")
+      expect(result.count).to eq(1)
+    end
+
+    it "returns truncated daily stats for valid month" do
+      result = Visit.filter_time_series_by_range(daily_stats, Time.zone.parse("2015-01-01"), nil, "monthly")
+      expect(result.count).to eq(2)
+    end
+
+    it "returns truncated daily stats for valid daily" do
+      result = Visit.filter_time_series_by_range(daily_stats, Time.zone.parse("2015-01-01"), nil, "daily")
+      expect(result.count).to eq(2)
+    end
+
+    it "returns truncated daily stats for valid daily" do
+      result = Visit.filter_time_series_by_range(daily_stats, Time.zone.parse("2014-12-30"), nil, "daily")
+      expect(result.count).to eq(2)
+    end
+
+
+
+  end
+
   #-----------------------------------------------------------------------------
 
   context "when a new report is created", :after_commit => true do
@@ -140,7 +183,7 @@ describe Visit do
       FactoryGirl.create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
       FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date2)
 
-      visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types([location])
+      visits = Visit.calculate_status_distribution_for_locations([location], nil, nil, "daily")
       expect(visits).to eq([
         {
           :date=>"2014-10-21",
@@ -210,7 +253,7 @@ describe Visit do
     end
 
     it "returns one time-series point for each date" do
-      expect(Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
+      expect(Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily").count).to eq(4)
       # expect(Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
     end
 
@@ -225,7 +268,7 @@ describe Visit do
       # :visited_at => date1)
 
       date_key = date1.strftime("%Y-%m-%d")
-      time_series = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+      time_series = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
       expect(time_series.find_all {|ts| ts[:date] == date_key}.length).to eq(1)
 
       # time_series = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
@@ -233,7 +276,7 @@ describe Visit do
     end
 
     it "orders points by visited_at in ascending order" do
-      visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+      visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
       expect(visits.first[:date]).to eq( date1.strftime("%Y-%m-%d") )
       expect(visits.last[:date]).to  eq( date4.strftime("%Y-%m-%d") )
 
@@ -252,7 +295,7 @@ describe Visit do
 
     describe "for Daily percentage relative to houses visited on a date" do
       it "returns the correct time-series" do
-        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations)
+        visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
@@ -273,64 +316,12 @@ describe Visit do
             :date=>"2015-01-29",
             :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
             :total => {:count => 1}
-          }
-        ])
-      end
-
-      it "returns only follow-up time series" do
-        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::FOLLOWUP])
-        expect(visits).to eq([
-          {
-            :date=>"2014-10-21",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-            :total => {:count => 0}
-          },
-          {
-            :date=>"2015-01-19",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-            :total => {:count => 0}
-          },
-          {
-            :date=>"2015-01-28",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-            :total => {:count => 0}
-          },
-          {
-            :date=>"2015-01-29",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
-            :total => {:count => 1}
-          }
-        ])
-      end
-
-      it "returns only inspection time series" do
-        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, nil, [Visit::Types::INSPECTION])
-        expect(visits).to eq([
-          {
-            :date=>"2014-10-21",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
-            :total => {:count => 2}
-          },
-          {
-            :date=>"2015-01-19",
-            :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-            :total => {:count => 1}
-          },
-          {
-            :date=>"2015-01-28",
-            :positive=>{:count=>1, :percent=>50}, :potential=>{:count=>2, :percent=>100}, :negative=>{:count=>0, :percent=>0},
-            :total => {:count => 2}
-          },
-          {
-            :date=>"2015-01-29",
-            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-            :total => {:count => 0}
           }
         ])
       end
 
       it "returns truncated time series when start time is set" do
-        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, DateTime.parse("2015-01-29 00:00"), [])
+        visits = Visit.calculate_status_distribution_for_locations(locations, Time.zone.parse("2015-01-29"), nil, "daily" )
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
@@ -341,7 +332,7 @@ describe Visit do
       end
 
       it "returns empty if time series contains no data since specified start time" do
-        visits = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(locations, DateTime.parse("2015-02-01 00:00"), [])
+        visits = Visit.calculate_status_distribution_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "daily" )
         expect(visits).to eq([])
       end
 
@@ -350,6 +341,44 @@ describe Visit do
 
 
     #--------------------------------------------------------------------------
+
+    describe "for Monthly percentage relative to houses visited on a date" do
+      it "returns the correct time-series" do
+        visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "monthly")
+        expect(visits).to eq([
+          {
+            :date=>"2014-10",
+            :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>1, :percent=>50}, :negative=>{:count=>1, :percent=>50},
+            :total => {:count => 2}
+          },
+          {
+            :date=>"2015-01",
+            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>2, :percent=>50}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
+          }
+        ])
+      end
+
+      it "returns truncated time series when start time is set" do
+        visits = Visit.calculate_status_distribution_for_locations(locations, DateTime.parse("2015-01-29 00:00"), nil, "monthly")
+        expect(visits).to eq([
+          {
+            :date=>"2015-01",
+            :positive=>{:count=>2, :percent=>50}, :potential=>{:count=>2, :percent=>50}, :negative=>{:count=>1, :percent=>25},
+            :total => {:count => 4}
+          }
+        ])
+      end
+
+      it "returns empty if time series contains no data since specified start time" do
+        visits = Visit.calculate_status_distribution_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "monthly")
+        expect(visits).to eq([])
+      end
+
+
+    end
+
+
 
   end
 

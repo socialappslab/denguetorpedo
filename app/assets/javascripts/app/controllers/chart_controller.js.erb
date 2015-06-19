@@ -4,9 +4,6 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   $scope.chartLoading = false;
   $scope.noChartData  = false;
 
-  // Note: we're deprecating cumulative percentages completely.
-  $scope.chartOptions.percentages = "daily"
-
   $scope.neighborhood = angular.fromJson($attrs.neighborhood);
   $scope.locations    = angular.fromJson($attrs.locations);
 
@@ -40,6 +37,12 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     params.potential    = $scope.chartOptions.potential;
     params.negative     = $scope.chartOptions.negative;
     params.percentages  = $scope.chartOptions.percentages;
+    params.type         = $scope.chartOptions.type;
+
+    params.custom_start_month = $scope.chartOptions.customStartMonth;
+    params.custom_start_year  = $scope.chartOptions.customStartYear;
+    params.custom_end_month   = $scope.chartOptions.customEndMonth;
+    params.custom_end_year    = $scope.chartOptions.customEndYear;
 
     var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
 
@@ -70,6 +73,12 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
 
   $scope.$watch("chartOptions.timeframe", function(newValue, oldValue)
   {
+    $scope.customDateRange = false;
+    $scope.chartOptions.customStartMonth = null;
+    $scope.chartOptions.customStartYear  = null;
+    $scope.chartOptions.customEndMonth   = null;
+    $scope.chartOptions.customEndYear    = null;
+
     if (newValue === oldValue)
       return;
     $scope.refreshChartWithParams({});
@@ -97,6 +106,34 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   });
 
   $scope.$watch("chartOptions.type", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChartWithParams({});
+  });
+
+  $scope.$watch("chartOptions.customStartMonth", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChartWithParams({});
+  });
+
+  $scope.$watch("chartOptions.customStartYear", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChartWithParams({});
+  });
+
+  $scope.$watch("chartOptions.customEndMonth", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    $scope.refreshChartWithParams({});
+  });
+
+  $scope.$watch("chartOptions.customEndYear", function(newValue, oldValue)
   {
     if (newValue === oldValue)
       return;

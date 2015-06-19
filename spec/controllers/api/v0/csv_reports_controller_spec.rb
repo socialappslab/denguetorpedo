@@ -310,7 +310,7 @@ describe API::V0::CsvReportsController do
       reports = Report.where(:neighborhood_id => neighborhood.id)
       @visit_ids = reports.joins(:location).pluck("locations.id")
 
-      daily_stats = Visit.calculate_daily_time_series_for_locations_start_time_and_visit_types(@visit_ids)
+      daily_stats = Visit.calculate_status_distribution_for_locations(@visit_ids, nil, nil, "daily")
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-15"}
       expect(stat).to eq ({

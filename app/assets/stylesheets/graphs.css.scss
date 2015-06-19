@@ -1,0 +1,78 @@
+.header-view {
+  display: none;
+}
+
+.content-view {
+  .master {
+    display: none;
+  }
+}
+
+.table-header-view {
+  input {
+    display: none;
+  }
+}
+
+.location-filter {
+  input {
+    display: none;
+  }
+  .locations {
+    display: none;
+  }
+
+  a {
+    display: none;
+  }
+}
+
+
+#timeseries {
+  .btn-group {
+    display: none;
+  }
+}
+
+.chart-filters {
+  input[type="radio"]{
+    display: none;
+  }
+
+  .btn-group {
+    label {
+      opacity: 0.3;
+    }
+    .active {
+      opacity: 1.0;
+    }
+  }
+}
+
+footer {
+  display: none;
+}
+
+.print-button {
+  display: none;
+}
+
+
+.chart-legend {
+  margin-top: 10px;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+
+  &.red {
+    background-color: #e74c3c !important;
+  }
+
+  &.yellow {
+    background-color: #f1c40f !important;
+  }
+
+  &.green {
+    background-color: #2ecc71 !important;
+  }
+}
