@@ -39,12 +39,10 @@ class API::V0::GraphsController < API::V0::BaseController
 
     # TODO: The visit_ids should be based on the actual association between locations
     # and neighborhood; not via the reports.
-    # TODO: Right now, we're counting locations that are associated with a report.
-    # Ideally, we could do something as simple as counting the locations
-    # associated with a *neighborhood*. The problem here, however, is that
-    # we may end up with an incongruity to Harold.
     if params[:location_ids].present?
       @visit_ids = JSON.parse(params[:location_ids])
+    elsif params[:csv_only].present?
+      @visit_ids = @neighborhood.locations.where("locations.id IN (SELECT location_id FROM csv_reports)")
     else
       @reports   = @neighborhood.reports
       @visit_ids = @reports.joins(:location).pluck("locations.id")
