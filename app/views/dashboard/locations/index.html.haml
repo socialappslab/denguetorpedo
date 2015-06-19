@@ -59,7 +59,8 @@
                 %ul
                   %li
                     %span
-                      {{location.barrel_reports.length}} total reports
+                      {{location.barrel_reports.length}}
+                      = I18n.t("activerecord.models.report.other").downcase
 
                   %li
                     %span
@@ -82,13 +83,12 @@
 
               %td{:rowspan => "{{location.visits.length + 1}}"}
                 .progress
-                  .progress-bar.progress-bar-danger{"style" => "width: 33%;"}
-                    {{ (location.visits | filter:{identification_type:0}).length }}
-                  .progress-bar.progress-bar-warning{"style" => "width: 34%;"}
-                    {{ (location.visits | filter:{identification_type:1}).length }}
                   .progress-bar.progress-bar-success{"style" => "width: 33%;"}
                     {{ (location.visits | filter:{identification_type:2}).length }}
-
+                  .progress-bar.progress-bar-warning{"style" => "width: 34%;"}
+                    {{ (location.visits | filter:{identification_type:1}).length }}
+                  .progress-bar.progress-bar-danger{"style" => "width: 33%;"}
+                    {{ (location.visits | filter:{identification_type:0}).length }}
 
               %td{"ng-if" => "location.visits.length === 0"}
               %td{"ng-if" => "location.visits.length === 0"}
@@ -97,7 +97,9 @@
               %tr{"ng-repeat" => "visit in location.visits", "ng-if" => "location.visits.length !== 0"}
                 %td
                   {{visit.timestamp}}
-                %td{"class" => "{{visit.class}}"}
+                %td
+                  %span.label.status-label{"class" => "{{visit.class}}"}
+                    %nbsp
                 %td
                   {{ (visit.inspections | filter:{identification_type:0}).length }}
                 %td
