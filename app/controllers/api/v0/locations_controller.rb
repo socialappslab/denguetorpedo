@@ -17,7 +17,6 @@ class API::V0::LocationsController < API::V0::BaseController
       @locations = @neighborhood.locations.includes(:visits)
     end
 
-
     render "api/v0/locations/index" and return
   end
 end
