@@ -15,14 +15,20 @@
   #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
 
 .legend
-  .chart-legend.red
-  .chart-label
+  %span.chart-legend.red
+  %span.chart-label
     = I18n.t('views.statistics.chart.percent_of_positive_sites')
   %br
-  .chart-legend.yellow
-  .chart-label
+  %span.chart-legend.yellow
+  %span.chart-label
     = I18n.t('views.statistics.chart.percent_of_potential_sites')
   %br
-  .chart-legend.green
-  .chart-label
+  %span.chart-legend.green
+  %span.chart-label
     = I18n.t('views.statistics.chart.percent_of_negative_sites')
+
+
+
+
+%p.chart-disclaimer
+  = I18n.t("views.statistics.chart.disclaimer")
