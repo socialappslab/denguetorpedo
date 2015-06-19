@@ -9,12 +9,10 @@ class API::V0::LocationsController < API::V0::BaseController
   # * CSV data
   def index
     @neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
-    @locations    = @neighborhood.locations.includes(:visits)
+    @locations    = @neighborhood.locations.includes(:visits, :reports)
 
     if params[:csv_only].present?
-      @locations = @neighborhood.locations.where("locations.id IN (SELECT location_id FROM csv_reports)").includes(:visits)
-    else
-      @locations = @neighborhood.locations.includes(:visits)
+      @locations = @locations.where("locations.id IN (SELECT location_id FROM csv_reports)")
     end
 
     render "api/v0/locations/index" and return

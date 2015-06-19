@@ -6,6 +6,40 @@
     border-right: 1px #bdc3c7 solid !important;
     border-bottom: 1px #bdc3c7 solid !important;
   }
+
+  .thick-border {
+    border-bottom: 2px #8E8E93 solid !important;
+  }
+
+  .label {
+    font-size: 16px;
+  }
+
+  li {
+    line-height: 50px;
+  }
+
+  .progress-bar {
+    font-size: 16px;
+  }
+
+  .danger {
+    background-color: #d9534f !important;
+  }
+
+  .warning {
+    background-color: #f0ad4e !important;
+  }
+
+  .success {
+    background-color: #5cb85c !important;
+  }
+
+  .status-label {
+    height: 10px;
+    width:  10px;
+    font-size: 10px;
+  }
 }
 
 

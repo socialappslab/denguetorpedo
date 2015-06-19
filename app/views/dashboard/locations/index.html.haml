@@ -40,17 +40,56 @@
             %th.text-center
               = I18n.t("activerecord.attributes.report.location_id")
             %th.text-center
+              Barrel summary
+            %th.text-center
+              Visit summary
+            %th.text-center
               Visit time
             %th.text-center
               Status
             %th.text-center
-              Number of positive sites
+              Positive sites
             %th.text-center
-              Number of potential sites
+              Potential sites
           %tbody
             %tr.thick-border{"ng-repeat-start" => "location in locations"}
               %td{:rowspan => "{{location.visits.length + 1}}"}
                 {{ location.address }}
+              %td{:rowspan => "{{location.visits.length + 1}}"}
+                %ul
+                  %li
+                    %span
+                      {{location.barrel_reports.length}}
+                      = I18n.t("activerecord.models.report.other").downcase
+
+                  %li
+                    %span
+                      {{ (location.barrel_reports | filter:{protected:true}).length }}
+                      = I18n.t("activerecord.attributes.report.protected")
+                  %li
+                    %span
+                      {{ (location.barrel_reports | filter:{larvae:true}).length }}
+                      = I18n.t("activerecord.attributes.report.larvae")
+                  %li
+                    %span
+                      {{ (location.barrel_reports | filter:{pupae:true}).length }}
+                      = I18n.t("activerecord.attributes.report.pupae")
+
+                  %li
+                    %span
+                      {{ (location.barrel_reports | filter:{chemically_treated:true}).length }}
+                      = I18n.t("activerecord.attributes.report.chemically_treated")
+
+
+              %td{:rowspan => "{{location.visits.length + 1}}"}
+                .progress
+                  .progress-bar.progress-bar-success{"style" => "width: 33%;"}
+                    {{ (location.visits | filter:{identification_type:2}).length }}
+                  .progress-bar.progress-bar-warning{"style" => "width: 34%;"}
+                    {{ (location.visits | filter:{identification_type:1}).length }}
+                  .progress-bar.progress-bar-danger{"style" => "width: 33%;"}
+                    {{ (location.visits | filter:{identification_type:0}).length }}
+
               %td{"ng-if" => "location.visits.length === 0"}
               %td{"ng-if" => "location.visits.length === 0"}
               %td{"ng-if" => "location.visits.length === 0"}
@@ -58,7 +97,9 @@
               %tr{"ng-repeat" => "visit in location.visits", "ng-if" => "location.visits.length !== 0"}
                 %td
                   {{visit.timestamp}}
-                %td{"class" => "{{visit.class}}"}
+                %td
+                  %span.label.status-label{"class" => "{{visit.class}}"}
+                    %nbsp
                 %td
                   {{ (visit.inspections | filter:{identification_type:0}).length }}
                 %td
