@@ -12,7 +12,16 @@
 
   .row
     .col-md-10.col-md-offset-1{"ng-controller" => "chartCtrl", "locations" => @locations.to_json, "neighborhood" => @neighborhood.to_json}
-      %h3.chart-title
-        Cambio en Riesgo de Dengue y Chikungunya
+      .row
+        .col-md-8
+          %h3.chart-title
+            Cambio en Riesgo de Dengue y Chikungunya
+        .col-md-4
+          = link_to "Print", "#", "onclick" => "window.print();", :class => "pull-right btn btn-warning print-button", :style => "margin-top: 20px;"
+
+
 
       = render :partial => "shared/locations_graph"
+
+- content_for :scripts do
+  = stylesheet_link_tag "graphs", :media => :print

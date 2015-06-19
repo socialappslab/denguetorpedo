@@ -13,7 +13,6 @@
 .chart-title {
   font-size: 23px;
   margin-top: 20px;
-  text-align: center;
 }
 
 #timeseries {
@@ -84,6 +83,10 @@
 
   input[type="radio"]{
     display: none;
+  }
+
+  table {
+    margin-bottom: 0px;
   }
 }
 
