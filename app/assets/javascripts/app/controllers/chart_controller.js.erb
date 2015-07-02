@@ -9,7 +9,7 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   $scope.noChartData  = false;
 
   $scope.neighborhood = angular.fromJson($attrs.neighborhood);
-  $scope.locations    = angular.fromJson($attrs.locations);
+  $scope.locations    = null;
 
   $scope.checkAllLocations = function() {
     angular.forEach($scope.locations, function(loc) { return loc.selected = true; })
@@ -52,11 +52,13 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
     var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
 
     ajax.success(function(response) {
-      if (response.length <= 1) {
+      $scope.locations = response.locations;
+
+      if (response.data.length <= 1) {
         $scope.noChartData = true;
       } else {
         $scope.noChartData = false;
-        google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response, $scope.chartOptions) } } );
+        google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response.data, $scope.chartOptions) } } );
       }
     });
     ajax.error(function(response) {
