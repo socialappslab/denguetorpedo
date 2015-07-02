@@ -54,17 +54,26 @@ describe API::V0::GraphsController do
     it "returns the correct time-series" do
       get :locations, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
       visits = JSON.parse(response.body)
-      expect(visits[1..-1]).to eq([
-        ["2014-10-21", 0, 50, 50],
-        ["2015-01-19", 100, 0, 0],
-        ["2015-01-28", 50, 100, 0],
-        ["2015-01-29", 0, 0, 100]
-      ])
+      expect(visits["data"]).to eq(
+        [
+          ["Tiempo", "Lugares con criaderos positivos", "Lugares con criaderos potenciales","Lugares sin criaderos"],
+          {"date"=>"2014-10-21", "positive"=>{"count"=>0, "percent"=>0}, "potential"=>{"count"=>1, "percent"=>50}, "negative"=>{"count"=>1, "percent"=>50}, "total"=>{"count"=>2}},
+          {"date"=>"2015-01-19", "positive"=>{"count"=>1, "percent"=>100}, "potential"=>{"count"=>0, "percent"=>0}, "negative"=>{"count"=>0, "percent"=>0}, "total"=>{"count"=>1}},
+          {"date"=>"2015-01-28", "positive"=>{"count"=>1, "percent"=>50}, "potential"=>{"count"=>2, "percent"=>100}, "negative"=>{"count"=>0, "percent"=>0}, "total"=>{"count"=>2}},
+          {"date"=>"2015-01-29", "positive"=>{"count"=>0, "percent"=>0}, "potential"=>{"count"=>0, "percent"=>0}, "negative"=>{"count"=>1, "percent"=>100}, "total"=>{"count"=>1}}
+        ]
+      )
     end
 
     it "returns empty if time series contains no data since specified start time" do
       get :locations, :timeframe => "1", "percentages" => "daily", "positive" => "1","potential" => "1","negative" => "1"
-      expect( JSON.parse(response.body).count ).to eq(1)
+      expect( JSON.parse(response.body)["data"].count ).to eq(1)
+    end
+
+    it "returns an array of locations" do
+      get :locations, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
+      visits = JSON.parse(response.body)
+      expect(visits["locations"].map {|l| l["id"] }.sort ).to eq(Location.pluck(:id).sort)
     end
   end
 
@@ -80,7 +89,10 @@ describe API::V0::GraphsController do
 
     it "returns only the locations associated with CSVs" do
       get "locations", :neighborhood_id => neighborhood.id, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1", :csv_only => "1", :format => :json
-      expect( JSON.parse(response.body)[1..2] ).to eq( [["2014-10-21", 0, 100, 0], ["2015-01-19", 100, 0, 0]] )
+      expect( JSON.parse(response.body)["data"][1..2] ).to eq( [
+        {"date"=>"2014-10-21", "positive"=>{"count"=>0, "percent"=>0}, "potential"=>{"count"=>1, "percent"=>100}, "negative"=>{"count"=>0, "percent"=>0}, "total"=>{"count"=>1}},
+        {"date"=>"2015-01-19", "positive"=>{"count"=>1, "percent"=>100}, "potential"=>{"count"=>0, "percent"=>0}, "negative"=>{"count"=>0, "percent"=>0}, "total"=>{"count"=>1}}
+        ] )
     end
   end
 

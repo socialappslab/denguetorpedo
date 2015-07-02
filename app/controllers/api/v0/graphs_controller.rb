@@ -36,17 +36,18 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
-
-    # TODO: The visit_ids should be based on the actual association between locations
-    # and neighborhood; not via the reports.
-    if params[:location_ids].present?
-      @visit_ids = JSON.parse(params[:location_ids])
+    selected_location_ids = JSON.parse(params[:location_ids]) if params[:location_ids].present?
+    if selected_location_ids.present?
+      @visit_ids = selected_location_ids
+      @locations = Location.where(:id => selected_location_ids)
     elsif params[:csv_only].present?
-      @visit_ids = @neighborhood.locations.where("locations.id IN (SELECT location_id FROM csv_reports)")
+      @locations = @neighborhood.locations.where("locations.id IN (SELECT location_id FROM csv_reports)")
+      @visit_ids = @locations.pluck(:id)
     else
-      @reports   = @neighborhood.reports
-      @visit_ids = @reports.joins(:location).pluck("locations.id")
+      @locations = @neighborhood.locations
+      @visit_ids = @locations.pluck(:id)
     end
+    @locations = @locations.order("address ASC")
 
     if params[:percentages] == "daily"
       @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "daily")
@@ -54,16 +55,7 @@ class API::V0::GraphsController < API::V0::BaseController
       @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "monthly")
     end
 
-    # Format the data in a way that Google Charts can use.
-    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')]]
-    @statistics.each do |hash|
-      @chart_statistics << [
-        hash[:date],
-        hash[:positive][:percent],
-        hash[:potential][:percent],
-        hash[:negative][:percent]
-      ]
-    end
+    @statistics.unshift([I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')])
 
     # Update the cookies.
     if cookies[:chart].present?
@@ -79,6 +71,6 @@ class API::V0::GraphsController < API::V0::BaseController
       cookies[:chart] = settings.to_json
     end
 
-    render :json => @chart_statistics.as_json, :status => 200 and return
+    render :json => {:data => @statistics.as_json, :locations => @locations.as_json}, :status => 200 and return
   end
 end

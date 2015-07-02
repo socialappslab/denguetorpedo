@@ -99,8 +99,8 @@ class Visit < ActiveRecord::Base
       pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
       pos_count    = pos_count[1] if pos_count
 
-      day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
       day_statistic[:positive][:count]  += 1 if pos_count && pos_count > 0
+      day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
       day_statistic[:negative][:count]  += 1 if pot_count.blank? && pos_count.blank?
       day_statistic[:total][:count]     += 1
 
