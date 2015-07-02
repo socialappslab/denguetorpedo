@@ -1,5 +1,5 @@
-- [["CSV", {:controller => "dashboard/csv_reports", :action => "index"}, "fa-file-o"], ["Locations", {:controller => "dashboard/locations", :action => "index"}, "fa-map-marker"], ["Graphs", {:controller => "dashboard/graphs", :action => "index"}, "fa-bar-chart"]].each do |md_navigation|
-  .master-view-cell{:class => (md_navigation[1][:controller] == params[:controller] ? "active" : "")}
+- [["CSV", dashboard_csv_index_path, "fa-file-o"], ["Locations", dashboard_locations_path, "fa-map-marker"], ["Graphs", dashboard_graphs_path, "fa-bar-chart"], ["Heat map", heatmap_dashboard_graphs_path, "fa-globe"]].each do |md_navigation|
+  .master-view-cell{:class => (md_navigation[1] == request.path ? "active" : "")}
     = link_to md_navigation[1] do
       .row
         .col-md-2.text-center

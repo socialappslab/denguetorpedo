@@ -1,0 +1,17 @@
+- content_for :dashboard_content do
+  #map.tab-pane{:role => "tabpanel"}
+    = render :partial => "reports/google_map"
+
+
+/------------------------------------------------------------------------------
+
+- content_for :scripts do
+  = javascript_include_tag "map"
+  = javascript_include_tag "googlemap/map"
+
+  :javascript
+    $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
+      var target = $(e.target).attr("href");
+      if (target == "#map")
+        google.maps.event.trigger(map, 'resize');
+    })
