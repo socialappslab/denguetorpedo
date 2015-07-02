@@ -9,7 +9,7 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
   $scope.noChartData  = false;
 
   $scope.neighborhood = angular.fromJson($attrs.neighborhood);
-  $scope.locations    = null;
+  $scope.locations    = [];
 
   $scope.checkAllLocations = function() {
     angular.forEach($scope.locations, function(loc) { return loc.selected = true; })
@@ -258,17 +258,67 @@ function drawChart(chartID, rawData, options) {
   else
     chart = new google.visualization.ColumnChart(chartHTMLElement);
 
+  var dataTable    = new google.visualization.DataTable();
+  var columnNames = rawData.shift();
+  dataTable.addColumn("string", columnNames[0])
+  for (var i = 1; i < columnNames.length; i++) {
+    dataTable.addColumn("number", columnNames[i])
+  }
+
+
+  for (var i = 0; i < rawData.length; i++) {
+    var rowIndex = dataTable.addRow( [ rawData[i].date, rawData[i].positive.percent, rawData[i].potential.percent, rawData[i].negative.percent] )
+    dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
+  }
+
+  // for (var i = 0; i < rawData.length; i++) {
+  //   rowData = rawData[i]
+  //   var total = rowData.total.count;
+  //   var posTooltipText    = String(rowData.positive.percent)  + "% (" + rowData.positive.count  + " of " + total + ")";
+  //   var posAnnotationText = "HAHA"
+  //
+  //   var potTooltipText    = String(rowData.potential.percent)  + "% (" + rowData.potential.count  + " of " + total + ")";
+  //   var potAnnotationText = "HAHA"
+  //
+  //   var negTooltipText    = String(rowData.negative.percent)  + "% (" + rowData.negative.count  + " of " + total + ")";
+  //   var negAnnotationText = "HAHA"
+  //
+  //   var rowIndex = dataTable.addRow( [ rawData[i].date, rawData[i].positive.percent, posTooltipText, posAnnotationText, rawData[i].potential.percent, potTooltipText, potAnnotationText, rawData[i].negative.percent, negTooltipText, negAnnotationText] )
+  //   dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
+  // }
+
+
 
   // Initialize the critical variables.
+  // var data      = new google.visualization.arrayToDataTable(rawData);
+  var data = dataTable;
 
-  var data      = new google.visualization.arrayToDataTable(rawData);
-  var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
-  formatter.format(data, 1);
-  formatter.format(data, 2);
-  formatter.format(data, 3);
+  for (var i = 0; i < data.getNumberOfRows(); i++)
+  {
+    var rowData = data.getRowProperty(i, "rowData")
+    var total = rowData.total.count;
+
+    var statuses = ["positive", "potential", "negative"]
+    for (var j = 0; j < statuses.length; j++)
+    {
+      var statusData = rowData[ statuses[j] ];
+      if (statusData.count === 0)
+        data.setFormattedValue(i, j + 1, "")
+      else if (options.timeframe <= 3)
+        data.setFormattedValue(i, j + 1, String(statusData.percent)  + "% (" + statusData.count  + " of " + total + ")" )
+      else
+        data.setFormattedValue(i, j + 1, String(statusData.percent) + "%")
+    }
+  }
+  //
+  // var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
+  // formatter.format(data, 1);
+  // formatter.format(data, 2);
+  // formatter.format(data, 3);
 
   // Let's hide the columns corresponding to unchecked checkboxes.
   var view    = googleDataView(data, options);
+  // var view = new google.visualization.DataView(data);
   var options = googleChartOptions(chartID, data, options)
   chart.draw(view, options);
 }

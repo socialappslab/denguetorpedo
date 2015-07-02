@@ -55,16 +55,7 @@ class API::V0::GraphsController < API::V0::BaseController
       @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "monthly")
     end
 
-    # Format the data in a way that Google Charts can use.
-    @chart_statistics = [[I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')]]
-    @statistics.each do |hash|
-      @chart_statistics << [
-        hash[:date],
-        hash[:positive][:percent],
-        hash[:potential][:percent],
-        hash[:negative][:percent]
-      ]
-    end
+    @statistics.unshift([I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')])
 
     # Update the cookies.
     if cookies[:chart].present?
@@ -80,6 +71,6 @@ class API::V0::GraphsController < API::V0::BaseController
       cookies[:chart] = settings.to_json
     end
 
-    render :json => {:data => @chart_statistics.as_json, :locations => @locations.as_json}, :status => 200 and return
+    render :json => {:data => @statistics.as_json, :locations => @locations.as_json}, :status => 200 and return
   end
 end
