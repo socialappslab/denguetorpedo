@@ -45,10 +45,10 @@
           = link_to "#report", :data => {:toggle => "tab"} do
             %i.fa.fa-map-marker
             = I18n.t("activerecord.models.report", :count => 2)
-        %li
-          = link_to "#map", :data => {:toggle => "tab"} do
-            %i.fa.fa-globe
-            = I18n.t("common_terms.map")
+        -# %li
+        -#   = link_to "#map", :data => {:toggle => "tab"} do
+        -#     %i.fa.fa-globe
+        -#     = I18n.t("common_terms.map")
 
     .col-md-6
       .pull-right
@@ -66,15 +66,15 @@
 .tab-content
   #report.tab-pane.active{:role => "tabpanel"}
     = render :partial => "reports/sites"
-  #map.tab-pane{:role => "tabpanel"}
-    = render :partial => "reports/google_map"
+  -# #map.tab-pane{:role => "tabpanel"}
+  -#   = render :partial => "reports/google_map"
 
 
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  = javascript_include_tag "map"
-  = javascript_include_tag "googlemap/map"
+  -# = javascript_include_tag "map"
+  -# = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
   = javascript_include_tag "moment"
   = javascript_include_tag "bootstrap/datetimepicker"
