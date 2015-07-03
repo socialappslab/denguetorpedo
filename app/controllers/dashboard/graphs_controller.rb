@@ -16,9 +16,9 @@ class Dashboard::GraphsController < Dashboard::BaseController
   def heatmap
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
 
-    reports_with_locs     = Report.joins(:location).select("latitude, longitude")
-    @open_locations       = reports_with_locs.is_open
-    @eliminated_locations = reports_with_locs.eliminated
+    reports_with_locs = Report.joins(:location).select("latitude, longitude")
+    @open_locations   = reports_with_locs.is_open
+    @open_locations   = @open_locations.uniq
   end
 
   #----------------------------------------------------------------------------
