@@ -1,0 +1,108 @@
+var heatmapCtrl = function ($scope, $http, $attrs) {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  //sensor parameter no longer needed
+  script.src = 'https://maps.googleapis.com/maps/api/js?v='+GMAPS_VERSION+'&libraries=visualization&callback=window.maps.initializeGoogleMaps';
+  document.body.appendChild(script);
+};
+
+
+
+// We use inline annotation to declare services in order to bypass
+// errors when JS gets minified:
+// https://docs.angularjs.org/tutorial/step_05
+var app        = angular.module('dengueChatApp');
+var controller = app.controller("heatmapCtrl", ["$scope", "$http", "$attrs", heatmapCtrl]);
+
+var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
+var GMAPS_VERSION = 3.17; //latest stable version
+var REGION_ZOOM = 13; // the zoom level at which we see the entire neighborhood
+
+var map; //this is a shared variable used by all methods.
+
+window.maps = {};
+window.maps.markers = [];
+
+window.maps.populateGoogleMaps = function(locations, map, locationType) {
+  // Populate the map with existing open locations.
+  var latitude, longitude, icon;
+  if (locationType == "open")
+    var icon = "/assets/markers/orange_marker.png"
+  else
+    var icon = "/assets/markers/grey_marker.png"
+
+  for(var i = 0; i < locations.length; i++) {
+    var latitude  = locations[i].latitude;
+    var longitude = locations[i].longitude;
+    var markerLoc = new google.maps.LatLng(latitude, longitude);
+    marker = new google.maps.Marker({
+      position: markerLoc,
+      map: map,
+      draggable:false,
+      animation: google.maps.Animation.DROP,
+      icon: icon
+    });
+    window.maps.markers.push(marker);
+  }
+}
+
+//set up a heatmap
+window.maps.setupHeatMap = function(locations, map){
+  var heatmapData = Array(locations.length);
+  for(var i = 0; i < locations.length; i++) {
+    var latitude  = locations[i].latitude;
+    var longitude = locations[i].longitude;
+    heatmapData[i] = new google.maps.LatLng(latitude, longitude);
+  }
+
+  var heatmap = new google.maps.visualization.HeatmapLayer({
+    data: heatmapData,
+    radius: 150,
+    gradient: [
+    "rgba(0, 255, 255, 0)",
+    "rgba(235,255,87,1)",
+    "rgba(235,240,85, 1)",
+    "rgba(234,225,82, 1)",
+    "rgba(234,210,80,1)",
+    "rgba(234,195,78,1)",
+    "rgba(233,180,76,1)",
+    "rgba(233,165,74,1)",
+    "rgba(233,151,71,1)",
+    "rgba(232,136,69,1)",
+    "rgba(232,121,67,1)",
+    "rgba(232,106,65,1)",
+    "rgba(231,91,62,1)",
+    "rgba(231,76,60,1)"
+    ]
+  });
+  heatmap.setMap(map);
+}
+
+window.maps.showLoading = function(){
+  $("#loading").show();
+}
+
+window.maps.hideLoading = function(){
+  $("#loading").hide();
+}
+
+window.maps.initializeGoogleMaps = function(){
+  var mapOptions = {
+    zoom: REGION_ZOOM,
+    // zoomControl: false,
+    streetViewControl: false,
+    // scrollwheel: false,
+    disableDoubleClickZoom: true,
+    center: new google.maps.LatLng(communityLatitude, communityLongitude)
+  };
+
+  // Initialize the map, and add the geographical layer to it.
+  map = new google.maps.Map(document.getElementById('gmap'), mapOptions);
+  window.maps.hideLoading();
+
+  window.maps.populateGoogleMaps(openLocations, map, "open");
+  new MarkerClusterer(map, window.maps.markers);
+
+  // window.maps.setupHeatMap(openLocations, map);
+
+}

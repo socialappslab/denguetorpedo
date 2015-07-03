@@ -1,0 +1,25 @@
+- content_for :dashboard_content do
+  %div{"ng-controller" => "heatmapCtrl", "neighborhood" => @neighborhood.to_json}
+    #map_div
+      .row
+        .col-md-8.col-md-offset-2
+          #loading
+            .fa.fa-refresh.fa-spin
+          #gmap
+
+/------------------------------------------------------------------------------
+
+- content_for :scripts do
+  :scss
+    #map_div {
+      height: auto;
+    }
+    #gmap {
+      height: 600px !important;
+    }
+  = javascript_include_tag "google/marker-clusterer"
+
+  :javascript
+    var openLocations       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
+    var communityLatitude   = #{@neighborhood.latitude}
+    var communityLongitude  = #{@neighborhood.longitude}

@@ -13,6 +13,7 @@
 //= require "app/controllers/post_controller"
 //= require "app/controllers/chart_controller"
 //= require "app/controllers/location_controller"
+//= require "app/controllers/heatmap_controller"
 //= require "jquery/caret-min"
 //= require "jquery/atwho-min"
 
