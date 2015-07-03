@@ -3,11 +3,6 @@
     #map_div
       .row
         .col-md-8.col-md-offset-2
-          #map-error-description
-            = I18n.t("map.location_not_found")
-
-      .row
-        .col-md-8.col-md-offset-2
           #loading
             .fa.fa-refresh.fa-spin
           #gmap
@@ -16,8 +11,11 @@
 
 - content_for :scripts do
   :scss
-    #map {
-
+    #map_div {
+      height: auto;
+    }
+    #gmap {
+      height: 600px !important;
     }
   = javascript_include_tag "google/marker-clusterer"
 

@@ -11,7 +11,7 @@ var heatmapCtrl = function ($scope, $http, $attrs) {
 // We use inline annotation to declare services in order to bypass
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
-var app = angular.module('dengueChatApp');
+var app        = angular.module('dengueChatApp');
 var controller = app.controller("heatmapCtrl", ["$scope", "$http", "$attrs", heatmapCtrl]);
 
 var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
@@ -19,36 +19,6 @@ var GMAPS_VERSION = 3.17; //latest stable version
 var REGION_ZOOM = 13; // the zoom level at which we see the entire neighborhood
 
 var map; //this is a shared variable used by all methods.
-
-// Do not declare shared variables after this line
-//-------------------------------------------------------------------------
-// Helpers
-//--------
-
-// Creates a new marker at markerLoc and stores it in newMarker.
-// pans and zooms map as needed
-// does NOT update the HTML form elements
-
-// $(document).ready(function() {
-//   console.log("Ready to display map using Google Maps!!")
-//
-//
-//   // //zoom and center map on the location of this marker
-//   // $('a.mapa').on('click', function(event){
-//   //   var reportLoc = $(this).data('location');
-//   //   var reportLatLng = new google.maps.LatLng(reportLoc.latitude, reportLoc.longitude);
-//   //   console.log('I will now zoom and pan the map to this marker at ' + reportLatLng);
-//   //   map.panTo(reportLatLng);
-//   //   map.setZoom(STREET_ZOOM);
-//   //   event.preventDefault();
-//   //   event.stopPropagation();
-//   // });
-//
-// });
-
-
-
-
 
 window.maps = {};
 window.maps.markers = [];
@@ -106,7 +76,6 @@ window.maps.setupHeatMap = function(locations, map){
     ]
   });
   heatmap.setMap(map);
-
 }
 
 window.maps.showLoading = function(){
@@ -115,12 +84,6 @@ window.maps.showLoading = function(){
 
 window.maps.hideLoading = function(){
   $("#loading").hide();
-}
-
-window.maps.showMarkers = function(map){
-  for (var i = 0; i < window.maps.markers.length; i++) {
-    window.maps.markers[i].setMap(map);
-  }
 }
 
 window.maps.initializeGoogleMaps = function(){
