@@ -4,6 +4,10 @@ class Dashboard::BaseController < ApplicationController
 
   #----------------------------------------------------------------------------
 
+  after_filter :verify_authorized
+
+  #----------------------------------------------------------------------------
+
   before_filter :require_login
   before_filter :authorize_user
   before_filter :set_navigational_components

@@ -7,6 +7,8 @@ class Dashboard::CsvReportsController < Dashboard::BaseController
   # GET /dashboard/csv_reports
 
   def index
+    authorize CsvReport
+
     @navigation["child"] = {"name" => "Upload CSV", "path" => new_dashboard_csv_path}
 
     @csvs = CsvReport.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
@@ -26,6 +28,8 @@ class Dashboard::CsvReportsController < Dashboard::BaseController
   # GET /dashboard/csv_reports/new
 
   def new
+    authorize CsvReport
+
     @navigation["parent"] = {"name" => "Back", "path" => dashboard_csv_index_path}
     @navigation["child"] = {"name" => "Cancel", "path" => dashboard_csv_index_path}
 
