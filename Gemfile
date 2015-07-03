@@ -16,6 +16,8 @@ gem "rack-timeout"
 # JSON
 gem "jbuilder"
 
+gem "pundit"
+
 # File management and manipulation
 # TODO: Update AWS to handle new versions
 # See: http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws

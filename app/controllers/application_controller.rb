@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ApplicationController < ActionController::Base
+  include Pundit
   protect_from_forgery
 
   before_filter :current_user
@@ -14,6 +15,10 @@ class ApplicationController < ActionController::Base
   # focus on other efforts.
   # See this for motivation: http://www.elabs.se/blog/36-working-with-time-zones-in-ruby-on-rails
   around_filter :set_time_zone
+
+  #-------------------------------------------------------------------------------------------------
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   #-------------------------------------------------------------------------------------------------
 
@@ -165,4 +170,9 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
+  private
+  
+  def user_not_authorized
+    render :file => "public/401.html", :layout => nil, :status => :unauthorized
+  end
 end
