@@ -21,10 +21,17 @@
 
     %footer.bs-docs-footer{:role => "contentinfo"}
       .container
-        %p
-          = link_to I18n.t("views.footer.creator"), credit_path
-        %p
-          2014-2015 © Regents of the University of California
+        .row
+          .col-md-1
+            = link_to "Dengue Chat", root_path, :class => "btn btn-default"
+          .col-md-9
+            %p
+              = link_to I18n.t("views.footer.creator"), credit_path
+            %p
+              2014-2015 © Regents of the University of California
+
+
+
 
       / Scripts
       // NOTE: We *cannot* load jquery asynchronously since the application.js file

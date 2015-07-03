@@ -1,9 +1,15 @@
 %footer.bs-docs-footer{:role => "contentinfo"}
   .container
-    %p
-      = link_to I18n.t("views.footer.creator"), credit_path
-    %p
-      2014-2015 © Regents of the University of California
+    .row
+      .col-md-1
+        = link_to "Data Dashboard", dashboard_csv_index_path, :class => "btn btn-default"
+      .col-md-9
+        %p
+          = link_to I18n.t("views.footer.creator"), credit_path
+        %p
+          2014-2015 © Regents of the University of California
+
+
     %ul.bs-docs-footer-links.muted
       %li
         = link_to I18n.t("home_navigation.education.title_and_description"), education_path
