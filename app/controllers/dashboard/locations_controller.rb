@@ -7,6 +7,7 @@ class Dashboard::LocationsController < Dashboard::BaseController
   # GET /dashboard/locations
 
   def index
+    authorize Location
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
   end
 

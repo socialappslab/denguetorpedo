@@ -7,6 +7,7 @@ class Dashboard::GraphsController < Dashboard::BaseController
   # GET /dashboard/graphs
 
   def index
+    authorize :dashboard, :graphs?
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
   end
 
@@ -14,6 +15,7 @@ class Dashboard::GraphsController < Dashboard::BaseController
   # GET /dashboard/heatmap
 
   def heatmap
+    authorize :dashboard, :heatmap?
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
 
     reports_with_locs = Report.joins(:location).select("latitude, longitude")
