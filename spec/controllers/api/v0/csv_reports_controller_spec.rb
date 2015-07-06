@@ -450,4 +450,25 @@ describe API::V0::CsvReportsController do
 
     end
   end
+
+  #----------------------------------------------------------------------------
+
+  context "asking for photos", :after_commit => true do
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+
+      neighborhood = Neighborhood.first
+      csv      = File.open(Rails.root + "spec/support/ask_for_photo.xlsx")
+      csv_file = ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+
+      post :create, :csv_report => { :csv => csv_file },
+      :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+      :neighborhood_id => neighborhood.id
+    end
+
+    it "should ask for photo" do
+    end
+  end
+
+
 end
