@@ -275,4 +275,12 @@ Dengue::Application.routes.draw do
   ActiveAdmin.routes(self)
 
   #----------------------------------------------------------------------------
+  # Sidekiq monitoring
+
+  require 'sidekiq/web'
+  authenticate :user, lambda { |u| u.email == "dmitriskj@gmail.com" } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
+  #----------------------------------------------------------------------------
 end
