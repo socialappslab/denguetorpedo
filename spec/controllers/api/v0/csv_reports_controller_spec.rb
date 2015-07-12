@@ -23,6 +23,14 @@ describe API::V0::CsvReportsController do
       expect(l.address).to eq("N123456")
     end
 
+    it "sets parsed_at" do
+      post :create, :csv_report => { :csv => uploaded_csv },
+      :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+      :neighborhood_id => Neighborhood.first.id
+
+      expect(CsvReport.last.parsed_at).not_to eq(nil)
+    end
+
     it "creates a new CSV file" do
       expect {
         post :create, :csv_report => { :csv => uploaded_csv },
