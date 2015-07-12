@@ -13,6 +13,9 @@ gem 'angularjs-rails'
 # Middleware hacks
 gem "rack-timeout"
 
+# Background jobs
+gem "sidekiq"
+
 # JSON
 gem "jbuilder"
 
@@ -49,6 +52,9 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 # TODO: Should we deprecate this? The only place where we use CanCan is when
 # initializing a user.
 gem 'cancan'
+
+# Sidekiq Monitoring
+gem 'sinatra', :require => nil
 
 #------------------------------------------------------------------------------
 
