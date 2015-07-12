@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150529044839) do
+ActiveRecord::Schema.define(:version => 20150712230506) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -146,6 +146,8 @@ ActiveRecord::Schema.define(:version => 20150529044839) do
     t.datetime "csv_updated_at"
     t.integer  "user_id"
     t.integer  "location_id"
+    t.datetime "parsed_at"
+    t.datetime "verified_at"
   end
 
   create_table "device_sessions", :force => true do |t|
