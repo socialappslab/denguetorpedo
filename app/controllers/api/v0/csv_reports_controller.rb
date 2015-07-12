@@ -167,6 +167,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report.parsed_content = rows.to_json
       @csv_report.user_id        = @current_user.id
       @csv_report.location_id    = location.id
+      @csv_report.parsed_at      = Time.zone.now
       @csv_report.save
 
       Analytics.track( :user_id => @current_user.id, :event => "Created a CSV report") if Rails.env.production?
