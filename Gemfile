@@ -46,6 +46,8 @@ gem 'haml'
 gem 'jquery-ui-rails'
 gem 'rails_autolink'
 
+gem "figaro"
+
 # User management
 gem 'bcrypt-ruby', '~> 3.0.0'
 

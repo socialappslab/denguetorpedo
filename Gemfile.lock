@@ -114,6 +114,8 @@ GEM
     faker (1.4.3)
       i18n (~> 0.5)
     ffi (1.9.8)
+    figaro (1.1.1)
+      thor (~> 0.14)
     foreman (0.78.0)
       thor (~> 0.19.1)
     formatador (0.2.5)
@@ -354,6 +356,7 @@ DEPENDENCIES
   devise-i18n
   factory_girl_rails
   faker
+  figaro
   foreman
   guard-rspec
   haml

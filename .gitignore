@@ -13,3 +13,6 @@ public/system/
 .idea/*
 
 db/development.dump
+
+# Ignore application configuration
+/config/application.yml
