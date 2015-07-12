@@ -7,6 +7,16 @@ require "roo"
 
 namespace :csv_reports do
   desc "[One-off task] Backfill created_at date with house inspection date"
+  task :backfill_parsed_at => :environment do
+    CsvReport.find_each do |csv|
+      csv.update_column(:parsed_at, csv.created_at)
+    end
+  end
+
+
+
+
+  desc "[One-off task] Backfill created_at date with house inspection date"
   task :backfill_created_at => :environment do
 
 
