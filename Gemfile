@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 ruby '2.1.2'
 
+# Rails
 gem 'rails', '~> 3.2.18'
 
 # Server Management
