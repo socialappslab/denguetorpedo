@@ -14,7 +14,7 @@ gem 'angularjs-rails'
 gem "rack-timeout"
 
 # Background jobs
-gem "sidekiq"
+gem "sidekiq", "~> 3.2.1"
 
 # JSON
 gem "jbuilder"
