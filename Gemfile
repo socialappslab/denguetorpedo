@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+ruby '2.1.2'
+
 gem 'rails', '~> 3.2.18'
 
 # Server Management
@@ -14,7 +16,7 @@ gem 'angularjs-rails'
 gem "rack-timeout"
 
 # Background jobs
-gem "sidekiq", "~> 3.2.1"
+gem "sidekiq"
 
 # JSON
 gem "jbuilder"

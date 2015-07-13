@@ -383,7 +383,7 @@ DEPENDENCIES
   roo
   rspec-rails (~> 3.2)
   sass-rails (~> 3.2.3)
-  sidekiq (~> 3.2.1)
+  sidekiq
   sinatra
   therubyracer
   uglifier (>= 1.0.3)
