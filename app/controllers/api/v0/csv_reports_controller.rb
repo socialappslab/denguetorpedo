@@ -14,8 +14,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # If a report exists with the UUID, then we update that report instead of
   # creating a new one.
   def create
-    @neighborhood = @current_user.neighborhood
-    @csv_report = CsvReport.new
+    @neighborhood = Neighborhood.find(params[:neighborhood_id])
+    @csv_report   = CsvReport.new
 
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]

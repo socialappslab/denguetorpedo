@@ -142,6 +142,11 @@ Dengue::Application.routes.draw do
   resources :cities, :only => [:show]
 
   #----------------------------------------------------------------------------
+  # CSV Reports
+
+  resources :csv_reports, :only => [:new, :create, :index, :show]
+
+  #----------------------------------------------------------------------------
   # Neighborhoods
 
   get "neighborhoods/invitation" => "neighborhoods#invitation", :as => :neighborhood_invitation
@@ -166,8 +171,6 @@ Dengue::Application.routes.draw do
         post 'discredit'
       end
     end
-
-    resources :csv_reports, :only => [:new, :create, :index, :show]
   end
 
   #----------------------------------------------------------------------------

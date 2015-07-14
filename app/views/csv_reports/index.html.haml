@@ -17,7 +17,7 @@
     %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
       Sus reportes cargados en CSV
   .col-md-2
-    = link_to new_neighborhood_csv_report_path(@neighborhood), :class => "btn btn-success btn-large", :style => "margin-bottom:20px;" do
+    = link_to new_csv_report_path, :class => "btn btn-success btn-large", :style => "margin-bottom:20px;" do
       %i.fa.fa-file
       = I18n.t("views.buttons.upload_csv")
 
@@ -48,4 +48,4 @@
                 - if csv.parsed_at.blank?
                   Parsing
                 - else
-                  = link_to "View", neighborhood_csv_report_path(@neighborhood, csv), :class => "btn btn-info"
+                  = link_to "View", csv_report_path(csv), :class => "btn btn-info"
