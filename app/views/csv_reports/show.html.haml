@@ -3,10 +3,16 @@
 - if @csv.csv_errors.present?
   .row
     .col-md-10.col-md-offset-1
-      - @csv.csv_errors.each do |error|
-        = CsvError.humanized_errors[error.error_type]
-      = form_for @csv, :html => {:method => :delete} do |f|
-        = f.submit "Delete CSV", :class => "btn btn-danger"
+      .well
+        %p
+          Errors for
+          = @csv.csv_file_name
+        %ul
+        - @csv.csv_errors.each do |error|
+          %li
+            = CsvError.humanized_errors[error.error_type]
+        = form_for @csv, :html => {:method => :delete} do |f|
+          = f.submit "Delete CSV", :class => "btn btn-danger"
 
 - else
   .row
