@@ -69,6 +69,7 @@ FactoryGirl.define do
 	end
 
 	factory :csv_report
+	factory :csv_error
 
 	#-----------------------------------------------------------------------------
 

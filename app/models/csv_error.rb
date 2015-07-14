@@ -24,4 +24,6 @@ class CsvError < ActiveRecord::Base
     ELIMINATION_DATE_BEFORE_VISIT_DATE = 5
   end
 
+  #----------------------------------------------------------------------------
+
 end
