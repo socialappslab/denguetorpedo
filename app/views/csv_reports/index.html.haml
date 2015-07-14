@@ -22,59 +22,30 @@
       = I18n.t("views.buttons.upload_csv")
 
 
-
-.row{:style => "margin-top: 20px;"}
-  .col-md-6.col-md-offset-3
-    = render :partial => "shared/locations_graph"
-
-.row
-  .col-md-6.col-md-offset-3
-    = render :partial => "shared/locations_filters"
-
-
-
-
-
-  .row{:style => "margin-top: 40px;"}
-    .col-md-10.col-md-offset-1
-      %table.table.table-bordered.table-hover{:style => "text-align: center;"}
+  .row
+    .col-md-6.col-md-offset-3
+      %table.table.table-bordered.table-hover.text-center.statistics-table
         %thead
-          %th
-            Lugar
-          %th
-            Fecha de cargue
-          %th
-            Descargar
-          %th
-            Criaderos
-          %th
-            Protegido
-          %th
-            Abatizado
-          %th
-            Larvas
-          %th
-            Pupas
-
-        - @csv_reports.each do |csv|
-          %tr
-            %td{:style => "font-weight: bold;", :rowspan => [csv.reports.count + 1, 1].max }
-              = csv.location.address
-            %td{:style => "font-weight: bold;", :rowspan => [csv.reports.count + 1, 1].max }
-              = format_timestamp(csv.created_at)
-
-            %td{:style => "font-weight: bold;", :rowspan => [csv.reports.count + 1, 1].max }
-              = link_to csv.csv_file_name, csv.csv.url
-
-            - csv.reports.order("created_at ASC").each do |r|
-              %tr
-                %td
-                  = r.breeding_site.present? ? r.breeding_site.description : "N/A"
-                %td
-                  = display_as_icon(r.protected)
-                %td
-                  = display_as_icon(r.chemically_treated)
-                %td
-                  = display_as_icon(r.larvae)
-                %td
-                  = display_as_icon(r.pupae)
+          %th.text-center
+            CSV
+          %th.text-center
+            Upload date
+          %th.text-center
+            Status
+        %tbody
+          - @csvs.each do |csv|
+            %tr{:data => {"csv_id" => csv.id}}
+              // NOTE: rowspan should always be +1 since it's counting its own
+              // tr as well.
+              - visits = csv.visits.order("visited_at ASC").includes(:inspections)
+              - visits_row_span = visits.map {|v| v.inspections.count + 1}
+              - csv_row_span    = visits_row_span.sum
+              %td{:rowspan => (csv_row_span + 1), :data => {:csv => csv.csv_file_name} }
+                = link_to csv.csv_file_name, csv.csv.url
+              %td
+                = csv.created_at.strftime("%Y-%m-%d %H:%M")
+              %td{:rowspan => (csv_row_span + 1), :data => {:location => csv.location.address} }
+                - if csv.parsed_at.blank?
+                  Parsing
+                - else
+                  = link_to "View", neighborhood_csv_report_path(@neighborhood, csv), :class => "btn btn-info"

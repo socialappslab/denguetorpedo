@@ -11,6 +11,7 @@ class CsvReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/csv_reports
 
   def index
+    @csvs = @current_user.csv_reports
   end
 
   #----------------------------------------------------------------------------
