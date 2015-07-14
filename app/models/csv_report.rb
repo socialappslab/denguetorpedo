@@ -11,6 +11,7 @@ class CsvReport < ActiveRecord::Base
 
   has_many :reports
   has_many :visits, :through => :reports
+  has_many :csv_errors, :dependent => :destroy
 
   # The header of the data must include "fecha de visita" text so we iterate
   # over the rows until we find it.
@@ -129,7 +130,7 @@ class CsvReport < ActiveRecord::Base
     uuid = uuid.strip.downcase.underscore
     return uuid
   end
-  
+
   #----------------------------------------------------------------------------
 
   def self.load_spreadsheet(file)
