@@ -14,7 +14,11 @@ module ApplicationHelper
   end
 
   def default_navigation_hash
-    return {:title => "", :description => "", :parent_navigation_path => nil, :parent_navigation_title => nil, :child_navigation_path => nil, :child_navigation_title => nil}
+    return {
+      :title => "", :description => "",
+      :parent_navigation_path => nil, :parent_navigation_title => nil,
+      :child_navigation_path  => nil, :child_navigation_title  => nil
+    }
   end
 
   #----------------------------------------------------------------------------

@@ -11,6 +11,7 @@ class CsvReportsController < ApplicationController
   # GET /neighborhoods/1/csv_reports
 
   def index
+    @csvs = @current_user.csv_reports.order("created_at DESC")
   end
 
   #----------------------------------------------------------------------------
@@ -19,6 +20,13 @@ class CsvReportsController < ApplicationController
   def new
     @neighborhood = @current_user.neighborhood
     @csv_report   = CsvReport.new
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /neighborhoods/1/csv_reports/:id
+
+  def show
+    @csv = @current_user.csv_reports.find(params[:id])
   end
 
   #----------------------------------------------------------------------------
