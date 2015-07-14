@@ -26,7 +26,52 @@ describe "CsvReports", :type => :feature do
       sleep 0.2
       expect(page).to have_content( I18n.t("views.csv_reports.flashes.missing_location") )
     end
+  end
 
+  #---------------------------------------------------------------------------
+
+  describe "Viewing all CSVs" do
+    before(:each) do
+      5.times do
+        FactoryGirl.create(:csv_report, :user_id => user.id)
+      end
+
+      CsvReport.last.update_column(:parsed_at, Time.zone.now)
+      visit csv_reports_path
+    end
+
+    it "displays parsing for non-parsed CSV" do
+      (1..4).each do |index|
+        expect( page.all("tr")[index] ).to have_content("Parsing")
+      end
+    end
+
+    it "displays needs verification for parsed CSV" do
+      skip "TODO"
+    end
+
+    it "display View for verified CSV" do
+      expect(page.all("tr")[0]).to have_content("View")
+    end
+
+    it "displays only your CSV" do
+      u = FactoryGirl.create(:user)
+      FactoryGirl.create(:csv_report, :user => u, :csv_file_name => "test")
+      expect(page).not_to have_content("test")
+    end
+  end
+
+  #---------------------------------------------------------------------------
+
+  describe "Viewing a CSV" do
+    describe "verified CSV" do
+      it "TODO" do
+        skip
+      end
+    end
+
+    describe "parsed but not verified CSV" do
+    end
   end
 
   #---------------------------------------------------------------------------

@@ -36,6 +36,6 @@
                 = csv.created_at.strftime("%Y-%m-%d %H:%M")
               %td
                 - if csv.parsed_at.blank?
-                  Parsing
+                  Parsing...
                 - else
                   = link_to "View", csv_report_path(csv), :class => "btn btn-info"
