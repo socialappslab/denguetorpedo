@@ -144,7 +144,7 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # CSV Reports
 
-  resources :csv_reports, :only => [:new, :create, :index, :show]
+  resources :csv_reports, :only => [:new, :create, :index, :show, :destroy]
 
   #----------------------------------------------------------------------------
   # Neighborhoods
