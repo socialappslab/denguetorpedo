@@ -281,9 +281,7 @@ Dengue::Application.routes.draw do
   # Sidekiq monitoring
 
   require 'sidekiq/web'
-  authenticate :user, lambda { |u| u.email == "dmitriskj@gmail.com" } do
-    mount Sidekiq::Web => '/sidekiq'
-  end
+  mount Sidekiq::Web => '/7XpBp7Bgd2cd'
 
   #----------------------------------------------------------------------------
 end
