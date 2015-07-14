@@ -15,4 +15,13 @@ class CsvError < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  module Errors
+    MISSING_HOUSE                      = 0
+    MISSING_VISITS                     = 1
+    UNKNOWN_BREEDING_SITE_CODE         = 2
+    VISIT_DATE_IN_FUTURE               = 3
+    ELIMINATION_DATE_IN_FUTURE         = 4
+    ELIMINATION_DATE_BEFORE_VISIT_DATE = 5
+  end
+
 end
