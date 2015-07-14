@@ -22,6 +22,13 @@ class CsvReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /neighborhoods/1/csv_reports/:id
+
+  def show
+    @csv = CsvReport.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
 
   private
 
