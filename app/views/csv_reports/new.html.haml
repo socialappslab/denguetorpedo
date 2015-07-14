@@ -47,6 +47,10 @@
         .form-group
           = f.label :csv, "2. Cargue un CSV"
           = f.file_field :csv, :class => "form-control"
+
+        .form-group
+          = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )  
+
         .form-group
           = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
             %i.fa.fa-refresh.fa-spin{:style => "display:none;"}

@@ -17,7 +17,8 @@ class CsvReportsController < ApplicationController
   # GET /neighborhoods/1/csv_reports/new
 
   def new
-    @csv_report = CsvReport.new
+    @neighborhood = @current_user.neighborhood
+    @csv_report   = CsvReport.new
   end
 
   #----------------------------------------------------------------------------
