@@ -9,7 +9,13 @@ class CsvParsingWorker
     @csv_report = CsvReport.find_by_id(csv_id)
     return if @csv.blank?
 
-    # 3. Identify the start of the reports table in the CSV file.
+    # Identify the file content type.
+    spreadsheet = CsvReport.load_spreadsheet( @csv_report.csv )
+    unless spreadsheet
+      CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNKNOWN_FORMAT)
+    end
+
+    # Identify the start of the reports table in the CSV file.
     # The first row is reserved for the house location/address.
     # Second row is reserved for permission.
     address = CsvReport.extract_address_from_spreadsheet(spreadsheet)
@@ -40,6 +46,9 @@ class CsvParsingWorker
       end
     end
 
+    # If there are any errors, we can't proceed so let's offload right now and let
+    # the user re-upload when they've fixed the errors.
+    return if @csv_report.csv_errors.present?
 
     #-------------------------------------------------------------------
     # At this point, we have a non-trivial CSV with valid breeding codes.
@@ -61,8 +70,11 @@ class CsvParsingWorker
         current_visited_at        = row_content[:visited_at]
         parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
 
+        # If the visit date doesn't match, then let's create an error and abort
+        # immediately.
         if parsed_current_visited_at.future?
           CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::VISIT_DATE_IN_FUTURE)
+          return
         end
 
         visits << {
@@ -103,10 +115,12 @@ class CsvParsingWorker
         # If the date of elimination is in the future or before visit date, then let's raise an error.
         if eliminated_at.present? && eliminated_at.future?
           CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::ELIMINATION_DATE_IN_FUTURE)
+          return
         end
 
         if eliminated_at.present? && eliminated_at < parsed_current_visited_at
           CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE)
+          return
         end
 
         reports << {
@@ -237,16 +251,5 @@ class CsvParsingWorker
       ls.health_report = visit[:health_report]
       ls.save
     end
-
-    incomplete_reports = @current_user.incomplete_reports
-    if incomplete_reports.present?
-      report = incomplete_reports.first
-      notice = I18n.t("views.reports.flashes.call_to_action_to_complete")
-      redirect_path = edit_neighborhood_report_path(@neighborhood, report)
-    else
-      notice = I18n.t("activerecord.success.report.create")
-      redirect_path = neighborhood_reports_path(@neighborhood)
-    end
-
   end
 end

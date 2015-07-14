@@ -28,21 +28,13 @@ class API::V0::CsvReportsController < API::V0::BaseController
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422)
     end
 
-    # 2. Identify the file content type.
-    file        = params[:csv_report][:csv]
-    spreadsheet = CsvReport.load_spreadsheet( file )
-    unless spreadsheet
-      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422)
-    end
 
-
-    # TODO
-    @csv_report.csv         = file
+    # Create the CSV.
+    @csv_report.csv         = params[:csv_report][:csv]
     @csv_report.user_id     = @current_user.id
     @csv_report.save
 
-
-    render :json => {:message => notice, :redirect_path => redirect_path}, :status => 200 and return
+    render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
 
   #----------------------------------------------------------------------------
