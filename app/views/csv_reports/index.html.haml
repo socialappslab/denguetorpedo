@@ -1,8 +1,3 @@
-
-%script{:src => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}", :type => "text/javascript"}
-
-/------------------------------------------------------------------------------
-
 = render :partial => "shared/flashes"
 
 /------------------------------------------------------------------------------
@@ -35,16 +30,11 @@
         %tbody
           - @csvs.each do |csv|
             %tr{:data => {"csv_id" => csv.id}}
-              // NOTE: rowspan should always be +1 since it's counting its own
-              // tr as well.
-              - visits = csv.visits.order("visited_at ASC").includes(:inspections)
-              - visits_row_span = visits.map {|v| v.inspections.count + 1}
-              - csv_row_span    = visits_row_span.sum
-              %td{:rowspan => (csv_row_span + 1), :data => {:csv => csv.csv_file_name} }
+              %td
                 = link_to csv.csv_file_name, csv.csv.url
               %td
                 = csv.created_at.strftime("%Y-%m-%d %H:%M")
-              %td{:rowspan => (csv_row_span + 1), :data => {:location => csv.location.address} }
+              %td
                 - if csv.parsed_at.blank?
                   Parsing
                 - else
