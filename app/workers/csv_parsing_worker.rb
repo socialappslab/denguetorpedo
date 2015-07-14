@@ -5,14 +5,19 @@ class CsvParsingWorker
 
   sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true
 
-  def perform(csv_id)
-    @csv_report = CsvReport.find_by_id(csv_id)
-    return if @csv.blank?
+  def perform(csv_id, params)
+    lat  = params["report_location_attributes_latitude"]
+    long = params["report_location_attributes_longitude"]
+
+    @neighborhood = Neighborhood.find(params["neighborhood_id"])
+    @csv_report   = CsvReport.find_by_id(csv_id)
+    return if @csv_report.blank?
 
     # Identify the file content type.
     spreadsheet = CsvReport.load_spreadsheet( @csv_report.csv )
     unless spreadsheet
       CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNKNOWN_FORMAT)
+      return
     end
 
     # Identify the start of the reports table in the CSV file.
@@ -21,12 +26,14 @@ class CsvParsingWorker
     address = CsvReport.extract_address_from_spreadsheet(spreadsheet)
     if address.blank?
       CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::MISSING_HOUSE)
+      return
     end
 
     # Error out if there are no reports extracted.
     rows = CsvReport.extract_rows_from_spreadsheet(spreadsheet)
     if rows.blank?
       CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::MISSING_VISITS)
+      return
     end
 
     # The start index is essentially the number of rows that are occupied by
@@ -146,16 +153,11 @@ class CsvParsingWorker
     end
 
     #-------------------------------
-    # Create or update the CSV file.
-
-    existing_report = CsvReport.find_by_parsed_content(rows.to_json)
-    if existing_report.blank?
-      @csv_report.parsed_content = rows.to_json
-      @csv_report.location       = location.id
-      @csv_report.parsed_at      = Time.zone.now
-    else
-      @csv_report = existing_report
-    end
+    # Update the CSV file.
+    @csv_report.parsed_content = rows.to_json
+    @csv_report.location_id    = location.id
+    @csv_report.parsed_at      = Time.zone.now
+    @csv_report.save
 
 
     #------------------------------
@@ -194,7 +196,7 @@ class CsvParsingWorker
       r.pupae              = report[:pupae]
       r.location_id        = location.id
       r.neighborhood_id    = @neighborhood.id
-      r.reporter_id        = @current_user.id
+      r.reporter_id        = @csv_report.user_id
       r.csv_report_id      = @csv_report.id
       r.csv_uuid           = report[:csv_uuid]
       r.eliminated_at      = report[:eliminated_at]
