@@ -3,9 +3,9 @@
 # encoding: utf-8
 
 
-class CsvReportsController < NeighborhoodsBaseController
+class CsvReportsController < ApplicationController
   before_filter :require_login
-  before_filter :calculate_ivars,                  :only => [:index]
+  before_filter :calculate_ivars, :only => [:index]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1/csv_reports

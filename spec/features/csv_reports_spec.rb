@@ -17,7 +17,7 @@ describe "CsvReports", :type => :feature do
 
   describe "uploading CSVs with errors", :js => true do
     before(:each) do
-      visit new_neighborhood_csv_report_path(Neighborhood.first)
+      visit new_csv_report_path
     end
 
     it "displays an error" do
