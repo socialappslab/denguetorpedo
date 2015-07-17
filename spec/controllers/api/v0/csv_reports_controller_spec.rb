@@ -41,6 +41,16 @@ describe API::V0::CsvReportsController do
     }.to change(CsvParsingWorker.jobs, :count).by(1)
   end
 
+  it "creates a location with correct neighborhood" do
+    Sidekiq::Testing.inline!
+    n = FactoryGirl.create(:neighborhood, :name => "Test Neighborhood", :city_id => 1)
+    post :create, :csv_report => { :csv => uploaded_csv },
+    :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+    :neighborhood_id => n.id
+
+    expect(Location.last.neighborhood_id).to eq(n.id)
+  end
+
   it "redirects to CSV#index path" do
     post :create, :csv_report => { :csv => uploaded_csv },
     :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
