@@ -30,6 +30,19 @@ class CsvReportsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # DELETE /neighborhoods/1/csv_reports/:id
+
+  def destroy
+    @csv = @current_user.csv_reports.find(params[:id])
+    if @csv.destroy
+      flash[:notice] = "CSV was successfully deleted"
+      redirect_to csv_reports_path and return
+    else
+      render "show" and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
 
   private
 

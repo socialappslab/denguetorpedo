@@ -135,11 +135,11 @@ class CsvReport < ActiveRecord::Base
 
   def self.load_spreadsheet(file)
     if File.extname( file.original_filename ) == ".csv"
-      spreadsheet = Roo::CSV.new(file.tempfile.path, :file_warning => :ignore)
+      spreadsheet = Roo::CSV.new(file.path, :file_warning => :ignore)
     elsif File.extname( file.original_filename ) == ".xls"
-      spreadsheet = Roo::Excel.new(file.tempfile.path, :file_warning => :ignore)
+      spreadsheet = Roo::Excel.new(file.path, :file_warning => :ignore)
     elsif File.extname( file.original_filename ) == ".xlsx"
-      spreadsheet = Roo::Excelx.new(file.tempfile.path, :file_warning => :ignore)
+      spreadsheet = Roo::Excelx.new(file.path, :file_warning => :ignore)
     end
 
     return spreadsheet
