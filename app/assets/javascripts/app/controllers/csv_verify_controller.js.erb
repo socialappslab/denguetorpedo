@@ -1,0 +1,51 @@
+var ctrl = function ($scope, $http, $attrs) {
+  $scope.csv = angular.fromJson($attrs.csv);
+  console.log($scope.csv)
+
+  $scope.removeReport = function(report) {
+    var response = window.confirm("Are you sure?");
+    if (response === false)
+      return
+
+    $scope.loading = true;
+
+    var ajax = $http.delete("/api/v0/reports/" + report.id);
+    ajax.success(function(data) {
+      var index = $scope.reports.indexOf(report);
+      if (index !== -1)
+        $scope.reports.splice(index, 1);
+
+    });
+    ajax.error(function(response) {
+      window.alert(response)
+    });
+    ajax.then(function(response) {
+    });
+
+    $scope.loading = false;
+  }
+
+  $scope.verifyCsv = function() {
+    var ajax = $http.put("/api/v0/csv_reports/" + $scope.csv.id + "/verify", {"reports": $scope.csv.reports});
+    ajax.success(function(data) {
+      window.alert("Success!");
+      window.location.href = data.redirect_path;
+
+    });
+    ajax.error(function(response) {
+      window.alert(response.message)
+    });
+    ajax.then(function(response) {
+    });
+
+    $scope.loading = false;
+
+  }
+};
+
+
+// We use inline annotation to declare services in order to bypass
+// errors when JS gets minified:
+// https://docs.angularjs.org/tutorial/step_05
+var app = angular.module('dengueChatApp');
+app.controller("csvVerifyCtrl", ["$scope", "$http", "$attrs", ctrl]);
