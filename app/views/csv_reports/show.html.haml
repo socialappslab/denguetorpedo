@@ -24,8 +24,6 @@
           %th.text-center
             = I18n.t("activerecord.attributes.report.location_id")
           %th.text-center
-            = I18n.t("activerecord.attributes.user.username")
-          %th.text-center
             = I18n.t("activerecord.attributes.visit.visited_at")
           %th.text-center
             = I18n.t("activerecord.attributes.visit.health_report")
@@ -50,9 +48,7 @@
             %td{:rowspan => (csv_row_span + 1), :data => {:csv => csv.csv_file_name} }
               = link_to csv.csv_file_name, csv.csv.url
             %td{:rowspan => (csv_row_span + 1), :data => {:location => csv.location.address} }
-              = link_to csv.location.address, dashboard_locations_path
-            %td{:rowspan => (csv_row_span + 1), :data => {:user => csv.user.username} }
-              = csv.user.username
+              = csv.location.address
 
             - if csv.visits.length == 0
               %td

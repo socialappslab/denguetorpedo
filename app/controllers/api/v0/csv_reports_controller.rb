@@ -15,11 +15,11 @@ class API::V0::CsvReportsController < API::V0::BaseController
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
     if lat.blank? || long.blank?
-      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422)
+      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422) and return
     end
 
     if params[:csv_report].blank?
-      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422)
+      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
     end
 
     # Create the CSV.
@@ -33,6 +33,33 @@ class API::V0::CsvReportsController < API::V0::BaseController
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
+
+  #----------------------------------------------------------------------------
+  # PUT /api/v0/csv_reports/:id/verify
+
+  def verify
+    @csv = @current_user.csv_reports.find(params[:id])
+
+    if params[:reports].blank?
+      raise API::V0::Error.new("You can't verify a CSV with no reports!", 422) and return
+    end
+
+    # At this point, we're guaranteed to have at least one report.
+    params[:reports].each do |r|
+      report = Report.find_by_id(r["id"])
+      report.attributes = r
+      unless report.save
+        raise API::V0::Error.new(report.errors.full_messages[0], 422) and return
+      end
+    end
+
+    # At this point, all reports saved and there were no errors. Let's update
+    # the verify_at column.
+    @csv.update_column(:verified_at, Time.zone.now)
+
+    render :json => {:redirect_path => csv_reports_path}, :status => 200 and return
+  end
+
 
   #----------------------------------------------------------------------------
 

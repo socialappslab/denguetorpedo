@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :created_at, :neighborhood_id, :breeding_site_id,
+  attr_accessible :report, :pupae, :created_at, :neighborhood_id, :breeding_site_id,
   :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,

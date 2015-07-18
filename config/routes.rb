@@ -16,7 +16,17 @@ Dengue::Application.routes.draw do
       #-------------------------------------------------------------------------
 
       resources :reports,     :only => [:index, :create, :destroy]
-      resources :csv_reports, :only => [:create]
+
+      #-------------------------------------------------------------------------
+
+      resources :csv_reports, :only => [:create] do
+        member do
+          put "verify"
+        end
+      end
+
+      #-------------------------------------------------------------------------
+
       resources :posts,       :only => [:create, :show, :destroy] do
         post "like", :on => :member
 
@@ -144,7 +154,11 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # CSV Reports
 
-  resources :csv_reports, :only => [:new, :create, :index, :show, :destroy]
+  resources :csv_reports, :only => [:new, :create, :index, :show, :destroy] do
+    member do
+      get "verify"
+    end
+  end
 
   #----------------------------------------------------------------------------
   # Neighborhoods

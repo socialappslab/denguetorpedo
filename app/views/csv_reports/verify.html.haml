@@ -1,0 +1,108 @@
+
+
+.container{"ng-controller" => "csvVerifyCtrl", "csv" => @csv.to_json(:include => {:reports => {:only => [:id, :protected, :larvae, :pupae, :chemically_treated, :breeding_site_id, :neighborhood_id, :report, :created_at]}} )}
+  .row
+    .col-md-12
+      .row
+        .col-md-8
+          %h1.light-font
+            Verify
+            = @csv.csv_file_name
+        .col-md-2
+          .pull-right
+            = form_for @csv, :html => {:method => :delete} do |f|
+              = f.submit "Delete CSV", :class => "btn btn-danger"
+        .col-md-2
+          .pull-right
+            = link_to "Verify CSV", "", "ng-click" => "verifyCsv()", "class" => "btn btn-success"
+      .well
+        .row
+          .col-md-6
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.location_id")
+            = text_field_tag :location_id, @csv.location.address, :class => "form-control"
+          .col-md-6
+
+        %hr.muted.wide
+
+        .row
+          .col-md-12
+            %p.form-label
+              = I18n.t("activerecord.models.report", :count => 2)
+        .row
+          .col-md-12
+            %table.table.table-bordered.table-hover.text-center.statistics-table
+              %thead
+                %th.text-center
+                  = I18n.t("activerecord.attributes.visit.visited_at")
+                %th.text-center
+                  = I18n.t("attributes.neighborhood_id")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.report")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.breeding_site_id")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.protected")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.larvae")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.pupae")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.chemically_treated")
+                %th.text-center
+                  Delete
+              %tbody
+                %tr{"ng-repeat" => "report in csv.reports"}
+                  %td
+                    = text_field_tag :created_at, nil, "ng-model" => "report.created_at", :class => "form-control"
+                  %td
+                    = select_tag :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}), "ng-model" => "report.neighborhood_id", :class => "form-control"
+                  %td
+                    = text_field_tag :report, nil, "ng-model" => "report.report", :class => "form-control"
+                  %td
+                    = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}), "ng-model" => "report.breeding_site_id", :class => "form-control"
+                  %td
+                    = check_box_tag :protected, "1", nil, :html => {"ng-checked" => "report.protected === true", "ng-model" => "report.protected", "ng-true-value" => "'1'", "ng-false-value" => "false"}
+                  %td
+                    = check_box_tag :larvae, "1", nil, :html => {"ng-checked" => "report.larvae === true", "ng-model" => "report.larvae", "ng-true-value" => "'1'", "ng-false-value" => "false"}
+                  %td
+                    = check_box_tag :pupae, "1", nil, :html => {"ng-checked" => "report.pupae === true", "ng-model" => "report.pupae", "ng-true-value" => "'1'", "ng-false-value" => "false"}
+                  %td
+                    = check_box_tag :chemically_treated, "1", nil, :html => {"ng-checked" => "report.chemically_treated === true", "ng-model" => "report.chemically_treated", "ng-true-value" => "'1'", "ng-false-value" => "false"}
+                  %td
+                    = link_to "Delete", "", "ng-click" => "removeReport(report)", :class => "btn btn-danger", :style => "margin-top: 0px;", "ng-class" => "{'disabled': loading}"
+
+            %table.table.table-bordered.table-hover.text-center.statistics-table
+              %thead
+                %th.text-center
+                  = I18n.t("activerecord.attributes.visit.visited_at")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.visit.health_report")
+                %th.text-center
+                  = I18n.t("activerecord.attributes.report.breeding_site_id")
+
+              %tbody
+                - csv = @csv
+                - @csv.visits.each_with_index do |visit, index|
+                  - visits_row_span = @csv.visits.map {|v| v.inspections.count + 1}
+                  - row_span = visits_row_span[index]
+                  %tr{:data => {"csv_id" => csv.id}}
+                    %td{:rowspan => row_span, :data => {:visit => format_csv_timestamp(visit.visited_at)}}
+                      = format_csv_timestamp(visit.visited_at)
+                    %td{:rowspan => row_span}
+                      = visit.health_report.to_i if visit.health_report.present?
+
+                    - visit.inspections.includes(:report).order("id ASC").each do |inspection|
+                      %tr{:data => {"csv_id" => csv.id}}
+                        - report = inspection.report
+                        %td
+                          - site = report.breeding_site
+                          = site.code if report.present? && site.present?
+                        %td
+                          = display_as_icon(report.protected) if report.present?
+                        %td
+                          = display_as_icon(report.larvae) if report.present?
+                        %td
+                          = display_as_icon(report.pupae) if report.present?
+                        %td
+                          = display_as_icon(report.chemically_treated) if report.present?
