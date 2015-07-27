@@ -36,38 +36,22 @@
                 %th.text-center
                   = I18n.t("activerecord.attributes.visit.visited_at")
                 %th.text-center
-                  = I18n.t("attributes.neighborhood_id")
-                %th.text-center
                   = I18n.t("activerecord.attributes.report.report")
                 %th.text-center
                   = I18n.t("activerecord.attributes.report.breeding_site_id")
                 %th.text-center
-                  = I18n.t("activerecord.attributes.report.protected")
-                %th.text-center
-                  = I18n.t("activerecord.attributes.report.larvae")
-                %th.text-center
-                  = I18n.t("activerecord.attributes.report.pupae")
-                %th.text-center
-                  = I18n.t("activerecord.attributes.report.chemically_treated")
+                  Verify
                 %th.text-center
                   Delete
               %tbody
                 %tr{"ng-repeat" => "report in csv.reports"}
                   %td
-                    = text_field_tag :created_at, nil, "ng-model" => "report.created_at", :class => "form-control"
+                    = text_field_tag :created_at, nil, "ng-model" => "report.created_at", :class => "form-control", :disabled => "disabled"
                   %td
-                    = select_tag :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}), "ng-model" => "report.neighborhood_id", :class => "form-control"
+                    = text_field_tag :report, nil, "ng-model" => "report.report", :class => "form-control", :disabled => "disabled"
                   %td
-                    = text_field_tag :report, nil, "ng-model" => "report.report", :class => "form-control"
+                    = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}), "ng-model" => "report.breeding_site_id", :class => "form-control", :disabled => "disabled"
                   %td
-                    = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}), "ng-model" => "report.breeding_site_id", :class => "form-control"
-                  %td
-                    = check_box_tag :protected, "1", nil, "ng-checked" => "report.protected == true", "ng-model" => "report.protected", "ng-true-value" => "true", "ng-false-value" => "false"
-                  %td
-                    = check_box_tag :larvae, "1", nil, "ng-checked" => "report.larvae == true", "ng-model" => "report.larvae", "ng-true-value" => "true", "ng-false-value" => "false"
-                  %td
-                    = check_box_tag :pupae, "1", nil, "ng-checked" => "report.pupae == true", "ng-model" => "report.pupae", "ng-true-value" => "'1'", "ng-false-value" => "false"
-                  %td
-                    = check_box_tag :chemically_treated, "1", nil, "ng-checked" => "report.chemically_treated == true", "ng-model" => "report.chemically_treated", "ng-true-value" => "true", "ng-false-value" => "false"
+                    = link_to "Verify", "", "ng-click" => "navigationToReport(report)", :class => "btn btn-success", :style => "margin-top: 0px;"
                   %td
                     = link_to "Delete", "", "ng-click" => "removeReport(report)", :class => "btn btn-danger", :style => "margin-top: 0px;", "ng-class" => "{'disabled': loading}"

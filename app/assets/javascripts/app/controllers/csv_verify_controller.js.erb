@@ -12,17 +12,19 @@ var ctrl = function ($scope, $http, $attrs) {
     var ajax = $http.delete("/api/v0/reports/" + report.id);
     ajax.success(function(data) {
       var index = $scope.reports.indexOf(report);
+      console.log(index)
       if (index !== -1)
         $scope.reports.splice(index, 1);
-
     });
     ajax.error(function(response) {
       window.alert(response)
     });
-    ajax.then(function(response) {
-    });
 
     $scope.loading = false;
+  }
+
+  $scope.navigationToReport = function(report) {
+    window.location.href = "/neighborhoods/" + report.neighborhood_id + "/reports/" + report.id + "/edit"
   }
 
   $scope.verifyCsv = function() {
