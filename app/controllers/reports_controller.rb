@@ -370,22 +370,20 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     # Set the attr accessor on report to save with/without photo
-    @report.save_without_before_photo = (params[:has_before_photo].to_i == 1)
+    @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
 
-    if params[:report][:compressed_photo].present?
-      base64_image = params[:report][:compressed_photo]
-      if base64_image.blank?
-        flash[:alert] = I18n.t("activerecord.errors.messages.blank")
-        render "verify" and return
-      else
-        filename  = @current_user.display_name.underscore + "_report.jpg"
-        data      = prepare_base64_image_for_paperclip(base64_image, filename)
-      end
-
-      # We set data on before_photo in this case since it come from an SMS,
-      # which doesn't have an image.
-      @report.before_photo = data
+    base64_image = params[:report][:compressed_photo]
+    if base64_image.blank? && @report.save_without_before_photo != true
+      flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
+      render "verify" and return
+    elsif base64_image.present?
+      filename  = @current_user.display_name.underscore + "_report.jpg"
+      data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
+
+    # We set data on before_photo in this case since it come from an SMS,
+    # which doesn't have an image.
+    @report.before_photo = data
 
     # Verify report saves and form submission is valid
     if @report.update_attributes(params[:report])

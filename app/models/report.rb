@@ -89,8 +89,8 @@ class Report < ActiveRecord::Base
   # Validation on photos
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
   validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates :before_photo, :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :before_photo, :presence => {:on => :update, :if => :incomplete? }
+  validates :before_photo, :presence => true, :unless => Proc.new {|file| puts "\n\n\n\n self.save_without_before_photo: #{self.save_without_before_photo}\n\n\n"; self.save_without_before_photo == true}
+  validates :before_photo, :presence => {:on => :update, :if => :incomplete? }, :unless => Proc.new {|file| puts "\n\n\n\n self.save_without_before_photo: #{self.save_without_before_photo}\n\n\n"; self.save_without_before_photo == true}
   validates :after_photo, :presence => {:on => :update, :unless => :incomplete?}
 
   # Validation on breeding sites, and elimination types.
