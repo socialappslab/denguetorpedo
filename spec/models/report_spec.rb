@@ -86,6 +86,27 @@ describe Report do
 		}.to change(Comment, :count).by(-1)
 	end
 
+	describe "Exceptions on Validations" do
+
+		it "doesn't validate before photo if save_without_before_photo is set" do
+			r  = FactoryGirl.build(:full_report, :report => "Test", :reporter => user, :location => location)
+			r.before_photo = nil
+			r.completed_at = nil
+			r.save_without_before_photo = true
+			r.save
+			expect(r.errors.full_messages).to eq([])
+		end
+
+		it "doesn't validate after photo or elimination method if completed_at is not set" do
+			r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+			r.prepared_at 	= nil
+			r.csv_report_id = 1
+			r.save
+
+			expect(r.errors.full_messages).to eq([])
+		end
+	end
+
 	#-----------------------------------------------------------------------------
 
 	describe "Displayable Scope" do

@@ -84,11 +84,9 @@
         %hr.muted.wide
 
         .row
-          .col-md-4
+          .col-md-6
             = link_to "Deletar", api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
-          .col-md-4
-            = link_to I18n.t("common_terms.cancel"), params[:redirect_path] || neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg btn-block"
-          .col-md-4
+          .col-md-6
             = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
               %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
               = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")

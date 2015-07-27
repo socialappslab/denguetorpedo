@@ -42,8 +42,7 @@ class Report < ActiveRecord::Base
     :medium => "300x300>"
   }, :convert_options => { :medium => "-quality 75 -strip", :large => "-quality 75 -strip" }
 
-  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
+  attr_accessor :save_without_before_photo
 
   #----------------------------------------------------------------------------
   # Associations
@@ -88,7 +87,9 @@ class Report < ActiveRecord::Base
   validates :sms, :presence => true, :if => :sms?
 
   # Validation on photos
-  validates :before_photo, :presence => true, :unless => :sms?
+  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
+  validates :before_photo, :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
   validates :before_photo, :presence => {:on => :update, :if => :incomplete? }
   validates :after_photo, :presence => {:on => :update, :unless => :incomplete?}
 
