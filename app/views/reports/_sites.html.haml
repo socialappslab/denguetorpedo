@@ -1,14 +1,6 @@
 .row
   .col-md-8.col-md-offset-2
     #reports
-      - if @current_user && @current_user.neighborhood == @neighborhood && @incomplete_reports.present?
-        .incomplete-reports-banner
-          .alert.alert-danger.alert-dismissable
-            %h2
-              = I18n.t("views.reports.index.incomplete", :count => @incomplete_reports.count)
-              = link_to I18n.t("views.reports.index.complete_now_button"), edit_neighborhood_report_path(@current_user.neighborhood, @incomplete_reports.first), :class => "btn btn-default"
-
-
       - @reports.each do |report|
         .report{ :class => (report.eliminated? ? "eliminated" : "open") }
           = render :partial => "reports/topbar",   :locals => {:report => report}

@@ -23,8 +23,8 @@ var ctrl = function ($scope, $http, $attrs) {
     $scope.loading = false;
   }
 
-  $scope.navigationToReport = function(report) {
-    window.location.href = "/neighborhoods/" + report.neighborhood_id + "/reports/" + report.id + "/edit"
+  $scope.navigateToReport = function(report) {
+    window.location.href = "/neighborhoods/" + report.neighborhood_id + "/reports/" + report.id + "/verify"
   }
 
   $scope.verifyCsv = function() {

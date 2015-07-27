@@ -41,17 +41,15 @@
                   = I18n.t("activerecord.attributes.report.breeding_site_id")
                 %th.text-center
                   Verify
-                %th.text-center
-                  Delete
               %tbody
-                %tr{"ng-repeat" => "report in csv.reports"}
-                  %td
-                    = text_field_tag :created_at, nil, "ng-model" => "report.created_at", :class => "form-control", :disabled => "disabled"
-                  %td
-                    = text_field_tag :report, nil, "ng-model" => "report.report", :class => "form-control", :disabled => "disabled"
-                  %td
-                    = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}), "ng-model" => "report.breeding_site_id", :class => "form-control", :disabled => "disabled"
-                  %td
-                    = link_to "Verify", "", "ng-click" => "navigationToReport(report)", :class => "btn btn-success", :style => "margin-top: 0px;"
-                  %td
-                    = link_to "Delete", "", "ng-click" => "removeReport(report)", :class => "btn btn-danger", :style => "margin-top: 0px;", "ng-class" => "{'disabled': loading}"
+                - @csv.reports.each do |report|
+                  %tr
+                    %td{"style" => "width: 30%;"}
+                      .form-inline
+                        = date_select :created_at, report.created_at, {:start_year => 2012, :order => [:day, :month, :year]}, :class => "form-control", :disabled => "disabled"
+                    %td{"style" => "width: 30%;"}
+                      = text_area_tag :report, report.report, :cols => "1", :rows => "3", :class => "form-control", :disabled => "disabled"
+                    %td{"style" => "width: 20%;"}
+                      = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => report.breeding_site_id), :class => "form-control", :disabled => "disabled"
+                    %td{"style" => "width: 20%;"}
+                      = link_to "Verify", verify_neighborhood_report_path(report), :class => "btn btn-warning", :style => "margin-top: 0px;"

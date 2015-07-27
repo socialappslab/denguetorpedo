@@ -19,9 +19,3 @@
           - path = api_v0_report_path(report)
           = link_to path, :class => "delete-resource-button", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => path do
             %i.fa.fa-trash-o
-
-        -# - if @current_user && @current_user.verifier?
-        -#   = link_to verify_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-        -#     %i.fa.fa-check.fa-2
-        -#   = link_to problem_neighborhood_reports_path(@neighborhood, :id => report.id), method: :post do
-        -#     %i.fa.fa-times.fa-2

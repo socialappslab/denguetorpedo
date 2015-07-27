@@ -22,7 +22,7 @@
           .col-md-4
             %p.form-label
               = I18n.t("activerecord.attributes.report.location_id")
-            = text_field_tag :location_id, (@report.location.present? ? @report.location.address : Location.new), :disabled => "disabled", :class => "form-control"
+            = text_field_tag :location_id, @report.location.address, :disabled => "disabled", :class => "form-control"
 
         %hr.muted.wide
 

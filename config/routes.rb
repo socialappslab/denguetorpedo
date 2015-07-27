@@ -168,7 +168,6 @@ Dengue::Application.routes.draw do
     resources :reports, :except => [:update, :destroy] do
       collection do
         put 'update'
-        post 'verify'
         post 'problem'
         get 'types'
       end
@@ -183,7 +182,8 @@ Dengue::Application.routes.draw do
         post 'creditar'
         post 'credit'
         post 'discredit'
-        get "verify", :action => "verify_report"
+        put 'verify', :action => "verify_report"
+        get "verify"
       end
     end
   end
