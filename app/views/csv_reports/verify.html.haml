@@ -8,14 +8,21 @@
           %h1.light-font
             Verify
             = @csv.csv_file_name
-        .col-md-2
+        .col-md-4
           .pull-right
             = form_for @csv, :html => {:method => :delete} do |f|
-              = f.submit "Delete CSV", :class => "btn btn-danger"
-        .col-md-2
-          .pull-right
-            = link_to "Verify CSV", "", "ng-click" => "verifyCsv()", "class" => "btn btn-success"
+              = f.submit "Delete CSV", :class => "btn btn-danger btn-lg btn-block"
+
       .well
+        %h2
+          NOTE: To verify a CSV, verify all
+          = @csv.reports.count
+          reports
+        - if @csv.reports.where(:verified_at => nil).count == 0
+          = link_to "Verify CSV", "", "ng-click" => "verifyCsv()", "class" => "btn btn-success", "ng-class" => "{'disabled': csv.verified?}"
+
+        %hr.muted.wide
+
         .row
           .col-md-6
             %p.form-label
@@ -52,4 +59,7 @@
                     %td{"style" => "width: 20%;"}
                       = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => report.breeding_site_id), :class => "form-control", :disabled => "disabled"
                     %td{"style" => "width: 20%;"}
-                      = link_to "Verify", verify_neighborhood_report_path(report), :class => "btn btn-warning", :style => "margin-top: 0px;"
+                      - if report.verified_at.present?
+                        Verified!
+                      - else
+                        = link_to "Verify", verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning", :style => "margin-top: 0px;"

@@ -355,64 +355,49 @@ class ReportsController < NeighborhoodsBaseController
   # PUT /neighborhoods/:neighborhood_id/reports/:id/verify
 
   def verify_report
-    if params[:report] && params[:report][:location_attributes]
-      params[:report][:location_attributes].merge!(:neighborhood_id => @neighborhood.id)
+    @report = Report.find(params[:id])
+    if @report.location.blank?
+      @report.location = Location.new
+      @report.location.latitude  ||= 0
+      @report.location.longitude ||= 0
     end
 
-    address  = params[:report][:location_attributes].slice(:address)
-
-    # Update the location.
-    if @report.location.present?
-      location = @report.location
-      location.update_attributes(address)
-    else
-      # for whatever reason if location doesn't exist create a new one
-      location = Location.find_or_create_by_address(address)
-    end
-
-    location.latitude        = params[:report][:location_attributes][:latitude] if params[:report][:location_attributes][:latitude].present?
-    location.longitude       = params[:report][:location_attributes][:longitude] if params[:report][:location_attributes][:longitude].present?
-    location.neighborhood_id = @neighborhood.id
-    location.save
-
-    @report.location_id  = location.id
-
-    base64_image = params[:report][:compressed_photo]
-    if base64_image.blank?
-      flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
-      redirect_to :back and return
-    else
-      filename  = @current_user.display_name.underscore + "_report.jpg"
-      data      = prepare_base64_image_for_paperclip(base64_image, filename)
-    end
-
-    # We set data on before_photo in this case since it come from an SMS,
-    # which doesn't have an image.
-    @report.before_photo    = data
     @report.neighborhood_id = @neighborhood.id
+
+    if params[:has_before_photo].blank?
+      flash[:alert] = "You need to specify if the report has a before photo or not!"
+      render "verify" and return
+    end
+
+    # Set the attr accessor on report to save with/without photo
+    @report.save_without_before_photo = (params[:has_before_photo].to_i == 1)
+
+    if params[:report][:compressed_photo].present?
+      base64_image = params[:report][:compressed_photo]
+      if base64_image.blank?
+        flash[:alert] = I18n.t("activerecord.errors.messages.blank")
+        render "verify" and return
+      else
+        filename  = @current_user.display_name.underscore + "_report.jpg"
+        data      = prepare_base64_image_for_paperclip(base64_image, filename)
+      end
+
+      # We set data on before_photo in this case since it come from an SMS,
+      # which doesn't have an image.
+      @report.before_photo = data
+    end
 
     # Verify report saves and form submission is valid
     if @report.update_attributes(params[:report])
       @report.update_column(:completed_at, Time.zone.now)
+      @report.update_column(:verified_at, Time.zone.now)
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
 
-      # Decide where to redirect: if there are still incomplete reports,
-      # then let's redirect to the first available one.
-      incomplete_reports = @current_user.incomplete_reports
-      if incomplete_reports.present?
-        report = incomplete_reports.first
-        flash[:notice] = I18n.t("views.reports.flashes.call_to_action_to_complete")
-        redirect_to edit_neighborhood_report_path(@neighborhood, report) and return
-      else
-        flash[:notice] = I18n.t("activerecord.success.report.create")
-        redirect_to neighborhood_reports_path(@neighborhood) and return
-      end
-
+      redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
     else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(" ")
-      redirect_to edit_neighborhood_report_path(@neighborhood) and return
+      render "verify" and return
     end
   end
 

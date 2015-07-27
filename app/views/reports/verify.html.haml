@@ -7,9 +7,9 @@
 .row
   .col-md-6.col-md-offset-3
     .well
-      - update_url = prepare_neighborhood_report_path(@neighborhood, @report)
+      - update_url = verify_neighborhood_report_path(@neighborhood, @report)
 
-      = form_for [@neighborhood, @report], :url => update_url, :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+      = form_for [@neighborhood, @report], :url => update_url, :html => {:method => "PUT", :autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
         .row
           .col-md-4
             %p.form-label
@@ -87,7 +87,7 @@
           .col-md-4
 
           .col-md-4
-            = link_to I18n.t("common_terms.cancel"), neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg btn-block"
+            = link_to I18n.t("common_terms.cancel"), params[:redirect_path] || neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg btn-block"
           .col-md-4
             = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
               %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
@@ -95,4 +95,4 @@
 
 
   - content_for :scripts do
-    = javascript_include_tag "image-compression"
+    = javascript_include_tag "image-compression-verify"
