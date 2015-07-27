@@ -183,6 +183,7 @@ Dengue::Application.routes.draw do
         post 'creditar'
         post 'credit'
         post 'discredit'
+        get "verify", :action => "verify_report"
       end
     end
   end

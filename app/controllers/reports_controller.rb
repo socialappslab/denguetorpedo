@@ -343,6 +343,19 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # GET /neighborhoods/:neighborhood_id/reports/verify
+
+  def verify_report
+    @report = Report.find(params[:id])
+
+    if @report.location.blank?
+      @report.location = Location.new
+      @report.location.latitude  ||= 0
+      @report.location.longitude ||= 0
+    end
+  end
+
+  #----------------------------------------------------------------------------
   # POST /neighborhoods/:neighborhood_id/reports/verify
 
   def verify
