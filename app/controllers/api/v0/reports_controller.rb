@@ -53,22 +53,9 @@ class API::V0::ReportsController < API::V0::BaseController
   #----------------------------------------------------------------------------
 
   def destroy
-    if @current_user.coordinator? || @current_user.created_reports.find_by_id(params[:id])
-      @report = Report.find(params[:id])
-      @report.destroy
-
-      render :json => @report.as_json(:only => [:id, :report],
-      :methods => [:formatted_created_at],
-      :include => {
-        :location => {:only => [:address]},
-        :breeding_site => {
-          :only => [:id, :description_in_es, :description_in_pt]
-        }
-      }), :status => 200 and return
-
-    end
-
-    raise API::V0::Error.new(I18n.t("views.application.permission_denied"), 403)
+    @report = @current_user.reports.find_by_id(params[:id])
+    @report.destroy
+    render :json => {:redirect_path => verify_csv_report_path(@report.csv_report)}, :status => 200 and return
   end
 
   #----------------------------------------------------------------------------

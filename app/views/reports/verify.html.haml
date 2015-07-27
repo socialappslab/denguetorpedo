@@ -85,7 +85,7 @@
 
         .row
           .col-md-4
-
+            = link_to "Deletar", api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
           .col-md-4
             = link_to I18n.t("common_terms.cancel"), params[:redirect_path] || neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg btn-block"
           .col-md-4
@@ -96,3 +96,24 @@
 
   - content_for :scripts do
     = javascript_include_tag "image-compression-verify"
+
+    :javascript
+      $("#delete-report-link").on("click", function(event) {
+        event.preventDefault();
+        window.test = event;
+
+        $.ajax({
+          url: event.currentTarget.href,
+          type: "DELETE",
+          success : function(data){
+            window.alert("Success!");
+            console.log(data)
+            window.location.href = data.redirect_path;
+          },
+          error: function(data) {
+            window.alert("Something went wrong! Please try again.");
+          }
+        })
+
+        return false;
+      })
