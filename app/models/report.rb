@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class Report < ActiveRecord::Base
-  attr_accessible :report, :created_at, :neighborhood_id, :breeding_site_id,
+  attr_accessible :report, :pupae, :created_at, :neighborhood_id, :breeding_site_id,
   :elimination_method_id, :before_photo, :after_photo, :status, :reporter_id,
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
@@ -42,8 +42,7 @@ class Report < ActiveRecord::Base
     :medium => "300x300>"
   }, :convert_options => { :medium => "-quality 75 -strip", :large => "-quality 75 -strip" }
 
-  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
+  attr_accessor :save_without_before_photo
 
   #----------------------------------------------------------------------------
   # Associations
@@ -88,13 +87,15 @@ class Report < ActiveRecord::Base
   validates :sms, :presence => true, :if => :sms?
 
   # Validation on photos
-  validates :before_photo, :presence => true, :unless => :sms?
-  validates :before_photo, :presence => {:on => :update, :if => :incomplete? }
-  validates :after_photo, :presence => {:on => :update, :unless => :incomplete?}
+  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
+  validates :before_photo, :presence => true,                                       :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates :before_photo, :presence => {:on => :update, :if     => :incomplete? }, :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates :after_photo,  :presence => {:on => :update, :unless => :incomplete?}
 
   # Validation on breeding sites, and elimination types.
-  validates :breeding_site_id, :presence => true, :unless => :sms?
-  validates :breeding_site_id, :presence => {:on => :update, :if => :incomplete? }
+  validates :breeding_site_id,      :presence => true, :unless => :sms?
+  validates :breeding_site_id,      :presence => {:on => :update, :if => :incomplete? }
   validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
 
   validate :created_at,    :inspected_in_the_past?

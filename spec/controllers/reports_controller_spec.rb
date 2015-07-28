@@ -228,6 +228,7 @@ describe ReportsController do
 		let(:report) { FactoryGirl.create(:report, :reporter => user) }
 
 		before(:each) do
+			skip "NEED TO DEPRECATE"
 			cookies[:auth_token] = admin.auth_token
 		end
 

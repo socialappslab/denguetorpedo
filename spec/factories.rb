@@ -68,7 +68,14 @@ FactoryGirl.define do
 		content "Hello world"
 	end
 
-	factory :csv_report
+	factory :csv_report do
+		factory :parsed_csv do
+			csv Rack::Test::UploadedFile.new('spec/support/nicaragua_csv/N002001003.xlsx', 'text/csv')
+			parsed_at { Time.zone.now }
+			association :location
+			association :user
+		end
+	end
 	factory :csv_error
 
 	#-----------------------------------------------------------------------------

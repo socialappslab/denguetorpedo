@@ -1,43 +1,46 @@
 = render :partial => "shared/flashes"
 
-/------------------------------------------------------------------------------
-.row{:style => "margin-bottom: 30px;"}
-  .col-md-7.col-md-offset-1
-    %p{:style => "margin-top: 10px;"}
-      %i.fa.fa-lock
-      Este es un sitio privado, sólo usted lo puede ver.
-
-.row
-  .col-md-8.col-md-offset-1
-    %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
-      Sus reportes cargados en CSV
-  .col-md-2
-    = link_to new_csv_report_path, :class => "btn btn-success btn-large", :style => "margin-bottom:20px;" do
-      %i.fa.fa-file
-      = I18n.t("views.buttons.upload_csv")
-
-
+.container
   .row
-    .col-md-6.col-md-offset-3
-      %table.table.table-bordered.table-hover.text-center.statistics-table
-        %thead
-          %th.text-center
-            CSV
-          %th.text-center
-            Upload date
-          %th.text-center
-            Status
-        %tbody
-          - @csvs.each do |csv|
-            %tr{:data => {"csv_id" => csv.id}}
-              %td
-                = link_to csv.csv_file_name, csv.csv.url
-              %td
-                = csv.created_at.strftime("%Y-%m-%d %H:%M")
-              %td
-                - if csv.csv_errors.present?
-                  = link_to "Failed with errors", csv_report_path(csv), :class => "btn btn-danger"
-                - elsif csv.parsed_at.blank?
-                  Parsing...
-                - else
-                  = link_to "View", csv_report_path(csv), :class => "btn btn-info"
+    .col-md-12
+      .row
+        .col-md-8
+          %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
+            Sus reportes cargados en CSV
+          %p{:style => "margin-top: 10px;"}
+            %i.fa.fa-lock
+            Este es un sitio privado, sólo usted lo puede ver.
+
+        .col-md-4
+          .pull-right
+            = link_to new_csv_report_path, :class => "btn btn-success btn-lg" do
+              %i.fa.fa-file
+              = I18n.t("views.buttons.upload_csv")
+
+      .well
+        .row
+
+          %table.table.table-bordered.table-hover.text-center.statistics-table
+            %thead
+              %th.text-center
+                CSV
+              %th.text-center
+                Upload date
+              %th.text-center
+                Status
+            %tbody
+              - @csvs.each do |csv|
+                %tr{:data => {"csv_id" => csv.id}}
+                  %td
+                    = link_to csv.csv_file_name, csv.csv.url
+                  %td
+                    = csv.created_at.strftime("%Y-%m-%d %H:%M")
+                  %td
+                    - if csv.csv_errors.present?
+                      = link_to "Failed with errors", csv_report_path(csv), :class => "btn btn-danger"
+                    - elsif csv.parsed_at.blank?
+                      Parsing...
+                    - elsif csv.verified_at.blank?
+                      = link_to "Needs verification", verify_csv_report_path(csv), :class => "btn btn-warning"
+                    - else
+                      = link_to "View", csv_report_path(csv), :class => "btn btn-info"

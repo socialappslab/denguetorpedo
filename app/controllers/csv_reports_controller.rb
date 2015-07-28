@@ -8,14 +8,14 @@ class CsvReportsController < ApplicationController
   before_filter :calculate_ivars, :only => [:index]
 
   #----------------------------------------------------------------------------
-  # GET /neighborhoods/1/csv_reports
+  # GET /csv_reports
 
   def index
     @csvs = @current_user.csv_reports.order("created_at DESC")
   end
 
   #----------------------------------------------------------------------------
-  # GET /neighborhoods/1/csv_reports/new
+  # GET /csv_reports/new
 
   def new
     @neighborhood = @current_user.neighborhood
@@ -23,9 +23,16 @@ class CsvReportsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /neighborhoods/1/csv_reports/:id
+  # GET /csv_reports/:id
 
   def show
+    @csv = @current_user.csv_reports.find(params[:id])
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /csv_reports/:id/verify
+
+  def verify
     @csv = @current_user.csv_reports.find(params[:id])
   end
 

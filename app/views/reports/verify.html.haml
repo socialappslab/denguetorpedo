@@ -1,0 +1,129 @@
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @report}
+
+/------------------------------------------------------------------------------
+.row
+  .col-md-6.col-md-offset-3
+    .well
+      - update_url = verify_neighborhood_report_path(@neighborhood, @report)
+
+      = form_for [@neighborhood, @report], :url => update_url, :html => {:method => "PUT", :autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+        .row
+          .col-md-4
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.reporter_id")
+            = f.text_field :reporter_id, :value => @current_user && @current_user.username, :disabled => "disabled", :class => "form-control"
+          .col-md-4
+            %p.form-label
+              = I18n.t("attributes.neighborhood_id")
+            = select_tag :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.neighborhood_id), :disabled => "disabled", :class => "form-control"
+          .col-md-4
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.location_id")
+            = text_field_tag :location_id, @report.location.address, :disabled => "disabled", :class => "form-control"
+
+        %hr.muted.wide
+
+        .row
+          .col-md-6
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.created_at")
+            .form-inline
+              = f.date_select :created_at, {:start_year => 2012, :order => [:day, :month, :year]}, :class => "form-control"
+
+          .col-md-6
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.breeding_site_id")
+            = f.select :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => @report.breeding_site_id), {:include_blank => true}, :class => "form-control input-lg"
+
+        %hr.muted.wide
+
+        .row
+          .col-md-6
+            %p.form-label
+              = I18n.t('activerecord.attributes.report.report')
+            = f.text_area :report, :cols => "1", :rows => "3", :class => "form-control"
+
+          .col-md-3
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.larvae") + "?"
+            .display-block
+              .radio-inline
+                = f.radio_button :larvae, "true"
+                = I18n.t("common_terms.yes_string")
+              .radio-inline{:style => "margin-left: 50px;"}
+                = f.radio_button :larvae, "false"
+                = I18n.t("common_terms.no_html_string").html_safe
+
+          .col-md-3
+            %p.form-label
+              = I18n.t("activerecord.attributes.report.pupae") + "?"
+            .display-block
+              .radio-inline
+                = f.radio_button :pupae, "true"
+                = I18n.t("common_terms.yes_string")
+              .radio-inline{:style => "margin-left: 50px;"}
+                = f.radio_button :pupae, "false"
+                = I18n.t("common_terms.no_html_string").html_safe
+
+          .row
+            .col-md-6.col-md-offset-6
+              %p{:style => "margin-top: 10px;"}
+                = I18n.t("views.reports.new.description_of_larvae")
+
+        %hr.muted.wide
+
+        .row
+          .col-md-4
+            %p.form-label
+              Hay photo?
+            .display-block
+              .radio-inline
+                = radio_button_tag "has_before_photo", "1", true, "ng-model" => "hasBeforePhoto"
+                = I18n.t("common_terms.yes_string")
+              .radio-inline{:style => "margin-left: 50px;"}
+                = radio_button_tag "has_before_photo", "0", true, "ng-model" => "hasBeforePhoto"
+                = I18n.t("common_terms.no_html_string").html_safe
+          .col-md-8{"ng-show" => "hasBeforePhoto == '1'"}
+            %p.form-label
+              = I18n.t("report.form.photo_of_report")
+            = f.file_field :before_photo, :class => "upload_photo form-control"
+            %img.preview{:style => "display: block;"}
+            %canvas{:style => "display: none;"}
+            = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
+        %hr.muted.wide
+
+        .row
+          .col-md-6
+            = link_to "Deletar", api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
+          .col-md-6
+            = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
+              %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+              = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")
+
+
+  - content_for :scripts do
+    = javascript_include_tag "image-compression-verify"
+
+    :javascript
+      $("#delete-report-link").on("click", function(event) {
+        event.preventDefault();
+        window.test = event;
+
+        $.ajax({
+          url: event.currentTarget.href,
+          type: "DELETE",
+          success : function(data){
+            window.alert("Success!");
+            console.log(data)
+            window.location.href = data.redirect_path;
+          },
+          error: function(data) {
+            window.alert("Something went wrong! Please try again.");
+          }
+        })
+
+        return false;
+      })

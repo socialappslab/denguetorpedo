@@ -29,6 +29,30 @@
   }
 }
 
+p.form-label {
+  color: $silver !important;
+  text-transform: uppercase;
+  font-weight: 400 !important;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+
+
+hr {
+  &.muted {
+    border-bottom: 0.5px solid $iosgrey;
+    margin-top: 10px;
+  }
+
+  &.wide {
+    margin-left: -40px;
+    margin-right: -40px;
+    margin-top: 20px;
+  }
+}
+
+
 
 
 .parent-view-button {
@@ -211,8 +235,13 @@
 
 
 .well {
-  margin-top: 40px;
+  margin-top: 20px;
   background-color: white;
+
+
+  border: 1px #D3D3D3 solid;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+
 
 
   .errors {

@@ -19,20 +19,11 @@
 /------------------------------------------------------------------------------
 
 - if @current_user && @current_user.neighborhood == @neighborhood
-  .action-buttons
-    .row
-      .col-md-8.col-md-offset-2
-
-        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success" do
+  .row
+    .col-md-12
+      .text-center
+        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
           = I18n.t("common_terms.create_a_report")
-
-
-        - if @neighborhood.spanish?
-          = link_to new_csv_report_path, :class => "btn btn-success" do
-            = I18n.t("views.buttons.upload_csv")
-
-          = link_to csv_reports_path, :class => "btn btn-success" do
-            = I18n.t("views.reports.index.view_csv")
 
 
 /------------------------------------------------------------------------------

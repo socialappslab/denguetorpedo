@@ -14,6 +14,7 @@
 //= require "app/controllers/chart_controller"
 //= require "app/controllers/location_controller"
 //= require "app/controllers/heatmap_controller"
+//= require "app/controllers/csv_verify_controller"
 //= require "jquery/caret-min"
 //= require "jquery/atwho-min"
 

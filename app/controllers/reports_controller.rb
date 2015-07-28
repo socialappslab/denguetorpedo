@@ -41,10 +41,6 @@ class ReportsController < NeighborhoodsBaseController
     @reports = @reports.limit(@report_limit).offset(@report_offset)
 
     if @current_user.present?
-      @incomplete_reports = @current_user.incomplete_reports
-    end
-
-    if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
     else
       Analytics.track(:anonymous_id => SecureRandom.base64, :event => "Visited reports page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
@@ -343,22 +339,63 @@ class ReportsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
-  # POST /neighborhoods/:neighborhood_id/reports/verify
+  # GET /neighborhoods/:neighborhood_id/reports/verify
 
   def verify
     @report = Report.find(params[:id])
 
-    @report.isVerified  = "t"
-    @report.verifier_id = @current_user.id
-    @report.verified_at = Time.zone.now
+    if @report.location.blank?
+      @report.location = Location.new
+      @report.location.latitude  ||= 0
+      @report.location.longitude ||= 0
+    end
+  end
 
-    if @report.save(:validate => false)
-      @current_user.award_points_for_verifying(@report)
+  #----------------------------------------------------------------------------
+  # PUT /neighborhoods/:neighborhood_id/reports/:id/verify
 
-      flash[:notice] = I18n.t("activerecord.success.report.verify")
-      redirect_to neighborhood_reports_path(@neighborhood) and return
+  def verify_report
+    @report = Report.find(params[:id])
+    if @report.location.blank?
+      @report.location = Location.new
+      @report.location.latitude  ||= 0
+      @report.location.longitude ||= 0
+    end
+
+    @report.neighborhood_id = @neighborhood.id
+
+    if params[:has_before_photo].blank?
+      flash[:alert] = "You need to specify if the report has a before photo or not!"
+      render "verify" and return
+    end
+
+    # Set the attr accessor on report to save with/without photo
+    @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
+
+    base64_image = params[:report][:compressed_photo]
+    if base64_image.blank? && @report.save_without_before_photo != true
+      flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
+      render "verify" and return
+    elsif base64_image.present?
+      filename  = @current_user.display_name.underscore + "_report.jpg"
+      data      = prepare_base64_image_for_paperclip(base64_image, filename)
+    end
+
+    # We set data on before_photo in this case since it come from an SMS,
+    # which doesn't have an image.
+    @report.before_photo = data
+
+    # Verify report saves and form submission is valid
+    if @report.update_attributes(params[:report])
+      @report.update_column(:verified_at, Time.zone.now)
+
+      # Let's award the user for submitting a report.
+      @current_user.award_points_for_submitting(@report)
+
+      redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
     else
-      redirect_to :back and return
+      puts "#{@report.errors.full_messages}"
+      render "verify" and return
     end
   end
 
