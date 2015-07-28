@@ -61,7 +61,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
   def verify
     @csv = @current_user.csv_reports.find(params[:id])
     @csv.update_column(:verified_at, Time.zone.now)
-    render :json => {:redirect_path => csv_reports_path}, :status => 200 and return
+    render :json => {:redirect_path => verify_csv_report_path(@csv)}, :status => 200 and return
   end
 
 

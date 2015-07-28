@@ -89,4 +89,36 @@ describe API::V0::CsvReportsController do
 
   #--------------------------------------------------------------------------
 
+  describe "Updating a CSV" do
+    let!(:csv)      { FactoryGirl.create(:parsed_csv, :user => user) }
+
+    it "updates location address" do
+      put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100 }
+      expect(csv.location.reload.address).to eq("Haha")
+    end
+
+    it "updates location neighborhood" do
+      put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100  }
+      expect(csv.location.reload.neighborhood_id).to eq(100)
+    end
+  end
+
+  #--------------------------------------------------------------------------
+
+  describe "Verifying a CSV" do
+    let!(:csv)      { FactoryGirl.create(:parsed_csv, :user => user) }
+
+    it "sets verified_at column" do
+      put :verify, :id => csv.id
+      expect(csv.reload.verified_at).not_to eq(nil)
+    end
+
+    it "returns proper redirect path" do
+      put :verify, :id => csv.id
+      expect( JSON.parse(response.body)["redirect_path"] ).to eq( verify_csv_report_path(csv) )
+    end
+  end
+
+  #--------------------------------------------------------------------------
+
 end
