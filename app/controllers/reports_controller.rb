@@ -387,7 +387,6 @@ class ReportsController < NeighborhoodsBaseController
 
     # Verify report saves and form submission is valid
     if @report.update_attributes(params[:report])
-      @report.update_column(:completed_at, Time.zone.now)
       @report.update_column(:verified_at, Time.zone.now)
 
       # Let's award the user for submitting a report.
@@ -395,6 +394,7 @@ class ReportsController < NeighborhoodsBaseController
 
       redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
     else
+      puts "#{@report.errors.full_messages}"
       render "verify" and return
     end
   end

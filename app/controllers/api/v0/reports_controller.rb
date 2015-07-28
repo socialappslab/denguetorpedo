@@ -51,6 +51,7 @@ class API::V0::ReportsController < API::V0::BaseController
   end
 
   #----------------------------------------------------------------------------
+  # DELETE /api/v0/reports/:id
 
   def destroy
     @report = @current_user.reports.find_by_id(params[:id])

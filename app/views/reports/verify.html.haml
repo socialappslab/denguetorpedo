@@ -36,7 +36,7 @@
           .col-md-6
             %p.form-label
               = I18n.t("activerecord.attributes.report.breeding_site_id")
-            = select_tag :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => @report.breeding_site_id), :class => "form-control"
+            = f.select :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => @report.breeding_site_id), {:include_blank => true}, :class => "form-control input-lg"
 
         %hr.muted.wide
 
