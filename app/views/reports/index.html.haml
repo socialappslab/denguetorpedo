@@ -19,12 +19,11 @@
 /------------------------------------------------------------------------------
 
 - if @current_user && @current_user.neighborhood == @neighborhood
-  .action-buttons
-    .row
-      .col-md-12
-        .text-center
-          = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg btn-block" do
-            = I18n.t("common_terms.create_a_report")
+  .row
+    .col-md-12
+      .text-center
+        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
+          = I18n.t("common_terms.create_a_report")
 
 
 /------------------------------------------------------------------------------
