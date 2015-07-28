@@ -6,7 +6,7 @@
       .main_nav_button
         .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
           %a{:href => "#"}
-            %h1{style: 'color:black; text-align: center;'}
+            %h2{style: 'color:black; text-align: center;'}
               = I18n.t("home_navigation.education.title")
               %i.fa.fa-caret-down
             %p{:style => "text-align: center;"}
@@ -25,7 +25,7 @@
       .main_nav_button
         .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
           %a{:href => "#"}
-            %h1{style: 'color:black; text-align: center;'}
+            %h2{style: 'color:black; text-align: center;'}
               = I18n.t("home_navigation.howto.title")
               %i.fa.fa-caret-down
             %p{:style => "text-align: center;"}
@@ -39,7 +39,7 @@
     .col-md-1{:style => "margin-top: 10px;"}
       .main_nav_button
         = link_to prizes_path do
-          %h1{style: 'color:black; text-align: center;'}
+          %h2{style: 'color:black; text-align: center;'}
             = I18n.t("home_navigation.prizes.title")
           %p{:style => "text-align: center;"}
             = I18n.t("attributes.points")
