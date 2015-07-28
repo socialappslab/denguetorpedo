@@ -89,13 +89,13 @@ class Report < ActiveRecord::Base
   # Validation on photos
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
   validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates :before_photo, :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :before_photo, :presence => {:on => :update, :if => :incomplete? }, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :after_photo, :presence => {:on => :update, :unless => :incomplete?}
+  validates :before_photo, :presence => true,                                       :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates :before_photo, :presence => {:on => :update, :if     => :incomplete? }, :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates :after_photo,  :presence => {:on => :update, :unless => :incomplete?}
 
   # Validation on breeding sites, and elimination types.
-  validates :breeding_site_id, :presence => true, :unless => :sms?
-  validates :breeding_site_id, :presence => {:on => :update, :if => :incomplete? }
+  validates :breeding_site_id,      :presence => true, :unless => :sms?
+  validates :breeding_site_id,      :presence => {:on => :update, :if => :incomplete? }
   validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
 
   validate :created_at,    :inspected_in_the_past?
