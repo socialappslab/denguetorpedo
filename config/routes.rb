@@ -19,7 +19,7 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :csv_reports, :only => [:create] do
+      resources :csv_reports, :only => [:create, :update] do
         member do
           put "verify"
         end

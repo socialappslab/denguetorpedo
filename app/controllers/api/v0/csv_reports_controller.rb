@@ -35,28 +35,32 @@ class API::V0::CsvReportsController < API::V0::BaseController
   end
 
   #----------------------------------------------------------------------------
+  # PUT /api/v0/csv_reports/:id
+
+  # We assume the user will upload a particular CSV only once. This means that
+  # a 'rolling update' to any CSV will be treated as different CSVs.
+  def update
+    @csv      = @current_user.csv_reports.find_by_id(params[:id])
+    @location = @csv.location
+
+    if params[:location].present?
+      @location.address         = params[:location][:address]
+      @location.neighborhood_id = params[:location][:neighborhood_id]
+    end
+
+    if @location.save
+      render :json => {:redirect_path => verify_csv_report_path(@csv)}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
   # PUT /api/v0/csv_reports/:id/verify
 
   def verify
     @csv = @current_user.csv_reports.find(params[:id])
-
-    if params[:reports].blank?
-      raise API::V0::Error.new("You can't verify a CSV with no reports!", 422) and return
-    end
-
-    # At this point, we're guaranteed to have at least one report.
-    params[:reports].each do |r|
-      report = Report.find_by_id(r["id"])
-      report.attributes = r
-      unless report.save
-        raise API::V0::Error.new(report.errors.full_messages[0], 422) and return
-      end
-    end
-
-    # At this point, all reports saved and there were no errors. Let's update
-    # the verify_at column.
     @csv.update_column(:verified_at, Time.zone.now)
-
     render :json => {:redirect_path => csv_reports_path}, :status => 200 and return
   end
 
