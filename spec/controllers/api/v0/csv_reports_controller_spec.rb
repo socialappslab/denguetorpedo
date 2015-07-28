@@ -115,7 +115,7 @@ describe API::V0::CsvReportsController do
 
     it "returns proper redirect path" do
       put :verify, :id => csv.id
-      expect( JSON.parse(response.body)["redirect_path"] ).to eq( verify_csv_report_path(csv) )
+      expect( JSON.parse(response.body)["redirect_path"] ).to eq( csv_report_path(csv) )
     end
   end
 
