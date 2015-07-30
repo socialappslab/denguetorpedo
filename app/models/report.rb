@@ -56,7 +56,7 @@ class Report < ActiveRecord::Base
   has_many :comments, :as => :commentable, :dependent => :destroy
 
   has_many :inspections, :dependent => :destroy
-  has_many :visits, :through => :inspections
+  has_many :visits,      :through => :inspections
 
   # The following associations define all stakeholders in the reporting
   # process.
@@ -127,9 +127,8 @@ class Report < ActiveRecord::Base
   # Every time a report gets created/updated, conceptually a visit must take place
   # at some location. Whether it's an identification or followup visit depends
   # on how the report is created/updated and with what attributes.
-  after_commit :create_inspection_visit, :on => :create
-  after_commit :create_elimination_visit,   :on => :update
-  # after_commit :destroy_visit,         :on => :destroy
+  after_commit :create_inspection_visit,  :on => :create
+  after_commit :create_elimination_visit, :on => :update
 
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report

@@ -17,4 +17,16 @@ class Inspection < ActiveRecord::Base
   belongs_to :visit
   belongs_to :report
   validates_uniqueness_of :report_id, :scope => :visit_id
+
+
+  after_destroy :conditionally_destroy_visit
+
+  #----------------------------------------------------------------------------
+
+  def conditionally_destroy_visit
+    visit = self.visit
+    visit.destroy if visit.inspections.count == 0
+  end
+
+  #----------------------------------------------------------------------------
 end

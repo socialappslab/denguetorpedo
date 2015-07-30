@@ -9,7 +9,7 @@ class CsvReport < ActiveRecord::Base
   belongs_to :user
   belongs_to :location
 
-  has_many :reports
+  has_many :reports, :dependent => :destroy
   has_many :visits, :through => :reports
   has_many :csv_errors, :dependent => :destroy
 
