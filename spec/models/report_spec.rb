@@ -63,27 +63,44 @@ describe Report do
 		expect(r.initial_visit.id).to eq(v1.id)
 	end
 
-	it "destroys associated inspection if report is destroyed", :after_commit => true do
-		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
-		expect {
-			r.destroy
-		}.to change(Inspection, :count).by(-1)
-	end
+	describe "Deleting a Report", :after_commit => true do
+		before(:each) do
+			@report = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+		end
 
-	it "destroys associated likes if report is destroyed", :after_commit => true do
-		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
-		FactoryGirl.create(:like, :user_id => user.id, :likeable_id => r.id, :likeable_type => "Report")
-		expect {
-			r.destroy
-		}.to change(Like, :count).by(-1)
-	end
+		it "destroys associated inspection" do
+			expect {
+				@report.destroy
+			}.to change(Inspection, :count).by(-1)
+		end
 
-	it "destroys associated commentss if report is destroyed", :after_commit => true do
-		r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
-		FactoryGirl.create(:comment, :content => "Test", :user_id => user.id, :commentable_id => r.id, :commentable_type => "Report")
-		expect {
-			r.destroy
-		}.to change(Comment, :count).by(-1)
+		it "destroys associated likes" do
+			FactoryGirl.create(:like, :user_id => user.id, :likeable_id => @report.id, :likeable_type => "Report")
+			expect {
+				@report.destroy
+			}.to change(Like, :count).by(-1)
+		end
+
+		it "destroys associated comments" do
+			FactoryGirl.create(:comment, :content => "Test", :user_id => user.id, :commentable_id => @report.id, :commentable_type => "Report")
+			expect {
+				@report.destroy
+			}.to change(Comment, :count).by(-1)
+		end
+
+		it "destroys associated visit if it's the last visit" do
+			expect {
+				@report.destroy
+			}.to change(Visit, :count).by(-1)
+		end
+
+		it "does not destroy visit if it's not the last visit" do
+			FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
+
+			expect {
+				@report.destroy
+			}.not_to change(Visit, :count)
+		end
 	end
 
 	describe "Exceptions on Validations" do
