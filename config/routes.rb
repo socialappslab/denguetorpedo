@@ -122,9 +122,7 @@ Dengue::Application.routes.draw do
 
   # TODO: What are the torpedos and why are they public???
   # TODO: Why are the phones listed publicly?
-
   get "torpedos/:id" => "reports#torpedos"
-  get '/phones' => "users#phones"
 
   # TODO: Make this into an actual route.
   # TODO: Are we actually using these routes?

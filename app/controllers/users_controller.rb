@@ -18,19 +18,6 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /phones
-
-  def phones
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-
-    if @neighborhood.present?
-      @users = User.where(:neighborhood_id => @neighborhood.id)
-    else
-      @users = User.all
-    end
-  end
-
-  #----------------------------------------------------------------------------
   # GET /users/1/
 
   def show

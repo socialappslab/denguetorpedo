@@ -10,7 +10,6 @@ describe TeamsController do
 
   before(:each) do
     cookies[:auth_token] = user.auth_token
-    request.env["HTTP_REFERER"] = administer_teams_path
   end
 
   it "fails to create a team with no name" do
