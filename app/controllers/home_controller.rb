@@ -21,9 +21,9 @@ class HomeController < ApplicationController
 
     # Display the appropriate introduction video on homepage.
     if I18n.locale == :es
-      @introductory_video_on_dengue = "http://www.youtube.com/embed/tp8Ti8-utF8?rel=0"
+      @introductory_video_on_dengue = "https://www.youtube.com/embed/hwod5NOxiNM?rel=0"
     else
-      @introductory_video_on_dengue = "http://www.youtube.com/embed/o6IY0NjdmZc?rel=0"
+      @introductory_video_on_dengue = "https://www.youtube.com/embed/o6IY0NjdmZc?rel=0"
     end
 
     if @current_user.present?
