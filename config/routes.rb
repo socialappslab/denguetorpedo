@@ -99,6 +99,8 @@ Dengue::Application.routes.draw do
     resources :teams, :only => [:index] do
       get "block", :on => :member
     end
+
+    resources :notices, :only => [:new, :create]
   end
 
   #----------------------------------------------------------------------------
@@ -279,7 +281,9 @@ Dengue::Application.routes.draw do
 
   resources :feedbacks
 
-  resources :notices do
+  # TODO: We should limit the routes that we expose for notices. :except => here
+  # shouldn't really exist.
+  resources :notices, :except =>[:new, :create] do
     post "like",    :on => :member
     post "comment", :on => :member
   end
