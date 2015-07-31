@@ -16,8 +16,16 @@ namespace :csv_reports do
 
   desc "Backfill all csvs with neighborhood"
   task :backfill_neighborhood_id => :environment do
+
+    csv_without_location           = []
     locations_without_neighborhood = []
     CsvReport.find_each do |csv|
+      loc = csv.location
+      if loc.blank?
+        csv_without_location << csv.id
+        next
+      end
+
       n = csv.location.neighborhood
       if n.present?
         csv.update_column(:neighborhood_id, n.id)
@@ -26,7 +34,11 @@ namespace :csv_reports do
       end
     end
 
+    puts "-" * 50
+    puts "csv_without_location: #{csv_without_location.inspect}"
+    puts "\n" * 5
     puts "locations_without_neighborhood: #{locations_without_neighborhood.inspect}"
+    puts "-" * 50
   end
 
 
