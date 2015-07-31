@@ -104,19 +104,6 @@ class TeamsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /teams/administer
-
-  def administer
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-
-    if @neighborhood.present?
-      @teams = Team.where(:neighborhood_id => @neighborhood.id)
-    else
-      @teams = Team.all
-    end
-  end
-
-  #----------------------------------------------------------------------------
   # POST /teams/1/join
 
   def join
@@ -150,26 +137,6 @@ class TeamsController < ApplicationController
 
         format.html { redirect_to :back and return }
         format.json { render :json => :bad_request and return }
-      end
-    end
-  end
-
-  #----------------------------------------------------------------------------
-  # PUT /teams/1/block
-
-  def block
-    @team         = Team.find(params[:id])
-    @team.blocked = !@team.blocked
-
-    respond_to do |format|
-      if @team.save
-        notice = (@team.blocked ? I18n.t("views.teams.team_successfully_blocked") : I18n.t("views.teams.team_successfully_unblocked"))
-
-        flash[:notice] = notice
-        format.html { redirect_to :back and return }
-      else
-        flash[:alert] = I18n.t("views.application.error")
-        format.html { redirect_to :back and return }
       end
     end
   end

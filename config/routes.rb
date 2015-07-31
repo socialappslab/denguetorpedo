@@ -94,6 +94,10 @@ Dengue::Application.routes.draw do
       end
     end
 
+    resources :teams, :only => [:index] do
+      get "block", :on => :member
+    end
+  end
 
   #----------------------------------------------------------------------------
   # Landing Pages routes.
@@ -267,9 +271,6 @@ Dengue::Application.routes.draw do
   resources :teams do
     post "join",  :on => :member
     post "leave", :on => :member
-    put "block", :on => :member
-
-    get "administer", :on => :collection
   end
 
   #----------------------------------------------------------------------------

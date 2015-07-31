@@ -36,24 +36,5 @@ describe TeamsController do
     expect(t.neighborhood_id).to eq(tepalcingo.id)
   end
 
-  describe "Blocking a team" do
-    before(:each) do
-      cookies[:auth_token] = coordinator.auth_token
-      request.env["HTTP_REFERER"] = administer_teams_path
-    end
-
-    it "blocks a team" do
-      put :block, :id => team.id
-      expect(team.reload.blocked).to eq(true)
-    end
-
-    it "unblocks a blocked team" do
-      team.update_attribute(:blocked, true)
-
-      put :block, :id => team.id
-      expect(team.reload.blocked).to eq(false)
-    end
-  end
-
   #---------------------------------------------------------------------------
 end
