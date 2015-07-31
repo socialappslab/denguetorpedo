@@ -17,6 +17,9 @@ class Coordinator::UsersController < Coordinator::BaseController
   # GET /coordinator/users/:id/block
 
   def block
+    # TODO: Change to appropriate policy.
+    authorize! :assign_roles, User
+
     @user = User.find(params[:id])
     @user.is_blocked = !@user.is_blocked
     if @user.save

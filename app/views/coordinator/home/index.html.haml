@@ -1,0 +1,26 @@
+
+
+.container
+  .row
+    .col-md-12
+      %h1
+        = I18n.t("common_terms.coordinator_configurations")
+      .well
+
+        %ul
+          %li.link
+            = link_to "Register new user", new_coordinator_user_path
+          %li.link
+            = link_to "Manager all users", coordinator_users_path
+          %li.link
+            = link_to I18n.t("views.admin.edit_teams"), coordinator_teams_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.register_prize"), new_prize_path
+          %li.link
+            = link_to I18n.t("views.admin.edit_news"), new_coordinator_notice_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.edit_prize"), premios_admin_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.edit_feedback"), feedbacks_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.edit_report"), breeding_sites_path

@@ -5,6 +5,8 @@ class Coordinator::TeamsController < Coordinator::BaseController
   # GET /coordinator/teams
 
   def index
+    authorize! :edit, Team
+
     @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
 
     if @neighborhood.present?
@@ -18,6 +20,9 @@ class Coordinator::TeamsController < Coordinator::BaseController
   # GET /coordinator/teams/:id/block
 
   def block
+    # TODO: Change to the appropriate policy.
+    authorize! :edit, Team
+
     @team         = Team.find(params[:id])
     @team.blocked = !@team.blocked
 

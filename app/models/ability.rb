@@ -5,6 +5,7 @@ class Ability
   def initialize(user)
     if user.coordinator?
       can(:assign_roles, User)
+      can(:edit, Team)
       can(:edit, User)
     end
   end

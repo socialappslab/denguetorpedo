@@ -1,14 +1,17 @@
 %footer.bs-docs-footer{:role => "contentinfo"}
   .container
     .row
-      .col-md-1
+      .col-md-2
         = link_to "Data Dashboard", dashboard_csv_index_path, :class => "btn btn-default"
-      .col-md-9
+      .col-md-8
         %p
           = link_to I18n.t("views.footer.creator"), credit_path
         %p
           2014-2015 © Regents of the University of California
 
+      - if @current_user.coordinator?
+        .col-md-2
+          = link_to "Coordinator", coordinator_path, :class => "btn btn-default"
 
     %ul.bs-docs-footer-links.muted
       %li

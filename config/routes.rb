@@ -88,6 +88,8 @@ Dengue::Application.routes.draw do
   # Coordinator routes
 
   namespace :coordinator do
+    get "/", :to => "home#index"
+
     resources :users, :only => [:new, :create, :index] do
       member do
         get "block", :action => "block"
@@ -146,6 +148,8 @@ Dengue::Application.routes.draw do
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
 
+  # TODO: We should limit the routes that we expose for users. :except => here
+  # shouldn't really exist.
   resources :users, :except => [:index] do
     resources :reports, :except => [:show]
     resources :conversations, :only => [:index, :show]
@@ -217,7 +221,6 @@ Dengue::Application.routes.draw do
 
   post '/reports/gateway'       => "reports#gateway"
   get  "/reports/notifications" => "reports#notifications"
-
 
   #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive
