@@ -9,19 +9,6 @@ class UsersController < ApplicationController
   before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
 
   #----------------------------------------------------------------------------
-  # GET /users/
-
-  def index
-    authorize! :assign_roles, User
-
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-    @users        = User.order("username ASC")
-
-    @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
-  end
-
-
-  #----------------------------------------------------------------------------
   # POST /users/cookies
 
   # This action is responsible for setting cookie settings for a user.
@@ -153,23 +140,6 @@ class UsersController < ApplicationController
     @prize      = Prize.find(params[:prize_id])
     @prize_code = @user.generate_coupon_for_prize(@prize)
     render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
-  end
-
-
-  #----------------------------------------------------------------------------
-
-  def block
-    @user = User.find(params[:id])
-    @user.is_blocked = !@user.is_blocked
-    if @user.save
-      if @user.is_blocked
-        redirect_to users_path, notice: "Usuário bloqueado com sucesso."
-      else
-        redirect_to users_path, notice: "Usuário desbloqueado com sucesso."
-      end
-    else
-      redirect_to users_path, notice: "There was an error blocking the user"
-    end
   end
 
   #----------------------------------------------------------------------------

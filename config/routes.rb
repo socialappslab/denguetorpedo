@@ -85,11 +85,14 @@ Dengue::Application.routes.draw do
   end
 
   #----------------------------------------------------------------------------
-  # Coordinator routes.
+  # Coordinator routes
 
   namespace :coordinator do
-    resources :users, :only => [:new, :create]
-  end
+    resources :users, :only => [:new, :create, :index] do
+      member do
+        get "block", :action => "block"
+      end
+    end
 
 
   #----------------------------------------------------------------------------
@@ -141,13 +144,12 @@ Dengue::Application.routes.draw do
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
 
-  resources :users do
+  resources :users, :except => [:index] do
     resources :reports, :except => [:show]
     resources :conversations, :only => [:index, :show]
     resources :messages,      :only => [:create]
 
     collection do
-      put 'block'
       post "set-cookies", :action => "set_neighborhood_cookie", :as => :set_cookies
     end
   end

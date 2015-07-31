@@ -2,11 +2,39 @@
 
 class Coordinator::UsersController < Coordinator::BaseController
   #----------------------------------------------------------------------------
+  # GET /coordinator/users
+
+  def index
+    authorize! :assign_roles, User
+
+    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+    @users        = User.order("username ASC")
+
+    @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /coordinator/users/:id/block
+
+  def block
+    @user = User.find(params[:id])
+    @user.is_blocked = !@user.is_blocked
+    if @user.save
+      if @user.is_blocked
+        redirect_to coordinator_users_path, notice: "Usuário bloqueado com sucesso."
+      else
+        redirect_to coordinator_users_path, notice: "Usuário desbloqueado com sucesso."
+      end
+    else
+      redirect_to coordinator_users_path, notice: "There was an error blocking the user"
+    end
+  end
+
+  #----------------------------------------------------------------------------
   # GET /coordinator/users/new
 
   def new
-    # TODO
-    # authorize! :edit, User.new
+    authorize! :edit, User.new
     @user ||= User.new
   end
 
@@ -14,10 +42,7 @@ class Coordinator::UsersController < Coordinator::BaseController
   # POST /coordinator/users
 
   def create
-    # TODO
-    # authorize! :edit, User
-
-
+    authorize! :edit, User
 
     @user = User.new(params[:user])
     if @user.save!

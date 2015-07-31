@@ -15,4 +15,17 @@ describe Coordinator::UsersController do
 			post :create, :user => user_params
 		}.to change(User, :count).by(1)
 	end
+
+	#-----------------------------------------------------------------------------
+
+	describe "Blocking users" do
+		let(:other_user) { FactoryGirl.create(:user) }
+		it "allows to block a user" do
+			get :block, :id => other_user.id
+			expect(other_user.reload.is_blocked).to eq(true)
+		end
+	end
+
+	#-----------------------------------------------------------------------------
+
 end
