@@ -65,7 +65,6 @@ class CsvParsingWorker
     parsed_current_visited_at = nil
     rows.each_with_index do |row, row_index|
       row_content = CsvReport.extract_content_from_row(row)
-      next if row_content[:breeding_site].blank?
 
       # Let's begin by creating a visit, if applicable.
       # Let's parse the current visited at date.
@@ -96,6 +95,11 @@ class CsvParsingWorker
         }
       end
 
+      # The specific bug here was that a valid visit date was completely ignored
+      # because the row didn't have a breeding site. The correct solution is to
+      # parse and store the visit date, and then make a decision on whether to
+      # continue parsing the remaining columns.
+      next if row_content[:breeding_site].blank?
 
       # Build report attributes.
       uuid        = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)

@@ -40,6 +40,20 @@ describe CsvParsingWorker do
     }.to change(Report, :count).by(3)
   end
 
+  it "current visit date of specific row is properly parsed" do
+    # The specific bug here was that a valid visit date was completely ignored
+    # because the row didn't have a breeding site. The correct solution is to
+    # parse and store the visit date, and then make a decision on whether to
+    # proceed or not to next row.
+    csv = File.open("spec/support/csv/visit_date_row_bug.xlsx")
+    csv = FactoryGirl.create(:csv_report, :csv => csv)
+    CsvParsingWorker.perform_async(csv.id, default_params)
+    csv = CsvReport.last
+    expect(csv.parsed_at).not_to eq(nil)
+  end
+
+  #----------------------------------------------------------------------------
+
   describe "with errors" do
     it "creates wrong format error" do
       csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"))
