@@ -137,12 +137,17 @@ class CsvReport < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def self.load_spreadsheet(file)
+    # TODO: This should technically be abstracted into paperclip_defaults.
+    # See https://github.com/thoughtbot/paperclip#uri-obfuscation
+    # See http://stackoverflow.com/questions/22416990/paperclip-unable-to-change-default-path
+    file_location = (Rails.env.production? ? file.url : file.path)
+
     if File.extname( file.original_filename ) == ".csv"
-      spreadsheet = Roo::CSV.new(file.path, :file_warning => :ignore)
+      spreadsheet = Roo::CSV.new(file_location, :file_warning => :ignore)
     elsif File.extname( file.original_filename ) == ".xls"
-      spreadsheet = Roo::Excel.new(file.path, :file_warning => :ignore)
+      spreadsheet = Roo::Excel.new(file_location, :file_warning => :ignore)
     elsif File.extname( file.original_filename ) == ".xlsx"
-      spreadsheet = Roo::Excelx.new(file.path, :file_warning => :ignore)
+      spreadsheet = Roo::Excelx.new(file_location, :file_warning => :ignore)
     end
 
     return spreadsheet
