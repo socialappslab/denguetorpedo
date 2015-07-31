@@ -14,6 +14,20 @@ namespace :csv_reports do
   end
 
 
+  desc "Backfill all csvs with neighborhood"
+  task :backfill_neighborhood_id => :environment do
+    locations_without_neighborhood = []
+    CsvReport.find_each do |csv|
+      n = csv.location.neighborhood
+      if n.present?
+        csv.update_column(:neighborhood_id, n.id)
+      else
+        locations_without_neighborhood << csv.location_id
+      end
+    end
+
+    puts "locations_without_neighborhood: #{locations_without_neighborhood.inspect}"
+  end
 
 
   desc "[One-off task] Backfill created_at date with house inspection date"
