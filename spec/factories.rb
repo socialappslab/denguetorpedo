@@ -75,6 +75,8 @@ FactoryGirl.define do
 			association :location
 			association :user
 		end
+
+		association :neighborhood
 	end
 	factory :csv_error
 

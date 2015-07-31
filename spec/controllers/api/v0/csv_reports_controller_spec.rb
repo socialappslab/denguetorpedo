@@ -9,6 +9,7 @@ describe API::V0::CsvReportsController do
   let(:uploaded_csv)    { ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv)) }
   let(:real_csv)        { ActionDispatch::Http::UploadedFile.new(:tempfile => File.open("spec/support/pruebaAutoreporte4.xlsx"), :filename => File.basename(csv)) }
 
+
   #-----------------------------------------------------------------------------
 
   before(:each) do
@@ -31,6 +32,17 @@ describe API::V0::CsvReportsController do
 
     csv = CsvReport.last
     expect(csv.user_id).to eq(user.id)
+  end
+
+  it "associates the CSV with the neighborhood" do
+    n = FactoryGirl.create(:neighborhood)
+
+    post :create, :csv_report => { :csv => uploaded_csv },
+    :report_location_attributes_latitude => 12.1308585524794, :report_location_attributes_longitude => -86.28059864131501,
+    :neighborhood_id => n.id
+
+    csv = CsvReport.last
+    expect(csv.neighborhood_id).to eq(n.id)
   end
 
   it "queues a CsvParsingJob" do

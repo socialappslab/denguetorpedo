@@ -8,10 +8,13 @@ class CsvReport < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :location
+  belongs_to :neighborhood
 
   has_many :reports, :dependent => :destroy
   has_many :visits, :through => :reports
   has_many :csv_errors, :dependent => :destroy
+
+  validates :neighborhood_id, :presence => true
 
   # The header of the data must include "fecha de visita" text so we iterate
   # over the rows until we find it.
