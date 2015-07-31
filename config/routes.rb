@@ -84,6 +84,24 @@ Dengue::Application.routes.draw do
     end
   end
 
+  #----------------------------------------------------------------------------
+  # Coordinator routes
+
+  namespace :coordinator do
+    get "/", :to => "home#index"
+
+    resources :users, :only => [:new, :create, :index] do
+      member do
+        get "block", :action => "block"
+      end
+    end
+
+    resources :teams, :only => [:index] do
+      get "block", :on => :member
+    end
+
+    resources :notices, :only => [:new, :create, :show, :edit, :update, :destroy]
+  end
 
   #----------------------------------------------------------------------------
   # Landing Pages routes.
@@ -108,9 +126,7 @@ Dengue::Application.routes.draw do
 
   # TODO: What are the torpedos and why are they public???
   # TODO: Why are the phones listed publicly?
-
   get "torpedos/:id" => "reports#torpedos"
-  get '/phones' => "users#phones"
 
   # TODO: Make this into an actual route.
   # TODO: Are we actually using these routes?
@@ -133,15 +149,15 @@ Dengue::Application.routes.draw do
   match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
   match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
-  resources :users do
+
+  # TODO: We should limit the routes that we expose for users. :except => here
+  # shouldn't really exist.
+  resources :users, :except => [:index] do
     resources :reports, :except => [:show]
     resources :conversations, :only => [:index, :show]
     resources :messages,      :only => [:create]
 
     collection do
-      get 'special_new', :as => :coordinator_create
-      post 'special_create'
-      put 'block'
       post "set-cookies", :action => "set_neighborhood_cookie", :as => :set_cookies
     end
   end
@@ -208,7 +224,6 @@ Dengue::Application.routes.draw do
   post '/reports/gateway'       => "reports#gateway"
   get  "/reports/notifications" => "reports#notifications"
 
-
   #----------------------------------------------------------------------------
   # Deprecated Routes with Neighborhood Redirect Directive
   # The following (2) resources are now nested under the neighborhood resource.
@@ -259,9 +274,6 @@ Dengue::Application.routes.draw do
   resources :teams do
     post "join",  :on => :member
     post "leave", :on => :member
-    put "block", :on => :member
-
-    get "administer", :on => :collection
   end
 
   #----------------------------------------------------------------------------
@@ -269,7 +281,9 @@ Dengue::Application.routes.draw do
 
   resources :feedbacks
 
-  resources :notices do
+  # TODO: We should limit the routes that we expose for notices. :except => here
+  # shouldn't really exist.
+  resources :notices, :only => [] do
     post "like",    :on => :member
     post "comment", :on => :member
   end

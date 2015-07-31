@@ -9,38 +9,12 @@ class UsersController < ApplicationController
   before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
 
   #----------------------------------------------------------------------------
-  # GET /users/
-
-  def index
-    authorize! :assign_roles, User
-
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-    @users        = User.order("username ASC")
-
-    @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
-  end
-
-
-  #----------------------------------------------------------------------------
   # POST /users/cookies
 
   # This action is responsible for setting cookie settings for a user.
   def set_neighborhood_cookie
     cookies[:neighborhood_id] = params[:neighborhood_id] if params[:neighborhood_id].present?
     redirect_to :back and return
-  end
-
-  #----------------------------------------------------------------------------
-  # GET /phones
-
-  def phones
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-
-    if @neighborhood.present?
-      @users = User.where(:neighborhood_id => @neighborhood.id)
-    else
-      @users = User.all
-    end
   end
 
   #----------------------------------------------------------------------------
@@ -74,16 +48,6 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-  end
-
-  #----------------------------------------------------------------------------
-
-  # TODO: Move this into CoordinatorController. For now, we'll use this legacy
-  # hack.
-  def special_new
-    authorize! :edit, User.new
-    @user ||= User.new
-    render "coordinators/users/edit" and return
   end
 
   #----------------------------------------------------------------------------
@@ -163,35 +127,6 @@ class UsersController < ApplicationController
     @prize      = Prize.find(params[:prize_id])
     @prize_code = @user.generate_coupon_for_prize(@prize)
     render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
-  end
-
-  #----------------------------------------------------------------------------
-
-  def special_create
-    authorize! :edit, User
-
-    @user = User.new(params[:user])
-    if @user.save
-      redirect_to coordinator_create_users_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")}
-    else
-      render "coordinators/users/edit", flash: { alert: @user.errors.full_messages.join(', ')}
-    end
-  end
-
-  #----------------------------------------------------------------------------
-
-  def block
-    @user = User.find(params[:id])
-    @user.is_blocked = !@user.is_blocked
-    if @user.save
-      if @user.is_blocked
-        redirect_to users_path, notice: "Usuário bloqueado com sucesso."
-      else
-        redirect_to users_path, notice: "Usuário desbloqueado com sucesso."
-      end
-    else
-      redirect_to users_path, notice: "There was an error blocking the user"
-    end
   end
 
   #----------------------------------------------------------------------------

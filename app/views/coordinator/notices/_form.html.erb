@@ -1,0 +1,48 @@
+<%= form_for(@notice, :url => coordinator_notice_path(@notice), :method => "PUT") do |f| %>
+
+  <div class="field">
+    <%= f.label :neighborhood_id %>
+    <%= f.select :neighborhood_id, Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]} %>
+  </div>
+  <div class="field">
+    <%= f.label :title, I18n.t("views.notices.new.activity_title") %>
+    <%= f.text_field :title, :style => "width:400px;", :maxlength => 60 %>
+  </div>
+  <div class="field">
+    <%= f.label :institution_name, I18n.t("views.notices.new.institution_name") %>
+    <%= f.text_field :institution_name, :style => "width:400px;", :maxlength => 60 %>
+  </div>
+  <div class="field">
+    <%= f.label :summary, I18n.t("views.notices.new.summary") %>
+    <%= f.text_area :summary, :maxlength => 150, :rows => 3 %>
+  </div>
+  <div class="field">
+    <%= f.label :description, I18n.t("views.notices.new.description") %>
+    <%= f.text_area :description, :maxlength => 900 %>
+  </div>
+  <div class="field">
+    <%= f.label :location, I18n.t("views.notices.new.location") %>
+    <%= f.text_field :location, :style => "width:600px;", :maxlength => 60 %>
+  </div>
+  <div class="field">
+    <%= f.label :date, I18n.t("views.notices.new.date") %>
+    <%= f.date_select :date, :order => [:day, :month, :year],
+    :use_month_names => [I18n.t("common_terms.january"), I18n.t("common_terms.february"), I18n.t("common_terms.march"), I18n.t("common_terms.april"), I18n.t("common_terms.may"), I18n.t("common_terms.june"), I18n.t("common_terms.july"), I18n.t("common_terms.august"), I18n.t("common_terms.september"), I18n.t("common_terms.october"), I18n.t("common_terms.november"), I18n.t("common_terms.december")] %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date, I18n.t("views.notices.new.time") %>
+    <%= f.time_select :date, :ignore_date => true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :photo %>
+    <%= f.file_field :photo %>
+  </div>
+  <div class="actions">
+    <%= button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "display: inline-block;" do %>
+      <i class = "fa fa-refresh fa-spin" style = "display:none;"></i>
+      <%= I18n.t("views.buttons.publish") %>
+    <% end %>
+  </div>
+<% end %>

@@ -20,7 +20,7 @@
           = team.name
         %td{:style => "margin-left:10px;"}
           - link_text = (team.blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block"))
-          = link_to link_text, block_team_path(team), method: :put, data: { confirm: I18n.t("views.alerts.confirm")}
+          = link_to link_text, block_coordinator_team_path(team), data: { confirm: I18n.t("views.alerts.confirm")}
 
   %br
 

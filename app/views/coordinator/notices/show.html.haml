@@ -1,0 +1,38 @@
+/------------------------------------------------------------------------------
+
+= render :partial => "shared/flashes"
+
+/------------------------------------------------------------------------------
+
+.container
+	.row
+		.col-md-12
+			%h1
+				= @notice.title
+			.well
+				.row
+					.col-md-4.col-md-offset-3.neighborhood_news_thumb{:style => "width:250px;height:250px;margin-top:10px;"}
+						= image_tag(asset_path(@notice.picture(:large)))
+
+					.col-md-6
+
+						%h2 Instituição
+						%p
+							= @notice.institution_name
+
+						%h2 Descrição da atividade
+						%p
+							= simple_format(@notice.description)
+
+						%h2 Endereço da atividade
+						%p
+							= @notice.location
+
+						%h2 Data da atividade
+						%p
+							= format_timestamp(@notice.date)
+
+				- if @current_user && @current_user.coordinator?
+					.row.col-md-offset-1
+						= link_to "Editar", edit_coordinator_notice_path(@notice)
+						-# = link_to "Deletar", @notice, method: :delete, data: { :confirm => I18n.t("views.alerts.confirm") }

@@ -24,7 +24,6 @@ describe "Verifying a Report", :type => :feature do
     report.csv_report_id = csv.id
     report.save(:validate => false)
 
-
     sign_in(user)
     visit verify_neighborhood_report_path(user.neighborhood, report)
   end

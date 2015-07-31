@@ -1,0 +1,11 @@
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @notice}
+
+
+.container
+	.row
+		.col-md-12
+			%h1
+				Nova notícia
+			.well
+				= render 'coordinator/notices/form_create'
