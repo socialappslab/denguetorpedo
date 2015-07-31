@@ -78,16 +78,6 @@ class UsersController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-  # TODO: Move this into CoordinatorController. For now, we'll use this legacy
-  # hack.
-  def special_new
-    authorize! :edit, User.new
-    @user ||= User.new
-    render "coordinators/users/edit" and return
-  end
-
-  #----------------------------------------------------------------------------
-
   def create
     @user = User.new(params[:user])
     if @user.save
@@ -165,18 +155,6 @@ class UsersController < ApplicationController
     render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
   end
 
-  #----------------------------------------------------------------------------
-
-  def special_create
-    authorize! :edit, User
-
-    @user = User.new(params[:user])
-    if @user.save
-      redirect_to coordinator_create_users_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")}
-    else
-      render "coordinators/users/edit", flash: { alert: @user.errors.full_messages.join(', ')}
-    end
-  end
 
   #----------------------------------------------------------------------------
 
