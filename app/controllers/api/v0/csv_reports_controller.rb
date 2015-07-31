@@ -22,10 +22,14 @@ class API::V0::CsvReportsController < API::V0::BaseController
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
     end
 
+    # Find the neighborhood.
+    @neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
+
     # Create the CSV.
-    @csv_report         = CsvReport.new
-    @csv_report.csv     = params[:csv_report][:csv]
-    @csv_report.user_id = @current_user.id
+    @csv_report              = CsvReport.new
+    @csv_report.csv          = params[:csv_report][:csv]
+    @csv_report.user_id      = @current_user.id
+    @csv_report.neighborhood = @neighborhood
     @csv_report.save
 
     # Queue a job to parse the newly created CSV.
