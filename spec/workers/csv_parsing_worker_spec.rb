@@ -93,7 +93,18 @@ describe CsvParsingWorker do
       expect(error.csv_report_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE)
     end
+
+    it "returns unparseable date error" do
+      csv = File.open("spec/support/csv/unparseable_datetime.xlsx")
+      csv = FactoryGirl.create(:csv_report, :csv => csv)
+      CsvParsingWorker.perform_async(csv.id, default_params)
+      error = CsvError.last
+      expect(error.csv_report_id).to eq(csv.id)
+      expect(error.error_type).to eq(CsvError::Types::UNPARSEABLE_DATE)
+    end
   end
+
+  #----------------------------------------------------------------------------
 
   describe "the parsed Visit attributes", :after_commit => true do
     before(:each) do

@@ -75,7 +75,13 @@ class CsvParsingWorker
       # method!
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at        = row_content[:visited_at]
-        parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
+
+        begin
+          parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
+        rescue
+          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
+          return
+        end
 
         # If the visit date doesn't match, then let's create an error and abort
         # immediately.
@@ -117,7 +123,12 @@ class CsvParsingWorker
 
       # Add to reports only if the code doesn't equal "negative" code.
       unless type == "n"
-        eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+        begin
+          eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+        rescue
+          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
+          return
+        end
 
         # If the date of elimination is in the future or before visit date, then let's raise an error.
         if eliminated_at.present? && eliminated_at.future?

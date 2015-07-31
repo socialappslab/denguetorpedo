@@ -75,7 +75,6 @@ class CsvReport < ActiveRecord::Base
 
     disease_report     = row.select {|k,v| k.include?("reporte")}.values[0].to_s
     disease_report     = nil if disease_report.blank?
-
     return {
       :visited_at    => visited_at,
       :health_report => disease_report,

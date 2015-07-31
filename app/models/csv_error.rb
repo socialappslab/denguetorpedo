@@ -23,6 +23,7 @@ class CsvError < ActiveRecord::Base
     ELIMINATION_DATE_IN_FUTURE         = 4
     ELIMINATION_DATE_BEFORE_VISIT_DATE = 5
     UNKNOWN_FORMAT                     = 6
+    UNPARSEABLE_DATE                   = 7
   end
 
   #----------------------------------------------------------------------------
@@ -35,7 +36,8 @@ class CsvError < ActiveRecord::Base
       Types::VISIT_DATE_IN_FUTURE => I18n.t("views.csv_reports.flashes.inspection_date_in_future"),
       Types::ELIMINATION_DATE_IN_FUTURE => I18n.t("views.csv_reports.flashes.elimination_date_in_future"),
       Types::ELIMINATION_DATE_BEFORE_VISIT_DATE => I18n.t("views.csv_reports.flashes.elimination_date_before_inspection_date"),
-      Types::UNKNOWN_FORMAT => I18n.t("views.csv_reports.flashes.unknown_format")
+      Types::UNKNOWN_FORMAT => I18n.t("views.csv_reports.flashes.unknown_format"),
+      Types::UNPARSEABLE_DATE => "The date is in a format we can't parse!"
     }
   end
 
