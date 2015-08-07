@@ -86,17 +86,21 @@ class ReportsController < NeighborhoodsBaseController
       render "new" and return
     end
 
-
     @report.reporter_id     = @current_user.id
     @report.neighborhood_id = @neighborhood.id
 
-    @report.save_without_before_photo = (!params[:has_before_photo].nil? && params[:has_before_photo].to_i == 0)
+    if params[:has_before_photo].blank?
+      flash[:alert] = "You need to specify if the report has a before photo or not!"
+      render "new" and return
+    end
+
+    @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
 
     base64_image = params[:report][:compressed_photo]
-    if base64_image.blank?
+    if base64_image.blank? && @report.save_without_before_photo == false
       flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       render "new" and return
-    else
+    elsif base64_image.present?
       filename             = @current_user.display_name.underscore + "_report.jpg"
       paperclip_image      = prepare_base64_image_for_paperclip(base64_image, filename)
       @report.before_photo = paperclip_image

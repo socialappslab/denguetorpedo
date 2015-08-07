@@ -77,9 +77,6 @@ class Report < ActiveRecord::Base
   # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
-  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
-
   validates :neighborhood_id,  :presence => true
   validates :report,           :presence => true
   validates :reporter_id,      :presence => true
@@ -88,6 +85,10 @@ class Report < ActiveRecord::Base
 
   validates :after_photo,           :presence => {:on => :update, :if => :verified?}
   validates :elimination_method_id, :presence => {:on => :update, :if => :verified?}
+
+
+  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
 
   validate :created_at,    :inspected_in_the_past?
   validate :created_at,    :inspected_after_two_thousand_fourteen?
