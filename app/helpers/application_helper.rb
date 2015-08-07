@@ -58,7 +58,7 @@ module ApplicationHelper
     if (timestamp - Time.zone.now).abs < 3.days
       time_ago_in_words(timestamp) + " " + I18n.t("common_terms.ago")
     else
-      return timestamp.strftime("%Y-%m-%d %H:%M")
+      return timestamp.strftime("%Y-%m-%d")
     end
   end
 
