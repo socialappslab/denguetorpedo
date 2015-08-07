@@ -9,6 +9,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :ensure_coordinator,        :only => [:coordinator_edit, :coordinator_update]
 
   #----------------------------------------------------------------------------
+  # GET /neighborhoods/:neighborhood_id/reports
 
   def index
     @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
@@ -58,33 +59,38 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:id/reports/new
 
   def new
-    @report = Report.new
+    @report          = Report.new
+    @report.location = Location.new
   end
 
   #-----------------------------------------------------------------------------
   # POST /neighborhoods/1/reports
 
   def create
-    # Add the neighborhood id to location attributes before saving the report.
-    # There are three different types of locations we may get:
-    # 1. Full street type, name and number coming from Brazilian communities (to be deprecated),
-    # 2. Single address field coming from Mexican communities,
-    # 3. Vague neighborhood/district from Nicaraguan communities.
-    # NOTE: We should NOT make any assumptions about pre-existing location
-    # instances with same user input. For instance, if we already have a location
-    # record with same :neighborhood string, then we should use the existing
-    # location record. We should always choose the conservative option.
-    params[:report][:location_attributes][:neighborhood_id] = @neighborhood.id
-
     # NOTE: Since we're no longer using the original uploaded image files,
     # we're excluding before_photo params (whatever it may be). Instead,
     # we're going to use before_photo_compressed attribute.
     params[:report].except!(:before_photo)
 
-
     @report = Report.new(params[:report])
-    @report.reporter_id  = @current_user.id
+
+    @location = Location.find_by_address(params[:location][:address])
+    if @location.blank?
+      @location = Location.new
+      @location.save(:validate => false)
+    end
+    @location.neighborhood = @neighborhood
+
+    @report.location = @location
+    unless @location.update_attributes(params[:location])
+      render "new" and return
+    end
+
+
+    @report.reporter_id     = @current_user.id
     @report.neighborhood_id = @neighborhood.id
+
+    @report.save_without_before_photo = (!params[:has_before_photo].nil? && params[:has_before_photo].to_i == 0)
 
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
@@ -98,11 +104,10 @@ class ReportsController < NeighborhoodsBaseController
 
     if @report.save
       @report.update_column(:completed_at, Time.zone.now)
+      @report.update_column(:verified_at,  Time.zone.now)
 
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
-
-      Analytics.track( :user_id => @current_user.id, :event => "Created a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
