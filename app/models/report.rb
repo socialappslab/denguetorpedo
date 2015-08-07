@@ -52,9 +52,9 @@ class Report < ActiveRecord::Base
   belongs_to :neighborhood
   belongs_to :breeding_site
   belongs_to :elimination_method
+
   has_many :likes,    :as => :likeable,    :dependent => :destroy
   has_many :comments, :as => :commentable, :dependent => :destroy
-
   has_many :inspections, :dependent => :destroy
   has_many :visits,      :through => :inspections
 
@@ -77,25 +77,17 @@ class Report < ActiveRecord::Base
   # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
-  # TODO refactor this code to be cleaner and find a better solution for all the scenarios
-  validates :neighborhood_id, :presence => true
-  validates :report,          :presence => true
-  validates :reporter_id,     :presence => true
-
-  # SMS creation
-  validates :sms, :presence => true, :if => :sms?
-
-  # Validation on photos
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
   validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates :before_photo, :presence => true,                                       :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :before_photo, :presence => {:on => :update, :if     => :incomplete? }, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :after_photo,  :presence => {:on => :update, :unless => :incomplete?}
 
-  # Validation on breeding sites, and elimination types.
-  validates :breeding_site_id,      :presence => true, :unless => :sms?
-  validates :breeding_site_id,      :presence => {:on => :update, :if => :incomplete? }
-  validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
+  validates :neighborhood_id,  :presence => true
+  validates :report,           :presence => true
+  validates :reporter_id,      :presence => true
+  validates :breeding_site_id, :presence => true
+  validates :before_photo,     :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
+
+  validates :after_photo,           :presence => {:on => :update, :if => :verified?}
+  validates :elimination_method_id, :presence => {:on => :update, :if => :verified?}
 
   validate :created_at,    :inspected_in_the_past?
   validate :created_at,    :inspected_after_two_thousand_fourteen?
@@ -111,6 +103,9 @@ class Report < ActiveRecord::Base
   scope :completed,   -> { where("completed_at IS NOT NULL") }
   scope :incomplete,  -> { where("completed_at IS NULL") }
   scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
+  scope :unverified,  -> { where("verified_at IS NULL") }
+  scope :verified,    -> { where("verified_at IS NOT NULL") }
+
   # NOTE: This scope is awkwardly named because we get the following warning:
   # Creating scope :open. Overwriting existing method Report.open.
   scope :is_open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
