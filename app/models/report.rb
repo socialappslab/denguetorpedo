@@ -69,7 +69,6 @@ class Report < ActiveRecord::Base
   # We're going to use prepared_at until we can deprecate completed_at
   alias_attribute :prepared_at, :completed_at
 
-
   #----------------------------------------------------------------------------
   # Validations
   #-------------
@@ -162,11 +161,6 @@ class Report < ActiveRecord::Base
     return (self.eliminated_at.blank? || self.elimination_method_id.blank?)
   end
 
-  # TODO: Deprecate this in favor for incomplete?
-  def sms_incomplete?
-    return (self.sms && self.prepared_at == nil)
-  end
-
   # We define an incomplete report to be a report that was created from
   # an SMS OR a CSV report.
   def incomplete?
@@ -178,56 +172,14 @@ class Report < ActiveRecord::Base
     return false
   end
 
-  # We define a report to be public if it's not SMS.
-  # TODO: This is obviously not a future proof solution, so come back to this
-  # when you're ready.
-  def is_public?
-    return !self.sms
+  def verified?
+    return self.verified_at.present?
   end
 
-  def public?
-    return self.is_public?
-  end
-
+  # TODO: Deprecate this as we don't have prizes anymore.
   def expired?
     return false if self.eliminated?
     return Time.zone.now > self.expire_date
-  end
-
-  # A valid report is a report that is
-  # a) open, and verified to be valid by a 3rd party, OR
-  # b) eliminated, and verified to be valid by a 3rd party.
-  # TODO: For now, we define a valid report to be a report
-  # that was verified (no matter what state)
-  def is_valid?
-    # if self.open?
-    #   return (self.isVerified == "t")
-    # elsif self.eliminated?
-    #   return (self.is_resolved_verified == "t")
-    # end
-
-    return nil if self.verifier_id.blank?
-    return self.isVerified == "t"
-  end
-
-  # A valid report is a report that is
-  # a) open, and verified to be problematic by a 3rd party, OR
-  # b) eliminated, and verified to be problematic by a 3rd party.
-  # TODO: For now, we define a valid report to be a report
-  # that was verified (no matter what state)
-  def is_invalid?
-    # if self.open?
-    #   return (self.isVerified == "f")
-    # elsif self.eliminated?
-    #   return (self.is_resolved_verified == "f")
-    # end
-
-    return nil if self.verifier_id.blank?
-    return self.isVerified == "f"
-  end
-
-  def invalid?
-    return self.is_invalid?
   end
 
   #----------------------------------------------------------------------------
@@ -422,18 +374,6 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # This method is run when the report is *destroyed*. We want to make sure that
-  # if this is the last report associated with the Visit, then make sure to
-  # destroy that visit.
-  # def destroy_visit
-  #   return if self.visit_id.blank?
-  #
-  #   remaining_reports_count = Report.where(:visit_id => self.visit_id).count
-  #   Visit.find(self.visit_id).destroy if remaining_reports_count == 0
-  # end
-
-  #----------------------------------------------------------------------------
-
 
   # NOTE: We have to use this hack (even though Paperclip handles base64 images)
   # because we want to explicitly specify the content type and filename. Some
@@ -470,7 +410,10 @@ class Report < ActiveRecord::Base
     self.eliminated_at += ELIMINATION_THRESHOLD if (self.created_at - self.eliminated_at).abs < ELIMINATION_THRESHOLD
   end
 
-  # Validator that ensures that eliminated_at is after created_at.
+  #------------------
+  # Validator helpers
+  #------------------
+
   def eliminated_after_creation?
     return true if self.eliminated_at.blank?
 
