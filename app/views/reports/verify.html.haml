@@ -16,8 +16,6 @@
 
         = render :partial => "reports/before_photo_form", :locals => {:f => f}
 
-
-
         .row
           .col-md-6
             = link_to "Deletar", api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"

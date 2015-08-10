@@ -178,21 +178,15 @@ Dengue::Application.routes.draw do
   get "neighborhoods/invitation" => "neighborhoods#invitation", :as => :neighborhood_invitation
   resources :neighborhoods, :only => [:show] do
     resources :reports, :except => [:update, :destroy] do
-      collection do
-        put 'update'
-        post 'problem'
-        get 'types'
-      end
-
       member do
-        get "coordinator-edit", :action => :coordinator_edit, :as => :coordinator_edit
-        put "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
+        get  "coordinator-edit", :action => :coordinator_edit, :as => :coordinator_edit
+        put  "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
         put  "eliminate"
         put  "prepare"
-        post 'like'
+        post "like"
         post "comment"
-        put 'verify', :action => "verify_report"
-        get "verify"
+        put  "verify", :action => "verify_report"
+        get  "verify"
       end
     end
   end
