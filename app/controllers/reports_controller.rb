@@ -267,23 +267,19 @@ class ReportsController < NeighborhoodsBaseController
 
   def verify
     @report = Report.find(params[:id])
-
-    if @report.location.blank?
-      @report.location = Location.new
-      @report.location.latitude  ||= 0
-      @report.location.longitude ||= 0
-    end
+    @report.location ||= Location.new
   end
 
   #----------------------------------------------------------------------------
   # PUT /neighborhoods/:neighborhood_id/reports/:id/verify
 
   def verify_report
-    @report          = Report.find(params[:id])
-    @location        = find_or_create_location_from_params(params[:location])
-    @report.location = @location
+    # NOTE: Since we're no longer using the original uploaded image files,
+    # we're excluding before_photo params (whatever it may be). Instead,
+    # we're going to use before_photo_compressed attribute.
+    params[:report].except!(:before_photo)
 
-    @report.neighborhood_id = @neighborhood.id
+    @report = Report.find(params[:id])
 
     if params[:has_before_photo].blank?
       flash[:alert] = "You need to specify if the report has a before photo or not!"
@@ -294,7 +290,7 @@ class ReportsController < NeighborhoodsBaseController
     @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
 
     base64_image = params[:report][:compressed_photo]
-    if base64_image.blank? && @report.save_without_before_photo != true
+    if base64_image.blank? && @report.save_without_before_photo == false
       flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       render "verify" and return
     elsif base64_image.present?
@@ -315,7 +311,6 @@ class ReportsController < NeighborhoodsBaseController
 
       redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
     else
-      puts "#{@report.errors.full_messages}"
       render "verify" and return
     end
   end

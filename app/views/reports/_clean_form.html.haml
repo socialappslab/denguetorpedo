@@ -8,7 +8,7 @@
   .col-md-4
     %p.form-label
       = I18n.t("attributes.neighborhood_id")
-    = f.select :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.neighborhood_id), {:disabled => disable}, {:class => "form-control"}
+    = f.select :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.neighborhood_id), {}, :disabled => disable, :class => "form-control"
   .col-md-4
     %p.form-label
       = I18n.t("activerecord.attributes.report.location_id")
@@ -64,10 +64,10 @@
       = I18n.t("activerecord.attributes.report.larvae") + "?"
     .display-block
       .radio-inline
-        = f.radio_button :larvae, "true", :disabled => disable_all
+        = f.radio_button :larvae, "true", :checked => @report.larvae == true, :disabled => disable_all
         = I18n.t("common_terms.yes_string")
       .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :larvae, "false", :disabled => disable_all
+        = f.radio_button :larvae, "false", :checked => @report.larvae == false, :disabled => disable_all
         = I18n.t("common_terms.no_html_string").html_safe
 
   .col-md-3
@@ -75,10 +75,10 @@
       = I18n.t("activerecord.attributes.report.pupae") + "?"
     .display-block
       .radio-inline
-        = f.radio_button :pupae, "true", :disabled => disable_all
+        = f.radio_button :pupae, "true", :checked => @report.pupae == true, :disabled => disable_all
         = I18n.t("common_terms.yes_string")
       .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :pupae, "false", :disabled => disable_all
+        = f.radio_button :pupae, "false",  :checked => @report.pupae == false, :disabled => disable_all
         = I18n.t("common_terms.no_html_string").html_safe
 
 
