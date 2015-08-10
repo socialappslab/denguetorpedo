@@ -127,15 +127,6 @@ class ReportsController < NeighborhoodsBaseController
 
   def edit
     @report = Report.find(params[:id])
-
-    if @report.location.blank?
-      @report.location = Location.new
-      @report.location.latitude  ||= 0
-      @report.location.longitude ||= 0
-    end
-
-    @open_locations       = [@report.location]
-    @eliminated_locations = []
   end
 
   #-----------------------------------------------------------------------------
