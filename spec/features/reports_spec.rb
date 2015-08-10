@@ -26,7 +26,7 @@ describe "Reports", :type => :feature do
 
       6.times do |index|
         u = (index % 2 == 0 ? user : other_user)
-        r = FactoryGirl.build(:report, :report => "Report with index #{index}", :reporter_id => u.id, :neighborhood_id => neighborhood.id, :created_at => inspection_time, :completed_at => inspection_time)
+        r = FactoryGirl.build(:report, :verified_at => Time.zone.now, :report => "Report with index #{index}", :reporter_id => u.id, :neighborhood_id => neighborhood.id, :created_at => inspection_time, :completed_at => inspection_time)
         if index == 0
           r.elimination_method_id = r.breeding_site.elimination_methods.first.id
           r.eliminated_at = inspection_time + 5.minutes

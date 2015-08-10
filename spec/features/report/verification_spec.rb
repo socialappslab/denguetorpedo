@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require "rails_helper"
 
-describe "Verifying a Report", :type => :feature do
+describe "Verifying a Report", :type => :feature, :js => true do
   let!(:neighborhood)     { FactoryGirl.create(:neighborhood) }
   let(:user) 						 { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
   let(:location)         { FactoryGirl.create(:location, :neighborhood => neighborhood) }
@@ -20,7 +20,7 @@ describe "Verifying a Report", :type => :feature do
     I18n.default_locale = User::Locales::SPANISH
 
     report.before_photo  = nil
-    report.prepared_at   = nil
+    report.verified_at   = nil
     report.csv_report_id = csv.id
     report.save(:validate => false)
 
@@ -71,8 +71,9 @@ describe "Verifying a Report", :type => :feature do
   it "allows to change pupae" do
     choose("has_before_photo_0")
 
-    option = (not report.pupae)
+    option = !report.pupae
     choose("report_pupae_#{option}")
+
     click_button "Actualizar"
     expect(report.reload.pupae).to eq(option)
   end

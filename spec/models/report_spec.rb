@@ -63,6 +63,8 @@ describe Report do
 		expect(r.initial_visit.id).to eq(v1.id)
 	end
 
+	#-----------------------------------------------------------------------------
+
 	describe "Deleting a Report", :after_commit => true do
 		before(:each) do
 			@report = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
@@ -103,12 +105,13 @@ describe Report do
 		end
 	end
 
-	describe "Exceptions on Validations" do
+	#-----------------------------------------------------------------------------
 
+	describe "Exceptions on Validations" do
 		it "doesn't validate before photo if save_without_before_photo is set" do
 			r  = FactoryGirl.build(:full_report, :report => "Test", :reporter => user, :location => location)
 			r.before_photo = nil
-			r.completed_at = nil
+			r.verified_at  = nil
 			r.save_without_before_photo = true
 			r.save
 			expect(r.errors.full_messages).to eq([])
@@ -116,8 +119,11 @@ describe Report do
 
 		it "doesn't validate after photo or elimination method if completed_at is not set" do
 			r  = FactoryGirl.create(:full_report, :report => "Test", :reporter => user, :location => location)
-			r.prepared_at 	= nil
+			r.after_photo   = nil
+			r.verified_at 	= Time.zone.now
 			r.csv_report_id = 1
+			r.elimination_method_id		 = r.breeding_site.elimination_methods.first.id
+			r.save_without_after_photo = true
 			r.save
 
 			expect(r.errors.full_messages).to eq([])
@@ -133,9 +139,11 @@ describe Report do
 		end
 	end
 
+	#-----------------------------------------------------------------------------
+
 	describe "Completed Scope" do
 		it "includes only completed reports" do
-			r = FactoryGirl.create(:full_report, :completed_at => nil)
+			r = FactoryGirl.create(:full_report, :verified_at => nil)
 			expect(Report.completed).not_to include(r)
 		end
 	end

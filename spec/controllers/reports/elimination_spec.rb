@@ -28,14 +28,19 @@ describe ReportsController do
 	#-----------------------------------------------------------------------------
 
 	it "sets eliminated_at" do
-		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_before_photo => 1, :report => report_params
+		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
 		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")
 	end
 
 	it "awards the eliminating user" do
 		before_points = user.total_points
-		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_before_photo => 1, :report => report_params
+		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
 		expect(user.reload.total_points).to eq(before_points + report.breeding_site.elimination_methods.first.points)
+	end
+
+	it "allows to eliminate report without after photo" do
+    put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil)
+		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")
 	end
 
   #-----------------------------------------------------------------------------
@@ -43,13 +48,13 @@ describe ReportsController do
   describe "with Errors" do
 		render_views
 
-		it "validates on presence of has_before_photo" do
+		it "validates on presence of has_after_photo" do
 			put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :report => report_params
-			expect(response.body).to have_content("You need to specify if the report has a before photo or not!")
+			expect(response.body).to have_content("You need to specify if the report has an after photo or not!")
 		end
 
 		it "validates on missing after photo" do
-			put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id,  :has_before_photo => 1, :report => report_params.merge(:compressed_photo => nil)
+			put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id,  :has_after_photo => 1, :report => report_params.merge(:compressed_photo => nil)
 			expect(response.body).to have_content(I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank"))
 		end
 	end

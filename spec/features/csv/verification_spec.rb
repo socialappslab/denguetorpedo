@@ -12,7 +12,7 @@ describe "CSV", :type => :feature do
     I18n.locale = User::Locales::SPANISH
     sign_in(user)
 
-    report = FactoryGirl.build(:report, :csv_report_id => csv.id)
+    report = FactoryGirl.build(:report, :verified_at => nil, :csv_report_id => csv.id)
     report.save(:validate => false)
 
     visit verify_csv_report_path(csv)

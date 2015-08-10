@@ -6,7 +6,7 @@ describe ReportsController do
 	let(:user) 			 { FactoryGirl.create(:user) }
 	let(:location)   { FactoryGirl.create(:location) }
 	let(:csv_report) { FactoryGirl.create(:csv_report) }
-	let(:report)     { FactoryGirl.create(:report, :protected => true, :larvae => false, :pupae => false, :location => location, :reporter => user, :csv_report_id => csv_report.id) }
+	let(:report)     { FactoryGirl.create(:report, :protected => true, :verified_at => nil, :larvae => false, :pupae => false, :location => location, :reporter => user, :csv_report_id => csv_report.id) }
 	let(:report_params) { FactoryGirl.attributes_for(:report).merge(:before_photo => nil, :compressed_photo => base64_image_string)}
 
   before(:each) do
