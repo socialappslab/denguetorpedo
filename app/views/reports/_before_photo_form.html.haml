@@ -1,0 +1,18 @@
+.row
+  .col-md-4
+    %p.form-label
+      Hay photo?
+    .display-block
+      .radio-inline
+        = radio_button_tag "has_before_photo", "1", true, "ng-model" => "hasBeforePhoto"
+        = I18n.t("common_terms.yes_string")
+      .radio-inline{:style => "margin-left: 50px;"}
+        = radio_button_tag "has_before_photo", "0", true, "ng-model" => "hasBeforePhoto"
+        = I18n.t("common_terms.no_html_string").html_safe
+  .col-md-8{"ng-show" => "hasBeforePhoto == '1'"}
+    %p.form-label
+      = I18n.t("report.form.photo_of_report")
+    = f.file_field :before_photo, :class => "upload_photo form-control"
+    %img.preview{:style => "display: block;"}
+    %canvas{:style => "display: none;"}
+    = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"

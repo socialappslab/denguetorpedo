@@ -10,7 +10,13 @@
       - update_url = verify_neighborhood_report_path(@neighborhood, @report)
 
       = form_for [@neighborhood, @report], :url => update_url, :html => {:method => "PUT", :autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
-        = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true}
+        = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => false}
+
+        /------------------------------------------------------------------------------
+
+        = render :partial => "reports/before_photo_form"
+
+
 
         .row
           .col-md-6

@@ -8,11 +8,11 @@
   .col-md-4
     %p.form-label
       = I18n.t("attributes.neighborhood_id")
-    = f.select :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.neighborhood_id), {:disabled => disable},  :class => "form-control"
+    = f.select :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.neighborhood_id), {:disabled => disable}, {:class => "form-control"}
   .col-md-4
     %p.form-label
       = I18n.t("activerecord.attributes.report.location_id")
-    = text_field_tag "location[address]", @report.location.address, :class => "form-control",:disabled => disable
+    = text_field_tag "location[address]", @report.location.address, :class => "form-control", :disabled => disable
 
 %hr.muted.wide
 
@@ -23,12 +23,12 @@
     %p.form-label
       = I18n.t("activerecord.attributes.report.created_at")
     .form-inline
-      = f.date_select :created_at, {:start_year => 2012, :order => [:day, :month, :year]}, :class => "form-control"
+      = f.date_select :created_at, {:start_year => 2012, :order => [:day, :month, :year]}, :class => "form-control", :disabled => disable_all
 
   .col-md-6
     %p.form-label
       = I18n.t("activerecord.attributes.report.breeding_site_id")
-    = f.select :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => @report.breeding_site_id), {:include_blank => true}, :class => "form-control"
+    = f.select :breeding_site_id, options_for_select(BreedingSite.order("code ASC").map {|bs| [bs.description_in_es, bs.id]}, :selected => @report.breeding_site_id), {:include_blank => true}, :class => "form-control", :disabled => disable_all
 
 %hr.muted.wide
 
@@ -40,10 +40,10 @@
       = I18n.t("activerecord.attributes.report.protected") + "?"
     .display-block
       .radio-inline
-        = f.radio_button :protected, "true"
+        = f.radio_button :protected, "true", :disabled => disable_all
         = I18n.t("common_terms.yes_string")
       .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :protected, "false"
+        = f.radio_button :protected, "false", :disabled => disable_all
         = I18n.t("common_terms.no_html_string").html_safe
   .col-md-4
     %p
@@ -57,17 +57,17 @@
   .col-md-6
     %p.form-label
       = I18n.t('activerecord.attributes.report.report')
-    = f.text_area :report, :cols => "1", :rows => "3", :class => "form-control"
+    = f.text_area :report, :cols => "1", :rows => "3", :class => "form-control", :disabled => disable_all
 
   .col-md-3
     %p.form-label
       = I18n.t("activerecord.attributes.report.larvae") + "?"
     .display-block
       .radio-inline
-        = f.radio_button :larvae, "true"
+        = f.radio_button :larvae, "true", :disabled => disable_all
         = I18n.t("common_terms.yes_string")
       .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :larvae, "false"
+        = f.radio_button :larvae, "false", :disabled => disable_all
         = I18n.t("common_terms.no_html_string").html_safe
 
   .col-md-3
@@ -75,10 +75,10 @@
       = I18n.t("activerecord.attributes.report.pupae") + "?"
     .display-block
       .radio-inline
-        = f.radio_button :pupae, "true"
+        = f.radio_button :pupae, "true", :disabled => disable_all
         = I18n.t("common_terms.yes_string")
       .radio-inline{:style => "margin-left: 50px;"}
-        = f.radio_button :pupae, "false"
+        = f.radio_button :pupae, "false", :disabled => disable_all
         = I18n.t("common_terms.no_html_string").html_safe
 
 
@@ -88,29 +88,5 @@
       %p{:style => "margin-top: 10px;"}
         = I18n.t("views.reports.new.description_of_larvae")
 
-  %hr.muted.wide
-
-/------------------------------------------------------------------------------
-
-.row
-  .col-md-4
-    %p.form-label
-      Hay photo?
-    .display-block
-      .radio-inline
-        = radio_button_tag "has_before_photo", "1", true, "ng-model" => "hasBeforePhoto"
-        = I18n.t("common_terms.yes_string")
-      .radio-inline{:style => "margin-left: 50px;"}
-        = radio_button_tag "has_before_photo", "0", true, "ng-model" => "hasBeforePhoto"
-        = I18n.t("common_terms.no_html_string").html_safe
-  .col-md-8{"ng-show" => "hasBeforePhoto == '1'"}
-    %p.form-label
-      = I18n.t("report.form.photo_of_report")
-    = f.file_field :before_photo, :class => "upload_photo form-control"
-    %img.preview{:style => "display: block;"}
-    %canvas{:style => "display: none;"}
-    = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
-
-%hr.muted.wide
 
 /------------------------------------------------------------------------------

@@ -24,7 +24,11 @@
     .well
       = form_for [@neighborhood, @report], :url => neighborhood_reports_path(@neighborhood), :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
 
-        = render :partial => "reports/clean_form", :locals => {:f => f, :disable => false}
+        = render :partial => "reports/clean_form", :locals => {:f => f, :disable => false, :disable_all => false}
+        %hr.muted.wide
+        = render :partial => "reports/before_photo_form", :locals => {:f => f}
+        %hr.muted.wide
+
 
         .row
           .col-md-12
@@ -33,8 +37,6 @@
             = hidden_field_tag "location[latitude]"
             = hidden_field_tag "location[longitude]"
             = render :partial => "reports/google_map"
-
-
 
         .row
           .col-md-6
