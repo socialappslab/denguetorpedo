@@ -191,9 +191,6 @@ Dengue::Application.routes.draw do
         put  "prepare"
         post 'like'
         post "comment"
-        post 'creditar'
-        post 'credit'
-        post 'discredit'
         put 'verify', :action => "verify_report"
         get "verify"
       end
