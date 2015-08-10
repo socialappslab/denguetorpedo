@@ -129,23 +129,23 @@ class ReportsController < NeighborhoodsBaseController
   # This action is used exclusively for eliminating an existing report.
   def eliminate
     # Set the before photo
-    if params[:has_before_photo].nil?
-      flash[:alert] = "You need to specify if the report has a before photo or not!"
+    if params[:has_after_photo].nil?
+      flash[:alert] = "You need to specify if the report has an after photo or not!"
       render "edit" and return
     end
 
-    @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
+    @report.save_without_after_photo = (params[:has_after_photo].to_i == 0)
 
     base64_image = params[:report][:compressed_photo]
-    if base64_image.blank?
+    if base64_image.blank? && @report.save_without_after_photo == false
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       render "edit" and return
-    else
+    elsif base64_image.present?
       filename  = @current_user.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
 
-    @report.after_photo = data
+    @report.after_photo   = data
     @report.eliminator_id = @current_user.id
 
     if @report.update_attributes(params[:report])

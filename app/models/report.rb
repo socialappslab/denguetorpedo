@@ -43,6 +43,7 @@ class Report < ActiveRecord::Base
   }, :convert_options => { :medium => "-quality 75 -strip", :large => "-quality 75 -strip" }
 
   attr_accessor :save_without_before_photo
+  attr_accessor :save_without_after_photo
 
   #----------------------------------------------------------------------------
   # Associations
@@ -83,11 +84,11 @@ class Report < ActiveRecord::Base
   validates :breeding_site_id, :presence => true
   validates :before_photo,     :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
 
-  validates :after_photo,           :presence => {:on => :update, :if => :verified?}
+  validates :after_photo,           :presence => {:on => :update, :if => :verified?}, :unless => Proc.new {|file| self.save_without_after_photo == true}
   validates :elimination_method_id, :presence => {:on => :update, :if => :verified?}
 
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_after_photo == true}
 
   validate :created_at,    :inspected_in_the_past?
   validate :created_at,    :inspected_after_two_thousand_fourteen?
