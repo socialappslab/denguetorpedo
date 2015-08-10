@@ -4,7 +4,7 @@
 
 class ReportsController < NeighborhoodsBaseController
   before_filter :require_login,             :except => [:index, :gateway, :notifications]
-  before_filter :find_by_id,                :only   => [:prepare, :eliminate, :update, :like, :comment]
+  before_filter :find_by_id,                :only   => [:verify, :verify_report, :eliminate, :update, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
   before_filter :ensure_coordinator,        :only   => [:coordinator_edit, :coordinator_update]
 
@@ -131,16 +131,15 @@ class ReportsController < NeighborhoodsBaseController
     # Set the before photo
     if params[:has_before_photo].nil?
       flash[:alert] = "You need to specify if the report has a before photo or not!"
-      render "new" and return
+      render "edit" and return
     end
 
     @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
 
-
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
       flash[:alert] = I18n.t("activerecord.attributes.report.after_photo") + " " + I18n.t("activerecord.errors.messages.blank")
-      redirect_to :back and return
+      render "edit" and return
     else
       filename  = @current_user.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
@@ -263,7 +262,6 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:neighborhood_id/reports/verify
 
   def verify
-    @report = Report.find(params[:id])
     @report.location ||= Location.new
   end
 
@@ -275,8 +273,6 @@ class ReportsController < NeighborhoodsBaseController
     # we're excluding before_photo params (whatever it may be). Instead,
     # we're going to use before_photo_compressed attribute.
     params[:report].except!(:before_photo)
-
-    @report = Report.find(params[:id])
 
     if params[:has_before_photo].blank?
       flash[:alert] = "You need to specify if the report has a before photo or not!"

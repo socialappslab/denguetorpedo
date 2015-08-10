@@ -11,7 +11,7 @@
       = I18n.t("views.reports.edit.eliminate")
 
     .well
-      = form_for [@neighborhood, @report], :url => neighborhood_reports_path(@neighborhood), :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+      = form_for [@neighborhood, @report], :url => eliminate_neighborhood_report_path(@neighborhood, @report), :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
 
         = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => true}
         %hr.muted.wide

@@ -100,11 +100,9 @@ class Report < ActiveRecord::Base
 
   scope :sms, where(sms: true).order(:created_at)
   scope :displayable, -> { where("larvae = ? OR pupae = ? OR protected = ? OR protected IS NULL", true, true, false) }
-  scope :completed,   -> { where("completed_at IS NOT NULL") }
-  scope :incomplete,  -> { where("completed_at IS NULL") }
+  scope :completed,   -> { where("verified_at IS NOT NULL") }
+  scope :incomplete,  -> { where("verified_at IS NULL") }
   scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
-  scope :unverified,  -> { where("verified_at IS NULL") }
-  scope :verified,    -> { where("verified_at IS NOT NULL") }
 
   # NOTE: This scope is awkwardly named because we get the following warning:
   # Creating scope :open. Overwriting existing method Report.open.
