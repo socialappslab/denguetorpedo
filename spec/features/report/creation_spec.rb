@@ -20,7 +20,7 @@ describe "Reports", :type => :feature do
 
   #-----------------------------------------------------------------------------
 
-  describe "Creating a report" do
+  describe "Creating a report", :js => true do
     before(:each) do
       sign_in(user)
       visit new_neighborhood_report_path(user.neighborhood)
@@ -29,9 +29,9 @@ describe "Reports", :type => :feature do
     describe "with errors" do
 
       it "notifies the user if report description is empty" do
-        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        fill_in "location_address", :with => "Rua Darci Vargas 45"
         page.find(".compressed_photo", :visible => false).set(base64_image)
-
+        choose("has_before_photo_1")
         select(elimination_type.description, :from => "report_breeding_site_id")
         page.find(".submit-button").click
         expect(page).to have_content("Descripción es obligatorio")
@@ -39,7 +39,8 @@ describe "Reports", :type => :feature do
 
       it "notifies the user if report before photo is empty" do
         fill_in "report_report", :with => "This is a description"
-        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        fill_in "location_address", :with => "Rua Darci Vargas 45"
+        choose("has_before_photo_1")
         select(elimination_type.description, :from => "report_breeding_site_id")
         page.find(".submit-button").click
         expect(page).to have_content("Foto del criadero es obligatorio")
@@ -47,17 +48,19 @@ describe "Reports", :type => :feature do
 
       it "notifies the user if identification type is empty" do
         fill_in "report_report", :with => "This is a description"
-        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        fill_in "location_address", :with => "Rua Darci Vargas 45"
+        choose("has_before_photo_1")
         page.find(".compressed_photo", :visible => false).set(base64_image)
         page.find(".submit-button").click
         expect(page).to have_content("Tipo de criadero es obligatorio")
       end
     end
 
-    describe "successfully" do
+    describe "successfully", :js => true do
       before(:each) do
-        fill_in "report_location_attributes_address", :with => "Rua Darci Vargas 45"
+        fill_in "location_address", :with => "Rua Darci Vargas 45"
         fill_in "report_report", :with => "This is a description"
+        choose("has_before_photo_0")
         page.find(".compressed_photo", :visible => false).set(base64_image)
         select(elimination_type.description, :from => "report_breeding_site_id")
         page.find(".submit-button").click

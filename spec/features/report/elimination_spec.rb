@@ -12,6 +12,7 @@ describe "Eliminating a Report", :type => :feature do
   let(:inspection_time)  { Time.parse("2015-01-01 10:00") }
   let!(:report) { FactoryGirl.create(:report,
     :location_id => location.id,
+    :created_at => Time.zone.now - 10.days,
     :neighborhood_id => neighborhood.id,
     :completed_at => Time.zone.now,
     :reporter_id => user.id) }
@@ -33,6 +34,7 @@ describe "Eliminating a Report", :type => :feature do
   it "allows users to eliminate a report" do
     method = elimination_type.elimination_methods.first
     select(method.description, :from => "report_elimination_method_id")
+    choose("has_after_photo_1")
     page.find(".compressed_photo", :visible => false).set(base64_image)
     page.find(".submit-button").click
 
@@ -47,6 +49,7 @@ describe "Eliminating a Report", :type => :feature do
     visit edit_neighborhood_report_path(user.neighborhood, report)
 
     select(elimination_type.elimination_methods.first.description, :from => "report_elimination_method_id")
+    choose("has_after_photo_1")
     page.find(".compressed_photo", :visible => false).set(base64_image)
     page.find(".submit-button").click
 
@@ -62,6 +65,7 @@ describe "Eliminating a Report", :type => :feature do
     method = elimination_type.elimination_methods.first
     select(method.description, :from => "report_elimination_method_id")
 
+    choose("has_after_photo_1")
     page.find(".compressed_photo", :visible => false).set(base64_image)
     page.find(".submit-button").click
 
@@ -70,6 +74,9 @@ describe "Eliminating a Report", :type => :feature do
   end
 
   it "notifies user if elimination method isn't selected" do
+    visit edit_neighborhood_report_path(user.neighborhood, report.reload)
+
+    choose("has_after_photo_1")
     page.find(".compressed_photo", :visible => false).set(base64_image)
     page.find(".submit-button").click
 
@@ -77,6 +84,7 @@ describe "Eliminating a Report", :type => :feature do
   end
 
   it "notifies user if after photo isn't selected" do
+    choose("has_after_photo_1")
     method = elimination_type.elimination_methods.first
     select(method.description, :from => "report_elimination_method_id")
     page.find(".submit-button").click

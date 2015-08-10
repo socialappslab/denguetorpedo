@@ -21,6 +21,7 @@ es:
     profile_photo: "Foto del perfil"
     photo: "Foto"
     created_at: Fecha de inspección
+    elimiated_at: Fecha de eliminación
     points: Puntos
     body: Conteúdo
     breeding_site_id: Tipo de criadero

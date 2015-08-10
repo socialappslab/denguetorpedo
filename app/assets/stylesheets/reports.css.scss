@@ -313,17 +313,6 @@
   width: 100%;
 }
 
-#report_elimination_method_id {
-  height: auto;
-  font-size: 16px;
-  width: 100%;
-}
-
-#report_breeding_site_id {
-  height: auto;
-  font-size: 16px;
-  width: 100%;
-}
 
 #address .street_type{
   width:200px;
@@ -474,5 +463,32 @@
 
   #OSMap {
     height: 500px;
+  }
+}
+
+
+
+#denguechat-map {
+  height: 400px;
+
+
+  #loading {
+    z-index:100;
+    text-align: center;
+
+    .fa-refresh {
+      font-size: 64px;
+    }
+  }
+
+  #map-error-description {
+    color: red;
+    font-weight: bold;
+    font-size: 10px;
+    display: none;
+  }
+
+  #gmap{
+    height: 400px;
   }
 }

@@ -116,6 +116,7 @@ FactoryGirl.define do
     before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
 		association  :breeding_site
 		association  :neighborhood
+		verified_at  {Time.zone.now}
 
 		factory :positive_report do
 			larvae true
@@ -134,6 +135,7 @@ FactoryGirl.define do
 			created_at Time.zone.now
 			association :reporter, :factory => :user
 		end
+
   end
 
 	factory :inspection

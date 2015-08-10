@@ -43,6 +43,7 @@ class Report < ActiveRecord::Base
   }, :convert_options => { :medium => "-quality 75 -strip", :large => "-quality 75 -strip" }
 
   attr_accessor :save_without_before_photo
+  attr_accessor :save_without_after_photo
 
   #----------------------------------------------------------------------------
   # Associations
@@ -52,9 +53,9 @@ class Report < ActiveRecord::Base
   belongs_to :neighborhood
   belongs_to :breeding_site
   belongs_to :elimination_method
+
   has_many :likes,    :as => :likeable,    :dependent => :destroy
   has_many :comments, :as => :commentable, :dependent => :destroy
-
   has_many :inspections, :dependent => :destroy
   has_many :visits,      :through => :inspections
 
@@ -69,7 +70,6 @@ class Report < ActiveRecord::Base
   # We're going to use prepared_at until we can deprecate completed_at
   alias_attribute :prepared_at, :completed_at
 
-
   #----------------------------------------------------------------------------
   # Validations
   #-------------
@@ -78,25 +78,17 @@ class Report < ActiveRecord::Base
   # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
 
-  # TODO refactor this code to be cleaner and find a better solution for all the scenarios
-  validates :neighborhood_id, :presence => true
-  validates :report,          :presence => true
-  validates :reporter_id,     :presence => true
+  validates :neighborhood_id,  :presence => true
+  validates :report,           :presence => true
+  validates :reporter_id,      :presence => true
+  validates :breeding_site_id, :presence => true
+  validates :before_photo,     :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
 
-  # SMS creation
-  validates :sms, :presence => true, :if => :sms?
+  validates :after_photo,           :presence => {:on => :update, :if => :verified?}, :unless => Proc.new {|file| self.save_without_after_photo == true}
+  validates :elimination_method_id, :presence => {:on => :update, :if => :verified?}
 
-  # Validation on photos
-  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
-  validates :before_photo, :presence => true,                                       :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :before_photo, :presence => {:on => :update, :if     => :incomplete? }, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  validates :after_photo,  :presence => {:on => :update, :unless => :incomplete?}
-
-  # Validation on breeding sites, and elimination types.
-  validates :breeding_site_id,      :presence => true, :unless => :sms?
-  validates :breeding_site_id,      :presence => {:on => :update, :if => :incomplete? }
-  validates :elimination_method_id, :presence => {:on => :update, :unless => :incomplete?}
+  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_after_photo == true}
 
   validate :created_at,    :inspected_in_the_past?
   validate :created_at,    :inspected_after_two_thousand_fourteen?
@@ -109,9 +101,10 @@ class Report < ActiveRecord::Base
 
   scope :sms, where(sms: true).order(:created_at)
   scope :displayable, -> { where("larvae = ? OR pupae = ? OR protected = ? OR protected IS NULL", true, true, false) }
-  scope :completed,   -> { where("completed_at IS NOT NULL") }
-  scope :incomplete,  -> { where("completed_at IS NULL") }
+  scope :completed,   -> { where("verified_at IS NOT NULL") }
+  scope :incomplete,  -> { where("verified_at IS NULL") }
   scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
+
   # NOTE: This scope is awkwardly named because we get the following warning:
   # Creating scope :open. Overwriting existing method Report.open.
   scope :is_open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
@@ -162,11 +155,6 @@ class Report < ActiveRecord::Base
     return (self.eliminated_at.blank? || self.elimination_method_id.blank?)
   end
 
-  # TODO: Deprecate this in favor for incomplete?
-  def sms_incomplete?
-    return (self.sms && self.prepared_at == nil)
-  end
-
   # We define an incomplete report to be a report that was created from
   # an SMS OR a CSV report.
   def incomplete?
@@ -178,56 +166,14 @@ class Report < ActiveRecord::Base
     return false
   end
 
-  # We define a report to be public if it's not SMS.
-  # TODO: This is obviously not a future proof solution, so come back to this
-  # when you're ready.
-  def is_public?
-    return !self.sms
+  def verified?
+    return self.verified_at.present?
   end
 
-  def public?
-    return self.is_public?
-  end
-
+  # TODO: Deprecate this as we don't have prizes anymore.
   def expired?
     return false if self.eliminated?
     return Time.zone.now > self.expire_date
-  end
-
-  # A valid report is a report that is
-  # a) open, and verified to be valid by a 3rd party, OR
-  # b) eliminated, and verified to be valid by a 3rd party.
-  # TODO: For now, we define a valid report to be a report
-  # that was verified (no matter what state)
-  def is_valid?
-    # if self.open?
-    #   return (self.isVerified == "t")
-    # elsif self.eliminated?
-    #   return (self.is_resolved_verified == "t")
-    # end
-
-    return nil if self.verifier_id.blank?
-    return self.isVerified == "t"
-  end
-
-  # A valid report is a report that is
-  # a) open, and verified to be problematic by a 3rd party, OR
-  # b) eliminated, and verified to be problematic by a 3rd party.
-  # TODO: For now, we define a valid report to be a report
-  # that was verified (no matter what state)
-  def is_invalid?
-    # if self.open?
-    #   return (self.isVerified == "f")
-    # elsif self.eliminated?
-    #   return (self.is_resolved_verified == "f")
-    # end
-
-    return nil if self.verifier_id.blank?
-    return self.isVerified == "f"
-  end
-
-  def invalid?
-    return self.is_invalid?
   end
 
   #----------------------------------------------------------------------------
@@ -422,18 +368,6 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # This method is run when the report is *destroyed*. We want to make sure that
-  # if this is the last report associated with the Visit, then make sure to
-  # destroy that visit.
-  # def destroy_visit
-  #   return if self.visit_id.blank?
-  #
-  #   remaining_reports_count = Report.where(:visit_id => self.visit_id).count
-  #   Visit.find(self.visit_id).destroy if remaining_reports_count == 0
-  # end
-
-  #----------------------------------------------------------------------------
-
 
   # NOTE: We have to use this hack (even though Paperclip handles base64 images)
   # because we want to explicitly specify the content type and filename. Some
@@ -470,7 +404,10 @@ class Report < ActiveRecord::Base
     self.eliminated_at += ELIMINATION_THRESHOLD if (self.created_at - self.eliminated_at).abs < ELIMINATION_THRESHOLD
   end
 
-  # Validator that ensures that eliminated_at is after created_at.
+  #------------------
+  # Validator helpers
+  #------------------
+
   def eliminated_after_creation?
     return true if self.eliminated_at.blank?
 
