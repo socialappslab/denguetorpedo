@@ -134,7 +134,7 @@ FactoryGirl.define do
 			created_at Time.zone.now
 			association :reporter, :factory => :user
 		end
-		
+
   end
 
 	factory :inspection
