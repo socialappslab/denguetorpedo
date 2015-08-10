@@ -25,26 +25,29 @@
               = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")
 
 
-  - content_for :scripts do
-    = javascript_include_tag "image-compression-verify"
+- content_for :scripts do
+  = javascript_include_tag "image-compression-verify"
 
-    :javascript
-      $("#delete-report-link").on("click", function(event) {
-        event.preventDefault();
-        window.test = event;
+  :javascript
+    $("#delete-report-link").on("click", function(event) {
+      var response = window.confirm("Are you sure?");
+      if (response == false)
+        return;
+      event.preventDefault();
+      window.test = event;
 
-        $.ajax({
-          url: event.currentTarget.href,
-          type: "DELETE",
-          success : function(data){
-            window.alert("Success!");
-            console.log(data)
-            window.location.href = data.redirect_path;
-          },
-          error: function(data) {
-            window.alert("Something went wrong! Please try again.");
-          }
-        })
-
-        return false;
+      $.ajax({
+        url: event.currentTarget.href,
+        type: "DELETE",
+        success : function(data){
+          window.alert("Success!");
+          console.log(data)
+          window.location.href = data.redirect_path;
+        },
+        error: function(data) {
+          window.alert("Something went wrong! Please try again.");
+        }
       })
+
+      return false;
+    })
