@@ -124,10 +124,6 @@ Dengue::Application.routes.draw do
   # but their implementation is not intuitive.
   resources :breeding_sites, :only => [:index]
 
-  # TODO: What are the torpedos and why are they public???
-  # TODO: Why are the phones listed publicly?
-  get "torpedos/:id" => "reports#torpedos"
-
   # TODO: Make this into an actual route.
   # TODO: Are we actually using these routes?
   get '/cupons/sponsor/:id' => "prize_codes#sponsor"
