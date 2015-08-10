@@ -72,24 +72,17 @@ class ReportsController < NeighborhoodsBaseController
     # we're going to use before_photo_compressed attribute.
     params[:report].except!(:before_photo)
 
-    @report = Report.new(params[:report])
-
-    @location = Location.find_by_address(params[:location][:address])
-    if @location.blank?
-      @location = Location.new
-      @location.save(:validate => false)
-    end
-    @location.neighborhood = @neighborhood
-
-    @report.location = @location
-    unless @location.update_attributes(params[:location])
-      render "new" and return
-    end
-
+    @report                 = Report.new(params[:report])
     @report.reporter_id     = @current_user.id
     @report.neighborhood_id = @neighborhood.id
 
-    if params[:has_before_photo].blank?
+    # Set location, and validate on its attributes
+    @location        = find_or_create_location_from_params(params[:location])
+    @report.location = @location
+    render "new" and return unless @location.update_attributes(params[:location])
+
+    # Set the before photo
+    if params[:has_before_photo].nil?
       flash[:alert] = "You need to specify if the report has a before photo or not!"
       render "new" and return
     end
@@ -107,6 +100,7 @@ class ReportsController < NeighborhoodsBaseController
     end
 
     if @report.save
+      # TODO: Deprecate completed_at
       @report.update_column(:completed_at, Time.zone.now)
       @report.update_column(:verified_at,  Time.zone.now)
 
@@ -285,12 +279,9 @@ class ReportsController < NeighborhoodsBaseController
   # PUT /neighborhoods/:neighborhood_id/reports/:id/verify
 
   def verify_report
-    @report = Report.find(params[:id])
-    if @report.location.blank?
-      @report.location = Location.new
-      @report.location.latitude  ||= 0
-      @report.location.longitude ||= 0
-    end
+    @report          = Report.find(params[:id])
+    @location        = find_or_create_location_from_params(params[:location])
+    @report.location = @location
 
     @report.neighborhood_id = @neighborhood.id
 
@@ -356,18 +347,23 @@ class ReportsController < NeighborhoodsBaseController
 
   private
 
-  #----------------------------------------------------------------------------
-
   def find_by_id
     @report = Report.find(params[:id])
   end
-
-  #----------------------------------------------------------------------------
 
   def ensure_coordinator
     redirect_to neighborhood_reports_path(@neighborhood) unless @current_user && @current_user.coordinator?
   end
 
-  #----------------------------------------------------------------------------
 
+  def find_or_create_location_from_params(location_params)
+    location = Location.find_by_address(location_params[:address])
+    if location.blank?
+      location = Location.new
+      location.save(:validate => false)
+    end
+
+    location.neighborhood = @neighborhood
+    return location
+  end
 end
