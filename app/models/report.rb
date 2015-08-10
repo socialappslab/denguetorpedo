@@ -86,7 +86,6 @@ class Report < ActiveRecord::Base
   validates :after_photo,           :presence => {:on => :update, :if => :verified?}
   validates :elimination_method_id, :presence => {:on => :update, :if => :verified?}
 
-
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
   validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }
 

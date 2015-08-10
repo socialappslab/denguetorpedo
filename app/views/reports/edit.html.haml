@@ -37,7 +37,7 @@
           .col-md-6
             %p.form-label
               = I18n.t("activerecord.models.elimination_method")
-            = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, @report.elimination_method_id), {:include_blank => true}, :class => "form-control"
+            = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, :selected => @report.elimination_method_id, :include_blank => true), {}, :class => "form-control"
 
 
         .row

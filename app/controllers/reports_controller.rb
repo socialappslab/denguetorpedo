@@ -128,12 +128,14 @@ class ReportsController < NeighborhoodsBaseController
 
   # This action is used exclusively for eliminating an existing report.
   def eliminate
-    # Parse the eliminated_at param or set to current time. Make sure to
-    # remove the param from params[:report] to avoid updating it in update_attributes.
-    eliminated_time = Time.zone.parse(params[:report][:eliminated_at]) if params[:report][:eliminated_at].present?
-    eliminated_time = Time.zone.now if eliminated_time.blank?
-    params[:report].delete(:eliminated_at)
-    @report.eliminated_at = eliminated_time
+    # Set the before photo
+    if params[:has_before_photo].nil?
+      flash[:alert] = "You need to specify if the report has a before photo or not!"
+      render "new" and return
+    end
+
+    @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
+
 
     base64_image = params[:report][:compressed_photo]
     if base64_image.blank?
@@ -143,14 +145,10 @@ class ReportsController < NeighborhoodsBaseController
       filename  = @current_user.display_name.underscore + "_report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
+
     @report.after_photo = data
-    params[:report].delete(:compressed_photo)
-
-    if params[:report] && params[:report][:location_attributes]
-      params[:report][:location_attributes].merge!(:neighborhood_id => @neighborhood.id)
-    end
-
     @report.eliminator_id = @current_user.id
+
     if @report.update_attributes(params[:report])
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
@@ -159,8 +157,7 @@ class ReportsController < NeighborhoodsBaseController
       flash[:notice] = I18n.t("activerecord.success.report.eliminate")
       redirect_to neighborhood_reports_path(@neighborhood) and return
     else
-      flash[:alert] = flash[:alert].to_s + @report.errors.full_messages.join(", ")
-      redirect_to :back and return
+      render "edit" and return
     end
   end
 
