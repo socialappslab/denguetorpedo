@@ -14,45 +14,55 @@
 
 /------------------------------------------------------------------------------
 
-= render :partial => "shared/title_banner", :locals => default_navigation_hash.merge(:title => I18n.t("reports_feed.title", :name => @neighborhood.name), :description => "Esta página muestra reportes de criaderos potenciales o positivos en la comunidad. Los datos no incluyen lugares en los que no había criaderos. Para ver cómo es que los criaderos reportados aquí afectan el riesgo de dengue y chikungunya, haga click #{link_to "aquí.", neighborhood_path(@neighborhood)}")
-
-/------------------------------------------------------------------------------
-
-- if @current_user && @current_user.neighborhood == @neighborhood
+.container
   .row
-    .col-md-12
-      .text-center
-        = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
-          = I18n.t("common_terms.create_a_report")
-
-
-/------------------------------------------------------------------------------
-
-.denguechat-tab-toggle
-  .row
-    .col-md-2.col-md-offset-2
-
-    .col-md-6
+    .col-md-8.col-xs-6
+      %h1.light-font
+        = I18n.t("reports_feed.title", :name => @neighborhood.name)
+    .col-md-4.col-xs-6
       .pull-right
-        .report-filter.btn-group
-          %label.btn.btn-default.active
-            = link_to I18n.t("common_terms.all"), neighborhood_reports_path(@neighborhood)
-          %label.btn.btn-default
-            = link_to I18n.t("common_terms.open_reports"), "?reports=open"
-          %label.btn.btn-default
-            = link_to I18n.t("common_terms.eliminated_reports"), "?reports=eliminated"
+        - if @current_user && @current_user.neighborhood == @neighborhood
+          = link_to new_neighborhood_report_path(@neighborhood), :class => "btn btn-success btn-lg" do
+            = I18n.t("common_terms.create_a_report")
 
 
-/------------------------------------------------------------------------------
-
-.tab-content
-  #report.tab-pane.active{:role => "tabpanel"}
-    = render :partial => "reports/sites"
-  -# #map.tab-pane{:role => "tabpanel"}
-  -#   = render :partial => "reports/google_map"
+  .row.page-header-description
+    .col-md-12
+      %p.description
+        Esta página muestra reportes de criaderos potenciales o positivos en la comunidad. Los datos no incluyen lugares en los que no había criaderos. Para ver cómo es que los criaderos reportados aquí afectan el riesgo de dengue y chikungunya, haga click
+        = link_to "aquí.", neighborhood_path(@neighborhood)
 
 
-/------------------------------------------------------------------------------
+
+
+
+  /------------------------------------------------------------------------------
+
+  .denguechat-tab-toggle
+    .row
+      .col-md-2.col-md-offset-2
+
+      .col-md-6
+        .pull-right
+          .report-filter.btn-group
+            %label.btn.btn-default.active
+              = link_to I18n.t("common_terms.all"), neighborhood_reports_path(@neighborhood)
+            %label.btn.btn-default
+              = link_to I18n.t("common_terms.open_reports"), "?reports=open"
+            %label.btn.btn-default
+              = link_to I18n.t("common_terms.eliminated_reports"), "?reports=eliminated"
+
+
+  /------------------------------------------------------------------------------
+
+  .tab-content
+    #report.tab-pane.active{:role => "tabpanel"}
+      = render :partial => "reports/sites"
+    -# #map.tab-pane{:role => "tabpanel"}
+    -#   = render :partial => "reports/google_map"
+
+
+  /------------------------------------------------------------------------------
 
 - content_for :scripts do
   -# = javascript_include_tag "map"

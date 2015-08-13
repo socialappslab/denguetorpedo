@@ -1,22 +1,25 @@
 = render :partial => "shared/flashes"
 
 .container
+
+  .row
+    .col-md-8.col-xs-8
+      %h1.light-font
+        Sus reportes cargados en CSV
+
+    .col-md-4.col-xs-4
+      .pull-right
+        = link_to new_csv_report_path, :class => "btn btn-success btn-lg" do
+          %i.fa.fa-file
+          = I18n.t("views.buttons.upload_csv")
+
+  .row.page-header-description
+    .col-md-12
+      %p.description
+        Este es un sitio privado, sólo usted lo puede ver.
+
   .row
     .col-md-12
-      .row
-        .col-md-8
-          %h1{:style => "font-size: 30px; margin-bottom: 30px;"}
-            Sus reportes cargados en CSV
-          %p{:style => "margin-top: 10px;"}
-            %i.fa.fa-lock
-            Este es un sitio privado, sólo usted lo puede ver.
-
-        .col-md-4
-          .pull-right
-            = link_to new_csv_report_path, :class => "btn btn-success btn-lg" do
-              %i.fa.fa-file
-              = I18n.t("views.buttons.upload_csv")
-
       .well
         .row
 
