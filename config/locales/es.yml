@@ -12,6 +12,7 @@ es:
         other: "%{count} horas"
 
   attributes:
+    location_id: Lugar
     title: "Título"
     neighborhood_id: "Comunidad"
     name: Nombre
@@ -81,7 +82,6 @@ es:
         message: Mensaje
       report:
         created_at: Fecha de inspección
-        location_id: Dirección
         prepared_at: Fecha de preparación
         completed_at: Fecha de preparación
         reporter_id: Marcado por
@@ -364,6 +364,33 @@ es:
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
       confirm: ¿Está seguro?
+    buttons:
+      add_photo: "Añadir foto"
+      confirm: "Confirmar"
+      create:  "Crear"
+      delete:  Eliminar
+      edit:    "Editar"
+      logout: Salir
+      publish: "Chat"
+      search:  "Buscar"
+      submit:  "Enviar"
+      update:  "Actualizar"
+      upload:  Cargue
+      upload_csv: Cargue un nuevo CSV
+    dashboard:
+      csv_only: Solo datos CSV
+      locations:
+        visit_summary: Resumen de visitas
+        visit_date: Fecha
+        status: Estatus
+        total_positive_sites: Total criaderos positivos
+        total_potential_sites: Total criaderos potenciales
+        barrel_summary: Resumen de barriles
+      navigation:
+        locations: Lugares
+        heatmap: Mapa de actividad
+        graphs: Gráficos
+
     flashes:
       login:
         error: Nombre de usuario o contraseña incorrecta
@@ -424,19 +451,6 @@ es:
         reset_email_sent: "Mensaje de cambio de contraseña enviado"
       update:
         success: "La contraseña fue cambiada"
-    buttons:
-      add_photo: "Añadir foto"
-      confirm: "Confirmar"
-      create:  "Crear"
-      delete:  Eliminar
-      edit:    "Editar"
-      logout: Salir
-      publish: "Chat"
-      search:  "Buscar"
-      submit:  "Enviar"
-      update:  "Actualizar"
-      upload:  Cargue
-      upload_csv: Cargue un nuevo CSV
     post:
       feed: Blog comunitario
       text_placeholder: "¡Comparta sus ideas!"

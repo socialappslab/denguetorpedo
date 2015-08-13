@@ -9,8 +9,6 @@ class Dashboard::CsvReportsController < Dashboard::BaseController
   def index
     authorize CsvReport
 
-    @navigation["child"] = {"name" => "Upload CSV", "path" => new_dashboard_csv_path}
-
     @csvs = CsvReport.joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
     @csvs = @csvs.order("csv_file_name ASC").includes(:visits)
 

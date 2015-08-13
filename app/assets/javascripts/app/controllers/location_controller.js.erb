@@ -1,4 +1,4 @@
-var locationListCtrl = function ($scope, $http, $attrs) {
+var ctrl = function ($scope, $http, $attrs) {
   // By default, we load only CSV data. If Harold wants to graph non-CSV
   // data, say from DengueChat, then we can let him do it.
   $scope.dataOptions = {"csvOnly": "1"};
@@ -41,4 +41,4 @@ var locationListCtrl = function ($scope, $http, $attrs) {
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
 var app = angular.module('dengueChatApp');
-app.controller("locationListCtrl", ["$scope", "$http", "$attrs", locationListCtrl]);
+app.controller("locationListCtrl", ["$scope", "$http", "$attrs", ctrl]);

@@ -10,7 +10,7 @@
               = I18n.t("attributes.neighborhood_id")
           .form-group
             = select_tag "neighborhood_id", options_for_select(@neighborhoods_select, :selected => @neighborhood.id),  :class => "form-control"
-          = submit_tag "Submit", :class => "btn btn-success"
+          = submit_tag I18n.t("views.buttons.submit"), :class => "btn btn-success"
 
       .col-md-6
         .pull-right
@@ -20,7 +20,7 @@
   .input-group.input-group-lg
     %span.input-group-addon
       .fa.fa-search
-    %input#search-filter.form-control{:placeholder => "Search by CSV, location, username or visit date", :type => "text"}/
+    %input#search-filter.form-control{:type => "text"}/
 
 
   .row
@@ -30,7 +30,7 @@
           %th.text-center
             CSV
           %th.text-center
-            = I18n.t("activerecord.attributes.report.location_id")
+            = I18n.t("attributes.location_id")
           %th.text-center
             = I18n.t("activerecord.attributes.user.username")
           %th.text-center
