@@ -48,7 +48,7 @@ describe ReportsController do
 
 		it "validates on presence of has_before_photo" do
 			put :verify_report, :neighborhood_id => neighborhood.id, :id => report.id, :report => report_params
-			expect(response.body).to have_content("You need to specify if the report has a before photo or not!")
+			expect(response.body).to have_content(I18n.t("views.reports.missing_has_before_photo"))
 		end
 
 		it "validates on missing before photo" do

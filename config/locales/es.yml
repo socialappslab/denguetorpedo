@@ -552,7 +552,7 @@ es:
 
     reports:
       has_before_photo: ¿Hay foto?
-      missing_has_before_photo: Es necesario especificar si el informe tiene un antes la foto o no!
+      missing_has_before_photo: Tienes que especificar si el reporte tiene foto antes de actualizar
       index:
         incomplete:
           one:   "Usted tiene un reporte incompleto"

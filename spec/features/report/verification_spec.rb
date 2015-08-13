@@ -16,6 +16,8 @@ describe "Verifying a Report", :type => :feature, :js => true do
     :reporter_id => user.id) }
 
   before(:each) do
+    I18n.locale = "es"
+
     FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
     I18n.default_locale = User::Locales::SPANISH
 
@@ -29,8 +31,8 @@ describe "Verifying a Report", :type => :feature, :js => true do
   end
 
   it "notifies if photo? is not chosen", :js => true do
-    click_button "Actualizar"
-    expect(page).to have_content("You need to specify if the report has a before photo or not!")
+    click_button I18n.t("views.buttons.confirm")
+    expect(page).to have_content(I18n.t("views.reports.missing_has_before_photo"))
   end
 
   it "decrements Report count when deleting report", :js => true do
@@ -41,21 +43,21 @@ describe "Verifying a Report", :type => :feature, :js => true do
   it "allows to change inspection date" do
     choose("has_before_photo_0")
     select "5", :from => "report_created_at_3i"
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(report.reload.created_at.strftime("%d")).to eq("05")
   end
 
   it "allows to change breeding site" do
     choose("has_before_photo_0")
     select breeding_site.description_in_es, :from => "report_breeding_site_id"
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(report.reload.breeding_site_id).to eq(breeding_site.id)
   end
 
   it "allows to change description" do
     choose("has_before_photo_0")
     fill_in "report_report", :with => "haha"
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(report.reload.report).to eq("haha")
   end
 
@@ -64,7 +66,7 @@ describe "Verifying a Report", :type => :feature, :js => true do
 
     option = (not report.larvae)
     choose("report_larvae_#{option}")
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(report.reload.larvae).to eq(option)
   end
 
@@ -74,20 +76,20 @@ describe "Verifying a Report", :type => :feature, :js => true do
     option = !report.pupae
     choose("report_pupae_#{option}")
 
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(report.reload.pupae).to eq(option)
   end
 
   it "allows to verify with no photo" do
     choose("has_before_photo_0")
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(current_path).to eq(verify_csv_report_path(csv))
   end
 
   it "allows to verify with photo", :js => true do
     choose("has_before_photo_0")
     page.find(".compressed_photo", :visible => false).set(base64_image)
-    click_button "Actualizar"
+    click_button I18n.t("views.buttons.confirm")
     expect(current_path).to eq(verify_csv_report_path(csv))
   end
 

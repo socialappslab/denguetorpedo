@@ -54,14 +54,14 @@ describe "CsvReports", :type => :feature do
 
     it "displays parsing for non-parsed CSV" do
       (1..4).each do |index|
-        expect( page.all("tr")[index] ).to have_content("Parsing")
+        expect( page.all("tr")[index] ).to have_content( I18n.t("views.csv_reports.parsing") )
       end
     end
 
     it "display View for verified CSV" do
       CsvReport.last.update_column(:verified_at, Time.zone.now)
       visit csv_reports_path
-      expect(page.all("tr")[0]).to have_content("View")
+      expect(page.all("tr")[0]).to have_content( I18n.t("views.csv_reports.view") )
     end
 
     it "displays only your CSV" do

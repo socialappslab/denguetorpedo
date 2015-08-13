@@ -19,12 +19,12 @@ describe "CSV", :type => :feature do
   end
 
   it "displays descriptive message about verification" do
-    expect(page).to have_content("NOTE: To verify a CSV, verify all")
+    expect(page).to have_content("Para verificar este CSV")
   end
 
   it "displays Needs Verification in CsvReports#index view" do
     visit csv_reports_path
-    expect(page.all("tr")[0]).to have_content("Needs verification")
+    expect(page.all("tr")[0]).to have_content( I18n.t("views.csv_reports.verify") )
   end
 
   it "displays N reports associated with report" do
@@ -33,16 +33,16 @@ describe "CSV", :type => :feature do
 
   it "Clicking Delete CSV deletes the CSV" do
     expect {
-      click_button "Delete CSV"
+      click_button I18n.t("views.csv_reports.delete")
     }.to change(CsvReport, :count).by(-1)
   end
 
   it "should not display Verify CSV button" do
-    expect(page).not_to have_css("Verify CSV")
+    expect(page).not_to have_css( I18n.t("views.csv_reports.verify") )
   end
 
   it "clicking on Verify for each report takes to report's verification page" do
-    click_link "Verify"
+    click_link I18n.t("views.csv_reports.verify")
     first_report = csv.reports.first
     expect(current_path).to eq( verify_neighborhood_report_path(first_report.neighborhood, first_report) )
   end
@@ -51,7 +51,7 @@ describe "CSV", :type => :feature do
     first_report = csv.reports.first
     first_report.update_column(:verified_at, Time.zone.now)
     visit verify_csv_report_path(csv)
-    expect(page.all("tr")[0]).to have_content("Verified")
+    expect(page.all("tr")[0]).to have_content( "Verificado" )
   end
 
   #----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ describe "CSV", :type => :feature do
     end
 
     it "displays success message" do
-      expect(page).to have_content("You've verified all reports in the CSV. Finish by verifying CSV.")
+      expect(page).to have_content( I18n.t("views.csv_reports.finish_verification") )
     end
   end
 

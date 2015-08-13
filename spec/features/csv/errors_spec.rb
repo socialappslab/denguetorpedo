@@ -26,7 +26,7 @@ describe "CSV", :type => :feature do
 
     visit csv_report_path(CsvReport.last)
     expect {
-      click_button "Delete CSV"
+      click_button I18n.t("views.csv_reports.delete")
     }.to change(CsvReport, :count).by(-1)
   end
 
@@ -37,7 +37,7 @@ describe "CSV", :type => :feature do
 
     visit csv_report_path(csv)
     expect {
-      click_button "Delete CSV"
+      click_button I18n.t("views.csv_reports.delete")
     }.to change(CsvError, :count).by(-1)
   end
 
