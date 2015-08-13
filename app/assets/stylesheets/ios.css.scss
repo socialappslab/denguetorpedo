@@ -56,6 +56,12 @@ hr {
   }
 }
 
+div[class*="col-"] {
+  &.ruled-left {
+    border-left: 1px solid $iosgrey;
+  }
+}
+
 
 
 

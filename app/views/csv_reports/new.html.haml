@@ -8,56 +8,62 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  .col-md-10.col-md-offset-1
-    %h1{:style => "font-size: 30px; text-align: center;"}
-      Cree reportes a partir de archivos CSV
+.container
 
-.row{:style => "margin-top: 50px;"}
-  .col-md-6.col-md-offset-3.well
+  .row
+    .col-md-8.col-xs-8
+      %h1.light-font
+        = I18n.t("views.buttons.upload_csv")
 
-    %p{:style => "font-size: 16px;margin-bottom: 20px;"}
-      Nota: use el mismo CSV para múltiples visitas.
-      Cada renglón en el archivo CSV debe corresponder a un criadero en el lugar
-      especificado. Si el sitio es eliminado, use la misma fila para actualizar
-      el registro con la fecha de eliminación y un comentario.
-      %br
-      %br
-      ¿Necesita usted una forma como modelo a seguir?
-      %br
-      = link_to "Haga clic aquí para bajar una forma CSV", "/assets/forma_csv.xlsx", :style => "font-weight: bold; color: #3a9bdc;"
+    .col-md-4.col-xs-4
+      .pull-right
+
+  .row.page-header-description
+    .col-md-12
+      %p.description
+        Nota: use el mismo CSV para múltiples visitas.
+        Cada renglón en el archivo CSV debe corresponder a un criadero en el lugar
+        especificado. Si el sitio es eliminado, use la misma fila para actualizar
+        el registro con la fecha de eliminación y un comentario.
+        ¿Necesita usted una forma como modelo a seguir?
+        = link_to "Haga clic aquí para bajar una forma CSV", "/assets/forma_csv.xlsx", :style => "font-weight: bold; color: #3a9bdc;"
 
 
-    #upload_csv{:style => "display: block;"}
-      -# = form_tag upload_csv_neighborhood_reports_path(@neighborhood), :multipart => true do
-      -#   = file_field_tag :csv_file
-      -#   %button.btn.btn-success.btn-large.submit-button{:style => "width: 210px;", :type => "submit"}
-      -#     %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-      -#     = I18n.t("views.buttons.submit")
-      = form_for [@neighborhood, @csv_report], :url => api_v0_csv_reports_path, :html => {:method => "POST", :multipart => true} do |f|
-        #new_report
-          = hidden_field_tag "report_location_attributes_latitude"
-          = hidden_field_tag "report_location_attributes_longitude"
+  .well
+    = form_for [@neighborhood, @csv_report], :url => api_v0_csv_reports_path, :html => {:method => "POST", :multipart => true} do |f|
 
-        .form-group
-          = f.label :location, "1. Haga click y mueva el marcador donde encontró el foco"
-          #map_div{:style => "position: static;"}
-            = render :partial => "reports/google_map"
+      .row
+        .col-md-6.col-xs-12{"style" => "height: 475px;"}
+          #upload_csv{:style => "display: block;"}
 
-        .form-group
-          = f.label :csv, "2. Cargue un CSV"
+            #new_report
+              = hidden_field_tag "report_location_attributes_latitude"
+              = hidden_field_tag "report_location_attributes_longitude"
+
+          .form-group
+            %p.form-label
+              Haga click y mueva el marcador donde encontró el foco
+            #map_div{:style => "position: static;"}
+              = render :partial => "reports/google_map"
+
+        .col-md-6.col-xs-12.ruled-left{"style" => "height: 475px;"}
+
+          %p.form-label
+            Cargue un CSV
           = f.file_field :csv, :class => "form-control"
 
-        .form-group
-          = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )  
+          %hr.muted
+          %p.form-label
+            = I18n.t("attributes.neighborhood_id")
+          = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )
 
-        .form-group
-          = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
-            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-            = I18n.t("views.buttons.upload")
+          .form-group
+            = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
+              %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+              = I18n.t("views.buttons.upload")
 
-        .form-group.form-errors
-          %p
+          .form-group.form-errors
+            %p
 
 
 
