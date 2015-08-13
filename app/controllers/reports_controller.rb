@@ -83,7 +83,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Set the before photo
     if params[:has_before_photo].nil?
-      flash[:alert] = "You need to specify if the report has a before photo or not!"
+      flash[:alert] = I18n.t("views.reports.missing_has_before_photo")
       render "new" and return
     end
 
@@ -275,7 +275,7 @@ class ReportsController < NeighborhoodsBaseController
     params[:report].except!(:before_photo)
 
     if params[:has_before_photo].blank?
-      flash[:alert] = "You need to specify if the report has a before photo or not!"
+      flash[:alert] = I18n.t("views.reports.missing_has_before_photo")
       render "verify" and return
     end
 

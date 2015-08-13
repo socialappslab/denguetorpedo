@@ -2,7 +2,7 @@
   .container
     .row
       .col-md-2.col-xs-2
-        = link_to "Data Dashboard", dashboard_csv_index_path, :class => "btn btn-default"
+        = link_to I18n.t("views.denguechat_analytics"), dashboard_csv_index_path, :class => "btn btn-default"
       .col-md-8.col-xs-8
         %p
           = link_to I18n.t("views.footer.creator"), credit_path

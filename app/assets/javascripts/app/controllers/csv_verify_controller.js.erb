@@ -7,7 +7,7 @@ var ctrl = function ($scope, $http, $attrs) {
 
     var ajax = $http.put("/api/v0/csv_reports/" + csv.id, { "location": csv.location } );
     ajax.success(function(data) {
-      window.alert("Success!");
+      window.alert("Éxito!");
       window.location.href = data.redirect_path;
     });
     ajax.error(function(response) {
@@ -46,7 +46,7 @@ var ctrl = function ($scope, $http, $attrs) {
   $scope.verifyCsv = function() {
     var ajax = $http.put("/api/v0/csv_reports/" + $scope.csv.id + "/verify", {"reports": $scope.csv.reports});
     ajax.success(function(data) {
-      window.alert("Success!");
+      window.alert("Éxito!");
       window.location.href = data.redirect_path;
 
     });

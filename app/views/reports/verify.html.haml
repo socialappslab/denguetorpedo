@@ -13,16 +13,16 @@
         = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => false}
 
         /------------------------------------------------------------------------------
-
+        %hr.muted.wide
         = render :partial => "reports/before_photo_form", :locals => {:f => f}
 
         .row
           .col-md-6
-            = link_to "Deletar", api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
+            = link_to I18n.t("views.buttons.delete"), api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
           .col-md-6
             = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
               %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-              = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")
+              = I18n.t("views.buttons.confirm")
 
 
 - content_for :scripts do
@@ -30,17 +30,17 @@
 
   :javascript
     $("#delete-report-link").on("click", function(event) {
-      var response = window.confirm("Are you sure?");
+      event.preventDefault();
+
+      var response = window.confirm("¿Estas seguro?");
       if (response == false)
         return;
-      event.preventDefault();
-      window.test = event;
 
       $.ajax({
         url: event.currentTarget.href,
         type: "DELETE",
         success : function(data){
-          window.alert("Success!");
+          window.alert("Éxito!");
           console.log(data)
           window.location.href = data.redirect_path;
         },

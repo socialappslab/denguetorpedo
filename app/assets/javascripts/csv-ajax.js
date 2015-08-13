@@ -37,7 +37,7 @@ $(document).ready(function() {
           if (typeof window.denguechat.responseCallback == "function")
             window.denguechat.responseCallback(response);
           else
-            window.alert("Success!");
+            window.alert("Éxito!");
         }
       },
 

@@ -42,7 +42,7 @@ class CsvReportsController < ApplicationController
   def destroy
     @csv = @current_user.csv_reports.find(params[:id])
     if @csv.destroy
-      flash[:notice] = "CSV was successfully deleted"
+      flash[:notice] = I18n.t("views.csv_reports.flashes.deleted")
       redirect_to csv_reports_path and return
     else
       render "show" and return

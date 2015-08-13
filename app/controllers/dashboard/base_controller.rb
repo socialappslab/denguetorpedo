@@ -34,7 +34,7 @@ class Dashboard::BaseController < ApplicationController
   def set_navigational_components
     @navigation            ||= {}
     @navigation["parent"]  ||= {}
-    @navigation["child"]   ||= {}
+    @navigation["child"]   ||= {"path" => root_path, "name" => I18n.t("views.denguechat_engage")}
     @navigation["current"] ||= {}
   end
 

@@ -330,9 +330,18 @@ es:
   #------
 
   views:
-    app: Dengue Chat
+    about:
+      title: Dengue Chat
+      description: Um aplicativo interativo de celular e web para o controle da dengue
+      university: "Universidad de California, Berkeley"
+    app: DengueChat
+    denguechat_analytics:
+      DengueChat Datos
+    denguechat_engage:
+      DengueChat Comunidad
     admin:
       block: 'Bloquear'
+      delete: Eliminar
       unblock: 'Desbloquear'
       register: "Registrar patrocinador, verificador e visitante"
       register_prize: Registrar premios
@@ -351,7 +360,9 @@ es:
       team_successfully_unblocked: Equipo desbloqueado exitosamente
       edit_team_members: Administrar miembros de equipos
       all_communities: Todas las comunidades
+
     application:
+      success: Éxito!
       head:
         description: "Dengue Chat es una aplicación social gratiuta para teléfonos celulares sencillos con cámara, ligado a un sitio de red, que promueve iniciativas comunitarias para el control del dengue."
       error: "Algo salió mal. Por favor, intente nuevamente."
@@ -368,15 +379,17 @@ es:
       add_photo: "Añadir foto"
       confirm: "Confirmar"
       create:  "Crear"
-      delete:  Eliminar
+      delete:  Borrar
       edit:    "Editar"
       logout: Salir
       publish: "Chat"
+      save: Guardar
       search:  "Buscar"
       submit:  "Enviar"
       update:  "Actualizar"
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
+      confirm: Confirmar
     dashboard:
       csv_only: Solo datos CSV
       locations:
@@ -390,55 +403,137 @@ es:
         locations: Lugares
         heatmap: Mapa de actividad
         graphs: Gráficos
-
-    flashes:
-      login:
-        error: Nombre de usuario o contraseña incorrecta
+    badges:
+      eye_of_the_mosquito: "Vigilante de mosquitos"
+      exterminator: "Exterminador de mosquitos"
+      fighter: "Guerrero Dengue Chat"
+      health_worker: "Comunidad saludable"
+      caretaker: "Yo cuido mi comunidad"
+    breeding_sites:
+      create: "Criar un tipo de criadero"
+      edit: "Editar un tipo de criadero"
     coordinators:
       users:
         success_create_flash:  "Usuario creado con éxito"
         edit: "Registrar patrocinador, verificador, o visitantes"
-    teams:
-      empty: "No hay equipos aquí"
-      success_join_flash: "Usted se unió al equipo exitosamente"
-      success_create_flash: "Usted creó un equipo exitosamente"
-      success_leave_flash: "Usted dejó al equipo exitosamente"
-      join: "Únase a este equipo"
-      leave: Salir
-      create: "Cree un equipo"
-      my_team: "Mi equipo"
-      call_to_action_flash: "Ahora cree un equipo o únase a un equipo."
+    create:
+      success_flash: "Premio añadido exitosamente"
+    conversations:
+      index:
+        new_message: Nuevo mensaje
+        messages_between: Mensajes entre
+        visit_messages: Ir a mensajes
+        to: Destinatarios (introducir nombre de usuario)
+      flashes:
+        success: Mensaje creado con éxito!
+        errors:
+          empty_recipients: "Es necesario incluir los destinatarios de este mensaje."
+          unknown_recipients: "El mensaje no fue creada porque los siguientes usuarios no se pudo encontrar: %{recipients}"
+          empty_body: "Contenido es obligatorio."
+    cities:
+      show:
+        header: Visita otros barrios
+        visit: Visitar
+
+    csv_reports:
+      parsing: Procesando
+      verify: Verificar
+      view: Ver
+      failed_with_errors: Error con errores
+      flashes:
+        create: "Los nuevos criaderos han sido documentados"
+        deleted: CSV se ha borrado correctamente
+        missing_location: "¡Usted tiene que marcar el lugar en el mapa!"
+        unknown_format: "Usted tiene que subir un archivo con extensión .csv, .xls, o .xlsx"
+        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, X u N para identificar criaderos como en la forma CSV modelo"
+        missing_visits: Usted tiene que tener al menos un creadero por lugar
+        missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
+        inspection_date_in_future: "Una fecha de inspección está en el futuro"
+        elimination_date_in_future: "Una fecha de eliminación está en el futuro"
+        elimination_date_before_inspection_date: "Una fecha de eliminación está antes de una fecha de inspección"
+      delete: Borrar CSV
+      verify_instructions: Para verificar este CSV debes verificar todos los %{count} reportes
+      finish_verification: Has terminado de verificar todos los reportes en el CSV. Para finalizar, presiona el botón "Verificar CSV"
+      parsing_errors: Procesando con errores
+      verified_time_ago: Verificado hace %{time}
+
+    documentation_sections:
+      new:
+        title: Añadir sección
+      edit:
+        no_edit: "Nota: esta sección no es editable"
+      create:
+        success: "Novo sección criado com sucesso!"
+      update:
+        success: "La sección actualizado com sucesso!"
+      delete:
+        success: "La sección eliminado exitosamente!"
+
+    education:
+      title: Manual Dengue Chat
+      summary: Sumario
+    elimination_methods:
+      create: "Criar un método de eliminación"
+      edit: "Editar un método de eliminación"
+
+    flashes:
+      login:
+        error: Nombre de usuario o contraseña incorrecta
+
+    footer:
+      code_of_conduct: "Manual de conducta"
+      faq: "Preguntas frecuentes"
+      contact: "Contacto DT"
+      about: "Sobre Dengue Chat"
+      creator: "Creado por el Social Apps Lab at CITRIS, UC Berkeley"
+
+    feed:
+      report:
+        reported:   "Encontré un criadero"
+        eliminated: "Eliminé un criadero"
+
+    faq:
+      title: Preguntas Frecuentes
+    feedback:
+      new:
+        header: Enviar un mensaje al Dengue Chat
+        max_message_length: "Max 3500 caracteres"
+
+    home:
+      login:
+        username: Nombre de usuario o email
+      cities:
+        title: "Ciudades usando Dengue Chat"
+      header: "Ciudadanos en el Combate contra el Dengue y la Chikungunya"
+      cellphone_description: "Use su celular para reporter criaderos de mosquito"
+      chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
+      teams_description: Únase a equipos para combatir el dengue y la chikungunya y gane puntos
+      video_description: "Vea un video"
+      activity_description: "Haga clic en una ciudad para ver las actividades del Dengue Chat"
+
+    index:
+      how_to_win_prizes: "¿Cómo ganar puntos? Haga clic aquí."
+      header_non_logged_in: Puntos y Medallas
+      badge_explanation: Todos ganan medallas en Dengue Chat por puntos acumulados.
+      community_explanation: Cada comunidad de Dengue Chat determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
+
+    new:
+      header: "Nuevo premio"
+      create_button: "Registrar un premio"
+
+    notices:
+      new:
+        activity_title: "Título de la actividad (máx 60 caracteres)"
+        institution_name: "Institución (máx 60 caracteres)"
+        summary: "Descripción resumida (máx 150 caracteres)"
+        description: "Descripción de la actividad (máx 900 caracteres)"
+        location: "Dirección de la actividad (máx 60 caracteres)"
+        date: "Data de la actividad"
+        time: "Hora de la actividad"
+
     posts:
       success_create_flash: "Usted creo un post con éxito"
-    users:
-      create_success_flash: "¡Perfil creado con éxito!"
-      phones:
-        header: "Administrar mensajes de texto"
-      edit:
-        success_flash: '¡Perfil actualizado con éxito!'
-        password: "Cambie su contraseña"
-        phone:
-          payment: "Tipo de pago"
-          prepaid: Tarjeta o pre-pago
-          postpaid: Plan fijo
-        referral_question: "¿Alguien lo invitó?"
-        show_name_as: "Mostrar nombre como"
-        sponsor:
-          edit_prizes: "Códigos de control de los premios"
-        username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de Dengue Chat y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
-    prizes:
-      index:
-        how_to_win_prizes: "¿Cómo ganar puntos? Haga clic aquí."
-        header_non_logged_in: Puntos y Medallas
-        badge_explanation: Todos ganan medallas en Dengue Chat por puntos acumulados.
-        community_explanation: Cada comunidad de Dengue Chat determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
-      create:
-        success_flash: "Premio añadido exitosamente"
-      new:
-        header: "Nuevo premio"
-        create_button: "Registrar un premio"
-      admin:
-        delete: Eliminar
+
     password_resets:
       new:
         title: Restablecer su contraseña
@@ -454,57 +549,10 @@ es:
     post:
       feed: Blog comunitario
       text_placeholder: "¡Comparta sus ideas!"
-    home:
-      login:
-        username: Nombre de usuario o email
-      cities:
-        title: "Ciudades usando Dengue Chat"
-      header: "Ciudadanos en el Combate contra el Dengue y la Chikungunya"
-      cellphone_description: "Use su celular para reporter criaderos de mosquito"
-      chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
-      teams_description: Únase a equipos para combatir el dengue y la chikungunya y gane puntos
-      video_description: "Vea un video"
-      activity_description: "Haga clic en una ciudad para ver las actividades del Dengue Chat"
-    footer:
-      code_of_conduct: "Manual de conducta"
-      faq: "Preguntas frecuentes"
-      contact: "Contacto DT"
-      about: "Sobre Dengue Chat"
-      creator: "Creado por el Social Apps Lab at CITRIS, UC Berkeley"
-    documentation_sections:
-      new:
-        title: Añadir sección
-      edit:
-        no_edit: "Nota: esta sección no es editable"
-      create:
-        success: "Novo sección criado com sucesso!"
-      update:
-        success: "La sección actualizado com sucesso!"
-      delete:
-        success: "La sección eliminado exitosamente!"
-    badges:
-      eye_of_the_mosquito: "Vigilante de mosquitos"
-      exterminator: "Exterminador de mosquitos"
-      fighter: "Guerrero Dengue Chat"
-      health_worker: "Comunidad saludable"
-      caretaker: "Yo cuido mi comunidad"
-    education:
-      title: Manual Dengue Chat
-      summary: Sumario
-    feedback:
-      new:
-        header: Enviar un mensaje al Dengue Chat
-        max_message_length: "Max 3500 caracteres"
-    notices:
-      new:
-        activity_title: "Título de la actividad (máx 60 caracteres)"
-        institution_name: "Institución (máx 60 caracteres)"
-        summary: "Descripción resumida (máx 150 caracteres)"
-        description: "Descripción de la actividad (máx 900 caracteres)"
-        location: "Dirección de la actividad (máx 60 caracteres)"
-        date: "Data de la actividad"
-        time: "Hora de la actividad"
+
     reports:
+      has_before_photo: ¿Hay foto?
+      missing_has_before_photo: Es necesario especificar si el informe tiene un antes la foto o no!
       index:
         incomplete:
           one:   "Usted tiene un reporte incompleto"
@@ -525,55 +573,20 @@ es:
         title: Complete el marcado del criadero
         prepare: Complete el marcado del criadero
         eliminate: Documente el eliminación de criadero
+      protected_instructions: Si marcó sí, el informe no aparecerá en Criaderos
 
-    about:
-      title: Dengue Chat
-      description: Um aplicativo interativo de celular e web para o controle da dengue
-      university: "Universidad de California, Berkeley"
-    user_mailer:
-      password_reset:
-        subject: "Cambio de contraseña"
-        click_link: "Para cambiar su contraseña, haga clic en la dirección de abajo"
-        ignore_email: "Si usted no ha solicitado un cambio de contraseña, ignore este mensaje y su contraseña no cambiará."
-    feed:
-      report:
-        reported:   "Encontré un criadero"
-        eliminated: "Eliminé un criadero"
-    conversations:
-      index:
-        new_message: Nuevo mensaje
-        messages_between: Mensajes entre
-        visit_messages: Ir a mensajes
-        to: Destinatarios (introducir nombre de usuario)
-      flashes:
-        success: Mensaje creado con éxito!
-        errors:
-          empty_recipients: "Es necesario incluir los destinatarios de este mensaje."
-          unknown_recipients: "El mensaje no fue creada porque los siguientes usuarios no se pudo encontrar: %{recipients}"
-          empty_body: "Contenido es obligatorio."
-    cities:
-      show:
-        header: Visita otros barrios
-        visit: Visitar
-    breeding_sites:
-      create: "Criar un tipo de criadero"
-      edit: "Editar un tipo de criadero"
-    elimination_methods:
-      create: "Criar un método de eliminación"
-      edit: "Editar un método de eliminación"
-    csv_reports:
-      flashes:
-        create: "Los nuevos criaderos han sido documentados"
-        missing_location: "¡Usted tiene que marcar el lugar en el mapa!"
-        unknown_format: "Usted tiene que subir un archivo con extensión .csv, .xls, o .xlsx"
-        unknown_code: "Uno de los criaderos no puede ser identificado. Por favor use A, B, L, M, P, T, X u N para identificar criaderos como en la forma CSV modelo"
-        missing_visits: Usted tiene que tener al menos un creadero por lugar
-        missing_house: La forma en el CSV tiene que tener un lugar. Por favor use la forma modelo.
-        inspection_date_in_future: "Una fecha de inspección está en el futuro"
-        elimination_date_in_future: "Una fecha de eliminación está en el futuro"
-        elimination_date_before_inspection_date: "Una fecha de eliminación está antes de una fecha de inspección"
-    faq:
-      title: Preguntas Frecuentes
+
+    teams:
+      empty: "No hay equipos aquí"
+      success_join_flash: "Usted se unió al equipo exitosamente"
+      success_create_flash: "Usted creó un equipo exitosamente"
+      success_leave_flash: "Usted dejó al equipo exitosamente"
+      join: "Únase a este equipo"
+      leave: Salir
+      create: "Cree un equipo"
+      my_team: "Mi equipo"
+      call_to_action_flash: "Ahora cree un equipo o únase a un equipo."
+
     statistics:
       table:
         title: Riesgo de Dengue y Chikungunya
@@ -602,6 +615,29 @@ es:
           percentages:
             cumulative: Porcentaje acumulado relativo a todos los lugares visitados
             daily: Porcentaje relativo a los lugares visitados en un dia
+
+    user_mailer:
+      password_reset:
+        subject: "Cambio de contraseña"
+        click_link: "Para cambiar su contraseña, haga clic en la dirección de abajo"
+        ignore_email: "Si usted no ha solicitado un cambio de contraseña, ignore este mensaje y su contraseña no cambiará."
+
+    users:
+      create_success_flash: "¡Perfil creado con éxito!"
+      phones:
+        header: "Administrar mensajes de texto"
+      edit:
+        success_flash: '¡Perfil actualizado con éxito!'
+        password: "Cambie su contraseña"
+        phone:
+          payment: "Tipo de pago"
+          prepaid: Tarjeta o pre-pago
+          postpaid: Plan fijo
+        referral_question: "¿Alguien lo invitó?"
+        show_name_as: "Mostrar nombre como"
+        sponsor:
+          edit_prizes: "Códigos de control de los premios"
+        username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de Dengue Chat y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
 
 
 

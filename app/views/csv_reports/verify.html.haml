@@ -6,39 +6,37 @@
       .row
         .col-md-8
           %h1.light-font
-            Verify
+            = I18n.t("views.csv_reports.verify")
             = @csv.csv_file_name
         .col-md-4
           .pull-right
             = form_for @csv, :html => {:method => :delete} do |f|
-              = f.submit "Delete CSV", :class => "btn btn-danger btn-lg"
+              = f.submit I18n.t("views.csv_reports.delete"), :class => "btn btn-danger btn-lg"
 
       .well
         - if @csv.reports.where(:verified_at => nil).count == 0
           %h2
-            You've verified all reports in the CSV. Finish by verifying CSV.
+            = I18n.t("views.csv_reports.finish_verification")
           .text-center
-            = link_to "Verify CSV", "", "ng-click" => "verifyCsv()", "class" => "btn btn-success btn-lg"
+            = link_to I18n.t("views.csv_reports.verify"), "", "ng-click" => "verifyCsv()", "class" => "btn btn-success btn-lg"
 
         - else
           %h2
-            NOTE: To verify a CSV, verify all
-            = @csv.reports.count
-            reports
+            = I18n.t("views.csv_reports.verify_instructions", :count => @csv.reports.count)
 
       .well
 
         .row
           .col-md-4
             %p.form-label
-              = I18n.t("activerecord.attributes.report.location_id")
+              = I18n.t("attributes.location_id")
             = text_field_tag :location_id, @csv.location.address, "ng-model" => "csv.location.address", :class => "form-control"
           .col-md-4
             %p.form-label
               = I18n.t("attributes.neighborhood_id")
             = select_tag :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @csv.location.neighborhood_id), :class => "form-control", "ng-model" => "csv.location.neighborhood_id"
           .col-md-2
-            = link_to "Save", "", "ng-click" => "saveCsv(csv)", "class" => "btn btn-success", :style => "margin-top: 35px;"
+            = link_to I18n.t("views.buttons.save"), "", "ng-click" => "saveCsv(csv)", "class" => "btn btn-success", :style => "margin-top: 35px;"
 
         %hr.muted.wide
 
@@ -57,7 +55,7 @@
                 %th.text-center
                   = I18n.t("activerecord.attributes.report.breeding_site_id")
                 %th.text-center
-                  Verify
+                  = I18n.t("views.csv_reports.verify")
               %tbody
                 - @csv.reports.each do |report|
                   %tr
@@ -69,8 +67,6 @@
                       = report.breeding_site.present? ? report.breeding_site.description_in_es : "N/A"
                     %td{"style" => "width: 20%;"}
                       - if report.verified_at.present?
-                        Verified
-                        = time_ago_in_words(report.verified_at)
-                        ago
+                        = I18n.t("views.csv_reports.verified_time_ago", :time => time_ago_in_words(report.verified_at))
                       - else
-                        = link_to "Verify", verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning", :style => "margin-top: 0px;"
+                        = link_to I18n.t("views.csv_reports.verify"), verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning", :style => "margin-top: 0px;"

@@ -31,16 +31,16 @@
             %tbody
               - @csvs.each do |csv|
                 %tr{:data => {"csv_id" => csv.id}}
-                  %td
+                  %td{"style" => "width: 33%;"}
                     = link_to csv.csv_file_name, csv.csv.url
-                  %td
+                  %td{"style" => "width: 33%;"}
                     = csv.created_at.strftime("%Y-%m-%d %H:%M")
-                  %td
+                  %td{"style" => "width: 33%;"}
                     - if csv.csv_errors.present?
-                      = link_to "Failed with errors", csv_report_path(csv), :class => "btn btn-danger"
+                      = link_to I18n.t("views.csv_reports.failed_with_errors"), csv_report_path(csv), :class => "btn btn-danger"
                     - elsif csv.parsed_at.blank?
-                      Parsing...
+                      = I18n.t("views.csv_reports.parsing") + "..."
                     - elsif csv.verified_at.blank?
-                      = link_to "Needs verification", verify_csv_report_path(csv), :class => "btn btn-warning"
+                      = link_to I18n.t("views.csv_reports.verify"), verify_csv_report_path(csv), :class => "btn btn-warning"
                     - else
-                      = link_to "View", csv_report_path(csv), :class => "btn btn-info"
+                      = link_to I18n.t("views.csv_reports.view"), csv_report_path(csv), :class => "btn btn-info"

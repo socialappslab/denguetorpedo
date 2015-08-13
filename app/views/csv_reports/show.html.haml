@@ -9,7 +9,7 @@
         .col-md-4
           .pull-right
             = form_for @csv, :html => {:method => :delete} do |f|
-              = f.submit "Delete CSV", :class => "btn btn-danger btn-lg"
+              = f.submit I18n.t("views.csv_reports.delete"), :class => "btn btn-danger btn-lg"
 
   .row
     .col-md-12
@@ -17,7 +17,7 @@
 
         - if @csv.csv_errors.present?
           %h2
-            Errors for
+            = I18n.t("views.csv_reports.parsing_errors") + ":"
             = @csv.csv_file_name
           %ul
           - @csv.csv_errors.each do |error|
@@ -29,7 +29,7 @@
               %th.text-center
                 CSV
               %th.text-center
-                = I18n.t("activerecord.attributes.report.location_id")
+                = I18n.t("attributes.location_id")
               %th.text-center
                 = I18n.t("activerecord.attributes.visit.visited_at")
               %th.text-center
