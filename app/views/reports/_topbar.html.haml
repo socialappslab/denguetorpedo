@@ -9,28 +9,23 @@
           %i.fa.fa-clock-o
           = I18n.t("common_terms.reported")
           = timestamp_in_metadata(report.created_at)
-      %span.label.label-success
-        = link_to prizes_path do
-          = inspection_award_text(report)
 
 
     .col-md-4.pull-right.metadata
-      // TODO: Optimize this inefficient query.
-      %ul.list-unstyled
-        - report.inspections.joins(:visit).order("visits.visited_at ASC").each do |ins|
-          %li
-            - if ins.identification_type == Inspection::Types::POSITIVE
-              %span.label.label-danger
-                = I18n.t("common_terms.positive")
-                = ins.visit.visited_at.strftime("%Y-%m-%d")
-            - elsif ins.identification_type == Inspection::Types::POTENTIAL
-              %span.label.label-warning
-                = I18n.t("common_terms.potential")
-                = ins.visit.visited_at.strftime("%Y-%m-%d")
-            - else
-              %span.label.label-success
-                = I18n.t("common_terms.eliminated")
-                = ins.visit.visited_at.strftime("%Y-%m-%d")
+      - report.inspections.joins(:visit).order("visits.visited_at ASC").each do |ins|
+        .pull-right.show{"style" => "margin-top: 10px;"}
+          - if ins.identification_type == Inspection::Types::POSITIVE
+            %span.label.label-danger
+              = I18n.t("common_terms.positive")
+              = ins.visit.visited_at.strftime("%Y-%m-%d")
+          - elsif ins.identification_type == Inspection::Types::POTENTIAL
+            %span.label.label-warning
+              = I18n.t("common_terms.potential")
+              = ins.visit.visited_at.strftime("%Y-%m-%d")
+          - else
+            %span.label.label-success
+              = I18n.t("common_terms.eliminated")
+              = ins.visit.visited_at.strftime("%Y-%m-%d")
 
 
   - if report.eliminated? && report.eliminator
@@ -44,8 +39,6 @@
             %i.fa.fa-clock-o
             = I18n.t("common_terms.eliminated")
             = timestamp_in_metadata(report.eliminated_at)
-        %span.label.label-success
-          = elimination_award_text(report)
 
   - if report.verifier
     .row

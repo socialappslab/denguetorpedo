@@ -34,32 +34,45 @@
 
 
 
-
-
   /------------------------------------------------------------------------------
 
   .denguechat-tab-toggle
     .row
-      .col-md-2.col-md-offset-2
-
       .col-md-6
-        .pull-right
-          .report-filter.btn-group
-            %label.btn.btn-default.active
-              = link_to I18n.t("common_terms.all"), neighborhood_reports_path(@neighborhood)
-            %label.btn.btn-default
-              = link_to I18n.t("common_terms.open_reports"), "?reports=open"
-            %label.btn.btn-default
-              = link_to I18n.t("common_terms.eliminated_reports"), "?reports=eliminated"
+        .report-filter.btn-group
+          %label.btn.btn-default.active
+            = link_to I18n.t("common_terms.all"), neighborhood_reports_path(@neighborhood)
+          %label.btn.btn-default
+            = link_to I18n.t("common_terms.open_reports"), "?reports=open"
+          %label.btn.btn-default
+            = link_to I18n.t("common_terms.eliminated_reports"), "?reports=eliminated"
 
 
-  /------------------------------------------------------------------------------
+  - @reports.each_slice(2).with_index do |reports, index|
+    .row
+      .col-md-6
+        - if reports[0].present?
+          - report = reports[0]
+          .report{ :class => (report.eliminated? ? "eliminated" : "open") }
+            = render :partial => "reports/topbar",   :locals => {:report => report}
+            = render :partial => "reports/content", :locals => {:report => report}
+            = render :partial => "reports/actionbar",   :locals => {:report => report}
+      .col-md-6
+        - if reports[1].present?
+          - report = reports[1]
+          .report{ :class => (report.eliminated? ? "eliminated" : "open") }
+            = render :partial => "reports/topbar",   :locals => {:report => report}
+            = render :partial => "reports/content", :locals => {:report => report}
+            = render :partial => "reports/actionbar",   :locals => {:report => report}
 
-  .tab-content
-    #report.tab-pane.active{:role => "tabpanel"}
-      = render :partial => "reports/sites"
-    -# #map.tab-pane{:role => "tabpanel"}
-    -#   = render :partial => "reports/google_map"
+
+  %hr
+
+  .row
+    .col-md-12.text-center
+      - if @report_count > @report_limit
+        = render :partial => "reports/pagination"
+
 
 
   /------------------------------------------------------------------------------
@@ -68,9 +81,18 @@
   -# = javascript_include_tag "map"
   -# = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
-  = javascript_include_tag "moment"
-  = javascript_include_tag "bootstrap/datetimepicker"
-  = javascript_include_tag "datepicker"
+
+  :scss
+    .report-topbar {
+      .name {
+        width: auto;
+
+        .feed-item-timestamp {
+          width: 200px;
+          display: block;
+        }
+      }
+    }
 
   :javascript
     $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {

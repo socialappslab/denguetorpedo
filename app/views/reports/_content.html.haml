@@ -1,33 +1,31 @@
 .report-content
   = form_for([@neighborhood, report], :url => eliminate_neighborhood_report_path(@neighborhood, report), :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}) do |f|
-
     .row
-      .col-md-12
-        .form-group.form-group-lg
-          = f.label :report, :class => "col-sm-4 control-label"
-          .col-sm-8
-            %p
-              = report.report
-
-        %hr
-
+      .col-md-6
         - if report.breeding_site_id.present?
-          .form-group.form-group-lg
-            = f.label :breeding_site_id, :class => "col-sm-4 control-label"
-            .col-sm-8
-              %p
-                = report.breeding_site.description
+          %p.form-label
+            = I18n.t("activerecord.attributes.report.breeding_site_id")
+          %p
+            = report.breeding_site.description
 
-        %hr
 
-        - if report.eliminated?
-          .form-group.form-group-lg
-            = f.label :elimination_method_id, :class => "col-sm-4 control-label"
-            .col-sm-8
-              %p
-                = report.elimination_method.detailed_description
+      .col-md-6
+        %p.form-label
+          = I18n.t("activerecord.attributes.report.report")
+        %p
+          = report.report
 
-          %hr
+
+    %hr.muted
+
+    - if report.eliminated?
+      .row
+        .col-md-12
+          %p.form-label
+            = I18n.t("activerecord.attributes.report.elimination_method_id")
+          %p
+            = report.elimination_method.detailed_description
+      %hr.muted
 
     .row
       .col-md-12

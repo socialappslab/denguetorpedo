@@ -82,7 +82,7 @@ class Report < ActiveRecord::Base
   validates :report,           :presence => true
   validates :reporter_id,      :presence => true
   validates :breeding_site_id, :presence => true
-  validates :before_photo,     :presence => true, :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates :before_photo,     :presence => {:on => :create}, :unless => Proc.new {|file| self.save_without_before_photo == true}
 
   validates :after_photo,           :presence => {:on => :update, :if => :verified?}, :unless => Proc.new {|file| self.save_without_after_photo == true}
   validates :elimination_method_id, :presence => {:on => :update, :if => :verified?}

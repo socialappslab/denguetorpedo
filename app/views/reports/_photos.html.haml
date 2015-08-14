@@ -9,12 +9,16 @@
             .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
       = f.label :before_photo, :class => "col-md-12 control-label"
 
-    - if report.eliminated? && report.elimination_method_picture.present?
-      .col-md-5
-        .sidebar-entity-photo
-          = image_tag(report.elimination_method_picture, :class => "img-rounded")
-        = f.label :after_photo, :class => "col-md-12 control-label"
+    - if report.eliminated?
+      - if report.elimination_method_picture.present?
+        .col-md-5
+          .sidebar-entity-photo
+            = image_tag(report.elimination_method_picture, :class => "img-rounded")
+          = f.label :after_photo, :class => "col-md-12 control-label"
+      - else
+        .img-rounded{:style => "border: 1px black dashed; height: 150px; width: 150px; display: inline-block;"}
+        = f.label :before_photo, :class => "col-md-12 control-label"
     - else
       .col-md-5
         - points = report.breeding_site.elimination_methods.pluck(:points).max
-        = link_to I18n.t("views.reports.index.eliminate_and_win_points", :points => points), edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success btn-lg eliminate-report-button"
+        = link_to I18n.t("views.reports.index.eliminate_and_win_points", :points => points), edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success eliminate-report-button"
