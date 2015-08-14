@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   before_filter :identify_for_segmentio
   before_filter :get_locale_specific_url
   before_filter :set_cookies
+  before_filter :setup_breadcrumbs
 
   # TODO: Work through this some other time. As of 2014-12-18, we should
   # focus on other efforts.
@@ -171,8 +172,12 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   private
-  
+
   def user_not_authorized
     render :file => "public/401.html", :layout => nil, :status => :unauthorized
+  end
+
+  def setup_breadcrumbs
+    @breadcrumbs = [{:name => I18n.t("dashboard.my_profile"), :path => root_path}]
   end
 end

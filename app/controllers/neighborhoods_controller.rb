@@ -2,6 +2,7 @@
 class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen,               :only => [:show]
   before_filter :calculate_ivars,                  :only => [:show]
+  before_filter :update_breadcrumb
 
 
   #----------------------------------------------------------------------------
@@ -32,6 +33,8 @@ class NeighborhoodsController < NeighborhoodsBaseController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
+
+    @breadcrumbs << {:name => @neighborhood.name, :path => neighborhood_path(@neighborhood)}
   end
 
   #----------------------------------------------------------------------------
@@ -47,7 +50,9 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
   private
 
-  #----------------------------------------------------------------------------
+  def update_breadcrumb
+    @breadcrumbs << {:name => I18n.t("activerecord.models.neighborhood", :count => 2), :path => city_path(@neighborhood.city)}
+  end
 
   def calculate_ivars
     @neighborhood = Neighborhood.find(params[:id])

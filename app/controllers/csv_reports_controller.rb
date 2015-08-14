@@ -6,6 +6,7 @@
 class CsvReportsController < ApplicationController
   before_filter :require_login
   before_filter :calculate_ivars, :only => [:index]
+  before_filter :update_breadcrumb
 
   #----------------------------------------------------------------------------
   # GET /csv_reports
@@ -20,6 +21,7 @@ class CsvReportsController < ApplicationController
   def new
     @neighborhood = @current_user.neighborhood
     @csv_report   = CsvReport.new
+    @breadcrumbs << {:name => I18n.t("views.buttons.upload_csv"), :path => new_csv_report_path}
   end
 
   #----------------------------------------------------------------------------
@@ -27,6 +29,7 @@ class CsvReportsController < ApplicationController
 
   def show
     @csv = @current_user.csv_reports.find(params[:id])
+    @breadcrumbs << {:name => @csv.csv_file_name, :path => csv_report_path(@csv)}
   end
 
   #----------------------------------------------------------------------------
@@ -34,6 +37,7 @@ class CsvReportsController < ApplicationController
 
   def verify
     @csv = @current_user.csv_reports.find(params[:id])
+    @breadcrumbs << {:name => I18n.t("views.csv_reports.verify"), :path => verify_csv_report_path(@csv)}
   end
 
   #----------------------------------------------------------------------------
@@ -53,10 +57,12 @@ class CsvReportsController < ApplicationController
 
   private
 
-  #----------------------------------------------------------------------------
-
   def calculate_ivars
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
+  end
+
+  def update_breadcrumb
+    @breadcrumbs << {:name => "CSV", :path => csv_reports_path}
   end
 
   #----------------------------------------------------------------------------

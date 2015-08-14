@@ -2,37 +2,35 @@
 = render :partial => "shared/form_errors", :locals => {:item => @team}
 
 .container
-  .row
-    .col-md-10.col-md-offset-1
-      %h1{:style => "font-size: 40px;"}
-        - if I18n.locale.to_s == User::Locales::PORTUGUESE
-          - preposition = ( @city.name == "Rio de Janeiro" ? "no" : "em")
-        - else
-          - preposition = "en"
-        = I18n.t("activerecord.models.neighborhood", :count => 2) + " #{preposition} " + @city.name
+  %h1.light-font
+    - if I18n.locale.to_s == User::Locales::PORTUGUESE
+      - preposition = ( @city.name == "Rio de Janeiro" ? "no" : "em")
+    - else
+      - preposition = "en"
+    = I18n.t("activerecord.models.neighborhood", :count => 2) + " #{preposition} " + @city.name
 
-      .well
-        - @rankings.each_with_index do |neighborhood_data, index|
-          - neighborhood        = neighborhood_data[0]
-          - neighborhood_points = neighborhood_data[1]
-          .row{:style => "height: 100px;"}
-            .col-md-1.col-xs-1
-              %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
-                = index + 1
-            .col-md-2.col-xs-2
-              = link_to neighborhood_path(neighborhood) do
-                - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
+  .well
+    - @rankings.each_with_index do |neighborhood_data, index|
+      - neighborhood        = neighborhood_data[0]
+      - neighborhood_points = neighborhood_data[1]
+      .row{:style => "height: 100px;"}
+        .col-md-1.col-xs-1
+          %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
+            = index + 1
+        .col-md-2.col-xs-2
+          = link_to neighborhood_path(neighborhood) do
+            - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
 
-            .col-md-7.col-xs-7
-              %h1
-                = link_to neighborhood.name, neighborhood_path(neighborhood)
-              %p{"style" => "color: #5cb85c; font-size: 24px;"}
-                = neighborhood_points
-                = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
+        .col-md-7.col-xs-7
+          %h1
+            = link_to neighborhood.name, neighborhood_path(neighborhood)
+          %p{"style" => "color: #5cb85c; font-size: 24px;"}
+            = neighborhood_points
+            = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
 
-            .col-md-2.col-xs-2
-              = link_to neighborhood_path(neighborhood), :class => "btn btn-success btn-lg btn-block", :style => "margin-top: 30px;" do
-                = I18n.t("views.cities.show.visit")
-                %i{:class => "fa fa-chevron-right"}
+        .col-md-2.col-xs-2
+          = link_to neighborhood_path(neighborhood), :class => "btn btn-success btn-lg btn-block", :style => "margin-top: 30px;" do
+            = I18n.t("views.cities.show.visit")
+            %i{:class => "fa fa-chevron-right"}
 
-          %hr.muted.wide
+      %hr.muted.wide

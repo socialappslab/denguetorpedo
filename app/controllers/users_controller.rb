@@ -7,6 +7,8 @@ class UsersController < ApplicationController
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
   before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
+  before_filter :update_breadcrumb
+
 
   #----------------------------------------------------------------------------
   # POST /users/cookies
@@ -41,6 +43,8 @@ class UsersController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
     end
+
+    @breadcrumbs << {:name => @user.username, :path => user_path(@user)}
   end
 
   #----------------------------------------------------------------------------
@@ -48,6 +52,8 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+
+    @breadcrumbs << {:name => I18n.t("common_terms.register"), :path => new_user_path}
   end
 
   #----------------------------------------------------------------------------
@@ -79,6 +85,8 @@ class UsersController < ApplicationController
 
     @verifiers = User.where(:role => User::Types::VERIFIER).map { |v| {:value => v.id, :label => v.full_name}}
     @residents = User.residents.map { |r| {:value => r.id, :label => r.full_name}}
+
+    @breadcrumbs << {:name => I18n.t("common_terms.configuration"), :path => edit_user_path(@user)}
   end
 
   #----------------------------------------------------------------------------
@@ -132,6 +140,10 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   private
+
+  def update_breadcrumb
+    @breadcrumbs << {:name => I18n.t("activerecord.models.user", :count => 2), :path => users_path}
+  end
 
   #----------------------------------------------------------------------------
 

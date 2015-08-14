@@ -23,8 +23,12 @@ class CitiesController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited city page", :properties => {:city => @city.name}) if Rails.env.production?
     end
+
+    @breadcrumbs << {:name => I18n.t("activerecord.models.neighborhood", :count => 2), :path => city_path(@city)}
   end
 
 
   #----------------------------------------------------------------------------
+
+  private
 end

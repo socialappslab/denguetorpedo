@@ -7,6 +7,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :find_by_id,                :only   => [:verify, :verify_report, :eliminate, :update, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
   before_filter :ensure_coordinator,        :only   => [:coordinator_edit, :coordinator_update]
+  before_filter :update_breadcrumb
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/:neighborhood_id/reports
@@ -53,6 +54,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def show
     @report = @neighborhood.reports.find_by_id( params[:id] )
+    @breadcrumbs << {:name => @report.id, :path => neighborhood_report_path(@neighborhood, @report)}
   end
 
   #----------------------------------------------------------------------------
@@ -61,6 +63,8 @@ class ReportsController < NeighborhoodsBaseController
   def new
     @report          = Report.new
     @report.location = Location.new
+
+    @breadcrumbs << {:name => I18n.t("common_terms.create_a_report"), :path => new_neighborhood_report_path(@neighborhood)}
   end
 
   #-----------------------------------------------------------------------------
@@ -121,6 +125,7 @@ class ReportsController < NeighborhoodsBaseController
 
   def edit
     @report = Report.find(params[:id])
+    @breadcrumbs << {:name => @report.id, :path => edit_neighborhood_report_path(@neighborhood, @report)}
   end
 
   #-----------------------------------------------------------------------------
@@ -263,6 +268,8 @@ class ReportsController < NeighborhoodsBaseController
 
   def verify
     @report.location ||= Location.new
+
+    @breadcrumbs << {:name => "Confirmar #{@report.id}", :path => verify_neighborhood_report_path(@neighborhood, @report)}
   end
 
   #----------------------------------------------------------------------------
@@ -353,5 +360,9 @@ class ReportsController < NeighborhoodsBaseController
 
     location.neighborhood = @neighborhood
     return location
+  end
+
+  def update_breadcrumb
+    @breadcrumbs << {:name => I18n.t("activerecord.models.report", :count => 2), :path => neighborhood_reports_path(@neighborhood)}
   end
 end

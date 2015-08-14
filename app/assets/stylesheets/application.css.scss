@@ -38,32 +38,45 @@
 #dashboard_bar {
   background-color: white;
   height: 85px;
-  border-width: 0px 0px 3px 0px;
+  border-width: 0px 0px 1px 0px;
   border-style: solid;
-  border-color: #FF6600;
+  border-color: $iosgrey;
   font-size: 19px;
-}
-
-#dashboard_bar a {
-  line-height: 50px;
-}
-
-#dashboard_bar .dashboard-item {
-  text-align: center;
-  margin-top: 15px;
 
   a {
-    text-decoration: none;
+    line-height: 50px;
   }
 
-  .label {
-    border-radius: 1em;
-    width: 25px;
-    font-size: 12px;
-    position: relative;
-    top: -20px;
-    right: 20px;
+  .dashboard-item {
+    text-align: center;
+    margin-top: 15px;
+
+    a {
+      text-decoration: none;
+    }
+
+    .label {
+      border-radius: 1em;
+      width: 25px;
+      font-size: 12px;
+      position: relative;
+      top: -20px;
+      right: 20px;
+    }
   }
+}
+
+
+.breadcrumb {
+  background-color: white !important;
+  border-width: 0px 0px 2px 0px;
+  border-style: solid;
+  border-color: #FF6600;
+
+  .active {
+    font-weight: bold;
+  }
+
 }
 
 

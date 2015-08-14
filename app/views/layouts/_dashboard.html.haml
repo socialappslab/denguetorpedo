@@ -84,3 +84,10 @@
     = link_to logout_path do
       %i.fa.fa-2.fa-sign-out
       = I18n.t("login_form.logout")
+
+
+- if @breadcrumbs.present?
+  %ol.breadcrumb
+    - @breadcrumbs.each do |bc|
+      %li{:class => "#{request.path == bc[:path] ? 'active' : ''}"}
+        = link_to bc[:name], bc[:path]
