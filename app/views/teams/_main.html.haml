@@ -32,7 +32,7 @@
 
 /------------------------------------------------------------------------------
 
-%div{"ng-controller" => "DCPostListCtrl", "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
+%div{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_team_posts_path(@team), "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
   - if @current_user && @users.include?(@current_user)
     .row
       .col-md-9
@@ -41,14 +41,17 @@
   .row
     .col-md-9
       #newsfeed
-        .error-message
-          %p
-            Algo salió mal. Por favor, intente nuevamente.
+        %h1.text-center{"ng-show" => "errorMessage"}
+          Algo salió mal. Por favor, intente nuevamente.
 
-        .loading-spinner
+        %h1.text-center{"ng-show" => "dataLoading"}
           %i.fa.fa-refresh.fa-spin
         .feed-item-complete
           %feed-item{"post" => "post", "ng-repeat" => "post in posts"}
+          .load-more{"ng-hide" => "noMoreData"}
+            .btn.btn-info.btn-lg{"ng-click" => "loadMoreMessages()"}
+              %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
+              Cargar más
 
 
 

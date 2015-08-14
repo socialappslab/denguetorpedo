@@ -1,91 +1,100 @@
-var postCtrl = function ($scope, $http, $attrs) {
-  var pathName = window.location.pathname;
-  var ajax   = $http.get("/api/v0" + pathName + ".json");
-
-  ajax.success(function(data) {
-    $scope.post = data;
-  });
-  ajax.error(function(response) {
-    $("#newsfeed .error-message").show();
-    $("#newsfeed .loading-spinner").hide();
-  });
-  ajax.then(function(response) {
-    $("#newsfeed .loading-spinner").hide();
-  });
-
-  $scope.usernames = angular.fromJson( $attrs.usernames );
-
-  $scope.createComment = function(post, comment)
-  {
-    // Disable the submit button for new-post directive.
-    $scope.submitButtonCommentDisabled = true;
-
-    var ajax = $http.post("/api/v0/posts/" + post.id + "/comments", {"comment": comment});
-    ajax.success(function(data) {
-      comment.content = ""
-      // $scope.submitButtonCommentDisabled = false;
-      post.comments.push(data)
-    })
-
-    ajax.error(function(data) {
-      // $scope.submitButtonCommentDisabled = false;
-    })
-  }
-
-  $scope.updateLikesCounter = function(post)
-  {
-    // TODO: Use Rails routes.
-    var ajax = $http.post("/api/v0/posts/" + post.id + "/like", {"count": post.likes_count});
-    ajax.success(function(data) {
-      post.likes_count = data.count;
-
-      // TODO: Think of a better way to represent likeColor outside of the Post model.
-      if (data.liked)
-        post.likeColor = "#3498db"
-      else
-        post.likeColor = "#8899a6"
-    })
-  }
-
-  $scope.updateCommentLikesCounter = function(comment)
-  {
-    // TODO: Use Rails routes.
-    var ajax = $http.post("/api/v0/comments/" + comment.id + "/like", {"count": comment.likes_count});
-    ajax.success(function(data) {
-      comment.likes_count = data.count;
-
-      // TODO: Think of a better way to represent likeColor outside of the Post model.
-      if (data.liked)
-        comment.likeColor = "#3498db"
-      else
-        comment.likeColor = "#8899a6"
-    })
-  }
-};
-
-
-
-
+// var postCtrl = function ($scope, $http, $attrs) {
+//   var pathName = window.location.pathname;
+//   var ajax   = $http.get("/api/v0" + pathName + ".json");
+//
+//   ajax.success(function(data) {
+//     $scope.post = data;
+//   });
+//   ajax.error(function(response) {
+//     $("#newsfeed .error-message").show();
+//     $("#newsfeed .loading-spinner").hide();
+//   });
+//   ajax.then(function(response) {
+//     $("#newsfeed .loading-spinner").hide();
+//   });
+//
+//   $scope.usernames = angular.fromJson( $attrs.usernames );
+//
+//   $scope.createComment = function(post, comment)
+//   {
+//     // Disable the submit button for new-post directive.
+//     $scope.submitButtonCommentDisabled = true;
+//
+//     var ajax = $http.post("/api/v0/posts/" + post.id + "/comments", {"comment": comment});
+//     ajax.success(function(data) {
+//       comment.content = ""
+//       // $scope.submitButtonCommentDisabled = false;
+//       post.comments.push(data)
+//     })
+//
+//     ajax.error(function(data) {
+//       // $scope.submitButtonCommentDisabled = false;
+//     })
+//   }
+//
+//   $scope.updateLikesCounter = function(post)
+//   {
+//     // TODO: Use Rails routes.
+//     var ajax = $http.post("/api/v0/posts/" + post.id + "/like", {"count": post.likes_count});
+//     ajax.success(function(data) {
+//       post.likes_count = data.count;
+//
+//       // TODO: Think of a better way to represent likeColor outside of the Post model.
+//       if (data.liked)
+//         post.likeColor = "#3498db"
+//       else
+//         post.likeColor = "#8899a6"
+//     })
+//   }
+//
+//   $scope.updateCommentLikesCounter = function(comment)
+//   {
+//     // TODO: Use Rails routes.
+//     var ajax = $http.post("/api/v0/comments/" + comment.id + "/like", {"count": comment.likes_count});
+//     ajax.success(function(data) {
+//       comment.likes_count = data.count;
+//
+//       // TODO: Think of a better way to represent likeColor outside of the Post model.
+//       if (data.liked)
+//         comment.likeColor = "#3498db"
+//       else
+//         comment.likeColor = "#8899a6"
+//     })
+//   }
+// };
 
 var postListCtrl = function ($scope, $http, $attrs) {
-  var pathName = window.location.pathname;
-  var ajax   = $http.get("/api/v0" + pathName + "/posts.json");
+  $scope.posts        = []
+  $scope.noMoreData   = false;
+  $scope.usernames    = angular.fromJson( $attrs.usernames );
 
-  ajax.success(function(data) {
-    $scope.posts = data.posts;
-  });
-  ajax.error(function(response) {
-    $("#newsfeed .error-message").show();
-    $("#newsfeed .loading-spinner").hide();
-  });
-  ajax.then(function(response) {
-    $("#newsfeed .loading-spinner").hide();
-  });
+  $scope.loadMoreMessages = function() {
+    var offset = $scope.posts.length;
+    $scope.dataLoading  = true;
+    $scope.errorMessage = false;
 
-  $scope.usernames = angular.fromJson( $attrs.usernames );
+    var promise = $http({
+      url: $attrs.postsPath + ".json",
+      method: "GET",
+      params: {"offset": offset, "limit": 10}
+    });
+    promise = promise.then(function(response) {
+      if (response.data.posts.length === 0)
+        $scope.noMoreData = true;
 
-  $scope.createPost = function(post)
-  {
+      $scope.posts = $scope.posts.concat(response.data.posts);
+      $scope.errorMessage = false;
+    }, function(response) {
+      $scope.errorMessage = true;
+    })
+    promise.finally(function(response) {
+      $scope.dataLoading  = false;
+    });
+  }
+
+  $scope.loadMoreMessages();
+
+  $scope.createPost = function(post) {
     // Disable the submit button for new-post directive.
     $scope.submitButtonDisabled = true;
 
@@ -105,8 +114,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
     })
   }
 
-  $scope.createComment = function(post, comment)
-  {
+  $scope.createComment = function(post, comment) {
     // Disable the submit button for new-post directive.
     $scope.submitButtonCommentDisabled = true;
 
@@ -125,13 +133,11 @@ var postListCtrl = function ($scope, $http, $attrs) {
 
   // TODO: This is a bit confusing as it triggers the file upload, which has
   // an attribute directive defined on change event. Confusing code!
-  $scope.triggerFileInput = function()
-  {
+  $scope.triggerFileInput = function() {
     $("input[type='file']").trigger("click")
   }
 
-  $scope.updateLikesCounter = function(post)
-  {
+  $scope.updateLikesCounter = function(post) {
     // TODO: Use Rails routes.
     var ajax = $http.post("/api/v0/posts/" + post.id + "/like", {"count": post.likes_count});
     ajax.success(function(data) {
@@ -145,8 +151,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
     })
   }
 
-  $scope.updateCommentLikesCounter = function(comment)
-  {
+  $scope.updateCommentLikesCounter = function(comment) {
     // TODO: Use Rails routes.
     var ajax = $http.post("/api/v0/comments/" + comment.id + "/like", {"count": comment.likes_count});
     ajax.success(function(data) {
@@ -236,7 +241,7 @@ var fileUploadDirective = function() {
 // https://docs.angularjs.org/tutorial/step_05
 var postController = angular.module('dengueChatApp');
 postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postListCtrl]);
-postController.controller("DCPostCtrl", ["$scope", "$http", "$attrs", postCtrl]);
+// postController.controller("DCPostCtrl", ["$scope", "$http", "$attrs", postCtrl]);
 
 
 // Define the directives on the controller.

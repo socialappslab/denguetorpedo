@@ -10,6 +10,15 @@ class API::V0::Users::PostsController < API::V0::BaseController
   def index
     @user = User.find(params[:user_id])
     @posts = @user.posts.order("created_at DESC").includes(:comments)
+
+    if params[:limit].present?
+     @posts = @posts.limit(params[:limit].to_i)
+    end
+
+    if params[:offset].present?
+     @posts = @posts.offset(params[:offset].to_i)
+    end
+
     render "api/v0/posts/index" and return
   end
 end
