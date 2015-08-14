@@ -130,7 +130,7 @@ class ReportsController < NeighborhoodsBaseController
   def eliminate
     # Set the before photo
     if params[:has_after_photo].nil?
-      flash[:alert] = "You need to specify if the report has an after photo or not!"
+      flash[:alert] = "Es necesario especificar si el informe tiene una después de la foto o no!"
       render "edit" and return
     end
 

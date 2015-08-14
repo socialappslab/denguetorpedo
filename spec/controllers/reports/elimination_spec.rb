@@ -50,7 +50,7 @@ describe ReportsController do
 
 		it "validates on presence of has_after_photo" do
 			put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :report => report_params
-			expect(response.body).to have_content("You need to specify if the report has an after photo or not!")
+			expect(response.body).to have_content("Es necesario especificar si el informe tiene una después de la foto o no!")
 		end
 
 		it "validates on missing after photo" do

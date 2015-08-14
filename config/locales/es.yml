@@ -381,6 +381,7 @@ es:
       create:  "Crear"
       delete:  Borrar
       edit:    "Editar"
+      eliminate: Eliminar
       logout: Salir
       publish: "Chat"
       save: Guardar
@@ -453,7 +454,7 @@ es:
         elimination_date_before_inspection_date: "Una fecha de eliminación está antes de una fecha de inspección"
       delete: Borrar CSV
       verify_instructions: Para verificar este CSV debes verificar todos los %{count} reportes
-      finish_verification: Has terminado de verificar todos los reportes en el CSV. Para finalizar, presiona el botón "Verificar CSV"
+      finish_verification: Has terminado de verificar todos los reportes en el CSV. Para finalizar,
       parsing_errors: Procesando con errores
       verified_time_ago: Verificado hace %{time}
 

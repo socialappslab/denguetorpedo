@@ -5,48 +5,69 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  .col-md-6.col-md-offset-3
-    %h1.light-font{:style => "font-size: 36px;"}
-      = I18n.t("views.reports.edit.eliminate")
-
-    .well
-      = form_for [@neighborhood, @report], :url => eliminate_neighborhood_report_path(@neighborhood, @report), :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
-
-        = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => true}
-        %hr.muted.wide
-        .row
-          .col-md-12
-            %p.form-label
-              = I18n.t("activerecord.attributes.report.before_photo")
-            .text-center
-              = image_tag(@report.before_photo, :style => "margin-bottom: 20px;")
-
-        %hr.muted.wide
-        = render :partial => "reports/after_photo_form", :locals => {:f => f}
-
-        %hr.muted.wide
-
-        .row
-          .col-md-6
-            %p.form-label
-              = I18n.t("activerecord.attributes.report.eliminated_at")
-            .form-inline
-              = f.date_select :eliminated_at, {:start_year => 2012, :order => [:day, :month, :year]}, :class => "form-control"
-
-          .col-md-6
-            %p.form-label
-              = I18n.t("activerecord.models.elimination_method")
-            = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, :selected => @report.elimination_method_id), {:include_blank => true}, :class => "form-control"
+.container
+  %h1.light-font{:style => "font-size: 36px;"}
+    = I18n.t("views.reports.edit.eliminate")
 
 
-        .row
-          .col-md-6
-            = link_to I18n.t("common_terms.cancel"), neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg btn-block"
-          .col-md-6
-            = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
-              %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-              = @report.new_record? ? I18n.t("views.buttons.create") : I18n.t("views.buttons.update")
+  .well
+    = form_for [@neighborhood, @report], :url => eliminate_neighborhood_report_path(@neighborhood, @report), :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+
+      = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => true}
+
+      %hr.muted.wide
+
+      .row
+        .col-md-12
+          %p.form-label
+            = I18n.t("activerecord.attributes.report.before_photo")
+          .text-center
+            = image_tag(@report.before_photo, :style => "margin-bottom: 20px;")
+
+      %hr.muted.wide
+
+      .row
+        .col-md-3
+          %p.form-label
+            = I18n.t("activerecord.models.elimination_method")
+          = f.select :elimination_method_id, options_for_select(@report.breeding_site.elimination_methods.map{|em| [em.detailed_description, em.id]}, :selected => @report.elimination_method_id), {:include_blank => true}, :class => "form-control"
+
+        .col-md-3
+          %p.form-label
+            = I18n.t("activerecord.attributes.report.eliminated_at")
+          .form-inline
+            = f.date_select :eliminated_at, {:start_year => 2012, :order => [:day, :month, :year]}, :class => "form-control"
+
+
+        .col-md-3
+          %p.form-label
+            Hay foto de eliminacion?
+          .display-block
+            .radio-inline
+              = radio_button_tag "has_after_photo", "1", true, "ng-model" => "hasAfterPhoto"
+              = I18n.t("common_terms.yes_string")
+            .radio-inline{:style => "margin-left: 50px;"}
+              = radio_button_tag "has_after_photo", "0", true, "ng-model" => "hasAfterPhoto"
+              = I18n.t("common_terms.no_html_string").html_safe
+        .col-md-3{"ng-show" => "hasAfterPhoto == '1'"}
+          %p.form-label
+            = I18n.t("report.form.upload_photo_of_eliminated_report")
+          = f.file_field :after_photo, :class => "upload_photo form-control"
+          %img.preview{:style => "display: block;"}
+          %canvas{:style => "display: none;"}
+          = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
+
+
+      %hr.muted.wide
+
+
+      .row
+        .col-md-6
+          = link_to I18n.t("common_terms.cancel"), neighborhood_reports_path(@neighborhood), :class => "btn btn-default btn-lg btn-block"
+        .col-md-6
+          = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.eliminate")
 
 
 

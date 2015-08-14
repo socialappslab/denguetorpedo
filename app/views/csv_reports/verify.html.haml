@@ -2,28 +2,26 @@
 
 .container{"ng-controller" => "csvVerifyCtrl", "csv" => @csv.to_json(:include => {:location => {:only => [:address, :neighborhood_id]}, :reports => {:only => [:id, :protected, :larvae, :pupae, :chemically_treated, :breeding_site_id, :neighborhood_id, :report, :created_at]} } )}
   .row
+    .col-md-8.col-xs-8
+      %h1.light-font
+        = I18n.t("views.csv_reports.verify")
+        = @csv.csv_file_name
+    .col-md-4.col-xs-4
+      .pull-right
+        = form_for @csv, :html => {:method => :delete} do |f|
+          = f.submit I18n.t("views.csv_reports.delete"), :class => "btn btn-danger btn-lg"
+
+  .row
     .col-md-12
-      .row
-        .col-md-8
-          %h1.light-font
-            = I18n.t("views.csv_reports.verify")
-            = @csv.csv_file_name
-        .col-md-4
-          .pull-right
-            = form_for @csv, :html => {:method => :delete} do |f|
-              = f.submit I18n.t("views.csv_reports.delete"), :class => "btn btn-danger btn-lg"
-
-      .well
+      %p.description
         - if @csv.reports.where(:verified_at => nil).count == 0
-          %h2
-            = I18n.t("views.csv_reports.finish_verification")
-          .text-center
-            = link_to I18n.t("views.csv_reports.verify"), "", "ng-click" => "verifyCsv()", "class" => "btn btn-success btn-lg"
-
+          = I18n.t("views.csv_reports.finish_verification")
+          = link_to "clic aquí.", "", "ng-click" => "verifyCsv()"
         - else
-          %h2
-            = I18n.t("views.csv_reports.verify_instructions", :count => @csv.reports.count)
+          = I18n.t("views.csv_reports.verify_instructions", :count => @csv.reports.count)
 
+  .row
+    .col-md-12
       .well
 
         .row

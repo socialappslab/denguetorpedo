@@ -4,25 +4,27 @@
 = render :partial => "shared/form_errors", :locals => {:item => @report}
 
 /------------------------------------------------------------------------------
-.row
-  .col-md-6.col-md-offset-3
-    .well
-      - update_url = verify_neighborhood_report_path(@neighborhood, @report)
+.container
+  %h1.light-font
+    Confirmar un reporte
 
-      = form_for [@neighborhood, @report], :url => update_url, :html => {:method => "PUT", :autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
-        = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => false}
+  .well
+    - update_url = verify_neighborhood_report_path(@neighborhood, @report)
 
-        /------------------------------------------------------------------------------
-        %hr.muted.wide
-        = render :partial => "reports/before_photo_form", :locals => {:f => f}
+    = form_for [@neighborhood, @report], :url => update_url, :html => {:method => "PUT", :autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
+      = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => false}
 
-        .row
-          .col-md-6
-            = link_to I18n.t("views.buttons.delete"), api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
-          .col-md-6
-            = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
-              %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-              = I18n.t("views.buttons.confirm")
+      /------------------------------------------------------------------------------
+      %hr.muted.wide
+      = render :partial => "reports/before_photo_form", :locals => {:f => f}
+
+      .row
+        .col-md-6
+          = link_to I18n.t("views.buttons.delete"), api_v0_report_path(@report), data: { :confirm => I18n.t("views.alerts.confirm") }, "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
+        .col-md-6
+          = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.confirm")
 
 
 - content_for :scripts do
