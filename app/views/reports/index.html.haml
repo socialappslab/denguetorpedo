@@ -56,13 +56,23 @@
           .report{ :class => (report.eliminated? ? "eliminated" : "open") }
             = render :partial => "reports/topbar",   :locals => {:report => report}
             = render :partial => "reports/content", :locals => {:report => report}
+            .row
+              .col-md-12
+                = render :partial => "reports/photos", :locals => {:report => report}
+            %hr.muted.wide
             = render :partial => "reports/actionbar",   :locals => {:report => report}
+
+
       .col-md-6
         - if reports[1].present?
           - report = reports[1]
           .report{ :class => (report.eliminated? ? "eliminated" : "open") }
             = render :partial => "reports/topbar",   :locals => {:report => report}
             = render :partial => "reports/content", :locals => {:report => report}
+            .row
+              .col-md-12
+                = render :partial => "reports/photos", :locals => {:report => report}
+            %hr.muted.wide
             = render :partial => "reports/actionbar",   :locals => {:report => report}
 
 

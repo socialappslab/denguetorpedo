@@ -1,34 +1,28 @@
 .report-content
-  = form_for([@neighborhood, report], :url => eliminate_neighborhood_report_path(@neighborhood, report), :html => {:class => "form-horizontal", :autocomplete => "off", :multipart => true}) do |f|
-    .row
-      .col-md-6
-        - if report.breeding_site_id.present?
-          %p.form-label
-            = I18n.t("activerecord.attributes.report.breeding_site_id")
-          %p
-            = report.breeding_site.description
-
-
-      .col-md-6
+  .row
+    .col-md-6
+      - if report.breeding_site_id.present?
         %p.form-label
-          = I18n.t("activerecord.attributes.report.report")
+          = I18n.t("activerecord.attributes.report.breeding_site_id")
         %p
-          = report.report
+          = report.breeding_site.description
+
+    %hr.muted.wide.hidden-md.hidden-lg
+
+    .col-md-6
+      %p.form-label
+        = I18n.t("activerecord.attributes.report.report")
+      %p
+        = report.report
 
 
-    %hr.muted
+  %hr.muted
 
-    - if report.eliminated?
-      .row
-        .col-md-12
-          %p.form-label
-            = I18n.t("activerecord.attributes.report.elimination_method_id")
-          %p
-            = report.elimination_method.detailed_description
-      %hr.muted
-
+  - if report.eliminated?
     .row
       .col-md-12
-        = render :partial => "reports/photos", :locals => {:report => report, :f => f}
-
-        %hr
+        %p.form-label
+          = I18n.t("activerecord.attributes.report.elimination_method_id")
+        %p
+          = report.elimination_method.detailed_description
+    %hr.muted
