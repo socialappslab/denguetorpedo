@@ -7,7 +7,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :find_by_id,                :only   => [:verify, :verify_report, :eliminate, :update, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]
   before_filter :ensure_coordinator,        :only   => [:coordinator_edit, :coordinator_update]
-  before_filter :update_breadcrumb
+  before_filter :update_breadcrumb,         :except => [:like, :comment]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/:neighborhood_id/reports
