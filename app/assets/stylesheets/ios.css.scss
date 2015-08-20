@@ -49,6 +49,12 @@ hr {
     margin-top: 10px;
   }
 
+  &.slightly-wide {
+    margin-left: -19px;
+    margin-right: -19px;
+    // margin-top: 20px;
+  }
+
   &.wide {
     margin-left: -40px;
     margin-right: -40px;
@@ -221,6 +227,11 @@ div[class*="col-"] {
   font-weight: 300;
 }
 
+.lato-font {
+  font-family: "Lato" sans-serif;
+  font-weight: 400;
+}
+
 .light-header {
   font-family: "Lato" sans-serif;
   font-weight: 300;
@@ -248,10 +259,11 @@ div[class*="col-"] {
   margin-top: 20px;
   background-color: white;
 
-
   border: 1px #D3D3D3 solid;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-
+  // border: 1px solid transparent;
+  // box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
 
 
   .errors {
@@ -264,6 +276,10 @@ div[class*="col-"] {
 
   .btn {
     margin-top: 40px;
+  }
+
+  hr:last-child {
+    border: none;
   }
 
 }

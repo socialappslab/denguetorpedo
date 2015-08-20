@@ -1,0 +1,41 @@
+.feed-item
+  .row{"style" => "margin-top: 20px; margin-left: 5px; margin-right: 5px;"}
+    .col-md-2
+      %div{"style" => "display: inline-block;"}
+        %a{"ng-href" => "{{post.user.url}}"}
+          %img.img-rounded{"ng-src" => "{{post.user.photo}}", "style" => "height: 75px; width: 75px;"}
+
+    .col-md-10
+      .feed-item-bar-new
+        .username
+          %a{"ng-href" => "{{post.user.url}}"}
+            {{post.user.display_name}}
+        .feed-item-timestamp.pull-right
+          {{post.timestamp}}
+      .feed-item-bar-new
+        .location
+          %a{"ng-href" => "{{post.user.neighborhood.url}}", :style => "color: #8899a6; font-weight: 300;"}
+            {{post.user.neighborhood.geographical_display_name}}
+
+
+  .feed-item-content
+    %div{"ng-bind-html" => "post.content"}
+    .post-photo{"ng-hide" => "{{post.photo == null}}"}
+      %img.img-rounded{"ng-src" => "{{post.photo}}"}
+
+
+  .feed-item-interaction-menu
+    %a.likes_button{"ng-click" => "updateLikesCounter(post)", "ng-style" => "{color: post.likeColor}"}
+      %i.fa.fa-thumbs-up.like-icon
+      %span
+        {{post.likes_count}}
+
+    &#183;
+    %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
+      Comentar
+
+// Enumerate all comments.
+%post-comment-new{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
+
+
+%new-comment{"post" => "post", "ng-show" => "showNewComment"}

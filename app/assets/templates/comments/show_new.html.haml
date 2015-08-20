@@ -1,0 +1,32 @@
+.feed-item-comment
+  .row{"style" => "margin-top: 20px; margin-left: 5px; margin-right: 5px;"}
+    .col-md-2
+      %div{"style" => "display: inline-block;"}
+        %a{"ng-href" => "{{comment.user.url}}"}
+          %img.img-rounded{"ng-src" => "{{comment.user.photo}}", "style" => "height: 75px; width: 75px;"}
+
+    .col-md-10
+      .feed-item-bar-new
+        .username
+          %a{"ng-href" => "{{comment.user.url}}"}
+            {{comment.user.display_name}}
+        .feed-item-timestamp.pull-right
+          {{comment.timestamp}}
+      .feed-item-bar-new
+        .location
+          %a{"ng-href" => "{{post.user.neighborhood.url}}", :style => "color: #8899a6; font-weight: 300;"}
+            {{comment.user.neighborhood.geographical_display_name}}
+
+
+      -# - if @current_user && @current_user == user && item.class == Post
+      // TODO: This needs to be shown/hidden based on current user.
+      // TODO: The jQuery doesn't bind to .delete-resource-button!
+      -# %a.comment-delete-button{"ng-href" => "{{comment.delete_path}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{comment.delete_path}}"}
+      -#   %i.fa.fa-trash-o
+  .feed-item-content{"ng-bind-html" => "comment.content"}
+
+  .feed-item-interaction-menu
+    %a.likes_button{"ng-click" => "updateCommentLikesCounter(comment)", "ng-style" => "{color: comment.likeColor}"}
+      %i.fa.fa-thumbs-up.like-icon
+      %span
+        {{comment.likes_count}}

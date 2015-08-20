@@ -81,14 +81,14 @@
 
 
   .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
-    = image_tag(asset_path(@user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
+    = image_tag(asset_path(@current_user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
     %ul.dropdown-menu{"style" => "right: 50%;"}
       %li
-        = link_to user_path(@user) do
+        = link_to user_path(@current_user) do
           %i.fa.fa-user.fa-2
           = I18n.t("dashboard.my_profile")
       %li
-        = link_to edit_user_path(@user) do
+        = link_to edit_user_path(@current_user) do
           %i.fa.fa-gear.fa-2
           = I18n.t("common_terms.configuration")
       %li

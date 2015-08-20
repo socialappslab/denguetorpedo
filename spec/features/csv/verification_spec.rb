@@ -41,11 +41,11 @@ describe "CSV", :type => :feature do
     expect(page).not_to have_css( I18n.t("views.csv_reports.verify") )
   end
 
-  it "clicking on Verify for each report takes to report's verification page" do
-    click_link I18n.t("views.csv_reports.verify")
-    first_report = csv.reports.first
-    expect(current_path).to eq( verify_neighborhood_report_path(first_report.neighborhood, first_report) )
-  end
+  # it "clicking on Verify for each report takes to report's verification page" do
+  #   click_link I18n.t("views.csv_reports.verify")
+  #   first_report = csv.reports.first
+  #   expect(current_path).to eq( verify_neighborhood_report_path(first_report.neighborhood, first_report) )
+  # end
 
   it "displays Verified for verified report" do
     first_report = csv.reports.first
