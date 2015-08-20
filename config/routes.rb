@@ -167,9 +167,7 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Cities
 
-  resources :cities, :only => [:show] do
-    get "new_show", :on => :member
-  end
+  resources :cities, :only => [:show]
 
   #----------------------------------------------------------------------------
   # CSV Reports
