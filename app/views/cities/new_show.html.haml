@@ -1,0 +1,55 @@
+= render :partial => "shared/flashes"
+= render :partial => "shared/form_errors", :locals => {:item => @team}
+
+.container{"ng-controller" => "cityCtrl"}
+  .row
+    .col-md-3
+      .well
+        = link_to image_tag(@city.photo, :style => "width: 261px; margin-left: -19px; margin-top: -19px; margin-right: -19px;"), city_path(@city)
+        %p.lato-font.text-center{"style" => "font-size: 24px; margin-top: 10px; margin-bottom: 20px;"}
+          = @city.name
+        = select_tag "city", options_for_select(@cities.map {|c| [c.name, c.id]}), :prompt => "Visita...", :class => "form-control", "ng-model" => "chosenCity"
+
+      .well
+        %p.form-label
+          = I18n.t("activerecord.models.neighborhood", :count => 2)
+        - @neighborhoods.each do |neighborhood|
+          .text-center
+            = link_to neighborhood_path(neighborhood) do
+              - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
+            %p.lato-font.text-center{"style" => "margin-top: 10px; margin-bottom: 20px;"}
+              = link_to neighborhood.name, neighborhood_path(neighborhood)
+          %hr.muted.slightly-wide
+
+
+    .col-md-6
+      .well
+        - @rankings.each_with_index do |neighborhood_data, index|
+          - neighborhood        = neighborhood_data[0]
+          - neighborhood_points = neighborhood_data[1]
+          .row{:style => "height: 100px;"}
+            .col-md-1.col-xs-1
+              %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
+                = index + 1
+            .col-md-2.col-xs-2
+              = link_to neighborhood_path(neighborhood) do
+                - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
+
+            .col-md-7.col-xs-7
+              %h1
+                = link_to neighborhood.name, neighborhood_path(neighborhood)
+              %p{"style" => "color: #5cb85c; font-size: 24px;"}
+                = neighborhood_points
+                = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
+
+            .col-md-2.col-xs-2
+              = link_to neighborhood_path(neighborhood), :class => "btn btn-success btn-lg btn-block", :style => "margin-top: 30px;" do
+                = I18n.t("views.cities.show.visit")
+                %i{:class => "fa fa-chevron-right"}
+
+          %hr.muted.wide
+
+    .col-md-3
+      .well
+        %p.form-label
+          Contribución
