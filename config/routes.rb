@@ -58,6 +58,12 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
+      resources :cities, :only => [] do
+        resources :posts, :controller => "cities/posts", :only => [:index]
+      end
+
+      #-------------------------------------------------------------------------
+
       resources :teams, :only => [] do
         resources :posts, :controller => "teams/posts", :only => [:index]
       end
