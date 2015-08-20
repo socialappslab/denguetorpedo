@@ -22,11 +22,11 @@
           %hr.muted.slightly-wide
 
 
-    .col-md-6
+    .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username), "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
       - if @current_user
         %new-post
 
-      #newsfeed{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username)}
+      #newsfeed
         %h1.text-center{"ng-show" => "errorMessage"}
           Algo salió mal. Por favor, intente nuevamente.
         %h1.text-center{"ng-show" => "dataLoading"}

@@ -4,7 +4,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :calculate_ivars,                  :only => [:show]
   before_filter :update_breadcrumb
 
-
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1
 
