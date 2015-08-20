@@ -51,7 +51,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
   private
 
   def update_breadcrumb
-    @breadcrumbs << {:name => I18n.t("activerecord.models.neighborhood", :count => 2), :path => city_path(@neighborhood.city)}
+    @breadcrumbs << {:name => @neighborhood.city.name, :path => city_path(@neighborhood.city)}
   end
 
   def calculate_ivars
