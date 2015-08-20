@@ -76,7 +76,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
     var promise = $http({
       url: $attrs.postsPath + ".json",
       method: "GET",
-      params: {"offset": offset, "limit": 10}
+      params: {"offset": offset, "limit": 20}
     });
     promise = promise.then(function(response) {
       if (response.data.posts.length === 0)
