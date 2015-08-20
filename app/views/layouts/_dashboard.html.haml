@@ -81,9 +81,22 @@
 
 
   .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
-    = link_to logout_path do
-      %i.fa.fa-2.fa-sign-out
-      = I18n.t("login_form.logout")
+    = image_tag(asset_path(@user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
+    %ul.dropdown-menu{"style" => "right: 50%;"}
+      %li
+        = link_to user_path(@user) do
+          %i.fa.fa-user.fa-2
+          = I18n.t("dashboard.my_profile")
+      %li
+        = link_to edit_user_path(@user) do
+          %i.fa.fa-gear.fa-2
+          = I18n.t("common_terms.configuration")
+      %li
+        = link_to logout_path do
+          %i.fa.fa-2.fa-sign-out
+          = I18n.t("login_form.logout")
+
+
 
 
 - if @breadcrumbs.present?
