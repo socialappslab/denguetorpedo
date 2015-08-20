@@ -1,3 +1,23 @@
+
+  .feed-item-bar
+    .username
+      %a{"ng-href" => "{{post.user.url}}"}
+        {{post.user.display_name}}
+    .location
+      %a{"ng-href" => "{{post.user.neighborhood.url}}"}
+        %span.muted
+          de
+        {{post.user.neighborhood.geographical_display_name}}
+  .feed-item-timestamp
+    {{post.timestamp}}
+    -# - if @current_user && @current_user == user && item.class == Post
+    // TODO: This needs to be shown/hidden based on current user.
+    // TODO: The jQuery doesn't bind to .delete-resource-button!
+    -# %a.delete-resource-button{"ng-href" => "{{post.actions.delete}}", "data-confirm" => I18n.t("views.alerts.confirm"), "data-path" => "{{post.actions.delete}}"}
+    -#   %i.fa.fa-trash-o
+
+
+
 .feed-item
   .feed-item-profile-photo
     %a{"ng-href" => "{{post.user.url}}"}

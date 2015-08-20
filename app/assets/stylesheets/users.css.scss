@@ -340,6 +340,51 @@ ul#user_right_panel {
   }
 }
 
+
+.feed-item-bar-new {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-left: 10px;
+
+  span {
+    font-weight: bold;
+  }
+
+  .username {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    display: inline-block;
+
+
+    a {
+      text-decoration: none;
+      white-space: nowrap;
+    }
+  }
+
+  .location {
+    font-weight: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+
+    .muted {
+      color: #8899a6;
+      font-weight: 200;
+    }
+
+    a {
+      text-decoration: none;
+      white-space: nowrap;
+    }
+  }
+
+}
+
+
+
 .feed-item-timestamp {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;

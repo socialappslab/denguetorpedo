@@ -23,31 +23,22 @@
 
 
     .col-md-6
-      .well
-        - @rankings.each_with_index do |neighborhood_data, index|
-          - neighborhood        = neighborhood_data[0]
-          - neighborhood_points = neighborhood_data[1]
-          .row{:style => "height: 100px;"}
-            .col-md-1.col-xs-1
-              %h1{:style => "font-size: 48px; color: #bdc3c7; line-height: 100px;"}
-                = index + 1
-            .col-md-2.col-xs-2
-              = link_to neighborhood_path(neighborhood) do
-                - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
+      - if @current_user
+        %new-post
 
-            .col-md-7.col-xs-7
-              %h1
-                = link_to neighborhood.name, neighborhood_path(neighborhood)
-              %p{"style" => "color: #5cb85c; font-size: 24px;"}
-                = neighborhood_points
-                = I18n.t("activerecord.attributes.user.total_points", :count => neighborhood.total_points)
+      #newsfeed{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username)}
+        %h1.text-center{"ng-show" => "errorMessage"}
+          Algo salió mal. Por favor, intente nuevamente.
+        %h1.text-center{"ng-show" => "dataLoading"}
+          %i.fa.fa-refresh.fa-spin
 
-            .col-md-2.col-xs-2
-              = link_to neighborhood_path(neighborhood), :class => "btn btn-success btn-lg btn-block", :style => "margin-top: 30px;" do
-                = I18n.t("views.cities.show.visit")
-                %i{:class => "fa fa-chevron-right"}
+        .feed-item-complete
+          %feed-item-new{"post" => "post", "ng-repeat" => "post in posts"}
+          .load-more{"ng-hide" => "noMoreData"}
+            .btn.btn-info.btn-lg{"ng-click" => "loadMoreMessages()"}
+              %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
+              Cargar más
 
-          %hr.muted.wide
 
     .col-md-3
       .well
