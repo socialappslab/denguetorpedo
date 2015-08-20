@@ -1,0 +1,67 @@
+var ctrl = function ($scope, $http, $attrs) {
+  console.log("hi")
+
+  $scope.refreshChartWithParams = function(params) {
+
+    if ($scope.locations)
+    {
+      var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
+      if (selectedLocations.length !== $scope.locations.length)
+        params.location_ids = JSON.stringify(selectedLocations.map(function(loc) { return loc.id }));
+    }
+
+    $scope.chartLoading = true;
+    var pathName = window.location.pathname;
+
+    params.neighborhood_id = $scope.neighborhood.id;
+    params.timeframe    = $scope.chartOptions.timeframe;
+    params.positive     = $scope.chartOptions.positive;
+    params.potential    = $scope.chartOptions.potential;
+    params.negative     = $scope.chartOptions.negative;
+    params.percentages  = $scope.chartOptions.percentages;
+    params.type         = $scope.chartOptions.type;
+    params.csv_only     = $scope.dataOptions.csvOnly;
+
+    params.custom_start_month = $scope.chartOptions.customStartMonth;
+    params.custom_start_year  = $scope.chartOptions.customStartYear;
+    params.custom_end_month   = $scope.chartOptions.customEndMonth;
+    params.custom_end_year    = $scope.chartOptions.customEndYear;
+
+    var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
+
+    ajax.success(function(response) {
+      $scope.locations = response.locations;
+
+      if (response.data.length <= 1) {
+        $scope.noChartData = true;
+      } else {
+        $scope.noChartData = false;
+        google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response.data, $scope.chartOptions) } } );
+      }
+    });
+    ajax.error(function(response) {
+      $scope.chartLoading = false;
+    });
+    ajax.then(function(response) {
+      $scope.chartLoading = false;
+    });
+  }
+
+  // $scope.refreshChartWithParams({});
+
+  $scope.$watch("chosenCity", function(newValue, oldValue)
+  {
+    if (newValue === oldValue)
+      return;
+    window.location.href = "/cities/" + newValue + "/new_show"
+  });
+
+};
+
+
+
+// We use inline annotation to declare services in order to bypass
+// errors when JS gets minified:
+// https://docs.angularjs.org/tutorial/step_05
+var app = angular.module('dengueChatApp');
+var controller = app.controller("cityCtrl", ["$scope", "$http", "$attrs", ctrl]);
