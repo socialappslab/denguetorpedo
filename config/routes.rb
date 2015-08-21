@@ -296,8 +296,8 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Active Admin
 
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
+  # devise_for :admin_users, ActiveAdmin::Devise.config
+  # ActiveAdmin.routes(self)
 
   #----------------------------------------------------------------------------
   # Sidekiq monitoring
