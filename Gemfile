@@ -33,7 +33,8 @@ gem "pundit"
 # See: http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
 gem 'aws-sdk', '< 2.0'
 gem 'rmagick'
-gem 'paperclip', '~> 4.3.0'
+gem 'paperclip', '~> 4.2.0'
+# gem 'paperclip', github: 'thoughtbot/paperclip'
 
 gem "roo", :require => false
 

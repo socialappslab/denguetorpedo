@@ -102,7 +102,11 @@ describe API::V0::CsvReportsController do
   #--------------------------------------------------------------------------
 
   describe "Updating a CSV" do
-    let!(:csv)      { FactoryGirl.create(:parsed_csv, :user => user) }
+    let!(:csv)      { FactoryGirl.build(:parsed_csv, :user => user) }
+
+    before(:each) do
+      csv.save(:validate => false)
+    end
 
     it "updates location address" do
       put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100 }
@@ -118,7 +122,11 @@ describe API::V0::CsvReportsController do
   #--------------------------------------------------------------------------
 
   describe "Verifying a CSV" do
-    let!(:csv)      { FactoryGirl.create(:parsed_csv, :user => user) }
+    let!(:csv)      { FactoryGirl.build(:parsed_csv, :user => user) }
+
+    before(:each) do
+      csv.save(:validate => false)
+    end
 
     it "sets verified_at column" do
       put :verify, :id => csv.id
