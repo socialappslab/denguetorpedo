@@ -112,7 +112,7 @@ Dengue::Application.routes.draw do
   #----------------------------------------------------------------------------
   # Landing Pages routes.
 
-  match "home/:id" => "home#index", :as => "Home"
+  match "home/:id" => "home#index", :as => "Home", :via => :get
   root :to        => 'home#index'
   get "faq"       => 'home#faq'
   get "manual"    => "home#manual"
@@ -147,10 +147,10 @@ Dengue::Application.routes.draw do
 
   # TODO: Are these matches even necessary? Can we remove them or fold them
   # under the :users resource?
-  match "/user/:id/prize_codes" => 'prize_codes#index'
-  match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show'
-  match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem'
-  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize'
+  match "/user/:id/prize_codes" => 'prize_codes#index', :via => :get
+  match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show', :via => :get
+  match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem', :via => :get
+  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize', :via => :get
 
   # TODO: We should limit the routes that we expose for users. :except => here
   # shouldn't really exist.
@@ -229,8 +229,8 @@ Dengue::Application.routes.draw do
 
   # TODO: We're keeping the original routes around so we don't get
   # undefined '_path' errors. At some point, we should refactor these.
-  match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }
-  match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }
+  match '/reports'       => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :via => :get
+  match '/reports/:path' => redirect { |params, request| "/neighborhoods/#{Neighborhood.first.id}" + request.path + (request.query_string.present? ? "?#{request.query_string}" : "") }, :constraints => { :path => ".*" }, :via => :get
 
   #----------------------------------------------------------------------------
   # Prizes
@@ -247,7 +247,7 @@ Dengue::Application.routes.draw do
   # User Session
 
   resource :session, :only => [:new, :create, :destroy]
-  match 'exit' => 'sessions#destroy', :as => :logout
+  match 'exit' => 'sessions#destroy', :as => :logout, :via => :get
 
   get "password_resets/new"
   resources :password_resets, :only => [:new, :create, :edit, :update]
