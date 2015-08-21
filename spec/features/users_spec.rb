@@ -101,7 +101,7 @@ describe "Users", :type => :feature do
       fill_in "password", :with => user.password
       click_button "Entrar"
 
-			expect(current_path).to eq(teams_path)
+			expect(current_path).to eq(city_path(user.city))
 		end
 
 		it "allows login by username" do
@@ -109,7 +109,7 @@ describe "Users", :type => :feature do
       fill_in "password", :with => user.password
       click_button "Entrar"
 
-			expect(current_path).to eq(teams_path)
+			expect(current_path).to eq(city_path(user.city))
 		end
 
 		it "allows login by name" do
@@ -117,7 +117,7 @@ describe "Users", :type => :feature do
       fill_in "password", :with => user.password
       click_button "Entrar"
 
-			expect(current_path).to eq(teams_path)
+			expect(current_path).to eq(city_path(user.city))
 		end
   end
 
