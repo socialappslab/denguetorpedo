@@ -293,11 +293,6 @@ Dengue::Application.routes.draw do
 
   post "time-series-settings", :controller => "home", :action => :time_series_settings, :as => :time_series_settings
 
-  #----------------------------------------------------------------------------
-  # Active Admin
-
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
 
   #----------------------------------------------------------------------------
   # Sidekiq monitoring

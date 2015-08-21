@@ -38,7 +38,7 @@ gem 'paperclip', '~> 4.2.0'
 gem "roo", :require => false
 
 # Administration
-gem "activeadmin"
+# gem 'activeadmin', github: 'activeadmin'
 
 # Analytics
 gem "analytics-ruby", '~> 2.0.8', :require => false
