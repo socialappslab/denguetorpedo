@@ -1,9 +1,8 @@
 .row
   .col-md-5.col-md-offset-4
-    %div{"ng-controller" => "DCPostCtrl", "usernames" => User.pluck(:username)}
-
+    %div{"ng-controller" => "DCPostListCtrl", "usernames" => User.pluck(:username), "post_path" => api_v0_post_path(@post)}
       #newsfeed
-        .loading-spinner
+        %h1.text-center{"ng-show" => "dataLoading"}
           %i.fa.fa-refresh.fa-spin
         .feed-item-complete
           %feed-item{"post" => "post"}
