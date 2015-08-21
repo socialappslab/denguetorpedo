@@ -12,6 +12,17 @@
   }
 }
 
+.report-topbar {
+  .name {
+    width: auto;
+
+    .feed-item-timestamp {
+      width: 200px;
+      display: block;
+    }
+  }
+}
+
 .incomplete-reports-banner {
   .alert {
     background-color: #e74c3c;
