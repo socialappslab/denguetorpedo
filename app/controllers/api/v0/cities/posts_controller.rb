@@ -9,7 +9,9 @@ class API::V0::Cities::PostsController < API::V0::BaseController
 
   def index
     @city  = City.find(params[:city_id])
-    @posts = Post.includes(:neighborhood).where("neighborhoods.city_id = ?", @city.id).order("posts.created_at DESC")
+
+    nids = @city.neighborhoods.pluck(:id)
+    @posts = Post.where(:neighborhood_id => nids).order("posts.created_at DESC")
 
     if params[:limit].present?
      @posts = @posts.limit(params[:limit].to_i)
