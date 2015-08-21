@@ -3,6 +3,7 @@
 # encoding: utf-8
 
 class ReportsController < NeighborhoodsBaseController
+  skip_before_filter :verify_authenticity_token, :only => [:like, :comment]
   before_filter :require_login,             :except => [:index, :gateway, :notifications]
   before_filter :find_by_id,                :only   => [:verify, :verify_report, :eliminate, :update, :like, :comment]
   before_filter :ensure_team_chosen,        :only   => [:index]

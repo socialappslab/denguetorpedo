@@ -15,7 +15,7 @@ module Dengue
 
     # Comress HTML and JS/CSS using gzip and deflate. See:
     # https://robots.thoughtbot.com/content-compression-with-rack-deflater
-    config.middleware.use Rack::Deflater
+    # config.middleware.use Rack::Deflater
 
     # DEPRECATION WARNING: Currently, Active Record suppresses errors raised within
     # `after_rollback`/`after_commit` callbacks and only print them to the logs.
