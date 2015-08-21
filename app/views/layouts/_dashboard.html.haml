@@ -8,13 +8,13 @@
         Menu
       %ul.dropdown-menu{"aria-labelledby" => "dropdownMenu1"}
         %li
-          = link_to user_path(@current_user) do
-            %i.fa.fa-user
-            = I18n.t("dashboard.my_profile")
+          = link_to city_path(@current_user.city) do
+            %i.fa.fa-globe
+            = I18n.t("dashboard.my_city")
         %li
-          = link_to city_path(@current_user.neighborhood.city) do
+          = link_to neighborhood_path(@current_user.neighborhood) do
             %i.fa.fa-users.fa-2
-            = I18n.t("activerecord.models.neighborhood", :count => 2)
+            = I18n.t("dashboard.my_community")
         %li
           = link_to teams_path do
             %i.fa.fa-futbol-o
@@ -34,16 +34,16 @@
 
 
   .col-md-2.col-md-offset-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "users", :action => "show") ? "font-weight:bold;" : ""
-    = link_to user_path(@current_user), :style => header_styling do
-      %i.fa.fa-user
-      = I18n.t("dashboard.my_profile")
+    - header_styling = current_page?(:controller => "cities", :action => "show") ? "font-weight:bold;" : ""
+    = link_to city_path(@current_user.city), :style => header_styling do
+      %i.fa.fa-globe
+      = I18n.t("dashboard.my_city")
 
-  .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "cities", :action => "show") ? "font-weight:bold; text-align: center;" : ""
-    = link_to city_path(@current_user.neighborhood.city), :style => header_styling do
+  .col-md-2.dashboard-item.hidden-xs.hidden-sm
+    - header_styling = current_page?(:controller => "neighborhoods", :action => "show") ? "font-weight:bold;" : ""
+    = link_to neighborhood_path(@current_user.neighborhood), :style => header_styling do
       %i.fa.fa-users.fa-2
-      = I18n.t("activerecord.models.neighborhood", :count => 2)
+      = I18n.t("dashboard.my_community")
 
   .col-md-2.dashboard-item.hidden-xs.hidden-sm
     - header_styling = current_page?(:controller => "teams", :action => "index") ? "font-weight:bold; text-align: center;" : ""
@@ -57,7 +57,7 @@
       %i.fa.fa-map-marker
       = I18n.t("dashboard.reports")
 
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
+  .col-md-1.dashboard-item.hidden-xs.hidden-sm
     - header_styling = current_page?(:controller => "csv_reports", :action => "index") ? "font-weight:bold; text-align: center;" : ""
     = link_to csv_reports_path, :style => header_styling do
       %i.fa.fa-table

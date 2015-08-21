@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
         # sites do and they did not want that association.
         # So let's remove it for now until we have more time to look into the question.
         # Can you just bracket it rather than delete it?"
-        format.html { redirect_to user_path(user) }
+        format.html { redirect_to city_path(user.city) }
         format.json { render json: {auth_token: user.auth_token}}
       end
     else
