@@ -108,7 +108,7 @@ class TeamsController < ApplicationController
 
   def join
     @team         = Team.find( params[:id] )
-    membership = TeamMembership.find_or_create_by_user_id_and_team_id(@current_user.id, @team.id)
+    membership = TeamMembership.find_or_create_by(:user_id => @current_user.id, :team_id => @team.id)
     if membership.save
       flash[:notice] = I18n.t("views.teams.success_join_flash")
       redirect_to :back and return

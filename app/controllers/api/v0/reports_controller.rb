@@ -32,7 +32,7 @@ class API::V0::ReportsController < API::V0::BaseController
     @report.before_photo    = paperclip_image
 
     if params[:report][:address].present?
-      location = Location.find_or_create_by_address(params[:report][:address])
+      location = Location.find_or_create_by(:address => params[:report][:address])
       @report.location_id = location.id
     end
 
