@@ -33,7 +33,7 @@ gem "pundit"
 # See: http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
 gem 'aws-sdk', '< 2.0'
 gem 'rmagick'
-gem 'paperclip', '~> 4.2.0'
+gem 'paperclip', '~> 4.3.0'
 
 gem "roo", :require => false
 
@@ -105,12 +105,10 @@ end
 
 #------------------------------------------------------------------------------
 
-group :assets do
-  gem 'sass-rails', "~> 3.2.3"
-  gem 'bootstrap-sass', '~> 3.2.0'
-  gem 'coffee-rails', "~> 3.2.1"
-  gem 'uglifier', '>= 1.0.3'
-  gem "yuicompressor"
-end
+gem 'sass-rails', "~> 5.0"
+gem 'bootstrap-sass', '~> 3.2.0'
+gem 'coffee-rails'
+gem 'uglifier', '>= 1.0.3'
+gem "yuicompressor"
 
 #------------------------------------------------------------------------------
