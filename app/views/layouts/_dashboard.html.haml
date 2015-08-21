@@ -34,31 +34,31 @@
 
 
   .col-md-2.col-md-offset-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "cities", :action => "show") ? "font-weight:bold;" : ""
+    - header_styling = request.path == city_path(@current_user.city) ? "font-weight:bold;" : ""
     = link_to city_path(@current_user.city), :style => header_styling do
       %i.fa.fa-globe
       = I18n.t("dashboard.my_city")
 
   .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "neighborhoods", :action => "show") ? "font-weight:bold;" : ""
+    - header_styling = request.path == neighborhood_path(@current_user.neighborhood) ? "font-weight:bold;" : ""
     = link_to neighborhood_path(@current_user.neighborhood), :style => header_styling do
       %i.fa.fa-users.fa-2
       = I18n.t("dashboard.my_community")
 
   .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "teams", :action => "index") ? "font-weight:bold; text-align: center;" : ""
+    - header_styling = request.path == teams_path ? "font-weight:bold; text-align: center;" : ""
     = link_to teams_path, :style => header_styling do
       %i.fa.fa-futbol-o
       = I18n.t("activerecord.models.team", :count => 3)
 
   .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "reports", :action => "index") ? "font-weight:bold; text-align: center;" : ""
+    - header_styling = request.path == neighborhood_reports_path(@current_user.neighborhood) ? "font-weight:bold; text-align: center;" : ""
     = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
       %i.fa.fa-map-marker
       = I18n.t("dashboard.reports")
 
   .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = current_page?(:controller => "csv_reports", :action => "index") ? "font-weight:bold; text-align: center;" : ""
+    - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
     = link_to csv_reports_path, :style => header_styling do
       %i.fa.fa-table
       CSV
