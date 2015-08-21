@@ -339,7 +339,7 @@ DEPENDENCIES
   rack-cache
   rack-mini-profiler
   rack-timeout
-  rails (~> 4.0)
+  rails (~> 4.1)
   rails-i18n
   rails_12factor
   rails_autolink

@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 ruby '2.1.2'
 
 # Rails
-gem 'rails', '~> 4.0'
+gem 'rails', '~> 4.1'
 
 # Needed for a smooth upgrade from Rails 3.2 to Rails 4.0
 # http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html
