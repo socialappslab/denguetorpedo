@@ -3,7 +3,11 @@ source 'http://rubygems.org'
 ruby '2.1.2'
 
 # Rails
-gem 'rails', '~> 3.2.18'
+gem 'rails', '~> 4.0'
+
+# Needed for a smooth upgrade from Rails 3.2 to Rails 4.0
+# http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html
+gem 'protected_attributes'
 
 # Server Management
 gem "pg"
