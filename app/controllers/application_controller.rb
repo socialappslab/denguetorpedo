@@ -174,7 +174,7 @@ class ApplicationController < ActionController::Base
   private
 
   def user_not_authorized
-    render :file => "public/401.html", :layout => nil, :status => :unauthorized
+    render :file => "public/401.html", :layout => false, :status => :unauthorized
   end
 
   def setup_breadcrumbs
