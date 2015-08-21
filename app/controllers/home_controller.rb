@@ -88,7 +88,7 @@ class HomeController < ApplicationController
   def redirect_if_logged_in
     flash.keep(:notice)
     flash.keep(:alert)
-    redirect_to user_path(@current_user) if @current_user.present?
+    redirect_to city_path(@current_user.city) if @current_user.present?
   end
 
   #----------------------------------------------------------------------------
