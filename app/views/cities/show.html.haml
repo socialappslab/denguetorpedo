@@ -16,8 +16,8 @@
         - @neighborhoods.each do |neighborhood|
           .text-center
             = link_to neighborhood_path(neighborhood) do
-              - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 100px; width: 100px;")
-            %p.lato-font.text-center{"style" => "margin-top: 10px; margin-bottom: 20px;"}
+              - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 200px; width: 200px;")
+            %p.lato-font.text-center{"style" => "margin-top: 10px; margin-bottom: 20px; font-size: 18px;"}
               = link_to neighborhood.name, neighborhood_path(neighborhood)
           %hr.muted.slightly-wide
 
