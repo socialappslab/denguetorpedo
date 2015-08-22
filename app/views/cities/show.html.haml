@@ -24,7 +24,7 @@
 
     .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username), "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
       - if @current_user
-        %new-post
+        %new-post-custom
 
       #newsfeed
         %h1.hidden.text-center{"ng-show" => "errorMessage"}
