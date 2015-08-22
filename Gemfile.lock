@@ -64,8 +64,6 @@ GEM
     bcrypt (3.1.10)
     bcrypt-ruby (3.0.1)
     benchmark-ips (2.2.0)
-    bootstrap-sass (3.2.0.2)
-      sass (~> 3.2)
     bourbon (3.2.4)
       sass (~> 3.2)
       thor
@@ -346,7 +344,6 @@ DEPENDENCIES
   angularjs-rails
   aws-sdk (< 2.0)
   bcrypt-ruby (~> 3.0.0)
-  bootstrap-sass (~> 3.2.0)
   cancan
   capybara
   coffee-rails (~> 3.2.1)
