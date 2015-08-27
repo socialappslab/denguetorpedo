@@ -37,14 +37,12 @@ gem "pundit"
 gem 'rails', "4.2"
 gem 'rails_autolink'
 gem 'rails-i18n'
-gem 'rmagick'
 gem "roo", :require => false
 gem 'sass-rails', "~> 5.0"
 gem "sidekiq"
 gem 'sinatra', :require => nil
 gem 'uglifier', '>= 1.0.3'
 gem "yuicompressor"
-
 
 #------------------------------------------------------------------------------
 
