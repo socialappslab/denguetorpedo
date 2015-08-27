@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     @neighborhoods     = @city.neighborhoods.includes(:city, :notices, :users)
 
     @post              = Post.new
-    @badges            = @user.badges
+    # @badges            = @user.badges
     @teams             = @user.teams
     @neighborhood      = @user.neighborhood
     @prizes            = Prize.where('stock > 0').where(:is_badge => false).where('expire_on >= ? OR expire_on is NULL', Time.zone.now)
