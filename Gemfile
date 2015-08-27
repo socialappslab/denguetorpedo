@@ -11,7 +11,6 @@ gem 'angularjs-rails'
 # See: http://stackoverflow.com/questions/28374401/nameerror-uninitialized-constant-paperclipstorages3aws
 gem 'aws-sdk', '< 2.0'
 
-# User management
 gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'bootstrap-sass', '~> 3.2.0'
 
@@ -29,29 +28,16 @@ gem 'jquery-ui-rails'
 
 gem 'haml'
 gem "http_accept_language"
-
-# JSON
 gem "jbuilder"
-
-
-# Rails
-gem 'rails', "4.2"
-gem 'rails_autolink'
-
-# Server Management
-gem "pg"
-
-
 gem 'paperclip', '~> 4.2.0'
-
+gem "pg"
 # Needed for a smooth upgrade from Rails 3.2 to Rails 4.0
 # http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html
 gem 'protected_attributes'
-
 gem "puma"
 gem "pundit"
-
-# gem "rack-timeout"
+gem 'rails', "4.2"
+gem 'rails_autolink'
 gem 'rails-i18n'
 gem 'rmagick'
 gem "roo", :require => false
