@@ -10,6 +10,7 @@
 *= require reports
 *= require neighborhoods
 *= require users
+*= require feed
 *= require "ios"
 *= require "jquery/atwho-min"
 */
@@ -372,22 +373,6 @@ div {
     font-family: "Lato" sans-serif;
     font-weight: 400;
     font-size: 20px;
-  }
-}
-
-.feed-item-new-comment {
-  display: none;
-}
-
-.feed-item-comment-form {
-  button {
-    float: right;
-    display: inline-block;
-    margin-top: 10px;
-  }
-
-  i {
-    display:none;
   }
 }
 
