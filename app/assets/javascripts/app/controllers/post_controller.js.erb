@@ -140,6 +140,23 @@ var newPostDirective = function(){
   }
 }
 
+var newPostCustomDirective = function(){
+  return {
+    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
+    templateUrl: "<%= asset_path('posts/new_custom.html') %>",
+    link: function(scope, element, attrs) {
+      scope.submitButtonDisabled = false;
+
+      angular.element(element).find("textarea").atwho({
+        at: "@",
+        data: scope.usernames,
+        limit: 5
+      })
+    }
+  }
+}
+
+
 var newCommentDirective = function(){
   return {
     restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
@@ -236,6 +253,7 @@ postController.directive("postCommentNew", commentNewDirective);
 postController.directive("feedItem", feedItemDirective);
 postController.directive("feedItemNew", feedItemNewDirective);
 postController.directive("newPost", newPostDirective);
+postController.directive("newPostCustom", newPostCustomDirective);
 postController.directive("fileUpload", fileUploadDirective);
 postController.directive("newComment", newCommentDirective);
 
