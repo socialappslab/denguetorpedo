@@ -39,7 +39,7 @@ Dengue::Application.configure do
   # Generate digests for assets URLs
   config.assets.digest                     = true
   config.static_cache_control              = "public, max-age=2592000"
-  config.serve_static_assets               = true
+  config.serve_static_files               = true
   config.action_controller.perform_caching = true
 
   # Configure Rack::Cache to use Dalli Memcached client.

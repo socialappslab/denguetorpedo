@@ -24,8 +24,6 @@ gem "devise-i18n"
 gem "figaro"
 gem "foreman"
 
-gem 'jquery-ui-rails'
-
 gem 'haml'
 gem "http_accept_language"
 gem "jbuilder"

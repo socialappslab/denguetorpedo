@@ -46,7 +46,7 @@ Dengue::Application.configure do
 
   # config.assets.digest                     = true
   # config.static_cache_control              = "public, max-age=2592000"
-  # config.serve_static_assets               = true
+  # config.serve_static_files               = true
   config.action_controller.perform_caching = false
 
   # config.i18n.available_locales = :pt
