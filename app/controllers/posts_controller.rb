@@ -11,7 +11,7 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
 
     # Remove the specific notification from the array of @notifications!
-    notification = @notifications.where(:notification_type => "Post").where(:notification_id => @post.id).pop
+    notification = @notifications.where(:notification_type => "Post").where(:notification_id => @post.id).first
     notification.update_column(:seen_at, Time.zone.now) if notification.present?
 
     # NOTE: For now, we're clearing both comments and posts if they visit the post.

@@ -92,7 +92,7 @@ class User < ActiveRecord::Base
   has_many :recruitees, :through => :recruitee_relationships, :source => :recruitee
   belongs_to :neighborhood
 
-  scope :residents, where("role = 'morador' OR role = 'coordenador'")
+  scope :residents, -> { where("role = 'morador' OR role = 'coordenador'") }
 
 
   has_many :team_memberships, :dependent => :destroy

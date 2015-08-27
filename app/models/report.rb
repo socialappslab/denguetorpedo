@@ -99,7 +99,7 @@ class Report < ActiveRecord::Base
 
   accepts_nested_attributes_for :location
 
-  scope :sms, where(sms: true).order(:created_at)
+  scope :sms,         -> { where(sms: true).order(:created_at) }
   scope :displayable, -> { where("larvae = ? OR pupae = ? OR protected = ? OR protected IS NULL", true, true, false) }
   scope :completed,   -> { where("verified_at IS NOT NULL") }
   scope :incomplete,  -> { where("verified_at IS NULL") }

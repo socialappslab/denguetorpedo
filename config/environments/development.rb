@@ -13,6 +13,8 @@ Dengue::Application.configure do
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 
+  config.eager_load = false
+
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
 
@@ -31,7 +33,7 @@ Dengue::Application.configure do
 
   # Do not compress assets
   config.assets.compress = false
-  config.assets.js_compressor  = :uglifier
+  # config.assets.js_compressor  = :uglifier
 
 
   # Expands the lines which load the assets

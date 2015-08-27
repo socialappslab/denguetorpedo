@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::ReportsController < API::V0::BaseController
-  skip_before_filter :authenticate_user_via_device_token, :only => [:destroy]
-  before_filter :current_user, :only => [:destroy]
+  skip_before_action :authenticate_user_via_device_token, :only => [:destroy]
+  before_action :current_user, :only => [:destroy]
 
   #----------------------------------------------------------------------------
   # GET /api/v0/reports
@@ -32,7 +32,7 @@ class API::V0::ReportsController < API::V0::BaseController
     @report.before_photo    = paperclip_image
 
     if params[:report][:address].present?
-      location = Location.find_or_create_by_address(params[:report][:address])
+      location = Location.find_or_create_by(:address => params[:report][:address])
       @report.location_id = location.id
     end
 

@@ -40,7 +40,6 @@ describe "Eliminating a Report", :type => :feature do
 
     expect(page).to have_content("Eliminado")
     expect(page).to have_content(report.reporter.display_name)
-    expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq(Time.zone.now.strftime("%Y-%m-%d"))
   end
 
   it "does not overwrite the reporter id when a different user eliminates report" do

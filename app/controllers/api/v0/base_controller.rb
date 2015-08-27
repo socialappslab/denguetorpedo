@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::BaseController < ApplicationController
-  before_filter :authenticate_user_via_device_token
-  before_filter :set_locale
+  before_action :authenticate_user_via_device_token
+  before_action :set_locale
 
   #----------------------------------------------------------------------------
 
@@ -22,10 +22,7 @@ class API::V0::BaseController < ApplicationController
   private
 
   def authenticate_user_via_device_token
-    token = request.headers["DengueChat-API-V0-Device-Session-Token"]
-
-    puts "\n\n\n\nTOKEN: #{token}\n\n\n"
-
+    token = request.env["DengueChat-API-V0-Device-Session-Token"]
     d = DeviceSession.find_by_token(token)
     if d.present?
       @user = d.user

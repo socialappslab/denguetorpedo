@@ -88,21 +88,8 @@
   /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  -# = javascript_include_tag "map"
-  -# = javascript_include_tag "googlemap/map"
   = javascript_include_tag "image-compression"
-
-  :scss
-    .report-topbar {
-      .name {
-        width: auto;
-
-        .feed-item-timestamp {
-          width: 200px;
-          display: block;
-        }
-      }
-    }
+  = stylesheet_link_tag "reports"
 
   :javascript
     $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {

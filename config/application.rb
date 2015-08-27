@@ -5,10 +5,9 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 
 if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  # Bundler.require *Rails.groups(:assets => %w(development test))
-  # If you want your assets lazily compiled in production, use this line
-  Bundler.require(:default, :assets, Rails.env)
+  # Require the gems listed in Gemfile, including any gems
+  # you've limited to :test, :development, or :production.
+  Bundler.require(*Rails.groups)
 end
 
 module Dengue
@@ -16,7 +15,14 @@ module Dengue
 
     # Comress HTML and JS/CSS using gzip and deflate. See:
     # https://robots.thoughtbot.com/content-compression-with-rack-deflater
-    config.middleware.use Rack::Deflater
+    # config.middleware.use Rack::Deflater
+
+    # DEPRECATION WARNING: Currently, Active Record suppresses errors raised within
+    # `after_rollback`/`after_commit` callbacks and only print them to the logs.
+    # In the next version, these errors will no longer be suppressed. Instead,
+    # the errors will propagate normally just like in other Active Record callbacks.
+    # You can opt into the new behavior and remove this warning by setting:
+    config.active_record.raise_in_transactional_callbacks = true
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

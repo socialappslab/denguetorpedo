@@ -3,19 +3,21 @@ class ApplicationController < ActionController::Base
   include Pundit
   protect_from_forgery
 
-  before_filter :current_user
-  before_filter :set_locale
-  before_filter :get_new_notifications
+  before_action :current_user
+  before_action :set_locale
+  before_action :get_new_notifications
 
-  before_filter :identify_for_segmentio
-  before_filter :get_locale_specific_url
-  before_filter :set_cookies
-  before_filter :setup_breadcrumbs
+  before_action :identify_for_segmentio
+  before_action :get_locale_specific_url
+  before_action :set_cookies
+  before_action :setup_breadcrumbs
 
   # TODO: Work through this some other time. As of 2014-12-18, we should
   # focus on other efforts.
   # See this for motivation: http://www.elabs.se/blog/36-working-with-time-zones-in-ruby-on-rails
-  around_filter :set_time_zone
+  around_action :set_time_zone
+
+  after_action :set_csrf_cookie_for_ng
 
   #-------------------------------------------------------------------------------------------------
 
@@ -53,10 +55,24 @@ class ApplicationController < ActionController::Base
 
   #----------------------------------------------------------------------------
 
-  protected
+  def set_csrf_cookie_for_ng
+    cookies['XSRF-TOKEN'] = form_authenticity_token if protect_against_forgery?
+  end
 
   #----------------------------------------------------------------------------
 
+  protected
+
+
+  #-------------------------------------------------------------------------------------------------
+
+  # See: http://stackoverflow.com/questions/7600347/rails-api-design-without-disabling-csrf-protection
+  # We basically treat the request verified if XSRF-TOKEN is set in the header (automatically by AngularJS)
+  def verified_request?
+    super || valid_authenticity_token?(session, request.headers['X-XSRF-TOKEN'])
+  end
+
+  #-------------------------------------------------------------------------------------------------
 
   def require_login
     @current_user ||= User.find_by_auth_token( params[:auth_token] )
@@ -79,7 +95,7 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
 
   def current_user
-    @current_user ||= User.find_by_auth_token(cookies[:auth_token]) if cookies[:auth_token]
+    @current_user ||= User.find_by(:auth_token => cookies[:auth_token]) if cookies[:auth_token]
   end
 
   #----------------------------------------------------------------------------
@@ -174,7 +190,7 @@ class ApplicationController < ActionController::Base
   private
 
   def user_not_authorized
-    render :file => "public/401.html", :layout => nil, :status => :unauthorized
+    render :file => "public/401.html", :layout => false, :status => :unauthorized
   end
 
   def setup_breadcrumbs
