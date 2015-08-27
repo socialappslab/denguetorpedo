@@ -20,6 +20,12 @@ class API::V0::Teams::PostsController < API::V0::BaseController
      @posts = @posts.offset(params[:offset].to_i)
     end
 
+    if @current_user.present?
+      likes               = @current_user.likes
+      @user_post_likes    = likes.where(:likeable_type => Post.name).pluck(:likeable_id)
+      @user_comment_likes = likes.where(:likeable_type => Comment.name).pluck(:likeable_id)
+    end
+
     render "api/v0/posts/index" and return
   end
 

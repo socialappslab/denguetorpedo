@@ -8,6 +8,8 @@ end
 
 json.timestamp timestamp_in_metadata(post.created_at)
 
+json.liked @user_post_likes.include?(post.id)
+
 #-------------
 # Associations
 #-------------

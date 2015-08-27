@@ -26,7 +26,7 @@
   .feed-item-content{"ng-bind-html" => "comment.content"}
 
   .feed-item-interaction-menu
-    %a.likes_button{"ng-click" => "updateCommentLikesCounter(comment)", "ng-style" => "{color: comment.likeColor}"}
+    %a.likes_button{"ng-click" => "updateCommentLikesCounter(comment)", "ng-style" => "{color: comment.liked == true ? '#3498db' : '#8899a6'}"}
       %i.fa.fa-thumbs-up.like-icon
       %span
         {{comment.likes_count}}

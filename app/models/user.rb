@@ -92,6 +92,8 @@ class User < ActiveRecord::Base
   has_many :recruitees, :through => :recruitee_relationships, :source => :recruitee
   belongs_to :neighborhood
 
+  has_many :likes
+
   scope :residents, -> { where("role = 'morador' OR role = 'coordenador'") }
 
 
