@@ -15,7 +15,7 @@ describe API::V0::ReportsController do
 
   it "returns list of user's reports" do
     request.env["DengueChat-API-V0-Device-Session-Token"] = device_session.token
-    get :index, nil
+    get :index, nil, :format => :json
     expect(JSON.parse(response.body)).to eq("reports" => [])
   end
 

@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::ReportsController < API::V0::BaseController
-  skip_before_filter :authenticate_user_via_device_token, :only => [:destroy]
-  before_filter :current_user, :only => [:destroy]
+  skip_before_action :authenticate_user_via_device_token, :only => [:destroy]
+  before_action :current_user, :only => [:destroy]
 
   #----------------------------------------------------------------------------
   # GET /api/v0/reports
