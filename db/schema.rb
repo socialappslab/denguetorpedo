@@ -497,8 +497,8 @@ ActiveRecord::Schema.define(:version => 20150731031606) do
     t.string   "name"
   end
 
-  add_index "users", ["auth_token"], :name => "index_users_on_auth_token"
-  add_index "users", ["username"], :name => "index_users_on_username", :unique => true
+  add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
   create_table "visits", :force => true do |t|
     t.integer  "location_id"
