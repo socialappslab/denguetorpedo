@@ -2,6 +2,134 @@
 require 'rack/test'
 
 FactoryGirl.define do
+	factory :breeding_site do
+		description_in_pt "Test"
+		description_in_es "Test"
+
+		after(:create) do |site|
+			create_list(:elimination_method, 1, :breeding_site_id => site.id)
+		end
+	end
+
+	factory :city do
+		name "San Francisco"
+		state "San Francisco"
+		state_code "SF"
+		time_zone "America/Guatemala"
+		country "United States"
+	end
+
+	factory :comment
+	factory :conversation
+	factory :csv_error
+
+	factory :csv_report do
+		factory :parsed_csv do
+			csv Rack::Test::UploadedFile.new('spec/support/nicaragua_csv/N002001003.xlsx', 'text/csv')
+			parsed_at { Time.zone.now }
+			association :location
+			association :user
+		end
+
+		association :neighborhood
+	end
+
+	factory :device_session
+	factory :documentation_section
+
+	factory :elimination_method do
+		description_in_pt "Eliminated Test"
+		description_in_es "Eliminated Test"
+		points 10
+	end
+
+	factory :inspection
+	factory :like
+	factory :location do
+		address 		"Rua Tatajuba 50"
+		association :neighborhood
+	end
+
+	factory :notice do
+		title "Title"
+		description "Description"
+		summary "Summary"
+		location "DT Headquarter"
+		date Time.zone.now
+	end
+
+	factory :notification
+
+	factory :post do
+		content "Hello world"
+	end
+
+	factory :neighborhood do
+		name "Test neighborhood"
+		association :city
+	end
+
+	factory :prize_code
+
+	factory :prize do
+		prize_name "Prize"
+		cost 100
+		stock 100
+		description "Description"
+	end
+
+
+  factory :report do
+    report 			 "Description"
+    before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+		association  :breeding_site
+		association  :neighborhood
+		verified_at  {Time.zone.now}
+
+		factory :positive_report do
+			larvae true
+		end
+
+		factory :potential_report do
+			larvae false
+			pupae  false
+		end
+
+		factory :negative_report do
+			protected true
+		end
+
+		factory :full_report do
+			created_at Time.zone.now
+			association :reporter, :factory => :user
+		end
+  end
+
+	factory :team do
+		association :neighborhood
+	end
+
+	factory :team_membership
+
+
+	factory :user_notification do
+		medium UserNotification::Mediums::WEB
+		notified_at { Time.zone.now }
+
+		factory :message_notification do
+			notification_type "Message"
+		end
+
+		factory :post_notification do
+			notification_type "Post"
+		end
+
+		factory :comment_notification do
+			notification_type "Comment"
+		end
+	end
+
+
 	factory :user do |user|
 		name 		 { Faker::Name.first_name }
 		username { Faker::Internet.user_name.gsub(" ", "").gsub(".", "") }
@@ -33,145 +161,7 @@ FactoryGirl.define do
 		end
 	end
 
-	factory :like
-	factory :comment
+	factory :visit
 
-	factory :notification
-
-	factory :documentation_section
-
-	factory :prize_code
-
-	factory :device_session
-
-	factory :prize do
-		prize_name "Prize"
-		cost 100
-		stock 100
-		description "Description"
-	end
-
-	factory :location do
-		address 		"Rua Tatajuba 50"
-		association :neighborhood
-	end
-
-	factory :notice do
-		title "Title"
-		description "Description"
-		summary "Summary"
-		location "DT Headquarter"
-		date Time.zone.now
-	end
-
-	factory :post do
-		content "Hello world"
-	end
-
-	factory :csv_report do
-		factory :parsed_csv do
-			csv Rack::Test::UploadedFile.new('spec/support/nicaragua_csv/N002001003.xlsx', 'text/csv')
-			parsed_at { Time.zone.now }
-			association :location
-			association :user
-		end
-
-		association :neighborhood
-	end
-	factory :csv_error
-
-	#-----------------------------------------------------------------------------
-
-	factory :city do
-		name "San Francisco"
-		state "San Francisco"
-		state_code "SF"
-		time_zone "America/Guatemala"
-		country "United States"
-	end
-
-	factory :neighborhood do
-		name "Test neighborhood"
-		association :city
-	end
-
-	factory :elimination_method do
-		description_in_pt "Eliminated Test"
-		description_in_es "Eliminated Test"
-		points 10
-	end
-
-	factory :breeding_site do
-		description_in_pt "Test"
-		description_in_es "Test"
-
-		after(:create) do |site|
-			create_list(:elimination_method, 1, :breeding_site_id => site.id)
-		end
-	end
-
-
-  factory :report do
-    report 			 "Description"
-    before_photo Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
-		association  :breeding_site
-		association  :neighborhood
-		verified_at  {Time.zone.now}
-
-		factory :positive_report do
-			larvae true
-		end
-
-		factory :potential_report do
-			larvae false
-			pupae  false
-		end
-
-		factory :negative_report do
-			protected true
-		end
-
-		factory :full_report do
-			created_at Time.zone.now
-			association :reporter, :factory => :user
-		end
-
-  end
-
-	factory :inspection
-
-	#-----------------------------------------------------------------------------
-
-	factory :visit do
-	end
-
-	#-----------------------------------------------------------------------------
-
-	factory :team do
-		association :neighborhood
-	end
-
-	factory :team_membership do
-	end
-
-	factory :conversation do
-	end
-
-	factory :user_notification do
-		medium UserNotification::Mediums::WEB
-		notified_at { Time.zone.now }
-
-		factory :message_notification do
-			notification_type "Message"
-		end
-
-		factory :post_notification do
-			notification_type "Post"
-		end
-
-		factory :comment_notification do
-			notification_type "Comment"
-		end
-	end
 
 end
