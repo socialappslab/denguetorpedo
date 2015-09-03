@@ -41,7 +41,6 @@ class Location < ActiveRecord::Base
   # b) the span of green visits is at least 2 months.
   def green?
     visits = self.visits.order("visited_at DESC").map {|v| {:date => v.visited_at, :status => v.identification_type} }
-    puts "visit: #{visits}"
     return false if visits.blank?
 
     # Starting from the first index, let's see what the largest streak of
@@ -51,8 +50,6 @@ class Location < ActiveRecord::Base
        break if hash[:status] != Inspection::Types::NEGATIVE
        green_streak += 1
      end
-
-     puts "green_streak: #{green_streak}"
 
      # If the streak is 0, then the first visit is not green.
      # If the streak is 1, then the first visit is green, but not the second.

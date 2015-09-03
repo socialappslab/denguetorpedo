@@ -234,6 +234,23 @@ class User < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # A user is associated with a location if
+  # a) They created a report for that location, and/or
+  # b) They eliminated a report for that location,
+  # c) They uploaded a CSV for that location.
+  def locations
+    report_loc_ids     = self.reports.pluck(:location_id)
+    csv_report_loc_ids = self.csv_reports.pluck(:location_id)
+    loc_ids = (report_loc_ids + csv_report_loc_ids).uniq
+    return Location.where(:id => loc_ids)
+  end
+
+  def green_locations
+    self.locations.find_all {|l| l.green?}
+  end
+
+  #----------------------------------------------------------------------------
+
   private
 
   def clean_username
