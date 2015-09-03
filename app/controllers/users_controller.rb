@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
   before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
-  before_filter :update_breadcrumb
 
 
   #----------------------------------------------------------------------------
@@ -140,10 +139,6 @@ class UsersController < ApplicationController
   #----------------------------------------------------------------------------
 
   private
-
-  def update_breadcrumb
-    @breadcrumbs << {:name => I18n.t("activerecord.models.user", :count => 2), :path => users_path}
-  end
 
   #----------------------------------------------------------------------------
 
