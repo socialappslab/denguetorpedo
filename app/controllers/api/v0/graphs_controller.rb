@@ -11,7 +11,7 @@ class API::V0::GraphsController < API::V0::BaseController
 
   def locations
     neighborhood_id = cookies[:neighborhood_id] || params[:neighborhood_id] || @current_user.neighborhood_id
-    @neighborhood = Neighborhood.find_by_id(neighborhood_id)
+    neighborhood = Neighborhood.find_by_id(neighborhood_id)
 
     # Determine the timeframe based on timeframe OR custom date ranges.
     if params[:custom_start_month].present? || params[:custom_start_year].present?
@@ -38,24 +38,24 @@ class API::V0::GraphsController < API::V0::BaseController
 
     selected_location_ids = JSON.parse(params[:location_ids]) if params[:location_ids].present?
     if selected_location_ids.present?
-      @visit_ids = selected_location_ids
-      @locations = Location.where(:id => selected_location_ids)
+      visit_ids = selected_location_ids
+      locations = Location.where(:id => selected_location_ids)
     elsif params[:csv_only].present?
-      @locations = @neighborhood.locations.where("locations.id IN (SELECT location_id FROM csv_reports)")
-      @visit_ids = @locations.pluck(:id)
+      locations = neighborhood.locations.where("locations.id IN (SELECT location_id FROM csv_reports)")
+      visit_ids = locations.pluck(:id)
     else
-      @locations = @neighborhood.locations
-      @visit_ids = @locations.pluck(:id)
+      locations = neighborhood.locations
+      visit_ids = locations.pluck(:id)
     end
-    @locations = @locations.order("address ASC")
+    locations = locations.order("address ASC")
 
     if params[:percentages] == "daily"
-      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "daily")
+      statistics = Visit.calculate_status_distribution_for_locations(visit_ids, start_time, end_time, "daily")
     else
-      @statistics = Visit.calculate_status_distribution_for_locations(@visit_ids, start_time, end_time, "monthly")
+      statistics = Visit.calculate_status_distribution_for_locations(visit_ids, start_time, end_time, "monthly")
     end
 
-    @statistics.unshift([I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')])
+    statistics.unshift([I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')])
 
     # Update the cookies.
     if cookies[:chart].present?
@@ -71,6 +71,6 @@ class API::V0::GraphsController < API::V0::BaseController
       cookies[:chart] = settings.to_json
     end
 
-    render :json => {:data => @statistics.as_json, :locations => @locations.as_json}, :status => 200 and return
+    render :json => {:data => statistics.as_json, :locations => locations.as_json}, :status => 200 and return
   end
 end
