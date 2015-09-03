@@ -127,16 +127,6 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /users/1/buy_prize/1
-
-  def buy_prize
-    @user       = User.find(params[:id])
-    @prize      = Prize.find(params[:prize_id])
-    @prize_code = @user.generate_coupon_for_prize(@prize)
-    render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
-  end
-
-  #----------------------------------------------------------------------------
 
   private
 

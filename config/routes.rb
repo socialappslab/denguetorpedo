@@ -150,7 +150,6 @@ Dengue::Application.routes.draw do
   match "/user/:id/prize_codes" => 'prize_codes#index', :via => :get
   match "/user/:id/prize_codes/:prize_id" => 'prize_codes#show', :via => :get
   match "/user/:id/prize_codes/:prize_id/redeem/:prize_code_id" => 'prize_codes#redeem', :via => :get
-  match "/user/:id/buy_prize/:prize_id" => 'users#buy_prize', :via => :get
 
   # TODO: We should limit the routes that we expose for users. :except => here
   # shouldn't really exist.

@@ -96,7 +96,6 @@ class User < ActiveRecord::Base
 
   scope :residents, -> { where("role = 'morador' OR role = 'coordenador'") }
 
-
   has_many :team_memberships, :dependent => :destroy
   has_many :teams, :through => :team_memberships
 
@@ -114,18 +113,7 @@ class User < ActiveRecord::Base
     Report.where("reporter_id = ? OR eliminator_id = ?", self.id, self.id).order("updated_at DESC")
   end
 
-  def incomplete_reports
-    reports = Report.where("reporter_id = ? OR eliminator_id = ?", self.id, self.id)
-    reports = reports.order("created_at DESC").incomplete.displayable
-    return reports
-  end
-
   #----------------------------------------------------------------------------
-
-  # TODO: Deprecate this method...
-  def location
-    house && house.location
-  end
 
   def city
     return self.neighborhood.city
@@ -136,11 +124,6 @@ class User < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
-
-  def award_points_for_referring
-    points = self.total_points || 0
-    self.update_column(:total_points, points + Points::REFERRAL)
-  end
 
   def award_points_for_posting
     points = self.total_points || 0
@@ -155,14 +138,6 @@ class User < ActiveRecord::Base
     self.update_column(:total_points, points + Points::REPORT_SUBMITTED)
     self.teams.each do |team|
       team.update_column(:points, team.points + Points::REPORT_SUBMITTED)
-    end
-  end
-
-  def award_points_for_verifying(report)
-    points = self.total_points || 0
-    self.update_column(:total_points, points + Points::REPORT_VERIFIED)
-    self.teams.each do |team|
-      team.update_column(:points, team.points + Points::REPORT_VERIFIED)
     end
   end
 
@@ -187,22 +162,6 @@ class User < ActiveRecord::Base
     self.password_reset_sent_at = Time.zone.now
     save!
     UserMailer.password_reset(self).deliver
-  end
-
-  #----------------------------------------------------------------------------
-  # In order to generate a coupon for a prize, the following must happen:
-  # a) Prize stock must decrease by 1, and
-  # b) User's total points must decrease by the right amount.
-
-  def generate_coupon_for_prize(prize)
-    return nil if self.total_points < prize.cost || prize.expired?
-
-    unless prize.is_badge?
-      prize.update_attribute(:stock, [0, prize.stock - 1].max)
-      self.update_attribute(:total_points, self.total_points - prize.cost)
-
-      return PrizeCode.create(:user_id => self.id, :prize_id => prize.id)
-    end
   end
 
   #----------------------------------------------------------------------------
@@ -236,7 +195,7 @@ class User < ActiveRecord::Base
   end
 
   def sponsor?
-    self.role == "lojista"
+    self.role == User::Types::SPONSOR
   end
 
   def residents?
@@ -260,18 +219,6 @@ class User < ActiveRecord::Base
       req = 20
     end
     req
-  end
-
-  #----------------------------------------------------------------------------
-
-  def total_torpedos
-    self.reports.sms.where('breeding_site_id IS NOT NULL')
-  end
-
-  #----------------------------------------------------------------------------
-
-  def creditable_torpedos
-    self.reports.sms.where('breeding_site_id IS NOT NULL').where(is_credited: nil)
   end
 
   #----------------------------------------------------------------------------

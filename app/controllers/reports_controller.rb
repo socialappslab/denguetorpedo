@@ -290,7 +290,7 @@ class ReportsController < NeighborhoodsBaseController
     # Set the attr accessor on report to save with/without photo
     @report.save_without_before_photo = (params[:has_before_photo].to_i == 0)
 
-    base64_image = params[:report][:compressed_photo]
+    base64_image = params[:report].delete(:compressed_photo)
     if base64_image.blank? && @report.save_without_before_photo == false
       flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       render "verify" and return
