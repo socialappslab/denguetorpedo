@@ -19,9 +19,11 @@ json.locations @locations do |location|
 
     barrel_reports = visit.reports.where(:breeding_site_id => BreedingSite.find_by_code("B").id)
     json.barrel_reports do |report|
+      json.total     barrel_reports.count
       json.protected barrel_reports.where(:protected => true).count
+      json.unprotected barrel_reports.where(:protected => false).count
       json.larvae    barrel_reports.where(:larvae => true).count
-      json.pupae    barrel_reports.where(:pupae => true).count
+      json.pupae     barrel_reports.where(:pupae => true).count
       json.chemically_treated    barrel_reports.where(:chemically_treated => true).count
     end
   end

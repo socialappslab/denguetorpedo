@@ -94,6 +94,7 @@ es:
         after_photo: Foto de eliminación
         elimination_method_id: Método de eliminación
         protected: "Protegido"
+        unprotected: "Desprotegido"
         chemically_treated: "Abatizado"
         larvae: "Larvas"
         pupae: "Pupas"
