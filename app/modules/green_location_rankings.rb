@@ -10,6 +10,12 @@ module GreenLocationRankings
     end
   end
 
+  def self.score_for_user(user)
+    $redis_pool.with do |redis|
+      redis.zscore(self.redis_key, user.id)
+    end
+  end
+
   def self.top_ten
     $redis_pool.with do |redis|
       redis.zrevrange(self.redis_key, 0, 10, :with_scores => true).map {|id, score| {:user => User.find_by_id(id), :score => score} }

@@ -1,9 +1,9 @@
 = render :partial => "shared/flashes"
 
-%div{style: "min-height:700px;"}
+.container{style: "min-height:700px;"}
   .row
-    .col-md-3.col-md-offset-1{:style => "border-right: 1px solid #ccc;"}
+    .col-md-3
       = render :partial => "users/sidebar"
 
-    .col-md-7.col-md-offset-1
+    .col-md-6
       = render :partial => "users/main"

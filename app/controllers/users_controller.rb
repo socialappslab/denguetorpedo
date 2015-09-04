@@ -3,6 +3,8 @@
 # encoding: utf-8
 
 class UsersController < ApplicationController
+  include GreenLocationRankings
+
   before_filter :require_login,             :only => [:edit, :update, :index, :show, :destroy]
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
@@ -42,6 +44,8 @@ class UsersController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
     end
+
+    @green_location_ranking = GreenLocationRankings.score_for_user(@user).to_i
 
     @breadcrumbs << {:name => @user.username, :path => user_path(@user)}
   end
