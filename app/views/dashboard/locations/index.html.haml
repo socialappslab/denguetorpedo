@@ -39,8 +39,8 @@
           %thead
             %th.text-center
               = I18n.t("attributes.location_id")
-            %th.text-center
-              Casa verde?
+            -# %th.text-center
+            -#   Casa verde?
             %th.text-center
               = I18n.t("views.dashboard.locations.visit_summary")
             %th.text-center
@@ -56,8 +56,8 @@
             %tr.thick-border{"ng-repeat-start" => "location in locations"}
               %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 10%;"}
                 {{ location.address }}
-              %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 7%;", "ng-class" => "location.green ? 'success' : 'danger'"}
-                %i.fa{"ng-class" => "location.green ? 'fa-check': 'fa-close'"}
+              -# %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 7%;", "ng-class" => "location.green ? 'success' : 'danger'"}
+              -#   %i.fa{"ng-class" => "location.green ? 'fa-check': 'fa-close'"}
 
 
               %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 10%"}

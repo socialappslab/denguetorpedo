@@ -1,9 +1,7 @@
 json.locations @locations do |location|
   json.partial! "api/v0/locations/location", :location => location
 
-  json.green location.green?
-
-
+  # json.green location.green?
   # json.barrel_reports location.reports.where(:breeding_site_id => BreedingSite.find_by_code("B").id) do |report|
   #   json.(report, :protected, :chemically_treated, :larvae, :pupae)
   # end
