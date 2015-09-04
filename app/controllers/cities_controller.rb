@@ -24,9 +24,7 @@ class CitiesController < ApplicationController
     end
 
     # Let's try to retrieve
-    @green_location_rankings = GreenLocationRankings.top_ten()
-
-
+    @green_location_rankings = GreenLocationRankings.top_ten_for_city(@city)
     @breadcrumbs << {:name => @city.name, :path => city_path(@city)}
   end
 
