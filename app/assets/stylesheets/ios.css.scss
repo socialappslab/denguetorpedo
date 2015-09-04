@@ -12,7 +12,7 @@
     margin-left: 0px; margin-right: 0px;
   }
 
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: $primary-font;
   background: $ioswhite;
   height: 54px !important;
   color: $iosblue;
@@ -78,7 +78,7 @@ div[class*="col-"] {
   }
 
   .parent-view-name {
-    font-family: "Helvetica Neue", sans-serif;
+    font-family: $primary-font;
     margin-left: 10px;
     display: inline;
     font-weight: 200;
@@ -96,7 +96,7 @@ div[class*="col-"] {
   float: right;
 
   .parent-view-name {
-    font-family: "Helvetica Neue", sans-serif;
+    font-family: $primary-font;
     margin-left: 10px;
     display: inline;
     font-weight: 200;
@@ -222,18 +222,37 @@ div[class*="col-"] {
   margin-top: 10px;
 }
 
+.lato-font {
+  font-family: $secondary-font;
+}
+
+.heavy-font {
+  font-weight: 500;
+}
+
 .light-font {
-  font-family: "Lato" sans-serif;
   font-weight: 300;
 }
 
-.lato-font {
-  font-family: "Lato" sans-serif;
-  font-weight: 400;
+.large-font {
+  font-size: 16px;
 }
 
+.larger-font {
+  font-size: 18px;
+}
+
+.largest-font {
+  font-size: 24px;
+}
+
+.green {
+  color: $green;
+}
+
+
 .light-header {
-  font-family: "Lato" sans-serif;
+  @extend .lato-font;
   font-weight: 300;
   text-align: center;
   margin-top: 40px;
@@ -242,7 +261,7 @@ div[class*="col-"] {
 
 
 .light-description {
-  font-family: "Lato" sans-serif;
+  @extend .lato-font;
   font-weight: 300;
   font-size: 20px;
 }
@@ -256,7 +275,6 @@ div[class*="col-"] {
 
 
 .well {
-  margin-top: 20px;
   background-color: white;
 
   border: 1px #D3D3D3 solid;
@@ -269,8 +287,8 @@ div[class*="col-"] {
   .errors {
     li {
       font-size: 18px;
-      font-family: "Lato" sans-serif;
-      font-weight: 300;
+      @extend .lato-font;
+      @extend .heavy-font;
     }
   }
 
@@ -301,7 +319,7 @@ div[class*="col-"] {
 }
 
 .master-detail-split-view {
-  font-family: 'Helvetica Neue', sans-serif;
+  font-family: $primary-font;
   width: 100%;
   z-index: 100;
   border-top: 1px $silver solid;
@@ -354,7 +372,7 @@ div[class*="col-"] {
     }
 
     .parent-view-name {
-      font-family: "Helvetica Neue", sans-serif;
+      font-family: $primary-font;
       margin-left: 10px;
       display: inline;
       font-weight: 200;

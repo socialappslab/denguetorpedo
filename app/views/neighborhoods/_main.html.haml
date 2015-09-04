@@ -1,31 +1,56 @@
 
 /------------------------------------------------------------------------------
 
-.row
-  .col-md-10
-    %h1{:style => "font-size: 40px; margin-bottom: 20px;"}
-      = @neighborhood.name
-
-.row
-  .col-md-9
-    %h3.chart-title
-      = I18n.t('views.statistics.chart.title')
-
-    = render :partial => "shared/locations_graph"
-
-
 .row.point-progress
-  .col-md-5
+  .col-md-6
     %h1.text-success-light
       = @total_points
     %p
       = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
 
 
-  .col-md-4.text-right
+  .col-md-6.text-right
     %h1.text-success-light
       = @total_reports
     %p
       = I18n.t("dashboard.reports")
+
+
+
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title
+      = I18n.t('views.statistics.chart.title')
+  .panel-body
+    = render :partial => "shared/locations_graph"
+
+
+
+.row
+  .col-md-12{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_neighborhood_posts_path(@neighborhood), "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
+    %h1.text-center{"style" => "margin-top: 40px; margin-bottom: 40px;"}
+      = I18n.t("views.post.feed")
+
+    - if @current_user
+      .row
+        .col-md-12
+          %new-post-custom
+    .row
+      .col-md-12
+        = render :partial => "shared/news_feed"
+
+        #newsfeed
+          %h1.text-center{"ng-show" => "errorMessage"}
+            Algo salió mal. Por favor, intente nuevamente.
+
+          %h1.text-center{"ng-show" => "dataLoading"}
+            %i.fa.fa-refresh.fa-spin
+          .feed-item-complete
+            %feed-item-new{"post" => "post", "ng-repeat" => "post in posts"}
+            .load-more{"ng-hide" => "noMoreData"}
+              .btn.btn-info.btn-lg{"ng-click" => "loadMoreMessages()"}
+                %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
+                Cargar más
+
 
 /------------------------------------------------------------------------------

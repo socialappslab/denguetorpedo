@@ -42,9 +42,9 @@ describe "Verifying a Report", :type => :feature, :js => true do
 
   it "allows to change inspection date" do
     choose("has_before_photo_0")
-    select "5", :from => "report_created_at_3i"
+    select "1", :from => "report_created_at_3i"
     click_button I18n.t("views.buttons.confirm")
-    expect(report.reload.created_at.strftime("%d")).to eq("05")
+    expect(report.reload.created_at.strftime("%d")).to eq("01")
   end
 
   it "allows to change breeding site" do

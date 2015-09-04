@@ -18,6 +18,7 @@ gem 'bootstrap-sass', '~> 3.2.0'
 # initializing a user.
 gem 'cancan'
 gem 'coffee-rails'
+gem "connection_pool"
 
 gem "devise-i18n"
 

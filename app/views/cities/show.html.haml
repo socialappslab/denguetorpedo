@@ -41,6 +41,26 @@
 
 
     .col-md-3
-      .well
-        %p.form-label
-          Casas Verdes (muy pronto)
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            Casas Verdes
+        - if @green_location_rankings.blank?
+          .panel-body
+            %p.lato-font.large-font.text-center
+              No hay casas verdes
+        - else
+          %table.table
+            %tbody
+              - @green_location_rankings.each do |ranking_hash|
+                - user = ranking_hash[:user]
+                - next if user.blank?
+                %tr
+                  %td{"style" => "vertical-align: middle;"}
+                    = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
+                  %td{"style" => "vertical-align: middle;"}
+                    .light-font
+                      = link_to user.username, user_path(user)
+                  %td{"style" => "vertical-align: middle;"}
+                    %p.largest-font.heavy-font.text-right.green
+                      = ranking_hash[:score].to_i

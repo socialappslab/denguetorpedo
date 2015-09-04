@@ -3,11 +3,12 @@
 # encoding: utf-8
 
 class UsersController < ApplicationController
+  include GreenLocationRankings
+
   before_filter :require_login,             :only => [:edit, :update, :index, :show, :destroy]
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
   before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
-  before_filter :update_breadcrumb
 
 
   #----------------------------------------------------------------------------
@@ -43,6 +44,8 @@ class UsersController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a user page", :properties => {:user => @user.id}) if Rails.env.production?
     end
+
+    @green_location_ranking = GreenLocationRankings.score_for_user(@user).to_i
 
     @breadcrumbs << {:name => @user.username, :path => user_path(@user)}
   end
@@ -128,22 +131,8 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # GET /users/1/buy_prize/1
-
-  def buy_prize
-    @user       = User.find(params[:id])
-    @prize      = Prize.find(params[:prize_id])
-    @prize_code = @user.generate_coupon_for_prize(@prize)
-    render :partial => "prizes/prizeconfirmation", :locals => {:bought => @prize_code.present?}
-  end
-
-  #----------------------------------------------------------------------------
 
   private
-
-  def update_breadcrumb
-    @breadcrumbs << {:name => I18n.t("activerecord.models.user", :count => 2), :path => users_path}
-  end
 
   #----------------------------------------------------------------------------
 

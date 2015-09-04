@@ -1,24 +1,29 @@
 
-.denguechat-sidebar
-  .sidebar-entity-photo
-    = image_tag(asset_path(@neighborhood.picture), :class => "img-rounded")
-    .sidebar-entity-name
-      = "#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code}"
-    .sidebar-entity-name
-      = "#{@neighborhood.city.localized_country_name}"
 
-  %hr
-  %h1.text-center
-    = I18n.t("activerecord.models.team", :count => 2).capitalize
+.panel.panel-default
+  .panel-body
+    .denguechat-sidebar
+      .sidebar-entity-photo
+        = image_tag(asset_path(@neighborhood.picture), :class => "img-rounded")
+        .sidebar-entity-name
+          = "#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code}"
+        .sidebar-entity-name
+          = "#{@neighborhood.city.localized_country_name}"
 
-  .row.sidebar-row
-    .col-md-12
+
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title
+      = I18n.t("activerecord.models.team", :count => 2).capitalize
+  .panel-body
+    .sidebar-row
       = render :partial => "shared/sidebar_list", :locals => { :items => @teams }
 
-  %hr
-  %h1.text-center
-    = I18n.t("common_terms.participants").capitalize
 
-  .row.sidebar-row
-    .col-md-12
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title
+      = I18n.t("common_terms.participants").capitalize
+  .panel-body
+    .sidebar-row
       = render :partial => "shared/sidebar_list", :locals => { :items => @users }

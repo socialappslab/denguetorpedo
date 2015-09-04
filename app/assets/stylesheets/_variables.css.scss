@@ -43,7 +43,7 @@ $denguechat-silver: rgba(189, 195, 199, 0.1);
 
 // IOS specific variables
 // $yellow: #f1c40f;
-// $green: #2ecc71;
+$green: #2ecc71;
 // $blue: #3498db;
 // $dark-blue: #2c3e50;
 // $red: #e74c3c;
@@ -57,6 +57,9 @@ $iosblue:  #007AFF;
 $iosgrey: #EFEFF4;
 $iosdarkgrey: #8E8E93;
 
+
+// Bootstrap
+$green: #5cb85c;
 
 // flatuicolors.com
 $midnight-blue: #2c3e50;
@@ -73,6 +76,5 @@ $bootstrap-info: #5bc0de;
 // Fonts
 $primary-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $secondary-font: "Lato" sans-serif;
-$font-weight: 300;
-
+$font-weight: 400;
 $secondary-content-color: #8899a6;

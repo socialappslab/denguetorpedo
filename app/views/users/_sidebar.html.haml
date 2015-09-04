@@ -1,39 +1,59 @@
 
-.denguechat-sidebar
-  .sidebar-entity-photo
-    = image_tag(asset_path(@user.picture), :class => "img-rounded")
-    .sidebar-entity-name
-      = @user.display_name
-
-  .row
-    .col-md-12
-      - if @user == @current_user
-        .sidebar-entity-name.text-left
-          = link_to edit_user_path(@current_user) do
-            %i.fa.fa-gear.fa-2
-            = I18n.t("common_terms.configuration")
-
-      - if @user.neighborhood.present?
-        .sidebar-entity-name.text-left
-          = link_to neighborhood_path(@neighborhood) do
-            %i.fa.fa-users.fa-2
-            = @neighborhood.geographical_display_name
+.panel.panel-default
+  .panel-body
+    .denguechat-sidebar
+      .sidebar-entity-photo
+        = image_tag(asset_path(@user.picture), :class => "img-rounded")
+        .sidebar-entity-name
+          = @user.display_name
 
 
-  %hr
-  %h1.text-center
-    = I18n.t("activerecord.models.team", :count => 2).capitalize
+    - if @user == @current_user
+      .text-left
+        = link_to edit_user_path(@current_user) do
+          %i.fa.fa-gear.fa-2
+          = I18n.t("common_terms.configuration")
 
-  .row.sidebar-row
-    .col-md-12
-      = render :partial => "shared/sidebar_list", :locals => {:items => @teams}
+    - if @user.neighborhood.present?
+      .text-left
+        = link_to neighborhood_path(@neighborhood) do
+          %i.fa.fa-users.fa-2
+          = @neighborhood.geographical_display_name
 
 
-  %hr
-  %h1.text-center
-    = I18n.t("common_terms.badges").capitalize
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title
+      = I18n.t("activerecord.models.team", :count => 2).capitalize
+  %table.table
+    %tbody
+    - @teams.each do |item|
+      %tr
+        - if item.is_a?(Team)
+          - item_path = team_path(item)
+          - link_name = item.name
+        - elsif item.is_a?(User)
+          - item_path = user_path(item)
+          - link_name = item.display_name
 
-  - if @user.total_points >= 100
-    .row.sidebar-row.text-center
-      .col-md-12
-        = render :partial => "users/badges"
+        %td{"style" => "vertical-align: middle;"}
+          = link_to image_tag(asset_path(item.picture), :class => "img-rounded", :style => "height: 50px; width: 50px;"), item_path
+        %td{"style" => "vertical-align: middle;"}
+          = link_to link_name, item_path
+        %td{"style" => "vertical-align: middle;"}
+          - if @current_user && @current_user == @user && item.is_a?(Team)
+            = form_tag leave_team_path(item), :method => "post", "data-confirm" => I18n.t("views.alerts.confirm_leave_team"), "data-path" => leave_team_path(item), :class => "leave-team-button" do
+              = button_tag(:type => "submit") do
+                %i.fa.fa-times
+
+
+
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title
+      = I18n.t("common_terms.badges").capitalize
+  .panel-body
+    - if @user.total_points >= 100
+      .row.sidebar-row.text-center
+        .col-md-12
+          = render :partial => "users/badges"

@@ -3,6 +3,7 @@ class TeamsController < ApplicationController
   before_filter :require_login
   before_filter :identify_neighborhood,            :except => [:administer]
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
+  before_filter :update_breadcrumb
 
   #----------------------------------------------------------------------------
   # GET /teams
@@ -52,6 +53,8 @@ class TeamsController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?
     end
+
+    @breadcrumbs << {:name => @team.name, :path => team_path(@team)}
   end
 
 
@@ -147,6 +150,10 @@ class TeamsController < ApplicationController
 
   def identify_neighborhood
     @neighborhood = @current_user.neighborhood
+  end
+
+  def update_breadcrumb
+    @breadcrumbs << {:name => I18n.t("activerecord.models.team", :count => 2), :path => teams_path}
   end
 
   #----------------------------------------------------------------------------

@@ -312,6 +312,7 @@ DEPENDENCIES
   cancan
   capybara
   coffee-rails
+  connection_pool
   dalli
   database_cleaner
   derailed_benchmarks!
