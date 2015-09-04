@@ -170,7 +170,8 @@ es:
   # Dashboard
   #----------
   dashboard:
-    my_profile: Inicio
+    home: Inicio
+    my_profile: Mi Perfíl
     my_house: Mi Casa
     my_community: Mi Comunidad
     reports: Criaderos

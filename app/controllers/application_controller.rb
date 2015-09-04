@@ -194,6 +194,6 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_breadcrumbs
-    @breadcrumbs = [{:name => I18n.t("dashboard.my_profile"), :path => root_path}]
+    @breadcrumbs = [{:name => I18n.t("dashboard.home"), :path => root_path}]
   end
 end
