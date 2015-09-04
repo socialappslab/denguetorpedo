@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class CitiesController < ApplicationController
+  include GreenLocationRankings
+
   #----------------------------------------------------------------------------
   # GET /cities
 
@@ -20,6 +22,10 @@ class CitiesController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited city page", :properties => {:city => @city.name}) if Rails.env.production?
     end
+
+    # Let's try to retrieve
+    @green_location_rankings = GreenLocationRankings.top_ten()
+
 
     @breadcrumbs << {:name => @city.name, :path => city_path(@city)}
   end
