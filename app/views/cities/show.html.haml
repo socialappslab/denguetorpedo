@@ -51,14 +51,16 @@
               No hay casas verdes
         - else
           %table.table
-            - @green_location_rankings.each do |ranking_hash|
-              - user = ranking_hash[:user]
-              %tr
-                %td{"style" => "vertical-align: middle;"}
-                  = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
-                %td{"style" => "vertical-align: middle;"}
-                  .light-font
-                    = link_to user.username, user_path(user)
-                %td{"style" => "vertical-align: middle;"}
-                  %p.largest-font.heavy-font.text-right.green
-                    = ranking_hash[:score].to_i
+            %tbody
+              - @green_location_rankings.each do |ranking_hash|
+                - user = ranking_hash[:user]
+                - next if user.blank?
+                %tr
+                  %td{"style" => "vertical-align: middle;"}
+                    = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
+                  %td{"style" => "vertical-align: middle;"}
+                    .light-font
+                      = link_to user.username, user_path(user)
+                  %td{"style" => "vertical-align: middle;"}
+                    %p.largest-font.heavy-font.text-right.green
+                      = ranking_hash[:score].to_i

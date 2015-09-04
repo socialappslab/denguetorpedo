@@ -12,7 +12,7 @@ module GreenLocationRankings
 
   def self.top_ten
     $redis_pool.with do |redis|
-      redis.zrevrange(self.redis_key, 0, 10, :with_scores => true).map {|id, score| {:user => User.find(id), :score => score} }
+      redis.zrevrange(self.redis_key, 0, 10, :with_scores => true).map {|id, score| {:user => User.find_by_id(id), :score => score} }
     end
   end
 
