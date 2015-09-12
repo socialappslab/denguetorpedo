@@ -146,34 +146,6 @@ var newCommentDirective = function(){
   }
 }
 
-// NOTE: We're not specifying isolate scope here since we'll *ONLY* use this
-// directive on the PostListCtrl. As such, we will use 'post' and all other
-// methods from the parent scope (e.g. the controller). If we ever introduce
-// scope here, we have to make sure that the ng-click events bubble up to the
-// parent scope.
-var feedItemNewDirective = function(){
-  return {
-    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
-    templateUrl: "<%= asset_path('posts/show_new.html') %>"
-  }
-}
-
-
-var commentNewDirective = function () {
-  return {
-    restrict: "E", // Restrict the template to being called only when using <post-comment> HTML element.
-    // NOTE: We're not specifying isolate scope here since we'll *ONLY* use this
-    // directive on the PostListCtrl. As such, we will use 'post' and all other
-    // methods from the parent scope (e.g. the controller). If we ever introduce
-    // scope here, we have to make sure that the ng-click events bubble up to the
-    // parent scope.
-    // scope: {
-    //   "comment": "=" // This is equivalent to the "=comment" scope.
-    // },
-    templateUrl: "<%= asset_path('comments/show_new.html') %>"
-  }
-};
-
 var fileUploadDirective = function() {
   return {
     restrict: 'A',
@@ -193,8 +165,6 @@ postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postLi
 
 
 // Define the directives on the controller.
-postController.directive("postCommentNew", commentNewDirective);
-postController.directive("feedItemNew", feedItemNewDirective);
 postController.directive("newPostCustom", newPostCustomDirective);
 postController.directive("fileUpload", fileUploadDirective);
 postController.directive("newComment", newCommentDirective);

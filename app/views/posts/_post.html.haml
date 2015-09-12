@@ -35,7 +35,7 @@
       Comentar
 
 // Enumerate all comments.
-%post-comment-new{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
-
+%div{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
+  = render :partial => "comments/comment"
 
 %new-comment{"post" => "post", "ng-show" => "showNewComment"}

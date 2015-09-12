@@ -5,4 +5,5 @@
         %h1.text-center{"ng-show" => "dataLoading"}
           %i.fa.fa-refresh.fa-spin
         .feed-item-complete
-          %feed-item-new{"post" => "post"}
+          %div{"post" => "post"}
+            = render :partial => "posts/post"
