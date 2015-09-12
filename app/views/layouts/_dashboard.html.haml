@@ -64,19 +64,14 @@
       CSV
 
   .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    - if @notifications.blank?
-      %a{:href => "#"}
-        %i.fa.fa-bell
-        &nbsp;
-    - else
-      .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
-        %a{:href => "#"}
-          %i.fa.fa-bell
-          %span.label.label-danger
-            = @notifications.count if @notifications.present?
-          &nbsp;
+    %a.notifications-toggle{:href => "#"}
+      %i.fa.fa-bell
+      - if @notifications.present?
+        %span.label.label-danger
+          = @notifications.count if @notifications.present?
+      &nbsp;
 
-      = render :partial => "shared/notifications"
+    = render :partial => "shared/notifications"
 
 
 

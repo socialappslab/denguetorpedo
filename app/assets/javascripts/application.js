@@ -24,6 +24,10 @@ window.denguechat = {};
 
 $(document).ready(function()
 {
+  $(".notifications-toggle").on("click", function(e) {
+    $(".notifications").toggle();
+  })
+
   $(".submit-button").on("click", function(e)
   {
     var button = $(e.currentTarget);

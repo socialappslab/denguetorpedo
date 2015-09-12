@@ -70,7 +70,7 @@
       font-size: 12px;
       position: relative;
       top: -20px;
-      right: 20px;
+      right: 15px;
     }
   }
 }
@@ -229,6 +229,22 @@ div {
 }
 
 
+.notifications {
+  background-color: white;
+  position: absolute;
+  right: 75px;
+  z-index: 1000;
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: none;
+
+  li {
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Banner configuration
@@ -288,8 +304,8 @@ div {
 
 .navigation-bar {
   .dropdown-menu {
-    width: 700px;
-    left: inherit !important;
+    width: 200px !important;
+    right: 0px !important;
 
     li {
       text-align: left;
