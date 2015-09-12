@@ -346,7 +346,6 @@ es:
       block: 'Bloquear'
       delete: Eliminar
       unblock: 'Desbloquear'
-      register: "Registrar patrocinador, verificador e visitante"
       register_prize: Registrar premios
       edit_news: Registrar noticias de la comunidad
       edit_user: Administrar usuario
@@ -355,10 +354,6 @@ es:
       edit_sms: Administrar DT Torpedos
       edit_feedback: "Administrar Contacto DT"
       edit_report: Administrar tipos y métodos
-      edit_verifiers: Administrar verificadores
-      edit_visitors: Administrar visitantes
-      edit_residents: Administrar residentes
-      edit_teams: Administrar equipos
       team_successfully_blocked: Equipo bloqueado exitosamente
       team_successfully_unblocked: Equipo desbloqueado exitosamente
       edit_team_members: Administrar miembros de equipos
@@ -394,6 +389,12 @@ es:
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
       confirm: Confirmar
+    coordinator:
+      home: Coordinador
+      register_user: Registrar nuevo usuario
+      manage_users: Administrar usuarios
+      manage_teams: Administrar equipos
+      new_news: Registrar noticias de la comunidad
     dashboard:
       csv_only: Solo datos CSV
       locations:

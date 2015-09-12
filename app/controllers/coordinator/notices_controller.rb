@@ -7,10 +7,7 @@ class Coordinator::NoticesController < Coordinator::BaseController
   def new
     @notice = Notice.new
 
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @notice }
-    end
+    @breadcrumbs << {:name => I18n.t("views.coordinator.new_news"), :path => new_coordinator_notice_path}
   end
 
   #----------------------------------------------------------------------------
@@ -25,7 +22,7 @@ class Coordinator::NoticesController < Coordinator::BaseController
         format.html { redirect_to coordinator_notice_path(@notice), notice: 'Notícia criada com sucesso.' }
         format.json { render json: @notice, status: :created, location: @notice }
       else
-        format.html { render action: "coordinator/notices/new" }
+        format.html { render action: "new" }
         format.json { render json: @notice.errors, status: :unprocessable_entity }
       end
     end

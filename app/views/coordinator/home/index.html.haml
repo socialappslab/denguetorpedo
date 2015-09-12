@@ -1,23 +1,26 @@
 
 
 .container
+  .row{"style" => "margin-bottom: 20px;"}
+    .col-md-12.col-xs-12
+      %h1.light-font
+        = I18n.t("common_terms.coordinator_configurations")
+
   .row
     .col-md-12
-      %h1
-        = I18n.t("common_terms.coordinator_configurations")
       .well
 
         %ul
           %li.link
-            = link_to "Register new user", new_coordinator_user_path
+            = link_to I18n.t("views.coordinator.register_user"), new_coordinator_user_path
           %li.link
-            = link_to "Manager all users", coordinator_users_path
+            = link_to I18n.t("views.coordinator.manage_users"), coordinator_users_path
           %li.link
-            = link_to I18n.t("views.admin.edit_teams"), coordinator_teams_path
+            = link_to I18n.t("views.coordinator.manage_teams"), coordinator_teams_path
           -# %li.link
           -#   = link_to I18n.t("views.admin.register_prize"), new_prize_path
           %li.link
-            = link_to I18n.t("views.admin.edit_news"), new_coordinator_notice_path
+            = link_to I18n.t("views.coordinator.new_news"), new_coordinator_notice_path
           -# %li.link
           -#   = link_to I18n.t("views.admin.edit_prize"), premios_admin_path
           -# %li.link

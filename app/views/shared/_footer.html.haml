@@ -11,7 +11,7 @@
 
       - if @current_user && @current_user.coordinator?
         .col-md-2.col-xs-2
-          = link_to "Coordinator", coordinator_path, :class => "btn btn-default"
+          = link_to I18n.t("views.coordinator.home"), coordinator_path, :class => "btn btn-default"
 
     %ul.bs-docs-footer-links.muted
       %li
