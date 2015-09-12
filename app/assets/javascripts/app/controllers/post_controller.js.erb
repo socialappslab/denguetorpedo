@@ -113,22 +113,6 @@ var postListCtrl = function ($scope, $http, $attrs) {
   }
 };
 
-var newPostDirective = function(){
-  return {
-    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
-    templateUrl: "<%= asset_path('posts/new.html') %>",
-    link: function(scope, element, attrs) {
-      scope.submitButtonDisabled = false;
-
-      angular.element(element).find("textarea").atwho({
-        at: "@",
-        data: scope.usernames,
-        limit: 5
-      })
-    }
-  }
-}
-
 var newPostCustomDirective = function(){
   return {
     restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
@@ -167,40 +151,12 @@ var newCommentDirective = function(){
 // methods from the parent scope (e.g. the controller). If we ever introduce
 // scope here, we have to make sure that the ng-click events bubble up to the
 // parent scope.
-var feedItemDirective = function(){
-  return {
-    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
-    templateUrl: "<%= asset_path('posts/show.html') %>"
-  }
-}
-
-// NOTE: We're not specifying isolate scope here since we'll *ONLY* use this
-// directive on the PostListCtrl. As such, we will use 'post' and all other
-// methods from the parent scope (e.g. the controller). If we ever introduce
-// scope here, we have to make sure that the ng-click events bubble up to the
-// parent scope.
 var feedItemNewDirective = function(){
   return {
     restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
     templateUrl: "<%= asset_path('posts/show_new.html') %>"
   }
 }
-
-
-var commentDirective = function () {
-  return {
-    restrict: "E", // Restrict the template to being called only when using <post-comment> HTML element.
-    // NOTE: We're not specifying isolate scope here since we'll *ONLY* use this
-    // directive on the PostListCtrl. As such, we will use 'post' and all other
-    // methods from the parent scope (e.g. the controller). If we ever introduce
-    // scope here, we have to make sure that the ng-click events bubble up to the
-    // parent scope.
-    // scope: {
-    //   "comment": "=" // This is equivalent to the "=comment" scope.
-    // },
-    templateUrl: "<%= asset_path('comments/show.html') %>"
-  }
-};
 
 
 var commentNewDirective = function () {
@@ -237,11 +193,8 @@ postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postLi
 
 
 // Define the directives on the controller.
-postController.directive("postComment", commentDirective);
 postController.directive("postCommentNew", commentNewDirective);
-postController.directive("feedItem", feedItemDirective);
 postController.directive("feedItemNew", feedItemNewDirective);
-postController.directive("newPost", newPostDirective);
 postController.directive("newPostCustom", newPostCustomDirective);
 postController.directive("fileUpload", fileUploadDirective);
 postController.directive("newComment", newCommentDirective);
