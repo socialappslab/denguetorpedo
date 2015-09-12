@@ -2,41 +2,50 @@ module Notifications
   module Action
     LIKE    = "like"
     COMMENT = "comment"
+    MENTION = "mention"
   end
 
-  def add_notification(item, action, user)
-    notify_json = Notifications.notification_json(item, action, user)
-
-    # We add the notification only if it hasn't been added yet.
+  def add_notification(item, action)
     $redis_pool.with do |redis|
-      redis.lpush(self.redis_key_for_notifications, notify_json)
+      redis.sadd(self.redis_key_for_item_and_action(item, action), item.id) unless redis.sismember(self.redis_key_for_item_and_action(item, action), item.id)
     end
   end
 
-  # We clear a notification if the user visits the path that corresponds to that
-  # notification.
-  def remove_notification(item, action, user)
-    notify_json = Notifications.notification_json(item, action, user)
-
+  def comment_notifications
+    ids = []
     $redis_pool.with do |redis|
-      redis.lrem(self.redis_key_for_notifications, 0, notify_json)
+      ids  = redis.smembers(self.redis_key + ":comment.#{Action::LIKE}")
+      ids += redis.smembers(self.redis_key + ":comment.#{Action::COMMENT}")
+      ids += redis.smembers(self.redis_key + ":comment.#{Action::MENTION}")
+    end
+
+    return Comment.where(:id => ids)
+  end
+
+  def post_notifications
+    ids = []
+    $redis_pool.with do |redis|
+      ids  = redis.smembers(self.redis_key + ":post.#{Action::LIKE}")
+      ids += redis.smembers(self.redis_key + ":post.#{Action::COMMENT}")
+      ids += redis.smembers(self.redis_key + ":post.#{Action::MENTION}")
+    end
+
+    return Post.where(:id => ids)
+  end
+
+  def remove_notifications(item)
+    $redis_pool.with do |redis|
+      redis.srem(self.redis_key_for_item_and_action(item, Action::LIKE), item.id)
+      redis.srem(self.redis_key_for_item_and_action(item, Action::COMMENT), item.id)
+      redis.srem(self.redis_key_for_item_and_action(item, Action::MENTION), item.id)
     end
   end
 
-  def get_notifications
-    notifications = []
-    $redis_pool.with do |redis|
-      notifications = redis.lrange(self.redis_key_for_notifications, 0, -1)
-    end
-
-    return notifications.map! {|n| JSON.parse(n)}
-  end
-
-  def self.notification_json(item, action, user)
-    return {:user => user.id, :notifiable_id => item.id, :notifiable_type => item.class.name, :action => action}.to_json
-  end
-
-  def redis_key_for_notifications
+  def redis_key
     "user:#{self.id}:notifications"
+  end
+
+  def redis_key_for_item_and_action(item, action)
+    self.redis_key + ":#{item.class.name.downcase}.#{action}"
   end
 end
