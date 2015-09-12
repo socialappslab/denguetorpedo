@@ -8,6 +8,7 @@ class Coordinator::BaseController < ApplicationController
 
   before_filter :require_login
   before_filter :authorize_user
+  before_filter :update_breadcrumbs
 
   #----------------------------------------------------------------------------
 
@@ -18,6 +19,8 @@ class Coordinator::BaseController < ApplicationController
     return true
   end
 
-  #----------------------------------------------------------------------------
+  def update_breadcrumbs
+    @breadcrumbs << {:name => I18n.t("views.coordinator.home"), :path => coordinator_path}
+  end
 
  end
