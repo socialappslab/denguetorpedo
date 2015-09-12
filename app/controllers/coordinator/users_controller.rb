@@ -48,8 +48,8 @@ class Coordinator::UsersController < Coordinator::BaseController
     authorize! :edit, User
 
     @user = User.new(params[:user])
-    if @user.save!
-      redirect_to edit_user_path(@current_user), :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")}
+    if @user.save
+      redirect_to coordinator_users_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")} and return
     else
       render "coordinator/users/new", flash: { alert: @user.errors.full_messages.join(', ')}
     end

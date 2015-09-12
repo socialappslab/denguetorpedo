@@ -1,9 +1,9 @@
-.row.col-md-offset-1
-  .col-md-2
-    %h2
+.row
+  .col-md-12
+    %p.description{"style" => "display: inline-block;"}
       = I18n.t("common_terms.filter_by")
-  .col-md-6
-    = form_tag request.path, :style => "margin-top: 5px;" do
+
+    = form_tag request.path, :style => "display: inline-block; margin-left: 10px;" do
       - searchable_neighborhoods = Neighborhood.all.map{|n| [n.name, n.id ] }
       = select_tag("neighborhood[name]", options_for_select( searchable_neighborhoods, @neighborhood ? @neighborhood.id : ""), :prompt => I18n.t("views.admin.all_communities"), :id => "search-neighborhoods")
 

@@ -1,80 +1,81 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @user}
 
-.row
-  .col-md-8.col-md-offset-1
-    .well{:style => "border: 1px solid #bdc3c7; text-align: center;"}
-      = form_for(@user, :html => {name: "configuration", :class => "form-horizontal"}, :url => coordinator_users_path) do |f|
 
-        %h1{:id => "role_title"}
-          = I18n.t("common_terms.configuration")
-        %br
+.container
+  .row
+    .col-md-8.col-xs-8
+      %h1.light-font
+        = I18n.t("common_terms.configuration")
 
-        .form-group
-          = f.label :name, :class => "control-label col-md-6"
-          .col-md-6
-            = f.text_field :name, :class => "form-control"
+  .row.page-header-description
+    .col-md-12
+      %p.description
+        = I18n.t("views.users.edit.username_notice")
 
 
-        .form-group
-          = f.label :username, :class => "control-label col-md-6"
-          .col-md-6
-            .input-group
-              %span.input-group-addon @
-              = f.text_field :username, :class => "form-control"
+  .row
+    .col-md-12
+      .well
+        = form_for(@user, :html => {name: "configuration", :class => "form-horizontal"}, :url => coordinator_users_path) do |f|
 
 
-        .form-group
-          = f.label :email, :class => "control-label col-md-6"
-          .col-md-6
-            = f.text_field :email, :class => "form-control"
-
-
-        .form-group{:style => "text-align: left; font-size: 12px;"}
-          = I18n.t("views.users.edit.username_notice")
-
-        .form-group
-          = f.label :gender, :class => "control-label col-md-6"
-          .col-md-6
-            = f.radio_button :gender, "true", :checked => (@user.gender == true), :class => "radio-inline"
-            = I18n.t("common_terms.male")
-            = f.radio_button :gender, "false", :checked => (@user.gender == false), :class => "radio-inline"
-            = I18n.t("common_terms.female")
-
-        .form-group
-          = f.label :profile_photo, :class => "control-label col-md-6"
-          .col-md-6
-            = f.file_field :profile_photo, :class => "form-control upload_photo"
-            - if @user.profile_photo.present?
-              = image_tag(asset_path(@user.picture), :style => "display: block;", :class => "preview")
-            - else
-              %img.preview{:style => "display: block;"}
-            %canvas{:style => "display: none;"}
-            = hidden_field_tag "user[compressed_photo]", nil, :class => "compressed_photo"
-
-
-
-        .form-group
-          = f.label nil, :class => "control-label col-md-6" do
-            = I18n.t("attributes.neighborhood_id")
-            %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
-              *
-          .col-md-6
-            = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, {}, :class => "form-control"
-
-
-        .form-group
-          = f.label :locale, :class => "control-label col-md-6"
-          .col-md-6
-            = f.select :locale, [[I18n.t("common_terms.portuguese"), User::Locales::PORTUGUESE], [I18n.t("common_terms.spanish"), User::Locales::SPANISH]], {}, :class => "form-control"
-
-
-        - if @user == @current_user
           .form-group
-            = f.label :password, :class => "control-label col-md-6"
+            = f.label :name, :class => "control-label col-md-6"
             .col-md-6
-              = link_to I18n.t("views.users.edit.password"), edit_password_reset_path(@user)
-        - else
+              = f.text_field :name, :class => "form-control"
+
+
+          .form-group
+            = f.label :username, :class => "control-label col-md-6"
+            .col-md-6
+              .input-group
+                %span.input-group-addon @
+                = f.text_field :username, :class => "form-control"
+
+
+          .form-group
+            = f.label :email, :class => "control-label col-md-6"
+            .col-md-6
+              = f.text_field :email, :class => "form-control"
+
+
+          .form-group
+            = f.label :gender, :class => "control-label col-md-6"
+            .col-md-6
+              = f.radio_button :gender, "true", :checked => (@user.gender == true), :class => "radio-inline"
+              = I18n.t("common_terms.male")
+              = f.radio_button :gender, "false", :checked => (@user.gender == false), :class => "radio-inline"
+              = I18n.t("common_terms.female")
+
+          .form-group
+            = f.label :profile_photo, :class => "control-label col-md-6"
+            .col-md-6
+              = f.file_field :profile_photo, :class => "form-control upload_photo"
+              - if @user.profile_photo.present?
+                = image_tag(asset_path(@user.picture), :style => "display: block;", :class => "preview")
+              - else
+                %img.preview{:style => "display: block;"}
+              %canvas{:style => "display: none;"}
+              = hidden_field_tag "user[compressed_photo]", nil, :class => "compressed_photo"
+
+
+
+          .form-group
+            = f.label nil, :class => "control-label col-md-6" do
+              = I18n.t("attributes.neighborhood_id")
+              %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
+                *
+            .col-md-6
+              = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, {:include_blank => true}, :class => "form-control"
+
+
+          .form-group
+            = f.label :locale, :class => "control-label col-md-6"
+            .col-md-6
+              = f.select :locale, [[I18n.t("common_terms.portuguese"), User::Locales::PORTUGUESE], [I18n.t("common_terms.spanish"), User::Locales::SPANISH]], {}, :class => "form-control"
+
+
           .form-group
             = f.label nil, :class => "control-label col-md-6" do
               = I18n.t("activerecord.attributes.user.password")
@@ -92,38 +93,8 @@
 
 
 
-        %hr{:style => "border-color: #ff6600; border-bottom: none;"}
-        .form-group
-          = f.label :phone_number, :class => "control-label col-md-6"
-          .col-md-6
-            = f.text_field :phone_number, :placeholder => "0219xxxxxxxx", :class => "form-control"
+    
 
-        .form-group
-          = f.label :carrier, :class => "control-label col-md-6"
-          .col-md-6
-            = f.text_field :carrier, :class => "form-control"
-
-        .form-group
-          = f.label :prepaid, I18n.t("views.users.edit.phone.payment"), :class => "control-label col-md-6"
-          .col-md-6
-            = f.radio_button :prepaid, "true", id:"pre_paid_radio", checked: "checked"
-            = I18n.t("views.users.edit.phone.prepaid")
-            = f.radio_button :prepaid, "false", id:"post_paid_radio"
-            = I18n.t("views.users.edit.phone.postpaid")
-
-
-        %hr{:style => "border-color: #ff6600; border-bottom: none;"}
-
-        .form-group
-          = f.label nil, :class => "control-label col-md-6", :style => "position: relative; font-size: 12px;" do
-            = I18n.t("views.users.edit.referral_question")
-            %span{:style => "position:absolute; top: 0px; right: -10px; color: #ff6600; font-size: 10px;"}
-              *
-          .col-md-6
-            - user_recruiter = ( @user.recruiter.present? ? [ @user.recruiter.full_name, @user.recruiter.id ] : nil )
-            = select_tag :recruiter_id, options_for_select(User.all.map {|u| [u.full_name, u.id]}, user_recruiter ), :prompt => I18n.t("common_terms.no_one")
-
-
-        = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
-          %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-          = I18n.t("views.buttons.update")
+          = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button", :style => "width: 100%;" do
+            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+            = I18n.t("views.buttons.update")
