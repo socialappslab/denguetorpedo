@@ -238,11 +238,11 @@ class User < ActiveRecord::Base
   # A user is associated with a location if
   # a) They created a report for that location, and/or
   # b) They eliminated a report for that location,
-  # c) They uploaded a CSV for that location.
+  # NOTE: We do not count CSV uploaded locations as proper locations
+  # because that might force the wrong incentives (e.g. upload many CSV reports
+  # and reap rewards for other people's work).
   def locations
-    report_loc_ids     = self.reports.pluck(:location_id)
-    csv_report_loc_ids = self.csv_reports.pluck(:location_id)
-    loc_ids = (report_loc_ids + csv_report_loc_ids).uniq
+    loc_ids     = self.reports.pluck(:location_id)
     return Location.where(:id => loc_ids)
   end
 
