@@ -308,7 +308,7 @@ class ReportsController < NeighborhoodsBaseController
       @report.update_column(:verified_at, Time.zone.now)
 
       # Let's award the user for submitting a report.
-      @report.user.award_points_for_submitting(@report)
+      @report.reporter.award_points_for_submitting(@report)
 
       redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
     else
