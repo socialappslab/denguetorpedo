@@ -2,7 +2,7 @@
 
   <div class="field">
     <%= f.label :neighborhood_id %>
-    <%= f.select :neighborhood_id, Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]} %>
+    <%= f.select :neighborhood_id, Neighborhood.all.collect{ |neighborhood| [neighborhood.name, neighborhood.id]}, {:include_blank => true} %>
   </div>
   <div class="field">
     <%= f.label :title, I18n.t("views.notices.new.activity_title") %>
@@ -42,7 +42,7 @@
   <div class="actions">
     <%= button_tag :type => "submit", :class => "btn btn-success btn-right submit-button", :style => "display: inline-block;" do %>
       <i class = "fa fa-refresh fa-spin" style = "display:none;"></i>
-      <%= I18n.t("views.buttons.publish") %>
+      <%= I18n.t("views.buttons.create") %>
     <% end %>
   </div>
 <% end %>

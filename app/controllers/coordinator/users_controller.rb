@@ -11,6 +11,8 @@ class Coordinator::UsersController < Coordinator::BaseController
     @users        = User.order("username ASC")
 
     @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
+
+    @breadcrumbs << {:name => I18n.t("views.coordinator.manage_users"), :path => coordinator_users_path}
   end
 
   #----------------------------------------------------------------------------
@@ -39,6 +41,8 @@ class Coordinator::UsersController < Coordinator::BaseController
   def new
     authorize! :edit, User.new
     @user ||= User.new
+
+    @breadcrumbs << {:name => I18n.t("views.coordinator.register_user"), :path => new_coordinator_user_path}
   end
 
   #----------------------------------------------------------------------------
@@ -48,13 +52,15 @@ class Coordinator::UsersController < Coordinator::BaseController
     authorize! :edit, User
 
     @user = User.new(params[:user])
-    if @user.save!
-      redirect_to edit_user_path(@current_user), :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")}
+    if @user.save
+      redirect_to coordinator_users_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")} and return
     else
       render "coordinator/users/new", flash: { alert: @user.errors.full_messages.join(', ')}
     end
   end
 
   #----------------------------------------------------------------------------
+
+
 
 end

@@ -30,3 +30,10 @@
       %i.fa.fa-thumbs-up.like-icon
       %span
         {{comment.likes_count}}
+
+    - if @current_user.present?
+      .pull-right{"ng-show" => "comment.user.id == #{@current_user.id} || #{@current_user.coordinator?}"}
+        %a{"style" => "margin-right: 10px;", "ng-click" => "deleteComment(post, comment)", "path" => "comment.actions.delete"}
+          %span{"ng-hide" => "deleteRequestSubmitted"}
+            = I18n.t("common_terms.delete")
+          %i.fa.fa-spin.fa-refresh{"ng-show" => "deleteRequestSubmitted"}

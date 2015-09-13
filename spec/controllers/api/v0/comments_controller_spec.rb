@@ -29,4 +29,36 @@ describe API::V0::CommentsController do
 
   #----------------------------------------------------------------------------
 
+  describe "Destroying a comment" do
+    let(:other_user)  { create(:user) }
+    let(:coordinator) { create(:coordinator) }
+
+    before(:each) do
+      cookies[:auth_token] = user.auth_token
+      FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => user.id)
+    end
+
+    it "decrements Comment count" do
+      expect {
+        delete :destroy, :id => comment.id
+      }.to change(Comment, :count).by(-1)
+    end
+
+    it "doesn't allow normal users deleting other people's posts" do
+      cookies[:auth_token] = other_user.auth_token
+      expect {
+        delete "destroy", :id => comment.id
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "allows coordinator to destroy a post" do
+      cookies[:auth_token] = coordinator.auth_token
+      expect {
+        delete "destroy", :id => comment.id
+      }.to change(Comment, :count).by(-1)
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
 end

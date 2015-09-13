@@ -1,27 +1,22 @@
-= render :partial => "shared/flashes"
-= render :partial => "shared/filter_by_community"
+.container
+  .row
+    .col-md-6
+      %h1.light-font
+        = I18n.t("views.coordinator.manage_teams")
+    .col-md-6
+      %p.description
+        .pull-right
+          = render :partial => "shared/filter_by_community"
 
-.row.col-md-offset-1
-  .col-md-5
-    %h1
-      = I18n.t("views.admin.edit_teams")
 
-
-.row.col-md-offset-1
-
-  %table.users_table.col-md-12{:cellpadding => 10, border: 1}
-    %colgroup
-      %col{style: "width:70%;"}
-      %col{style: "width:15%;"}
-      %col{style: "width:15%;"}
-    - @teams.each do |team|
-      %tr
-        %td
-          = team.name
-        %td{:style => "margin-left:10px;"}
-          - link_text = (team.blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block"))
-          = link_to link_text, block_coordinator_team_path(team), data: { confirm: I18n.t("views.alerts.confirm")}
-
-  %br
-
-  -#----------------------------------------------------------------------------
+  .row
+    .col-md-12
+      .panel.panel-default
+        %table.table.table-bordered
+          - @teams.each do |team|
+            %tr
+              %td
+                = team.name
+              %td{:style => "margin-left:10px;"}
+                - link_text = (team.blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block"))
+                = link_to link_text, block_coordinator_team_path(team), data: { confirm: I18n.t("views.alerts.confirm")}

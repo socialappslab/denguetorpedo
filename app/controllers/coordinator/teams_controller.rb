@@ -14,6 +14,8 @@ class Coordinator::TeamsController < Coordinator::BaseController
     else
       @teams = Team.order("name ASC").all
     end
+
+    @breadcrumbs << {:name => I18n.t("views.coordinator.manage_teams"), :path => coordinator_teams_path}
   end
 
   #----------------------------------------------------------------------------

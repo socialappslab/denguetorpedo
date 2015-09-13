@@ -33,4 +33,21 @@ class API::V0::CommentsController < API::V0::BaseController
   end
 
   #----------------------------------------------------------------------------
+  # DELETE api/v0/comments/:id
+
+  def destroy
+    if @current_user.coordinator?
+      @comment = Comment.find( params[:id] )
+    else
+      @comment = @current_user.comments.find( params[:id] )
+    end
+
+    if @comment.destroy
+      render :json => {}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@comment.errors.full_messages[0], 422)
+    end
+  end
+
+  #----------------------------------------------------------------------------
 end
