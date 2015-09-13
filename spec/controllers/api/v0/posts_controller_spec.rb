@@ -64,6 +64,9 @@ describe API::V0::PostsController do
   #----------------------------------------------------------------------------
 
   describe "Deleting a post" do
+    let(:other_user)  { create(:user) }
+    let(:coordinator) { create(:coordinator) }
+
     before(:each) do
       cookies[:auth_token] = user.auth_token
 
@@ -89,6 +92,20 @@ describe API::V0::PostsController do
       delete "destroy", :id => blog_post.id
       expect(team.reload.points).to eq(before_points - User::Points::POST_CREATED)
       expect(other_team.reload.points).to eq(before_points_for_other_team - User::Points::POST_CREATED)
+    end
+
+    it "doesn't allow normal users deleting other people's posts" do
+      cookies[:auth_token] = other_user.auth_token
+      expect {
+        delete "destroy", :id => blog_post.id
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "allows coordinator to destroy a post" do
+      cookies[:auth_token] = coordinator.auth_token
+      expect {
+        delete "destroy", :id => blog_post.id
+      }.to change(Post, :count).by(-1)
     end
   end
 
