@@ -19,7 +19,7 @@
 
 
   .feed-item-content
-    %div{"ng-bind-html" => "post.content"}
+    %div{"ng-bind-html" => "post.content | denguechatLinky:'_blank'"}
     .post-photo{"ng-hide" => "{{post.photo == null}}"}
       %img.img-rounded{"ng-src" => "{{post.photo}}"}
 
