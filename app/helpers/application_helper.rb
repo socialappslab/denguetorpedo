@@ -1,6 +1,12 @@
 # -*- encoding : utf-8 -*-
 module ApplicationHelper
 
+  def calculate_team_users(user)
+    team_ids = user.teams.pluck(:id)
+    users = User.joins(:team_memberships).where("team_memberships.team_id IN (?)", team_ids).order("username ASC")
+    return users.uniq
+  end
+
   def color_for_inspection_status(status)
     return "#e74c3c" if status == Inspection::Types::POSITIVE
     return "#f1c40f" if status == Inspection::Types::POTENTIAL

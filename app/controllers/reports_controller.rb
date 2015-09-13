@@ -295,7 +295,7 @@ class ReportsController < NeighborhoodsBaseController
       flash[:alert] = I18n.t("activerecord.attributes.report.before_photo") + " " + I18n.t("activerecord.errors.messages.blank")
       render "verify" and return
     elsif base64_image.present?
-      filename  = @current_user.display_name.underscore + "_report.jpg"
+      filename  = "report.jpg"
       data      = prepare_base64_image_for_paperclip(base64_image, filename)
     end
 
@@ -308,7 +308,7 @@ class ReportsController < NeighborhoodsBaseController
       @report.update_column(:verified_at, Time.zone.now)
 
       # Let's award the user for submitting a report.
-      @current_user.award_points_for_submitting(@report)
+      @report.user.award_points_for_submitting(@report)
 
       redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
     else

@@ -4,7 +4,11 @@
   .col-md-3
     %p.form-label
       = I18n.t("activerecord.attributes.report.reporter_id")
-    = f.text_field :reporter_id, :value => @current_user && @current_user.username, :disabled => "disabled", :class => "form-control"
+    - if allow_assigning_user == true
+      - team_users = calculate_team_users(@current_user)
+      = f.select :reporter_id, options_for_select(team_users.map {|u| [u.username, u.id]}, :selected => (@current_user && @current_user.id) ), {}, :disabled => false, :class => "form-control"
+    - else
+      = f.text_field :reporter_id, :value => @current_user && @current_user.username, :disabled => "disabled", :class => "form-control"
   .col-md-3
     %p.form-label
       = I18n.t("attributes.neighborhood_id")

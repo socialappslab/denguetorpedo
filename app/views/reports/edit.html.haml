@@ -13,7 +13,7 @@
   .well
     = form_for [@neighborhood, @report], :url => eliminate_neighborhood_report_path(@neighborhood, @report), :method => "PUT", :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
 
-      = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => true}
+      = render :partial => "reports/clean_form", :locals => {:f => f, :disable => true, :disable_all => true, :allow_assigning_user => false}
 
       %hr.muted.wide
 

@@ -18,7 +18,7 @@
   .well
     = form_for [@neighborhood, @report], :url => neighborhood_reports_path(@neighborhood), :html => {:autocomplete => "off", :multipart => true, :id => "new_report"} do |f|
 
-      = render :partial => "reports/clean_form", :locals => {:f => f, :disable => false, :disable_all => false}
+      = render :partial => "reports/clean_form", :locals => {:f => f, :disable => false, :disable_all => false, :allow_assigning_user => false}
       %hr.muted.wide
       = render :partial => "reports/before_photo_form", :locals => {:f => f}
       %hr.muted.wide
