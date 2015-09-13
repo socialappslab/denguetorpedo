@@ -111,6 +111,26 @@ var postListCtrl = function ($scope, $http, $attrs) {
       comment.liked       = data.liked;
     })
   }
+
+  $scope.deletePost = function(post) {
+    var answer = window.confirm("¿Estas seguro?");
+    if (answer !== true)
+      return false;
+
+    $scope.deleteRequestSubmitted = true;
+
+    var ajax = $http.delete(post.actions.delete);
+    ajax.success(function(data) {
+      var index = $scope.posts.indexOf(post);
+      $scope.posts.splice(index, 1);
+    })
+    ajax.error(function(data) {
+      alert(data.message);
+    })
+    ajax.then(function(data) {
+      $scope.deleteRequestSubmitted = false;
+    })
+  }
 };
 
 var newPostCustomDirective = function(){
