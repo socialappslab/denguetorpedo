@@ -17,9 +17,13 @@ module GreenLocationRankings
   end
 
   def self.top_ten_for_city(city)
+    users = []
     $redis_pool.with do |redis|
-      redis.zrevrange(self.redis_key_for_city(city), 0, 10, :with_scores => true).map {|id, score| {:user => User.find_by_id(id), :score => score} }
+      users = redis.zrevrange(self.redis_key_for_city(city), 0, 20, :with_scores => true).map {|id, score| {:user => User.find_by_id(id), :score => score} }
     end
+
+    users.reject! { |user| user[:user].coordinator? }
+    return users[0..9]
   end
 
   def self.redis_key_for_city(city)
