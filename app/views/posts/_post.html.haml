@@ -30,12 +30,12 @@
       %span
         {{post.likes_count}}
 
-    &#183;
-    %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
-      Comentar
+    - if @current_user.present?
+      &#183;
+      %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
+        Comentar
 
-    .pull-right
-      - if @current_user && @current_user.coordinator?
+      .pull-right{"ng-show" => "post.user.id == #{@current_user.id} || #{@current_user && @current_user.coordinator?}"}
         %a{"style" => "margin-right: 10px;", "ng-click" => "deletePost(post)", "path" => "post.actions.delete"}
           %span{"ng-hide" => "deleteRequestSubmitted"}
             = I18n.t("common_terms.delete")

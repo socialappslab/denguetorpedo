@@ -40,7 +40,7 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :comments,       :only => [] do
+      resources :comments,       :only => [:destroy] do
         post "like", :on => :member
       end
 
