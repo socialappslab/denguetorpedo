@@ -90,54 +90,43 @@ class CsvParsingWorker
         ls.save
       end
 
-      # The specific bug here was that a valid visit date was completely ignored
+      # Why do this? The specific bug here was that a valid visit date was completely ignored
       # because the row didn't have a breeding site. The correct solution is to
       # parse and store the visit date, and then make a decision on whether to
       # continue parsing the remaining columns.
       next if row_content[:breeding_site].blank?
 
-      # Build report attributes.
-      uuid        = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)
-      description = CsvReport.generate_description_from_row_content(row_content)
+      # If the breeding code is N or X then we will NOT create a report. Otherwise,
+      # we will, *and* we may also add a unique identifier to the report.
+      raw_breeding_code = row_content[:breeding_site].strip.downcase
+      next if CsvReport.clean_breeding_site_codes.include?(raw_breeding_code)
 
-      type = row_content[:breeding_site].strip.downcase
-      if type.include?("a")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-      elsif type.include?("b")
-        breeding_site = BreedingSite.find_by_code("B")
-      elsif type.include?("l")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
-      elsif type.include?("m")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-      elsif type.include?("p")
-        breeding_site = BreedingSite.find_by_code("P")
-      elsif type.include?("t")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
-      end
+      # At this point, we have a valid breeding code. Let's parse and start creating
+      # the report.
+      uuid          = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)
+      description   = CsvReport.generate_description_from_row_content(row_content)
+      breeding_site = CsvReport.extract_breeding_site_from_row(row_content)
 
       # We say that the report has a field identifier if the breeding site CSV column
       # also has an integer associated with it.
       field_identifier = nil
-      field_identifier = type if type =~ /\d/
+      field_identifier = raw_breeding_code if raw_breeding_code =~ /\d/
 
       # Add to reports only if the code doesn't equal "negative" code.
-      unless type == "n"
-        eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
-
-        reports << {
-          :visited_at    => current_visited_at,
-          :eliminated_at => eliminated_at,
-          :breeding_site => breeding_site,
-          :field_identifier => field_identifier,
-          :description   => description,
-          :protected     => row_content[:protected],
-          :chemically_treated => row_content[:chemical],
-          :larvae => row_content[:larvae],
-          :pupae => row_content[:pupae],
-          :csv_uuid => uuid
-        }
-      end
-    end
+      eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+      report = {
+        :visited_at    => current_visited_at,
+        :eliminated_at => eliminated_at,
+        :breeding_site => breeding_site,
+        :field_identifier => field_identifier,
+        :description   => description,
+        :protected     => row_content[:protected],
+        :chemically_treated => row_content[:chemical],
+        :larvae => row_content[:larvae],
+        :pupae => row_content[:pupae],
+        :csv_uuid => uuid
+      }
+      reports << report
 
     #------------------------------
     # Create or update the reports

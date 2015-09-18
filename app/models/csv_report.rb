@@ -89,6 +89,26 @@ class CsvReport < ActiveRecord::Base
     }
   end
 
+  def self.extract_breeding_site_from_row(row_content)
+    type = row_content[:breeding_site].strip.downcase
+
+    if type.include?("a")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+    elsif type.include?("b")
+      breeding_site = BreedingSite.find_by_code("B")
+    elsif type.include?("l")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+    elsif type.include?("m")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+    elsif type.include?("p")
+      breeding_site = BreedingSite.find_by_code("P")
+    elsif type.include?("t")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+    end
+
+    return breeding_site
+  end
+
   #----------------------------------------------------------------------------
 
   def self.generate_description_from_row_content(row_content)
@@ -212,8 +232,12 @@ class CsvReport < ActiveRecord::Base
     return spreadsheet
   end
 
+  def self.clean_breeding_site_codes
+    return ["n"]
+  end
+
   def self.accepted_breeding_site_codes
-    return ["a", "b", "l", "m", "p", "t", "x", "n"]
+    return ["a", "b", "l", "m", "p", "t", "x"] + self.clean_breeding_site_codes
   end
 
 end
