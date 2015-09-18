@@ -64,26 +64,26 @@ class CsvParsingWorker
 
     # At this point, we do not have any errors. Let's iterate over each row, and
     # create/update the reports accordingly.
-    reports            = []
-    visits             = []
+    reports = []
     current_visited_at = nil
-    parsed_current_visited_at = nil
     rows.each_with_index do |row, row_index|
       row_content = CsvReport.extract_content_from_row(row)
 
-      # Let's begin by creating a visit, if applicable.
+      # Let's begin by creating a visit, if applicable. We create a visit
+      # anytime there is an entry in visited_at column and that entry doesn't match
+      # the last parsed entry.
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
-        parsed_current_visited_at = Time.zone.parse( row_content[:visited_at] )
+        current_visited_at = Time.zone.parse( row_content[:visited_at] )
 
         ls = Visit.where(:location_id => location.id)
         ls = ls.where(:parent_visit_id => nil)
-        ls = ls.where(:visited_at => (parsed_current_visited_at.beginning_of_day..parsed_current_visited_at.end_of_day))
+        ls = ls.where(:visited_at => (current_visited_at.beginning_of_day..current_visited_at.end_of_day))
         ls = ls.order("visited_at DESC").first
         if ls.blank?
           ls                 = Visit.new
           ls.parent_visit_id = nil
           ls.location_id     = location.id
-          ls.visited_at      = parsed_current_visited_at
+          ls.visited_at      = current_visited_at
         end
 
         ls.health_report = row_content[:health_report]
@@ -125,7 +125,7 @@ class CsvParsingWorker
         eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
 
         reports << {
-          :visited_at    => parsed_current_visited_at,
+          :visited_at    => current_visited_at,
           :eliminated_at => eliminated_at,
           :breeding_site => breeding_site,
           :field_identifier => field_identifier,
