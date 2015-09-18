@@ -43,19 +43,17 @@ class CsvParsingWorker
     #--------------------------------------------------------------------------
     # At this point, we know that there is at least one row. Let's see if there
     # are any incorrect breeding site codes.
-    rows.each do |row|
-      row_content = CsvReport.extract_content_from_row(row)
-      next if row_content[:breeding_site].blank?
+    @csv_report.check_for_breeding_site_errors(rows)
 
-      type = row_content[:breeding_site].strip.downcase
-      if CsvReport.accepted_breeding_site_codes.exclude?(type[0])
-        CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNKNOWN_CODE)
-      end
-    end
+    # Iterate over the rows, checking if any dates are invalid.
+    @csv_report.check_for_date_errors(rows)
 
     # If there are any errors, we can't proceed so let's offload right now and let
     # the user re-upload when they've fixed the errors.
     return if @csv_report.csv_errors.present?
+
+    # At this point, we do not have any errors. Let's iterate over each row, and
+    # create/update the reports accordingly.
 
     #-------------------------------------------------------------------
     # At this point, we have a non-trivial CSV with valid breeding codes.
@@ -73,21 +71,7 @@ class CsvParsingWorker
       # will have 0 reports, which is taken into account in visit.identification_type
       # method!
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
-        current_visited_at        = row_content[:visited_at]
-
-        begin
-          parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
-        rescue
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
-          return
-        end
-
-        # If the visit date doesn't match, then let's create an error and abort
-        # immediately.
-        if parsed_current_visited_at.future?
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::VISIT_DATE_IN_FUTURE)
-          return
-        end
+        parsed_current_visited_at = Time.zone.parse( row_content[:visited_at] ) || Time.zone.now
 
         visits << {
           :visited_at    => parsed_current_visited_at,
@@ -127,23 +111,7 @@ class CsvParsingWorker
 
       # Add to reports only if the code doesn't equal "negative" code.
       unless type == "n"
-        begin
-          eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
-        rescue
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
-          return
-        end
-
-        # If the date of elimination is in the future or before visit date, then let's raise an error.
-        if eliminated_at.present? && eliminated_at.future?
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::ELIMINATION_DATE_IN_FUTURE)
-          return
-        end
-
-        if eliminated_at.present? && eliminated_at < parsed_current_visited_at
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE)
-          return
-        end
+        eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
 
         reports << {
           :visited_at    => parsed_current_visited_at,
