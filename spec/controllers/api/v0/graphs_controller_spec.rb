@@ -27,21 +27,38 @@ describe API::V0::GraphsController do
     # Second date had 1 visit to second location (second positive)
     # Third date had 2 visits to 2 (first and third) locations (first positive and third potential)
     # Fourth date had 1 visit to first location (first negative)
-    FactoryGirl.create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1, :neighborhood_id => neighborhood.id)
+    r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1, :neighborhood_id => neighborhood.id)
+    v = r.find_or_create_first_visit()
+    r.update_inspection_for_visit(v)
 
-    FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date1, :neighborhood_id => neighborhood.id)
+    r = create(:potential_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date1, :neighborhood_id => neighborhood.id)
+    v = r.find_or_create_first_visit()
+    r.update_inspection_for_visit(v)
 
-    FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date2, :neighborhood_id => neighborhood.id)
+    r = create(:positive_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date2, :neighborhood_id => neighborhood.id)
+    v = r.find_or_create_first_visit()
+    r.update_inspection_for_visit(v)
 
-    pos_report = FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
-    FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
 
-    FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => third_location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
+    pos_report = create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
+    v = pos_report.find_or_create_first_visit()
+    pos_report.update_inspection_for_visit(v)
+
+    r = create(:potential_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
+    v = r.find_or_create_first_visit()
+    r.update_inspection_for_visit(v)
+
+    r = create(:potential_report, :reporter_id => user.id, :location_id => third_location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
+    v = r.find_or_create_first_visit()
+    r.update_inspection_for_visit(v)
+
 
     pos_report.completed_at  = date4
     pos_report.eliminated_at = date4
     pos_report.elimination_method_id = breeding_site.elimination_methods.first.id
     pos_report.save(:validate => false)
+    v = pos_report.find_or_create_elimination_visit()
+    pos_report.update_inspection_for_visit(v)
 
     Report.find_each do |r|
       r.update_column(:completed_at, date4)

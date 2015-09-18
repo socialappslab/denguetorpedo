@@ -376,7 +376,7 @@ describe CsvParsingWorker do
 
   #----------------------------------------------------------------------------
 
-  context "when uploading custom CSV with labels", :after_commit => true do
+  context "when uploading custom CSV with labels" do
     before(:each) do
       csv      = File.open(Rails.root + "spec/support/barrel_labeling.xlsx")
       csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
@@ -395,6 +395,10 @@ describe CsvParsingWorker do
       r = Report.find_by_field_identifier("b3")
       r.completed_at = Time.zone.now
       r.save(:validate => false)
+
+      v = r.find_or_create_elimination_visit()
+      r.update_inspection_for_visit(v)
+
       inspections = Inspection.where(:report_id => r.id)
       expect(inspections.count).to eq(4)
     end
@@ -403,6 +407,11 @@ describe CsvParsingWorker do
       r = Report.find_by_field_identifier("b3")
       r.completed_at = Time.zone.now
       r.save(:validate => false)
+
+      v = r.find_or_create_elimination_visit()
+      r.update_inspection_for_visit(v)
+
+
       inspections = Inspection.where(:report_id => r.id).joins(:visit).order("visits.visited_at ASC")
       expect(inspections[0].identification_type).to eq(Inspection::Types::POTENTIAL)
       expect(inspections[1].identification_type).to eq(Inspection::Types::POTENTIAL)
@@ -414,6 +423,10 @@ describe CsvParsingWorker do
       r = Report.find_by_field_identifier("b3")
       r.completed_at = Time.zone.now
       r.save(:validate => false)
+
+      v = r.find_or_create_elimination_visit()
+      r.update_inspection_for_visit(v)
+
       expect(r.visits.count).to eq(4)
     end
 
@@ -422,6 +435,9 @@ describe CsvParsingWorker do
       r.completed_at = Time.zone.now
       r.save(:validate => false)
       visits = r.visits.order("visited_at ASC")
+
+      v = r.find_or_create_elimination_visit()
+      r.update_inspection_for_visit(v)
 
       # NOTE: We're expecting 4 but the last one will not be created until it's "completed"!
       expect(visits[0].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-01")
