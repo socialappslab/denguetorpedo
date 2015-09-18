@@ -52,11 +52,18 @@ class CsvParsingWorker
     # the user re-upload when they've fixed the errors.
     return if @csv_report.csv_errors.present?
 
+    # Find and/or create the location and assign it to the report.
+    location = Location.find_by_address(address)
+    location = Location.create!(:latitude => lat, :longitude => long, :address => address, :neighborhood_id => @neighborhood.id) if location.blank?
+    @csv_report.parsed_content = rows.to_json
+    @csv_report.location_id    = location.id
+
+    #--------------------------------------------------------------------------
+    # Let's iterate over the rows and create/update reports.
+    #------
+
     # At this point, we do not have any errors. Let's iterate over each row, and
     # create/update the reports accordingly.
-
-    #-------------------------------------------------------------------
-    # At this point, we have a non-trivial CSV with valid breeding codes.
     reports            = []
     visits             = []
     current_visited_at = nil
@@ -65,18 +72,22 @@ class CsvParsingWorker
       row_content = CsvReport.extract_content_from_row(row)
 
       # Let's begin by creating a visit, if applicable.
-      # Let's parse the current visited at date.
-      # NOTE: If the last type is N then the location is clean (definition). However,
-      # we don't have to keep track of it in some "status" key. Why? Because the visit
-      # will have 0 reports, which is taken into account in visit.identification_type
-      # method!
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
-        parsed_current_visited_at = Time.zone.parse( row_content[:visited_at] ) || Time.zone.now
+        parsed_current_visited_at = Time.zone.parse( row_content[:visited_at] )
 
-        visits << {
-          :visited_at    => parsed_current_visited_at,
-          :health_report => row_content[:health_report]
-        }
+        ls = Visit.where(:location_id => location.id)
+        ls = ls.where(:parent_visit_id => nil)
+        ls = ls.where(:visited_at => (parsed_current_visited_at.beginning_of_day..parsed_current_visited_at.end_of_day))
+        ls = ls.order("visited_at DESC").first
+        if ls.blank?
+          ls                 = Visit.new
+          ls.parent_visit_id = nil
+          ls.location_id     = location.id
+          ls.visited_at      = parsed_current_visited_at
+        end
+
+        ls.health_report = row_content[:health_report]
+        ls.save
       end
 
       # The specific bug here was that a valid visit date was completely ignored
@@ -127,21 +138,6 @@ class CsvParsingWorker
         }
       end
     end
-
-    #--------------------------------
-    # Find and/or create the location.
-    location = Location.find_by_address(address)
-    if location.blank?
-      location = Location.create!(:latitude => lat, :longitude => long, :address => address, :neighborhood_id => @neighborhood.id)
-    end
-
-    #-------------------------------
-    # Update the CSV file.
-    @csv_report.parsed_content = rows.to_json
-    @csv_report.location_id    = location.id
-    @csv_report.parsed_at      = Time.zone.now
-    @csv_report.save
-
 
     #------------------------------
     # Create or update the reports
@@ -211,32 +207,8 @@ class CsvParsingWorker
       end
     end
 
-    #--------------------------------------------------------------------
-    # The above Report callbacks create a set of visits and inspections. Here, we iterate
-    # over our own set of visits, and either
-    #
-    # a) find existing visit with same date and set the health report,
-    # b) create new visit (e.g. if it's of code N with no associated reports)
-    #
-    # We *must* run this here just so we can let the callbacks do their job.
-    visits.each do |visit|
-      parsed_visited_at = visit[:visited_at]
 
-      ls = Visit.where(:location_id => location.id)
-      ls = ls.where(:parent_visit_id => nil)
-      ls = ls.where(:visited_at => (parsed_visited_at.beginning_of_day..parsed_visited_at.end_of_day))
-      ls = ls.order("visited_at DESC").limit(1)
-      if ls.blank?
-        ls                 = Visit.new
-        ls.parent_visit_id = nil
-        ls.location_id     = location.id
-        ls.visited_at      = parsed_visited_at
-      else
-        ls = ls.first
-      end
-
-      ls.health_report = visit[:health_report]
-      ls.save
-    end
+    @csv_report.parsed_at      = Time.zone.now
+    @csv_report.save
   end
 end
