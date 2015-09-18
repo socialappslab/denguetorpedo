@@ -197,8 +197,33 @@ describe Visit do
         }
       ])
     end
+  end
 
+  #-----------------------------------------------------------------------------
 
+  describe "associated visits", :after_commit => true do
+    let(:locations) { [location] }
+    let!(:date1)    { DateTime.parse("2014-11-15 11:00") }
+    let!(:date2)    { DateTime.parse("2014-11-20 11:00") }
+
+    it "calculates identification type without consider past day's reports" do
+      FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :larvae => true,    :created_at => date1)
+      FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :protected => true, :created_at => date2)
+
+      visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
+      expect(visits).to eq([
+        {
+          :date=>"2014-11-15",
+          :positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
+          :total => {:count => 1}
+        },
+        {
+          :date=>"2014-11-20",
+          :positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
+          :total => {:count => 1}
+        }
+      ])
+    end
   end
 
   #-----------------------------------------------------------------------------

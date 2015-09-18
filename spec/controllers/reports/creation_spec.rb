@@ -69,6 +69,35 @@ describe ReportsController do
 		expect(user.reload.total_points).to eq(User::Points::REPORT_SUBMITTED)
 	end
 
+
+	describe "Visit and inspection instances" do
+	  it "creates a Visit instance" do
+			expect {
+				post :create, :neighborhood_id => neighborhood.id, :location => location_hash, :has_before_photo => 1, :report => report_params
+			}.to change(Visit, :count).by(1)
+	  end
+
+	  it "creates an Inspection instance" do
+			expect {
+				post :create, :neighborhood_id => neighborhood.id, :location => location_hash, :has_before_photo => 1, :report => report_params
+			}.to change(Inspection, :count).by(1)
+	  end
+
+		it "creates a Visit with correct attributes" do
+			post :create, :neighborhood_id => neighborhood.id, :location => location_hash, :has_before_photo => 1, :report => report_params
+			v = Visit.last
+			expect(v.visited_at.strftime("%d-%m-%Y")).to eq("09-08-2015")
+			expect(v.location_id).to eq(Location.last.id)
+		end
+
+		it "creates an Inspection with correct attributes" do
+			post :create, :neighborhood_id => neighborhood.id, :location => location_hash, :has_before_photo => 1, :report => report_params
+			v = Inspection.last
+			expect(v.identification_type).to eq(Inspection::Types::POSITIVE)
+			expect(v.report_id).to eq(Report.last.id)
+		end
+	end
+
   #---------------------------------------------------------------------------
 
   describe "Location model" do

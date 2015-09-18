@@ -32,11 +32,15 @@ class API::V0::ReportsController < API::V0::BaseController
     @report.before_photo    = paperclip_image
 
     if params[:report][:address].present?
-      location = Location.find_or_create_by(:address => params[:report][:address])
+      location = Location.find_or_create_by(:address => params[:report][:address], :neighborhood_id => @report.neighborhood_id)
       @report.location_id = location.id
     end
 
     if @report.save
+      # Let's associate a visit and inspection.
+      visit = @report.find_or_create_first_visit
+      @report.update_inspection_for_visit(visit)
+
       render :json => @report.as_json(:only => [:id, :report],
       :methods => [:formatted_created_at],
       :include => {
@@ -58,7 +62,5 @@ class API::V0::ReportsController < API::V0::BaseController
     @report.destroy
     render :json => {:redirect_path => verify_csv_report_path(@report.csv_report)}, :status => 200 and return
   end
-
-  #----------------------------------------------------------------------------
 
 end

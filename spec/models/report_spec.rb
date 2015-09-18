@@ -54,13 +54,20 @@ describe Report do
 		expect(report.errors.full_messages).to include("Fecha de inspección can't be before 2014")
 	end
 
-	it "returns the correct initial visit" do
-		r  = FactoryGirl.create(:full_report, :reporter => user)
-		v1 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.zone.now - 100.days)
-		v2 = FactoryGirl.create(:visit, :location_id => location.id, :visited_at => Time.zone.now - 3.days, :parent_visit_id => v1.id)
+	it "does not create a visit" do
+		r  = FactoryGirl.build(:full_report, :reporter => user)
 
-		FactoryGirl.create(:inspection, :visit_id => v1.id, :report_id => r.id, :identification_type => Inspection::Types::POSITIVE)
-		expect(r.initial_visit.id).to eq(v1.id)
+		expect {
+			r.save
+		}.not_to change(Visit, :count)
+	end
+
+	it "does not create an inspection" do
+		r  = FactoryGirl.build(:full_report, :reporter => user)
+
+		expect {
+			r.save
+		}.not_to change(Inspection, :count)
 	end
 
 	#-----------------------------------------------------------------------------
@@ -71,9 +78,21 @@ describe Report do
 		end
 
 		it "destroys associated inspection" do
+			v = create(:visit, :location_id => 1, :visited_at => 3.years.ago)
+			create(:inspection, :report => @report, :visit => v, :identification_type => 0)
+
 			expect {
 				@report.destroy
 			}.to change(Inspection, :count).by(-1)
+		end
+
+		it "destroys associated visit if it's the last visit" do
+			v = create(:visit, :location_id => 1, :visited_at => 3.years.ago)
+			create(:inspection, :report => @report, :visit => v, :identification_type => 0)
+
+			expect {
+				@report.destroy
+			}.to change(Visit, :count).by(-1)
 		end
 
 		it "destroys associated likes" do
@@ -88,12 +107,6 @@ describe Report do
 			expect {
 				@report.destroy
 			}.to change(Comment, :count).by(-1)
-		end
-
-		it "destroys associated visit if it's the last visit" do
-			expect {
-				@report.destroy
-			}.to change(Visit, :count).by(-1)
 		end
 
 		it "does not destroy visit if it's not the last visit" do
@@ -145,52 +158,6 @@ describe Report do
 		it "includes only completed reports" do
 			r = FactoryGirl.create(:full_report, :verified_at => nil)
 			expect(Report.completed).not_to include(r)
-		end
-	end
-
-	#-----------------------------------------------------------------------------
-
-	describe "Creating Visits" do
-		it "sets visited_at to be at least 1 minute", :after_commit => true do
-			t = Time.zone.now
-			r = FactoryGirl.create(:full_report, :completed_at => t, :created_at => t, :location => location)
-
-			r.after_photo 	= Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
-			r.elimination_method_id = 1
-			r.eliminated_at = t
-			r.save!
-
-			original_visit 	 = r.initial_visit
-			subsequent_visit = Visit.where("parent_visit_id IS NOT NULL").first
-			expect(original_visit.visited_at).to eq(t)
-			expect(subsequent_visit.visited_at).to eq(t + Report::ELIMINATION_THRESHOLD)
-		end
-	end
-
-	#-----------------------------------------------------------------------------
-
-	describe "associated visits", :after_commit => true do
-		let(:locations) { [location] }
-		let!(:date1)    { DateTime.parse("2014-11-15 11:00") }
-		let!(:date2)    { DateTime.parse("2014-11-20 11:00") }
-
-		it "calculates identification type without consider past day's reports" do
-			FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :larvae => true,    :created_at => date1)
-			FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :protected => true, :created_at => date2)
-
-			visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
-			expect(visits).to eq([
-				{
-					:date=>"2014-11-15",
-					:positive=>{:count=>1, :percent=>100}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>0, :percent=>0},
-					:total => {:count => 1}
-				},
-				{
-					:date=>"2014-11-20",
-					:positive=>{:count=>0, :percent=>0}, :potential=>{:count=>0, :percent=>0}, :negative=>{:count=>1, :percent=>100},
-					:total => {:count => 1}
-				}
-			])
 		end
 	end
 

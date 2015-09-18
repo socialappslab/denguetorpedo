@@ -117,12 +117,6 @@ class Report < ActiveRecord::Base
   # eliminated_at to be 1 second, if they equal.
   before_save :set_elimination_threshold
 
-  # Every time a report gets created/updated, conceptually a visit must take place
-  # at some location. Whether it's an identification or followup visit depends
-  # on how the report is created/updated and with what attributes.
-  after_commit :create_inspection_visit,  :on => :create
-  after_commit :create_elimination_visit, :on => :update
-
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
@@ -288,38 +282,6 @@ class Report < ActiveRecord::Base
   end
 
   #----------------------------------------------------------------------------
-
-  # This method should be used when we first create a new report.
-  def find_or_create_first_visit
-    return nil if self.location_id.blank?
-
-    v = Visit.where(:location_id => self.location_id)
-    v = v.where(:parent_visit_id => nil)
-    v = v.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
-    v = v.order("visited_at DESC").first
-    if v.blank?
-      v             = Visit.new
-      v.location_id = self.location_id
-      v.visited_at  = self.created_at
-      v.save
-    end
-  end
-
-  def update_inspection_for_visit(v)
-    return if v.blank?
-
-    # At this point, we've identified a visit. Let's save it and create an
-    # inspection for the report.
-    ins = self.inspections.where(:visit_id => v.id).first
-    ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
-    ins.identification_type = self.original_status
-    ins.save
-  end
-
-  # This method is run when the report is created. Each report essentially
-  # represents the identification type of a location.
-  #
-
 
   # A new report offers conceptually implies a visit to some location.
   # Specifically, the report tells us *what* was identified at the location,
