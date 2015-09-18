@@ -52,9 +52,8 @@
         .col-md-3{"ng-show" => "hasAfterPhoto == '1'"}
           %p.form-label
             = I18n.t("report.form.upload_photo_of_eliminated_report")
-          = f.file_field :after_photo, :class => "upload_photo form-control"
-          %img.preview{:style => "display: block;"}
-          %canvas{:style => "display: none;"}
+          = f.file_field :after_photo, :class => "upload_photo form-control", "compress-image" => true
+          %img.preview
           = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
 
 
@@ -68,8 +67,3 @@
           = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
             %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
             = I18n.t("views.buttons.eliminate")
-
-
-
-- content_for :scripts do
-  = javascript_include_tag "image-compression"

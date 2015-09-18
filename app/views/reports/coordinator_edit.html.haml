@@ -94,9 +94,8 @@
         - if @report.after_photo.present?
           = image_tag(@report.after_photo, :style => "display: block; margin-bottom: 20px;")
         - else
-          = f.file_field :after_photo, :disabled => (@report.after_photo_file_size), :class => "upload_photo form-control"
-          %img.preview{:style => "display: block;"}
-          %canvas{:style => "display: none;"}
+          = f.file_field :after_photo, :disabled => (@report.after_photo_file_size), :class => "upload_photo form-control", "compress-image" => true
+          %img.preview
           = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
 
 
@@ -107,10 +106,6 @@
           = I18n.t("views.buttons.update")
 
 
-    - content_for :scripts do
-      = javascript_include_tag "map"
-      = javascript_include_tag "googlemap/map-csv"
-      = javascript_include_tag "image-compression"
-      = javascript_include_tag "moment"
-      = javascript_include_tag "bootstrap/datetimepicker"
-      = javascript_include_tag "datepicker"
+- content_for :scripts do
+  = javascript_include_tag "map"
+  = javascript_include_tag "googlemap/map-csv"

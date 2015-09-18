@@ -38,12 +38,11 @@
   .form-group
     = f.label :profile_photo, :class => "control-label col-md-6"
     .col-md-6
-      = f.file_field :profile_photo, :class => "form-control upload_photo"
+      = f.file_field :profile_photo, :class => "form-control upload_photo", "compress-image" => true
       - if @user.profile_photo.present?
         = image_tag(asset_path(@user.picture), :style => "display: block;", :class => "preview")
       - else
-        %img.preview{:style => "display: block;"}
-      %canvas{:style => "display: none;"}
+        %img.preview
       = hidden_field_tag "user[compressed_photo]", nil, :class => "compressed_photo"
 
 
