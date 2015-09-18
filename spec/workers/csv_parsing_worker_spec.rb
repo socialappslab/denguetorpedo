@@ -388,9 +388,6 @@ describe CsvParsingWorker do
       expect(Report.count).to eq(3)
     end
 
-    it "creates Report instances with correct attributes" do
-    end
-
     it "creates additional Inspection instances for same report" do
       r = Report.find_by_field_identifier("b3")
       r.completed_at = Time.zone.now

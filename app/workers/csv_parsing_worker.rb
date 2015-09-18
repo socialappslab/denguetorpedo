@@ -109,8 +109,8 @@ class CsvParsingWorker
 
       # We say that the report has a field identifier if the breeding site CSV column
       # also has an integer associated with it.
-      field_identifier = nil
-      field_identifier = raw_breeding_code if raw_breeding_code =~ /\d/
+      field_id = nil
+      field_id = raw_breeding_code if raw_breeding_code =~ /\d/
 
       # Add to reports only if the code doesn't equal "negative" code.
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
@@ -118,7 +118,7 @@ class CsvParsingWorker
         :visited_at    => current_visited_at,
         :eliminated_at => eliminated_at,
         :breeding_site => breeding_site,
-        :field_identifier => field_identifier,
+        :field_identifier => field_id,
         :description   => description,
         :protected     => row_content[:protected],
         :chemically_treated => row_content[:chemical],
@@ -128,12 +128,32 @@ class CsvParsingWorker
       }
       reports << report
 
-      # TODO: Horrible way of checking whether we have a new report and thereby
-      # creating Visit instance.
-      r = Report.find_by_field_identifier(report[:field_identifier]) if report[:field_identifier].present?
-      field_identifier_report = r
+      # If this is an existing report, then let's update a subset of properties
+      # on this report.
+      r = Report.find_by_field_identifier(field_id) if field_id.present?
+      if r.present?
+        r.report             = report[:description]
+        r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
+        r.protected          = report[:protected]
+        r.chemically_treated = report[:chemically_treated]
+        r.larvae             = report[:larvae]
+        r.pupae              = report[:pupae]
+        r.csv_uuid           = report[:csv_uuid]
+        r.save(:validate => false)
+
+        # We create a special "followup" visit for reports with a field identifier.
+        # All other reports are assumed to be new.
+        if eliminated_at.blank?
+          v = r.find_or_create_followup_visit(report[:visited_at])
+          r.update_inspection_for_visit(v)
+        else
+          v = r.find_or_create_elimination_visit
+          r.update_inspection_for_visit(v)
+        end
+      end
 
       if r.blank?
+        # TODO: This MUST be scoped to @csv_report.reports
         r = Report.find_by_csv_uuid(report[:csv_uuid])
         if r.blank?
           r            = Report.new
@@ -170,13 +190,6 @@ class CsvParsingWorker
       r.csv_uuid           = report[:csv_uuid]
       r.eliminated_at      = report[:eliminated_at]
       r.save(:validate => false)
-
-      # We create an inspection for this report if we know the report to be present,
-      # and it's not eliminated yet.
-      if field_identifier_report.present? && report[:eliminated_at].blank?
-        v = r.find_or_create_followup_visit(report[:visited_at])
-        r.update_inspection_for_visit(v)
-      end
 
 
     end
