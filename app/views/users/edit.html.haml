@@ -5,7 +5,3 @@
   .col-md-6.col-md-offset-3
     .well{:style => "border: 1px solid #bdc3c7; text-align: center;"}
       = render :partial => "users/form", :locals => {:action => "update"}
-
-
-- content_for :scripts do
-  = javascript_include_tag "image-compression"

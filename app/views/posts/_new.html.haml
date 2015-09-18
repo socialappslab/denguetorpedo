@@ -4,11 +4,10 @@
     = hidden_field_tag "post[neighborhood_id]", @neighborhood.id
     = f.text_area :content, :rows => 3, :placeholder => I18n.t("views.post.text_placeholder"), :class => "form-control"
 
-    = f.file_field :photo, :class => "upload_photo"
+    = f.file_field :photo, :class => "upload_photo", "compress-image" => true
     .row
       .pull-left
         %img.preview
-      %canvas
       = hidden_field_tag "post[compressed_photo]", nil, :class => "compressed_photo"
 
     .row
@@ -30,4 +29,3 @@
         $("input[type='file']").trigger("click")
       })
     })
-  = javascript_include_tag "image-compression"

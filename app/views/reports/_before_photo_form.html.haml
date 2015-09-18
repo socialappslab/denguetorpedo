@@ -12,7 +12,6 @@
   .col-md-8{"ng-show" => "hasBeforePhoto == '1'"}
     %p.form-label
       = I18n.t("report.form.photo_of_report")
-    = f.file_field :before_photo, :class => "upload_photo form-control"
-    %img.preview{:style => "display: block;"}
-    %canvas{:style => "display: none;"}
+    = f.file_field :before_photo, :class => "upload_photo form-control", "compress-image" => true
+    %img.preview
     = hidden_field_tag "report[compressed_photo]", nil, :class => "compressed_photo"
