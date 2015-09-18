@@ -25,7 +25,10 @@ describe CsvReport do
 
     it "destroys associated visits" do
       3.times do |index|
-        csv.reports << FactoryGirl.create(:full_report, :location_id => 1, :created_at => index.months.ago)
+        r = create(:full_report, :location_id => 1, :created_at => index.months.ago)
+        v = r.find_or_create_first_visit
+        r.update_inspection_for_visit(v)
+        csv.reports << r
       end
 
       expect {
@@ -35,8 +38,12 @@ describe CsvReport do
 
     it "destroys associated inspections" do
       3.times do |index|
-        csv.reports << FactoryGirl.create(:full_report, :location_id => 1, :created_at => index.months.ago)
+        r = create(:full_report,:location_id => 1, :created_at => index.months.ago)
+        v = r.find_or_create_first_visit()
+        r.update_inspection_for_visit(v)
+        csv.reports << r
       end
+
 
       expect {
         csv.destroy
