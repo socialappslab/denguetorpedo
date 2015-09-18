@@ -29,6 +29,13 @@ describe ReportsController do
 
 	#-----------------------------------------------------------------------------
 
+	it "allows to eliminate even if report doesn't have initial visit" do
+		Visit.destroy_all
+
+		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
+		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")
+	end
+
 	it "sets eliminated_at" do
 		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
 		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")

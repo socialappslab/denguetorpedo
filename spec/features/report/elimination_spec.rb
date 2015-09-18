@@ -22,6 +22,9 @@ describe "Eliminating a Report", :type => :feature do
     FactoryGirl.create(:team_membership, :team_id => team.id, :user_id => other_user.id)
     I18n.default_locale = User::Locales::SPANISH
 
+    v = report.find_or_create_first_visit
+    report.update_inspection_for_visit(v)
+
     sign_in(user)
     visit edit_neighborhood_report_path(user.neighborhood, report)
   end

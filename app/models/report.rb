@@ -331,7 +331,7 @@ class Report < ActiveRecord::Base
     if v.blank?
       v                 = Visit.new
       v.location_id     = self.location_id
-      v.parent_visit_id = self.initial_visit.id
+      v.parent_visit_id = self.initial_visit.id if self.initial_visit.present?
       v.visited_at      = self.eliminated_at
       v.save
     else

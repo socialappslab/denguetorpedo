@@ -10,7 +10,6 @@ describe Visit do
   let(:user)           { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
   let(:report)         { FactoryGirl.create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at)}
 
-
   describe "filter_time_series_from_date" do
     let(:daily_stats) {[
       {:date=>"2014-02-24"},
@@ -18,7 +17,6 @@ describe Visit do
       {:date=>"2015-01-01"},
       {:date=>"2015-01-15"}
     ]}
-
 
     it "returns original daily stats if no start_time is passed" do
       result = Visit.filter_time_series_by_range(daily_stats, nil, nil, "daily")
