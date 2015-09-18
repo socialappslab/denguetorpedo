@@ -128,34 +128,35 @@ class CsvParsingWorker
       }
       reports << report
 
-    #------------------------------
-    # Create or update the reports
-    # We create a new report if the following is true:
-    # * It's a new visit AND
-    # * The "breeding site" column has an identifier (e.g. B3) different
-    #   than any previous report.
-    reports.each do |report|
       # TODO: Horrible way of checking whether we have a new report and thereby
       # creating Visit instance.
-      new_report = false
-      already_exists_report = nil
       r = Report.find_by_field_identifier(report[:field_identifier]) if report[:field_identifier].present?
+      field_identifier_report = r
 
-      # TODO: Refactor this cluster fuck.
       if r.blank?
-        already_exists_report = Report.find_by_csv_uuid(report[:csv_uuid])
-        if already_exists_report.present?
-          r = already_exists_report
-        else
-          new_report   = true
+        r = Report.find_by_csv_uuid(report[:csv_uuid])
+        if r.blank?
           r            = Report.new
           r.field_identifier = report[:field_identifier]
           r.created_at = report[:visited_at] if report[:visited_at].present?
-          # Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
+          r.report             = report[:description]
+          r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
+          r.protected          = report[:protected]
+          r.chemically_treated = report[:chemically_treated]
+          r.larvae             = report[:larvae]
+          r.pupae              = report[:pupae]
+          r.location_id        = location.id
+          r.neighborhood_id    = @neighborhood.id
+          r.reporter_id        = @csv_report.user_id
+          r.csv_report_id      = @csv_report.id
+          r.csv_uuid           = report[:csv_uuid]
+          r.eliminated_at      = report[:eliminated_at]
+          r.save(:validate => false)
+          v = r.find_or_create_first_visit()
+          r.update_inspection_for_visit(v)
         end
       end
 
-      # Let's update the report and save.
       r.report             = report[:description]
       r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
       r.protected          = report[:protected]
@@ -170,30 +171,14 @@ class CsvParsingWorker
       r.eliminated_at      = report[:eliminated_at]
       r.save(:validate => false)
 
-      if new_report == true
-        v = r.find_or_create_first_visit()
-        r.update_inspection_for_visit(v)
-      end
-
       # We create an inspection for this report if we know the report to be present,
       # and it's not eliminated yet.
-      if new_report == false && already_exists_report.blank? && report[:eliminated_at].blank?
-        v = Visit.where(:location_id => location.id)
-        v = v.where("parent_visit_id IS NOT NULL")
-        v = v.where(:visited_at => (report[:visited_at].beginning_of_day..report[:visited_at].end_of_day))
-        v = v.order("visited_at DESC").limit(1)
-        if v.blank?
-          v                 = Visit.new
-          v.location_id     = location.id
-          v.parent_visit_id = r.initial_visit.id if r.initial_visit.present? # TODO: We're not really using this column I think.
-          v.visited_at      = report[:visited_at]
-          v.save
-        else
-          v = v.first
-        end
-
+      if field_identifier_report.present? && report[:eliminated_at].blank?
+        v = r.find_or_create_followup_visit(report[:visited_at])
         r.update_inspection_for_visit(v)
       end
+
+
     end
 
 
