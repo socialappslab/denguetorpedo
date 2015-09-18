@@ -117,12 +117,6 @@ class Report < ActiveRecord::Base
   # eliminated_at to be 1 second, if they equal.
   before_save :set_elimination_threshold
 
-  # Every time a report gets created/updated, conceptually a visit must take place
-  # at some location. Whether it's an identification or followup visit depends
-  # on how the report is created/updated and with what attributes.
-  after_commit :create_inspection_visit,  :on => :create
-  after_commit :create_elimination_visit, :on => :update
-
   #----------------------------------------------------------------------------
   # These methods are the authoritative way of determining if a report
   # is eliminated, open, expired or SMS.
@@ -289,11 +283,6 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # This method is run when the report is created. Each report essentially
-  # represents the identification type of a location.
-  #
-
-
   # A new report offers conceptually implies a visit to some location.
   # Specifically, the report tells us *what* was identified at the location,
   # and *when* it was identified. The *what* depends on what other reports
@@ -302,32 +291,23 @@ class Report < ActiveRecord::Base
   # * If report is status = POSITIVE, then the identification_type is POSITIVE
   # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
   #   of existing Visit does not equal POSITIVE.
-  def create_inspection_visit
-    return if self.location_id.blank?
+  # This method should be used when we first create a new report.
+  def find_or_create_first_visit
+    return nil if self.location_id.blank?
 
     v = Visit.where(:location_id => self.location_id)
-    # ls = ls.where(:visit_type => Visit::Types::INSPECTION)
     v = v.where(:parent_visit_id => nil)
     v = v.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
-    v = v.order("visited_at DESC").limit(1)
+    v = v.order("visited_at DESC").first
     if v.blank?
       v             = Visit.new
       v.location_id = self.location_id
       v.visited_at  = self.created_at
       v.save
-    else
-      v = v.first
     end
 
-    # At this point, we've identified a visit. Let's save it and create an
-    # inspection for the report.
-    ins = Inspection.find_by_visit_id_and_report_id(v.id, self.id)
-    ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
-    ins.identification_type = self.original_status
-    ins.save
+    return v
   end
-
-  #----------------------------------------------------------------------------
 
   # This method is run when the report is *eliminated*. Again, the eliminated
   # report gleams some insight into the state of the location. Whether the location
@@ -339,7 +319,7 @@ class Report < ActiveRecord::Base
   # to the report's created_at date. This ensures consistency between the
   # create_visit method, and this method so we're working on the same
   # Visit.
-  def create_elimination_visit
+  def find_or_create_elimination_visit
     return if self.location_id.blank?
     return if self.completed_at.blank?
     return if self.eliminated_at.blank?
@@ -351,20 +331,30 @@ class Report < ActiveRecord::Base
     if v.blank?
       v                 = Visit.new
       v.location_id     = self.location_id
-      v.parent_visit_id = self.initial_visit.id
+      v.parent_visit_id = self.initial_visit.id if self.initial_visit.present?
       v.visited_at      = self.eliminated_at
-
       v.save
     else
       v = v.first
     end
 
-    # At this point, we have a follow-up visit. Let's create an inspection for it.
-    ins = Inspection.find_by_visit_id_and_report_id(v.id, self.id)
+    return v
+  end
+
+  def update_inspection_for_visit(v)
+    return if v.blank?
+
+    # At this point, we've identified a visit. Let's save it and create an
+    # inspection for the report.
+    ins = self.inspections.where(:visit_id => v.id).first
     ins = Inspection.new(:visit_id => v.id, :report_id => self.id) if ins.blank?
     ins.identification_type = self.status
     ins.save
   end
+
+  #----------------------------------------------------------------------------
+
+
 
   #----------------------------------------------------------------------------
 

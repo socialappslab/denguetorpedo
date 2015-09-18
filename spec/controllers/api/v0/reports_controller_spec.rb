@@ -29,5 +29,34 @@ describe API::V0::ReportsController do
         post :create, :report => {:report => "Hello", :breeding_site_id => site.id, :address => "N0032", :before_photo => base64_image}
       }.to change(Report, :count).by(1)
     end
+
+    describe "Visit and inspection instances" do
+      it "creates a Visit instance" do
+        expect {
+          post :create, :report => {:report => "Hello", :breeding_site_id => site.id, :address => "N0032", :before_photo => base64_image}
+        }.to change(Visit, :count).by(1)
+      end
+
+      it "creates an Inspection instance" do
+        expect {
+          post :create, :report => {:report => "Hello", :breeding_site_id => site.id, :address => "N0032", :before_photo => base64_image}
+        }.to change(Inspection, :count).by(1)
+      end
+
+      it "creates a Visit with correct attributes" do
+        post :create, :report => {:report => "Hello", :breeding_site_id => site.id, :address => "N0032", :before_photo => base64_image}
+        v = Visit.last
+        expect(v.visited_at.strftime("%d-%m-%Y")).to eq(Time.zone.now.strftime("%d-%m-%Y"))
+        expect(v.location_id).to eq(Location.last.id)
+      end
+
+      it "creates an Inspection with correct attributes" do
+        post :create, :report => {:report => "Hello", :larvae => true, :breeding_site_id => site.id, :address => "N0032", :before_photo => base64_image}
+        v = Inspection.last
+        expect(v.identification_type).to eq(Inspection::Types::POSITIVE)
+        expect(v.report_id).to eq(Report.last.id)
+      end
+    end
   end
+
 end

@@ -12,6 +12,8 @@ describe ReportsController do
 
   before(:each) do
     cookies[:auth_token] = user.auth_token
+		v = report.find_or_create_first_visit()
+		report.update_inspection_for_visit(v)
   end
 
 	#-----------------------------------------------------------------------------
@@ -27,6 +29,13 @@ describe ReportsController do
 
 	#-----------------------------------------------------------------------------
 
+	it "allows to eliminate even if report doesn't have initial visit" do
+		Visit.destroy_all
+
+		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
+		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")
+	end
+
 	it "sets eliminated_at" do
 		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
 		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")
@@ -41,6 +50,58 @@ describe ReportsController do
 	it "allows to eliminate report without after photo" do
     put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil)
 		expect(report.reload.eliminated_at.strftime("%Y-%m-%d")).to eq("2015-08-09")
+	end
+
+	describe "Visit and inspection instances" do
+		before(:each) do
+			report.find_or_create_first_visit
+		end
+
+		it "creates an elimination Visit" do
+			expect {
+				put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil)
+			}.to change(Visit, :count).by(1)
+		end
+
+		it "creates an Inspection instance" do
+			expect {
+				put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil)
+			}.to change(Inspection, :count).by(1)
+		end
+
+		it "creates an elimination Visit with correct attributes" do
+			put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil)
+			v = Visit.last
+			expect(v.visited_at.strftime("%d-%m-%Y")).to eq("09-08-2015")
+			expect(v.location_id).to eq(report.location_id)
+			expect(v.parent_visit_id).to eq(Visit.first.id)
+		end
+
+		it "creates an Inspection with correct attributes" do
+			put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil)
+			v = Inspection.last
+			expect(v.identification_type).to eq(Inspection::Types::NEGATIVE)
+			expect(v.report_id).to eq(Report.last.id)
+		end
+
+
+		# it "sets visited_at to be at least 1 minute", :after_commit => true do
+		# 	t = Time.zone.now
+		# 	r = FactoryGirl.create(:full_report, :completed_at => t, :created_at => t, :location => location)
+		#
+		# 	# r.after_photo 	= Rack::Test::UploadedFile.new('spec/support/foco_marcado.jpg', 'image/jpg')
+		# 	# r.elimination_method_id = 1
+		# 	# r.eliminated_at = t
+		# 	# r.save!
+		#
+		# 	put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 0, :report => report_params.merge(:compressed_photo => nil, :eliminated_at => t)
+		#
+		# 	original_visit 	 = r.initial_visit
+		# 	subsequent_visit = Visit.where("parent_visit_id IS NOT NULL").first
+		# 	expect(original_visit.visited_at).to eq(t)
+		# 	expect(subsequent_visit.visited_at).to eq(t + Report::ELIMINATION_THRESHOLD)
+		# end
+
 	end
 
   #-----------------------------------------------------------------------------

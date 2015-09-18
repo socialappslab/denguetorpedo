@@ -217,6 +217,11 @@ class CsvParsingWorker
       r.eliminated_at      = report[:eliminated_at]
       r.save(:validate => false)
 
+      if new_report == true
+        v = r.find_or_create_first_visit()
+        r.update_inspection_for_visit(v)
+      end
+
       # We create an inspection for this report if we know the report to be present,
       # and it's not eliminated yet.
       if new_report == false && already_exists_report.blank? && report[:eliminated_at].blank?
@@ -234,10 +239,7 @@ class CsvParsingWorker
           v = v.first
         end
 
-        ins = Inspection.find_by_visit_id_and_report_id(v.id, r.id)
-        ins = Inspection.new(:visit_id => v.id, :report_id => r.id) if ins.blank?
-        ins.identification_type = r.status
-        ins.save
+        r.update_inspection_for_visit(v)
       end
     end
 

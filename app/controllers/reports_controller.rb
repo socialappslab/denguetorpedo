@@ -112,6 +112,10 @@ class ReportsController < NeighborhoodsBaseController
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
+      # Let's associate a visit and inspection.
+      visit = @report.find_or_create_first_visit
+      @report.update_inspection_for_visit(visit)
+
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
       redirect_to neighborhood_reports_path(@neighborhood) and return
@@ -156,6 +160,9 @@ class ReportsController < NeighborhoodsBaseController
 
     if @report.update_attributes(params[:report])
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
+
+      visit = @report.find_or_create_elimination_visit()
+      @report.update_inspection_for_visit(visit)
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_eliminating(@report)

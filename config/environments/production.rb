@@ -59,9 +59,9 @@ Dengue::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( jquery/* google/* googlemap/* bootstrap/*.js map.js map-2.js csv-ajax.js image-compression-verify.js image-compression.js moment.js datepicker.js)
+  config.assets.precompile += %w( jquery/* google/* googlemap/* bootstrap/*.js map.js map-2.js csv-ajax.js moment.js datepicker.js)
   config.assets.precompile += %w( *.png *.jpg )
-  config.assets.precompile += %w( app/* feed.css panel.css dashboard.css bootstrap/bootstrap-min.css bootstrap/bootstrap-multiselect.css jquery/*.css graphs.css )
+  config.assets.precompile += %w( app/* feed.css panel.css cities.css dashboard.css bootstrap/bootstrap-min.css bootstrap/bootstrap-multiselect.css jquery/*.css graphs.css )
 
   config.assets.paths << Rails.root.join("app", "assets", "templates")
 
