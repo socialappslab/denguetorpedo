@@ -5,13 +5,12 @@ class CsvParsingWorker
 
   sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true
 
-  def perform(csv_id, params)
-    lat  = params["report_location_attributes_latitude"]
-    long = params["report_location_attributes_longitude"]
-
-    @neighborhood = Neighborhood.find(params["neighborhood_id"])
+  def perform(csv_id)
     @csv_report   = CsvReport.find_by_id(csv_id)
     return if @csv_report.blank?
+
+    @neighborhood = @csv_report.neighborhood
+    location      = @csv_report.location
 
     # Identify the file content type.
     spreadsheet = CsvReport.load_spreadsheet( @csv_report.csv )
@@ -52,11 +51,8 @@ class CsvParsingWorker
     # the user re-upload when they've fixed the errors.
     return if @csv_report.csv_errors.present?
 
-    # Find and/or create the location and assign it to the report.
-    location = Location.find_by_address(address)
-    location = Location.create!(:latitude => lat, :longitude => long, :address => address, :neighborhood_id => @neighborhood.id) if location.blank?
+    # Let's parse the content and assign it to the database column.
     @csv_report.parsed_content = rows.to_json
-    @csv_report.location_id    = location.id
 
     #--------------------------------------------------------------------------
     # Let's iterate over the rows and create/update reports.
@@ -64,7 +60,7 @@ class CsvParsingWorker
 
     # At this point, we do not have any errors. Let's iterate over each row, and
     # create/update the reports accordingly.
-    reports = []
+    reports  = []
     current_visited_at = nil
     rows.each_with_index do |row, row_index|
       row_content = CsvReport.extract_content_from_row(row)

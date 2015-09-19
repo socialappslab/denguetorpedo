@@ -53,9 +53,15 @@
           = f.file_field :csv, :class => "form-control"
 
           %hr.muted
-          %p.form-label
-            = I18n.t("attributes.neighborhood_id")
-          = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )
+          .row
+            .col-md-6
+              %p.form-label
+                = I18n.t("attributes.location_id")
+              = text_field_tag "location[address]", @csv_report.location, :class => "form-control"
+            .col-md-6
+              %p.form-label
+                = I18n.t("attributes.neighborhood_id")
+              = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )
 
           .form-group
             = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
