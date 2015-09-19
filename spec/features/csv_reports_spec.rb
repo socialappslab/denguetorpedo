@@ -19,6 +19,7 @@ describe "CsvReports", :type => :feature do
     expect {
       page.find("#report_location_attributes_latitude", :visible => false).set(12)
       page.find("#report_location_attributes_longitude", :visible => false).set(12)
+      fill_in "location[address]", :with => "Test"
       attach_file "csv_report_csv", csv
       page.find(".submit-button").click
     }.to change(CsvReport, :count).by(1)
