@@ -60,7 +60,6 @@ class CsvParsingWorker
 
     # At this point, we do not have any errors. Let's iterate over each row, and
     # create/update the reports accordingly.
-    reports  = []
     current_visited_at = nil
     rows.each_with_index do |row, row_index|
       row_content = CsvReport.extract_content_from_row(row)
@@ -110,37 +109,24 @@ class CsvParsingWorker
 
       # Add to reports only if the code doesn't equal "negative" code.
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
-      report = {
-        :visited_at    => current_visited_at,
-        :eliminated_at => eliminated_at,
-        :breeding_site => breeding_site,
-        :field_identifier => field_id,
-        :description   => description,
-        :protected     => row_content[:protected],
-        :chemically_treated => row_content[:chemical],
-        :larvae => row_content[:larvae],
-        :pupae => row_content[:pupae],
-        :csv_uuid => uuid
-      }
-      reports << report
 
       # If this is an existing report, then let's update a subset of properties
       # on this report.
       r = @csv_report.reports.find_by_field_identifier(field_id) if field_id.present?
       if r.present?
-        r.report             = report[:description]
-        r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
-        r.protected          = report[:protected]
-        r.chemically_treated = report[:chemically_treated]
-        r.larvae             = report[:larvae]
-        r.pupae              = report[:pupae]
-        r.csv_uuid           = report[:csv_uuid]
+        r.report             = description
+        r.breeding_site_id   = breeding_site.id if breeding_site.present?
+        r.protected          = row_content[:protected]
+        r.chemically_treated = row_content[:chemical]
+        r.larvae             = row_content[:larvae]
+        r.pupae              = row_content[:pupae]
+        r.csv_uuid           = uuid
         r.save(:validate => false)
 
         # We create a special "followup" visit for reports with a field identifier.
         # All other reports are assumed to be new.
         if eliminated_at.blank?
-          v = r.find_or_create_followup_visit(report[:visited_at])
+          v = r.find_or_create_followup_visit(current_visited_at)
           r.update_inspection_for_visit(v)
         else
           v = r.find_or_create_elimination_visit
@@ -151,24 +137,26 @@ class CsvParsingWorker
         # we're parsing the whole CSV, there are two options:
         # 1. This report has been previously created from a previous upload.
         #    In this case, we should be able to identify it through the UUID. The
-        #    only attributes we should update is whether it has been eliminated.
-        r = @csv_report.reports.find_by_csv_uuid(report[:csv_uuid])
+        #    only attributes we should update is whether it has been eliminated. If
+        #    it *has* indeed been eliminated, then make sure to set verified_at to nil
+        #    for the user to verify who has eliminated it.
+        r = @csv_report.reports.find_by_csv_uuid(uuid)
         if r.blank?
           r            = Report.new
-          r.field_identifier = report[:field_identifier]
-          r.created_at = report[:visited_at] if report[:visited_at].present?
-          r.report             = report[:description]
-          r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
-          r.protected          = report[:protected]
-          r.chemically_treated = report[:chemically_treated]
-          r.larvae             = report[:larvae]
-          r.pupae              = report[:pupae]
+          r.field_identifier   = field_id
+          r.created_at         = current_visited_at
+          r.report             = description
+          r.breeding_site_id   = breeding_site.id if breeding_site.present?
+          r.protected          = row_content[:protected]
+          r.chemically_treated = row_content[:chemical]
+          r.larvae             = row_content[:larvae]
+          r.pupae              = row_content[:pupae]
           r.location_id        = location.id
           r.neighborhood_id    = @neighborhood.id
           r.reporter_id        = @csv_report.user_id
           r.csv_report_id      = @csv_report.id
-          r.csv_uuid           = report[:csv_uuid]
-          r.eliminated_at      = report[:eliminated_at]
+          r.csv_uuid           = uuid
+          r.eliminated_at      = eliminated_at
           r.save(:validate => false)
 
           v = r.find_or_create_first_visit()
@@ -176,18 +164,18 @@ class CsvParsingWorker
         end
       end
 
-      r.report             = report[:description]
-      r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
-      r.protected          = report[:protected]
-      r.chemically_treated = report[:chemically_treated]
-      r.larvae             = report[:larvae]
-      r.pupae              = report[:pupae]
+      r.report             = description
+      r.breeding_site_id   = breeding_site.id if breeding_site.present?
+      r.protected          = row_content[:protected]
+      r.chemically_treated = row_content[:chemical]
+      r.larvae             = row_content[:larvae]
+      r.pupae              = row_content[:pupae]
       r.location_id        = location.id
       r.neighborhood_id    = @neighborhood.id
       r.reporter_id        = @csv_report.user_id
       r.csv_report_id      = @csv_report.id
-      r.csv_uuid           = report[:csv_uuid]
-      r.eliminated_at      = report[:eliminated_at]
+      r.csv_uuid           = uuid
+      r.eliminated_at      = eliminated_at
       r.save(:validate => false)
 
 
