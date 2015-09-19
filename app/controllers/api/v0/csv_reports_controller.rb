@@ -57,8 +57,6 @@ class API::V0::CsvReportsController < API::V0::BaseController
   #----------------------------------------------------------------------------
   # PUT /api/v0/csv_reports/:id
 
-  # We assume the user will upload a particular CSV only once. This means that
-  # a 'rolling update' to any CSV will be treated as different CSVs.
   def update
     @csv      = @current_user.csv_reports.find_by_id(params[:id])
     @location = @csv.location
@@ -67,6 +65,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @location.address         = params[:location][:address]
       @location.neighborhood_id = params[:location][:neighborhood_id]
     end
+
+    @csv.update_column(:neighborhood_id, @location.neighborhood_id)
 
     if @location.save
       render :json => {:redirect_path => verify_csv_report_path(@csv)}, :status => 200 and return
