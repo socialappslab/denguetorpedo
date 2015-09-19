@@ -6,6 +6,9 @@ class CsvParsingWorker
   sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true
 
   def perform(csv_id)
+    # Make sure that we're parsing relative to the correct timezone.
+    Time.zone = "America/Guatemala"
+
     @csv_report   = CsvReport.find_by_id(csv_id)
     return if @csv_report.blank?
 

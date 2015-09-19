@@ -18,6 +18,13 @@ describe CsvParsingWorker do
     expect(CsvReport.last.parsed_at).not_to eq(nil)
   end
 
+  it "creates a date with CST timezone" do
+    csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/updating_csv/initial_visit/N0020010034234243.xlsx"), :location => location)
+    CsvParsingWorker.perform_async(csv.id)
+    report = csv.reload.reports.first
+    expect(report.created_at.strftime("%Z")).to eq("CST")
+  end
+
   it "creates a new CSV file" do
     expect {
       CsvParsingWorker.perform_async(csv.id)
