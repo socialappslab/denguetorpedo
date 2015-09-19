@@ -126,7 +126,7 @@ class CsvParsingWorker
 
       # If this is an existing report, then let's update a subset of properties
       # on this report.
-      r = Report.find_by_field_identifier(field_id) if field_id.present?
+      r = @csv_report.reports.find_by_field_identifier(field_id) if field_id.present?
       if r.present?
         r.report             = report[:description]
         r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
@@ -146,11 +146,13 @@ class CsvParsingWorker
           v = r.find_or_create_elimination_visit
           r.update_inspection_for_visit(v)
         end
-      end
-
-      if r.blank?
-        # TODO: This MUST be scoped to @csv_report.reports
-        r = Report.find_by_csv_uuid(report[:csv_uuid])
+      else
+        # At this point, this isn't a report with a field identifier. Because
+        # we're parsing the whole CSV, there are two options:
+        # 1. This report has been previously created from a previous upload.
+        #    In this case, we should be able to identify it through the UUID. The
+        #    only attributes we should update is whether it has been eliminated.
+        r = @csv_report.reports.find_by_csv_uuid(report[:csv_uuid])
         if r.blank?
           r            = Report.new
           r.field_identifier = report[:field_identifier]
@@ -168,6 +170,7 @@ class CsvParsingWorker
           r.csv_uuid           = report[:csv_uuid]
           r.eliminated_at      = report[:eliminated_at]
           r.save(:validate => false)
+
           v = r.find_or_create_first_visit()
           r.update_inspection_for_visit(v)
         end

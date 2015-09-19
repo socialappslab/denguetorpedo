@@ -225,10 +225,12 @@ describe CsvParsingWorker do
 
   context "when uploading the same but updated CSV", :after_commit => true do
     before(:each) do
-      csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/updating_csv/initial_visit.xlsx"), :location => location)
+      csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/updating_csv/initial_visit/N0020010034234243.xlsx"), :location => location)
       CsvParsingWorker.perform_async(csv.id)
 
-      @subsequent_csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/updating_csv/subsequent_visit.xlsx"), :location => location)
+      @subsequent_csv     = csv
+      @subsequent_csv.csv = File.open(Rails.root + "spec/support/updating_csv/subsequent_visit/N0020010034234243.xlsx")
+      @subsequent_csv.save
     end
 
     it "creates only 1 report" do
