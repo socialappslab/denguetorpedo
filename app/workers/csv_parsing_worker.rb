@@ -131,11 +131,14 @@ class CsvParsingWorker
 
         # We create a special "followup" visit for reports with a field identifier.
         # All other reports are assumed to be new.
-        if eliminated_at.blank?
-          v = r.find_or_create_followup_visit(current_visited_at)
+        if eliminated_at.present?
+          r.eliminated_at = eliminated_at
+          r.save(:validate => false)
+
+          v = r.find_or_create_elimination_visit
           r.update_inspection_for_visit(v)
         else
-          v = r.find_or_create_elimination_visit
+          v = r.find_or_create_followup_visit(current_visited_at)
           r.update_inspection_for_visit(v)
         end
       else
@@ -143,9 +146,11 @@ class CsvParsingWorker
         # we're parsing the whole CSV, there are two options:
         # 1. This report has been previously created from a previous upload.
         #    In this case, we should be able to identify it through the UUID. The
-        #    only attributes we should update is whether it has been eliminated. If
-        #    it *has* indeed been eliminated, then make sure to set verified_at to nil
-        #    for the user to verify who has eliminated it.
+        #    only attributes we should update is whether it has been eliminated,
+        #    which we do further down.
+        # 2. The other possibility is that this is a new report. In this case, we
+        #    create it with all attributes, and leave the checking of eliminated_at
+        #    further down.
         r = @csv_report.reports.find_by_csv_uuid(uuid)
         if r.blank?
           r            = Report.new
@@ -168,23 +173,17 @@ class CsvParsingWorker
           v = r.find_or_create_first_visit()
           r.update_inspection_for_visit(v)
         end
+
+        # At this point, we have a report, be it existing or created. Either way,
+        # let's
+        if eliminated_at.present?
+          r.eliminated_at = eliminated_at
+          r.save(:validate => false)
+
+          v = r.find_or_create_elimination_visit()
+          r.update_inspection_for_visit(v)
+        end
       end
-
-      r.report             = description
-      r.breeding_site_id   = breeding_site.id if breeding_site.present?
-      r.protected          = row_content[:protected]
-      r.chemically_treated = row_content[:chemical]
-      r.larvae             = row_content[:larvae]
-      r.pupae              = row_content[:pupae]
-      r.location_id        = location.id
-      r.neighborhood_id    = @neighborhood.id
-      r.reporter_id        = @csv_report.user_id
-      r.csv_report_id      = @csv_report.id
-      r.csv_uuid           = uuid
-      r.eliminated_at      = eliminated_at
-      r.save(:validate => false)
-
-
     end
 
 
