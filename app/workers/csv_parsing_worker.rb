@@ -12,6 +12,9 @@ class CsvParsingWorker
     @csv_report   = CsvReport.find_by_id(csv_id)
     return if @csv_report.blank?
 
+    # Reset any verification we may have done.
+    @csv_report.verified_at = nil
+
     @neighborhood = @csv_report.neighborhood
     location      = @csv_report.location
 
