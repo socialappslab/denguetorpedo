@@ -5,13 +5,18 @@ class CsvParsingWorker
 
   sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true
 
-  def perform(csv_id, params)
-    lat  = params["report_location_attributes_latitude"]
-    long = params["report_location_attributes_longitude"]
+  def perform(csv_id)
+    # Make sure that we're parsing relative to the correct timezone.
+    Time.zone = "America/Guatemala"
 
-    @neighborhood = Neighborhood.find(params["neighborhood_id"])
     @csv_report   = CsvReport.find_by_id(csv_id)
     return if @csv_report.blank?
+
+    # Reset any verification we may have done.
+    @csv_report.verified_at = nil
+
+    @neighborhood = @csv_report.neighborhood
+    location      = @csv_report.location
 
     # Identify the file content type.
     spreadsheet = CsvReport.load_spreadsheet( @csv_report.csv )
@@ -43,232 +48,146 @@ class CsvParsingWorker
     #--------------------------------------------------------------------------
     # At this point, we know that there is at least one row. Let's see if there
     # are any incorrect breeding site codes.
-    rows.each do |row|
-      row_content = CsvReport.extract_content_from_row(row)
-      next if row_content[:breeding_site].blank?
+    @csv_report.check_for_breeding_site_errors(rows)
 
-      type = row_content[:breeding_site].strip.downcase
-      if CsvReport.accepted_breeding_site_codes.exclude?(type[0])
-        CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNKNOWN_CODE)
-      end
-    end
+    # Iterate over the rows, checking if any dates are invalid.
+    @csv_report.check_for_date_errors(rows)
 
     # If there are any errors, we can't proceed so let's offload right now and let
     # the user re-upload when they've fixed the errors.
     return if @csv_report.csv_errors.present?
 
-    #-------------------------------------------------------------------
-    # At this point, we have a non-trivial CSV with valid breeding codes.
-    reports            = []
-    visits             = []
+    # Let's parse the content and assign it to the database column.
+    @csv_report.parsed_content = rows.to_json
+
+    #--------------------------------------------------------------------------
+    # Let's iterate over the rows and create/update reports.
+    #------
+
+    # At this point, we do not have any errors. Let's iterate over each row, and
+    # create/update the reports accordingly.
     current_visited_at = nil
-    parsed_current_visited_at = nil
     rows.each_with_index do |row, row_index|
       row_content = CsvReport.extract_content_from_row(row)
 
-      # Let's begin by creating a visit, if applicable.
-      # Let's parse the current visited at date.
-      # NOTE: If the last type is N then the location is clean (definition). However,
-      # we don't have to keep track of it in some "status" key. Why? Because the visit
-      # will have 0 reports, which is taken into account in visit.identification_type
-      # method!
+      # Let's begin by creating a visit, if applicable. We create a visit
+      # anytime there is an entry in visited_at column and that entry doesn't match
+      # the last parsed entry.
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
-        current_visited_at        = row_content[:visited_at]
+        current_visited_at = Time.zone.parse( row_content[:visited_at] )
 
-        begin
-          parsed_current_visited_at = Time.zone.parse( current_visited_at ) || Time.zone.now
-        rescue
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
-          return
+        ls = Visit.where(:location_id => location.id)
+        ls = ls.where(:parent_visit_id => nil)
+        ls = ls.where(:visited_at => (current_visited_at.beginning_of_day..current_visited_at.end_of_day))
+        ls = ls.order("visited_at DESC").first
+        if ls.blank?
+          ls                 = Visit.new
+          ls.parent_visit_id = nil
+          ls.location_id     = location.id
+          ls.visited_at      = current_visited_at
         end
 
-        # If the visit date doesn't match, then let's create an error and abort
-        # immediately.
-        if parsed_current_visited_at.future?
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::VISIT_DATE_IN_FUTURE)
-          return
-        end
-
-        visits << {
-          :visited_at    => parsed_current_visited_at,
-          :health_report => row_content[:health_report]
-        }
+        ls.health_report = row_content[:health_report]
+        ls.save
       end
 
-      # The specific bug here was that a valid visit date was completely ignored
+      # Why do this? The specific bug here was that a valid visit date was completely ignored
       # because the row didn't have a breeding site. The correct solution is to
       # parse and store the visit date, and then make a decision on whether to
       # continue parsing the remaining columns.
       next if row_content[:breeding_site].blank?
 
-      # Build report attributes.
-      uuid        = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)
-      description = CsvReport.generate_description_from_row_content(row_content)
+      # If the breeding code is N or X then we will NOT create a report. Otherwise,
+      # we will, *and* we may also add a unique identifier to the report.
+      raw_breeding_code = row_content[:breeding_site].strip.downcase
+      next if CsvReport.clean_breeding_site_codes.include?(raw_breeding_code)
 
-      type = row_content[:breeding_site].strip.downcase
-      if type.include?("a")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-      elsif type.include?("b")
-        breeding_site = BreedingSite.find_by_code("B")
-      elsif type.include?("l")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
-      elsif type.include?("m")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
-      elsif type.include?("p")
-        breeding_site = BreedingSite.find_by_code("P")
-      elsif type.include?("t")
-        breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
-      end
+      # At this point, we have a valid breeding code. Let's parse and start creating
+      # the report.
+      uuid          = CsvReport.generate_uuid_from_row_index_and_address(row, row_index, address)
+      description   = CsvReport.generate_description_from_row_content(row_content)
+      breeding_site = CsvReport.extract_breeding_site_from_row(row_content)
 
       # We say that the report has a field identifier if the breeding site CSV column
       # also has an integer associated with it.
-      field_identifier = nil
-      field_identifier = type if type =~ /\d/
+      field_id = nil
+      field_id = raw_breeding_code if raw_breeding_code =~ /\d/
 
       # Add to reports only if the code doesn't equal "negative" code.
-      unless type == "n"
-        begin
-          eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
-        rescue
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
-          return
+      eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+
+      # If this is an existing report, then let's update a subset of properties
+      # on this report.
+      r = @csv_report.reports.find_by_field_identifier(field_id) if field_id.present?
+      if r.present?
+        r.report             = description
+        r.breeding_site_id   = breeding_site.id if breeding_site.present?
+        r.protected          = row_content[:protected]
+        r.chemically_treated = row_content[:chemical]
+        r.larvae             = row_content[:larvae]
+        r.pupae              = row_content[:pupae]
+        r.csv_uuid           = uuid
+        r.save(:validate => false)
+
+        # We create a special "followup" visit for reports with a field identifier.
+        # All other reports are assumed to be new.
+        if eliminated_at.present?
+          r.eliminated_at = eliminated_at
+          r.save(:validate => false)
+
+          v = r.find_or_create_elimination_visit
+          r.update_inspection_for_visit(v)
+        else
+          v = r.find_or_create_followup_visit(current_visited_at)
+          r.update_inspection_for_visit(v)
+        end
+      else
+        # At this point, this isn't a report with a field identifier. Because
+        # we're parsing the whole CSV, there are two options:
+        # 1. This report has been previously created from a previous upload.
+        #    In this case, we should be able to identify it through the UUID. The
+        #    only attributes we should update is whether it has been eliminated,
+        #    which we do further down.
+        # 2. The other possibility is that this is a new report. In this case, we
+        #    create it with all attributes, and leave the checking of eliminated_at
+        #    further down.
+        r = @csv_report.reports.find_by_csv_uuid(uuid)
+        if r.blank?
+          r            = Report.new
+          r.field_identifier   = field_id
+          r.created_at         = current_visited_at
+          r.report             = description
+          r.breeding_site_id   = breeding_site.id if breeding_site.present?
+          r.protected          = row_content[:protected]
+          r.chemically_treated = row_content[:chemical]
+          r.larvae             = row_content[:larvae]
+          r.pupae              = row_content[:pupae]
+          r.location_id        = location.id
+          r.neighborhood_id    = @neighborhood.id
+          r.reporter_id        = @csv_report.user_id
+          r.csv_report_id      = @csv_report.id
+          r.csv_uuid           = uuid
+          r.eliminated_at      = eliminated_at
+          r.save(:validate => false)
+
+          v = r.find_or_create_first_visit()
+          r.update_inspection_for_visit(v)
         end
 
-        # If the date of elimination is in the future or before visit date, then let's raise an error.
-        if eliminated_at.present? && eliminated_at.future?
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::ELIMINATION_DATE_IN_FUTURE)
-          return
-        end
+        # At this point, we have a report, be it existing or created. Either way,
+        # let's
+        if eliminated_at.present?
+          r.eliminated_at = eliminated_at
+          r.save(:validate => false)
 
-        if eliminated_at.present? && eliminated_at < parsed_current_visited_at
-          CsvError.create(:csv_report_id => @csv_report.id, :error_type => CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE)
-          return
+          v = r.find_or_create_elimination_visit()
+          r.update_inspection_for_visit(v)
         end
-
-        reports << {
-          :visited_at    => parsed_current_visited_at,
-          :eliminated_at => eliminated_at,
-          :breeding_site => breeding_site,
-          :field_identifier => field_identifier,
-          :description   => description,
-          :protected     => row_content[:protected],
-          :chemically_treated => row_content[:chemical],
-          :larvae => row_content[:larvae],
-          :pupae => row_content[:pupae],
-          :csv_uuid => uuid
-        }
       end
     end
 
-    #--------------------------------
-    # Find and/or create the location.
-    location = Location.find_by_address(address)
-    if location.blank?
-      location = Location.create!(:latitude => lat, :longitude => long, :address => address, :neighborhood_id => @neighborhood.id)
-    end
 
-    #-------------------------------
-    # Update the CSV file.
-    @csv_report.parsed_content = rows.to_json
-    @csv_report.location_id    = location.id
     @csv_report.parsed_at      = Time.zone.now
     @csv_report.save
-
-
-    #------------------------------
-    # Create or update the reports
-    # We create a new report if the following is true:
-    # * It's a new visit AND
-    # * The "breeding site" column has an identifier (e.g. B3) different
-    #   than any previous report.
-    reports.each do |report|
-      # TODO: Horrible way of checking whether we have a new report and thereby
-      # creating Visit instance.
-      new_report = false
-      already_exists_report = nil
-      r = Report.find_by_field_identifier(report[:field_identifier]) if report[:field_identifier].present?
-
-      # TODO: Refactor this cluster fuck.
-      if r.blank?
-        already_exists_report = Report.find_by_csv_uuid(report[:csv_uuid])
-        if already_exists_report.present?
-          r = already_exists_report
-        else
-          new_report   = true
-          r            = Report.new
-          r.field_identifier = report[:field_identifier]
-          r.created_at = report[:visited_at] if report[:visited_at].present?
-          # Analytics.track( :user_id => @current_user.id, :event => "Created a new report", :properties => {:source => "CSV"}) if Rails.env.production?
-        end
-      end
-
-      # Let's update the report and save.
-      r.report             = report[:description]
-      r.breeding_site_id   = report[:breeding_site].id if report[:breeding_site].present?
-      r.protected          = report[:protected]
-      r.chemically_treated = report[:chemically_treated]
-      r.larvae             = report[:larvae]
-      r.pupae              = report[:pupae]
-      r.location_id        = location.id
-      r.neighborhood_id    = @neighborhood.id
-      r.reporter_id        = @csv_report.user_id
-      r.csv_report_id      = @csv_report.id
-      r.csv_uuid           = report[:csv_uuid]
-      r.eliminated_at      = report[:eliminated_at]
-      r.save(:validate => false)
-
-      if new_report == true
-        v = r.find_or_create_first_visit()
-        r.update_inspection_for_visit(v)
-      end
-
-      # We create an inspection for this report if we know the report to be present,
-      # and it's not eliminated yet.
-      if new_report == false && already_exists_report.blank? && report[:eliminated_at].blank?
-        v = Visit.where(:location_id => location.id)
-        v = v.where("parent_visit_id IS NOT NULL")
-        v = v.where(:visited_at => (report[:visited_at].beginning_of_day..report[:visited_at].end_of_day))
-        v = v.order("visited_at DESC").limit(1)
-        if v.blank?
-          v                 = Visit.new
-          v.location_id     = location.id
-          v.parent_visit_id = r.initial_visit.id if r.initial_visit.present? # TODO: We're not really using this column I think.
-          v.visited_at      = report[:visited_at]
-          v.save
-        else
-          v = v.first
-        end
-
-        r.update_inspection_for_visit(v)
-      end
-    end
-
-    #--------------------------------------------------------------------
-    # The above Report callbacks create a set of visits and inspections. Here, we iterate
-    # over our own set of visits, and either
-    #
-    # a) find existing visit with same date and set the health report,
-    # b) create new visit (e.g. if it's of code N with no associated reports)
-    #
-    # We *must* run this here just so we can let the callbacks do their job.
-    visits.each do |visit|
-      parsed_visited_at = visit[:visited_at]
-
-      ls = Visit.where(:location_id => location.id)
-      ls = ls.where(:parent_visit_id => nil)
-      ls = ls.where(:visited_at => (parsed_visited_at.beginning_of_day..parsed_visited_at.end_of_day))
-      ls = ls.order("visited_at DESC").limit(1)
-      if ls.blank?
-        ls                 = Visit.new
-        ls.parent_visit_id = nil
-        ls.location_id     = location.id
-        ls.visited_at      = parsed_visited_at
-      else
-        ls = ls.first
-      end
-
-      ls.health_report = visit[:health_report]
-      ls.save
-    end
   end
 end

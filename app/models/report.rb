@@ -309,6 +309,24 @@ class Report < ActiveRecord::Base
     return v
   end
 
+  def find_or_create_followup_visit(visited_at)
+    return nil if self.location_id.blank?
+
+    v = Visit.where(:location_id => self.location_id)
+    v = v.where("parent_visit_id IS NOT NULL")
+    v = v.where(:visited_at => (visited_at.beginning_of_day..visited_at.end_of_day))
+    v = v.order("visited_at DESC").first
+    if v.blank?
+      v             = Visit.new
+      v.location_id = self.location_id
+      v.parent_visit_id = self.initial_visit.id if self.initial_visit.present?
+      v.visited_at  = visited_at
+      v.save
+    end
+
+    return v
+  end
+
   # This method is run when the report is *eliminated*. Again, the eliminated
   # report gleams some insight into the state of the location. Whether the location
   # is actually cleaned or not depends on all other reports, however. Therefore,

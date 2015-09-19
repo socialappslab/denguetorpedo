@@ -89,6 +89,26 @@ class CsvReport < ActiveRecord::Base
     }
   end
 
+  def self.extract_breeding_site_from_row(row_content)
+    type = row_content[:breeding_site].strip.downcase
+
+    if type.include?("a")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+    elsif type.include?("b")
+      breeding_site = BreedingSite.find_by_code("B")
+    elsif type.include?("l")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::TIRE)
+    elsif type.include?("m")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
+    elsif type.include?("p")
+      breeding_site = BreedingSite.find_by_code("P")
+    elsif type.include?("t")
+      breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
+    end
+
+    return breeding_site
+  end
+
   #----------------------------------------------------------------------------
 
   def self.generate_description_from_row_content(row_content)
@@ -135,6 +155,66 @@ class CsvReport < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def check_for_breeding_site_errors(rows)
+    rows.each do |row|
+      row_content = CsvReport.extract_content_from_row(row)
+      next if row_content[:breeding_site].blank?
+
+      type = row_content[:breeding_site].strip.downcase
+      if CsvReport.accepted_breeding_site_codes.exclude?(type[0])
+        CsvError.create(:csv_report_id => self.id, :error_type => CsvError::Types::UNKNOWN_CODE)
+      end
+    end
+  end
+
+  def check_for_date_errors(rows)
+    parsed_current_visited_at = nil
+
+    rows.each do |row|
+      row_content = CsvReport.extract_content_from_row(row)
+
+      # Check for any errors related to visited_at.
+      if row_content[:visited_at].present?
+        begin
+          parsed_current_visited_at = Time.zone.parse( row_content[:visited_at] )
+        rescue
+          CsvError.create(:csv_report_id => self.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
+          next
+        end
+
+        if parsed_current_visited_at.future?
+          CsvError.create(:csv_report_id => self.id, :error_type => CsvError::Types::VISIT_DATE_IN_FUTURE)
+          next
+        end
+      end
+
+      # Check for any errors related to eliminated_at.
+      if row_content[:eliminated_at].present?
+        begin
+          eliminated_at = Time.zone.parse( row_content[:eliminated_at] )
+        rescue
+          CsvError.create(:csv_report_id => self.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
+          next
+        end
+
+        # If the date of elimination is in the future or before visit date, then let's raise an error.
+        if eliminated_at.present?
+          if eliminated_at.future?
+            CsvError.create(:csv_report_id => self.id, :error_type => CsvError::Types::ELIMINATION_DATE_IN_FUTURE)
+            next
+          end
+
+          if parsed_current_visited_at && eliminated_at < parsed_current_visited_at
+            CsvError.create(:csv_report_id => self.id, :error_type => CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE)
+            next
+          end
+        end
+      end
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
   def self.load_spreadsheet(file)
     # TODO: This should technically be abstracted into paperclip_defaults.
     # See https://github.com/thoughtbot/paperclip#uri-obfuscation
@@ -152,8 +232,12 @@ class CsvReport < ActiveRecord::Base
     return spreadsheet
   end
 
+  def self.clean_breeding_site_codes
+    return ["n"]
+  end
+
   def self.accepted_breeding_site_codes
-    return ["a", "b", "l", "m", "p", "t", "x", "n"]
+    return ["a", "b", "l", "m", "p", "t", "x"] + self.clean_breeding_site_codes
   end
 
 end

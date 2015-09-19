@@ -28,17 +28,21 @@
               %th.text-center
                 CSV
               %th.text-center
-                Upload date
+                = I18n.t("attributes.location_id")
               %th.text-center
-                Status
+                Fecha de carga
+              %th.text-center
+                Condición
             %tbody
               - @csvs.each do |csv|
                 %tr{:data => {"csv_id" => csv.id}}
-                  %td{"style" => "width: 33%;"}
+                  %td{"style" => "width: 25%;"}
                     = link_to csv.csv_file_name, csv.csv.url
-                  %td{"style" => "width: 33%;"}
+                  %td{"style" => "width: 25%;"}
+                    = csv.location.address if csv.location.present?
+                  %td{"style" => "width: 25%;"}
                     = csv.created_at.strftime("%Y-%m-%d %H:%M")
-                  %td{"style" => "width: 33%;"}
+                  %td{"style" => "width: 25%;"}
                     - if csv.csv_errors.present?
                       = link_to I18n.t("views.csv_reports.failed_with_errors"), csv_report_path(csv), :class => "btn btn-danger"
                     - elsif csv.parsed_at.blank?

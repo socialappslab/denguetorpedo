@@ -60,7 +60,7 @@ class API::V0::ReportsController < API::V0::BaseController
   def destroy
     @report = @current_user.reports.find_by_id(params[:id])
     @report.destroy
-    render :json => {:redirect_path => verify_csv_report_path(@report.csv_report)}, :status => 200 and return
+    render :json => {:redirect_path => neighborhood_reports_path(@report.neighborhood)}, :status => 200 and return
   end
 
 end
