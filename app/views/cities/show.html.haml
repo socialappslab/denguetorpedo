@@ -72,21 +72,23 @@
                       = ranking_hash[:score].to_i
 
       .panel.panel-default
-        .panel-heading{"data-content" => "Clic para ampliar", "data-toggle" => "popover", "data-placement" => "top", "data-trigger" => "hover", "ng-click" => "showGreenLocationsChartModal()"}
+        .panel-heading
           %h3.panel-title
             Gráficos
-            .pull-right
-              %i.fa.fa-eye{"style" => "color: #8E8E93;"}
         .panel-body
+          %h1.text-center{"ng-show" => "chartLoading == true"}
+            %i.fa.fa-spin.fa-refresh
           #green-locations-chart-minor
 
 
-      #green-locations-chart-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
-        .modal-dialog{:role => "document"}
-          .modal-content
-            .modal-body
-              #green-locations-chart-major
-
+      -# #green-locations-chart-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
+      -#   .modal-dialog{:role => "document"}
+      -#     .modal-content
+      -#       .modal-body
+      -#         %h1.text-center{"ng-show" => "chartLoading == true"}
+      -#           %i.fa.fa-spin.fa-refresh
+      -#         #green-locations-chart-major
+      -#
 
 
 
