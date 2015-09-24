@@ -12,10 +12,10 @@ class GreenLocationSeriesWorker
   def perform
     Time.use_zone("America/Guatemala") do
       time = Time.zone.now.end_of_week
-    end
 
-    green_locs = Location.all.find_all {|loc| loc.green?}
-    GreenLocationWeeklySeries.add_green_houses_to_date(green_locs.count, time)
-    GreenLocationSeriesWorker.perform_in(1.week)
+      green_locs = Location.all.find_all {|loc| loc.green?}
+      GreenLocationWeeklySeries.add_green_houses_to_date(green_locs.count, time)
+      GreenLocationSeriesWorker.perform_in(1.week)
+    end
   end
 end
