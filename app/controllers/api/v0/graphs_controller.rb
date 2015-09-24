@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+include GreenLocationWeeklySeries
+
 class API::V0::GraphsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
 
@@ -73,4 +75,28 @@ class API::V0::GraphsController < API::V0::BaseController
 
     render :json => {:data => statistics.as_json, :locations => locations.as_json}, :status => 200 and return
   end
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/graph/green_locations
+
+  def green_locations
+    end_time   = Time.zone.now.end_of_week
+    start_time = end_time - 6.months
+    @series = GreenLocationWeeklySeries.time_series_for(start_time, end_time)
+
+
+    # We will pad empty data with green locations = 0.
+    while start_time < end_time
+      if @series.find {|s| s[:date].strftime("%Y%W") == start_time.end_of_week.strftime("%Y%W")}.blank?
+        @series << {:date => start_time.end_of_week, :green_houses => 0}
+      end
+
+      start_time += 1.week
+    end
+
+    @series.sort_by! {|s| s[:date]}
+
+    render "api/v0/graph/green_locations"
+  end
+
 end
