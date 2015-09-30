@@ -1,5 +1,20 @@
-// TODO @animeshpathak Replace this completely with google Maps calls
+window.maps = {};
+window.maps.markers = [];
 
+window.maps.hideLoading = function(){
+  $("#loading").hide();
+}
+
+// NOTE: DO NOT use lat, long as parameters to the function.
+// This causes an error in the YUI compressor:
+// [ERROR] in /tmp/yui_compress20140930-1167-32nwix 39:48:missing formal parameter
+window.maps.updateHTMLFormLocation = function(latitude, longitude){
+  $("#new_report #report_location_attributes_latitude").val(latitude);
+  $("#new_report #report_location_attributes_longitude").val(longitude);
+}
+
+
+// TODO @animeshpathak Replace this completely with google Maps calls
 var GMAP_API_KEY = "AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18" ;
 var GMAPS_VERSION = 3.17; //latest stable version
 var REGION_ZOOM = 14; // the zoom level at which we see the entire neighborhood
