@@ -39,9 +39,8 @@ function createOrUpdateNewMarker(markerLoc){
       map: map,
       draggable: true,
       animation: google.maps.Animation.DROP,
-      icon: "/assets/markers/orange_marker.png"
+      icon: "<%= asset_path('markers/orange_marker') %>"
     });
-    console.log("Added marker to page at " + markerLoc);
 
 
     // We only want to add handlers to map clicks to allow moving the marker when clicked.
@@ -57,10 +56,8 @@ function createOrUpdateNewMarker(markerLoc){
       var position = newmarker.getPosition();
       window.maps.updateHTMLFormLocation(position.lat(), position.lng());
     });
-  } else {
+  } else
     newmarker.setPosition(markerLoc)
-    console.log("Updated marker location to " + markerLoc);
-  }
 }
 
 $(document).ready(function() {
@@ -80,17 +77,6 @@ $(document).ready(function() {
     map = new google.maps.Map(document.getElementById('gmap'),
         mapOptions);
     window.maps.hideLoading();
-
-    //see if lat and long are set, if so, this is an error page, and we should set
-    //the marker
-    var oldlat = $("#new_report #report_location_attributes_latitude").val();
-    var oldlong = $("#new_report #report_location_attributes_longitude").val();
-    if (oldlat != "" && oldlong != ""){
-      //we want none of them to be blank
-      var markerLoc = new google.maps.LatLng(oldlat, oldlong);
-      console.log("setting up stored marker at "+ markerLoc);
-      createOrUpdateNewMarker(markerLoc);
-    }
 
    //initialize the geocoder
    geocoder = new google.maps.Geocoder();

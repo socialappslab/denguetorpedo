@@ -27,9 +27,9 @@ window.maps.populateGoogleMaps = function(locations, map, locationType) {
   // Populate the map with existing open locations.
   var latitude, longitude, icon;
   if (locationType == "open")
-    var icon = "/assets/markers/orange_marker.png"
+    var icon = "<%= asset_path('markers/orange_marker') %>"
   else
-    var icon = "/assets/markers/grey_marker.png"
+    var icon = "<%= asset_path('markers/grey_marker') %>"
 
   for(var i = 0; i < locations.length; i++) {
     var latitude  = locations[i].latitude;
