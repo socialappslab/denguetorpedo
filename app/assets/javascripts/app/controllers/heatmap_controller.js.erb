@@ -46,38 +46,6 @@ window.maps.populateGoogleMaps = function(locations, map, locationType) {
   }
 }
 
-//set up a heatmap
-window.maps.setupHeatMap = function(locations, map){
-  var heatmapData = Array(locations.length);
-  for(var i = 0; i < locations.length; i++) {
-    var latitude  = locations[i].latitude;
-    var longitude = locations[i].longitude;
-    heatmapData[i] = new google.maps.LatLng(latitude, longitude);
-  }
-
-  var heatmap = new google.maps.visualization.HeatmapLayer({
-    data: heatmapData,
-    radius: 150,
-    gradient: [
-    "rgba(0, 255, 255, 0)",
-    "rgba(235,255,87,1)",
-    "rgba(235,240,85, 1)",
-    "rgba(234,225,82, 1)",
-    "rgba(234,210,80,1)",
-    "rgba(234,195,78,1)",
-    "rgba(233,180,76,1)",
-    "rgba(233,165,74,1)",
-    "rgba(233,151,71,1)",
-    "rgba(232,136,69,1)",
-    "rgba(232,121,67,1)",
-    "rgba(232,106,65,1)",
-    "rgba(231,91,62,1)",
-    "rgba(231,76,60,1)"
-    ]
-  });
-  heatmap.setMap(map);
-}
-
 window.maps.showLoading = function(){
   $("#loading").show();
 }
@@ -102,7 +70,4 @@ window.maps.initializeGoogleMaps = function(){
 
   window.maps.populateGoogleMaps(openLocations, map, "open");
   new MarkerClusterer(map, window.maps.markers);
-
-  // window.maps.setupHeatMap(openLocations, map);
-
 }
