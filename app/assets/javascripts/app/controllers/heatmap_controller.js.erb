@@ -43,5 +43,4 @@ var ctrl = function ($scope, $http, $attrs) {
   document.body.appendChild(script);
 };
 
-var app        = angular.module('dengueChatApp');
-var controller = app.controller("heatmapCtrl", ["$scope", "$http", "$attrs", ctrl]);
+angular.module("denguechat.controllers").controller("heatmapCtrl", ["$scope", "$http", "$attrs", ctrl]);
