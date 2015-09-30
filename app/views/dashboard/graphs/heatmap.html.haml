@@ -1,22 +1,15 @@
 - content_for :dashboard_content do
-  %div{"ng-controller" => "heatmapCtrl", "neighborhood" => @neighborhood.to_json}
-    #map_div
-      .row
-        .col-md-8.col-md-offset-2
+  .container-fluid{"ng-controller" => "heatmapCtrl", "neighborhood" => @neighborhood.to_json, "style" => "margin-top: 20px;"}
+    .row
+      .col-md-12
+        #map_div{"style" => "height: auto;"}
           #loading
             .fa.fa-refresh.fa-spin
-          #gmap
+          #gmap{"style" => "height: 600px !important;"}
 
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  :scss
-    #map_div {
-      height: auto;
-    }
-    #gmap {
-      height: 600px !important;
-    }
   = javascript_include_tag "google/marker-clusterer"
 
   :javascript
