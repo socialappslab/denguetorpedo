@@ -43,5 +43,11 @@
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  = javascript_include_tag "map-2"
-  = javascript_include_tag "googlemap/map-csv-2"
+  :javascript
+    window.maps.updateHTMLFormLocation = function(latitude, longitude){
+      $("#location_latitude").val(latitude);
+      $("#location_longitude").val(longitude);
+    }
+
+
+  = javascript_include_tag "google-maps"

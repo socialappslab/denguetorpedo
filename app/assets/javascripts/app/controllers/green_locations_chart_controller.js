@@ -36,7 +36,7 @@ var chartCtrl = function ($scope, $http, $cookies, $attrs) {
 // We use inline annotation to declare services in order to bypass
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
-angular.module('dengueChatApp').controller("greenLocationsChartCtrl", ["$scope", "$http", "$cookies", "$attrs", chartCtrl]);
+angular.module("denguechat.controllers").controller("greenLocationsChartCtrl", ["$scope", "$http", "$cookies", "$attrs", chartCtrl]);
 
 
 function drawChart(chartID, data) {

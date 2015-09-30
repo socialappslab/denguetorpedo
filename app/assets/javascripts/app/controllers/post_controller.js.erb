@@ -200,8 +200,7 @@ var fileUploadDirective = function() {
 // We use inline annotation to declare services in order to bypass
 // errors when JS gets minified:
 // https://docs.angularjs.org/tutorial/step_05
-var postController = angular.module('dengueChatApp');
-postController.controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postListCtrl]);
+var postController = angular.module("denguechat.controllers").controller("DCPostListCtrl", ["$scope", "$http", "$attrs", postListCtrl]);
 
 
 // Define the directives on the controller.
