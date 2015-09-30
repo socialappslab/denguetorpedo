@@ -1,325 +1,305 @@
-var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
-  // By default, we load only CSV data. If Harold wants to graph non-CSV
-  // data, say from DengueChat, then we can let him do it.
-  $scope.dataOptions = {"csvOnly": "1"};
+(function() {
 
-  if ($cookies.chart == undefined)
-    $cookies.chart = "{\"timeframe\":\"3\",\"positive\":\"1\",\"potential\":\"1\",\"negative\":\"1\",\"percentages\":\"daily\"}"
-  $scope.chartOptions = JSON.parse($cookies.chart);
-  $scope.chartOptions.type = "bar"
-  $scope.chartLoading = false;
-  $scope.noChartData  = false;
 
-  $scope.neighborhood = angular.fromJson($attrs.neighborhood);
-  $scope.locations    = [];
+  var googleChartOptions = function(chartID, data, chartOptions) {
+    var width = $(chartID).width();
 
-  $scope.checkAllLocations = function() {
-    angular.forEach($scope.locations, function(loc) { return loc.selected = true; })
+    var colors = []
+
+    if ( chartOptions.positive )
+      colors.push("#e74c3c");
+
+    if ( chartOptions.potential )
+      colors.push("#f1c40f")
+
+    if ( chartOptions.negative )
+      colors.push("#2ecc71")
+
+
+    var options =  {
+      width: width,
+      chartArea: {
+        left: 50,
+        right: 50,
+        top: 50,
+        bottom: 0,
+        width: "90%",
+        height: "70%"
+      },
+      hAxis: {},
+      vAxis: {
+        gridlines: {
+          color: "transparent"
+        },
+        format: "#\'%\'"
+      },
+      // backgroundColor: 'white',
+      legend: {
+        position: "none",
+        alignment: "start",
+        textStyle: {
+          fontSize: "15"
+        }
+      },
+      colors: colors
+    };
+
+
+    if ( chartOptions.timeframe <= 3 )
+      options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
+    else
+      options.hAxis.slantedtextangle = 90;
+
+    return options;
   }
 
-  $scope.uncheckAllLocations = function() {
-    angular.forEach($scope.locations, function(loc) { return loc.selected = false; })
+  function googleDataView(data, chartOptions) {
+    var view = new google.visualization.DataView(data);
+    // Select the default display
+
+    var columns = [0];
+
+    if ( chartOptions.positive )
+      columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
+
+    if ( chartOptions.potential )
+      columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
+
+    if ( chartOptions.negative )
+      columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
+
+    view.setColumns(columns);
+    return view;
   }
 
-  if ($scope.locations)
-    $scope.checkAllLocations();
+  function drawChart(chartID, rawData, options) {
+    var chartHTMLElement = document.getElementById(chartID)
 
+    if (options.type === "line")
+      chart = new google.visualization.LineChart(chartHTMLElement);
+    else
+      chart = new google.visualization.ColumnChart(chartHTMLElement);
 
-  $scope.refreshChartWithParams = function(params) {
-
-    if ($scope.locations)
-    {
-      var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
-      if (selectedLocations.length !== $scope.locations.length)
-        params.location_ids = JSON.stringify(selectedLocations.map(function(loc) { return loc.id }));
+    var dataTable    = new google.visualization.DataTable();
+    var columnNames = rawData.shift();
+    dataTable.addColumn("string", columnNames[0])
+    for (var i = 1; i < columnNames.length; i++) {
+      dataTable.addColumn("number", columnNames[i])
     }
 
-    $scope.chartLoading = true;
-    var pathName = window.location.pathname;
 
-    params.neighborhood_id = $scope.neighborhood.id;
-    params.timeframe    = $scope.chartOptions.timeframe;
-    params.positive     = $scope.chartOptions.positive;
-    params.potential    = $scope.chartOptions.potential;
-    params.negative     = $scope.chartOptions.negative;
-    params.percentages  = $scope.chartOptions.percentages;
-    params.type         = $scope.chartOptions.type;
-    params.csv_only     = $scope.dataOptions.csvOnly;
+    for (var i = 0; i < rawData.length; i++) {
+      var rowIndex = dataTable.addRow( [ rawData[i].date, rawData[i].positive.percent, rawData[i].potential.percent, rawData[i].negative.percent] )
+      dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
+    }
 
-    params.custom_start_month = $scope.chartOptions.customStartMonth;
-    params.custom_start_year  = $scope.chartOptions.customStartYear;
-    params.custom_end_month   = $scope.chartOptions.customEndMonth;
-    params.custom_end_year    = $scope.chartOptions.customEndYear;
+    // Initialize the critical variables.
+    // var data      = new google.visualization.arrayToDataTable(rawData);
+    var data = dataTable;
 
-    var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
+    for (var i = 0; i < data.getNumberOfRows(); i++)
+    {
+      var rowData = data.getRowProperty(i, "rowData")
+      var total = rowData.total.count;
 
-    ajax.success(function(response) {
-      $scope.locations = response.locations;
-
-      if (response.data.length <= 1) {
-        $scope.noChartData = true;
-      } else {
-        $scope.noChartData = false;
-        google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response.data, $scope.chartOptions) } } );
+      var statuses = ["positive", "potential", "negative"]
+      for (var j = 0; j < statuses.length; j++)
+      {
+        var statusData = rowData[ statuses[j] ];
+        if (statusData.count === 0)
+          data.setFormattedValue(i, j + 1, "")
+        else if (options.timeframe <= 3)
+          data.setFormattedValue(i, j + 1, String(statusData.percent)  + "% (" + statusData.count  + " of " + total + ")" )
+        else
+          data.setFormattedValue(i, j + 1, String(statusData.percent) + "%")
       }
-    });
-    ajax.error(function(response) {
-      $scope.chartLoading = false;
-    });
-    ajax.then(function(response) {
-      $scope.chartLoading = false;
-    });
+    }
+    //
+    // var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
+    // formatter.format(data, 1);
+    // formatter.format(data, 2);
+    // formatter.format(data, 3);
+
+    // Let's hide the columns corresponding to unchecked checkboxes.
+    var view    = googleDataView(data, options);
+    // var view = new google.visualization.DataView(data);
+    var options = googleChartOptions(chartID, data, options)
+    chart.draw(view, options);
   }
 
-  $scope.refreshChartWithParams({});
+  var chartCtrl = function ($scope, $http, $cookies, $attrs, filterFilter) {
+    // By default, we load only CSV data. If Harold wants to graph non-CSV
+    // data, say from DengueChat, then we can let him do it.
+    $scope.dataOptions = {"csvOnly": "1"};
 
-  $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
+    if ($cookies.chart == undefined)
+      $cookies.chart = "{\"timeframe\":\"3\",\"positive\":\"1\",\"potential\":\"1\",\"negative\":\"1\",\"percentages\":\"daily\"}"
+    $scope.chartOptions = JSON.parse($cookies.chart);
+    $scope.chartOptions.type = "bar"
+    $scope.chartLoading = false;
+    $scope.noChartData  = false;
 
-  $scope.$watch("chartOptions.timeframe", function(newValue, oldValue)
-  {
-    $scope.customDateRange = false;
-    $scope.chartOptions.customStartMonth = null;
-    $scope.chartOptions.customStartYear  = null;
-    $scope.chartOptions.customEndMonth   = null;
-    $scope.chartOptions.customEndYear    = null;
+    $scope.neighborhood = angular.fromJson($attrs.neighborhood);
+    $scope.locations    = [];
 
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
+    $scope.checkAllLocations = function() {
+      angular.forEach($scope.locations, function(loc) { return loc.selected = true; })
+    }
 
-  $scope.$watch("chartOptions.positive", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
+    $scope.uncheckAllLocations = function() {
+      angular.forEach($scope.locations, function(loc) { return loc.selected = false; })
+    }
 
-  $scope.$watch("chartOptions.potential", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("chartOptions.negative", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("chartOptions.type", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("chartOptions.customStartMonth", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("chartOptions.customStartYear", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("chartOptions.customEndMonth", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("chartOptions.customEndYear", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
-
-  $scope.$watch("dataOptions.csvOnly", function(newValue, oldValue)
-  {
-    if (newValue === oldValue)
-      return;
-    $scope.refreshChartWithParams({});
-  });
+    if ($scope.locations)
+      $scope.checkAllLocations();
 
 
-  $scope.selectedLocationsText = function() {
-    var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true })
+    $scope.refreshChartWithParams = function(params) {
 
-    // If all locations are selected, then let's return a descriptive message.
-    if (selectedLocations.length === $scope.locations.length)
-      return "Todos"
-
-    var addresses = selectedLocations.map(function(loc) { return loc.address });
-    return addresses.join(", ");
-  }
-
-};
-
-
-
-// We use inline annotation to declare services in order to bypass
-// errors when JS gets minified:
-// https://docs.angularjs.org/tutorial/step_05
-angular.module("denguechat.controllers").controller("chartCtrl", ["$scope", "$http", "$cookies", "$attrs", "filterFilter", chartCtrl]);
-
-
-var googleChartOptions = function(chartID, data, chartOptions) {
-  var width = $(chartID).width();
-
-  var colors = []
-
-  if ( chartOptions.positive )
-    colors.push("#e74c3c");
-
-  if ( chartOptions.potential )
-    colors.push("#f1c40f")
-
-  if ( chartOptions.negative )
-    colors.push("#2ecc71")
-
-
-  var options =  {
-    width: width,
-    chartArea: {
-      left: 50,
-      right: 50,
-      top: 50,
-      bottom: 0,
-      width: "90%",
-      height: "70%"
-    },
-    hAxis: {},
-    vAxis: {
-      gridlines: {
-        color: "transparent"
-      },
-      format: "#\'%\'"
-    },
-    // backgroundColor: 'white',
-    legend: {
-      position: "none",
-      alignment: "start",
-      textStyle: {
-        fontSize: "15"
+      if ($scope.locations)
+      {
+        var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true });
+        if (selectedLocations.length !== $scope.locations.length)
+          params.location_ids = JSON.stringify(selectedLocations.map(function(loc) { return loc.id }));
       }
-    },
-    colors: colors
+
+      $scope.chartLoading = true;
+      var pathName = window.location.pathname;
+
+      params.neighborhood_id = $scope.neighborhood.id;
+      params.timeframe    = $scope.chartOptions.timeframe;
+      params.positive     = $scope.chartOptions.positive;
+      params.potential    = $scope.chartOptions.potential;
+      params.negative     = $scope.chartOptions.negative;
+      params.percentages  = $scope.chartOptions.percentages;
+      params.type         = $scope.chartOptions.type;
+      params.csv_only     = $scope.dataOptions.csvOnly;
+
+      params.custom_start_month = $scope.chartOptions.customStartMonth;
+      params.custom_start_year  = $scope.chartOptions.customStartYear;
+      params.custom_end_month   = $scope.chartOptions.customEndMonth;
+      params.custom_end_year    = $scope.chartOptions.customEndYear;
+
+      var ajax = $http({url: "/api/v0/graph/locations.json", method: "GET", params: params });
+
+      ajax.success(function(response) {
+        $scope.locations = response.locations;
+
+        if (response.data.length <= 1) {
+          $scope.noChartData = true;
+        } else {
+          $scope.noChartData = false;
+          google.load( 'visualization', '1', {'packages':['corechart'], 'callback': function(){ drawChart("timeseries-chart", response.data, $scope.chartOptions) } } );
+        }
+      });
+      ajax.error(function(response) {
+        $scope.chartLoading = false;
+      });
+      ajax.then(function(response) {
+        $scope.chartLoading = false;
+      });
+    }
+
+    $scope.refreshChartWithParams({});
+
+    $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.timeframe", function(newValue, oldValue)
+    {
+      $scope.customDateRange = false;
+      $scope.chartOptions.customStartMonth = null;
+      $scope.chartOptions.customStartYear  = null;
+      $scope.chartOptions.customEndMonth   = null;
+      $scope.chartOptions.customEndYear    = null;
+
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.positive", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.potential", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.negative", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.type", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.customStartMonth", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.customStartYear", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.customEndMonth", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("chartOptions.customEndYear", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+    $scope.$watch("dataOptions.csvOnly", function(newValue, oldValue)
+    {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams({});
+    });
+
+
+    $scope.selectedLocationsText = function() {
+      var selectedLocations = filterFilter($scope.locations, function(loc) { return loc.selected === true })
+
+      // If all locations are selected, then let's return a descriptive message.
+      if (selectedLocations.length === $scope.locations.length)
+        return "Todos"
+
+      var addresses = selectedLocations.map(function(loc) { return loc.address });
+      return addresses.join(", ");
+    }
+
   };
 
 
-  if ( chartOptions.timeframe <= 3 )
-    options.hAxis.showTextEvery = parseInt(data.getNumberOfRows() / 4);
-  else
-    options.hAxis.slantedtextangle = 90;
 
-  return options;
-}
-
-
-function googleDataView(data, chartOptions) {
-  var view = new google.visualization.DataView(data);
-  // Select the default display
-
-  var columns = [0];
-
-  if ( chartOptions.positive )
-    columns.push(1, {calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"})
-
-  if ( chartOptions.potential )
-    columns.push(2, {calc: "stringify", sourceColumn: 2, type: "string", role: "annotation"})
-
-  if ( chartOptions.negative )
-    columns.push(3, {calc: "stringify", sourceColumn: 3, type: "string", role: "annotation"})
-
-  view.setColumns(columns);
-  return view;
-}
-
-
-function drawChart(chartID, rawData, options) {
-  var chartHTMLElement = document.getElementById(chartID)
-
-  if (options.type === "line")
-    chart = new google.visualization.LineChart(chartHTMLElement);
-  else
-    chart = new google.visualization.ColumnChart(chartHTMLElement);
-
-  var dataTable    = new google.visualization.DataTable();
-  var columnNames = rawData.shift();
-  dataTable.addColumn("string", columnNames[0])
-  for (var i = 1; i < columnNames.length; i++) {
-    dataTable.addColumn("number", columnNames[i])
-  }
-
-
-  for (var i = 0; i < rawData.length; i++) {
-    var rowIndex = dataTable.addRow( [ rawData[i].date, rawData[i].positive.percent, rawData[i].potential.percent, rawData[i].negative.percent] )
-    dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
-  }
-
-  // for (var i = 0; i < rawData.length; i++) {
-  //   rowData = rawData[i]
-  //   var total = rowData.total.count;
-  //   var posTooltipText    = String(rowData.positive.percent)  + "% (" + rowData.positive.count  + " of " + total + ")";
-  //   var posAnnotationText = "HAHA"
-  //
-  //   var potTooltipText    = String(rowData.potential.percent)  + "% (" + rowData.potential.count  + " of " + total + ")";
-  //   var potAnnotationText = "HAHA"
-  //
-  //   var negTooltipText    = String(rowData.negative.percent)  + "% (" + rowData.negative.count  + " of " + total + ")";
-  //   var negAnnotationText = "HAHA"
-  //
-  //   var rowIndex = dataTable.addRow( [ rawData[i].date, rawData[i].positive.percent, posTooltipText, posAnnotationText, rawData[i].potential.percent, potTooltipText, potAnnotationText, rawData[i].negative.percent, negTooltipText, negAnnotationText] )
-  //   dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
-  // }
-
-
-
-  // Initialize the critical variables.
-  // var data      = new google.visualization.arrayToDataTable(rawData);
-  var data = dataTable;
-
-  for (var i = 0; i < data.getNumberOfRows(); i++)
-  {
-    var rowData = data.getRowProperty(i, "rowData")
-    var total = rowData.total.count;
-
-    var statuses = ["positive", "potential", "negative"]
-    for (var j = 0; j < statuses.length; j++)
-    {
-      var statusData = rowData[ statuses[j] ];
-      if (statusData.count === 0)
-        data.setFormattedValue(i, j + 1, "")
-      else if (options.timeframe <= 3)
-        data.setFormattedValue(i, j + 1, String(statusData.percent)  + "% (" + statusData.count  + " of " + total + ")" )
-      else
-        data.setFormattedValue(i, j + 1, String(statusData.percent) + "%")
-    }
-  }
-  //
-  // var formatter = new google.visualization.NumberFormat({suffix: "%", fractionDigits: 0});
-  // formatter.format(data, 1);
-  // formatter.format(data, 2);
-  // formatter.format(data, 3);
-
-  // Let's hide the columns corresponding to unchecked checkboxes.
-  var view    = googleDataView(data, options);
-  // var view = new google.visualization.DataView(data);
-  var options = googleChartOptions(chartID, data, options)
-  chart.draw(view, options);
-}
+  angular.module("denguechat.controllers").controller("chartCtrl", ["$scope", "$http", "$cookies", "$attrs", "filterFilter", chartCtrl]);
+})();
