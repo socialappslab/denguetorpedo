@@ -2,8 +2,8 @@
 # by using Redis to store weekly green location data.
 # We do this as follows:
 #   * We use sorted sets
-#   * Score represents unique precision timestamp in form YYYYWW where WW is the
-#   * week number.
+#   * Score represents unique precision timestamp in form YYYYMMDD. The day of the
+#     week is always the last day of the week.
 #   * Element corresponds to number of green houses in a particular week.
 # This is run in a Sidekiq job every week.
 
