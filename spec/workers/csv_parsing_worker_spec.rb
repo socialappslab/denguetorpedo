@@ -122,7 +122,7 @@ describe CsvParsingWorker do
 
   #----------------------------------------------------------------------------
 
-  describe "the parsed Visit attributes", :after_commit => true do
+  describe "the parsed Visit attributes" do
     before(:each) do
       CsvParsingWorker.perform_async(csv.id)
     end
@@ -131,8 +131,8 @@ describe CsvParsingWorker do
       expect(Visit.where(:parent_visit_id => nil).count).to eq(3)
     end
 
-    it "creates no follow-up visits" do
-      expect(Visit.where("parent_visit_id IS NOT NULL").count).to eq(0)
+    it "creates 1 follow-up visits" do
+      expect(Visit.where("parent_visit_id IS NOT NULL").count).to eq(1)
     end
 
     it "correctly sets inspection type" do
@@ -249,7 +249,7 @@ describe CsvParsingWorker do
     it "create a new inspection Visit" do
       expect {
         CsvParsingWorker.perform_async(@subsequent_csv.id)
-      }.to change(Visit, :count).by(1)
+      }.to change(Visit.where(:parent_visit_id => nil), :count).by(1)
     end
   end
 
@@ -264,6 +264,19 @@ describe CsvParsingWorker do
     end
 
   end
+
+  #-----------------------------------------------------------------------------
+
+  # context "when uploading a custom CSV with inspection AND elimination date" do
+  #   let(:csv_file)       { File.open("spec/support/should_create_elimination_visit.xlsx") }
+  #   let(:csv)            { FactoryGirl.create(:csv_report, :csv => csv_file, :user_id => user.id, :location => location) }
+  #
+  #   it "creates 2 visits" do
+  #     expect {
+  #       CsvParsingWorker.perform_async(csv.id)
+  #     }.to change(Visit, :count).by(2)
+  #   end
+  # end
 
   #-----------------------------------------------------------------------------
 
@@ -283,7 +296,7 @@ describe CsvParsingWorker do
       expect(Report.where("DATE(created_at) = '2015-01-12'").count).to eq(1)
     end
 
-    it "returns data that matches Harold's graphs" do
+    it "returns data that matches Harold's graphs", :wip => true do
       neighborhood = Neighborhood.first
       Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|
         csv      = File.open(f)
@@ -390,7 +403,6 @@ describe CsvParsingWorker do
 
     it "creates additional Inspection instances for same report" do
       r = Report.find_by_field_identifier("b3")
-      r.completed_at = Time.zone.now
       r.save(:validate => false)
 
       v = r.find_or_create_elimination_visit()
@@ -402,7 +414,6 @@ describe CsvParsingWorker do
 
     it "creates Inspection instances with correct attributes" do
       r = Report.find_by_field_identifier("b3")
-      r.completed_at = Time.zone.now
       r.save(:validate => false)
 
       v = r.find_or_create_elimination_visit()

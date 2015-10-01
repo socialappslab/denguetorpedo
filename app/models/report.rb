@@ -339,7 +339,7 @@ class Report < ActiveRecord::Base
   # Visit.
   def find_or_create_elimination_visit
     return if self.location_id.blank?
-    return if self.completed_at.blank?
+    # return if self.completed_at.blank?
     return if self.eliminated_at.blank?
 
     v = Visit.where(:location_id => self.location_id)
