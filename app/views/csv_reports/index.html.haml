@@ -20,34 +20,40 @@
 
   .row
     .col-md-12
-      .well
-        .row
-
-          %table.table.table-bordered.table-hover.text-center.statistics-table
-            %thead
-              %th.text-center
-                CSV
-              %th.text-center
-                = I18n.t("attributes.location_id")
-              %th.text-center
-                Fecha de carga
-              %th.text-center
-                Condición
-            %tbody
-              - @csvs.each do |csv|
-                %tr{:data => {"csv_id" => csv.id}}
-                  %td{"style" => "width: 25%;"}
-                    = link_to csv.csv_file_name, csv.csv.url
-                  %td{"style" => "width: 25%;"}
-                    = csv.location.address if csv.location.present?
-                  %td{"style" => "width: 25%;"}
-                    = csv.created_at.strftime("%Y-%m-%d %H:%M")
-                  %td{"style" => "width: 25%;"}
-                    - if csv.csv_errors.present?
-                      = link_to I18n.t("views.csv_reports.failed_with_errors"), csv_report_path(csv), :class => "btn btn-danger"
-                    - elsif csv.parsed_at.blank?
-                      = I18n.t("views.csv_reports.parsing") + "..."
-                    - elsif csv.verified_at.blank?
-                      = link_to I18n.t("views.csv_reports.verify"), verify_csv_report_path(csv), :class => "btn btn-warning"
-                    - else
-                      = link_to I18n.t("views.csv_reports.view"), csv_report_path(csv), :class => "btn btn-info"
+      .panel.panel-default
+        %table.table.table-bordered.table-hover.text-center.statistics-table
+          %thead
+            %th.text-center
+              CSV
+            %th.text-center
+              = I18n.t("attributes.location_id")
+            %th.text-center
+              Fecha de carga
+            %th.text-center
+              = I18n.t("activerecord.attributes.visit.visited_at")
+            %th.text-center
+              Condición
+          %tbody
+            - @csvs.each do |csv|
+              - visits = csv.visits.order("visited_at ASC").map {|v| v.visited_at.strftime("%Y-%m-%d")}.uniq
+              %tr{:data => {"csv_id" => csv.id}}
+                %td{"style" => "width: 20%;"}
+                  = link_to csv.csv_file_name, csv.csv.url
+                %td{"style" => "width: 20%;"}
+                  = csv.location.address if csv.location.present?
+                %td{"style" => "width: 20%;"}
+                  = csv.created_at.strftime("%Y-%m-%d %H:%M")
+                %td{"style" => "width: 20%;"}
+                  %ul.list-group
+                    - visits.each do |visit_date|
+                      %li.list-group-item
+                        = visit_date
+                %td{"style" => "width: 20%;"}
+                  - if csv.csv_errors.present?
+                    = link_to I18n.t("views.csv_reports.failed_with_errors"), csv_report_path(csv), :class => "btn btn-danger"
+                  - elsif csv.parsed_at.blank?
+                    = I18n.t("views.csv_reports.parsing") + "..."
+                  - elsif csv.verified_at.blank?
+                    = link_to I18n.t("views.csv_reports.verify"), verify_csv_report_path(csv), :class => "btn btn-warning"
+                  - else
+                    = link_to I18n.t("views.csv_reports.view"), csv_report_path(csv), :class => "btn btn-info"
