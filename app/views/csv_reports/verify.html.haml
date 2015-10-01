@@ -8,8 +8,7 @@
         = @csv.csv_file_name
     .col-md-4.col-xs-4
       .pull-right
-        = form_for @csv, :html => {:method => :delete} do |f|
-          = f.submit I18n.t("views.csv_reports.delete"), :class => "btn btn-danger btn-lg"
+        = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(@csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "btn btn-danger btn-lg", :prompt => I18n.t("common_terms.are_you_sure")
 
   .row
     .col-md-12

@@ -223,6 +223,7 @@ es:
   #----------------------------------
 
   common_terms:
+    are_you_sure: "¿Estas seguro?"
     map: Mapa
     no_data: No hay datos
     saved: Actualizado

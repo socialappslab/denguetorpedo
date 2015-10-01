@@ -75,6 +75,19 @@ class API::V0::CsvReportsController < API::V0::BaseController
     end
   end
 
+
+  #----------------------------------------------------------------------------
+  # DELETE /api/v0/csv_reports/:id
+
+  def destroy
+    @csv = @current_user.csv_reports.find(params[:id])
+    if @csv.destroy
+      render :json => {:reload => true}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@csv.errors.full_messages[0], 422) and return
+    end
+  end
+
   #----------------------------------------------------------------------------
   # PUT /api/v0/csv_reports/:id/verify
 
