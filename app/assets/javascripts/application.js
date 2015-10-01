@@ -19,6 +19,8 @@
 //= require "app/controllers/green_locations_chart_controller"
 //= require "app/directives/remote-link"
 //= require "app/directives/remote-submit"
+//= require "app/directives/compress-image"
+
 
 //= require "jquery/caret-min"
 //= require "jquery/atwho-min"
