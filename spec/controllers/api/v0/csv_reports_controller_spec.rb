@@ -164,4 +164,17 @@ describe API::V0::CsvReportsController do
 
   #--------------------------------------------------------------------------
 
+  describe "Destroying a CSV" do
+    it "changes CsvReport" do
+      csv =  build(:parsed_csv, :user => user)
+      csv.save(:validate => false)
+
+      expect {
+        delete :destroy, :id => csv.id
+      }.to change(CsvReport, :count).by(-1)
+    end
+  end
+
+  #--------------------------------------------------------------------------
+
 end

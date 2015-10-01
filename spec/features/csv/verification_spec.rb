@@ -24,17 +24,11 @@ describe "CSV", :type => :feature do
 
   it "displays Needs Verification in CsvReports#index view" do
     visit csv_reports_path
-    expect(page.all("tr")[0]).to have_content( I18n.t("views.csv_reports.verify") )
+    expect(page.all("tr")[1]).to have_content( I18n.t("views.csv_reports.verify") )
   end
 
   it "displays N reports associated with report" do
     expect(page.all("tr").count).to eq(csv.reports.count)
-  end
-
-  it "Clicking Delete CSV deletes the CSV" do
-    expect {
-      click_button I18n.t("views.csv_reports.delete")
-    }.to change(CsvReport, :count).by(-1)
   end
 
   it "should not display Verify CSV button" do
@@ -51,7 +45,7 @@ describe "CSV", :type => :feature do
     first_report = csv.reports.first
     first_report.update_column(:verified_at, Time.zone.now)
     visit verify_csv_report_path(csv)
-    expect(page.all("tr")[0]).to have_content( "Verificado" )
+    expect(page).to have_content( "Verificado" )
   end
 
   #----------------------------------------------------------------------------

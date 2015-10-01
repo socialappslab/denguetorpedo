@@ -19,31 +19,9 @@ describe "CSV", :type => :feature do
     Sidekiq::Testing.fake!
   end
 
-  it "clicking delete CSV will delete the CSV" do
-    csv = File.open(Rails.root + "spec/support/foco_marcado.jpg")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
-
-    visit csv_report_path(CsvReport.last)
-    expect {
-      click_button I18n.t("views.csv_reports.delete")
-    }.to change(CsvReport, :count).by(-1)
-  end
-
-  it "clicking delete CSV will delete all CsvErrors" do
-    csv = File.open(Rails.root + "spec/support/foco_marcado.jpg")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
-
-    visit csv_report_path(csv)
-    expect {
-      click_button I18n.t("views.csv_reports.delete")
-    }.to change(CsvError, :count).by(-1)
-  end
-
   it "displays unknown format error" do
     csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"), :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
+    CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::UNKNOWN_FORMAT] )
@@ -52,7 +30,7 @@ describe "CSV", :type => :feature do
   it "displays missing house error" do
     csv = File.open("spec/support/csv/missing_house.csv")
     csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
+    CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::MISSING_HOUSE] )
@@ -61,7 +39,7 @@ describe "CSV", :type => :feature do
   it "displays unknown code error" do
     csv = File.open("spec/support/csv/unknown_code.csv")
     csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
+    CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::UNKNOWN_CODE] )
@@ -70,7 +48,7 @@ describe "CSV", :type => :feature do
   it "displays inspection date in future error" do
     csv = File.open("spec/support/csv/inspection_date_in_future.xlsx")
     csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
+    CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::VISIT_DATE_IN_FUTURE] )
@@ -79,7 +57,7 @@ describe "CSV", :type => :feature do
   it "displays elimination date in future error" do
     csv = File.open("spec/support/csv/elimination_date_in_future.xlsx")
     csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
+    CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(csv)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::ELIMINATION_DATE_IN_FUTURE] )
@@ -88,7 +66,7 @@ describe "CSV", :type => :feature do
   it "displays elimination date before inspection date error" do
     csv = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
     csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id, default_params)
+    CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE] )
