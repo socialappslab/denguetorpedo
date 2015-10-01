@@ -503,8 +503,60 @@ namespace :csv_reports do
 
   end
 
+  #----------------------------------------------------------------------------
+
+  # This task converts CSV file names to their appropriate locations.
+  desc "Convert CSV file name to the appropriate location"
+  task :convert_csv_name => :environment do
+    CsvReport.find_each do |csv|
+      next if csv.csv_file_name.include?("N0")
+
+      # At this point, the CSV file name is probably forma_csv_(55).xlsx.
+      if csv.location.blank?
+        raise "Location is blank for csv: #{csv.csv_file_name} | #{csv.id}"
+      end
+
+      csv.csv_file_name = csv.location.address.strip + ".xlsx"
+      csv.save(:validate => false)
+    end
+  end
+
 
   #----------------------------------------------------------------------------
+
+  # This task identifies a master CSV out of a copy of identically named CSVs,
+  # and proceeds to associate all reports to that master CSV, and then remove
+  # the slave CSVs.
+  desc "Stitch common CSVs together"
+  task :stitch_csv => :environment do
+    csv_file_names = CsvReport.pluck(:csv_file_name).uniq
+    csv_file_names.each do |name|
+      if name.exclude?("N0")
+        puts "Name does not contain N0: #{name}"
+        next
+      end
+
+      # At this point, we're pretty sure these are Nicaraguan CSVs.
+      csvs = CsvReport.where(:csv_file_name => name).order("created_at DESC")
+      master_csv = csvs.first
+      csvs.each do |csv|
+        next if csv.id == master_csv.id
+
+        # Let's transfer all reports associated with old CSV to master CSV.
+        csv.reports.each do |rep|
+          rep.update_column(:csv_report_id, master_csv.id)
+        end
+      end
+
+      # Now, let's iterate over the CSVs again, deleting them. Make sure to do a
+      # new SQL query so as not to remove the reports.
+      csvs_to_delete = CsvReport.where(:csv_file_name => name).where("id != ?", master_csv.id)
+      csvs_to_delete.each do |csv|
+        csv.destroy
+      end
+    end
+  end
+
 
 
 end
