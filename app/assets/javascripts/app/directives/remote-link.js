@@ -18,6 +18,9 @@ var remoteLinkDirective = function($http){
         ajax.success(function(response) {
           alert("Success!");
 
+          if (response.redirect_path)
+            window.location.href = response.redirect_path;
+
           if (response.reload || attrs.reload)
             window.location.reload();
         });

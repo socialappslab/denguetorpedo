@@ -20,33 +20,8 @@
 
       .row
         .col-md-6
-          = link_to I18n.t("views.buttons.delete"), api_v0_report_path(@report), "id" => "delete-report-link", :class => "btn btn-danger btn-lg btn-block"
+          = link_to I18n.t("views.buttons.delete"), api_v0_report_path(@report), :class => "btn btn-danger btn-lg btn-block", :method => "DELETE", "remote-link" => true, :prompt => I18n.t("common_terms.are_you_sure")
         .col-md-6
           = button_tag :type => "submit", :class => "btn btn-success btn-lg btn-block submit-button pull-right" do
             %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
             = I18n.t("views.buttons.confirm")
-
-
-- content_for :scripts do
-  :javascript
-    $("#delete-report-link").on("click", function(event) {
-      event.preventDefault();
-
-      var response = window.confirm("¿Estas seguro?");
-      if (response == false)
-        return;
-
-      $.ajax({
-        url: event.currentTarget.href,
-        type: "DELETE",
-        success : function(data){
-          window.alert("Éxito!");
-          window.location.href = data.redirect_path;
-        },
-        error: function(data) {
-          window.alert("Something went wrong! Please try again.");
-        }
-      })
-
-      return false;
-    })
