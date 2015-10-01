@@ -113,8 +113,8 @@ class ReportsController < NeighborhoodsBaseController
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
       # Let's associate a visit and inspection.
-      visit = @report.find_or_create_first_visit
-      @report.update_inspection_for_visit(visit)
+      visit = @report.find_or_create_visit_for_date(@report.created_at)
+      Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => @report.original_status)
 
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
@@ -161,8 +161,8 @@ class ReportsController < NeighborhoodsBaseController
     if @report.update_attributes(params[:report])
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
-      visit = @report.find_or_create_elimination_visit()
-      @report.update_inspection_for_visit(visit)
+      visit = @report.find_or_create_visit_for_date(@report.eliminated_at)
+      Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => Inspection::Types::NEGATIVE)
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_eliminating(@report)

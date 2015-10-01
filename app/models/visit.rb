@@ -33,11 +33,6 @@ class Visit < ActiveRecord::Base
     FOLLOWUP   = 1
   end
 
-  def visit_type
-    return Types::FOLLOWUP if self.parent_visit_id.present?
-    return Types::INSPECTION
-  end
-
   #----------------------------------------------------------------------------
 
   def identification_type
@@ -51,13 +46,30 @@ class Visit < ActiveRecord::Base
     end
   end
 
+  def self.find_or_create_visit_for_location_id_and_date(location_id, date)
+    return nil if location_id.blank?
+    return nil if date.blank?
+
+    v = Visit.where(:location_id => location_id)
+    v = v.where(:visited_at => (date.beginning_of_day..date.end_of_day))
+    v = v.order("visited_at DESC").first
+    if v.blank?
+      v             = Visit.new
+      v.location_id = location_id
+      v.visited_at  = date
+      v.save
+    end
+
+    return v
+  end
+
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
   def self.calculate_status_distribution_for_locations(location_ids, start_time, end_time, scale)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
-    visits       = Visit.select("id, visited_at, location_id, parent_visit_id").where(:location_id => location_ids).order("visited_at ASC")
+    visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
     return [] if visits.blank?
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
@@ -72,7 +84,6 @@ class Visit < ActiveRecord::Base
     daily_stats = []
     visits.each do |visit|
       visited_at_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
-      visit_type      = visit.visit_type
 
       day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
       if day_statistic.blank?

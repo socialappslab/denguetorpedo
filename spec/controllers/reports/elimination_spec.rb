@@ -12,7 +12,7 @@ describe ReportsController do
 
   before(:each) do
     cookies[:auth_token] = user.auth_token
-		v = report.find_or_create_first_visit()
+		v = report.find_or_create_visit_for_date(report.created_at)
 		report.update_inspection_for_visit(v)
   end
 
@@ -54,7 +54,7 @@ describe ReportsController do
 
 	describe "Visit and inspection instances" do
 		before(:each) do
-			report.find_or_create_first_visit
+			report.find_or_create_visit_for_date(report.created_at)
 		end
 
 		it "creates an elimination Visit" do
@@ -74,7 +74,6 @@ describe ReportsController do
 			v = Visit.last
 			expect(v.visited_at.strftime("%d-%m-%Y")).to eq("09-08-2015")
 			expect(v.location_id).to eq(report.location_id)
-			expect(v.parent_visit_id).to eq(Visit.first.id)
 		end
 
 		it "creates an Inspection with correct attributes" do

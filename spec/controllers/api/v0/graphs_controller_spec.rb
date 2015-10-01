@@ -28,28 +28,28 @@ describe API::V0::GraphsController do
     # Third date had 2 visits to 2 (first and third) locations (first positive and third potential)
     # Fourth date had 1 visit to first location (first negative)
     r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1, :neighborhood_id => neighborhood.id)
-    v = r.find_or_create_first_visit()
+    v = r.find_or_create_visit_for_date(r.created_at)
     r.update_inspection_for_visit(v)
 
     r = create(:potential_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date1, :neighborhood_id => neighborhood.id)
-    v = r.find_or_create_first_visit()
+    v = r.find_or_create_visit_for_date(r.created_at)
     r.update_inspection_for_visit(v)
 
     r = create(:positive_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date2, :neighborhood_id => neighborhood.id)
-    v = r.find_or_create_first_visit()
+    v = r.find_or_create_visit_for_date(r.created_at)
     r.update_inspection_for_visit(v)
 
 
     pos_report = create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
-    v = pos_report.find_or_create_first_visit()
+    v = pos_report.find_or_create_visit_for_date(pos_report.created_at)
     pos_report.update_inspection_for_visit(v)
 
     r = create(:potential_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
-    v = r.find_or_create_first_visit()
+    v = r.find_or_create_visit_for_date(r.created_at)
     r.update_inspection_for_visit(v)
 
     r = create(:potential_report, :reporter_id => user.id, :location_id => third_location.id, :created_at => date3, :neighborhood_id => neighborhood.id)
-    v = r.find_or_create_first_visit()
+    v = r.find_or_create_visit_for_date(r.created_at)
     r.update_inspection_for_visit(v)
 
 
@@ -57,7 +57,7 @@ describe API::V0::GraphsController do
     pos_report.eliminated_at = date4
     pos_report.elimination_method_id = breeding_site.elimination_methods.first.id
     pos_report.save(:validate => false)
-    v = pos_report.find_or_create_elimination_visit()
+    v = pos_report.find_or_create_visit_for_date(date4)
     pos_report.update_inspection_for_visit(v)
 
     Report.find_each do |r|
