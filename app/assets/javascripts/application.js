@@ -17,8 +17,12 @@
 //= require "app/controllers/csv_verify_controller"
 //= require "app/controllers/city_controller"
 //= require "app/controllers/green_locations_chart_controller"
+//= require "app/directives/remote-link"
+//= require "app/directives/remote-submit"
+
 //= require "jquery/caret-min"
 //= require "jquery/atwho-min"
+
 
 
 window.denguechat = {};
