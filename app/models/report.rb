@@ -136,6 +136,8 @@ class Report < ActiveRecord::Base
   # This is the authoritative method for the report's status since it also
   # considers the report's elimination state.
   def status
+    # TODO: The problem here is taht we can't treat a report as eliminated unti
+    # someone marks its elimination_method_id... NOT CORRECT.
     return Status::NEGATIVE if self.eliminated?
     return self.original_status
   end

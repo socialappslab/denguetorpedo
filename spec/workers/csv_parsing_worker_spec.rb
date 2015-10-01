@@ -267,16 +267,27 @@ describe CsvParsingWorker do
 
   #-----------------------------------------------------------------------------
 
-  # context "when uploading a custom CSV with inspection AND elimination date" do
-  #   let(:csv_file)       { File.open("spec/support/should_create_elimination_visit.xlsx") }
-  #   let(:csv)            { FactoryGirl.create(:csv_report, :csv => csv_file, :user_id => user.id, :location => location) }
-  #
-  #   it "creates 2 visits" do
-  #     expect {
-  #       CsvParsingWorker.perform_async(csv.id)
-  #     }.to change(Visit, :count).by(2)
-  #   end
-  # end
+  context "when uploading a custom CSV with inspection AND elimination date" do
+    let(:csv_file)       { File.open("spec/support/should_create_elimination_visit.xlsx") }
+    let(:csv)            { FactoryGirl.create(:csv_report, :csv => csv_file, :user_id => user.id, :location => location) }
+
+    it "creates 2 visits" do
+      expect {
+        CsvParsingWorker.perform_async(csv.id)
+      }.to change(Visit, :count).by(2)
+    end
+
+    it "creates a positive inspection visit and an elimination visit" do
+      CsvParsingWorker.perform_async(csv.id)
+      visits = Visit.all
+
+      initial_visit = visits.where(:parent_visit_id => nil).first
+      expect(initial_visit.inspections.first.identification_type).to eq(Inspection::Types::POSITIVE)
+
+      elimination_visit = visits.where("parent_visit_id IS NOT NULL").first
+      expect(elimination_visit.inspections.first.identification_type).to eq(Inspection::Types::NEGATIVE)
+    end
+  end
 
   #-----------------------------------------------------------------------------
 
