@@ -230,6 +230,7 @@ GEM
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
+    rollbar (2.2.1)
     roo (2.1.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
@@ -343,6 +344,7 @@ DEPENDENCIES
   rails-i18n
   rails_12factor
   rails_autolink
+  rollbar (~> 2.2.1)
   roo
   rspec-rails
   sass-rails (~> 5.0)

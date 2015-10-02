@@ -38,6 +38,7 @@ gem "pundit"
 gem 'rails', "4.2"
 gem 'rails_autolink'
 gem 'rails-i18n'
+gem 'rollbar', '~> 2.2.1'
 gem "roo", :require => false
 gem 'sass-rails', "~> 5.0"
 gem "sidekiq"
