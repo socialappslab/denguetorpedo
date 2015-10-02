@@ -108,5 +108,26 @@ namespace :reports do
 
   #----------------------------------------------------------------------------
 
+  # This is a one-off task that backfills all reports by adding an inspection
+  # with status NEGATIVE and position (count inspections) only if the eliminated_at
+  # is present and the most recent inspection is not NEGATIVE.
+  task :add_eliminated_inspection => :environment do
+    Report.find_each do |r|
+      next if r.created_at.blank?
+      next if r.eliminated_at.blank?
+
+      inspections = r.visits.order("visited_at ASC").map {|v| v.inspections.where(:report_id => r.id)}.flatten.uniq
+      next if inspections.blank?
+
+      last_inspection = inspections.last
+      if last_inspection.identification_type != Inspection::Types::NEGATIVE
+        position = r.inspections.where(:visit_id => last_inspection.visit_id).count
+        Inspection.create(:visit_id => last_inspection.visit_id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
+      end
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
 
 end

@@ -12,7 +12,7 @@
 
 
     .col-md-4.col-xs-4.metadata
-      - report.inspections.joins(:visit).order("visits.visited_at ASC").each do |ins|
+      - report.inspections.order("position ASC").joins(:visit).order("visits.visited_at ASC").each do |ins|
         .pull-right{"style" => "margin-top: 10px; display: block;"}
           - if ins.identification_type == Inspection::Types::POSITIVE
             %span.label.label-danger

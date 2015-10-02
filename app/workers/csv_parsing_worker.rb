@@ -75,20 +75,8 @@ class CsvParsingWorker
       # the last parsed entry.
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at = Time.zone.parse( row_content[:visited_at] )
-
-        ls = Visit.where(:location_id => location.id)
-        ls = ls.where(:parent_visit_id => nil)
-        ls = ls.where(:visited_at => (current_visited_at.beginning_of_day..current_visited_at.end_of_day))
-        ls = ls.order("visited_at DESC").first
-        if ls.blank?
-          ls                 = Visit.new
-          ls.parent_visit_id = nil
-          ls.location_id     = location.id
-          ls.visited_at      = current_visited_at
-        end
-
-        ls.health_report = row_content[:health_report]
-        ls.save
+        v = Visit.find_or_create_visit_for_location_id_and_date(location.id, current_visited_at)
+        v.update_column(:health_report, row_content[:health_report])
       end
 
       # Why do this? The specific bug here was that a valid visit date was completely ignored
@@ -135,11 +123,14 @@ class CsvParsingWorker
           r.eliminated_at = eliminated_at
           r.save(:validate => false)
 
-          v = r.find_or_create_elimination_visit
-          r.update_inspection_for_visit(v)
+          # Create an inspection whose position is dependent on the existing inspections
+          # associated with this report.
+          v = r.find_or_create_visit_for_date(r.eliminated_at)
+          position = r.inspections.where(:visit_id => v).count
+          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
         else
-          v = r.find_or_create_followup_visit(current_visited_at)
-          r.update_inspection_for_visit(v)
+          v = r.find_or_create_visit_for_date(current_visited_at)
+          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status)
         end
       else
         # At this point, this isn't a report with a field identifier. Because
@@ -170,8 +161,8 @@ class CsvParsingWorker
           r.eliminated_at      = eliminated_at
           r.save(:validate => false)
 
-          v = r.find_or_create_first_visit()
-          r.update_inspection_for_visit(v)
+          v = r.find_or_create_visit_for_date(r.created_at)
+          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status)
         end
 
         # At this point, we have a report, be it existing or created. Either way,
@@ -180,12 +171,14 @@ class CsvParsingWorker
           r.eliminated_at = eliminated_at
           r.save(:validate => false)
 
-          v = r.find_or_create_elimination_visit()
-          r.update_inspection_for_visit(v)
+          # Create an inspection whose position is dependent on the existing inspections
+          # associated with this report.
+          v = r.find_or_create_visit_for_date(r.eliminated_at)
+          position = r.inspections.where(:visit_id => v).count
+          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
         end
       end
     end
-
 
     @csv_report.parsed_at      = Time.zone.now
     @csv_report.save

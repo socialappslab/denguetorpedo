@@ -122,7 +122,7 @@ class Report < ActiveRecord::Base
   # is eliminated, open, expired or SMS.
 
   def initial_visit
-    return self.visits.where(:parent_visit_id => nil).first
+    return self.visits.order("visited_at ASC").first
   end
 
   # This method returns the report's original status, which is the status
@@ -135,7 +135,10 @@ class Report < ActiveRecord::Base
 
   # This is the authoritative method for the report's status since it also
   # considers the report's elimination state.
+  # TODO: To deprecate
   def status
+    # TODO: The problem here is taht we can't treat a report as eliminated unti
+    # someone marks its elimination_method_id... NOT CORRECT.
     return Status::NEGATIVE if self.eliminated?
     return self.original_status
   end
@@ -283,82 +286,11 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # A new report offers conceptually implies a visit to some location.
-  # Specifically, the report tells us *what* was identified at the location,
-  # and *when* it was identified. The *what* depends on what other reports
-  # correspond to that location, so it will be calculated appropriately.
-  # Specifically, to update or set the identification_type based on the following information:
-  # * If report is status = POSITIVE, then the identification_type is POSITIVE
-  # * If report is status = POTENTIAL, then set to POTENTIAL only if identification_type
-  #   of existing Visit does not equal POSITIVE.
-  # This method should be used when we first create a new report.
-  def find_or_create_first_visit
-    return nil if self.location_id.blank?
-
-    v = Visit.where(:location_id => self.location_id)
-    v = v.where(:parent_visit_id => nil)
-    v = v.where(:visited_at => (self.created_at.beginning_of_day..self.created_at.end_of_day))
-    v = v.order("visited_at DESC").first
-    if v.blank?
-      v             = Visit.new
-      v.location_id = self.location_id
-      v.visited_at  = self.created_at
-      v.save
-    end
-
-    return v
+  def find_or_create_visit_for_date(date)
+    Visit.find_or_create_visit_for_location_id_and_date(self.location_id, date)
   end
 
-  def find_or_create_followup_visit(visited_at)
-    return nil if self.location_id.blank?
-
-    v = Visit.where(:location_id => self.location_id)
-    v = v.where("parent_visit_id IS NOT NULL")
-    v = v.where(:visited_at => (visited_at.beginning_of_day..visited_at.end_of_day))
-    v = v.order("visited_at DESC").first
-    if v.blank?
-      v             = Visit.new
-      v.location_id = self.location_id
-      v.parent_visit_id = self.initial_visit.id if self.initial_visit.present?
-      v.visited_at  = visited_at
-      v.save
-    end
-
-    return v
-  end
-
-  # This method is run when the report is *eliminated*. Again, the eliminated
-  # report gleams some insight into the state of the location. Whether the location
-  # is actually cleaned or not depends on all other reports, however. Therefore,
-  # we update cleaned_at ONLY IF all reports have been eliminated. We set cleaned_at
-  # to be the time of the incoming report's eliminated_at time.
-  #
-  # What Visit are we updating? The one whose identified_at corresponds
-  # to the report's created_at date. This ensures consistency between the
-  # create_visit method, and this method so we're working on the same
-  # Visit.
-  def find_or_create_elimination_visit
-    return if self.location_id.blank?
-    return if self.completed_at.blank?
-    return if self.eliminated_at.blank?
-
-    v = Visit.where(:location_id => self.location_id)
-    v = v.where("parent_visit_id IS NOT NULL")
-    v = v.where(:visited_at => (self.eliminated_at.beginning_of_day..self.eliminated_at.end_of_day))
-    v = v.order("visited_at DESC").limit(1)
-    if v.blank?
-      v                 = Visit.new
-      v.location_id     = self.location_id
-      v.parent_visit_id = self.initial_visit.id if self.initial_visit.present?
-      v.visited_at      = self.eliminated_at
-      v.save
-    else
-      v = v.first
-    end
-
-    return v
-  end
-
+  # TODO: To deprecate
   def update_inspection_for_visit(v)
     return if v.blank?
 
@@ -369,10 +301,6 @@ class Report < ActiveRecord::Base
     ins.identification_type = self.status
     ins.save
   end
-
-  #----------------------------------------------------------------------------
-
-
 
   #----------------------------------------------------------------------------
 

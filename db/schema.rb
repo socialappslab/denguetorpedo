@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150828155724) do
+ActiveRecord::Schema.define(version: 20151001230706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -237,6 +237,7 @@ ActiveRecord::Schema.define(version: 20150828155724) do
     t.integer "visit_id"
     t.integer "report_id"
     t.integer "identification_type"
+    t.integer "position",            default: 0
   end
 
   create_table "likes", force: :cascade do |t|
@@ -251,11 +252,11 @@ ActiveRecord::Schema.define(version: 20150828155724) do
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], name: "index_likes_on_user_id_and_likeable_id_and_likeable_type", unique: true, using: :btree
 
   create_table "location_statuses", id: false, force: :cascade do |t|
-    t.integer  "id",                              default: "nextval('location_statuses_id_seq'::regclass)", null: false
+    t.integer  "id",                              null: false
     t.integer  "location_id"
     t.integer  "status"
-    t.datetime "created_at",                                                                                null: false
-    t.datetime "updated_at",                                                                                null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.integer  "dengue_count"
     t.integer  "chik_count"
     t.string   "health_report",       limit: 255

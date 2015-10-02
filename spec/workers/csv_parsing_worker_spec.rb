@@ -122,17 +122,13 @@ describe CsvParsingWorker do
 
   #----------------------------------------------------------------------------
 
-  describe "the parsed Visit attributes", :after_commit => true do
+  describe "the parsed Visit attributes" do
     before(:each) do
       CsvParsingWorker.perform_async(csv.id)
     end
 
-    it "creates 3 inspection visits" do
-      expect(Visit.where(:parent_visit_id => nil).count).to eq(3)
-    end
-
-    it "creates no follow-up visits" do
-      expect(Visit.where("parent_visit_id IS NOT NULL").count).to eq(0)
+    it "creates 4 visits" do
+      expect(Visit.count).to eq(4)
     end
 
     it "correctly sets inspection type" do
@@ -249,7 +245,7 @@ describe CsvParsingWorker do
     it "create a new inspection Visit" do
       expect {
         CsvParsingWorker.perform_async(@subsequent_csv.id)
-      }.to change(Visit, :count).by(1)
+      }.to change(Visit.where(:parent_visit_id => nil), :count).by(1)
     end
   end
 
@@ -263,6 +259,36 @@ describe CsvParsingWorker do
       }.to change(Report, :count).by(4)
     end
 
+  end
+
+  #-----------------------------------------------------------------------------
+
+  context "when uploading a custom CSV with inspection AND elimination date" do
+    let(:csv_file)       { File.open("spec/support/should_create_elimination_visit.xlsx") }
+    let(:csv)            { FactoryGirl.create(:csv_report, :csv => csv_file, :user_id => user.id, :location => location) }
+
+    it "creates 2 inspections" do
+      expect {
+        CsvParsingWorker.perform_async(csv.id)
+      }.to change(Inspection, :count).by(2)
+    end
+
+    it "creates only 1 visit" do
+      expect {
+        CsvParsingWorker.perform_async(csv.id)
+      }.to change(Visit, :count).by(1)
+    end
+
+    it "creates a positive inspection and a negative inspection with correct positions" do
+      CsvParsingWorker.perform_async(csv.id)
+
+      inspections = Visit.all.first.inspections.order("position ASC")
+      expect(inspections.first.identification_type).to eq(Inspection::Types::POSITIVE)
+      expect(inspections.last.identification_type).to eq(Inspection::Types::NEGATIVE)
+
+      expect(inspections.first.position).to eq(0)
+      expect(inspections.last.position).to eq(1)
+    end
   end
 
   #-----------------------------------------------------------------------------
@@ -283,7 +309,7 @@ describe CsvParsingWorker do
       expect(Report.where("DATE(created_at) = '2015-01-12'").count).to eq(1)
     end
 
-    it "returns data that matches Harold's graphs" do
+    it "returns data that matches Harold's graphs", :wip => true do
       neighborhood = Neighborhood.first
       Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|
         csv      = File.open(f)
@@ -388,24 +414,22 @@ describe CsvParsingWorker do
       expect(Report.count).to eq(3)
     end
 
-    it "creates additional Inspection instances for same report" do
+    it "creates additional Inspection instances for same report", :wip => true do
       r = Report.find_by_field_identifier("b3")
-      r.completed_at = Time.zone.now
       r.save(:validate => false)
 
-      v = r.find_or_create_elimination_visit()
+      v = r.find_or_create_visit_for_date(r.eliminated_at)
       r.update_inspection_for_visit(v)
 
       inspections = Inspection.where(:report_id => r.id)
       expect(inspections.count).to eq(4)
     end
 
-    it "creates Inspection instances with correct attributes" do
+    it "creates Inspection instances with correct attributes", :wip => true do
       r = Report.find_by_field_identifier("b3")
-      r.completed_at = Time.zone.now
       r.save(:validate => false)
 
-      v = r.find_or_create_elimination_visit()
+      v = r.find_or_create_visit_for_date(r.eliminated_at)
       r.update_inspection_for_visit(v)
 
 
@@ -421,7 +445,7 @@ describe CsvParsingWorker do
       r.completed_at = Time.zone.now
       r.save(:validate => false)
 
-      v = r.find_or_create_elimination_visit()
+      v = r.find_or_create_visit_for_date(r.eliminated_at)
       r.update_inspection_for_visit(v)
 
       expect(r.visits.count).to eq(4)
@@ -433,7 +457,7 @@ describe CsvParsingWorker do
       r.save(:validate => false)
       visits = r.visits.order("visited_at ASC")
 
-      v = r.find_or_create_elimination_visit()
+      v = r.find_or_create_visit_for_date(r.eliminated_at)
       r.update_inspection_for_visit(v)
 
       # NOTE: We're expecting 4 but the last one will not be created until it's "completed"!

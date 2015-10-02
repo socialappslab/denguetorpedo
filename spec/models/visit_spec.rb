@@ -57,23 +57,15 @@ describe Visit do
   context "when a new report is created", :after_commit => true do
     it "sets the correct visit time" do
       report = FactoryGirl.create(:report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = report.find_or_create_first_visit()
+      v = report.find_or_create_visit_for_date(report.created_at)
       report.update_inspection_for_visit(v)
       v = Visit.first
       expect(v.visited_at).to eq(created_at)
     end
 
-    it "sets the correct visit type" do
-      report = FactoryGirl.create(:report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = report.find_or_create_first_visit()
-      report.update_inspection_for_visit(v)
-      v = Visit.first
-      expect(v.visit_type).to eq(Visit::Types::INSPECTION)
-    end
-
     it "sets the correct location" do
       report = FactoryGirl.create(:report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = report.find_or_create_first_visit
+      v = report.find_or_create_visit_for_date(report.created_at)
       report.update_inspection_for_visit(v)
       v = Visit.first
       expect(v.location_id).to eq(location.id)
@@ -81,7 +73,7 @@ describe Visit do
 
     it "sets the correct identification type on positive reports" do
       r = create(:positive_report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
       ins = Inspection.last
       expect(ins.identification_type).to eq(Report::Status::POSITIVE)
@@ -89,7 +81,7 @@ describe Visit do
 
     it "sets the correct identification type on potential reports" do
       r = FactoryGirl.create(:potential_report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
       v = Inspection.last
       expect(v.identification_type).to eq(Report::Status::POTENTIAL)
@@ -97,7 +89,7 @@ describe Visit do
 
     it "sets the correct identification type on negative reports" do
       r = FactoryGirl.create(:negative_report, :location_id => location.id, :reporter => user, :created_at => created_at)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
       v = Inspection.last
       expect(v.identification_type).to eq(Report::Status::NEGATIVE)
@@ -113,7 +105,7 @@ describe Visit do
     before(:each) do
       # This invokes after_commit callback to create a Visit instance.
       report.save
-      v = report.find_or_create_first_visit
+      v = report.find_or_create_visit_for_date(report.created_at)
       report.update_inspection_for_visit(v)
 
 
@@ -126,20 +118,13 @@ describe Visit do
     end
 
     it "sets the correct visit time" do
-      report.find_or_create_elimination_visit
+      report.find_or_create_visit_for_date(report.eliminated_at)
       expect(Visit.last.visited_at).to eq(report.eliminated_at)
-    end
-
-    it "sets the correct visit type" do
-      report.save
-      report.find_or_create_elimination_visit
-      v = Visit.last
-      expect(v.visit_type).to eq(Visit::Types::FOLLOWUP)
     end
 
     it "sets the correct location" do
       report.save
-      v = report.find_or_create_elimination_visit
+      v = report.find_or_create_visit_for_date(report.eliminated_at)
       report.update_inspection_for_visit(v)
       v = Visit.last
       expect(v.location_id).to eq(report.location.id)
@@ -147,7 +132,7 @@ describe Visit do
 
     it "sets the correct identification type" do
       report.save
-      v = report.find_or_create_elimination_visit
+      v = report.find_or_create_visit_for_date(report.eliminated_at)
       report.update_inspection_for_visit(v)
       v = Visit.last
       expect(v.identification_type).to eq(Report::Status::NEGATIVE)
@@ -168,10 +153,10 @@ describe Visit do
     # positive on T2.
     it "does not include future data of inspections before a certain date for daily percentages" do
       r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
       r = create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date2)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       visits = Visit.calculate_status_distribution_for_locations([location], nil, nil, "daily")
@@ -199,10 +184,10 @@ describe Visit do
 
     it "calculates identification type without consider past day's reports" do
       r = FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :larvae => true,    :created_at => date1)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
       r = FactoryGirl.create(:full_report, :reporter_id => user.id, :location_id => location.id, :protected => true, :created_at => date2)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
@@ -240,7 +225,7 @@ describe Visit do
       # Third date had 2 visits to 2 (first and third) locations (first positive and third potential)
       # Fourth date had 1 visit to first location (first negative)
       r = FactoryGirl.create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       # FactoryGirl.create(:visit,
@@ -248,7 +233,7 @@ describe Visit do
       # :location_id => location.id, :visited_at => date1)
 
       r = FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date1)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       # FactoryGirl.create(:visit, :visit_type => Visit::Types::INSPECTION,
@@ -256,7 +241,7 @@ describe Visit do
       # :location_id => second_location.id, :visited_at => date1)
 
       r = FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => second_location.id, :created_at => date2)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       # FactoryGirl.create(:visit,
@@ -264,12 +249,12 @@ describe Visit do
       # :location_id => second_location.id, :visited_at => date2)
 
       pos_report = FactoryGirl.create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3)
-      v = pos_report.find_or_create_first_visit()
+      v = pos_report.find_or_create_visit_for_date(pos_report.created_at)
       pos_report.update_inspection_for_visit(v)
 
 
       r = FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => location.id, :created_at => date3)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       # FactoryGirl.create(:visit,
@@ -277,7 +262,7 @@ describe Visit do
       # :location_id => location.id, :visited_at => date3)
 
       r = FactoryGirl.create(:potential_report, :reporter_id => user.id, :location_id => third_location.id, :created_at => date3)
-      v = r.find_or_create_first_visit()
+      v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
       # FactoryGirl.create(:visit,
@@ -288,7 +273,7 @@ describe Visit do
       pos_report.eliminated_at = date4
       pos_report.elimination_method_id = BreedingSite.first.elimination_methods.first.id
       pos_report.save(:validate => false)
-      v = pos_report.find_or_create_elimination_visit()
+      v = pos_report.find_or_create_visit_for_date(pos_report.eliminated_at)
       pos_report.update_inspection_for_visit(v)
 
 
