@@ -263,31 +263,33 @@ describe CsvParsingWorker do
 
   #-----------------------------------------------------------------------------
 
-  # context "when uploading a custom CSV with inspection AND elimination date" do
-  #   let(:csv_file)       { File.open("spec/support/should_create_elimination_visit.xlsx") }
-  #   let(:csv)            { FactoryGirl.create(:csv_report, :csv => csv_file, :user_id => user.id, :location => location) }
-  #
-  #   it "creates 2 inspections" do
-  #     expect {
-  #       CsvParsingWorker.perform_async(csv.id)
-  #     }.to change(Inspection, :count).by(2)
-  #   end
-  #
-  #   it "creates only 1 visit" do
-  #     expect {
-  #       CsvParsingWorker.perform_async(csv.id)
-  #     }.to change(Visit, :count).by(1)
-  #   end
-  #
-  #   it "creates a positive inspection and a negative inspection" do
-  #     CsvParsingWorker.perform_async(csv.id)
-  #     visits = Visit.all
-  #
-  #     initial_visit = visits.where(:parent_visit_id => nil).first
-  #     expect(initial_visit.inspections.first.identification_type).to eq(Inspection::Types::POSITIVE)
-  #     expect(initial_visit.inspections.last.identification_type).to eq(Inspection::Types::NEGATIVE)
-  #   end
-  # end
+  context "when uploading a custom CSV with inspection AND elimination date" do
+    let(:csv_file)       { File.open("spec/support/should_create_elimination_visit.xlsx") }
+    let(:csv)            { FactoryGirl.create(:csv_report, :csv => csv_file, :user_id => user.id, :location => location) }
+
+    it "creates 2 inspections" do
+      expect {
+        CsvParsingWorker.perform_async(csv.id)
+      }.to change(Inspection, :count).by(2)
+    end
+
+    it "creates only 1 visit" do
+      expect {
+        CsvParsingWorker.perform_async(csv.id)
+      }.to change(Visit, :count).by(1)
+    end
+
+    it "creates a positive inspection and a negative inspection with correct positions" do
+      CsvParsingWorker.perform_async(csv.id)
+
+      inspections = Visit.all.first.inspections.order("position ASC")
+      expect(inspections.first.identification_type).to eq(Inspection::Types::POSITIVE)
+      expect(inspections.last.identification_type).to eq(Inspection::Types::NEGATIVE)
+
+      expect(inspections.first.position).to eq(0)
+      expect(inspections.last.position).to eq(1)
+    end
+  end
 
   #-----------------------------------------------------------------------------
 

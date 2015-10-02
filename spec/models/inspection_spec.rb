@@ -11,13 +11,6 @@ describe Inspection do
   let(:report)     { FactoryGirl.create(:report, :reporter => user) }
   let(:new_report) { FactoryGirl.create(:full_report) }
 
-  it "avoids creating duplicate records" do
-    FactoryGirl.create(:inspection, :visit_id => visit.id, :report_id => report.id, :identification_type => Inspection::Types::POSITIVE)
-    r = FactoryGirl.build(:inspection, :visit_id => visit.id, :report_id => report.id, :identification_type => Inspection::Types::POSITIVE)
-    expect {
-      r.save
-    }.not_to change(Inspection, :count)
-  end
 
   #-----------------------------------------------------------------------------
 

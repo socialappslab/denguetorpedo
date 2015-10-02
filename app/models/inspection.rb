@@ -6,7 +6,7 @@
 # NOTE: The primary key is (report_id, visit_id).
 # NOTE: Inspection times are defined in the associated report.
 class Inspection < ActiveRecord::Base
-  attr_accessible :visit_id, :report_id, :identification_type
+  attr_accessible :visit_id, :report_id, :identification_type, :position
 
   module Types
     POSITIVE  = 0
@@ -16,7 +16,6 @@ class Inspection < ActiveRecord::Base
 
   belongs_to :visit
   belongs_to :report
-  validates_uniqueness_of :report_id, :scope => :visit_id
 
 
   after_destroy :conditionally_destroy_visit

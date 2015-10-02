@@ -123,8 +123,11 @@ class CsvParsingWorker
           r.eliminated_at = eliminated_at
           r.save(:validate => false)
 
-          v = r.find_or_create_visit_for_date(eliminated_at)
-          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE)
+          # Create an inspection whose position is dependent on the existing inspections
+          # associated with this report.
+          v = r.find_or_create_visit_for_date(r.eliminated_at)
+          position = r.inspections.where(:visit_id => v).count
+          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
         else
           v = r.find_or_create_visit_for_date(current_visited_at)
           Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status)
@@ -168,12 +171,14 @@ class CsvParsingWorker
           r.eliminated_at = eliminated_at
           r.save(:validate => false)
 
-          v = r.find_or_create_visit_for_date(eliminated_at)
-          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE)
+          # Create an inspection whose position is dependent on the existing inspections
+          # associated with this report.
+          v = r.find_or_create_visit_for_date(r.eliminated_at)
+          position = r.inspections.where(:visit_id => v).count
+          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
         end
       end
     end
-
 
     @csv_report.parsed_at      = Time.zone.now
     @csv_report.save

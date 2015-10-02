@@ -135,6 +135,7 @@ class Report < ActiveRecord::Base
 
   # This is the authoritative method for the report's status since it also
   # considers the report's elimination state.
+  # TODO: To deprecate
   def status
     # TODO: The problem here is taht we can't treat a report as eliminated unti
     # someone marks its elimination_method_id... NOT CORRECT.
@@ -289,6 +290,7 @@ class Report < ActiveRecord::Base
     Visit.find_or_create_visit_for_location_id_and_date(self.location_id, date)
   end
 
+  # TODO: To deprecate
   def update_inspection_for_visit(v)
     return if v.blank?
 
