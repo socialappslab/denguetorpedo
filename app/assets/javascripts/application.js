@@ -17,6 +17,7 @@
 //= require "app/controllers/csv_verify_controller"
 //= require "app/controllers/city_controller"
 //= require "app/controllers/green_locations_chart_controller"
+//= require "app/controllers/csv_batch_upload_controller"
 //= require "app/directives/remote-link"
 //= require "app/directives/remote-submit"
 //= require "app/directives/compress-image"

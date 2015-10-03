@@ -9,7 +9,10 @@
 
     .col-md-4.col-xs-4
       .pull-right
-        = link_to new_csv_report_path, :class => "btn btn-success btn-lg" do
+        = link_to batch_csv_reports_path, :class => "btn btn-success" do
+          %i.fa.fa-file
+          = I18n.t("views.csv_reports.batch_upload")
+        = link_to new_csv_report_path, :class => "btn btn-success" do
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
 
