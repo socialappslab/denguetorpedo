@@ -20,6 +20,10 @@ Dengue::Application.routes.draw do
       #-------------------------------------------------------------------------
 
       resources :csv_reports, :only => [:create, :update, :destroy] do
+        collection do
+          post "batch"
+        end
+
         member do
           put "verify"
         end
@@ -173,6 +177,10 @@ Dengue::Application.routes.draw do
   # CSV Reports
 
   resources :csv_reports, :only => [:new, :create, :index, :show] do
+    collection do
+      get "batch"
+    end
+
     member do
       get "verify"
     end
