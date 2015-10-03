@@ -174,6 +174,62 @@ describe API::V0::CsvReportsController do
       }.to change(CsvReport, :count).by(-1)
     end
   end
+  #--------------------------------------------------------------------------
+
+  describe "Uploading CSV in batch" do
+    before(:each) do
+      @multiple_csvs = []
+      Dir["spec/support/nicaragua_csv/*.xlsx"].each do |csv|
+        filename = File.basename(csv).split("/").last.split(".").first.strip
+        loc = create(:location, :address => filename)
+        csv_report = FactoryGirl.build(:parsed_csv, :location => loc, :user => user, :csv => Rack::Test::UploadedFile.new(csv, 'text/csv'))
+        csv_report.save(:validate => false)
+
+        csv = File.open(csv)
+        @multiple_csvs << ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
+      end
+    end
+
+    after(:each) do
+      CsvParsingWorker.drain
+    end
+
+    around(:each) do |example|
+      Sidekiq::Testing.fake! do
+        example.run
+      end
+    end
+
+    it "creates N Sidekiq jobs" do
+      expect {
+        post :batch, :multiple_csv => @multiple_csvs
+      }.to change(CsvParsingWorker.jobs, :count).by(3)
+    end
+
+    it "doesn't create new CSVs" do
+      expect {
+        post :batch, :multiple_csv => @multiple_csvs
+      }.not_to change(CsvReport, :count)
+    end
+
+    describe "with errors" do
+      before(:each) do
+        Location.last.destroy
+      end
+
+      it "complains if location can't be found for a CSV" do
+        post :batch, :multiple_csv => @multiple_csvs
+        expect( JSON.parse(response.body)["message"] ).to include( "¡Uy! No se pudo encontrar lugar para" )
+      end
+
+      it "doesn't create any Sidekiq jobs" do
+        expect {
+          post :batch, :multiple_csv => @multiple_csvs
+        }.not_to change(CsvParsingWorker.jobs, :count)
+      end
+    end
+  end
+
 
   #--------------------------------------------------------------------------
 
