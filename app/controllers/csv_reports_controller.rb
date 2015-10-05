@@ -25,6 +25,14 @@ class CsvReportsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /csv_reports/batch
+
+  def batch
+    @neighborhood = @current_user.neighborhood
+    @breadcrumbs << {:name => I18n.t("views.csv_reports.batch_upload"), :path => batch_csv_reports_path}
+  end
+
+  #----------------------------------------------------------------------------
   # GET /csv_reports/:id
 
   def show

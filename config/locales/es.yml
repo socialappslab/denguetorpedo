@@ -451,6 +451,7 @@ es:
         visit: Visitar
 
     csv_reports:
+      batch_upload: Carga CSV lotes
       parsing: Procesando
       verify: Verificar
       view: Ver
