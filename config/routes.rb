@@ -188,9 +188,12 @@ Dengue::Application.routes.draw do
 
   #----------------------------------------------------------------------------
   # Neighborhoods
-
-  get "neighborhoods/invitation" => "neighborhoods#invitation", :as => :neighborhood_invitation
   resources :neighborhoods, :only => [:show] do
+    collection do
+      get  "invitation"
+      post "contact"
+    end
+
     resources :reports, :except => [:update, :destroy] do
       member do
         get  "coordinator-edit", :action => :coordinator_edit, :as => :coordinator_edit

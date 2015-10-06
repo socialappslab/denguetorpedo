@@ -62,9 +62,7 @@ Dengue::Application.configure do
   config.assets.precompile += %w( jquery/* google/* bootstrap/*.js google-maps.js csv-ajax.js)
   config.assets.precompile += %w( *.png *.jpg )
   config.assets.precompile += %w( app/* feed.css panel.css cities.css dashboard.css bootstrap/bootstrap-min.css bootstrap/bootstrap-multiselect.css jquery/*.css graphs.css )
-
   config.assets.paths << Rails.root.join("app", "assets", "templates")
-
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -79,11 +77,11 @@ Dengue::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  # ActionMailer settings
+  #----------------------------------------------------------------------------
+  # Mailer
+  #-------
   config.action_mailer.delivery_method     = :smtp
-  config.action_mailer.default_url_options = { host: "www.denguetorpedo.com", protocol: "https" }
-
-  # Gmail SMTP server setup
+  config.action_mailer.default_url_options = { host: "www.denguetorpedo.org", protocol: "https" }
   config.action_mailer.smtp_settings = {
     :user_name => ENV['SENDGRID_USERNAME'],
     :password => ENV['SENDGRID_PASSWORD'],
@@ -94,10 +92,10 @@ Dengue::Application.configure do
     :enable_starttls_auto => true
   }
 
-  # Paperclip gem: ImageMagic path
+  #----------------------------------------------------------------------------
+  # Paperclip
+  #----------
   Paperclip.options[:command_path] = "/usr/local/bin/convert"
-
-  # S3 Credential
   config.paperclip_defaults = {
     :storage => :s3,
     :s3_protocol => :https,
@@ -108,4 +106,5 @@ Dengue::Application.configure do
     }
   }
 
+  #----------------------------------------------------------------------------
 end

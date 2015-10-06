@@ -14,8 +14,8 @@
             - if (index == @cities.each_slice(3).count - 1) && city_index == cities.count - 1
               .col-md-5
                 %div{:style => "margin-bottom: 10px; font-weight: normal;"}
-                  = link_to I18n.t("landing_page.community.future_community"), neighborhood_invitation_path
-                = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), neighborhood_invitation_path, :class => 'neighborhood_selection_photo'
+                  = link_to I18n.t("landing_page.community.future_community"), invitation_neighborhoods_path
+                = link_to image_tag("neighborhood_default.png", :style => "width: 325px; height: 325px;"), invitation_neighborhoods_path, :class => 'neighborhood_selection_photo'
 
 
     %a.left.dt-carousel-control{"data-slide" => "prev", :href => "#carousel-example-captions", :role => "button"}

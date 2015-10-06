@@ -40,28 +40,6 @@ class FeedbacksController < ApplicationController
     @feedback = Feedback.find(params[:id])
   end
 
-  # POST /feedbacks
-  # POST /feedbacks.json
-  def create
-    @feedback = Feedback.new(params[:feedback])
-    respond_to do |format|
-      if @feedback.save
-        UserMailer.send_contact(params[:feedback][:title], params[:feedback][:email], params[:feedback][:name], params[:feedback][:message]).deliver
-        if @current_user
-          format.html { redirect_to :back, notice: 'Mensagem enviada com sucesso!' }
-          format.json { render json: @feedback, status: :created, location: @feedback }
-        else
-          format.html { redirect_to root_url, notice: 'Mensagem enviada com sucesso!' }
-          format.json { render json: @feedback, status: :created, location: @feedback }
-        end
-      else
-        flash[:alert] =  "Você tem que colocar um título, o seu e-email, o seu nome e uma mensagem."
-        format.html { render action: "new" }
-        format.json { render json: @feedback.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   # PUT /feedbacks/1
   # PUT /feedbacks/1.json
   def update

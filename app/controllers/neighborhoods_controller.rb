@@ -1,8 +1,8 @@
 # -*- encoding : utf-8 -*-
 class NeighborhoodsController < NeighborhoodsBaseController
-  before_filter :ensure_team_chosen,               :only => [:show]
-  before_filter :calculate_ivars,                  :only => [:show]
-  before_filter :update_breadcrumb
+  before_filter :ensure_team_chosen, :only => [:show]
+  before_filter :calculate_ivars,    :only => [:show]
+  before_filter :update_breadcrumb,  :except => [:invitation, :contact]
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1
@@ -41,8 +41,22 @@ class NeighborhoodsController < NeighborhoodsBaseController
   #------------------------------
 
   def invitation
-    @title    = "Participar da Dengue Torpedo"
     @feedback = Feedback.new
+  end
+
+  #----------------------------------------------------------------------------
+  # POST /neighborhoods/contact
+  #------------------------------
+
+  def contact
+    @feedback = Feedback.new(params[:feedback])
+    if @feedback.save
+      UserMailer.delay.send_contact(@feedback)
+      redirect_to invitation_neighborhoods_path, :notice => I18n.t("views.application.success") and return
+    else
+      render :invitation and return
+    end
+
   end
 
   #----------------------------------------------------------------------------

@@ -2,25 +2,17 @@
 require "rails_helper"
 
 describe "Contact Form for Future Communities", :type => :feature do
-  before(:each) do
-    ActionMailer::Base.deliveries = []
-    skip "TODO"
-  end
-
   it "sends an email to denguetorpedo@gmail.com" do
-    expect(ActionMailer::Base.deliveries.count).to eq(0)
+    Sidekiq::Testing.fake!
 
-    visit neighborhood_invitation_path
-    fill_in "feedback_title", :with => "Hello"
-    fill_in "feedback_email", :with => "test@denguetorpedo.com"
-    fill_in "feedback_name", :with => "Test"
-    fill_in "feedback_message", :with => "Test again"
-    page.find(".submit-button").click
+    expect {
+      visit invitation_neighborhoods_path
+      fill_in "feedback_email", :with => "test@denguetorpedo.com"
+      fill_in "feedback_name", :with => "Test"
+      fill_in "feedback_message", :with => "Test again"
+      page.find(".submit-button").click
+    }.to change(Sidekiq::Extensions::DelayedMailer.jobs, :size).by(1)
 
-    expect(ActionMailer::Base.deliveries.count).to eq(1)
-
-    email = ActionMailer::Base.deliveries.first
-    expect(email.to).to include("denguetorpedo@gmail.com")
-    expect(email.from).to include("test@denguetorpedo.com")
+    Sidekiq::Extensions::DelayedMailer.drain
   end
 end
