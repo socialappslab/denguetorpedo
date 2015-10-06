@@ -13,8 +13,12 @@ class GreenLocationSeriesWorker
     Time.use_zone("America/Guatemala") do
       time = Time.zone.now.end_of_week
 
-      green_locs = Location.all.find_all {|loc| loc.green?}
-      GreenLocationWeeklySeries.add_green_houses_to_date(green_locs.count, time)
+      City.find_each do |city|
+        locids = city.neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
+        green_locs = Location.where(:id => locids).find_all {|loc| loc.green?}
+        GreenLocationWeeklySeries.add_green_houses_to_date(city, green_locs.count, time)
+      end
+
       GreenLocationSeriesWorker.perform_in(1.week)
     end
   end

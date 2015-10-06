@@ -82,8 +82,7 @@ class API::V0::GraphsController < API::V0::BaseController
   def green_locations
     end_time   = Time.zone.now.end_of_week
     start_time = end_time - 6.months
-    @series = GreenLocationWeeklySeries.time_series_for(start_time, end_time)
-
+    @series = GreenLocationWeeklySeries.time_series_for_city(city, start_time, end_time)
 
     # We will pad empty data with green locations = 0.
     while start_time < end_time
