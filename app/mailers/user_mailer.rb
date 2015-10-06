@@ -43,12 +43,10 @@ class UserMailer < ActionMailer::Base
 
   #----------------------------------------------------------------------------
 
-  def send_contact(title, email, name, message)
-    @title = title
-    @email = email
-    @name = name
-    @message = message
-    mail from: @email, to: "denguetorpedo@gmail.com", subject: "[Contato DT] " + @title
+  def send_contact(feedback)
+    body = "Someone filled out the feedback form.\n\nEmail = #{feedback.email}\n\nName = #{feedback.name}\n\nMessage = #{feedback.message}"
+    mail(to: "dmitriskj@gmail.com", :from => "support@denguechat.org", subject: "Interest in using DengueChat", :body => body)
+    mail(to: "jholston@berkeley.edu", :from => "support@denguechat.org", subject: "Interest in using DengueChat", :body => body)
   end
 
   #----------------------------------------------------------------------------
