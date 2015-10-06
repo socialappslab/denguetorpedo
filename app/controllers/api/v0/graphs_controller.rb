@@ -80,6 +80,8 @@ class API::V0::GraphsController < API::V0::BaseController
   # GET /api/v0/graph/green_locations
 
   def green_locations
+    city = City.find(params[:city])
+
     end_time   = Time.zone.now.end_of_week
     start_time = end_time - 6.months
     @series = GreenLocationWeeklySeries.time_series_for_city(city, start_time, end_time)

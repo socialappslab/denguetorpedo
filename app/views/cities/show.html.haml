@@ -44,7 +44,7 @@
               Cargar más
 
 
-    .col-md-3{"ng-controller" => "greenLocationsChartCtrl", "green_locations_path" => green_locations_api_v0_graph_path}
+    .col-md-3{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
       .panel.panel-default
         .panel-heading{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat", "data-toggle" => "popover", "data-placement" => "top", "data-trigger" => "hover"}
           %h3.panel-title
@@ -74,7 +74,7 @@
       .panel.panel-default
         .panel-heading
           %h3.panel-title
-            Gráficos
+            Gráfico de casas verdes
         .panel-body
           %h1.text-center{"ng-show" => "chartLoading == true"}
             %i.fa.fa-spin.fa-refresh

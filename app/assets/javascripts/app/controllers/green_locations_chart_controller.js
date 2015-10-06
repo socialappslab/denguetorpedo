@@ -8,8 +8,8 @@
     dataTable.addColumn({type: 'number', role: 'annotation'});
 
     for (var i = 0; i < data.length; i++) {
-      var tooltipText = data[i].week + " tenido " + data[i].count + " casas verdes";
-      dataTable.addRow([data[i].week, data[i].count, tooltipText, data[i].count])
+      var tooltipText = data[i].start_week + " a " + data[i].end_week + " : " + data[i].count + " casas verdes";
+      dataTable.addRow([data[i].start_week, data[i].count, tooltipText, data[i].count])
     }
 
     var element = document.getElementById(chartID);
@@ -48,11 +48,12 @@
   var ctrl = function ($scope, $http, $cookies, $attrs) {
     $scope.chartLoading = false;
     $scope.noChartData  = false;
+    $scope.city         = angular.fromJson($attrs.city);
 
     $scope.refreshChart = function(chartID) {
       $scope.chartLoading = true;
 
-      var ajax = $http({url: $attrs.greenLocationsPath, method: "GET"});
+      var ajax = $http({url: $attrs.greenLocationsPath, method: "GET", params: {"city": $scope.city.id}});
       ajax.success(function(response) {
         $scope.chartLoading = false;
         if (response.green_locations.length === 0) {
