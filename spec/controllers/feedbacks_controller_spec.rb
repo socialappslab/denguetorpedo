@@ -44,25 +44,25 @@ describe FeedbacksController do
     end
   end
 
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new Feedback" do
-        expect {
-          post :create, {:feedback => valid_attributes}, valid_session
-        }.to change(Feedback, :count).by(1)
-      end
-
-      it "assigns a newly created feedback as @feedback" do
-        post :create, {:feedback => valid_attributes}, valid_session
-        expect(assigns(:feedback)).to be_a(Feedback)
-        expect(assigns(:feedback)).to be_persisted
-      end
-
-      it "redirects to the home page" do
-        post :create, {:feedback => valid_attributes}, valid_session
-        expect(response).to redirect_to(root_path)
-      end
-    end
+  # describe "POST create" do
+  #   describe "with valid params" do
+  #     it "creates a new Feedback" do
+  #       expect {
+  #         post :create, {:feedback => valid_attributes}, valid_session
+  #       }.to change(Feedback, :count).by(1)
+  #     end
+  #
+  #     it "assigns a newly created feedback as @feedback" do
+  #       post :create, {:feedback => valid_attributes}, valid_session
+  #       expect(assigns(:feedback)).to be_a(Feedback)
+  #       expect(assigns(:feedback)).to be_persisted
+  #     end
+  #
+  #     it "redirects to the home page" do
+  #       post :create, {:feedback => valid_attributes}, valid_session
+  #       expect(response).to redirect_to(root_path)
+  #     end
+  #   end
 
     # describe "with invalid params" do
     #   it "assigns a newly created but unsaved feedback as @feedback" do
@@ -79,7 +79,7 @@ describe FeedbacksController do
     #     response.should render_template("new")
     #   end
     # end
-  end
+  # end
 
   describe "PUT update" do
     describe "with valid params" do
