@@ -45,6 +45,21 @@ class NeighborhoodsController < NeighborhoodsBaseController
   end
 
   #----------------------------------------------------------------------------
+  # POST /neighborhoods/contact
+  #------------------------------
+
+  def contact
+    @feedback = Feedback.new(params[:feedback])
+    if @feedback.save
+      UserMailer.delay.send_contact(@feedback)
+      redirect_to invitation_neighborhoods_path, :notice => I18n.t("views.application.success") and return
+    else
+      render :invitation and return
+    end
+
+  end
+
+  #----------------------------------------------------------------------------
 
   private
 
