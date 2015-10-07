@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
     REPORT_SUBMITTED = 50
     POST_CREATED     = 5
     REFERRAL         = 50
+    GREEN_HOUSE      = 200
 
     # Points for certain badges
     WATCHER      = 50
@@ -122,6 +123,14 @@ class User < ActiveRecord::Base
 
   def new_notifications
     return self.notifications.where(:seen_at => nil)
+  end
+
+  # A user's points consist of two things:
+  # 1. The total_points column, and
+  # 2. The 250*N calculation, where N is the number of green houses.
+  def points
+    num_greens = GreenLocationRankings.score_for_user(self) || 0
+    return (num_greens * Points::GREEN_HOUSE + self.total_points).to_i
   end
 
   #----------------------------------------------------------------------------
