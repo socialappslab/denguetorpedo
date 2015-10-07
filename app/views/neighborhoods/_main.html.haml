@@ -22,25 +22,43 @@
     %h3.panel-title
       = I18n.t('views.statistics.chart.title')
   .panel-body{"ng-controller" => "houseIndexTimeseriesCtrl", "path" => locations_api_v0_graph_path, "neighborhood_id" => @neighborhood.id}
+    .chart
+      .row
+        .col-xs-4
+          .chart-filters{:style => "margin-top: 0px;"}
+            %p.form-label
+              = I18n.t("views.statistics.chart.unit")
+            .btn-group
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'daily'}" do
+                = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "chartOptions.percentages"
+                En un dia
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'monthly'}" do
+                = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "chartOptions.percentages"
+                En un mes
+        .col-xs-8
+          .legend{:style => "margin-left: 0px; margin-top: 0px;"}
+            %span.chart-legend.red
+            %span.chart-label.light-font
+              = I18n.t('views.statistics.chart.percent_of_positive_sites')
+            %br
+            %span.chart-legend.yellow
+            %span.chart-label.light-font
+              = I18n.t('views.statistics.chart.percent_of_potential_sites')
+            %br
+            %span.chart-legend.green
+            %span.chart-label.light-font
+              = I18n.t('views.statistics.chart.percent_of_negative_sites')
+      %hr
+
+      #timeseries
+        %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+        %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+          = I18n.t("common_terms.no_data")
+        #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
+
+  .panel-footer
     %p.light-font.large-font
       = I18n.t("views.statistics.chart.disclaimer")
-    .legend
-      %span.chart-legend.red
-      %span.chart-label.light-font
-        = I18n.t('views.statistics.chart.percent_of_positive_sites')
-      %br
-      %span.chart-legend.yellow
-      %span.chart-label.light-font
-        = I18n.t('views.statistics.chart.percent_of_potential_sites')
-      %br
-      %span.chart-legend.green
-      %span.chart-label.light-font
-        = I18n.t('views.statistics.chart.percent_of_negative_sites')
-
-
-
-    = render :partial => "neighborhoods/house_index_time_series"
-
 
 
 .row
