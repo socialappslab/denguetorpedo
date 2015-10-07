@@ -5,7 +5,7 @@
         %tr
           %td{"style" => "width: 30%;"}
             %h2
-              = I18n.t("common_terms.percentage")
+              = I18n.t("views.statistics.chart.unit")
             .btn-group
               = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'daily'}" do
                 = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "chartOptions.percentages"

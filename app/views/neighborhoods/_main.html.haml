@@ -21,8 +21,25 @@
   .panel-heading
     %h3.panel-title
       = I18n.t('views.statistics.chart.title')
-  .panel-body
-    = render :partial => "shared/locations_graph"
+  .panel-body{"ng-controller" => "houseIndexTimeseriesCtrl", "path" => locations_api_v0_graph_path, "neighborhood_id" => @neighborhood.id}
+    %p.light-font.large-font
+      = I18n.t("views.statistics.chart.disclaimer")
+    .legend
+      %span.chart-legend.red
+      %span.chart-label.light-font
+        = I18n.t('views.statistics.chart.percent_of_positive_sites')
+      %br
+      %span.chart-legend.yellow
+      %span.chart-label.light-font
+        = I18n.t('views.statistics.chart.percent_of_potential_sites')
+      %br
+      %span.chart-legend.green
+      %span.chart-label.light-font
+        = I18n.t('views.statistics.chart.percent_of_negative_sites')
+
+
+
+    = render :partial => "neighborhoods/house_index_time_series"
 
 
 
@@ -56,3 +73,6 @@
 
 
 /------------------------------------------------------------------------------
+
+- content_for :scripts do
+  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
