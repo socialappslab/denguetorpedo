@@ -7,7 +7,7 @@
     %tbody.point-progress
       %tr
         %td.text-center{:style => "width: 33%;"}
-          - if @user.points == 0
+          - if @user.total_total_points == 0
             - total_points_color = "#d9534f";
           - else
             - total_points_color = "#5cb85c";
