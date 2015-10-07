@@ -51,6 +51,14 @@ class API::V0::GraphsController < API::V0::BaseController
     end
     locations = locations.order("address ASC")
 
+
+    # Finally, let's check to see if this request is coming from the public neighborhood page.
+    # If it is, then we need to limit the end_time be end of the next-to-last month to
+    # account for lag in uploading CSVs.
+    if params[:display] == "public" && end_time.blank?
+      end_time = (Time.zone.now.beginning_of_month - 2.months).end_of_month
+    end
+
     if params[:percentages] == "daily"
       statistics = Visit.calculate_time_series_for_locations(visit_ids, start_time, end_time, "daily")
     else
