@@ -119,7 +119,7 @@
     $scope.dataOptions = {"csvOnly": "1"};
 
     if ($cookies.chart == undefined)
-      $cookies.chart = "{\"timeframe\":\"3\",\"positive\":\"1\",\"potential\":\"1\",\"negative\":\"1\",\"percentages\":\"daily\"}"
+      $cookies.chart = "{\"timeframe\":\"3\",\"positive\":\"1\",\"potential\":\"1\",\"negative\":\"1\",\"percentages\":\"monthly\"}"
     $scope.chartOptions = JSON.parse($cookies.chart);
     $scope.chartOptions.type = "bar"
     $scope.chartLoading = false;
