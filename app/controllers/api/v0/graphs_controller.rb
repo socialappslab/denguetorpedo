@@ -12,8 +12,7 @@ class API::V0::GraphsController < API::V0::BaseController
   # * neighborhood_id (optional).
 
   def locations
-    neighborhood_id = cookies[:neighborhood_id] || params[:neighborhood_id] || @current_user.neighborhood_id
-    neighborhood = Neighborhood.find_by_id(neighborhood_id)
+    neighborhood    = Neighborhood.find_by_id(params[:neighborhood_id])
 
     # Determine the timeframe based on timeframe OR custom date ranges.
     if params[:custom_start_month].present? || params[:custom_start_year].present?
