@@ -52,9 +52,9 @@ class API::V0::GraphsController < API::V0::BaseController
     locations = locations.order("address ASC")
 
     if params[:percentages] == "daily"
-      statistics = Visit.calculate_status_distribution_for_locations(visit_ids, start_time, end_time, "daily")
+      statistics = Visit.calculate_time_series_for_locations(visit_ids, start_time, end_time, "daily")
     else
-      statistics = Visit.calculate_status_distribution_for_locations(visit_ids, start_time, end_time, "monthly")
+      statistics = Visit.calculate_time_series_for_locations(visit_ids, start_time, end_time, "monthly")
     end
 
     statistics.unshift([I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')])

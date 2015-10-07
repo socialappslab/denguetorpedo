@@ -159,7 +159,7 @@ describe Visit do
       v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
-      visits = Visit.calculate_status_distribution_for_locations([location], nil, nil, "daily")
+      visits = Visit.calculate_time_series_for_locations([location], nil, nil, "daily")
       expect(visits).to eq([
         {
           :date=>"2014-10-21",
@@ -190,7 +190,7 @@ describe Visit do
       v = r.find_or_create_visit_for_date(r.created_at)
       r.update_inspection_for_visit(v)
 
-      visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
+      visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
       expect(visits).to eq([
         {
           :date=>"2014-11-15",
@@ -281,7 +281,7 @@ describe Visit do
     end
 
     it "returns one time-series point for each date" do
-      expect(Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily").count).to eq(4)
+      expect(Visit.calculate_time_series_for_locations(locations, nil, nil, "daily").count).to eq(4)
       # expect(Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
     end
 
@@ -296,7 +296,7 @@ describe Visit do
       # :visited_at => date1)
 
       date_key = date1.strftime("%Y-%m-%d")
-      time_series = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
+      time_series = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
       expect(time_series.find_all {|ts| ts[:date] == date_key}.length).to eq(1)
 
       # time_series = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
@@ -304,7 +304,7 @@ describe Visit do
     end
 
     it "orders points by visited_at in ascending order" do
-      visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
+      visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
       expect(visits.first[:date]).to eq( date1.strftime("%Y-%m-%d") )
       expect(visits.last[:date]).to  eq( date4.strftime("%Y-%m-%d") )
 
@@ -323,7 +323,7 @@ describe Visit do
 
     describe "for Daily percentage relative to houses visited on a date" do
       it "returns the correct time-series" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "daily")
+        visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
@@ -349,7 +349,7 @@ describe Visit do
       end
 
       it "returns truncated time series when start time is set" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, Time.zone.parse("2015-01-29"), nil, "daily" )
+        visits = Visit.calculate_time_series_for_locations(locations, Time.zone.parse("2015-01-29"), nil, "daily" )
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
@@ -360,7 +360,7 @@ describe Visit do
       end
 
       it "returns empty if time series contains no data since specified start time" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "daily" )
+        visits = Visit.calculate_time_series_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "daily" )
         expect(visits).to eq([])
       end
 
@@ -372,7 +372,7 @@ describe Visit do
 
     describe "for Monthly percentage relative to houses visited on a date" do
       it "returns the correct time-series" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, nil, nil, "monthly")
+        visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "monthly")
         expect(visits).to eq([
           {
             :date=>"2014-10",
@@ -388,7 +388,7 @@ describe Visit do
       end
 
       it "returns truncated time series when start time is set" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, DateTime.parse("2015-01-29 00:00"), nil, "monthly")
+        visits = Visit.calculate_time_series_for_locations(locations, DateTime.parse("2015-01-29 00:00"), nil, "monthly")
         expect(visits).to eq([
           {
             :date=>"2015-01",
@@ -399,7 +399,7 @@ describe Visit do
       end
 
       it "returns empty if time series contains no data since specified start time" do
-        visits = Visit.calculate_status_distribution_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "monthly")
+        visits = Visit.calculate_time_series_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "monthly")
         expect(visits).to eq([])
       end
 

@@ -66,7 +66,7 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
-  def self.calculate_status_distribution_for_locations(location_ids, start_time, end_time, scale)
+  def self.calculate_time_series_for_locations(location_ids, start_time, end_time, scale)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
@@ -79,23 +79,24 @@ class Visit < ActiveRecord::Base
     # b) inner joining visits on inspections leads to problems with accounting
     #    for visits with no inspections (e.g. those that are N on CSV forms)
     visit_ids = visits.pluck(:id)
-    visit_identification_hash = Inspection.where(:visit_id => visit_ids).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
+    inspections_hash = Inspection.where(:visit_id => visit_ids).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
 
-    daily_stats = []
+    # NOTE: We're guaranteed that each visit corresponds to a unique day.
+    stats = []
     visits.each do |visit|
-      visited_at_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+      visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
 
-      day_statistic = daily_stats.find {|stat| stat[:date] == visited_at_date}
+      day_statistic = stats.find {|stat| stat[:date] == visit_date}
       if day_statistic.blank?
         day_statistic = {
-          :date       => visited_at_date,
+          :date       => visit_date,
           :positive   => {:count => 0, :percent => 0},
           :potential  => {:count => 0, :percent => 0},
           :negative   => {:count => 0, :percent => 0},
           :total      => {:count => 0}
         }
 
-        daily_stats << day_statistic
+        stats << day_statistic
       end
 
       # The daily metric calculates number of visited houses
@@ -104,7 +105,7 @@ class Visit < ActiveRecord::Base
       # and if the house had a positive site.
       # We do this by checking if there is an entry in the visit_identifaction_hash
       # by narrowing the array size as fast as possible.
-      visit_counts = visit_identification_hash.find_all {|k, v| k[0] == visit.id}
+      visit_counts = inspections_hash.find_all {|k, v| k[0] == visit.id}
       pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
       pot_count    = pot_count[1] if pot_count
       pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
@@ -117,17 +118,17 @@ class Visit < ActiveRecord::Base
 
       # NOTE: We're not adding the hash here because there's a chance we simply
       # modified an existing element. We're going to search for it again.
-      index              = daily_stats.find_index {|stat| stat[:date] == visited_at_date}
-      daily_stats[index] = day_statistic
+      index        = stats.find_index {|stat| stat[:date] == visit_date}
+      stats[index] = day_statistic
     end
 
-    # Now, let's iterate over daily_stats, calculating percentage.
+    # Now, let's iterate over stats, calculating percentage.
     # Finally, let's include only those visit types that match the visit type.
     # Now that the full history is captured, let's filter starting from the start_time
-    daily_stats = Visit.calculate_percentages_for_time_series(daily_stats)
-    daily_stats = Visit.filter_time_series_by_range(daily_stats, start_time, end_time, scale)
+    stats = Visit.calculate_percentages_for_time_series(stats)
+    stats = Visit.filter_time_series_by_range(stats, start_time, end_time, scale)
 
-    return daily_stats
+    return stats
   end
 
   #----------------------------------------------------------------------------
