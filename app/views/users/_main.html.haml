@@ -13,10 +13,10 @@
             - total_points_color = "#5cb85c";
 
           %h1{:style => "color: #{total_points_color};"}
-            = @user.points
+            = @user.total_total_points
 
           %p.light-font
-            = I18n.t("activerecord.attributes.user.total_points", :count => @user.points)
+            = I18n.t("activerecord.attributes.user.total_points", :count => @user.total_total_points)
 
         %td.text-center{:style => "width: 33%;"}
           - if @green_location_ranking.blank? || @green_location_ranking == 0

@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
   # A user's points consist of two things:
   # 1. The total_points column, and
   # 2. The 250*N calculation, where N is the number of green houses.
-  def points
+  def total_total_points
     num_greens = GreenLocationRankings.score_for_user(self) || 0
     return (num_greens * Points::GREEN_HOUSE + self.total_points).to_i
   end

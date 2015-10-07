@@ -69,7 +69,7 @@ describe API::V0::GraphsController do
 
   describe "Request for charts", :after_commit => true do
     it "returns the correct time-series" do
-      get :locations, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
+      get :locations, :neighborhood_id => neighborhood.id,  "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
       visits = JSON.parse(response.body)
       expect(visits["data"]).to eq(
         [
@@ -83,12 +83,12 @@ describe API::V0::GraphsController do
     end
 
     it "returns empty if time series contains no data since specified start time" do
-      get :locations, :timeframe => "1", "percentages" => "daily", "positive" => "1","potential" => "1","negative" => "1"
+      get :locations, :neighborhood_id => neighborhood.id, :timeframe => "1", "percentages" => "daily", "positive" => "1","potential" => "1","negative" => "1"
       expect( JSON.parse(response.body)["data"].count ).to eq(1)
     end
 
     it "returns an array of locations" do
-      get :locations, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
+      get :locations, :neighborhood_id => neighborhood.id, "percentages" => "daily", "positive" => "1", "potential" => "1", "negative" => "1"
       visits = JSON.parse(response.body)
       expect(visits["locations"].map {|l| l["id"] }.sort ).to eq(Location.pluck(:id).sort)
     end
