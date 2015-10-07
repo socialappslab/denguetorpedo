@@ -1,0 +1,18 @@
+.chart
+  .chart-filters
+    %p.form-label
+      = I18n.t("views.statistics.chart.unit")
+    .btn-group
+      = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'daily'}" do
+        = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "chartOptions.percentages"
+        En un dia
+      = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'monthly'}" do
+        = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "chartOptions.percentages"
+        En un mes
+    %hr
+
+    #timeseries
+      %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+      %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+        = I18n.t("common_terms.no_data")
+      #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
