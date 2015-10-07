@@ -1,19 +1,25 @@
 
 /------------------------------------------------------------------------------
 
-.row.point-progress
-  .col-md-6
-    %h1.text-success-light
-      = @total_points
-    %p
-      = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title
+      Progreso
+  %table.table.table-bordered
+    %tbody.point-progress
+      %tr
+        %td.text-center{:style => "width: 50%;"}
+          %h1.text-success-light
+            = @total_points
+          %p.light-font
+            = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
 
+        %td.text-center{:style => "width: 50%;"}
+          %h1.text-success-light
+            = @total_reports
+          %p.light-font
+            = I18n.t("dashboard.reports")
 
-  .col-md-6.text-right
-    %h1.text-success-light
-      = @total_reports
-    %p
-      = I18n.t("dashboard.reports")
 
 
 
