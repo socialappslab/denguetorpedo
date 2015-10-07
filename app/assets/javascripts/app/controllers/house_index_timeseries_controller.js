@@ -2,6 +2,9 @@
 
   var googleChartOptions = function(chartID, data) {
     var options =  {
+      annotations: {
+        alwaysOutside: true
+      },
       width: 614,
       height: 350,
       chartArea: {
@@ -31,7 +34,7 @@
     return options;
   }
 
-  function drawChart(chartID, rawData) {
+  function drawChart(chartID, rawData, unit) {
     var dataTable    = new google.visualization.DataTable();
 
     // Create the type columns for the table.
@@ -48,13 +51,13 @@
       var rowIndex = dataTable.addRow( [
         rawData[i].date,
         rawData[i].positive.percent,
-        customAnnotationForPercent(rawData[i].positive.percent),
+        customAnnotationForPercent(rawData[i].positive.percent, unit),
         customToolTipForData(rawData[i]),
         rawData[i].potential.percent,
-        customAnnotationForPercent(rawData[i].potential.percent),
+        customAnnotationForPercent(rawData[i].potential.percent, unit),
         customToolTipForData(rawData[i]),
         rawData[i].negative.percent,
-        customAnnotationForPercent(rawData[i].negative.percent),
+        customAnnotationForPercent(rawData[i].negative.percent, unit),
         customToolTipForData(rawData[i])
       ] )
       dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
@@ -68,9 +71,11 @@
   }
 
   // Let's not display the annotations for now.
-  var customAnnotationForPercent = function(percent) {
-    return ""
-    // percent === 0 ? "" : (String(percent) + "%")
+  var customAnnotationForPercent = function(percent, unit) {
+    if (unit == "monthly")
+      return String(percent) + "%";
+    else
+      return "";
   }
 
   var customToolTipForData = function(data) {
@@ -102,7 +107,7 @@
           $scope.noChartData = true;
         } else {
           $scope.noChartData = false;
-          drawChart("timeseries-chart", response.data)
+          drawChart("timeseries-chart", response.data, $scope.chartOptions.percentages)
         }
       });
       ajax.error(function(response) {
