@@ -7,6 +7,7 @@ class CsvReportsController < ApplicationController
   before_filter :require_login
   before_filter :calculate_ivars, :only => [:index]
   before_filter :update_breadcrumb
+  before_filter :redirect_if_no_csv, :only => [:show, :verify]
 
   #----------------------------------------------------------------------------
   # GET /csv_reports
@@ -36,7 +37,6 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports/:id
 
   def show
-    @csv = @current_user.csv_reports.find(params[:id])
     @breadcrumbs << {:name => @csv.csv_file_name, :path => csv_report_path(@csv)}
   end
 
@@ -44,7 +44,6 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports/:id/verify
 
   def verify
-    @csv = @current_user.csv_reports.find(params[:id])
     @breadcrumbs << {:name => I18n.t("views.csv_reports.verify"), :path => verify_csv_report_path(@csv)}
   end
 
@@ -64,6 +63,14 @@ class CsvReportsController < ApplicationController
   #----------------------------------------------------------------------------
 
   private
+
+  def redirect_if_no_csv
+    @csv = @current_user.csv_reports.find_by_id(params[:id])
+    if @csv.blank?
+      flash[:alert] = "Usted no tiene este CSV!"
+      redirect_to csv_reports_path and return
+    end
+  end
 
   def calculate_ivars
     @csv_reports = @current_user.csv_reports.order("updated_at DESC")
