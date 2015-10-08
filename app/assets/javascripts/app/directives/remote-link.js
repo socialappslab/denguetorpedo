@@ -25,7 +25,7 @@ var remoteLinkDirective = function($http){
             window.location.reload();
         });
         ajax.error(function(response) {
-          alert(response.error);
+          alert(response.message);
         });
         ajax.then(function(response) {
           element.toggleClass("disabled")
