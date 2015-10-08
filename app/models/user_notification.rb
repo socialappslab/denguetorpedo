@@ -22,4 +22,12 @@ class UserNotification < ActiveRecord::Base
   validates :notified_at,       :presence => true
 
   #----------------------------------------------------------------------------
+
+  def post
+    return Post.find_by_id(self.notification_id)
+  end
+
+  def comment
+    return Comment.find_by_id(self.notification_id)
+  end
 end
