@@ -88,15 +88,7 @@
   /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  = stylesheet_link_tag "reports"
-
   :javascript
-    $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
-      var target = $(e.target).attr("href");
-      if (target == "#map")
-        google.maps.event.trigger(map, 'resize');
-    })
-
     $(document).ready(function(){
       var reportType = window.location.href.split("?reports=")[1]
       if (reportType)
