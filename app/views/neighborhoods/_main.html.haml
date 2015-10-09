@@ -32,8 +32,6 @@
       .row
         .col-xs-4
           .chart-filters{:style => "margin-top: 0px;"}
-            %p.form-label
-              = I18n.t("views.statistics.chart.unit")
             .btn-group
               = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'daily'}" do
                 = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "chartOptions.percentages"
