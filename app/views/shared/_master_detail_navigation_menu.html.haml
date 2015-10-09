@@ -1,4 +1,4 @@
-- [["CSV", dashboard_csv_index_path, "fa-file-o"], [I18n.t("views.dashboard.navigation.locations"), dashboard_locations_path, "fa-search"], [I18n.t("views.dashboard.navigation.graphs"), dashboard_graphs_path, "fa-bar-chart"], [I18n.t("views.dashboard.navigation.heatmap"), heatmap_dashboard_graphs_path, "fa-globe"]].each do |md_navigation|
+- dashboard_navigation_menu.each do |md_navigation|
   .master-view-cell{:class => (md_navigation[1] == request.path ? "active" : "")}
     = link_to md_navigation[1] do
       .row
