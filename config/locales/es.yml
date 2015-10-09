@@ -415,7 +415,7 @@ es:
         total_potential_sites: Total criaderos potenciales
         barrel_summary: Resumen de barriles
       navigation:
-        locations: Lugares
+        locations: Busca Lugar
         heatmap: Mapa de actividad
         graphs: Gráficos
     badges:

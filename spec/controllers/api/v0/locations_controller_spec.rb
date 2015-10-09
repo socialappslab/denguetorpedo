@@ -2,28 +2,19 @@
 require "rails_helper"
 
 describe API::V0::LocationsController do
-  let(:neighborhood)  { FactoryGirl.create(:neighborhood) }
-  let!(:breeding_site) { FactoryGirl.create(:breeding_site, :code => "B") }
-  let(:user)          { FactoryGirl.create(:user, :neighborhood_id => neighborhood.id) }
+  render_views
 
-  describe "Requesting CSV only data" do
-    render_views
-
-    before(:each) do
-      10.times do |index|
-        FactoryGirl.create(:location, :address => "#{index}", :neighborhood_id => neighborhood.id)
-      end
-
-      l1 = Location.find_by_address("4")
-      l2 = Location.find_by_address("5")
-
-      FactoryGirl.create(:csv_report, :location_id => l1.id)
-      FactoryGirl.create(:csv_report, :location_id => l2.id)
+  it "responds with correct locations" do
+    5.times do |index|
+      create(:location, :address => "N0#{index}002", :neighborhood_id => 1)
     end
 
-    it "returns only the locations associated with CSVs" do
-      get "index", :neighborhood_id => neighborhood.id, :csv_only => "1", :format => :json
-      expect( JSON.parse(response.body)["locations"].map {|l| l["address"] } ).to eq(["4", "5"])
-    end
+    get "index", :addresses => Location.pluck(:address).join(","), :format => :json
+    expect( JSON.parse(response.body)["locations"].map {|loc| loc["id"]} ).to eq(Location.order("address ASC").pluck(:id))
+  end
+
+  it "responds with an error if location is missing" do
+    get "index", :addresses => "TEST", :format => :json
+    expect( JSON.parse(response.body)["message"] ).to eq("No pudo encontrar lugar con la dirección TEST")
   end
 end
