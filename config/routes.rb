@@ -77,6 +77,7 @@ Dengue::Application.routes.draw do
       resource :graph, :only => [] do
         get "locations"
         get "green_locations"
+        get "timeseries"
       end
     end
   end
