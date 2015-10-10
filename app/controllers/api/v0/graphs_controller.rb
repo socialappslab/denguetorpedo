@@ -31,8 +31,13 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
+    if JSON.parse(params[:neighborhoods]).blank?
+      raise API::V0::Error.new("Debe seleccionar al menos un comunidad", 422) and return
+    end
+
+
     neighborhoods = []
-    params[:neighborhoods].split(",").each do |nparams|
+    JSON.parse(params[:neighborhoods]).split(",").each do |nparams|
       neighborhoods << Neighborhood.find_by_id(nparams)
     end
     location_ids = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
@@ -44,8 +49,10 @@ class API::V0::GraphsController < API::V0::BaseController
     end
 
     statistics.each do |shash|
-      locations = Location.where(:id => shash[:locations]).pluck(:address)
-      shash[:locations] = locations
+      [:positive, :potential, :negative].each do |status|
+        locations = Location.where(:id => shash[status][:locations]).order("address ASC").pluck(:address)
+        shash[status][:locations] = locations
+      end
     end
 
     render :json => statistics.as_json, :status => 200 and return
