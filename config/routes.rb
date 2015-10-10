@@ -77,6 +77,7 @@ Dengue::Application.routes.draw do
       resource :graph, :only => [] do
         get "locations"
         get "green_locations"
+        get "timeseries"
       end
     end
   end
@@ -88,6 +89,7 @@ Dengue::Application.routes.draw do
     resources :csv, :controller => "csv_reports", :only => [:index, :new]
     resources :locations, :only => [:index]
     resources :reports,   :only => [:index]
+    resources :visits,    :only => [:index]
     resources :graphs,    :only => [:index] do
       collection do
         get "heatmap"

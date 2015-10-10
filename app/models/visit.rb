@@ -90,9 +90,9 @@ class Visit < ActiveRecord::Base
       if day_statistic.blank?
         day_statistic = {
           :date       => visit_date,
-          :positive   => {:count => 0, :percent => 0},
-          :potential  => {:count => 0, :percent => 0},
-          :negative   => {:count => 0, :percent => 0},
+          :positive   => {:count => 0, :percent => 0, :locations => []},
+          :potential  => {:count => 0, :percent => 0, :locations => []},
+          :negative   => {:count => 0, :percent => 0, :locations => []},
           :total      => {:count => 0}
         }
 
@@ -111,9 +111,21 @@ class Visit < ActiveRecord::Base
       pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
       pos_count    = pos_count[1] if pos_count
 
-      day_statistic[:positive][:count]  += 1 if pos_count && pos_count > 0
-      day_statistic[:potential][:count] += 1 if pot_count && pot_count > 0
-      day_statistic[:negative][:count]  += 1 if pot_count.blank? && pos_count.blank?
+      if pos_count && pos_count > 0
+        day_statistic[:positive][:count]  += 1
+        day_statistic[:positive][:locations] << visit.location_id
+      end
+
+      if pot_count && pot_count > 0
+        day_statistic[:potential][:count] += 1
+        day_statistic[:potential][:locations] << visit.location_id
+      end
+
+      if pot_count.blank? && pos_count.blank?
+        day_statistic[:negative][:count]  += 1
+        day_statistic[:negative][:locations] << visit.location_id
+      end
+
       day_statistic[:total][:count]     += 1
 
       # NOTE: We're not adding the hash here because there's a chance we simply
@@ -127,6 +139,7 @@ class Visit < ActiveRecord::Base
     # Now that the full history is captured, let's filter starting from the start_time
     stats = Visit.calculate_percentages_for_time_series(stats)
     stats = Visit.filter_time_series_by_range(stats, start_time, end_time, scale)
+    stats = Visit.uniquefy_locations(stats)
 
     return stats
   end
@@ -149,6 +162,21 @@ class Visit < ActiveRecord::Base
 
     return daily_stats
   end
+
+  #----------------------------------------------------------------------------
+
+  def self.uniquefy_locations(daily_stats)
+    daily_stats.each_with_index do |day_statistic, index|
+      day_statistic[:positive][:locations]  = day_statistic[:positive][:locations].uniq
+      day_statistic[:potential][:locations] = day_statistic[:potential][:locations].uniq
+      day_statistic[:negative][:locations]  = day_statistic[:negative][:locations].uniq
+
+      daily_stats[index] = day_statistic
+    end
+
+    return daily_stats
+  end
+
 
   #----------------------------------------------------------------------------
 

@@ -1,13 +1,12 @@
-class DashboardPolicy < Struct.new(:user, :dashboard)
+class DashboardPolicy
+  attr_reader :user, :record
+
+  def initialize(user, record)
+    @user   = user
+    @record = record
+  end
+
   def index?
-    return user.coordinator?
-  end
-
-  def graphs?
-    return user.coordinator?
-  end
-
-  def heatmap?
     return user.coordinator?
   end
 end

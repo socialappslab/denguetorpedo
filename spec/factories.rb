@@ -85,6 +85,7 @@ FactoryGirl.define do
 		association  :breeding_site
 		association  :neighborhood
 		verified_at  {Time.zone.now}
+		association  :reporter, :factory => :user
 
 		factory :positive_report do
 			larvae true

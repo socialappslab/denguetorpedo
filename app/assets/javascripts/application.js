@@ -12,6 +12,7 @@
 //= require "app/app"
 //= require "app/controllers/post_controller"
 //= require "app/controllers/chart_controller"
+//= require_tree ./app/controllers/dashboard
 //= require "app/controllers/house_index_timeseries_controller"
 //= require "app/controllers/dashboard_locations_ctrl"
 //= require "app/controllers/heatmap_controller"
