@@ -52,19 +52,20 @@
 
 
 
+          .row{:style => "margin-top: 20px;"}
+            .col-md-4
+              %a.btn.btn-block.btn-success{"ng-click" => "generatePreview()", :style => "cursor: hand;"}
+                Vista previa
+            .col-md-4.pull-right
+              %a.btn.btn-block.btn-success{"ng-click" => "generateCsv()", :style => "cursor: hand;"}
+                Generar CSV inform
 
           .form-errors{:style => "display: block;", "ng-show" => "serverError || serverErrorMessage"}
             %p
               {{serverErrorMessage || "Algo salió mal. Por favor, intente nuevamente."}}
           %h1.text-center{"ng-show" => "loading"}
             %i.fa.fa-refresh.fa-spin
-          .row{:style => "margin-top: 20px;"}
-            .col-md-6.text-center
-              %a.btn.btn-info{"ng-click" => "generatePreview()", :style => "cursor: hand;"}
-                Vista previa
-            .col-md-6.text-center
-              %a.btn.btn-info{"ng-click" => "generatePreview", :style => "cursor: hand;"}
-                Generate report
+
         %table.table.table-bordered{"ng-show" => "timeseries.length > 0"}
           %thead
             %th{:style => "width: 15%"}
