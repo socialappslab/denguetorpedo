@@ -5,12 +5,7 @@ var ctrl = function ($scope, $http, $attrs) {
   $scope.options       = {unit: "monthly", timeframe: "6"};
   $scope.customDateRange = false;
 
-  $scope.generatePreview = function() {
-    $scope.loading     = true;
-    $scope.serverError = false;
-    $scope.serverErrorMessage = null;
-    $scope.timeseries    = [];
-
+  var prepareParams = function() {
     // General params.
     var params = {
       neighborhoods: JSON.stringify($scope.neighborhoods),
@@ -26,6 +21,17 @@ var ctrl = function ($scope, $http, $attrs) {
     } else {
       params.timeframe = $scope.options.timeframe
     }
+
+    return params;
+  }
+
+  $scope.generatePreview = function() {
+    $scope.loading     = true;
+    $scope.serverError = false;
+    $scope.serverErrorMessage = null;
+    $scope.timeseries    = [];
+
+    var params = prepareParams()
 
     var promise   = $http({
       url: $attrs.path,
@@ -46,6 +52,16 @@ var ctrl = function ($scope, $http, $attrs) {
       $scope.loading = false;
     })
   }
+
+  $scope.generateCsv = function() {
+    $scope.loading     = false;
+    $scope.serverError = false;
+    $scope.serverErrorMessage = null;
+    var params = prepareParams()
+
+    window.location.href = $attrs.path + ".csv?" + $.param(params)
+  }
+
 
   $scope.toggleNeighborhood = function(id) {
     index = $scope.neighborhoods.indexOf(id)
