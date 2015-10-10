@@ -9,7 +9,5 @@ module DashboardHelper
       [I18n.t("views.dashboard.navigation.graphs"), dashboard_graphs_path, "fa-bar-chart"],
       [I18n.t("views.dashboard.navigation.heatmap"), heatmap_dashboard_graphs_path, "fa-globe"]
     ]
-
   end
-
 end

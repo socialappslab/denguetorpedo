@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 include GreenLocationWeeklySeries
 
+require "csv"
+
 class API::V0::GraphsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
 
@@ -37,7 +39,7 @@ class API::V0::GraphsController < API::V0::BaseController
 
 
     neighborhoods = []
-    JSON.parse(params[:neighborhoods]).split(",").each do |nparams|
+    JSON.parse(params[:neighborhoods]).each do |nparams|
       neighborhoods << Neighborhood.find_by_id(nparams)
     end
     location_ids = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
@@ -55,7 +57,17 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
-    render :json => statistics.as_json, :status => 200 and return
+    respond_to do |format|
+      format.csv do
+        filename = neighborhoods.map {|n| n.name.gsub(" ", "_").downcase}.join("_") + "_visita_datos.csv"
+        send_data generate_csv_for_timeseries(statistics), :filename => filename
+      end
+
+      format.json do
+        render :json => statistics.as_json, :status => 200 and return
+      end
+    end
+
   end
 
 
@@ -160,6 +172,44 @@ class API::V0::GraphsController < API::V0::BaseController
     @series.sort_by! {|s| s[:date]}
 
     render "api/v0/graph/green_locations"
+  end
+
+
+
+  private
+
+  def generate_csv_for_timeseries(timeseries)
+    CSV.generate do |csv|
+      csv << [
+        "Fecha de visita",
+        "Lugares visitados",
+        "Lugares positivos",
+        "Lugares potenciales",
+        "Lugares negativos",
+        "Lugares positivos (%)",
+        "Lugares potenciales (%)",
+        "Lugares sin criaderos (%)",
+        I18n.t("attributes.address") + " de lugares positivos",
+        I18n.t("attributes.address") + " de lugares potenciales",
+        I18n.t("attributes.address") + " de lugares negativos"
+      ]
+      timeseries.each do |series|
+        csv << [
+          series[:date],
+          series[:total][:count],
+          series[:positive][:count],
+          series[:potential][:count],
+          series[:negative][:count],
+          series[:positive][:percent],
+          series[:potential][:percent],
+          series[:negative][:percent],
+          series[:positive][:locations].join("\n"),
+          series[:potential][:locations].join("\n"),
+          series[:negative][:locations].join("\n")
+        ]
+      end
+    end
+
   end
 
 end
