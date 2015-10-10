@@ -203,9 +203,9 @@ class API::V0::GraphsController < API::V0::BaseController
           series[:positive][:percent],
           series[:potential][:percent],
           series[:negative][:percent],
-          series[:positive][:locations].join("\n"),
-          series[:potential][:locations].join("\n"),
-          series[:negative][:locations].join("\n")
+          series[:positive][:locations].join(","),
+          series[:potential][:locations].join(","),
+          series[:negative][:locations].join(",")
         ]
       end
     end
