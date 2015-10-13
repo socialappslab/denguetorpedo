@@ -8,9 +8,9 @@
 # This is run in a Sidekiq job every week.
 
 module GreenLocationWeeklySeries
-  def self.add_green_houses_to_date(city, house_count, date)
+  def self.add_green_houses_to_date(city, house_count, end_of_week)
     $redis_pool.with do |redis|
-      formatted_date = self.format_date(date.end_of_week)
+      formatted_date = self.format_date(end_of_week)
       redis.zadd(self.redis_key_for_city(city), formatted_date.to_i, "#{formatted_date}:#{house_count}" )
     end
   end
