@@ -327,9 +327,9 @@ describe CsvParsingWorker do
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-15"}
       expect(stat).to eq ({
         :date => "2014-11-15",
-        :positive => {:count=>1, :percent=>33},
-        :potential => {:count=>1, :percent=>33},
-        :negative => {:count=>1, :percent=>33},
+        :positive => {:count=>1, :percent=>33, :locations=>[2]},
+        :potential => {:count=>1, :percent=>33, :locations=>[1]},
+        :negative => {:count=>1, :percent=>33, :locations=>[3]},
         :total => {:count=>3}
       })
 
@@ -337,63 +337,63 @@ describe CsvParsingWorker do
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-22"}
       expect(stat).to eq ({
         :date => "2014-11-22",
-        :positive => {:count=>2, :percent=>67},
-        :potential => {:count=>2, :percent=>67},
-        :negative => {:count=>0, :percent=>0},
+        :positive => {:count=>2, :percent=>67, :locations=>[3, 1]},
+        :potential => {:count=>2, :percent=>67, :locations=>[3, 2]},
+        :negative => {:count=>0, :percent=>0, :locations=>[]},
         :total => {:count=>3}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-24"}
       expect(stat).to eq ({
         :date => "2014-11-24",
-        :positive => {:count=>0, :percent=>0},
-        :potential => {:count=>1, :percent=>50},
-        :negative => {:count=>1, :percent=>50},
+        :positive => {:count=>0, :percent=>0, :locations=>[]},
+        :potential => {:count=>1, :percent=>50, :locations=>[1]},
+        :negative => {:count=>1, :percent=>50, :locations=>[3]},
         :total => {:count=>2}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-11-26"}
       expect(stat).to eq ({
         :date => "2014-11-26",
-        :positive => {:count=>1, :percent=>100},
-        :potential => {:count=>1, :percent=>100},
-        :negative => {:count=>0, :percent=>0},
+        :positive => {:count=>1, :percent=>100, :locations=>[2]},
+        :potential => {:count=>1, :percent=>100, :locations=>[2]},
+        :negative => {:count=>0, :percent=>0, :locations=>[]},
         :total => {:count=>1}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-12-05"}
       expect(stat).to eq ({
         :date => "2014-12-05",
-        :positive => {:count=>1, :percent=>50},
-        :potential => {:count=>1, :percent=>50},
-        :negative => {:count=>0, :percent=>0},
+        :positive => {:count=>1, :percent=>50, :locations=>[3]},
+        :potential => {:count=>1, :percent=>50, :locations=>[1]},
+        :negative => {:count=>0, :percent=>0, :locations=>[]},
         :total => {:count=>2}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2014-12-13"}
       expect(stat).to eq ({
         :date => "2014-12-13",
-        :positive => {:count=>0, :percent=>0},
-        :potential => {:count=>2, :percent=>100},
-        :negative => {:count=>0, :percent=>0},
+        :positive => {:count=>0, :percent=>0, :locations=>[]},
+        :potential => {:count=>2, :percent=>100, :locations=>[1, 3]},
+        :negative => {:count=>0, :percent=>0, :locations=>[]},
         :total => {:count=>2}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2015-01-10"}
       expect(stat).to eq ({
         :date => "2015-01-10",
-        :positive => {:count=>0, :percent=>0},
-        :potential => {:count=>1, :percent=>33},
-        :negative => {:count=>2, :percent=>67},
+        :positive => {:count=>0, :percent=>0, :locations=>[]},
+        :potential => {:count=>1, :percent=>33, :locations=>[2]},
+        :negative => {:count=>2, :percent=>67, :locations=>[1, 3]},
         :total => {:count=>3}
       })
 
       stat = daily_stats.find {|ds| ds[:date] == "2015-01-21"}
       expect(stat).to eq ({
         :date => "2015-01-21",
-        :positive => {:count=>0, :percent=>0},
-        :potential => {:count=>1, :percent=>33},
-        :negative => {:count=>2, :percent=>67},
+        :positive => {:count=>0, :percent=>0, :locations=>[]},
+        :potential => {:count=>1, :percent=>33, :locations=>[2]},
+        :negative => {:count=>2, :percent=>67, :locations=>[3, 1]},
         :total => {:count=>3}
       })
 

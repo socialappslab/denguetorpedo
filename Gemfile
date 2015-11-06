@@ -57,14 +57,14 @@ end
 #------------------------------------------------------------------------------
 
 group :test do
-  gem 'rspec-rails'
-  gem 'factory_girl_rails'
   gem 'capybara'
-  gem 'guard-rspec'
   gem 'database_cleaner'
+  gem 'factory_girl_rails'
   gem 'faker'
+  gem 'guard-rspec'
   gem 'launchy', :require => false
   gem "poltergeist"
+  gem 'rspec-rails'
 end
 
 #------------------------------------------------------------------------------
