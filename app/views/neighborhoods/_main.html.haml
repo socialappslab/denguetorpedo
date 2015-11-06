@@ -8,13 +8,24 @@
   %table.table.table-bordered
     %tbody.point-progress
       %tr
-        %td.text-center{:style => "width: 50%;"}
+        %td.text-center{:style => "width: 33%;"}
           %h1.text-success-light
             = @total_points
           %p.light-font
             = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
 
-        %td.text-center{:style => "width: 50%;"}
+        %td.text-center{:style => "width: 33%;"}
+          - if @green_location_ranking.blank? || @green_location_ranking == 0
+            - num_of_reports_color = "#d9534f";
+          - else
+            - num_of_reports_color = "#5cb85c";
+
+          %h1{:style => "color: #{num_of_reports_color};"}
+            = @green_location_ranking
+          %p.light-font
+            casas verdes
+
+        %td.text-center{:style => "width: 33%;"}
           %h1.text-success-light
             = @total_reports
           %p.light-font
