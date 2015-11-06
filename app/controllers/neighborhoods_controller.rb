@@ -33,6 +33,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
 
+    @green_location_ranking = GreenLocationRankings.score_for_neighborhood(@neighborhood).to_i
     @breadcrumbs << {:name => @neighborhood.name, :path => neighborhood_path(@neighborhood)}
   end
 
