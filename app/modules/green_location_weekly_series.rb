@@ -26,10 +26,12 @@ module GreenLocationWeeklySeries
 
     series = []
     $redis_pool.with do |redis|
-      # NOTE: We're using zrevrange here since it orders elements by highest (most recent week)
-      # to lowest (a week six months ago). Any other way, and we would be searching many more elements.
-      series = redis.zrevrange(self.redis_key_for_city(city), 0, weeks.count, :with_scores => true).map do |val, score|
-        {:green_houses => val.split(":")[-1], :date => Time.parse(score.to_i.to_s)}
+      Time.use_zone("America/Guatemala") do
+        # NOTE: We're using zrevrange here since it orders elements by highest (most recent week)
+        # to lowest (a week six months ago). Any other way, and we would be searching many more elements.
+        series = redis.zrevrange(self.redis_key_for_city(city), 0, weeks.count, :with_scores => true).map do |val, score|
+          {:green_houses => val.split(":")[-1], :date => Time.zone.parse(score.to_i.to_s)}
+        end
       end
     end
 
