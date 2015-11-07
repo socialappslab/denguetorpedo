@@ -7,12 +7,35 @@
 #   * Element corresponds to number of green houses in a particular week.
 # This is run in a Sidekiq job every week.
 
-module GreenLocationWeeklySeries
+module GreenLocationSeries
   def self.add_green_houses_to_date(city, house_count, end_of_week)
     $redis_pool.with do |redis|
       formatted_date = self.format_date(end_of_week)
       redis.zadd(self.redis_key_for_city(city), formatted_date.to_i, "#{formatted_date}:#{house_count}" )
     end
+  end
+
+  def self.add_to_neighborhood_count(neighborhood, house_count, end_of_day)
+    $redis_pool.with do |redis|
+      formatted_date = self.format_date(end_of_day)
+      redis.zadd(self.redis_key_for_neighborhood(neighborhood), formatted_date.to_i, "#{formatted_date}:#{house_count}" )
+    end
+  end
+
+  def self.get_latest_count_for_neighborhood(neighborhood)
+    score = []
+
+    $redis_pool.with do |redis|
+      Time.use_zone("America/Guatemala") do
+        # NOTE: We're using zrevrange here since it orders elements by highest (most recent week)
+        # to lowest (a week six months ago). Any other way, and we would be searching many more elements.
+        score = redis.zrevrange(self.redis_key_for_neighborhood(neighborhood), 0, 1).map do |val, score|
+          val.split(":")[-1]
+        end
+      end
+    end
+
+    return score[0]
   end
 
   def self.time_series_for_city(city, start_time, end_time)
@@ -44,5 +67,9 @@ module GreenLocationWeeklySeries
 
   def self.redis_key_for_city(city)
     "cities:#{city.id}:green_locations:timeseries:weekly"
+  end
+
+  def self.redis_key_for_neighborhood(neighborhood)
+    "neighborhoods:#{neighborhood.id}:green_locations:timeseries:daily"
   end
 end

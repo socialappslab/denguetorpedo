@@ -1,5 +1,5 @@
 require "sidekiq"
-include GreenLocationWeeklySeries
+include GreenLocationSeries
 
 # This method runs every day and updates the Redis datastore responsible for
 # calculating green location rankings.
