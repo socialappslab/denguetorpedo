@@ -65,6 +65,7 @@ group :test do
   gem 'launchy', :require => false
   gem "poltergeist"
   gem 'rspec-rails'
+  gem "timecop", :require => false
 end
 
 #------------------------------------------------------------------------------
