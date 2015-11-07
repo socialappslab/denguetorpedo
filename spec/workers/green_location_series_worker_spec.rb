@@ -49,7 +49,7 @@ describe GreenLocationSeriesWorker do
     GreenLocationSeriesWorker.perform_async
     GreenLocationSeriesWorker.perform_one
     score = GreenLocationSeries.get_latest_count_for_neighborhood(community)
-    expect(score).to eq(1)
+    expect(score).to eq("1")
   end
 
 end
