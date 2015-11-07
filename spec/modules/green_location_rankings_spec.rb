@@ -18,14 +18,6 @@ describe GreenLocationRankings do
     expect(subject.score_for_user(user)).to eq(100)
   end
 
-  it "returns corrects score to neighborhood" do
-    user = create(:user, :neighborhood => community)
-    subject.add_score_to_user(100, user)
-    user2 = create(:user)
-    subject.add_score_to_user(200, user2)
-    expect(subject.score_for_neighborhood(community)).to eq(100)
-  end
-
   it "returns correct top 10 list" do
     3.times do |index|
       u = create(:user, :neighborhood => community, :username => "user#{index}")

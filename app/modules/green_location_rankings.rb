@@ -16,21 +16,6 @@ module GreenLocationRankings
     end
   end
 
-  def self.score_for_neighborhood(neighborhood)
-    total_score = 0
-
-    $redis_pool.with do |redis|
-      city  = neighborhood.city
-      users = neighborhood.users.where(:is_blocked => false).pluck(:id)
-      users.each do |uid|
-        score = redis.zscore(self.redis_key_for_city(city), uid)
-        total_score += score if score.present?
-      end
-    end
-
-    return total_score
-  end
-
   def self.top_ten_for_city(city)
     users = []
     $redis_pool.with do |redis|

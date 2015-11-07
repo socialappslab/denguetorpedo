@@ -25,6 +25,10 @@ class CitiesController < ApplicationController
 
     # Let's try to retrieve
     @green_location_rankings = GreenLocationRankings.top_ten_for_city(@city)
+    @neighborhood_rankings = @neighborhoods.map do |n|
+      {:id => n.id, :score => GreenLocationSeries.get_latest_count_for_neighborhood(n).to_i}
+    end
+
     @breadcrumbs << {:name => @city.name, :path => city_path(@city)}
   end
 

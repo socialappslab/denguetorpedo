@@ -21,6 +21,8 @@
               - image_tag(asset_path(neighborhood.picture), :class => "img-rounded", :style => "height: 200px; width: 200px;")
             %p.lato-font.text-center{"style" => "margin-top: 10px; margin-bottom: 20px; font-size: 18px;"}
               = link_to neighborhood.name, neighborhood_path(neighborhood)
+              %span{:style => "color: #5cb85c;"}
+                = @neighborhood_rankings.find {|nr| nr[:id] == neighborhood.id}[:score]
           %hr.muted.slightly-wide
 
 
