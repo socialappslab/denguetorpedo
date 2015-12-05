@@ -469,6 +469,29 @@ describe CsvParsingWorker do
     end
   end
 
-  #----------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------
+
+  # Harold notices when uploading the specific CSV, duplicate reports were generated.
+  describe "Ensure no duplicate reports" do
+    before(:each) do
+      csv      = File.open(Rails.root + "spec/support/duplicate_reports_generated.xlsx")
+      csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location)
+
+      CsvParsingWorker.perform_async(csv.id)
+    end
+
+
+    it "creates 5 distinct barrel reports" do
+      expect(Report.count).to eq(5)
+    end
+
+    it "creates 1 visit" do
+      expect(Visit.count).to eq(1)
+    end
+
+    it "creates 5 inspections" do
+      expect(Inspection.count).to eq(5)
+    end
+  end
 
 end
