@@ -293,7 +293,7 @@ describe CsvParsingWorker do
 
   #-----------------------------------------------------------------------------
 
-  context "when uploading custom Nicaraguan CSV", :after_commit => true do
+  context "when uploading custom Nicaraguan CSV" do
     it "sets correct created_at for generated reports" do
       neighborhood = Neighborhood.first
       csv      = File.open(Rails.root + "spec/support/weird_inspection_date_inconsistency.xlsx")
@@ -308,13 +308,15 @@ describe CsvParsingWorker do
       expect(Report.where("DATE(created_at) = '2014-12-17'").count).to eq(1)
       expect(Report.where("DATE(created_at) = '2015-01-12'").count).to eq(1)
     end
+  end
 
+  describe "Harold's graphs" do
     it "returns data that matches Harold's graphs", :wip => true do
       neighborhood = Neighborhood.first
       Dir[Rails.root + "spec/support/nicaragua_csv/*.xlsx"].each do |f|
         csv      = File.open(f)
 
-        location = create(:location, :address => "#{csv.path}", :neighborhood => neighborhood)
+        location = create(:location, :address => "#{csv.path.split('/')[-1].gsub('.xlsx', '')}", :neighborhood => neighborhood)
         csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location, :neighborhood => neighborhood)
         CsvParsingWorker.perform_async(csv.id)
       end
@@ -324,79 +326,26 @@ describe CsvParsingWorker do
 
       daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, nil, nil, "daily")
 
-      stat = daily_stats.find {|ds| ds[:date] == "2014-11-15"}
-      expect(stat).to eq ({
-        :date => "2014-11-15",
-        :positive => {:count=>1, :percent=>33, :locations=>[2]},
-        :potential => {:count=>1, :percent=>33, :locations=>[1]},
-        :negative => {:count=>1, :percent=>33, :locations=>[3]},
-        :total => {:count=>3}
-      })
 
+      loc1 = Location.find_by_address("N002001003").id
+      loc2 = Location.find_by_address("N002001004").id
+      loc3 = Location.find_by_address("N002001007").id
 
-      stat = daily_stats.find {|ds| ds[:date] == "2014-11-22"}
-      expect(stat).to eq ({
-        :date => "2014-11-22",
-        :positive => {:count=>2, :percent=>67, :locations=>[3, 1]},
-        :potential => {:count=>2, :percent=>67, :locations=>[3, 2]},
-        :negative => {:count=>0, :percent=>0, :locations=>[]},
-        :total => {:count=>3}
-      })
-
-      stat = daily_stats.find {|ds| ds[:date] == "2014-11-24"}
-      expect(stat).to eq ({
-        :date => "2014-11-24",
-        :positive => {:count=>0, :percent=>0, :locations=>[]},
-        :potential => {:count=>1, :percent=>50, :locations=>[1]},
-        :negative => {:count=>1, :percent=>50, :locations=>[3]},
-        :total => {:count=>2}
-      })
-
-      stat = daily_stats.find {|ds| ds[:date] == "2014-11-26"}
-      expect(stat).to eq ({
-        :date => "2014-11-26",
-        :positive => {:count=>1, :percent=>100, :locations=>[2]},
-        :potential => {:count=>1, :percent=>100, :locations=>[2]},
-        :negative => {:count=>0, :percent=>0, :locations=>[]},
-        :total => {:count=>1}
-      })
-
-      stat = daily_stats.find {|ds| ds[:date] == "2014-12-05"}
-      expect(stat).to eq ({
-        :date => "2014-12-05",
-        :positive => {:count=>1, :percent=>50, :locations=>[3]},
-        :potential => {:count=>1, :percent=>50, :locations=>[1]},
-        :negative => {:count=>0, :percent=>0, :locations=>[]},
-        :total => {:count=>2}
-      })
-
-      stat = daily_stats.find {|ds| ds[:date] == "2014-12-13"}
-      expect(stat).to eq ({
-        :date => "2014-12-13",
-        :positive => {:count=>0, :percent=>0, :locations=>[]},
-        :potential => {:count=>2, :percent=>100, :locations=>[1, 3]},
-        :negative => {:count=>0, :percent=>0, :locations=>[]},
-        :total => {:count=>2}
-      })
-
-      stat = daily_stats.find {|ds| ds[:date] == "2015-01-10"}
-      expect(stat).to eq ({
-        :date => "2015-01-10",
-        :positive => {:count=>0, :percent=>0, :locations=>[]},
-        :potential => {:count=>1, :percent=>33, :locations=>[2]},
-        :negative => {:count=>2, :percent=>67, :locations=>[1, 3]},
-        :total => {:count=>3}
-      })
-
-      stat = daily_stats.find {|ds| ds[:date] == "2015-01-21"}
-      expect(stat).to eq ({
-        :date => "2015-01-21",
-        :positive => {:count=>0, :percent=>0, :locations=>[]},
-        :potential => {:count=>1, :percent=>33, :locations=>[2]},
-        :negative => {:count=>2, :percent=>67, :locations=>[3, 1]},
-        :total => {:count=>3}
-      })
-
+      [
+        {:date => "2014-11-15", :result => [ [:positive, [loc2]], [:potential, [loc1]], [:negative, [loc3]] ]},
+        {:date => "2014-11-22", :result => [ [:positive, [loc3, loc1]], [:potential, [loc3, loc2]], [:negative, []] ]},
+        {:date => "2014-11-24", :result => [ [:positive, []], [:potential, [loc1]], [:negative, [loc3]] ]},
+        {:date => "2014-11-26", :result => [ [:positive, [loc2]], [:potential, [loc2]], [:negative, []] ]},
+        {:date => "2014-12-05", :result => [ [:positive, [loc3]], [:potential, [loc1]], [:negative, []] ]},
+        {:date => "2014-12-13", :result => [ [:positive, []], [:potential, [loc1,loc3]], [:negative, []] ]},
+        {:date => "2015-01-10", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc1,loc3]] ]},
+        {:date => "2015-01-21", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc3,loc1]] ]}
+      ].each do |hash|
+        stat = daily_stats.find {|ds| ds[:date] == hash[:date]}
+        hash[:result].each do |result|
+          expect(stat[result[0]][:locations].sort).to eq(result[1].sort)
+        end
+      end
     end
   end
 

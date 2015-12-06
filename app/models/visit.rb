@@ -10,6 +10,8 @@
 # * identification type (positive, potential, or negative/clean)
 # * time of visit
 # * type of visit
+require "set"
+
 class Visit < ActiveRecord::Base
   attr_accessible :location_id, :identification_type, :identified_at, :cleaned_at, :health_report
 
@@ -67,6 +69,17 @@ class Visit < ActiveRecord::Base
 
   # This calculates the daily percentage of houses that were visited on that day.
   def self.calculate_time_series_for_locations(location_ids, start_time, end_time, scale)
+    time_series = Visit.segment_locations_by_date_and_type(location_ids, start_time, end_time, scale)
+    time_series = Visit.calculate_statistics_for_time_series(time_series)
+    time_series = Visit.filter_time_series_by_range(time_series, start_time, end_time, scale)
+    return time_series
+  end
+
+  #----------------------------------------------------------------------------
+
+  # This method separates the location_ids into a visit date and, within that, into
+  # identification type (positive, potential, negative).
+  def self.segment_locations_by_date_and_type(location_ids, start_time, end_time, scale)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
@@ -78,105 +91,77 @@ class Visit < ActiveRecord::Base
     #    identification type since a visit has many inspections,
     # b) inner joining visits on inspections leads to problems with accounting
     #    for visits with no inspections (e.g. those that are N on CSV forms)
-    visit_ids = visits.pluck(:id)
-    inspections_hash = Inspection.where(:visit_id => visit_ids).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
+    inspections_hash = Inspection.where(:visit_id => visits.pluck(:id)).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
 
-    # NOTE: We're guaranteed that each visit corresponds to a unique day.
-    stats = []
+    # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
+    time_series = []
     visits.each do |visit|
-      visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+      # Calculate the number of positive inspections for this visit, and
+      # calculate number of potential inspections for this visit.
+      # If there are no inspections that match this visit, then we will bypass it completely.
+      visit_counts_by_type = inspections_hash.find_all {|k, v| k[0] == visit.id}
+      next if visit_counts_by_type.blank?
 
-      day_statistic = stats.find {|stat| stat[:date] == visit_date}
-      if day_statistic.blank?
-        day_statistic = {
-          :date       => visit_date,
-          :positive   => {:count => 0, :percent => 0, :locations => []},
-          :potential  => {:count => 0, :percent => 0, :locations => []},
-          :negative   => {:count => 0, :percent => 0, :locations => []},
-          :total      => {:count => 0}
-        }
+      # Why Set? Because set is a collection of unordered values with no duplicates.
+      # This saves us the time of removing duplicate location ids.
+      distribution = {:positive  => {:locations => Set.new}, :potential => {:locations => Set.new}, :negative  => {:locations => Set.new}, :total => {:locations => Set.new}}
 
-        stats << day_statistic
-      end
-
-      # The daily metric calculates number of visited houses
-      # that had at least one potential and/or at least one positive
-      # site. This means we need to ask if the house had a potential site,
-      # and if the house had a positive site.
-      # We do this by checking if there is an entry in the visit_identifaction_hash
-      # by narrowing the array size as fast as possible.
-      visit_counts = inspections_hash.find_all {|k, v| k[0] == visit.id}
-      pot_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
-      pot_count    = pot_count[1] if pot_count
-      pos_count    = visit_counts.find {|k,v| k[1] == Inspection::Types::POSITIVE}
+      # Calculate the number of positive and potential instances for this particular visit.
+      # All other instances are negative.
+      pos_count    = visit_counts_by_type.find {|k,v| k[1] == Inspection::Types::POSITIVE}
       pos_count    = pos_count[1] if pos_count
+      pot_count    = visit_counts_by_type.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
+      pot_count    = pot_count[1] if pot_count
 
-      if pos_count && pos_count > 0
-        day_statistic[:positive][:count]  += 1
-        day_statistic[:positive][:locations] << visit.location_id
+      distribution[:positive][:locations].add(visit.location_id) if pos_count && pos_count > 0
+      distribution[:potential][:locations].add(visit.location_id) if pot_count && pot_count > 0
+      distribution[:negative][:locations].add(visit.location_id) if pos_count.blank? && pot_count.blank?
+      distribution[:total][:locations].add(visit.location_id)
+
+      # Identify and find a matching entry for the key we're using. If the key
+      # is not present in the time_series, create it.
+      visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+      series     = time_series.find {|stat| stat[:date] == visit_date}
+      if series.blank?
+        series = {:date => visit_date}
+        [:positive, :potential, :negative, :total].each do |key|
+          series[key] = {:locations => distribution[key][:locations]}
+        end
+
+        time_series << series
+      else
+        [:positive, :potential, :negative, :total].each do |key|
+          series[key][:locations].merge(distribution[key][:locations])
+        end
       end
-
-      if pot_count && pot_count > 0
-        day_statistic[:potential][:count] += 1
-        day_statistic[:potential][:locations] << visit.location_id
-      end
-
-      if pot_count.blank? && pos_count.blank?
-        day_statistic[:negative][:count]  += 1
-        day_statistic[:negative][:locations] << visit.location_id
-      end
-
-      day_statistic[:total][:count]     += 1
-
-      # NOTE: We're not adding the hash here because there's a chance we simply
-      # modified an existing element. We're going to search for it again.
-      index        = stats.find_index {|stat| stat[:date] == visit_date}
-      stats[index] = day_statistic
     end
 
-    # Now, let's iterate over stats, calculating percentage.
-    # Finally, let's include only those visit types that match the visit type.
-    # Now that the full history is captured, let's filter starting from the start_time
-    stats = Visit.calculate_percentages_for_time_series(stats)
-    stats = Visit.filter_time_series_by_range(stats, start_time, end_time, scale)
-    stats = Visit.uniquefy_locations(stats)
+    # Before we return, let's convert the sets to array.
+    time_series.each do |ts|
+      [:positive, :potential, :negative, :total].each do |key|
+        ts[key][:locations] = ts[key][:locations].to_a
+      end
+    end
 
-    return stats
+    return time_series
   end
 
   #----------------------------------------------------------------------------
 
-  def self.calculate_percentages_for_time_series(daily_stats)
-    daily_stats.each_with_index do |day_statistic, index|
-      positive_count  = day_statistic[:positive][:count]
-      potential_count = day_statistic[:potential][:count]
-      negative_count  = day_statistic[:negative][:count]
-      total           = day_statistic[:total][:count]
+  def self.calculate_statistics_for_time_series(time_series)
+    time_series.each do |day_statistic|
+      [:positive, :potential, :negative, :total].each do |key|
+        day_statistic[key][:count] = day_statistic[key][:locations].count
+      end
 
-      day_statistic[:positive][:percent]  = (total == 0 ? 0 : (positive_count.to_f / total * 100).round(0)  )
-      day_statistic[:potential][:percent] = (total == 0 ? 0 : (potential_count.to_f / total * 100).round(0) )
-      day_statistic[:negative][:percent]  = (total == 0 ? 0 : (negative_count.to_f / total * 100).round(0)  )
-
-      daily_stats[index] = day_statistic
+      total = day_statistic[:total][:count]
+      [:positive, :potential, :negative].each do |key|
+        day_statistic[key][:percent] = (total == 0 ? 0 : (day_statistic[key][:count].to_f / total * 100).round(0)  )
+      end
     end
 
-    return daily_stats
+    return time_series
   end
-
-  #----------------------------------------------------------------------------
-
-  def self.uniquefy_locations(daily_stats)
-    daily_stats.each_with_index do |day_statistic, index|
-      day_statistic[:positive][:locations]  = day_statistic[:positive][:locations].uniq
-      day_statistic[:potential][:locations] = day_statistic[:potential][:locations].uniq
-      day_statistic[:negative][:locations]  = day_statistic[:negative][:locations].uniq
-
-      daily_stats[index] = day_statistic
-    end
-
-    return daily_stats
-  end
-
 
   #----------------------------------------------------------------------------
 

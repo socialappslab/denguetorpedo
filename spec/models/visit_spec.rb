@@ -177,6 +177,14 @@ describe Visit do
         }
       ])
     end
+
+    it "doesn't count a Visit without inspections" do
+      r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
+      v = r.find_or_create_visit_for_date(r.created_at)
+
+      visits = Visit.calculate_time_series_for_locations([location], nil, nil, "daily")
+      expect(visits).to eq([])
+    end
   end
 
   #-----------------------------------------------------------------------------
