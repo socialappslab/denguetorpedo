@@ -310,6 +310,8 @@ describe CsvParsingWorker do
     end
   end
 
+  #----------------------------------------------------------------------------
+
   describe "Harold's graphs" do
     it "returns data that matches Harold's graphs", :wip => true do
       neighborhood = Neighborhood.first
@@ -348,6 +350,57 @@ describe CsvParsingWorker do
       end
     end
   end
+
+  #----------------------------------------------------------------------------
+
+  describe "Benchmarking with a week in August" do
+    it "returns data that matches Harold's graphs", :wip => true do
+      neighborhood = Neighborhood.first
+      Dir[Rails.root + "spec/support/august_week_csvs/*.xlsx"].each do |f|
+        csv      = File.open(f)
+
+        location = create(:location, :address => "#{csv.path.split('/')[-1].gsub('.xlsx', '')}", :neighborhood => neighborhood)
+        csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location, :neighborhood => neighborhood)
+        CsvParsingWorker.perform_async(csv.id)
+      end
+
+      reports = Report.where(:neighborhood_id => neighborhood.id)
+      @visit_ids = reports.joins(:location).pluck("locations.id")
+
+      start_time = Time.parse("2015-08-02")
+      end_time   = Time.parse("2015-08-10")
+      daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, start_time, end_time, "daily")
+      daily_stats.each do |hash|
+        [:potential, :positive, :negative, :total].each do |key|
+          hash[key][:locations] = hash[key][:locations].map {|id| Location.find(id).address}
+        end
+      end
+
+      puts daily_stats
+
+      #
+      # loc1 = Location.find_by_address("N002001003").id
+      # loc2 = Location.find_by_address("N002001004").id
+      # loc3 = Location.find_by_address("N002001007").id
+
+      # [
+      #   {:date => "2014-11-15", :result => [ [:positive, [loc2]], [:potential, [loc1]], [:negative, [loc3]] ]},
+      #   {:date => "2014-11-22", :result => [ [:positive, [loc3, loc1]], [:potential, [loc3, loc2]], [:negative, []] ]},
+      #   {:date => "2014-11-24", :result => [ [:positive, []], [:potential, [loc1]], [:negative, [loc3]] ]},
+      #   {:date => "2014-11-26", :result => [ [:positive, [loc2]], [:potential, [loc2]], [:negative, []] ]},
+      #   {:date => "2014-12-05", :result => [ [:positive, [loc3]], [:potential, [loc1]], [:negative, []] ]},
+      #   {:date => "2014-12-13", :result => [ [:positive, []], [:potential, [loc1,loc3]], [:negative, []] ]},
+      #   {:date => "2015-01-10", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc1,loc3]] ]},
+      #   {:date => "2015-01-21", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc3,loc1]] ]}
+      # ].each do |hash|
+      #   stat = daily_stats.find {|ds| ds[:date] == hash[:date]}
+      #   hash[:result].each do |result|
+      #     expect(stat[result[0]][:locations].sort).to eq(result[1].sort)
+      #   end
+      # end
+    end
+  end
+
 
   #----------------------------------------------------------------------------
 
