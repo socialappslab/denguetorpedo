@@ -37,6 +37,8 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # TODO: Deprecate? I don't like this algorithm (and it's outdated) but I haven't had time
+  # to check its accuracy.
   def identification_type
     id_grouping = self.inspections.select(:identification_type).group(:identification_type).count
     if id_grouping[Inspection::Types::POSITIVE] && id_grouping[Inspection::Types::POSITIVE] >= 1
@@ -86,37 +88,63 @@ class Visit < ActiveRecord::Base
     return [] if visits.blank?
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
-    # NOTE: I've considered using SQL joins here, but:
-    # a) inner joining inspections on visits leads to problems when calculating
-    #    identification type since a visit has many inspections,
-    # b) inner joining visits on inspections leads to problems with accounting
-    #    for visits with no inspections (e.g. those that are N on CSV forms)
-    inspections_hash = Inspection.where(:visit_id => visits.pluck(:id)).select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
+    inspections_by_visit = {}
+    inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type) #.select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
+    inspections.map do |ins|
+      inspections_by_visit[ins.visit_id] ||= {
+        Inspection::Types::POSITIVE  => Set.new,
+        Inspection::Types::POTENTIAL => Set.new,
+        Inspection::Types::NEGATIVE  => Set.new
+      }
+      inspections_by_visit[ins.visit_id][ins.identification_type].add(ins.report_id)
+    end
 
     # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
     time_series = []
     visits.each do |visit|
-      # Calculate the number of positive inspections for this visit, and
-      # calculate number of potential inspections for this visit.
-      # If there are no inspections that match this visit, then we will bypass it completely.
-      visit_counts_by_type = inspections_hash.find_all {|k, v| k[0] == visit.id}
-      next if visit_counts_by_type.blank?
-
       # Why Set? Because set is a collection of unordered values with no duplicates.
       # This saves us the time of removing duplicate location ids.
       distribution = {:positive  => {:locations => Set.new}, :potential => {:locations => Set.new}, :negative  => {:locations => Set.new}, :total => {:locations => Set.new}}
-
-      # Calculate the number of positive and potential instances for this particular visit.
-      # All other instances are negative.
-      pos_count    = visit_counts_by_type.find {|k,v| k[1] == Inspection::Types::POSITIVE}
-      pos_count    = pos_count[1] if pos_count
-      pot_count    = visit_counts_by_type.find {|k,v| k[1] == Inspection::Types::POTENTIAL}
-      pot_count    = pot_count[1] if pot_count
-
-      distribution[:positive][:locations].add(visit.location_id) if pos_count && pos_count > 0
-      distribution[:potential][:locations].add(visit.location_id) if pot_count && pot_count > 0
-      distribution[:negative][:locations].add(visit.location_id) if pos_count.blank? && pot_count.blank?
       distribution[:total][:locations].add(visit.location_id)
+
+      # Calculate the number of positive inspections for this visit, and
+      # calculate number of potential inspections for this visit.
+      # If there are no inspections that match this visit, then we will bypass it completely.
+      # visit_counts_by_type = inspections_hash.find_all {|k, v| k[0] == visit.id}
+      visit_counts_by_type = inspections_by_visit[visit.id]
+
+      # NOTE: Why are we checking both the negative count (see neg_count below) & the lack of any visits?
+      # Because there are 2 scenarios at play:
+      # 1. Visits without inspections are visits that are labeled N in the CSV. They have no inspections,
+      #    but they're negative nonetheless. Therefore, we count them as such.
+      # 2. Visits with inspections can only be negative if they have the NEGATIVE label on the inspection. This
+      # is regardless of whether they have positive/potential label.
+      # TODO: The correct way to make this clearer is to refactor the inspections table into a concept
+      # that accepts both visits without reports, and visits with reports. This may require deprecating
+      # our dependence on DengueChat Reports.
+      if visit_counts_by_type.blank?
+        distribution[:negative][:locations].add(visit.location_id)
+      else
+        # At this point, we have a bunch of reports (as keys) and an array of statuses
+        # for that report and that specific day, sorted by chronological insertion. We
+        # can assume that the last entry is the most recent for that report.
+        # The visual explanation here is to treat each report as a row in CSV, and choose
+        # the rightmost (elimination) column if it's available.
+        pos_reports = visit_counts_by_type[Inspection::Types::POSITIVE]
+        pot_reports = visit_counts_by_type[Inspection::Types::POTENTIAL]
+        neg_reports = visit_counts_by_type[Inspection::Types::NEGATIVE]
+
+        # Why do we do it this way? A report can, on the same day, be both positive/potential and
+        # negative if the brigadistas eliminate it same day. As such, we need to be able to say first
+        # if the location was positive/potential and then whether it is negative by virtue of all those
+        # positive/potential reports having been eliminated.
+        distribution[:positive][:locations].add(visit.location_id)  if pos_reports.size > 0
+        distribution[:potential][:locations].add(visit.location_id) if pot_reports.size > 0
+
+        if neg_reports.present? && neg_reports.superset?(pot_reports) && neg_reports.superset?(pos_reports)
+          distribution[:negative][:locations].add(visit.location_id)
+        end
+      end
 
       # Identify and find a matching entry for the key we're using. If the key
       # is not present in the time_series, create it.

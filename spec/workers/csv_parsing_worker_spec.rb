@@ -334,17 +334,18 @@ describe CsvParsingWorker do
       loc3 = Location.find_by_address("N002001007").id
 
       [
-        {:date => "2014-11-15", :result => [ [:positive, [loc2]], [:potential, [loc1]], [:negative, [loc3]] ]},
-        {:date => "2014-11-22", :result => [ [:positive, [loc3, loc1]], [:potential, [loc3, loc2]], [:negative, []] ]},
+        {:date => "2014-11-15", :result => [ [:positive, [loc2]], [:potential, [loc1]], [:negative, [loc3, loc2]] ]},
+        {:date => "2014-11-22", :result => [ [:positive, [loc1, loc3]], [:potential, [loc3, loc2]], [:negative, [loc1]] ]},
         {:date => "2014-11-24", :result => [ [:positive, []], [:potential, [loc1]], [:negative, [loc3]] ]},
         {:date => "2014-11-26", :result => [ [:positive, [loc2]], [:potential, [loc2]], [:negative, []] ]},
-        {:date => "2014-12-05", :result => [ [:positive, [loc3]], [:potential, [loc1]], [:negative, []] ]},
-        {:date => "2014-12-13", :result => [ [:positive, []], [:potential, [loc1,loc3]], [:negative, []] ]},
+        {:date => "2014-12-05", :result => [ [:positive, [loc3]], [:potential, [loc1]], [:negative, [loc3]] ]},
+        {:date => "2014-12-13", :result => [ [:positive, []], [:potential, [loc1,loc3]], [:negative, [loc1, loc3]] ]},
         {:date => "2015-01-10", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc1,loc3]] ]},
         {:date => "2015-01-21", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc3,loc1]] ]}
       ].each do |hash|
         stat = daily_stats.find {|ds| ds[:date] == hash[:date]}
         hash[:result].each do |result|
+          puts "hash: #{hash[:date]} | result: #{result}"
           expect(stat[result[0]][:locations].sort).to eq(result[1].sort)
         end
       end
@@ -353,13 +354,13 @@ describe CsvParsingWorker do
 
   #----------------------------------------------------------------------------
 
-  describe "Benchmarking with a week in August" do
+  describe "Benchmarking with a week in August", :heavy => true do
     it "returns data that matches Harold's graphs", :wip => true do
       neighborhood = Neighborhood.first
       Dir[Rails.root + "spec/support/august_week_csvs/*.xlsx"].each do |f|
-        csv      = File.open(f)
-
-        location = create(:location, :address => "#{csv.path.split('/')[-1].gsub('.xlsx', '')}", :neighborhood => neighborhood)
+        csv       = File.open(f)
+        file_name = csv.path.split('/')[-1].gsub('.xlsx', '')
+        location  = create(:location, :address => "#{file_name}", :neighborhood => neighborhood)
         csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location, :neighborhood => neighborhood)
         CsvParsingWorker.perform_async(csv.id)
       end
@@ -376,30 +377,109 @@ describe CsvParsingWorker do
         end
       end
 
-      puts daily_stats
+      expect(daily_stats[0][:positive][:locations].count).to eq(1)
+      ["N002002037.."].each do |loc|
+        expect(daily_stats[0][:positive][:locations]).to include(loc)
+      end
+      expect(daily_stats[0][:potential][:locations].count).to eq(0)
+      expect(daily_stats[0][:negative][:locations].count).to eq(0)
 
-      #
-      # loc1 = Location.find_by_address("N002001003").id
-      # loc2 = Location.find_by_address("N002001004").id
-      # loc3 = Location.find_by_address("N002001007").id
-
-      # [
-      #   {:date => "2014-11-15", :result => [ [:positive, [loc2]], [:potential, [loc1]], [:negative, [loc3]] ]},
-      #   {:date => "2014-11-22", :result => [ [:positive, [loc3, loc1]], [:potential, [loc3, loc2]], [:negative, []] ]},
-      #   {:date => "2014-11-24", :result => [ [:positive, []], [:potential, [loc1]], [:negative, [loc3]] ]},
-      #   {:date => "2014-11-26", :result => [ [:positive, [loc2]], [:potential, [loc2]], [:negative, []] ]},
-      #   {:date => "2014-12-05", :result => [ [:positive, [loc3]], [:potential, [loc1]], [:negative, []] ]},
-      #   {:date => "2014-12-13", :result => [ [:positive, []], [:potential, [loc1,loc3]], [:negative, []] ]},
-      #   {:date => "2015-01-10", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc1,loc3]] ]},
-      #   {:date => "2015-01-21", :result => [ [:positive, []], [:potential, [loc2]], [:negative, [loc3,loc1]] ]}
-      # ].each do |hash|
-      #   stat = daily_stats.find {|ds| ds[:date] == hash[:date]}
-      #   hash[:result].each do |result|
-      #     expect(stat[result[0]][:locations].sort).to eq(result[1].sort)
-      #   end
-      # end
+      expect(daily_stats[1][:positive][:locations].count).to eq(2)
+      ["N002005110..", "N002004104.."].each do |loc|
+        expect(daily_stats[1][:positive][:locations]).to include(loc)
+      end
+      expect(daily_stats[1][:potential][:locations].count).to eq(5)
+      ["N002006137..", "N002006134..", "N002005121..", "N002003070..", "N002001009.."].each do |loc|
+        expect(daily_stats[1][:potential][:locations]).to include(loc)
+      end
+      expect(daily_stats[1][:negative][:locations].count).to eq(7)
+      ["N002005110..", "N002001009..", "N002006137..", "N002004104..", "N002006134..", "N002005121..", "N002003070.."].each do |loc|
+        expect(daily_stats[1][:negative][:locations]).to include(loc)
+      end
     end
   end
+
+  #----------------------------------------------------------------------------
+
+  describe "Benchmarking with July", :heavy => true do
+    it "returns data that matches Harold's graphs", :wip => true do
+      neighborhood = Neighborhood.first
+      Dir[Rails.root + "spec/support/july_csvs/*.xlsx"].each do |f|
+        csv      = File.open(f)
+        address = csv.path.split('/')[-1].gsub('.xlsx', '').gsub(".", "")
+
+        location = create(:location, :address => "#{address}", :neighborhood => neighborhood)
+        csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location, :neighborhood => neighborhood)
+        CsvParsingWorker.perform_async(csv.id)
+      end
+
+      @visit_ids = neighborhood.locations.pluck(:id)
+
+      start_time = Time.parse("2015-07-01")
+      end_time   = Time.parse("2015-07-31")
+      daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, start_time, end_time, "daily")
+      daily_stats.each do |hash|
+        [:potential, :positive, :negative, :total].each do |key|
+          hash[key][:locations] = hash[key][:locations].map {|id| Location.find(id).address}.sort
+        end
+      end
+
+      # July 7th, 2015
+      ["N002002039", "N002002044"].each do |loc|
+        expect(daily_stats[0][:positive][:locations]).to include(loc)
+      end
+      "N002002034,  N002002035,  N002002039,  N002002040,  N002002041,  N002002042,  N002002044,  N002002045,  N002002047,  N002002048,  N002002049,  N002003065,  N002003066,  N002003070,  N002003071,  N002003072,  N002006131,  N002006134,  N002006136,  N002006137,  N002006138,  N002006140,  N002002033".split(",  ").each do |loc|
+        expect(daily_stats[0][:negative][:locations]).to include(loc)
+      end
+
+      # July 8th, 2015
+      expect(daily_stats[1][:positive][:locations]).to eq([])
+      "N002001005,  N002001012".split(",  ").each do |loc|
+        expect(daily_stats[1][:potential][:locations]).to include(loc)
+      end
+      "N002001001, N002001002, N002001004, N002001007, N002001009, N002001014, N002001015, N002001016, N002001017, N002001020, N002001020".split(", ").each do |loc|
+        expect(daily_stats[1][:negative][:locations]).to include(loc)
+      end
+
+      # July 18th, 2015
+      ["N002002037", "N002004087", "N002004095"].each do |loc|
+        expect(daily_stats[2][:positive][:locations]).to include(loc)
+      end
+      ["N002005118", "N002006126", "N002006127"].each do |loc|
+        expect(daily_stats[2][:potential][:locations]).to include(loc)
+      end
+      "N002002032, N002002033, N002002034, N002002035, N002002036, N002002039, N002002040, N002002042, N002002044, N002002045, N002002046, N002002047, N002002048, N002002049, N002004079, N002004080, N002004081, N002004082, N002004083, N002004084, N002004085, N002004086, N002004087, N002004088, N002004091, N002004092, N002004093, N002004095, N002004096, N002005107, N002005109, N002005110, N002005112, N002005113, N002005114, N002005116, N002006128, N002006131, N002006132, N002006133, N002006136, N002006137, N002006138, N002006139, N002006140".split(", ").each do |loc|
+        expect(daily_stats[2][:negative][:locations]).to include(loc)
+      end
+
+      # July 25th, 2015
+      "N002004104, N002005117".split(", ").each do |loc|
+        expect(daily_stats[3][:positive][:locations]).to include(loc)
+      end
+      "N002001002, N002001013, N002005118, N002005121".split(", ").each do |loc|
+        expect(daily_stats[3][:potential][:locations]).to include(loc)
+      end
+      "N002001001, N002001006, N002001007, N002001008, N002001009, N002001014, N002001015, N002001018, N002001019, N002001020, N002001021, N002001022, N002001023, N002001025, N002001027, N002005106, N002005107, N002005112, N002005113, N002005116".split(", ").each do |loc|
+        expect(daily_stats[3][:negative][:locations]).to include(loc)
+      end
+
+
+      # July 31st, 2015
+      "N002004104, N002002039, N002005118".split(", ").each do |loc|
+        expect(daily_stats[4][:positive][:locations]).to include(loc)
+      end
+      "N002001003, N002003069, N002005121, N002006126".split(", ").each do |loc|
+        expect(daily_stats[4][:potential][:locations]).to include(loc)
+      end
+      "N002001001, N002001009, N002001011, N002001014, N002001015, N002001016, N002001019, N002002032, N002002033, N002002034, N002002035, N002002036, N002002039, N002002040, N002002042, N002002044, N002002045, N002002046, N002002047, N002002049, N002003051, N002003055, N002003056, N002003057, N002003061, N002003062, N002003063, N002003064, N002003066, N002003070, N002003071, N002003072, N002004079, N002004080, N002004081, N002004082, N002004083, N002004086, N002004089, N002004090, N002004095, N002004096, N002004098, N002004103, N002005106, N002005107, N002005109, N002005112, N002005118, N002006127, N002006128, N002006129, N002006131, N002006133, N002006134, N002006136, N002006137, N002006138, N002006140".split(", ").each do |loc|
+        expect(daily_stats[4][:negative][:locations]).to include(loc)
+      end
+
+      # puts JSON.pretty_generate(daily_stats)
+    end
+  end
+
+
 
 
   #----------------------------------------------------------------------------
@@ -424,7 +504,7 @@ describe CsvParsingWorker do
       r.update_inspection_for_visit(v)
 
       inspections = Inspection.where(:report_id => r.id)
-      expect(inspections.count).to eq(4)
+      expect(inspections.count).to eq(5)
     end
 
     it "creates Inspection instances with correct attributes", :wip => true do
@@ -449,8 +529,7 @@ describe CsvParsingWorker do
 
       v = r.find_or_create_visit_for_date(r.eliminated_at)
       r.update_inspection_for_visit(v)
-
-      expect(r.visits.count).to eq(4)
+      expect(r.visits.count).to eq(5)
     end
 
     it "creates Visit instances with correct attributes" do
