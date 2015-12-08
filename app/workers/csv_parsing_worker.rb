@@ -122,19 +122,6 @@ class CsvParsingWorker
         v = r.find_or_create_visit_for_date(current_visited_at)
         position = r.inspections.where(:visit_id => v).count
         Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status, :position => position)
-
-        # We create a special "followup" visit for reports with a field identifier.
-        # All other reports are assumed to be new.
-        if eliminated_at.present?
-          r.eliminated_at = eliminated_at
-          r.save(:validate => false)
-
-          # Create an inspection whose position is dependent on the existing inspections
-          # associated with this report.
-          v = r.find_or_create_visit_for_date(r.eliminated_at)
-          position = r.inspections.where(:visit_id => v).count
-          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
-        end
       else
         # At this point, this isn't a report with a field identifier. Because
         # we're parsing the whole CSV, there are two options:
@@ -165,21 +152,22 @@ class CsvParsingWorker
           r.save(:validate => false)
 
           v = r.find_or_create_visit_for_date(r.created_at)
+          position = r.inspections.where(:visit_id => v).count
           Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status)
         end
+      end
 
-        # At this point, we have a report, be it existing or created. Either way,
-        # let's
-        if eliminated_at.present?
-          r.eliminated_at = eliminated_at
-          r.save(:validate => false)
+      # We create a special "followup" visit for reports with a field identifier.
+      # All other reports are assumed to be new.
+      if eliminated_at.present?
+        r.eliminated_at = eliminated_at
+        r.save(:validate => false)
 
-          # Create an inspection whose position is dependent on the existing inspections
-          # associated with this report.
-          v = r.find_or_create_visit_for_date(r.eliminated_at)
-          position = r.inspections.where(:visit_id => v).count
-          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
-        end
+        # Create an inspection whose position is dependent on the existing inspections
+        # associated with this report.
+        v = r.find_or_create_visit_for_date(r.eliminated_at)
+        position = r.inspections.where(:visit_id => v).count
+        Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
       end
     end
 
