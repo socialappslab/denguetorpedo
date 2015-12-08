@@ -89,8 +89,7 @@ class Visit < ActiveRecord::Base
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
     inspections_by_visit = {}
-    inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type) #.select([:visit_id, :identification_type]).group(:visit_id, :identification_type).count(:identification_type)
-    inspections.map do |ins|
+    inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
       inspections_by_visit[ins.visit_id] ||= {
         Inspection::Types::POSITIVE  => Set.new,
         Inspection::Types::POTENTIAL => Set.new,
