@@ -1,5 +1,6 @@
 # encoding: UTF-8
 require "roo"
+require "fileutils"
 
 #------
 # Parse the raw CSV data given to me by Harold, and extract CSVs corresponding
@@ -18,8 +19,9 @@ task :parse_nicaragua_data => :environment do
       if row_content[:visited_at].present?
         time = Time.zone.parse( row_content[:visited_at] )
 
-        if time.month == 8 && time.day >= 3 && time.day <= 9
-          csvs << csvr.csv.original_filename
+        if time.month == 7
+          FileUtils.copy_file(file, "/Users/dmitri/Desktop/july_csvs/#{csvr.csv.original_filename}")
+          # csvs << csvr.csv.original_filename
         end
       end
     end
