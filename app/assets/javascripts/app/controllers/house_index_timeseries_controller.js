@@ -98,8 +98,9 @@
     $scope.refreshChartWithParams = function() {
       $scope.chartLoading = true;
 
-      var params = {"neighborhood_id": $attrs.neighborhoodId, "display": "public", "csv_only": 1, "timeframe": "6","positive": "1","potential": "1","negative": "1"}
-      params.percentages = $scope.chartOptions.percentages;
+      var params = {};
+      params.neighborhood_id =  $attrs.neighborhoodId;
+      params.percentages     = $scope.chartOptions.percentages;
 
       var ajax = $http({url: $attrs.path, method: "GET", params: params });
       ajax.success(function(response) {

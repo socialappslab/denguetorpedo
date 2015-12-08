@@ -160,22 +160,29 @@ describe Visit do
       r.update_inspection_for_visit(v)
 
       visits = Visit.calculate_time_series_for_locations([location], nil, nil, "daily")
+      visits.map {|v| v.delete(:total)}
       expect(visits).to eq([
         {
           :date=>"2014-10-21",
           :positive=>{:count=>0, :percent=>0, :locations => []},
           :potential=>{:count=>0, :percent=>0, :locations => []},
           :negative=>{:count=>1, :percent=>100, :locations => [location.id]},
-          :total => {:count => 1}
         },
         {
           :date=>"2015-01-19",
           :positive=>{:count=>1, :percent=>100, :locations => [location.id]},
           :potential=>{:count=>0, :percent=>0, :locations => []},
           :negative=>{:count=>0, :percent=>0, :locations => []},
-          :total => {:count => 1}
         }
       ])
+    end
+
+    it "counts a Visit without inspections (usual when the location is marked N)" do
+      r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
+      v = r.find_or_create_visit_for_date(r.created_at)
+
+      visits = Visit.calculate_time_series_for_locations([location], nil, nil, "daily")
+      expect(visits[0][:negative][:count]).to eq(1)
     end
   end
 
@@ -195,20 +202,19 @@ describe Visit do
       r.update_inspection_for_visit(v)
 
       visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
+      visits.map {|v| v.delete(:total)}
       expect(visits).to eq([
         {
           :date=>"2014-11-15",
           :positive  => { :count => 1, :percent => 100, :locations => [location.id] },
           :potential => { :count => 0, :percent => 0,   :locations => [] },
-          :negative  => { :count => 0, :percent => 0,   :locations => [] },
-          :total     => {:count => 1}
+          :negative  => { :count => 0, :percent => 0,   :locations => [] }
         },
         {
           :date      => "2014-11-20",
           :positive  => {:count=>0, :percent=>0,   :locations =>[]},
           :potential => {:count=>0, :percent=>0,   :locations =>[]},
-          :negative  => {:count=>1, :percent=>100, :locations => [location.id]},
-          :total     => {:count => 1}
+          :negative  => {:count=>1, :percent=>100, :locations => [location.id]}
         }
       ])
     end
@@ -254,7 +260,6 @@ describe Visit do
 
     it "returns one time-series point for each date" do
       expect(Visit.calculate_time_series_for_locations(locations, nil, nil, "daily").count).to eq(4)
-      # expect(Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations).count).to eq(4)
     end
 
     it "doesn't add duplicate date to time series" do
@@ -279,10 +284,6 @@ describe Visit do
       visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
       expect(visits.first[:date]).to eq( date1.strftime("%Y-%m-%d") )
       expect(visits.last[:date]).to  eq( date4.strftime("%Y-%m-%d") )
-
-      # visits = Visit.calculate_cumulative_time_series_for_locations_start_time_and_visit_types(locations)
-      # expect(visits.first[:date]).to eq( date1.strftime("%Y-%m-%d") )
-      # expect(visits.last[:date]).to  eq( date4.strftime("%Y-%m-%d") )
     end
 
     #--------------------------------------------------------------------------
@@ -296,47 +297,44 @@ describe Visit do
     describe "for Daily percentage relative to houses visited on a date" do
       it "returns the correct time-series" do
         visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
+        visits.map {|v| v.delete(:total)}
         expect(visits).to eq([
           {
             :date=>"2014-10-21",
             :positive=>{:count=>0, :percent=>0, :locations => []},
             :potential=>{:count=>1, :percent=>50, :locations => [loc2.id]},
-            :negative=>{:count=>1, :percent=>50, :locations => [location.id]},
-            :total => {:count => 2}
+            :negative=>{:count=>1, :percent=>50, :locations => [location.id]}
           },
           {
             :date=>"2015-01-19",
             :positive=>{:count=>1, :percent=>100, :locations => [loc2.id]},
             :potential=>{:count=>0, :percent=>0, :locations => []},
-            :negative=>{:count=>0, :percent=>0, :locations => []},
-            :total => {:count => 1}
+            :negative=>{:count=>0, :percent=>0, :locations => []}
           },
           {
             :date=>"2015-01-28",
             :positive=>{:count=>1, :percent=>50, :locations => [location.id]},
             :potential=>{:count=>2, :percent=>100, :locations => [location.id, loc3.id]},
-            :negative=>{:count=>0, :percent=>0, :locations => []},
-            :total => {:count => 2}
+            :negative=>{:count=>0, :percent=>0, :locations => []}
           },
           {
             :date=>"2015-01-29",
             :positive=>{:count=>0, :percent=>0, :locations => []},
             :potential=>{:count=>0, :percent=>0, :locations => []},
-            :negative=>{:count=>1, :percent=>100, :locations => [location.id]},
-            :total => {:count => 1}
+            :negative=>{:count=>1, :percent=>100, :locations => [location.id]}
           }
         ])
       end
 
       it "returns truncated time series when start time is set" do
         visits = Visit.calculate_time_series_for_locations(locations, Time.zone.parse("2015-01-29"), nil, "daily" )
+        visits.map {|v| v.delete(:total)}
         expect(visits).to eq([
           {
             :date=>"2015-01-29",
             :positive=>{:count=>0, :percent=>0,   :locations => []},
             :potential=>{:count=>0, :percent=>0,  :locations => []},
-            :negative=>{:count=>1, :percent=>100, :locations => [location.id]},
-            :total => {:count => 1}
+            :negative=>{:count=>1, :percent=>100, :locations => [location.id]}
           }
         ])
       end
@@ -345,43 +343,40 @@ describe Visit do
         visits = Visit.calculate_time_series_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "daily" )
         expect(visits).to eq([])
       end
-
-
     end
-
 
     #--------------------------------------------------------------------------
 
     describe "for Monthly percentage relative to houses visited on a date" do
       it "returns the correct time-series" do
         visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "monthly")
+        visits.map {|v| v.delete(:total)}
         expect(visits).to eq([
           {
             :date=>"2014-10",
             :positive=>{:count=>0, :percent=>0,  :locations => []},
             :potential=>{:count=>1, :percent=>50, :locations => [loc2.id]},
-            :negative=>{:count=>1, :percent=>50, :locations => [location.id]},
-            :total => {:count => 2}
+            :negative=>{:count=>1, :percent=>50, :locations => [location.id]}
           },
           {
             :date=>"2015-01",
-            :positive=>{:count=>2, :percent=>50, :locations => [loc2.id, location.id]},
-            :potential=>{:count=>2, :percent=>50, :locations => [location.id, loc3.id]},
-            :negative=>{:count=>1, :percent=>25, :locations => [location.id]},
-            :total => {:count => 4}
+            :positive=>{:count=>2, :percent=>67, :locations => [loc2.id, location.id]},
+            :potential=>{:count=>2, :percent=>67, :locations => [location.id, loc3.id]},
+            :negative=>{:count=>1, :percent=>33, :locations => [location.id]}
           }
         ])
       end
 
       it "returns truncated time series when start time is set" do
         visits = Visit.calculate_time_series_for_locations(locations, DateTime.parse("2015-01-29 00:00"), nil, "monthly")
+
+        visits.map {|v| v.delete(:total)}
         expect(visits).to eq([
           {
             :date=>"2015-01",
-            :positive=>{:count=>2, :percent=>50,  :locations => [loc2.id, location.id]},
-            :potential=>{:count=>2, :percent=>50, :locations => [location.id, loc3.id]},
-            :negative=>{:count=>1, :percent=>25,  :locations => [location.id]},
-            :total => {:count => 4}
+            :positive=>{:count=>2, :percent=>67,  :locations => [loc2.id, location.id]},
+            :potential=>{:count=>2, :percent=>67, :locations => [location.id, loc3.id]},
+            :negative=>{:count=>1, :percent=>33,  :locations => [location.id]}
           }
         ])
       end
@@ -390,12 +385,7 @@ describe Visit do
         visits = Visit.calculate_time_series_for_locations(locations, Time.zone.parse("2015-02-01"), nil, "monthly")
         expect(visits).to eq([])
       end
-
-
     end
-
-
-
   end
 
   #-----------------------------------------------------------------------------
