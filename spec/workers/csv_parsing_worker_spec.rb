@@ -345,7 +345,6 @@ describe CsvParsingWorker do
       ].each do |hash|
         stat = daily_stats.find {|ds| ds[:date] == hash[:date]}
         hash[:result].each do |result|
-          puts "hash: #{hash[:date]} | result: #{result}"
           expect(stat[result[0]][:locations].sort).to eq(result[1].sort)
         end
       end
