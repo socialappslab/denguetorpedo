@@ -117,6 +117,12 @@ class CsvParsingWorker
         r.csv_uuid           = uuid
         r.save(:validate => false)
 
+        # Create an inspection regardless if eliminated_at is present or not. This
+        # ensures that we have a 1-1 correspondence between a row and an inspection.
+        v = r.find_or_create_visit_for_date(current_visited_at)
+        position = r.inspections.where(:visit_id => v).count
+        Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status, :position => position)
+
         # We create a special "followup" visit for reports with a field identifier.
         # All other reports are assumed to be new.
         if eliminated_at.present?
@@ -128,9 +134,6 @@ class CsvParsingWorker
           v = r.find_or_create_visit_for_date(r.eliminated_at)
           position = r.inspections.where(:visit_id => v).count
           Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
-        else
-          v = r.find_or_create_visit_for_date(current_visited_at)
-          Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status)
         end
       else
         # At this point, this isn't a report with a field identifier. Because
