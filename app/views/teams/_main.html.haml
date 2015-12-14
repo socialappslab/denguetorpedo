@@ -32,7 +32,7 @@
 
 /------------------------------------------------------------------------------
 
-%div{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_team_posts_path(@team), "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
+%div{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:team_id => @team.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => @neighborhood.id}
   - if @current_user && @users.include?(@current_user)
     .row
       .col-md-9

@@ -26,7 +26,7 @@
           %hr.muted.slightly-wide
 
 
-    .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
+    .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:city_id => @city.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
       - if @current_user
         %new-post-custom
 

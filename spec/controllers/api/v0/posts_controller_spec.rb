@@ -7,6 +7,36 @@ describe API::V0::PostsController do
   let(:team)  { FactoryGirl.create(:team, :name => "Team", :neighborhood_id => Neighborhood.first.id) }
   let(:other_team) { FactoryGirl.create(:team, :name => "Other team", :neighborhood_id => Neighborhood.first.id) }
 
+  describe "Loading posts in a city" do
+    render_views
+    let(:city)  { create(:city) }
+    let(:user)  { FactoryGirl.create(:user) }
+
+    #----------------------------------------------------------------------------
+
+    describe "Loading posts" do
+      let(:neighborhood) { create(:neighborhood, :city => city) }
+      let!(:post) { create(:post, :user_id => user.id, :neighborhood_id => neighborhood.id) }
+
+      before(:each) do
+        cookies[:auth_token] = user.auth_token
+      end
+
+      it "successfully loads" do
+        get :index, :city_id => city.id, :hashtag => "", :format => :json
+        posts = JSON.parse(response.body)["posts"]
+        expect(posts.count).to eq(1)
+      end
+
+      it "filters by hashtag" do
+        get :index, :city_id => city.id, :hashtag => "testimonio", :format => :json
+        posts = JSON.parse(response.body)["posts"]
+        expect(posts).to eq([])
+      end
+    end
+  end
+
+
   #----------------------------------------------------------------------------
 
   describe "Creating a post" do

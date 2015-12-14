@@ -4,6 +4,47 @@ class API::V0::PostsController < API::V0::BaseController
   before_action :current_user
 
   #----------------------------------------------------------------------------
+  # GET api/v0/posts
+
+  def index
+    if params[:team_id].present?
+      team     = Team.find(params[:team_id])
+      user_ids = team.users.pluck(:id)
+      @posts   = Post.where(:user_id => user_ids).order("created_at DESC").includes(:comments)
+    elsif params[:city_id].present?
+      city   = City.find(params[:city_id])
+      nids   = city.neighborhoods.pluck(:id)
+      @posts = Post.where(:neighborhood_id => nids).order("posts.created_at DESC")
+    elsif params[:neighborhood_id].present?
+      ngbrhd = Neighborhood.find(params[:neighborhood_id])
+      @posts = ngbrhd.posts.order("created_at DESC").includes(:comments)
+    end
+
+    if params[:hashtag].present?
+      pids = Hashtag.post_ids_for_hashtag(params[:hashtag])
+      @posts = @posts.where(:id => pids)
+    end
+
+    if params[:limit].present?
+     @posts = @posts.limit(params[:limit].to_i)
+    end
+
+    if params[:offset].present?
+     @posts = @posts.offset(params[:offset].to_i)
+    end
+
+    if @current_user.present?
+      likes               = @current_user.likes
+      @user_post_likes    = likes.where(:likeable_type => Post.name).pluck(:likeable_id)
+      @user_comment_likes = likes.where(:likeable_type => Comment.name).pluck(:likeable_id)
+    end
+
+    render "api/v0/posts/index" and return
+
+  end
+
+
+  #----------------------------------------------------------------------------
   # POST api/v0/posts/:id/like
 
   def like

@@ -77,7 +77,7 @@
 
 
 .row
-  .col-md-12{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_neighborhood_posts_path(@neighborhood), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => @neighborhood.id}
+  .col-md-12{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:neighborhood_id => @neighborhood.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => @neighborhood.id}
     %h1.text-center{"style" => "margin-top: 40px; margin-bottom: 40px;"}
       = I18n.t("views.post.feed")
 

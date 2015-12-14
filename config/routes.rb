@@ -31,7 +31,7 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :posts,       :only => [:create, :show, :destroy] do
+      resources :posts,       :only => [:index, :create, :show, :destroy] do
         post "like", :on => :member
 
         resources :comments, :controller => "posts/comments", :only => [:create]
@@ -52,24 +52,6 @@ Dengue::Application.routes.draw do
 
       resources :users, :only => [] do
         resources :posts, :controller => "users/posts", :only => [:index]
-      end
-
-      #-------------------------------------------------------------------------
-
-      resources :neighborhoods, :only => [] do
-        resources :posts, :controller => "neighborhoods/posts", :only => [:index]
-      end
-
-      #-------------------------------------------------------------------------
-
-      resources :cities, :only => [] do
-        resources :posts, :controller => "cities/posts", :only => [:index]
-      end
-
-      #-------------------------------------------------------------------------
-
-      resources :teams, :only => [] do
-        resources :posts, :controller => "teams/posts", :only => [:index]
       end
 
       #-------------------------------------------------------------------------
