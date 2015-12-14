@@ -55,6 +55,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
   $scope.toggleFilter = function(hashtag) {
     $scope.filter.hashtag = ($scope.filter.hashtag == hashtag ? "" : hashtag)
     $scope.posts = [];
+    $scope.noMoreData = false;
     $scope.loadPosts();
   }
 
