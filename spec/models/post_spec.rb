@@ -61,4 +61,27 @@ describe Post do
     }.to change(Like, :count).by(-1)
 
   end
+
+  describe "Adding hashtags", :after_commit => true do
+    it "adds the post to an accepted hashtag after creation" do
+      post = build(:post, :user_id => 1, :content => "Hello #testimonio")
+      post.save!
+      expect(Hashtag.post_ids_for_hashtag("testimonio")).to include(post.id.to_s)
+    end
+
+    it "does not add hashtag after just saving" do
+      post = create(:post, :user_id => 1, :content => "Hello")
+      post.content = "Test #testimonio"; post.save
+      expect(Hashtag.post_ids_for_hashtag("testimonio")).not_to include(post.id.to_s)
+    end
+  end
+
+  describe "Removing hashtags", :after_commit => true do
+    let!(:post) { create(:post, :user_id => 1, :content => "Hello #testimonio")}
+
+    it "removes the post from the accepted hashtag" do
+      post.destroy
+      expect(Hashtag.post_ids_for_hashtag("testimonio")).not_to include(post.id.to_s)
+    end
+  end
 end

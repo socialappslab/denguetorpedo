@@ -13,6 +13,11 @@ class API::V0::Cities::PostsController < API::V0::BaseController
     nids = @city.neighborhoods.pluck(:id)
     @posts = Post.where(:neighborhood_id => nids).order("posts.created_at DESC")
 
+    if params[:hashtag].present?
+      pids = Hashtag.post_ids_for_hashtag(params[:hashtag])
+      @posts = @posts.where(:id => pids)
+    end
+
     if params[:limit].present?
      @posts = @posts.limit(params[:limit].to_i)
     end

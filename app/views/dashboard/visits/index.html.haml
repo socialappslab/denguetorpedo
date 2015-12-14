@@ -42,11 +42,11 @@
                       Todo
                     = label_tag  nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': customDateRange}" do
                       = radio_button_tag nil, true, false, "ng-model" => "customDateRange"
-                      Custom
+                      = I18n.t("views.statistics.chart.custom_date")
                   .text-center{"ng-show" => "customDateRange", "style" => "margin-top: 20px;"}
                     = select_tag nil, options_for_select( (1..12).map {|i| [i, i]} ), "ng-model" => "options.customStartMonth"
                     = select_tag nil, options_for_select( (2010..Time.zone.now.year).map {|i| [i, i]} ), "ng-model" => "options.customStartYear"
-                    to
+                    a
                     = select_tag nil, options_for_select( (1..12).map {|i| [i, i]} ), "ng-model" => "options.customEndMonth"
                     = select_tag nil, options_for_select( (2010..Time.zone.now.year).map {|i| [i, i]} ), "ng-model" => "options.customEndYear"
 

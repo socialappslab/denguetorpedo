@@ -5,14 +5,6 @@ describe GreenLocationRankings do
   let(:community) {create(:neighborhood)}
   let(:user)      {build_stubbed(:user)}
 
-  before(:each) do
-    $redis_pool = ConnectionPool.new(size: 1, timeout: 2) { Redis.new(:url => "redis://localhost:9736/") }
-  end
-
-  after(:each) do
-    $redis_pool.with {|redis| redis.flushall }
-  end
-
   it "adds and returns score to user" do
     subject.add_score_to_user(100, user)
     expect(subject.score_for_user(user)).to eq(100)

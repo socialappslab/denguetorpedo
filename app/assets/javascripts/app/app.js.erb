@@ -71,3 +71,21 @@ angular.module('ngSanitize').filter('denguechatLinky', [function() {
     }
   };
 }]);
+
+
+
+// angular.module("denguechat.filters").filter('showMore', ["$sce", function($sce) {
+//   return function(text) {
+//     if (!text) return text;
+//
+//     html = ""
+//     if (text.length > 600) {
+//       html = text.substring(0,600);
+//       remainingHtml = text.substring(601);
+//     }
+//
+//     html += '<br><a ng-click="load()">Show more</a>';
+//
+//     return $sce.trustAsHtml(html);
+//   };
+// }]);

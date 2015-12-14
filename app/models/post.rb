@@ -10,6 +10,9 @@ class Post < ActiveRecord::Base
   has_many :likes,    :as => :likeable,    :dependent => :destroy
   has_many :comments, :as => :commentable, :dependent => :destroy
 
+  after_commit :add_hashtags,    :on => :create
+  after_commit :update_hashtags, :on => :destroy
+
   #----------------------------------------------------------------------------
 
   has_attached_file :photo, :styles => {
@@ -25,6 +28,26 @@ class Post < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   CHARACTER_LIMIT = 350
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  # Iterate over the post's content, updating the Redis set of the corresponding
+  # hashtags. This will run only once, on create.
+  def add_hashtags
+    self.content.scan(/#\w*/).each do |hashtag|
+      Hashtag.add_post_to_hashtag(self, hashtag)
+    end
+  end
+
+  # Iterate over the post's content, updating the Redis set of the corresponding
+  # hashtags. This will run only once, on create.
+  def update_hashtags
+    self.content.scan(/#\w*/).each do |hashtag|
+      Hashtag.remove_post_from_hashtag(self, hashtag)
+    end
+  end
 
   #----------------------------------------------------------------------------
 end
