@@ -77,7 +77,7 @@
 
 
 .row
-  .col-md-12{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_neighborhood_posts_path(@neighborhood), "usernames" => User.pluck(:username), "neighborhood_id" => @neighborhood.id}
+  .col-md-12{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_neighborhood_posts_path(@neighborhood), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => @neighborhood.id}
     %h1.text-center{"style" => "margin-top: 40px; margin-bottom: 40px;"}
       = I18n.t("views.post.feed")
 
@@ -85,24 +85,13 @@
       .row
         .col-md-12
           %new-post-custom
+
+    = render :partial => "shared/filter_posts"
+
     .row
       .col-md-12
         = render :partial => "shared/news_feed"
-
-        #newsfeed
-          %h1.text-center{"ng-show" => "errorMessage"}
-            Algo salió mal. Por favor, intente nuevamente.
-
-          %h1.text-center{"ng-show" => "dataLoading"}
-            %i.fa.fa-refresh.fa-spin
-          .feed-item-complete
-            %div{"post" => "post", "ng-repeat" => "post in posts"}
-              = render :partial => "posts/post"
-
-            .load-more{"ng-hide" => "noMoreData"}
-              .btn.btn-info.btn-lg{"ng-click" => "loadMoreMessages()"}
-                %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
-                Cargar más
+        = render :partial => "shared/feed"
 
 
 /------------------------------------------------------------------------------

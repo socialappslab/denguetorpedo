@@ -40,20 +40,8 @@
 
   .row
     .col-md-9
-      #newsfeed
-        %h1.text-center{"ng-show" => "errorMessage"}
-          Algo salió mal. Por favor, intente nuevamente.
-
-        %h1.text-center{"ng-show" => "dataLoading"}
-          %i.fa.fa-refresh.fa-spin
-        .feed-item-complete
-          %div{"post" => "post", "ng-repeat" => "post in posts"}
-            = render :partial => "posts/post"
-
-          .load-more{"ng-hide" => "noMoreData"}
-            .btn.btn-info.btn-lg{"ng-click" => "loadMoreMessages()"}
-              %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
-              Cargar más
+      = render :partial => "shared/filter_posts"
+      = render :partial => "shared/feed"
 
 
 

@@ -30,31 +30,8 @@
       - if @current_user
         %new-post-custom
 
-      .panel.panel-default{:style => "margin-top: 20px;"}
-        .panel-body
-          %p.form-label{:style => "display: inline;"}
-            Filtrar por
-
-          .pull-right
-            .btn-group
-              - Hashtag.official_hashtags.each do |hashtag|
-                %button.btn.btn-default.btn-xs{"ng-click" => "toggleFilter('#{hashtag}')", "ng-class" => "{'active': filter.hashtag == '#{hashtag}'}"}
-                  = "#" + hashtag
-
-      #newsfeed
-        %h1.hidden.text-center{"ng-show" => "errorMessage"}
-          Algo salió mal. Por favor, intente nuevamente.
-        %h1.text-center{"ng-show" => "dataLoading"}
-          %i.fa.fa-refresh.fa-spin
-
-        .feed-item-complete
-          %div{"post" => "post", "ng-repeat" => "post in posts"}
-            = render :partial => "posts/post"
-
-          .load-more{"ng-hide" => "noMoreData", :style => "margin-top: 20px;"}
-            .btn.btn-info.btn-lg{"ng-click" => "loadPosts()"}
-              %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
-              Cargar más
+      = render :partial => "shared/filter_posts"
+      = render :partial => "shared/feed"
 
 
     .col-md-3{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}

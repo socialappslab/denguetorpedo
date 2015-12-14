@@ -1,0 +1,10 @@
+.panel.panel-default{:style => "margin-top: 20px;"}
+  .panel-body
+    %p.form-label{:style => "display: inline;"}
+      Filtrar por
+
+    .pull-right
+      .btn-group
+        - Hashtag.official_hashtags.each do |hashtag|
+          %button.btn.btn-default.btn-xs{"ng-click" => "toggleFilter('#{hashtag}')", "ng-class" => "{'active': filter.hashtag == '#{hashtag}'}"}
+            = "#" + hashtag
