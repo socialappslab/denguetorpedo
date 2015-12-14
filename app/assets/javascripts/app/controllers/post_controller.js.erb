@@ -3,15 +3,13 @@ var postListCtrl = function ($scope, $http, $attrs) {
   $scope.posts        = []
   $scope.noMoreData   = false;
   $scope.usernames    = angular.fromJson( $attrs.usernames );
+  $scope.filter       = {hashtag: ""};
 
   $scope.loadPost = function() {
     $scope.dataLoading  = true;
     $scope.errorMessage = false;
 
-    var promise = $http({
-      url: $attrs.postPath + ".json",
-      method: "GET"
-    });
+    var promise = $http({url: $attrs.postPath, method: "GET"});
     promise = promise.then(function(response) {
       $scope.post         = response.data;
       $scope.errorMessage = false;
@@ -23,15 +21,15 @@ var postListCtrl = function ($scope, $http, $attrs) {
     });
   }
 
-  $scope.loadMoreMessages = function() {
+  $scope.loadPosts = function() {
     var offset = $scope.posts.length;
     $scope.dataLoading  = true;
     $scope.errorMessage = false;
 
     var promise = $http({
-      url: $attrs.postsPath + ".json",
+      url: $attrs.postsPath,
       method: "GET",
-      params: {"offset": offset, "limit": 20}
+      params: {"offset": offset, "limit": 20, "hashtag": $scope.filter.hashtag}
     });
     promise = promise.then(function(response) {
       if (response.data.posts.length === 0)
@@ -48,9 +46,16 @@ var postListCtrl = function ($scope, $http, $attrs) {
   }
 
   if ($attrs.postPath)
-    $scope.loadPost()
+    $scope.loadPost();
   else
-    $scope.loadMoreMessages();
+    $scope.loadPosts();
+
+
+  $scope.toggleFilter = function(hashtag) {
+    $scope.filter.hashtag = ($scope.filter.hashtag == hashtag ? "" : hashtag)
+    $scope.posts = [];
+    $scope.loadPosts();
+  }
 
   $scope.createPost = function(post) {
     // Disable the submit button for new-post directive.

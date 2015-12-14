@@ -40,8 +40,8 @@
           %div{"post" => "post", "ng-repeat" => "post in posts"}
             = render :partial => "posts/post"
 
-          .load-more{"ng-hide" => "noMoreData"}
-            .btn.btn-info.btn-lg{"ng-click" => "loadMoreMessages()"}
+          .load-more{"ng-hide" => "noMoreData", :style => "margin-top: 20px;"}
+            .btn.btn-info.btn-lg{"ng-click" => "loadPosts()"}
               %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
               Cargar más
 
