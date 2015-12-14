@@ -12,6 +12,11 @@ class API::V0::Teams::PostsController < API::V0::BaseController
     user_ids = @team.users.pluck(:id)
     @posts   = Post.where(:user_id => user_ids).order("created_at DESC").includes(:comments)
 
+    if params[:hashtag].present?
+      pids = Hashtag.post_ids_for_hashtag(params[:hashtag])
+      @posts = @posts.where(:id => pids)
+    end
+
     if params[:limit].present?
      @posts = @posts.limit(params[:limit].to_i)
     end

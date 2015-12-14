@@ -11,6 +11,11 @@ class API::V0::Neighborhoods::PostsController < API::V0::BaseController
     @neighborhood = Neighborhood.find(params[:neighborhood_id])
     @posts = @neighborhood.posts.order("created_at DESC").includes(:comments)
 
+    if params[:hashtag].present?
+      pids = Hashtag.post_ids_for_hashtag(params[:hashtag])
+      @posts = @posts.where(:id => pids)
+    end
+
     if params[:limit].present?
      @posts = @posts.limit(params[:limit].to_i)
     end
