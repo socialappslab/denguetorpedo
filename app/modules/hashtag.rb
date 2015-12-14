@@ -1,5 +1,5 @@
 module Hashtag
-  def self.accepted_hashtags
+  def self.official_hashtags
     ["testimonio", "puntos"]
   end
 

@@ -21,7 +21,7 @@ class GreenLocationRankingsWorker
         points       = differential * User::Points::GREEN_HOUSE
 
         content = "¡Felicitaciones! <a href='#{Rails.application.routes.url_helpers.user_path(u)}'>@#{u.username}</a>, "
-        content += "lograste #{differential} casas verdes y ganaste #{points} puntos!"
+        content += "lograste #{differential} casas verdes y ganaste #{points} puntos! #puntos"
 
         post                 = Post.new
         post.content         = content

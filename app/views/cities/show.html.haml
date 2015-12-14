@@ -26,9 +26,20 @@
           %hr.muted.slightly-wide
 
 
-    .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username), "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
+    .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_city_posts_path(@city), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
       - if @current_user
         %new-post-custom
+
+      .panel.panel-default{:style => "margin-top: 20px;"}
+        .panel-body
+          %p.form-label{:style => "display: inline;"}
+            Filtrar por
+
+          .pull-right
+            .btn-group
+              - Hashtag.official_hashtags.each do |hashtag|
+                %button.btn.btn-default.btn-xs{"ng-click" => "toggleFilter('#{hashtag}')", "ng-class" => "{'active': filter.hashtag == '#{hashtag}'}"}
+                  = "#" + hashtag
 
       #newsfeed
         %h1.hidden.text-center{"ng-show" => "errorMessage"}

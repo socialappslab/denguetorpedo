@@ -3,6 +3,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
   $scope.posts        = []
   $scope.noMoreData   = false;
   $scope.usernames    = angular.fromJson( $attrs.usernames );
+  $scope.hashtags     = angular.fromJson( $attrs.hashtags  );
   $scope.filter       = {hashtag: ""};
 
   $scope.loadPost = function() {
@@ -168,6 +169,12 @@ var newPostCustomDirective = function(){
       angular.element(element).find("textarea").atwho({
         at: "@",
         data: scope.usernames,
+        limit: 5
+      })
+
+      angular.element(element).find("textarea").atwho({
+        at: "#",
+        data: scope.hashtags,
         limit: 5
       })
     }
