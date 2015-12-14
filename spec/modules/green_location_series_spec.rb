@@ -8,14 +8,6 @@ describe GreenLocationSeries do
   let(:start_time) {Time.parse("2015-10-01").beginning_of_week}
   let(:end_time)   {Time.parse("2015-11-09").end_of_week}
 
-  before(:each) do
-    $redis_pool = ConnectionPool.new(size: 1, timeout: 2) { Redis.new(:url => "redis://localhost:9736/") }
-  end
-
-  after(:each) do
-    $redis_pool.with {|redis| redis.flushall }
-  end
-
   it "adds and returns correct time series for city" do
     end_of_week = Time.parse("2015-11-08").end_of_week
     subject.add_green_houses_to_date(city, 100, end_of_week)

@@ -75,6 +75,7 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
+    $redis_pool.with {|redis| redis.flushall }
   end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
