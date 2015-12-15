@@ -40,6 +40,7 @@ class Location < ActiveRecord::Base
   # a) having green status for at least 2 consecutive visits, and
   # b) the span of green visits is at least 2 months.
   def green?
+    # TODO: Refactor this as we don't want to use identification type anymore.
     visits = self.visits.order("visited_at DESC").map {|v| {:date => v.visited_at, :status => v.identification_type} }
     return false if visits.blank?
 
