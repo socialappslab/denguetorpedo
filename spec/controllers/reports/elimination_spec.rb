@@ -12,7 +12,7 @@ describe ReportsController do
 
   before(:each) do
     cookies[:auth_token] = user.auth_token
-		v = report.find_or_create_visit_for_date(report.created_at)
+		v = Visit.find_or_create_visit_for_location_id_and_date(report.location_id, report.created_at)
 		report.update_inspection_for_visit(v)
   end
 
@@ -54,7 +54,7 @@ describe ReportsController do
 
 	describe "Visit and inspection instances" do
 		before(:each) do
-			report.find_or_create_visit_for_date(report.created_at)
+			Visit.find_or_create_visit_for_location_id_and_date(report.location_id, report.created_at)
 		end
 
 		it "creates an elimination Visit" do

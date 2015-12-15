@@ -38,7 +38,7 @@ class API::V0::ReportsController < API::V0::BaseController
 
     if @report.save
       # Let's associate a visit and inspection.
-      visit = @report.find_or_create_visit_for_date(@report.created_at)
+      visit = Visit.find_or_create_visit_for_location_id_and_date(@report.location_id, @report.created_at)
       Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => @report.original_status)
 
       render :json => @report.as_json(:only => [:id, :report],

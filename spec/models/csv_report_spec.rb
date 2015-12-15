@@ -26,7 +26,7 @@ describe CsvReport do
     it "destroys associated visits" do
       3.times do |index|
         r = create(:full_report, :location_id => 1, :created_at => index.months.ago)
-        v = r.find_or_create_visit_for_date(r.created_at)
+        v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
         r.update_inspection_for_visit(v)
         csv.reports << r
       end
@@ -39,7 +39,7 @@ describe CsvReport do
     it "destroys associated inspections" do
       3.times do |index|
         r = create(:full_report,:location_id => 1, :created_at => index.months.ago)
-        v = r.find_or_create_visit_for_date(r.created_at)
+        v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
         r.update_inspection_for_visit(v)
         csv.reports << r
       end

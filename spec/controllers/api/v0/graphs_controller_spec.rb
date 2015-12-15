@@ -7,10 +7,10 @@ describe API::V0::GraphsController do
   let(:loc)           { create(:location, :address => "Test address", :neighborhood_id => neighborhood.id)}
   let!(:loc2)         { create(:location, :address => "New Test address", :neighborhood_id => neighborhood.id)}
   let!(:loc3)         { create(:location, :address => "New Test address again", :neighborhood_id => neighborhood.id)}
-  let!(:date1)    { Time.now - 6.months }
-  let!(:date2)    { Time.now - 3.months - 10.days }
-  let!(:date3)    { Time.now - 3.months - 1.day }
-  let!(:date4)    { Time.now - 3.months }
+  let!(:date1)    { Time.now - 5.months }
+  let!(:date2)    { Time.now - 4.months - 10.days }
+  let!(:date3)    { Time.now - 4.months - 1.day }
+  let!(:date4)    { Time.now - 4.months }
 
 
   before(:each) do
@@ -30,7 +30,7 @@ describe API::V0::GraphsController do
       date           = h[2]
 
       r = build_stubbed(type_of_report, :location_id => location.id, :created_at => date, :neighborhood => neighborhood)
-      v = r.find_or_create_visit_for_date(r.created_at)
+      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
       r.update_inspection_for_visit(v)
     end
 
@@ -38,7 +38,7 @@ describe API::V0::GraphsController do
     pos_report.completed_at  = date4
     pos_report.eliminated_at = date4
     pos_report.elimination_method_id = 1
-    v = pos_report.find_or_create_visit_for_date(date4)
+    v = Visit.find_or_create_visit_for_location_id_and_date(pos_report.location_id, date4)
     pos_report.update_inspection_for_visit(v)
   end
 
@@ -147,7 +147,7 @@ describe API::V0::GraphsController do
     it "returns only those locations associated with the neighborhood" do
       location = create(:location, :address => "Address")
       r = build_stubbed(:positive_report, :location_id => location.id, :created_at => date4, :neighborhood_id => location.neighborhood_id)
-      v = r.find_or_create_visit_for_date(r.created_at)
+      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
       r.update_inspection_for_visit(v)
 
       get :timeseries, :neighborhoods => [location.neighborhood_id].to_json, :timeframe => "-1", :unit => "daily", :format => :json

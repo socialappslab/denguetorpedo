@@ -499,7 +499,7 @@ describe CsvParsingWorker do
       r = Report.find_by_field_identifier("b3")
       r.save(:validate => false)
 
-      v = r.find_or_create_visit_for_date(r.eliminated_at)
+      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.eliminated_at)
       r.update_inspection_for_visit(v)
 
       inspections = Inspection.where(:report_id => r.id)
@@ -510,7 +510,7 @@ describe CsvParsingWorker do
       r = Report.find_by_field_identifier("b3")
       r.save(:validate => false)
 
-      v = r.find_or_create_visit_for_date(r.eliminated_at)
+      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.eliminated_at)
       r.update_inspection_for_visit(v)
 
 
@@ -526,7 +526,7 @@ describe CsvParsingWorker do
       r.completed_at = Time.zone.now
       r.save(:validate => false)
 
-      v = r.find_or_create_visit_for_date(r.eliminated_at)
+      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.eliminated_at)
       r.update_inspection_for_visit(v)
       expect(r.visits.count).to eq(5)
     end
@@ -537,7 +537,7 @@ describe CsvParsingWorker do
       r.save(:validate => false)
       visits = r.visits.order("visited_at ASC")
 
-      v = r.find_or_create_visit_for_date(r.eliminated_at)
+      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.eliminated_at)
       r.update_inspection_for_visit(v)
 
       # NOTE: We're expecting 4 but the last one will not be created until it's "completed"!

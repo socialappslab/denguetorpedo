@@ -286,10 +286,6 @@ class Report < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def find_or_create_visit_for_date(date)
-    Visit.find_or_create_visit_for_location_id_and_date(self.location_id, date)
-  end
-
   # TODO: To deprecate
   def update_inspection_for_visit(v)
     return if v.blank?

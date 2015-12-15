@@ -119,7 +119,7 @@ class CsvParsingWorker
 
         # Create an inspection regardless if eliminated_at is present or not. This
         # ensures that we have a 1-1 correspondence between a row and an inspection.
-        v = r.find_or_create_visit_for_date(current_visited_at)
+        v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, current_visited_at)
         position = r.inspections.where(:visit_id => v).count
         Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status, :position => position)
       else
@@ -151,7 +151,7 @@ class CsvParsingWorker
           r.eliminated_at      = eliminated_at
           r.save(:validate => false)
 
-          v = r.find_or_create_visit_for_date(r.created_at)
+          v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
           position = r.inspections.where(:visit_id => v).count
           Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => r.original_status)
         end
@@ -165,7 +165,7 @@ class CsvParsingWorker
 
         # Create an inspection whose position is dependent on the existing inspections
         # associated with this report.
-        v = r.find_or_create_visit_for_date(r.eliminated_at)
+        v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.eliminated_at)
         position = r.inspections.where(:visit_id => v).count
         Inspection.create(:visit_id => v.id, :report_id => r.id, :identification_type => Inspection::Types::NEGATIVE, :position => position)
       end
