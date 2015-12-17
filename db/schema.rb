@@ -16,44 +16,47 @@ ActiveRecord::Schema.define(version: 20151216211551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "active_admin_comments", id: false, force: :cascade do |t|
-    t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false
-    t.string   "resource_id",   limit: 255,                                                               null: false
-    t.string   "resource_type", limit: 255,                                                               null: false
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string   "resource_id",   limit: 255, null: false
+    t.string   "resource_type", limit: 255, null: false
     t.integer  "author_id"
     t.string   "author_type",   limit: 255
     t.text     "body"
-    t.datetime "created_at",                                                                              null: false
-    t.datetime "updated_at",                                                                              null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.string   "namespace",     limit: 255
   end
 
-  create_table "admin_users", id: false, force: :cascade do |t|
-    t.integer  "id",                                 default: "nextval('admin_users_id_seq'::regclass)", null: false
-    t.string   "email",                  limit: 255, default: "",                                        null: false
-    t.string   "encrypted_password",     limit: 255, default: "",                                        null: false
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_admin_notes_on_resource_type_and_resource_id", using: :btree
+
+  create_table "admin_users", force: :cascade do |t|
+    t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "encrypted_password",     limit: 255, default: "", null: false
     t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                      default: 0,                                         null: false
+    t.integer  "sign_in_count",                      default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip",     limit: 255
     t.string   "last_sign_in_ip",        limit: 255
-    t.datetime "created_at",                                                                             null: false
-    t.datetime "updated_at",                                                                             null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
   end
 
-  create_table "badges", id: false, force: :cascade do |t|
-    t.integer  "id",         default: "nextval('badges_id_seq'::regclass)", null: false
+  add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true, using: :btree
+  add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "badges", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "prize_id"
-    t.datetime "created_at",                                                null: false
-    t.datetime "updated_at",                                                null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "breeding_sites", id: false, force: :cascade do |t|
-    t.integer  "id",                            default: "nextval('breeding_sites_id_seq'::regclass)", null: false
+  create_table "breeding_sites", force: :cascade do |t|
     t.string   "description_in_pt", limit: 255
     t.string   "description_in_es", limit: 255
     t.datetime "created_at"
@@ -62,18 +65,16 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.string   "code",              limit: 255
   end
 
-  create_table "buy_ins", id: false, force: :cascade do |t|
-    t.integer  "id",              default: "nextval('buy_ins_id_seq'::regclass)", null: false
+  create_table "buy_ins", force: :cascade do |t|
     t.integer  "group_buy_in_id"
     t.integer  "user_id"
-    t.datetime "created_at",                                                      null: false
-    t.datetime "updated_at",                                                      null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.boolean  "accepted"
-    t.boolean  "expired",         default: false,                                 null: false
+    t.boolean  "expired",         default: false, null: false
   end
 
-  create_table "cities", id: false, force: :cascade do |t|
-    t.integer  "id",                             default: "nextval('cities_id_seq'::regclass)", null: false
+  create_table "cities", force: :cascade do |t|
     t.string   "name",               limit: 255
     t.string   "state",              limit: 255
     t.string   "state_code",         limit: 255
@@ -102,59 +103,54 @@ ActiveRecord::Schema.define(version: 20151216211551) do
   add_index "ckeditor_assets", ["assetable_type", "assetable_id"], name: "idx_ckeditor_assetable", using: :btree
   add_index "ckeditor_assets", ["assetable_type", "type", "assetable_id"], name: "idx_ckeditor_assetable_type", using: :btree
 
-  create_table "comments", id: false, force: :cascade do |t|
-    t.integer  "id",                           default: "nextval('comments_id_seq'::regclass)", null: false
+  create_table "comments", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "commentable_id"
     t.string   "commentable_type", limit: 255
     t.text     "content"
-    t.datetime "created_at",                                                                    null: false
-    t.datetime "updated_at",                                                                    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.integer  "likes_count",                  default: 0
   end
 
-  create_table "contacts", id: false, force: :cascade do |t|
-    t.integer  "id",                     default: "nextval('contacts_id_seq'::regclass)", null: false
+  add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
+
+  create_table "contacts", force: :cascade do |t|
     t.string   "title",      limit: 255
     t.string   "email",      limit: 255
     t.string   "name",       limit: 255
     t.text     "message"
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  create_table "conversations", id: false, force: :cascade do |t|
-    t.integer  "id",         default: "nextval('conversations_id_seq'::regclass)", null: false
+  create_table "conversations", force: :cascade do |t|
     t.text     "name"
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "conversations_users", id: false, force: :cascade do |t|
-    t.integer "id",              default: "nextval('conversations_users_id_seq'::regclass)", null: false
+  create_table "conversations_users", force: :cascade do |t|
     t.integer "conversation_id"
     t.integer "user_id"
   end
 
-  create_table "countries", id: false, force: :cascade do |t|
-    t.integer "id",               default: "nextval('countries_id_seq'::regclass)", null: false
-    t.string  "name", limit: 255
+  create_table "countries", force: :cascade do |t|
+    t.string "name", limit: 255
   end
 
-  create_table "csv_errors", id: false, force: :cascade do |t|
-    t.integer  "id",            default: "nextval('csv_errors_id_seq'::regclass)", null: false
+  create_table "csv_errors", force: :cascade do |t|
     t.integer  "csv_report_id"
     t.integer  "error_type"
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.integer  "csv_id"
   end
 
-  create_table "csv_reports", id: false, force: :cascade do |t|
-    t.integer  "id",                           default: "nextval('csv_reports_id_seq'::regclass)", null: false
+  create_table "csv_reports", force: :cascade do |t|
     t.text     "parsed_content"
-    t.datetime "created_at",                                                                       null: false
-    t.datetime "updated_at",                                                                       null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.string   "csv_file_name",    limit: 255
     t.string   "csv_content_type", limit: 255
     t.integer  "csv_file_size"
@@ -179,73 +175,66 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.datetime "updated_at"
   end
 
-  create_table "device_sessions", id: false, force: :cascade do |t|
-    t.integer  "id",                       default: "nextval('device_sessions_id_seq'::regclass)", null: false
+  create_table "device_sessions", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "token",        limit: 255
     t.string   "device_name",  limit: 255
     t.string   "device_model", limit: 255
-    t.datetime "created_at",                                                                       null: false
-    t.datetime "updated_at",                                                                       null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
-  create_table "documentation_sections", id: false, force: :cascade do |t|
-    t.integer  "id",                        default: "nextval('documentation_sections_id_seq'::regclass)", null: false
+  create_table "documentation_sections", force: :cascade do |t|
     t.string   "title",         limit: 255
     t.text     "content"
     t.integer  "editor_id"
     t.integer  "creator_id"
-    t.datetime "created_at",                                                                               null: false
-    t.datetime "updated_at",                                                                               null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.integer  "order_id"
     t.string   "title_in_es",   limit: 255
     t.text     "content_in_es"
   end
 
-  create_table "elimination_methods", id: false, force: :cascade do |t|
-    t.integer  "id",                              default: "nextval('elimination_methods_id_seq'::regclass)", null: false
+  create_table "elimination_methods", force: :cascade do |t|
     t.string   "method",              limit: 255
     t.integer  "points"
-    t.datetime "created_at",                                                                                  null: false
-    t.datetime "updated_at",                                                                                  null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.integer  "elimination_type_id"
     t.integer  "breeding_site_id"
     t.string   "description_in_pt",   limit: 255
     t.string   "description_in_es",   limit: 255
   end
 
-  create_table "elimination_types", id: false, force: :cascade do |t|
-    t.integer  "id",                     default: "nextval('elimination_types_id_seq'::regclass)", null: false
+  create_table "elimination_types", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.integer  "points"
-    t.datetime "created_at",                                                                       null: false
-    t.datetime "updated_at",                                                                       null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  create_table "feedbacks", id: false, force: :cascade do |t|
-    t.integer  "id",                     default: "nextval('feedbacks_id_seq'::regclass)", null: false
+  create_table "feedbacks", force: :cascade do |t|
     t.string   "title",      limit: 255
     t.string   "email",      limit: 255
     t.string   "name",       limit: 255
     t.text     "message"
-    t.datetime "created_at",                                                               null: false
-    t.datetime "updated_at",                                                               null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  create_table "feeds", id: false, force: :cascade do |t|
-    t.integer  "id",                       default: "nextval('feeds_id_seq'::regclass)", null: false
+  create_table "feeds", force: :cascade do |t|
     t.string   "target_type",  limit: 255
     t.integer  "target_id"
-    t.datetime "created_at",                                                             null: false
-    t.datetime "updated_at",                                                             null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.integer  "user_id"
     t.integer  "feed_type_cd"
   end
 
-  create_table "houses", id: false, force: :cascade do |t|
-    t.integer  "id",                                     default: "nextval('houses_id_seq'::regclass)", null: false
-    t.datetime "created_at",                                                                            null: false
-    t.datetime "updated_at",                                                                            null: false
+  create_table "houses", force: :cascade do |t|
+    t.datetime "created_at",                                                 null: false
+    t.datetime "updated_at",                                                 null: false
     t.string   "name",                       limit: 255
     t.integer  "featured_event_id"
     t.integer  "location_id"
@@ -258,8 +247,7 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.integer  "neighborhood_id"
   end
 
-  create_table "inspections", id: false, force: :cascade do |t|
-    t.integer "id",                  default: "nextval('inspections_id_seq'::regclass)", null: false
+  create_table "inspections", force: :cascade do |t|
     t.integer "visit_id"
     t.integer "report_id"
     t.integer "identification_type"
@@ -267,21 +255,23 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.integer "csv_id"
   end
 
-  create_table "likes", id: false, force: :cascade do |t|
-    t.integer  "id",                        default: "nextval('likes_id_seq'::regclass)", null: false
+  create_table "likes", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "likeable_id"
     t.string   "likeable_type", limit: 255
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
+  add_index "likes", ["likeable_id", "likeable_type"], name: "index_likes_on_likeable_id_and_likeable_type", using: :btree
+  add_index "likes", ["user_id", "likeable_id", "likeable_type"], name: "index_likes_on_user_id_and_likeable_id_and_likeable_type", unique: true, using: :btree
+
   create_table "location_statuses", id: false, force: :cascade do |t|
-    t.integer  "id",                              default: "nextval('location_statuses_id_seq'::regclass)", null: false
+    t.integer  "id",                              null: false
     t.integer  "location_id"
     t.integer  "status"
-    t.datetime "created_at",                                                                                null: false
-    t.datetime "updated_at",                                                                                null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.integer  "dengue_count"
     t.integer  "chik_count"
     t.string   "health_report",       limit: 255
@@ -290,33 +280,30 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.datetime "cleaned_at"
   end
 
-  create_table "locations", id: false, force: :cascade do |t|
-    t.integer  "id",                          default: "nextval('locations_id_seq'::regclass)", null: false
+  create_table "locations", force: :cascade do |t|
     t.string   "address",         limit: 255
     t.float    "latitude"
     t.float    "longitude"
-    t.datetime "created_at",                                                                    null: false
-    t.datetime "updated_at",                                                                    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.integer  "neighborhood_id"
     t.string   "street_type",     limit: 255, default: ""
     t.string   "street_name",     limit: 255, default: ""
     t.string   "street_number",   limit: 255, default: ""
   end
 
-  create_table "messages", id: false, force: :cascade do |t|
-    t.integer  "id",              default: "nextval('messages_id_seq'::regclass)", null: false
+  create_table "messages", force: :cascade do |t|
     t.text     "body"
     t.integer  "user_id"
     t.integer  "conversation_id"
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
-  create_table "neighborhoods", id: false, force: :cascade do |t|
-    t.integer  "id",                             default: "nextval('neighborhoods_id_seq'::regclass)", null: false
+  create_table "neighborhoods", force: :cascade do |t|
     t.string   "name",               limit: 255
-    t.datetime "created_at",                                                                           null: false
-    t.datetime "updated_at",                                                                           null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.string   "photo_file_name",    limit: 255
     t.string   "photo_content_type", limit: 255
     t.integer  "photo_file_size"
@@ -326,16 +313,15 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.float    "longitude"
   end
 
-  create_table "notices", id: false, force: :cascade do |t|
-    t.integer  "id",                             default: "nextval('notices_id_seq'::regclass)", null: false
+  create_table "notices", force: :cascade do |t|
     t.string   "title",              limit: 255, default: ""
     t.text     "description",                    default: ""
     t.string   "location",           limit: 255, default: ""
     t.datetime "date"
     t.integer  "neighborhood_id"
     t.integer  "user_id"
-    t.datetime "created_at",                                                                     null: false
-    t.datetime "updated_at",                                                                     null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.string   "photo_file_name",    limit: 255
     t.string   "photo_content_type", limit: 255
     t.integer  "photo_file_size"
@@ -344,23 +330,21 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.string   "institution_name",   limit: 255
   end
 
-  create_table "notifications", id: false, force: :cascade do |t|
-    t.integer  "id",                     default: "nextval('notifications_id_seq'::regclass)", null: false
+  create_table "notifications", force: :cascade do |t|
     t.string   "phone",      limit: 255
     t.text     "text"
     t.string   "board",      limit: 255
-    t.datetime "created_at",                                                                   null: false
-    t.datetime "updated_at",                                                                   null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.boolean  "read",                   default: false
   end
 
-  create_table "posts", id: false, force: :cascade do |t|
-    t.integer  "id",                             default: "nextval('posts_id_seq'::regclass)", null: false
+  create_table "posts", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "title",              limit: 255
     t.text     "content"
-    t.datetime "created_at",                                                                   null: false
-    t.datetime "updated_at",                                                                   null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.integer  "neighborhood_id"
     t.integer  "likes_count",                    default: 0
     t.string   "photo_file_name",    limit: 255
@@ -369,21 +353,21 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.datetime "photo_updated_at"
   end
 
-  create_table "prize_codes", id: false, force: :cascade do |t|
-    t.integer  "id",                      default: "nextval('prize_codes_id_seq'::regclass)", null: false
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
+
+  create_table "prize_codes", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "prize_id"
     t.datetime "expire_by"
     t.string   "code",        limit: 255
-    t.datetime "created_at",                                                                  null: false
-    t.datetime "updated_at",                                                                  null: false
-    t.boolean  "redeemed",                default: false,                                     null: false
-    t.boolean  "expired",                 default: false,                                     null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.boolean  "redeemed",                default: false, null: false
+    t.boolean  "expired",                 default: false, null: false
     t.datetime "obtained_on"
   end
 
-  create_table "prizes", id: false, force: :cascade do |t|
-    t.integer  "id",                                   default: "nextval('prizes_id_seq'::regclass)", null: false
+  create_table "prizes", force: :cascade do |t|
     t.string   "prize_name",               limit: 255
     t.integer  "cost"
     t.integer  "stock"
@@ -391,34 +375,32 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.text     "description"
     t.text     "redemption_directions"
     t.datetime "expire_on"
-    t.datetime "created_at",                                                                          null: false
-    t.datetime "updated_at",                                                                          null: false
+    t.datetime "created_at",                                           null: false
+    t.datetime "updated_at",                                           null: false
     t.string   "prize_photo_file_name",    limit: 255
     t.string   "prize_photo_content_type", limit: 255
     t.integer  "prize_photo_file_size"
     t.datetime "prize_photo_updated_at"
-    t.boolean  "community_prize",                      default: false,                                null: false
-    t.boolean  "self_prize",                           default: false,                                null: false
-    t.boolean  "is_badge",                             default: false,                                null: false
+    t.boolean  "community_prize",                      default: false, null: false
+    t.boolean  "self_prize",                           default: false, null: false
+    t.boolean  "is_badge",                             default: false, null: false
     t.boolean  "prazo",                                default: true
     t.integer  "neighborhood_id"
     t.integer  "team_id"
   end
 
-  create_table "recruitments", id: false, force: :cascade do |t|
-    t.integer  "id",           default: "nextval('recruitments_id_seq'::regclass)", null: false
-    t.datetime "created_at",                                                        null: false
-    t.datetime "updated_at",                                                        null: false
+  create_table "recruitments", force: :cascade do |t|
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.integer  "recruiter_id"
     t.integer  "recruitee_id"
   end
 
-  create_table "reports", id: false, force: :cascade do |t|
-    t.integer  "id",                                    default: "nextval('reports_id_seq'::regclass)", null: false
+  create_table "reports", force: :cascade do |t|
     t.text     "report"
     t.integer  "reporter_id"
-    t.datetime "created_at",                                                                            null: false
-    t.datetime "updated_at",                                                                            null: false
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
     t.integer  "status_cd"
     t.integer  "eliminator_id"
     t.integer  "location_id"
@@ -457,36 +439,38 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.integer  "csv_id"
   end
 
+  add_index "reports", ["eliminator_id"], name: "index_reports_on_eliminator_id", using: :btree
+  add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
+
   create_table "reports_users", id: false, force: :cascade do |t|
     t.integer "report_id"
     t.integer "user_id"
   end
 
-  create_table "team_memberships", id: false, force: :cascade do |t|
-    t.integer  "id",         default: "nextval('team_memberships_id_seq'::regclass)", null: false
+  create_table "team_memberships", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "team_id"
     t.boolean  "verified"
-    t.datetime "created_at",                                                          null: false
-    t.datetime "updated_at",                                                          null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "teams", id: false, force: :cascade do |t|
-    t.integer  "id",                                     default: "nextval('teams_id_seq'::regclass)", null: false
+  add_index "team_memberships", ["user_id", "team_id"], name: "index_team_memberships_on_user_id_and_team_id", unique: true, using: :btree
+
+  create_table "teams", force: :cascade do |t|
     t.string   "name",                       limit: 255
     t.integer  "neighborhood_id"
     t.string   "profile_photo_file_name",    limit: 255
     t.string   "profile_photo_content_type", limit: 255
     t.integer  "profile_photo_file_size"
     t.datetime "profile_photo_updated_at"
-    t.datetime "created_at",                                                                           null: false
-    t.datetime "updated_at",                                                                           null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
     t.boolean  "blocked"
     t.integer  "points",                                 default: 0
   end
 
-  create_table "user_notifications", id: false, force: :cascade do |t|
-    t.integer  "id",                            default: "nextval('user_notifications_id_seq'::regclass)", null: false
+  create_table "user_notifications", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "notification_type", limit: 255
     t.integer  "notification_id"
@@ -495,18 +479,20 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.integer  "medium"
   end
 
-  create_table "users", id: false, force: :cascade do |t|
-    t.integer  "id",                                     default: "nextval('users_id_seq'::regclass)", null: false
+  add_index "user_notifications", ["seen_at"], name: "index_user_notifications_on_seen_at", using: :btree
+  add_index "user_notifications", ["user_id"], name: "index_user_notifications_on_user_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
     t.string   "username",                   limit: 255
     t.string   "password_digest",            limit: 255
     t.string   "auth_token",                 limit: 255
-    t.datetime "created_at",                                                                           null: false
-    t.datetime "updated_at",                                                                           null: false
+    t.datetime "created_at",                                                         null: false
+    t.datetime "updated_at",                                                         null: false
     t.string   "email",                      limit: 255
     t.string   "password_reset_token",       limit: 255
     t.datetime "password_reset_sent_at"
     t.string   "phone_number",               limit: 255
-    t.integer  "points",                                 default: 0,                                   null: false
+    t.integer  "points",                                 default: 0,                 null: false
     t.integer  "house_id"
     t.string   "profile_photo_file_name",    limit: 255
     t.string   "profile_photo_content_type", limit: 255
@@ -531,8 +517,10 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.string   "name",                       limit: 255
   end
 
-  create_table "visits", id: false, force: :cascade do |t|
-    t.integer  "id",                          default: "nextval('visits_id_seq'::regclass)", null: false
+  add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
+
+  create_table "visits", force: :cascade do |t|
     t.integer  "location_id"
     t.integer  "dengue_count"
     t.integer  "chik_count"
