@@ -25,7 +25,7 @@ class Visit < ActiveRecord::Base
   # Associations
 
   has_many :inspections
-  has_many :reports, :through => :inspections
+  has_many :reports, -> {distinct}, :through => :inspections
   belongs_to :csv
 
   #----------------------------------------------------------------------------
