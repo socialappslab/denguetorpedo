@@ -2,7 +2,7 @@
 require "roo"
 
 class CsvError < ActiveRecord::Base
-  attr_accessible :csv_report_id, :error_type
+  attr_accessible :csv_report_id, :csv_id, :error_type
 
   #----------------------------------------------------------------------------
 
@@ -10,7 +10,8 @@ class CsvError < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  validates :csv_report_id, :presence => true
+  # validates :csv_id, :presence => true
+  # validates :csv_report_id, :presence => true
   validates :error_type,    :presence => true
 
   #----------------------------------------------------------------------------
