@@ -17,20 +17,12 @@ class NewCsvParsingWorker
 
     location      = @csv.location
     @neighborhood = location.neighborhood
+    address       = location.address
 
     # Identify the file content type.
     spreadsheet = Csv.load_spreadsheet( @csv.csv )
     unless spreadsheet
       CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::UNKNOWN_FORMAT)
-      return
-    end
-
-    # Identify the start of the reports table in the CSV file.
-    # The first row is reserved for the house location/address.
-    # Second row is reserved for permission.
-    address = Csv.extract_address_from_spreadsheet(spreadsheet)
-    if address.blank?
-      CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::MISSING_HOUSE)
       return
     end
 

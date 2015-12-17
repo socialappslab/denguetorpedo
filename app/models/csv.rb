@@ -41,12 +41,6 @@ class Csv < ActiveRecord::Base
     return name.gsub("xlsx", "").gsub(".", "").strip
   end
 
-  def self.extract_address_from_spreadsheet(spreadsheet)
-    address = spreadsheet.row(1)[1]
-    address = address.to_s if address.present?
-    return address
-  end
-
   #----------------------------------------------------------------------------
 
   def self.extract_rows_from_spreadsheet(spreadsheet)
@@ -225,11 +219,7 @@ class Csv < ActiveRecord::Base
     # See http://stackoverflow.com/questions/22416990/paperclip-unable-to-change-default-path
     file_location = (Rails.env.production? ? file.url : file.path)
 
-    if File.extname( file.original_filename ) == ".csv"
-      spreadsheet = Roo::CSV.new(file_location, :file_warning => :ignore)
-    elsif File.extname( file.original_filename ) == ".xls"
-      spreadsheet = Roo::Excel.new(file_location, :file_warning => :ignore)
-    elsif File.extname( file.original_filename ) == ".xlsx"
+    if File.extname( file.original_filename ) == ".xlsx"
       spreadsheet = Roo::Excelx.new(file_location, :file_warning => :ignore)
     end
 
