@@ -34,6 +34,10 @@ FactoryGirl.define do
 		association :neighborhood
 	end
 
+	factory :csv do
+	end
+
+
 	factory :device_session
 	factory :documentation_section
 

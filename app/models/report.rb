@@ -57,7 +57,7 @@ class Report < ActiveRecord::Base
   has_many :likes,    :as => :likeable,    :dependent => :destroy
   has_many :comments, :as => :commentable, :dependent => :destroy
   has_many :inspections, :dependent => :destroy
-  has_many :visits,      :through => :inspections
+  has_many :visits, -> {distinct}, :through => :inspections
 
   # The following associations define all stakeholders in the reporting
   # process.
