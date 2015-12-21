@@ -66,6 +66,7 @@ class Report < ActiveRecord::Base
   belongs_to :verifier,          :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :csv_report
+  belongs_to :spreadsheet, :foreign_key => "csv_id"
 
   # We're going to use prepared_at until we can deprecate completed_at
   alias_attribute :prepared_at, :completed_at
