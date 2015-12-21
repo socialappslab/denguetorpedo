@@ -23,7 +23,10 @@ var directive = function($http){
           processData: false,
           success: function(response) {
             window.alert("Éxito!");
-            window.location.href = response.redirect_path;
+            if (response.reload)
+              window.location.reload();
+            if (response.redirect_path)
+              window.location.href = response.redirect_path;
           },
 
           error: function(response) {
