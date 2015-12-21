@@ -14,7 +14,6 @@ namespace :csvs do
     addys = []
 
     nonunique_addresses = []
-    nonunique_csvs      = []
     Dir[Rails.root + "lib/quinta_csvs/*.xlsx"].each_with_index do |filepath, index|
       puts "\n\n\nLooking at index = #{index} \n\n\n"
       address   = Spreadsheet.extract_address_from_filepath(filepath)
@@ -64,29 +63,29 @@ namespace :csvs do
       # manually later.
       csv_reports = CsvReport.where(:location_id => location.id)
       if csv_reports.count > 1
-        nonunique_csvs << location.id
-        puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
-        next
-      end
+        # If we don't have a unique csv report to copy (because we previously allowed
+        # to distribute visits across multiple CSVs), then let's assign the first
+        # CsvReport user to user_id, and then associate all reports that have that location
+        # and csv_report_id with the new csv_id.
+        csv.user_id = csv_reports.first.user_id
+        csv.save(:validate => false)
 
-      # Continue as no additional changes need to be made.
-      if csv_reports.count == 0
-        puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
-        next
-      end
+        reports = Report.where(:location_id => location.id).where(:csv_report_id => csv_reports.pluck(:id))
+        reports.find_each {|r| r.update_column(:csv_id, csv.id) }
+      else
+        # At this point, we have a unique CsvReport. Let's copy the attributes
+        # and update the associated models.
+        csv_report    = csv_reports.first
+        csv.user_id   = csv_report.user_id
+        csv.save(:validate => false)
 
-      # At this point, we have a unique CsvReport. Let's copy the attributes
-      # and update the associated models.
-      csv_report    = csv_reports.first
-      csv.user_id   = csv_report.user_id
-      csv.save(:validate => false)
+        CsvError.where(:csv_report_id => csv_report.id).find_each do |csve|
+          csve.update_column(:csv_id, csv.id)
+        end
 
-      CsvError.where(:csv_report_id => csv_report.id).find_each do |csve|
-        csve.update_column(:csv_id, csv.id)
-      end
-
-      Report.where(:csv_report_id => csv_report.id).find_each do |r|
-        r.update_column(:csv_id, csv.id)
+        Report.where(:csv_report_id => csv_report.id).find_each do |r|
+          r.update_column(:csv_id, csv.id)
+        end
       end
 
       puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
@@ -95,8 +94,6 @@ namespace :csvs do
     puts "-" * 50
     puts "There are #{nonunique_addresses.count} non-unique addresses for locations. They are: "
     puts "nonunique_addresses: #{nonunique_addresses.inspect}"
-    puts "There are #{nonunique_csvs.count} non-unique locations for csvs. They are: "
-    puts "nonunique_csvs: #{nonunique_csvs.inspect}"
     puts "-" * 50
   end
 end
