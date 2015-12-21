@@ -58,25 +58,16 @@ describe CsvParsingWorker do
 
   describe "with errors" do
     it "creates wrong format error" do
-      csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"))
+      csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"), :location => location)
       CsvParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_report_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::UNKNOWN_FORMAT)
     end
 
-    it "returns missing house error" do
-      csv = File.open("spec/support/csv/missing_house.csv")
-      csv = FactoryGirl.create(:csv_report, :csv => csv)
-      CsvParsingWorker.perform_async(csv.id)
-      error = CsvError.last
-      expect(error.csv_report_id).to eq(csv.id)
-      expect(error.error_type).to eq(CsvError::Types::MISSING_HOUSE)
-    end
-
     it "returns unknown code error" do
-      csv = File.open("spec/support/csv/unknown_code.csv")
-      csv = FactoryGirl.create(:csv_report, :csv => csv)
+      csv = File.open("spec/support/csv/unknown_code.xlsx")
+      csv = FactoryGirl.create(:csv_report, :csv => csv, :location => location)
       CsvParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_report_id).to eq(csv.id)
@@ -85,7 +76,7 @@ describe CsvParsingWorker do
 
     it "returns visit date in future error" do
       csv = File.open("spec/support/csv/inspection_date_in_future.xlsx")
-      csv = FactoryGirl.create(:csv_report, :csv => csv)
+      csv = FactoryGirl.create(:csv_report, :csv => csv, :location => location)
       CsvParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_report_id).to eq(csv.id)
@@ -94,7 +85,7 @@ describe CsvParsingWorker do
 
     it "returns elimination date in future error" do
       csv = File.open("spec/support/csv/elimination_date_in_future.xlsx")
-      csv = FactoryGirl.create(:csv_report, :csv => csv)
+      csv = FactoryGirl.create(:csv_report, :csv => csv, :location => location)
       CsvParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_report_id).to eq(csv.id)
@@ -103,7 +94,7 @@ describe CsvParsingWorker do
 
     it "returns elimination date before visit date error" do
       csv = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
-      csv = FactoryGirl.create(:csv_report, :csv => csv)
+      csv = FactoryGirl.create(:csv_report, :csv => csv, :location => location)
       CsvParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_report_id).to eq(csv.id)
@@ -112,7 +103,7 @@ describe CsvParsingWorker do
 
     it "returns unparseable date error" do
       csv = File.open("spec/support/csv/unparseable_datetime.xlsx")
-      csv = FactoryGirl.create(:csv_report, :csv => csv)
+      csv = FactoryGirl.create(:csv_report, :csv => csv, :location => location)
       CsvParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_report_id).to eq(csv.id)
