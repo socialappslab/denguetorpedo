@@ -1,83 +1,78 @@
 
-.container
 
-  .row{"style" => "margin-bottom: 20px;"}
-    .col-md-8
+.container{"ng-controller" => "csvVerifyCtrl", "csv" => @csv.to_json(:include => {:location => {:only => [:address, :neighborhood_id]}, :reports => {:only => [:id, :protected, :larvae, :pupae, :chemically_treated, :breeding_site_id, :neighborhood_id, :report, :created_at]} } )}
+  .row
+    .col-md-8.col-xs-8
       %h1.light-font
+        = I18n.t("common_terms.edit")
         = @csv.csv_file_name
-    .col-md-4
+    .col-md-4.col-xs-4
       .pull-right
+        = link_to I18n.t("views.csv_reports.verify"), "#", :class => "btn btn-lg btn-warning", "ng-click" => "verifyCsv()"
         = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(@csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "btn btn-danger btn-lg", :prompt => I18n.t("common_terms.are_you_sure")
 
-  .row
+
+  .row{:style => "margin-top: 20px;"}
     .col-md-12
       .panel.panel-default
+        .panel-body
+          = form_tag api_v0_csv_report_path(@csv), :method => "PUT", "remote-submit" => true do
+            .form-inline
+              .form-group
+                %p.form-label{:style => "display: inline;"}
+                  = I18n.t("attributes.location_id")
+                = text_field_tag "location[address]", @csv.location.address, :class => "form-control"
 
-        - if @csv.csv_errors.present?
-          %h2
-            = I18n.t("views.csv_reports.parsing_errors") + ":"
-            = @csv.csv_file_name
-          %ul
-          - @csv.csv_errors.each do |error|
-            %li{"style" => "font-size: 18px; line-height: 40px;"}
-              = CsvError.humanized_errors[error.error_type]
-        - else
-          %table.table.table-bordered.table-hover.text-center.statistics-table
-            %thead
-              %th.text-center
-                CSV
-              %th.text-center
-                = I18n.t("attributes.location_id")
-              %th.text-center
-                = I18n.t("activerecord.attributes.visit.visited_at")
-              %th.text-center
-                = I18n.t("activerecord.attributes.visit.health_report")
-              %th.text-center
-                = I18n.t("activerecord.attributes.report.breeding_site_id")
-              %th.text-center
-                = I18n.t("activerecord.attributes.report.protected")
-              %th.text-center
-                = I18n.t("activerecord.attributes.report.larvae")
-              %th.text-center
-                = I18n.t("activerecord.attributes.report.pupae")
-              %th.text-center
-                = I18n.t("activerecord.attributes.report.chemically_treated")
-            %tbody
-              - csv = @csv
-              %tr{:data => {"csv_id" => csv.id}}
-                // NOTE: rowspan should always be +1 since it's counting its own
-                // tr as well.
-                - visits = csv.visits.order("visited_at ASC").includes(:inspections)
-                - visits_row_span = visits.map {|v| v.inspections.count + 1}
-                - csv_row_span    = visits_row_span.sum
-                %td{:rowspan => (csv_row_span + 1), :data => {:csv => csv.csv_file_name} }
-                  = link_to csv.csv_file_name, csv.csv.url
-                %td{:rowspan => (csv_row_span + 1), :data => {:location => csv.location.address} }
-                  = csv.location.address
+                %p.form-label{:style => "display: inline; margin-left: 40px;"}
+                  = I18n.t("attributes.neighborhood_id")
+                = select_tag "location[neighborhood_id]", options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id.to_s]}, :selected => @csv.location.neighborhood_id), :class => "form-control"
 
-                - if csv.visits.length == 0
-                  %td
-                  %td
-                - else
-                  - visits.each_with_index do |visit, index|
-                    - row_span = visits_row_span[index]
-                    %tr{:data => {"csv_id" => csv.id}}
-                      %td{:rowspan => row_span, :data => {:visit => format_csv_timestamp(visit.visited_at)}}
-                        = format_csv_timestamp(visit.visited_at)
-                      %td{:rowspan => row_span}
-                        = visit.health_report.to_i if visit.health_report.present?
+                = submit_tag I18n.t("views.buttons.save"), "class" => "btn btn-success"
 
-                      - visit.inspections.includes(:report).order("id ASC").each do |inspection|
-                        %tr{:data => {"csv_id" => csv.id}}
-                          - report = inspection.report
-                          %td
-                            - site = report.breeding_site
-                            = site.code if report.present? && site.present?
-                          %td
-                            = display_as_icon(report.protected) if report.present?
-                          %td
-                            = display_as_icon(report.larvae) if report.present?
-                          %td
-                            = display_as_icon(report.pupae) if report.present?
-                          %td
-                            = display_as_icon(report.chemically_treated) if report.present?
+      .panel.panel-default
+        %table.table.table-bordered.table-hover.text-center.statistics-table
+          %thead
+            %th.text-center
+              = I18n.t("activerecord.attributes.visit.visited_at")
+            %th.text-center
+              = I18n.t("attributes.breeding_site_id")
+            %th.text-center
+              = I18n.t("activerecord.attributes.report.protected")
+            %th.text-center
+              = I18n.t("activerecord.attributes.report.chemically_treated")
+            %th.text-center
+              = I18n.t("activerecord.attributes.report.larvae")
+            %th.text-center
+              = I18n.t("activerecord.attributes.report.pupae")
+            %th.text-center
+              = I18n.t("activerecord.attributes.report.before_photo")
+            %th.text-center
+              = I18n.t("views.csv_reports.verify")
+          %tbody
+            - @csv.visits.order("visited_at ASC").each do |visit|
+              %tr
+                - inspections = visit.inspections.includes(:report)
+                %td{:rowspan => inspections.count + 1}
+                  = form_for visit, :url => api_v0_visit_path(visit), :html => {:method => "PUT", "remote-submit" => true} do |f|
+                    .form-inline
+                      = f.date_select :visited_at, {}, :class => "form-control"
+                      = f.submit "Update", :class => "btn btn-success"
+                - inspections.each do |ins|
+                  - report = ins.report
+                  %tr
+                    = form_for report, :url => api_v0_report_path(report), :html => {:method => "PUT", "remote-submit" => true} do |f|
+                      %td
+                        = f.select :breeding_site_id, BreedingSite.all.collect{ |bs| [bs.description, bs.id]}, {:selected => report.breeding_site_id}, :class => "form-control"
+                      %td
+                        = f.check_box :protected, :checked => report.protected
+                      %td
+                        = f.check_box :chemically_treated, :checked => report.chemically_treated
+                      %td
+                        = f.check_box :larvae, :checked => report.larvae
+                      %td
+                        = f.check_box :pupae, :checked => report.pupae
+                      %td
+                        = image_tag(report.before_photo)
+                        = link_to "Change photo", verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning", :style => "margin-top: 0px;"
+                      %td
+                        = f.submit "Update report", :class => "btn btn-success"

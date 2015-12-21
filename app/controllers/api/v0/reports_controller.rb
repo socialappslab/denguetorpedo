@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::ReportsController < API::V0::BaseController
-  skip_before_action :authenticate_user_via_device_token, :only => [:destroy]
-  before_action :current_user, :only => [:destroy]
+  skip_before_action :authenticate_user_via_device_token, :only => [:destroy, :update]
+  before_action :current_user, :only => [:update, :destroy]
 
   #----------------------------------------------------------------------------
   # GET /api/v0/reports
@@ -11,6 +11,21 @@ class API::V0::ReportsController < API::V0::BaseController
       :only => [:id, :report, :created_at],
       :methods => [:formatted_created_at],
       :include => {:location => {:only => [:address]}, :breeding_site => {:only => [:id, :description_in_es, :description_in_pt]}})}, :status => 200 and return
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/reports/:id
+
+  def update
+    @report                           = Report.find_by_id(params[:id])
+    @report.save_without_before_photo = true
+    @report.save_without_after_photo  = true
+
+    if @report.update_attributes(params[:report])
+      render :json => {:reload => true}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@report.errors.full_messages[0], 403)
+    end
   end
 
   #----------------------------------------------------------------------------

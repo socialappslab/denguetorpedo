@@ -45,7 +45,7 @@
           %tbody
             %tr
               %td.text-left.light-font
-                Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx 
+                Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
               %td
               %td
               %td
@@ -66,14 +66,15 @@
                         = visit_date
                 %td{"style" => "width: 20%;"}
                   - if csv.csv_errors.present?
-                    = link_to I18n.t("views.csv_reports.failed_with_errors"), csv_report_path(csv), :class => "btn btn-danger btn-block"
+                    = I18n.t("views.csv_reports.parsing_errors") + ":"
+                    %ul
+                    - @csv.csv_errors.each do |error|
+                      %li{"style" => "font-size: 18px; line-height: 40px;"}
+                        = CsvError.humanized_errors[error.error_type]
                   - elsif csv.parsed_at.blank?
                     = I18n.t("views.csv_reports.parsing") + "..."
-                  - elsif csv.verified_at.blank?
-                    = link_to I18n.t("views.csv_reports.verify"), verify_csv_report_path(csv), :class => "btn btn-warning btn-block"
-                  - else
-                    = link_to I18n.t("views.csv_reports.view"), csv_report_path(csv), :class => "btn btn-info btn-block"
 
-                  %hr
-
-                  = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "text-danger", :prompt => I18n.t("common_terms.are_you_sure")
+                  - if csv.csv_errors.blank?
+                    = link_to I18n.t("common_terms.edit"), csv_report_path(csv), :class => "btn btn-warning btn-block"
+                    - if csv.verified_at?
+                      = I18n.t("views.csv_reports.verified_time_ago", :time => time_ago_in_words(csv.verified_at))

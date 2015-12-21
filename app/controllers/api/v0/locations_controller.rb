@@ -22,4 +22,6 @@ class API::V0::LocationsController < API::V0::BaseController
     @locations = Location.where(:id => location_ids).order("address ASC").includes(:visits, :reports)
     render "api/v0/locations/index" and return
   end
+
+  #----------------------------------------------------------------------------
 end

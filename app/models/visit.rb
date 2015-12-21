@@ -13,7 +13,7 @@
 require "set"
 
 class Visit < ActiveRecord::Base
-  attr_accessible :location_id, :identification_type, :csv_id, :identified_at, :cleaned_at, :health_report
+  attr_accessible :location_id, :identification_type, :visited_at, :csv_id, :identified_at, :cleaned_at, :health_report
 
   #----------------------------------------------------------------------------
   # Validators
