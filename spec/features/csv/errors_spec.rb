@@ -20,25 +20,16 @@ describe "CSV", :type => :feature do
   end
 
   it "displays unknown format error" do
-    csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"), :user_id => user.id)
+    csv = FactoryGirl.create(:csv_report, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"), :user_id => user.id, :location => location)
     CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
     expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::UNKNOWN_FORMAT] )
   end
 
-  it "displays missing house error" do
-    csv = File.open("spec/support/csv/missing_house.csv")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
-    CsvParsingWorker.perform_async(csv.id)
-
-    visit csv_report_path(CsvReport.last)
-    expect(page).to have_content( CsvError.humanized_errors[CsvError::Types::MISSING_HOUSE] )
-  end
-
   it "displays unknown code error" do
-    csv = File.open("spec/support/csv/unknown_code.csv")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
+    csv = File.open("spec/support/csv/unknown_code.xlsx")
+    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location)
     CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
@@ -47,7 +38,7 @@ describe "CSV", :type => :feature do
 
   it "displays inspection date in future error" do
     csv = File.open("spec/support/csv/inspection_date_in_future.xlsx")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
+    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location)
     CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)
@@ -56,7 +47,7 @@ describe "CSV", :type => :feature do
 
   it "displays elimination date in future error" do
     csv = File.open("spec/support/csv/elimination_date_in_future.xlsx")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
+    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location)
     CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(csv)
@@ -65,7 +56,7 @@ describe "CSV", :type => :feature do
 
   it "displays elimination date before inspection date error" do
     csv = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
-    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id)
+    csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location)
     CsvParsingWorker.perform_async(csv.id)
 
     visit csv_report_path(CsvReport.last)

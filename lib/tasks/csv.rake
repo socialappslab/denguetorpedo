@@ -17,7 +17,7 @@ namespace :csvs do
     nonunique_csvs      = []
     Dir[Rails.root + "lib/quinta_csvs/*.xlsx"].each_with_index do |filepath, index|
       puts "\n\n\nLooking at index = #{index} \n\n\n"
-      address   = Csv.extract_address_from_filepath(filepath)
+      address   = Spreadsheet.extract_address_from_filepath(filepath)
       locations = Location.where(:address => address)
 
       # If the address is not unique to a location, then let's keep track of it and add
@@ -34,7 +34,7 @@ namespace :csvs do
         location.neighborhood_id = 8 # TODO: This should change with the directory.
         location.save(:validate => false)
 
-        csv             = Csv.new
+        csv             = Spreadsheet.new
         csv.csv         = File.open(filepath)
         csv.user_id     = 253 # This is Harold.
         csv.location_id = location.id
@@ -44,17 +44,17 @@ namespace :csvs do
         next
       end
 
-      # At this point, we have a unique location. If the Csv instance already exists
+      # At this point, we have a unique location. If the Spreadsheet instance already exists
       # (by running this rake task previously), then let's skip it.
       location = locations.first
-      csv = Csv.find_by_location_id(location.id)
+      csv = Spreadsheet.find_by_location_id(location.id)
       if csv.present?
         puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
         next
       end
 
-      # A Csv instance DOES NOT exist. Let's build it here.
-      csv             = Csv.new
+      # A Spreadsheet instance DOES NOT exist. Let's build it here.
+      csv             = Spreadsheet.new
       csv.csv         = File.open(filepath)
       csv.location_id = location.id
       csv.user_id     = 253 # TODO: This should change to whoever Harold wants.

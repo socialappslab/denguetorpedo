@@ -16,7 +16,7 @@ class Inspection < ActiveRecord::Base
 
   belongs_to :visit
   belongs_to :report
-  belongs_to :csv
+  belongs_to :spreadsheet, :foreign_key => "csv_id"
 
 
   after_destroy :conditionally_destroy_visit

@@ -26,7 +26,7 @@ class Visit < ActiveRecord::Base
 
   has_many :inspections
   has_many :reports, -> {distinct}, :through => :inspections
-  belongs_to :csv
+  belongs_to :spreadsheet, :foreign_key => "csv_id"
 
   #----------------------------------------------------------------------------
   # Constants

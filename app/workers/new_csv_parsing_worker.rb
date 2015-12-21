@@ -9,7 +9,7 @@ class NewCsvParsingWorker
     # Make sure that we're parsing relative to the correct timezone.
     Time.zone = "America/Guatemala"
 
-    @csv   = Csv.find_by_id(csv_id)
+    @csv   = Spreadsheet.find_by_id(csv_id)
     return if @csv.blank?
 
     # Reset any verification we may have done.
@@ -20,14 +20,14 @@ class NewCsvParsingWorker
     address       = location.address
 
     # Identify the file content type.
-    spreadsheet = Csv.load_spreadsheet( @csv.csv )
+    spreadsheet = Spreadsheet.load_spreadsheet( @csv.csv )
     unless spreadsheet
       CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::UNKNOWN_FORMAT)
       return
     end
 
     # Error out if there are no reports extracted.
-    rows = Csv.extract_rows_from_spreadsheet(spreadsheet)
+    rows = Spreadsheet.extract_rows_from_spreadsheet(spreadsheet)
     if rows.blank?
       CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::MISSING_VISITS)
       return
@@ -35,7 +35,7 @@ class NewCsvParsingWorker
 
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
-    header = Csv.extract_header_from_spreadsheet(spreadsheet)
+    header = Spreadsheet.extract_header_from_spreadsheet(spreadsheet)
 
     #--------------------------------------------------------------------------
     # At this point, we know that there is at least one row. Let's see if there
@@ -57,7 +57,7 @@ class NewCsvParsingWorker
     # create/update the reports accordingly.
     current_visited_at = nil
     rows.each_with_index do |row, row_index|
-      row_content = Csv.extract_content_from_row(row)
+      row_content = Spreadsheet.extract_content_from_row(row)
 
       # Let's begin by creating a visit, if applicable. We create a visit
       # anytime there is an entry in visited_at column and that entry doesn't match
@@ -78,13 +78,13 @@ class NewCsvParsingWorker
       # If the breeding code is N or X then we will NOT create a report. Otherwise,
       # we will, *and* we may also add a unique identifier to the report.
       raw_breeding_code = row_content[:breeding_site].strip.downcase
-      next if Csv.clean_breeding_site_codes.include?(raw_breeding_code)
+      next if Spreadsheet.clean_breeding_site_codes.include?(raw_breeding_code)
 
       # At this point, we have a valid breeding code. Let's parse and start creating
       # the report.
-      uuid          = Csv.generate_uuid_from_row_index_and_address(row, row_index, address)
-      description   = Csv.generate_description_from_row_content(row_content)
-      breeding_site = Csv.extract_breeding_site_from_row(row_content)
+      uuid          = Spreadsheet.generate_uuid_from_row_index_and_address(row, row_index, address)
+      description   = Spreadsheet.generate_description_from_row_content(row_content)
+      breeding_site = Spreadsheet.extract_breeding_site_from_row(row_content)
 
       # We say that the report has a field identifier if the breeding site CSV column
       # also has an integer associated with it.

@@ -2,7 +2,9 @@
 # -*- encoding : utf-8 -*-
 require "roo"
 
-class Csv < ActiveRecord::Base
+class Spreadsheet < ActiveRecord::Base
+  self.table_name = "csvs"
+
   attr_accessible :csv
   has_attached_file :csv
   do_not_validate_attachment_file_type :csv
@@ -10,10 +12,10 @@ class Csv < ActiveRecord::Base
   belongs_to :user
   belongs_to :location
 
-  has_many :reports, :dependent => :destroy
-  has_many :visits
-  has_many :csv_errors, :dependent => :destroy
-  has_many :inspections
+  has_many :reports, :dependent => :destroy, :foreign_key => :csv_id
+  has_many :visits, :foreign_key => :csv_id
+  has_many :csv_errors, :dependent => :destroy, :foreign_key => :csv_id
+  has_many :inspections, :foreign_key => :csv_id
 
   # The header of the data must include "fecha de visita" text so we iterate
   # over the rows until we find it.
@@ -27,7 +29,7 @@ class Csv < ActiveRecord::Base
   end
 
   def self.extract_header_from_spreadsheet(spreadsheet)
-    start_index = Csv.calculate_row_index_of_header(spreadsheet)
+    start_index = Spreadsheet.calculate_row_index_of_header(spreadsheet)
     header      = spreadsheet.row(start_index)
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
@@ -44,8 +46,8 @@ class Csv < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def self.extract_rows_from_spreadsheet(spreadsheet)
-    start_index = Csv.calculate_row_index_of_header(spreadsheet)
-    header      = Csv.extract_header_from_spreadsheet(spreadsheet)
+    start_index = Spreadsheet.calculate_row_index_of_header(spreadsheet)
+    header      = Spreadsheet.extract_header_from_spreadsheet(spreadsheet)
 
     rows = []
     (start_index + 1..spreadsheet.last_row).each do |i|
@@ -128,7 +130,7 @@ class Csv < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def self.generate_uuid_from_row_index_and_address(row, row_index, address)
-    row_content = Csv.extract_content_from_row(row)
+    row_content = Spreadsheet.extract_content_from_row(row)
 
     # 4d. Generate a UUID to identify the row that the report will correspond
     # to. We define the UUID based on
@@ -155,11 +157,11 @@ class Csv < ActiveRecord::Base
 
   def check_for_breeding_site_errors(rows)
     rows.each do |row|
-      row_content = Csv.extract_content_from_row(row)
+      row_content = Spreadsheet.extract_content_from_row(row)
       next if row_content[:breeding_site].blank?
 
       type = row_content[:breeding_site].strip.downcase
-      if Csv.accepted_breeding_site_codes.exclude?(type[0])
+      if Spreadsheet.accepted_breeding_site_codes.exclude?(type[0])
         CsvError.create(:csv_id => self.id, :error_type => CsvError::Types::UNKNOWN_CODE)
       end
     end
@@ -169,7 +171,7 @@ class Csv < ActiveRecord::Base
     parsed_current_visited_at = nil
 
     rows.each do |row|
-      row_content = Csv.extract_content_from_row(row)
+      row_content = Spreadsheet.extract_content_from_row(row)
 
       # Check for any errors related to visited_at.
       if row_content[:visited_at].present?

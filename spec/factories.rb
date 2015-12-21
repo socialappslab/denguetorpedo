@@ -34,7 +34,7 @@ FactoryGirl.define do
 		association :neighborhood
 	end
 
-	factory :csv do
+	factory :spreadsheet do
 	end
 
 

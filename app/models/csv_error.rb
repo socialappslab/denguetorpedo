@@ -7,6 +7,7 @@ class CsvError < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   belongs_to :csv_report
+  belongs_to :spreadsheet, :foreign_key => "csv_id"
 
   #----------------------------------------------------------------------------
 
