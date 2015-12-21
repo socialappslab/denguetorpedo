@@ -110,24 +110,7 @@ class Visit < ActiveRecord::Base
       distribution = {:positive  => {:locations => Set.new}, :potential => {:locations => Set.new}, :negative  => {:locations => Set.new}, :total => {:locations => Set.new}}
       distribution[:total][:locations].add(visit.location_id)
 
-      # Calculate the number of positive inspections for this visit, and
-      # calculate number of potential inspections for this visit.
-      # If there are no inspections that match this visit, then we will bypass it completely.
-      # visit_counts_by_type = inspections_hash.find_all {|k, v| k[0] == visit.id}
-      visit_counts_by_type = inspections_by_visit[visit.id]
-
-      # NOTE: Why are we checking both the negative count (see neg_count below) & the lack of any visits?
-      # Because there are 2 scenarios at play:
-      # 1. Visits without inspections are visits that are labeled N in the CSV. They have no inspections,
-      #    but they're negative nonetheless. Therefore, we count them as such.
-      # 2. Visits with inspections can only be negative if they have the NEGATIVE label on the inspection. This
-      # is regardless of whether they have positive/potential label.
-      # TODO: The correct way to make this clearer is to refactor the inspections table into a concept
-      # that accepts both visits without reports, and visits with reports. This may require deprecating
-      # our dependence on DengueChat Reports.
-      if visit_counts_by_type.blank?
-        distribution[:negative][:locations].add(visit.location_id)
-      else
+      if visit_counts_by_type = inspections_by_visit[visit.id]
         # At this point, we have a bunch of reports (as keys) and an array of statuses
         # for that report and that specific day, sorted by chronological insertion. We
         # can assume that the last entry is the most recent for that report.
@@ -135,19 +118,14 @@ class Visit < ActiveRecord::Base
         # the rightmost (elimination) column if it's available.
         pos_reports = visit_counts_by_type[Inspection::Types::POSITIVE]
         pot_reports = visit_counts_by_type[Inspection::Types::POTENTIAL]
-        neg_reports = visit_counts_by_type[Inspection::Types::NEGATIVE]
-
-        # Why do we do it this way? A report can, on the same day, be both positive/potential and
-        # negative if the brigadistas eliminate it same day. As such, we need to be able to say first
-        # if the location was positive/potential and then whether it is negative by virtue of all those
-        # positive/potential reports having been eliminated.
         distribution[:positive][:locations].add(visit.location_id)  if pos_reports.size > 0
         distribution[:potential][:locations].add(visit.location_id) if pot_reports.size > 0
-
-        if neg_reports.present? && neg_reports.superset?(pot_reports) && neg_reports.superset?(pos_reports)
-          distribution[:negative][:locations].add(visit.location_id)
-        end
       end
+
+      # Instead of tracking negative location by presence of N and by whether the negative locations are a
+      # superset of both positive locations and potential locations (as we were previously doing), we define
+      # a negative location as all locations that are neither positive nor potential.
+      distribution[:negative][:locations] = distribution[:total][:locations] - (distribution[:positive][:locations] + distribution[:potential][:locations])
 
       # Identify and find a matching entry for the key we're using. If the key
       # is not present in the time_series, create it.
