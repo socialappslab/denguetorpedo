@@ -59,8 +59,8 @@ namespace :csvs do
       csv.user_id     = 253 # TODO: This should change to whoever Harold wants.
       csv.save(:validate => false)
 
-      # If the location is not unique to a CSV, then let's add it and process it
-      # manually later.
+      # Attempt to copy over existing association to the new Spreadsheet instance.
+      # If there is no data to copy, then move on.
       csv_reports = CsvReport.where(:location_id => location.id)
       if csv_reports.count > 1
         # If we don't have a unique csv report to copy (because we previously allowed
@@ -72,7 +72,7 @@ namespace :csvs do
 
         reports = Report.where(:location_id => location.id).where(:csv_report_id => csv_reports.pluck(:id))
         reports.find_each {|r| r.update_column(:csv_id, csv.id) }
-      else
+      elsif csv_reports.count == 1
         # At this point, we have a unique CsvReport. Let's copy the attributes
         # and update the associated models.
         csv_report    = csv_reports.first
