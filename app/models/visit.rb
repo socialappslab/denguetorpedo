@@ -51,6 +51,16 @@ class Visit < ActiveRecord::Base
     end
   end
 
+  def inspection_types
+    types = {Inspection::Types::POSITIVE => false, Inspection::Types::POTENTIAL => false, Inspection::Types::NEGATIVE => false}
+    id_grouping = self.inspections.select(:identification_type).group(:identification_type).count
+    types[Inspection::Types::POSITIVE]  = (id_grouping[Inspection::Types::POSITIVE] && id_grouping[Inspection::Types::POSITIVE] >= 1)
+    types[Inspection::Types::POTENTIAL] = (id_grouping[Inspection::Types::POTENTIAL] && id_grouping[Inspection::Types::POTENTIAL] >= 1)
+    types[Inspection::Types::NEGATIVE]  = (!types[Inspection::Types::POSITIVE] && !types[Inspection::Types::POTENTIAL])
+
+    return types
+  end
+
   def self.find_or_create_visit_for_location_id_and_date(location_id, date)
     return nil if location_id.blank?
     return nil if date.blank?

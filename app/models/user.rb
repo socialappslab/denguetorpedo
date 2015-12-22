@@ -103,6 +103,7 @@ class User < ActiveRecord::Base
 
   has_many :notifications, :dependent => :destroy, :class_name => "UserNotification"
   has_many :csv_reports, :dependent => :destroy
+  has_many :csvs, :dependent => :destroy, :class_name => "Spreadsheet"
 
   has_and_belongs_to_many :conversations
 
