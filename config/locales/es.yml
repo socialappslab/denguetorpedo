@@ -469,6 +469,8 @@ es:
         elimination_date_in_future: "Una fecha de eliminación está en el futuro"
         elimination_date_before_inspection_date: "Una fecha de eliminación está antes de una fecha de inspección"
       delete: Borrar CSV
+      inspection_index: Índice de inspección
+      house_index: Índice casa
       verify_instructions: Para verificar este CSV debes verificar todos los %{count} reportes
       finish_verification: Has terminado de verificar todos los reportes en el CSV. Para finalizar,
       parsing_errors: Procesando con errores
