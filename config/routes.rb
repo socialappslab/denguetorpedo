@@ -20,6 +20,7 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
+      resources :inspections, :only => [:update]
       resources :reports,     :only => [:index, :update, :create, :destroy]
 
       #-------------------------------------------------------------------------
