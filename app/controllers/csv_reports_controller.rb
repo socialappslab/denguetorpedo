@@ -5,7 +5,6 @@
 
 class CsvReportsController < ApplicationController
   before_filter :require_login
-  before_filter :calculate_ivars, :only => [:index]
   before_filter :update_breadcrumb
   before_filter :redirect_if_no_csv, :only => [:show, :verify]
 
@@ -13,7 +12,7 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports
 
   def index
-    @csvs = @current_user.csv_reports.order("created_at DESC")
+    @csvs = @current_user.csvs.order("created_at DESC")
   end
 
   #----------------------------------------------------------------------------
@@ -21,7 +20,7 @@ class CsvReportsController < ApplicationController
 
   def new
     @neighborhood = @current_user.neighborhood
-    @csv_report   = CsvReport.new
+    @csv_report   = Spreadsheet.new
     @breadcrumbs << {:name => I18n.t("views.buttons.upload_csv"), :path => new_csv_report_path}
   end
 
@@ -37,6 +36,18 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports/:id
 
   def show
+    @visits_hash = {}
+    @csv.inspections.order("position ASC").each do |ins|
+      @visits_hash[ins.visit_id] ||= []
+      matching_hash = @visits_hash[ins.visit_id].find {|hash| hash[:report].id == ins.report_id}
+      @visits_hash[ins.visit_id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
+      puts "@visits_hash: #{@visits_hash.inspect}"
+      puts "@visits_hash[ins.visit_id]; #{@visits_hash[ins.visit_id]}"
+      matching_hash = @visits_hash[ins.visit_id].find {|hash| hash[:report].id == ins.report_id}
+
+      matching_hash[:inspections] << ins
+    end
+
     @breadcrumbs << {:name => @csv.csv_file_name, :path => csv_report_path(@csv)}
   end
 
@@ -44,14 +55,14 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports/:id/verify
 
   def verify
-    @breadcrumbs << {:name => I18n.t("views.csv_reports.verify"), :path => verify_csv_report_path(@csv)}
+    @breadcrumbs << {:name => I18n.t("views.csv_reports.verify"), :path => csv_report_path(@csv)}
   end
 
   #----------------------------------------------------------------------------
   # DELETE /neighborhoods/1/csv_reports/:id
 
   def destroy
-    @csv = @current_user.csv_reports.find(params[:id])
+    @csv = @current_user.csvs.find(params[:id])
     if @csv.destroy
       flash[:notice] = I18n.t("views.csv_reports.flashes.deleted")
       redirect_to csv_reports_path and return
@@ -65,15 +76,11 @@ class CsvReportsController < ApplicationController
   private
 
   def redirect_if_no_csv
-    @csv = @current_user.csv_reports.find_by_id(params[:id])
+    @csv = @current_user.csvs.find_by_id(params[:id])
     if @csv.blank?
       flash[:alert] = "Usted no tiene este CSV!"
       redirect_to csv_reports_path and return
     end
-  end
-
-  def calculate_ivars
-    @csv_reports = @current_user.csv_reports.order("updated_at DESC")
   end
 
   def update_breadcrumb
