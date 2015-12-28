@@ -462,6 +462,77 @@ describe CsvParsingWorker do
   end
 
 
+  #----------------------------------------------------------------------------
+
+  describe "Benchmarking with August", :heavy => true do
+    it "returns data that matches Harold's graphs", :wip => true do
+      neighborhood = Neighborhood.first
+      Dir[Rails.root + "spec/support/august_csvs/*.xlsx"].each do |f|
+        csv      = File.open(f)
+        address = csv.path.split('/')[-1].gsub('.xlsx', '').gsub(".", "")
+
+        location = create(:location, :address => "#{address}", :neighborhood => neighborhood)
+        csv = FactoryGirl.create(:csv_report, :csv => csv, :user_id => user.id, :location => location, :neighborhood => neighborhood)
+        CsvParsingWorker.perform_async(csv.id)
+      end
+
+      @visit_ids = neighborhood.locations.pluck(:id)
+
+      start_time = Time.parse("2015-08-01")
+      end_time   = Time.parse("2015-08-31")
+      daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, start_time, end_time, "monthly")
+      daily_stats.each do |hash|
+        [:potential, :positive, :negative, :total].each do |key|
+          hash[key][:locations] = hash[key][:locations].map {|id| Location.find(id).address}.sort
+        end
+      end
+
+      puts "daily_stats: #{JSON.pretty_generate(daily_stats.as_json)}"
+
+      # # July 7th, 2015
+      # ["N002002039", "N002002044"].each do |loc|
+      #   expect(daily_stats[0][:positive][:locations]).to include(loc)
+      # end
+      # expect(daily_stats[0][:negative][:count]).to eq(21)
+      #
+      # # July 8th, 2015
+      # expect(daily_stats[1][:positive][:locations]).to eq([])
+      # "N002001005,  N002001012".split(",  ").each do |loc|
+      #   expect(daily_stats[1][:potential][:locations]).to include(loc)
+      # end
+      # expect(daily_stats[1][:negative][:count]).to eq(11)
+      #
+      # # July 18th, 2015
+      # ["N002002037", "N002004087", "N002004095"].each do |loc|
+      #   expect(daily_stats[2][:positive][:locations]).to include(loc)
+      # end
+      # ["N002005118", "N002006126", "N002006127"].each do |loc|
+      #   expect(daily_stats[2][:potential][:locations]).to include(loc)
+      # end
+      # expect(daily_stats[2][:negative][:count]).to eq(43)
+      #
+      # # July 25th, 2015
+      # "N002004104, N002005117".split(", ").each do |loc|
+      #   expect(daily_stats[3][:positive][:locations]).to include(loc)
+      # end
+      # "N002001002, N002001013, N002005118, N002005121".split(", ").each do |loc|
+      #   expect(daily_stats[3][:potential][:locations]).to include(loc)
+      # end
+      # expect(daily_stats[3][:negative][:count]).to eq(20)
+      #
+      #
+      # # July 31st, 2015
+      # "N002004104, N002002039, N002005118".split(", ").each do |loc|
+      #   expect(daily_stats[4][:positive][:locations]).to include(loc)
+      # end
+      # "N002001003, N002003069, N002005121, N002006126".split(", ").each do |loc|
+      #   expect(daily_stats[4][:potential][:locations]).to include(loc)
+      # end
+      # expect(daily_stats[4][:negative][:count]).to eq(57)
+
+      # puts JSON.pretty_generate(daily_stats)
+    end
+  end
 
 
   #----------------------------------------------------------------------------
