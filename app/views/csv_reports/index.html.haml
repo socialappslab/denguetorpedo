@@ -23,48 +23,51 @@
           %h3.panel-title
             Reglas
         .panel-body
-          %p.light-font
+          %p.light-font.large-font
             Suba un nuevo CSV para que DengueChat lo analice.
             Si tiene un CSV con nuevas visitas, por favor súbale usando el mismo
             nombre del CSV original para asegurase que DengueChat tenga los datos completos.
+          %br
+          %p.light-font.large-font
+            Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
+
   .row
     .col-md-12
       .panel.panel-default
         %table.table.table-bordered.table-hover.text-center.statistics-table
           %thead
             %th.text-center
+              Fecha de carga
+            %th.text-center
+              = I18n.t("activerecord.models.user", :count => 1)
+            %th.text-center
               CSV
             %th.text-center
               = I18n.t("attributes.location_id")
-            %th.text-center
-              Fecha de carga
             %th.text-center
               = I18n.t("activerecord.attributes.visit.visited_at")
             %th.text-center
               Condición
           %tbody
-            %tr
-              %td.text-left.light-font
-                Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
-              %td
-              %td
-              %td
-              %td
             - @csvs.each do |csv|
               - visits = csv.visits.order("visited_at ASC").map {|v| v.visited_at.strftime("%Y-%m-%d")}.uniq
               %tr{:data => {"csv_id" => csv.id}}
-                %td{"style" => "width: 20%;"}
-                  = link_to csv.csv_file_name, csv.csv.url
-                %td{"style" => "width: 20%;"}
+                %td{"style" => "width: 10%;"}
+                  = csv.updated_at.strftime("%Y-%m-%d %H:%M")
+                %td{"style" => "width: 15%;"}
+                  = csv.user && csv.user.name
+                %td{"style" => "width: 15%;"}
+                  = link_to csv.csv.url do
+                    = csv.csv_file_name
+                    %i.fa.fa-download
+                %td{"style" => "width: 15%;"}
                   = csv.location.address if csv.location.present?
-                %td{"style" => "width: 20%;"}
-                  = csv.created_at.strftime("%Y-%m-%d %H:%M")
-                %td{"style" => "width: 20%;"}
+                %td{"style" => "width: 25%;"}
                   %ul.list-group
                     - visits.each do |visit_date|
                       %li.list-group-item
                         = visit_date
-                %td{"style" => "width: 20%;"}
+                %td{"style" => "width: 25%;"}
                   - if csv.csv_errors.present?
                     = I18n.t("views.csv_reports.parsing_errors") + ":"
                     %ul
