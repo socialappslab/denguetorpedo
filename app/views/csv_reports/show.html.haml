@@ -4,11 +4,13 @@
   .row
     .col-md-8.col-xs-8
       %h1.light-font
-        = I18n.t("common_terms.edit")
         = @csv.csv_file_name
     .col-md-4.col-xs-4
       .pull-right
-        = link_to I18n.t("views.csv_reports.verify"), "#", :class => "btn btn-lg btn-warning", "ng-click" => "verifyCsv()"
+        - if @csv.verified_at.blank?
+          = link_to I18n.t("views.csv_reports.verify"), "#", :class => "btn btn-lg btn-warning", "ng-click" => "verifyCsv()"
+        - else
+          = I18n.t("views.csv_reports.verified_time_ago", :time => time_ago_in_words(@csv.verified_at))
         = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(@csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "btn btn-danger btn-lg", :prompt => I18n.t("common_terms.are_you_sure")
 
 
@@ -17,7 +19,7 @@
       .panel.panel-default
         .panel-heading
           %p.black-font.larger-font
-            Dirección
+            = I18n.t("attributes.address")
         .panel-body
           = form_tag api_v0_csv_report_path(@csv), :method => "PUT", "remote-submit" => true do
             .form-inline
@@ -32,6 +34,27 @@
 
                 = submit_tag I18n.t("views.buttons.save"), "class" => "btn btn-success"
 
+
+
+  .row{:style => "margin-top: 20px;"}
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %p.black-font.larger-font
+            = I18n.t("activerecord.models.user", :count => 1)
+        .panel-body
+          = form_tag api_v0_csv_report_path(@csv), :method => "PUT", "remote-submit" => true do
+            .form-inline
+              .form-group
+                = form_for @csv, :url => api_v0_csv_report_path(@csv), :html => {:method => "PUT", "remote-submit" => true, :class => "form-inline"} do |f|
+                  = f.select :user_id, options_for_select(@users.map {|u| [u.username, u.id]}, :selected => @csv.user_id), {}, :class => "form-control"
+                  = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success"
+
+
+
+
+  .row
+    .col-md-12
       - @csv.visits.order("visited_at ASC").each do |visit|
         .panel.panel-default
           .panel-heading
@@ -48,7 +71,7 @@
               %th.text-center
                 = I18n.t("views.csv_reports.inspection_index")
               %th.text-center
-                = I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase
+                = I18n.t("activerecord.models.report", :count => 1)
             %tbody
               - @visits_hash[visit.id].each do |visit_hash|
                 %tr

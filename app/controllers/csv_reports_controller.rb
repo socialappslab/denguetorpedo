@@ -12,7 +12,7 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports
 
   def index
-    @csvs = @current_user.csvs.order("created_at DESC")
+    @csvs = @current_user.csvs.order("updated_at DESC")
   end
 
   #----------------------------------------------------------------------------
@@ -41,13 +41,11 @@ class CsvReportsController < ApplicationController
       @visits_hash[ins.visit_id] ||= []
       matching_hash = @visits_hash[ins.visit_id].find {|hash| hash[:report].id == ins.report_id}
       @visits_hash[ins.visit_id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
-      puts "@visits_hash: #{@visits_hash.inspect}"
-      puts "@visits_hash[ins.visit_id]; #{@visits_hash[ins.visit_id]}"
       matching_hash = @visits_hash[ins.visit_id].find {|hash| hash[:report].id == ins.report_id}
-
       matching_hash[:inspections] << ins
     end
 
+    @users = @csv.location.neighborhood.users
     @breadcrumbs << {:name => @csv.csv_file_name, :path => csv_report_path(@csv)}
   end
 
