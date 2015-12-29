@@ -95,14 +95,14 @@ class Visit < ActiveRecord::Base
   def self.segment_locations_by_date_and_type(location_ids, start_time, end_time, scale)
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
-    visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
-    # visits       = Visit.select("id, visited_at, location_id").where("csv_id IS NOT NULL").where(:location_id => location_ids).order("visited_at ASC")
+    # visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
+    visits       = Visit.select("id, visited_at, location_id").where("csv_id IS NOT NULL").where(:location_id => location_ids).order("visited_at ASC")
     return [] if visits.blank?
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
     inspections_by_visit = {}
-    inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
-    # inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
+    # inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
+    inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
     inspections.map do |ins|
       inspections_by_visit[ins.visit_id] ||= {
         Inspection::Types::POSITIVE  => Set.new,
