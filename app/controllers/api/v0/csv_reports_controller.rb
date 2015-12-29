@@ -48,7 +48,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
     @csv_report.save
 
     # Queue a job to parse the newly created CSV.
-    NewCsvParsingWorker.perform_async(@csv_report.id)
+    SpreadsheetParsingWorker.perform_async(@csv_report.id)
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
@@ -84,7 +84,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report.location_id     = location.id
       @csv_report.save(:validate => false)
 
-      NewCsvParsingWorker.perform_async(@csv_report.id)
+      SpreadsheetParsingWorker.perform_async(@csv_report.id)
     end
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return

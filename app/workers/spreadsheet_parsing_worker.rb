@@ -1,6 +1,6 @@
 require "sidekiq"
 
-class NewCsvParsingWorker
+class SpreadsheetParsingWorker
   include Sidekiq::Worker
 
   sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true

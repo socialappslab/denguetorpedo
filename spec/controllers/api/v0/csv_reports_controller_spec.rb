@@ -60,7 +60,7 @@ describe API::V0::CsvReportsController do
   it "queues a CsvParsingJob" do
     expect {
       post :create, csv_params
-    }.to change(NewCsvParsingWorker.jobs, :count).by(1)
+    }.to change(SpreadsheetParsingWorker.jobs, :count).by(1)
   end
 
   it "creates a location with correct neighborhood" do
@@ -173,7 +173,7 @@ describe API::V0::CsvReportsController do
     end
 
     after(:each) do
-      NewCsvParsingWorker.drain
+      SpreadsheetParsingWorker.drain
     end
 
     around(:each) do |example|
@@ -185,7 +185,7 @@ describe API::V0::CsvReportsController do
     it "creates N Sidekiq jobs" do
       expect {
         post :batch, :multiple_csv => @multiple_csvs
-      }.to change(NewCsvParsingWorker.jobs, :count).by(3)
+      }.to change(SpreadsheetParsingWorker.jobs, :count).by(3)
     end
 
     it "doesn't create new CSVs" do
@@ -207,7 +207,7 @@ describe API::V0::CsvReportsController do
       it "doesn't create any Sidekiq jobs" do
         expect {
           post :batch, :multiple_csv => @multiple_csvs
-        }.not_to change(NewCsvParsingWorker.jobs, :count)
+        }.not_to change(SpreadsheetParsingWorker.jobs, :count)
       end
     end
   end

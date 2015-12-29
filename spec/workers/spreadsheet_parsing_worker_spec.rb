@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require "rails_helper"
 
-describe NewCsvParsingWorker do
+describe SpreadsheetParsingWorker do
   let(:user) 		       { FactoryGirl.create(:user) }
   let(:csv_file)       { File.open("spec/support/forma_csv_examples.xlsx") }
   let(:real_csv_file)  { File.open("spec/support/pruebaAutoreporte4.xlsx") }
@@ -14,31 +14,31 @@ describe NewCsvParsingWorker do
   end
 
   it "sets parsed_at" do
-    NewCsvParsingWorker.perform_async(csv.id)
+    SpreadsheetParsingWorker.perform_async(csv.id)
     expect(Spreadsheet.last.parsed_at).not_to eq(nil)
   end
 
   it "creates a date with CST timezone" do
     csv = FactoryGirl.create(:spreadsheet, :csv => File.open(Rails.root + "spec/support/updating_csv/initial_visit/N0020010034234243.xlsx"), :location => location)
-    NewCsvParsingWorker.perform_async(csv.id)
+    SpreadsheetParsingWorker.perform_async(csv.id)
     report = csv.reload.reports.first
     expect(report.created_at.strftime("%Z")).to eq("CST")
   end
 
   it "creates a new CSV file" do
     expect {
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     }.to change(Spreadsheet, :count).by(1)
   end
 
   it "associates the CSV with the user" do
-    NewCsvParsingWorker.perform_async(csv.id)
+    SpreadsheetParsingWorker.perform_async(csv.id)
     expect(Spreadsheet.last.user_id).to eq(user.id)
   end
 
   it "creates 3 new reports" do
     expect {
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     }.to change(Report, :count).by(3)
   end
 
@@ -49,7 +49,7 @@ describe NewCsvParsingWorker do
     # proceed or not to next row.
     csv = File.open("spec/support/csv/visit_date_row_bug.xlsx")
     csv = FactoryGirl.create(:spreadsheet, :csv => csv, :location => location)
-    NewCsvParsingWorker.perform_async(csv.id)
+    SpreadsheetParsingWorker.perform_async(csv.id)
     csv = Spreadsheet.last
     expect(csv.parsed_at).not_to eq(nil)
   end
@@ -59,7 +59,7 @@ describe NewCsvParsingWorker do
   describe "with errors" do
     it "creates wrong format error" do
       csv = create(:spreadsheet, :location => location, :csv => File.open(Rails.root + "spec/support/foco_marcado.jpg"))
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::UNKNOWN_FORMAT)
@@ -68,7 +68,7 @@ describe NewCsvParsingWorker do
     it "returns unknown code error" do
       csv = File.open("spec/support/csv/unknown_code.xlsx")
       csv = create(:spreadsheet, :csv => csv, :location => location)
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::UNKNOWN_CODE)
@@ -77,7 +77,7 @@ describe NewCsvParsingWorker do
     it "returns visit date in future error" do
       csv = File.open("spec/support/csv/inspection_date_in_future.xlsx")
       csv = create(:spreadsheet, :csv => csv, :location => location)
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::VISIT_DATE_IN_FUTURE)
@@ -86,7 +86,7 @@ describe NewCsvParsingWorker do
     it "returns elimination date in future error" do
       csv = File.open("spec/support/csv/elimination_date_in_future.xlsx")
       csv = create(:spreadsheet, :csv => csv, :location => location)
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::ELIMINATION_DATE_IN_FUTURE)
@@ -95,7 +95,7 @@ describe NewCsvParsingWorker do
     it "returns elimination date before visit date error" do
       csv = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
       csv = create(:spreadsheet, :csv => csv, :location => location)
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::ELIMINATION_DATE_BEFORE_VISIT_DATE)
@@ -104,7 +104,7 @@ describe NewCsvParsingWorker do
     it "returns unparseable date error" do
       csv = File.open("spec/support/csv/unparseable_datetime.xlsx")
       csv = create(:spreadsheet, :csv => csv, :location => location)
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
       error = CsvError.last
       expect(error.csv_id).to eq(csv.id)
       expect(error.error_type).to eq(CsvError::Types::UNPARSEABLE_DATE)
@@ -115,7 +115,7 @@ describe NewCsvParsingWorker do
 
   describe "the parsed Visit attributes" do
     before(:each) do
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     end
 
     it "creates 4 visits" do
@@ -153,7 +153,7 @@ describe NewCsvParsingWorker do
 
   describe "the parsed Report attributes" do
     before(:each) do
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     end
 
 
@@ -187,30 +187,30 @@ describe NewCsvParsingWorker do
 
   context "when uploading the same CSV", :after_commit => true do
     before(:each) do
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     end
 
     it "reuses the same location" do
       expect {
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       }.not_to change(Location, :count)
     end
 
     it "does not create new Spreadsheet" do
       expect {
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       }.not_to change(Spreadsheet, :count)
     end
 
     it "does NOT create new reports" do
       expect {
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       }.not_to change(Report, :count)
     end
 
     it "does NOT create new Visit" do
       expect {
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       }.not_to change(Visit, :count)
     end
   end
@@ -220,7 +220,7 @@ describe NewCsvParsingWorker do
   context "when uploading the same but updated CSV", :after_commit => true do
     before(:each) do
       csv = FactoryGirl.create(:spreadsheet, :csv => File.open(Rails.root + "spec/support/updating_csv/initial_visit/N0020010034234243.xlsx"), :location => location)
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
 
       @subsequent_csv     = csv
       @subsequent_csv.csv = File.open(Rails.root + "spec/support/updating_csv/subsequent_visit/N0020010034234243.xlsx")
@@ -229,13 +229,13 @@ describe NewCsvParsingWorker do
 
     it "creates only 1 report" do
       expect {
-        NewCsvParsingWorker.perform_async(@subsequent_csv.id)
+        SpreadsheetParsingWorker.perform_async(@subsequent_csv.id)
       }.to change(Report, :count).by(1)
     end
 
     it "create a new inspection Visit" do
       expect {
-        NewCsvParsingWorker.perform_async(@subsequent_csv.id)
+        SpreadsheetParsingWorker.perform_async(@subsequent_csv.id)
       }.to change(Visit.where(:parent_visit_id => nil), :count).by(1)
     end
   end
@@ -246,7 +246,7 @@ describe NewCsvParsingWorker do
 
     it "creates 4 new reports" do
       expect {
-        NewCsvParsingWorker.perform_async(real_csv.id)
+        SpreadsheetParsingWorker.perform_async(real_csv.id)
       }.to change(Report, :count).by(4)
     end
 
@@ -260,18 +260,18 @@ describe NewCsvParsingWorker do
 
     it "creates 2 inspections" do
       expect {
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       }.to change(Inspection, :count).by(2)
     end
 
     it "creates only 1 visit" do
       expect {
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       }.to change(Visit, :count).by(1)
     end
 
     it "creates a positive inspection and a negative inspection with correct positions" do
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
 
       inspections = Visit.all.first.inspections.order("position ASC")
       expect(inspections.first.identification_type).to eq(Inspection::Types::POSITIVE)
@@ -290,7 +290,7 @@ describe NewCsvParsingWorker do
       csv      = File.open(Rails.root + "spec/support/weird_inspection_date_inconsistency.xlsx")
       csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
 
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
 
       expect(Report.count).to eq(6)
       expect(Report.where("DATE(created_at) = '2014-11-19'").count).to eq(2)
@@ -311,7 +311,7 @@ describe NewCsvParsingWorker do
 
         location = create(:location, :address => "#{csv.path.split('/')[-1].gsub('.xlsx', '')}", :neighborhood => neighborhood)
         csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       end
 
       reports = Report.where(:neighborhood_id => neighborhood.id)
@@ -352,7 +352,7 @@ describe NewCsvParsingWorker do
         file_name = csv.path.split('/')[-1].gsub('.xlsx', '')
         location  = create(:location, :address => "#{file_name}", :neighborhood => neighborhood)
         csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       end
 
       reports = Report.where(:neighborhood_id => neighborhood.id)
@@ -395,7 +395,7 @@ describe NewCsvParsingWorker do
         file_name = csv.path.split('/')[-1].gsub('.xlsx', '')
         location  = create(:location, :address => "#{file_name}", :neighborhood => Neighborhood.first)
         csv = create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
         csvs << csv
       end
 
@@ -404,7 +404,7 @@ describe NewCsvParsingWorker do
       old_insp_count   = Inspection.count
 
       csvs.each do |csv|
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       end
 
       expect(Report.count).to eq(old_report_count)
@@ -424,7 +424,7 @@ describe NewCsvParsingWorker do
 
         location = create(:location, :address => "#{address}", :neighborhood => neighborhood)
         csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
-        NewCsvParsingWorker.perform_async(csv.id)
+        SpreadsheetParsingWorker.perform_async(csv.id)
       end
 
       @visit_ids = neighborhood.locations.pluck(:id)
@@ -490,7 +490,7 @@ describe NewCsvParsingWorker do
       csv      = File.open(Rails.root + "spec/support/barrel_labeling.xlsx")
       csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
 
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     end
 
     it "doesn't create duplicate reports" do
@@ -542,7 +542,7 @@ describe NewCsvParsingWorker do
       csv      = File.open(Rails.root + "spec/support/duplicate_reports_generated.xlsx")
       csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
 
-      NewCsvParsingWorker.perform_async(csv.id)
+      SpreadsheetParsingWorker.perform_async(csv.id)
     end
 
 
