@@ -21,16 +21,16 @@
           %p.black-font.larger-font
             = I18n.t("attributes.address")
         .panel-body
-          = form_tag api_v0_csv_report_path(@csv), :method => "PUT", "remote-submit" => true do
+          = form_for @csv.location, :url => api_v0_location_path(@csv.location), :html => {:method => "PUT", "remote-submit" => true} do |f|
             .form-inline
               .form-group
                 %p.form-label{:style => "display: inline;"}
                   = I18n.t("attributes.location_id")
-                = text_field_tag "location[address]", @csv.location.address, :class => "form-control"
+                = f.text_field :address, :class => "form-control"
 
                 %p.form-label{:style => "display: inline; margin-left: 40px;"}
                   = I18n.t("attributes.neighborhood_id")
-                = select_tag "location[neighborhood_id]", options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id.to_s]}, :selected => @csv.location.neighborhood_id), :class => "form-control"
+                = f.select :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id.to_s]}, :selected => @csv.location.neighborhood_id), {}, :class => "form-control"
 
                 = submit_tag I18n.t("views.buttons.save"), "class" => "btn btn-success"
 

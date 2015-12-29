@@ -17,4 +17,16 @@ describe API::V0::LocationsController do
     get "index", :addresses => "TEST", :format => :json
     expect( JSON.parse(response.body)["message"] ).to eq("No pudo encontrar lugar con la dirección TEST")
   end
+
+  #--------------------------------------------------------------------------
+
+  describe "Updating a location" do
+    let(:location)      { create(:location) }
+
+    it "updates location address" do
+      put :update, :id => location.id, :location => { :address => "Haha", :neighborhood_id => 100 }
+      expect(location.reload.address).to eq("Haha")
+      expect(location.reload.neighborhood_id).to eq(100)
+    end
+  end
 end

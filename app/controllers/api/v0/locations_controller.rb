@@ -23,5 +23,25 @@ class API::V0::LocationsController < API::V0::BaseController
     render "api/v0/locations/index" and return
   end
 
+
   #----------------------------------------------------------------------------
+  # PUT /api/v0/locations/:id
+
+  def update
+    @location = Location.find_by_id(params[:id])
+    if @location.update_attributes(location_params)
+      render :json => {:reload => true}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
+    end
+  end
+
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  def location_params
+    params.require(:location).permit(Location.permitted_params)
+  end
 end
