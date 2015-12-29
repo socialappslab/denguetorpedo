@@ -97,20 +97,15 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # PUT /api/v0/csv_reports/:id
 
   def update
-    @csv      = @current_user.csv_reports.find_by_id(params[:id])
-    @location = @csv.location
-
-    if params[:location].present?
-      @location.address         = params[:location][:address]
-      @location.neighborhood_id = params[:location][:neighborhood_id]
+    @csv = @current_user.csvs.find_by_id(params[:id])
+    if @csv.blank?
+      raise API::V0::Error.new("CSV ya eliminado o no es tu CSV", 422) and return
     end
 
-    @csv.update_column(:neighborhood_id, @location.neighborhood_id)
-
-    if @location.save
-      render :json => {:redirect_path => verify_csv_report_path(@csv)}, :status => 200 and return
+    if @csv.update_attributes(spreadsheet_params)
+      render :json => {:reload => true}, :status => 200 and return
     else
-      raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
+      raise API::V0::Error.new(@csv.errors.full_messages[0], 422) and return
     end
   end
 
@@ -119,7 +114,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # DELETE /api/v0/csv_reports/:id
 
   def destroy
-    @csv = @current_user.csv_reports.find_by_id(params[:id])
+    @csv = @current_user.csvs.find_by_id(params[:id])
     if @csv.blank?
       raise API::V0::Error.new("CSV ya eliminado o no es tu CSV", 422) and return
     end
@@ -135,12 +130,18 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # PUT /api/v0/csv_reports/:id/verify
 
   def verify
-    @csv = @current_user.csv_reports.find(params[:id])
+    @csv = @current_user.csvs.find(params[:id])
     @csv.update_column(:verified_at, Time.zone.now)
-    render :json => {:redirect_path => csv_report_path(@csv)}, :status => 200 and return
+    render :json => {:reload => true}, :status => 200 and return
   end
 
 
   #----------------------------------------------------------------------------
+
+  private
+
+  def spreadsheet_params
+    params.require(:spreadsheet).permit(Spreadsheet.permitted_params)
+  end
 
 end

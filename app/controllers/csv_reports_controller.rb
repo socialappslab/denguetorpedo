@@ -37,12 +37,15 @@ class CsvReportsController < ApplicationController
 
   def show
     @visits_hash = {}
-    @csv.inspections.order("position ASC").each do |ins|
-      @visits_hash[ins.visit_id] ||= []
-      matching_hash = @visits_hash[ins.visit_id].find {|hash| hash[:report].id == ins.report_id}
-      @visits_hash[ins.visit_id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
-      matching_hash = @visits_hash[ins.visit_id].find {|hash| hash[:report].id == ins.report_id}
-      matching_hash[:inspections] << ins
+    @csv.visits.each do |visit|
+      @visits_hash[visit.id] ||= []
+
+      visit.inspections.order("position ASC").each do |ins|
+        matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
+        @visits_hash[visit.id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
+        matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
+        matching_hash[:inspections] << ins
+      end
     end
 
     @users = @csv.location.neighborhood.users

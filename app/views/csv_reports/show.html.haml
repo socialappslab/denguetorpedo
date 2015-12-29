@@ -58,12 +58,27 @@
       - @csv.visits.order("visited_at ASC").each do |visit|
         .panel.panel-default
           .panel-heading
-            = form_for visit, :url => api_v0_visit_path(visit), :html => {:method => "PUT", "remote-submit" => true, :style => "margin-bottom: 0px;"} do |f|
-              .form-inline
-                %p.black-font.larger-font{:style => "display: inline;"}
-                  = I18n.t("activerecord.attributes.visit.visited_at")
-                = f.date_select :visited_at, {}, :class => "form-control"
-                = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success"
+            .row
+              .col-md-8
+                = form_for visit, :url => api_v0_visit_path(visit), :html => {:method => "PUT", "remote-submit" => true, :style => "margin-bottom: 0px;"} do |f|
+                  .form-inline
+                    %p.black-font.larger-font{:style => "display: inline;"}
+                      = I18n.t("activerecord.attributes.visit.visited_at")
+                    = f.date_select :visited_at, {}, :class => "form-control"
+                    = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success"
+              .col-md-4
+                .pull-right
+                  %p.lato-font.larger-font
+                    - if visit.inspection_types[Inspection::Types::POSITIVE]
+                      %span.text-red{:style => "font-weight: bold;"}
+                        = Inspection.humanized_inspection_types[Inspection::Types::POSITIVE]
+                    - if visit.inspection_types[Inspection::Types::POTENTIAL]
+                      %span.text-yellow{:style => "font-weight: bold;"}
+                        = Inspection.humanized_inspection_types[Inspection::Types::POTENTIAL]
+                    - if visit.inspection_types[Inspection::Types::NEGATIVE]
+                      %span.text-green{:style => "font-weight: bold;"}
+                        = Inspection.humanized_inspection_types[Inspection::Types::NEGATIVE]
+
           %table.table.table-bordered.table-hover.text-center.statistics-table
             %thead
               %th.text-center
@@ -91,17 +106,3 @@
 
                   %td{:style => "width: 30%;"}
                     = link_to I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase, verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning", :style => "margin-top: 0px;"
-          .panel-footer
-            %p.lato-font.larger-font
-              La
-              = I18n.t("views.csv_reports.house_index").downcase
-              es
-              - if visit.inspection_types[Inspection::Types::POSITIVE]
-                %span.text-danger{:style => "font-weight: bold;"}
-                  = Inspection.humanized_inspection_types[Inspection::Types::POSITIVE]
-              - if visit.inspection_types[Inspection::Types::POTENTIAL]
-                %span.text-warning{:style => "font-weight: bold;"}
-                  = Inspection.humanized_inspection_types[Inspection::Types::POTENTIAL]
-              - if visit.inspection_types[Inspection::Types::NEGATIVE]
-                %span.text-success{:style => "font-weight: bold;"}
-                  = Inspection.humanized_inspection_types[Inspection::Types::NEGATIVE]

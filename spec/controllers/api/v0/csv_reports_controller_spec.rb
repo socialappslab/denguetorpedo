@@ -132,13 +132,8 @@ describe API::V0::CsvReportsController do
     end
 
     it "updates location address" do
-      put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100 }
-      expect(csv.location.reload.address).to eq("Haha")
-    end
-
-    it "updates location neighborhood" do
-      put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100  }
-      expect(csv.location.reload.neighborhood_id).to eq(100)
+      put :update, :id => csv.id, :csv => {:user_id => 1}
+      expect(csv.user_id).to eq(1)
     end
   end
 

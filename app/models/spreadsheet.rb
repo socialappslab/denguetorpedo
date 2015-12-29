@@ -3,6 +3,7 @@
 require "roo"
 
 class Spreadsheet < ActiveRecord::Base
+  attr_accessible :user_id
   self.table_name = "csvs"
 
   attr_accessible :csv
@@ -34,6 +35,10 @@ class Spreadsheet < ActiveRecord::Base
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
     return header
+  end
+
+  def self.permitted_params
+    [:user_id]
   end
 
   #----------------------------------------------------------------------------
