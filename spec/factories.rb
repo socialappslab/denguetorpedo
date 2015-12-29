@@ -23,20 +23,14 @@ FactoryGirl.define do
 	factory :conversation
 	factory :csv_error
 
-	factory :csv_report do
+	factory :spreadsheet do
 		factory :parsed_csv do
 			csv Rack::Test::UploadedFile.new('spec/support/nicaragua_csv/N002001003.xlsx', 'text/csv')
 			parsed_at { Time.zone.now }
 			association :location
 			association :user
 		end
-
-		association :neighborhood
 	end
-
-	factory :spreadsheet do
-	end
-
 
 	factory :device_session
 	factory :documentation_section

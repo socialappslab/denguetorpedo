@@ -39,17 +39,16 @@ class API::V0::CsvReportsController < API::V0::BaseController
     location.save
 
     # Create the CSV.
-    @csv_report = CsvReport.find_by_csv_file_name(params[:csv_report][:csv].original_filename)
-    @csv_report = CsvReport.new if @csv_report.blank?
+    @csv_report = Spreadsheet.find_by_csv_file_name(params[:csv_report][:csv].original_filename)
+    @csv_report = Spreadsheet.new if @csv_report.blank?
 
     @csv_report.csv          = params[:csv_report][:csv]
     @csv_report.user_id      = @current_user.id
-    @csv_report.neighborhood = @neighborhood
     @csv_report.location     = location
     @csv_report.save
 
     # Queue a job to parse the newly created CSV.
-    CsvParsingWorker.perform_async(@csv_report.id)
+    NewCsvParsingWorker.perform_async(@csv_report.id)
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
@@ -77,16 +76,15 @@ class API::V0::CsvReportsController < API::V0::BaseController
       csv      = csv_hash[:csv]
       location = csv_hash[:location]
 
-      @csv_report = CsvReport.find_by_csv_file_name(csv.original_filename)
-      @csv_report = CsvReport.new if @csv_report.blank?
+      @csv_report = Spreadsheet.find_by_csv_file_name(csv.original_filename)
+      @csv_report = Spreadsheet.new if @csv_report.blank?
 
       @csv_report.csv             = csv
       @csv_report.user_id         = @current_user.id
-      @csv_report.neighborhood_id = location.neighborhood_id
       @csv_report.location_id     = location.id
       @csv_report.save(:validate => false)
 
-      CsvParsingWorker.perform_async(@csv_report.id)
+      NewCsvParsingWorker.perform_async(@csv_report.id)
     end
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
