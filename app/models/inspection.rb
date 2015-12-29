@@ -33,7 +33,7 @@ class Inspection < ActiveRecord::Base
 
   def conditionally_destroy_visit
     visit = Visit.find_by_id(self.visit_id)
-    visit.destroy if visit.inspections.count == 0
+    visit.destroy if visit && visit.inspections.count == 0
   end
 
   #----------------------------------------------------------------------------
