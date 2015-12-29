@@ -60,12 +60,16 @@
           .panel-heading
             .row
               .col-md-8
-                = form_for visit, :url => api_v0_visit_path(visit), :html => {:method => "PUT", "remote-submit" => true, :style => "margin-bottom: 0px;"} do |f|
+                %span{"ng-hide" => "editVisit#{visit.id} == true"}
+                  = visit.visited_at.strftime("%Y-%m-%d")
+                  %a.btn.btn-xs.btn-default{"ng-click" => "editVisit#{visit.id} = true"}
+                    = I18n.t("common_terms.edit")
+                = form_for visit, :url => api_v0_visit_path(visit), :html => {:method => "PUT", "remote-submit" => true, :style => "margin-bottom: 0px;", "ng-show" => "editVisit#{visit.id} == true"} do |f|
                   .form-inline
-                    %p.black-font.larger-font{:style => "display: inline;"}
-                      = I18n.t("activerecord.attributes.visit.visited_at")
-                    = f.date_select :visited_at, {}, :class => "form-control"
-                    = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success"
+                    = f.date_select :visited_at, {}, :class => "form-control input-sm"
+                    = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success btn-sm"
+                    %a.btn.btn-sm.btn-default{"ng-click" => "editVisit#{visit.id} = false"}
+                      = I18n.t("common_terms.cancel")
               .col-md-4
                 .pull-right
                   %p.lato-font.larger-font
@@ -101,8 +105,8 @@
                       = report.field_identifier
                   %td{:style => "width: 30%;"}
                     = form_for initial_inspection, :url => api_v0_inspection_path(initial_inspection), :html => {:method => "PUT", "remote-submit" => true, :class => "form-inline"} do |f|
-                      = f.select :identification_type, Inspection.humanized_inspection_types.collect{ |ins_type| [ins_type[1], ins_type[0]]}, {:selected => initial_inspection.identification_type}, :class => "form-control"
-                      = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success"
+                      = f.select :identification_type, Inspection.humanized_inspection_types.collect{ |ins_type| [ins_type[1], ins_type[0]]}, {:selected => initial_inspection.identification_type}, :class => "form-control input-sm"
+                      = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success btn-sm"
 
                   %td{:style => "width: 30%;"}
-                    = link_to I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase, verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning", :style => "margin-top: 0px;"
+                    = link_to I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase, verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning input-sm", :style => "margin-top: 0px;"

@@ -14,9 +14,9 @@ $(document).ready(function() {
     for (var i = 0; i < form.length; i++)
       fd.append( form[i].name, form[i].value )
 
-    var input = document.getElementById("csv_report_csv");
+    var input = document.getElementById("spreadsheet_csv");
     if (input.files[0])
-      fd.append( 'csv_report[csv]', input.files[0] );
+      fd.append( 'spreadsheet[csv]', input.files[0] );
 
     // Perform the AJAX request.
     url    = $(this).attr("action")

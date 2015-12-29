@@ -44,7 +44,7 @@ class CsvReportsController < ApplicationController
         matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
         @visits_hash[visit.id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
         matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
-        matching_hash[:inspections] << ins
+        matching_hash[:inspections] << ins unless matching_hash[:inspections].include?(ins)
       end
     end
 

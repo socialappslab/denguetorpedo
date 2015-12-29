@@ -23,7 +23,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_address"), 422) and return
     end
 
-    if params[:csv_report].blank?
+    if params[:spreadsheet].blank?
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
     end
 
@@ -39,10 +39,10 @@ class API::V0::CsvReportsController < API::V0::BaseController
     location.save
 
     # Create the CSV.
-    @csv_report = Spreadsheet.find_by_csv_file_name(params[:csv_report][:csv].original_filename)
+    @csv_report = Spreadsheet.find_by_csv_file_name(params[:spreadsheet][:csv].original_filename)
     @csv_report = Spreadsheet.new if @csv_report.blank?
 
-    @csv_report.csv          = params[:csv_report][:csv]
+    @csv_report.csv          = params[:spreadsheet][:csv]
     @csv_report.user_id      = @current_user.id
     @csv_report.location     = location
     @csv_report.save
