@@ -9,6 +9,7 @@ class Dashboard::LocationsController < Dashboard::BaseController
   def index
     authorize Location
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
+    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.locations"), :path => request.path}
   end
 
   #----------------------------------------------------------------------------

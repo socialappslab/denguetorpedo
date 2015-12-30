@@ -11,6 +11,7 @@ class Dashboard::BaseController < ApplicationController
   before_filter :require_login
   before_filter :authorize_user
   before_filter :set_navigational_components
+  before_action :setup_breadcrumbs
 
   #----------------------------------------------------------------------------
 
@@ -36,6 +37,10 @@ class Dashboard::BaseController < ApplicationController
     @navigation["parent"]  ||= {}
     @navigation["child"]   ||= {"path" => root_path, "name" => I18n.t("views.denguechat_engage")}
     @navigation["current"] ||= {}
+  end
+
+  def setup_breadcrumbs
+    @breadcrumbs = [{:name => I18n.t("views.denguechat_analytics"), :path => root_path}]
   end
 
   #----------------------------------------------------------------------------

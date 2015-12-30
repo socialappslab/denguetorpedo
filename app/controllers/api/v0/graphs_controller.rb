@@ -10,7 +10,6 @@ class API::V0::GraphsController < API::V0::BaseController
   # GET /api/v0/graph/timeseries
 
   def timeseries
-    # Determine the timeframe based on timeframe OR custom date ranges.
     if params[:custom_start_month].present? || params[:custom_start_year].present?
       start_month = params[:custom_start_month] || "01"
       start_year  = params[:custom_start_year]  || "2010"

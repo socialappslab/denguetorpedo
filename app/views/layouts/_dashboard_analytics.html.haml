@@ -8,21 +8,21 @@
         Menu
       %ul.dropdown-menu{"aria-labelledby" => "dropdownMenu1"}
         %li
-          = link_to city_path(@current_user.city) do
+          = link_to dashboard_locations_path do
             %i.fa.fa-globe
-            = I18n.t("dashboard.my_city")
+            = I18n.t("views.dashboard.navigation.locations")
         %li
-          = link_to neighborhood_path(@current_user.neighborhood) do
-            %i.fa.fa-users.fa-2
-            = I18n.t("dashboard.my_community")
+          = link_to dashboard_visits_path do
+            %i.fa.fa-pie-chart.fa-2
+            = I18n.t("views.dashboard.navigation.visits")
+        -# %li
+        -#   = link_to dashboard_graphs_path do
+        -#     %i.fa.fa-futbol-o
+        -#     = I18n.t("views.dashboard.navigation.graphs")
         %li
-          = link_to teams_path do
-            %i.fa.fa-futbol-o
-            = I18n.t("activerecord.models.team", :count => 3)
-        %li
-          = link_to neighborhood_reports_path(@current_user.neighborhood) do
+          = link_to heatmap_dashboard_graphs_path do
             %i.fa.fa-map-marker
-            = I18n.t("dashboard.reports")
+            = I18n.t("views.dashboard.navigation.heatmap")
         %li
           = link_to csv_reports_path do
             %i.fa.fa-table
@@ -34,46 +34,34 @@
 
 
   .col-md-2.col-md-offset-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == city_path(@current_user.city) ? "font-weight:bold;" : ""
-    = link_to city_path(@current_user.city), :style => header_styling do
+    - header_styling = request.path == dashboard_locations_path ? "font-weight:bold;" : ""
+    = link_to dashboard_locations_path, :style => header_styling do
       %i.fa.fa-globe
-      = I18n.t("dashboard.my_city")
+      = I18n.t("views.dashboard.navigation.locations")
 
   .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == neighborhood_path(@current_user.neighborhood) ? "font-weight:bold;" : ""
-    = link_to neighborhood_path(@current_user.neighborhood), :style => header_styling do
-      %i.fa.fa-users.fa-2
-      = I18n.t("dashboard.my_community")
+    - header_styling = request.path == dashboard_visits_path ? "font-weight:bold;" : ""
+    = link_to dashboard_visits_path, :style => header_styling do
+      %i.fa.fa-pie-chart.fa-2
+      Visita Datos
+
+  -# .col-md-2.dashboard-item.hidden-xs.hidden-sm
+  -#   - header_styling = request.path == dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
+  -#   = link_to dashboard_graphs_path, :style => header_styling do
+  -#     %i.fa.fa-futbol-o
+  -#     = I18n.t("views.dashboard.navigation.graphs")
 
   .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == teams_path ? "font-weight:bold; text-align: center;" : ""
-    = link_to teams_path, :style => header_styling do
-      %i.fa.fa-futbol-o
-      = I18n.t("activerecord.models.team", :count => 3)
-
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == neighborhood_reports_path(@current_user.neighborhood) ? "font-weight:bold; text-align: center;" : ""
-    = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
+    - header_styling = request.path == heatmap_dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
+    = link_to heatmap_dashboard_graphs_path, :style => header_styling do
       %i.fa.fa-map-marker
-      = I18n.t("dashboard.reports")
+      =I18n.t("views.dashboard.navigation.heatmap")
 
   .col-md-1.dashboard-item.hidden-xs.hidden-sm
     - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
     = link_to csv_reports_path, :style => header_styling do
       %i.fa.fa-table
       CSV
-
-  .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    %a.notifications-toggle{:href => "#"}
-      %i.fa.fa-bell
-      - if @notifications.present?
-        %span.label.label-danger
-          = @notifications.count if @notifications.present?
-      &nbsp;
-
-    = render :partial => "shared/notifications"
-
-
 
   .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
     = image_tag(asset_path(@current_user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
@@ -88,9 +76,9 @@
           = I18n.t("common_terms.configuration")
       - if @current_user.coordinator?
         %li
-          = link_to dashboard_locations_path do
+          = link_to city_path(@current_user.city) do
             %i.fa.fa-line-chart.fa-2
-            = I18n.t("views.denguechat_analytics")
+            = I18n.t("views.denguechat_engage")
         %li
           = link_to coordinator_path do
             %i.fa.fa-user-secret.fa-2
