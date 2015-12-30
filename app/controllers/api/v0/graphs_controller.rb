@@ -124,24 +124,24 @@ class API::V0::GraphsController < API::V0::BaseController
     CSV.generate do |csv|
       csv << [
         "Fecha de visita",
-        "Lugares visitados",
         "Lugares positivos",
         "Lugares potenciales",
-        "Lugares negativos",
-        "Lugares positivos (%)",
-        "Lugares potenciales (%)",
-        "Lugares sin criaderos (%)",
-        I18n.t("attributes.address") + " de lugares positivos",
-        I18n.t("attributes.address") + " de lugares potenciales",
-        I18n.t("attributes.address") + " de lugares negativos"
+        "Lugares sin criaderos",
+        "Total lugares",
+        "% positivos",
+        "% potenciales",
+        "% sin criaderos",
+        "Lugares positivos",
+        "Lugares potenciales",
+        "Lugares sin criaderos"
       ]
       timeseries.each do |series|
         csv << [
           series[:date],
-          series[:total][:count],
           series[:positive][:count],
           series[:potential][:count],
           series[:negative][:count],
+          series[:total][:count],
           series[:positive][:percent],
           series[:potential][:percent],
           series[:negative][:percent],
