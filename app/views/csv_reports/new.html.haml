@@ -51,14 +51,13 @@
           %p.form-label
             Cargue un CSV
           = f.file_field :csv, :class => "form-control"
+          %p.light-font.larger-font#location_association{:style => "display: none;"}
+            Vamos a asociar este csv con
+            %span#location_address
 
           %hr.muted
           .row
-            .col-md-6
-              %p.form-label
-                = I18n.t("attributes.location_id")
-              = text_field_tag "location[address]", @csv_report.location, :class => "form-control"
-            .col-md-6
+            .col-md-12
               %p.form-label
                 = I18n.t("attributes.neighborhood_id")
               = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )

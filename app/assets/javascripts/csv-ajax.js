@@ -59,4 +59,17 @@ $(document).ready(function() {
       }
     })
   })
+
+  $("#spreadsheet_csv").on("change", function(event) {
+    if ( window.File && window.FileReader && window.FileList && window.Blob ) {
+      var file = event.target.files[0];
+      var filename = file.name.replace("xlsx", "").replace(/\./g, "");
+      $("#location_association").show();
+      $("#location_address").text(filename);
+    } else {
+      alert('The File APIs are not fully supported in this browser.');
+      return false;
+    }
+
+  })
 })

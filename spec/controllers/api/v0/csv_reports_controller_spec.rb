@@ -9,8 +9,7 @@ describe API::V0::CsvReportsController do
   let(:uploaded_csv)    { ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv)) }
   let(:real_csv)        { ActionDispatch::Http::UploadedFile.new(:tempfile => File.open("spec/support/pruebaAutoreporte4.xlsx"), :filename => File.basename(csv)) }
   let(:csv_params)      {
-    {:csv_report => { :csv => uploaded_csv },
-    :location => {:address => "Test"},
+    {:spreadsheet => { :csv => uploaded_csv },
     :report_location_attributes_latitude => 12.1308585524794,
     :report_location_attributes_longitude => -86.28059864131501,
     :neighborhood_id => Neighborhood.first.id}
@@ -38,13 +37,13 @@ describe API::V0::CsvReportsController do
   it "creates a location with proper attributes" do
     post :create, csv_params
     l = Location.last
-    expect(l.address).to eq("Test")
+    expect(l.address).to eq("forma_csv_examples")
     expect(l.latitude).to eq(12.1308585524794)
     expect(l.longitude).to eq(-86.280598641315)
   end
 
   it "uses an existing location if address exists" do
-    create(:location, :address => "Test")
+    create(:location, :address => "forma_csv_examples")
     expect {
       post :create, csv_params
     }.not_to change(Location, :count)
@@ -97,19 +96,8 @@ describe API::V0::CsvReportsController do
       expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.missing_location") )
     end
 
-    it "fails on missing location" do
-      csv      = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
-      file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
-
-      post :create, csv_params.merge(:location => {:address => ""})
-      expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.missing_address") )
-    end
-
     it "returns missing CSV error" do
-      csv      = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
-      file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
-
-      post :create, csv_params.merge(:csv_report => {})
+      post :create, csv_params.merge(:spreadsheet => {})
       expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.unknown_format") )
     end
   end

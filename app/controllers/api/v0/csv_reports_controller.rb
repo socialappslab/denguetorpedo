@@ -14,13 +14,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
-    address = params[:location][:address]
     if lat.blank? || long.blank?
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422) and return
-    end
-
-    if address.blank?
-      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_address"), 422) and return
     end
 
     if params[:spreadsheet].blank?
@@ -31,7 +26,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
     @neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
 
     # Create or find the location.
-    location = Location.find_by_address(address)
+    address  = Spreadsheet.extract_address_from_filepath(params[:spreadsheet][:csv].original_filename)
+    location = Location.where("lower(address) = ?", address.downcase).first
     location = Location.new(:address => address) if location.blank?
     location.latitude  = lat
     location.longitude = long
@@ -62,9 +58,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # 2. Making sure that the location exists,
     csvs = []
     params[:multiple_csv].each do |csv|
-      filename = csv.original_filename.split("/").last
-      filename = filename.split(".").first.strip
-      location = Location.where("lower(address) = ?", filename.downcase).first
+      address  = Spreadsheet.extract_address_from_filepath(csv.original_filename)
+      location = Location.where("lower(address) = ?", address.downcase).first
       if location.blank?
         raise API::V0::Error.new("¡Uy! No se pudo encontrar lugar para #{csv.original_filename}", 422) and return
       end
