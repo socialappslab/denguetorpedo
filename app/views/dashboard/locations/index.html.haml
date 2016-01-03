@@ -33,11 +33,11 @@
                 = I18n.t("views.analytics.house_index")
               %th.text-center
                 = I18n.t("views.analytics.inspection_index")
-              %th.text-center
-                = I18n.t("dashboard.reports")
 
-              %th.text-center
-                = I18n.t("views.dashboard.locations.barrel_summary")
+              -# %th.text-center
+              -#   = I18n.t("dashboard.reports")
+              -# %th.text-center
+              -#   = I18n.t("views.dashboard.locations.barrel_summary")
             %tbody
               %tr.thick-border{"ng-repeat-start" => "location in locations"}
                 %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 10%;"}
@@ -67,27 +67,27 @@
                           ({{inspection.report.field_identifier}})
 
 
-                  %td{"style" => "width: 15%;"}
-                    {{ (visit.inspections | filter:{identification_type:0}).length }}
-                    = I18n.t("views.dashboard.locations.total_positive_sites").downcase
-                    %br
-                    {{ (visit.inspections | filter:{identification_type:1}).length }}
-                    = I18n.t("views.dashboard.locations.total_potential_sites").downcase
-
-                  %td.text-left{"style" => "width: 15%;"}
-                    {{ visit.barrel_reports.total}}
-                    Total,
-                    {{ visit.barrel_reports.protected }}
-                    = I18n.t("activerecord.attributes.report.protected") + ","
-                    {{ visit.barrel_reports.unprotected }}
-                    = I18n.t("activerecord.attributes.report.unprotected")
-                    %br
-                    {{ visit.barrel_reports.larvae }}
-                    = I18n.t("activerecord.attributes.report.larvae") + ","
-                    {{ visit.barrel_reports.pupae }}
-                    = I18n.t("activerecord.attributes.report.pupae") + ","
-                    {{ visit.barrel_reports.chemically_treated }}
-                    = I18n.t("activerecord.attributes.report.chemically_treated")
+                  -# %td{"style" => "width: 15%;"}
+                  -#   {{ (visit.inspections | filter:{identification_type:0}).length }}
+                  -#   = I18n.t("views.dashboard.locations.total_positive_sites").downcase
+                  -#   %br
+                  -#   {{ (visit.inspections | filter:{identification_type:1}).length }}
+                  -#   = I18n.t("views.dashboard.locations.total_potential_sites").downcase
+                  -#
+                  -# %td.text-left{"style" => "width: 15%;"}
+                  -#   {{ visit.barrel_reports.total}}
+                  -#   Total,
+                  -#   {{ visit.barrel_reports.protected }}
+                  -#   = I18n.t("activerecord.attributes.report.protected") + ","
+                  -#   {{ visit.barrel_reports.unprotected }}
+                  -#   = I18n.t("activerecord.attributes.report.unprotected")
+                  -#   %br
+                  -#   {{ visit.barrel_reports.larvae }}
+                  -#   = I18n.t("activerecord.attributes.report.larvae") + ","
+                  -#   {{ visit.barrel_reports.pupae }}
+                  -#   = I18n.t("activerecord.attributes.report.pupae") + ","
+                  -#   {{ visit.barrel_reports.chemically_treated }}
+                  -#   = I18n.t("activerecord.attributes.report.chemically_treated")
 
 
               %tr{"ng-repeat-end" => true}

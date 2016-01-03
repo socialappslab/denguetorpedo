@@ -99,14 +99,14 @@
                 ({{series.negative.percent}} %)
               %td{:style => "width: 8%"}
                 {{series.total.count}}
-              %th{:style => "width: 10%"}
-                %span{"ng-repeat" => "location in series.positive.locations"}
+              %td{:style => "width: 10%"}
+                .show{"ng-repeat" => "location in series.positive.locations"}
                   {{location}}
-              %th{:style => "width: 10%"}
-                %span{"ng-repeat" => "location in series.potential.locations"}
+              %td{:style => "width: 10%"}
+                .show{"ng-repeat" => "location in series.potential.locations"}
                   {{location}}
-              %th{:style => "width: 10%"}
-                %span{"ng-repeat" => "location in series.negative.locations"}
+              %td{:style => "width: 10%"}
+                .show{"ng-repeat" => "location in series.negative.locations"}
                   {{location}}
         .panel-footer
           Seleccione comunidades, la unidad y el tiempo para generar informe.
