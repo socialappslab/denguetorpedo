@@ -7,8 +7,10 @@
 //= require_self
 //= require "feed-interactions"
 //= require angular
+//= require angular-animate
+//=require angular-messages
+//= require angular-aria
 //= require angular-sanitize
-//= require angular-cookies
 //= require "app/app"
 //= require "app/controllers/post_controller"
 //= require "app/controllers/chart_controller"
