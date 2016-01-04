@@ -16,20 +16,27 @@
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
 
-  .row
-    .col-md-12
-      .panel.panel-default
-        .panel-heading
-          %h3.panel-title
-            Reglas
-        .panel-body
-          %p.light-font.large-font
-            Suba un nuevo CSV para que DengueChat lo analice.
-            Si tiene un CSV con nuevas visitas, por favor súbale usando el mismo
-            nombre del CSV original para asegurase que DengueChat tenga los datos completos.
-          %br
-          %p.light-font.large-font
-            Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
+  - if @current_user && @current_user.coordinator?
+    .row{"ng-controller" => "csv"}
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              Opciones coordinador
+          .panel-body
+            .row
+              .col-md-6
+                %p.form-label
+                  = I18n.t("activerecord.models.user", :count => 2)
+
+              .col-md-6
+                %p.form-label
+                  = I18n.t("activerecord.models.neighborhood", :count => 2)
+                %ul.list-group
+                  = link_to "Todas las comunidades", csv_reports_path, :class => "list-group-item #{params[:neighborhood_id].blank? ? 'active' : ''}"
+                  - @current_user.city.neighborhoods.each do |neighborhood|
+                    = link_to csv_reports_path(:neighborhood_id => neighborhood.id), :class => "list-group-item #{params[:neighborhood_id] == neighborhood.id.to_s ? 'active' : ''}" do
+                      = neighborhood.name
 
   .row
     .col-md-12
