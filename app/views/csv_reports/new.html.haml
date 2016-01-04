@@ -9,66 +9,64 @@
 /------------------------------------------------------------------------------
 
 .container
-
-  .row
-    .col-md-8.col-xs-8
-      %h1.light-font
-        = I18n.t("views.buttons.upload_csv")
-
-    .col-md-4.col-xs-4
-      .pull-right
-
   .row.page-header-description
     .col-md-12
-      %p.description
-        Nota: use el mismo CSV para múltiples visitas.
-        Cada renglón en el archivo CSV debe corresponder a un criadero en el lugar
-        especificado. Si el sitio es eliminado, use la misma fila para actualizar
-        el registro con la fecha de eliminación y un comentario.
-        ¿Necesita usted una forma como modelo a seguir?
-        = link_to "Haga clic aquí para bajar una forma CSV", asset_path("forma_csv.xlsx"), :style => "font-weight: bold; color: #3a9bdc;"
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = I18n.t("views.buttons.upload_csv")
+        .panel-body
+          %p.light-font.large-font
+            Suba un nuevo CSV para que DengueChat lo analice.
+            Si tiene un CSV con nuevas visitas, por favor súbale usando el mismo
+            nombre del CSV original para asegurase que DengueChat tenga los datos completos.
+            Nota: use el mismo CSV para múltiples visitas.
+            Cada renglón en el archivo CSV debe corresponder a un criadero en el lugar
+            especificado. Si el sitio es eliminado, use la misma fila para actualizar
+            el registro con la fecha de eliminación y un comentario.
+            ¿Necesita usted una forma como modelo a seguir?
+            = link_to "Haga clic aquí para bajar una forma CSV", asset_path("forma_csv.xlsx"), :style => "font-weight: bold; color: #3a9bdc;"
+            Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
 
+          = form_for [@neighborhood, @csv_report], :url => api_v0_csv_reports_path, :html => {:method => "POST", :multipart => true, :style => "margin-top: 40px;"} do |f|
 
-  .well
-    = form_for [@neighborhood, @csv_report], :url => api_v0_csv_reports_path, :html => {:method => "POST", :multipart => true} do |f|
+            .row
+              .col-md-6.col-xs-12{"style" => "height: 475px;"}
+                #upload_csv{:style => "display: block;"}
 
-      .row
-        .col-md-6.col-xs-12{"style" => "height: 475px;"}
-          #upload_csv{:style => "display: block;"}
+                  #new_report
+                    = hidden_field_tag "report_location_attributes_latitude"
+                    = hidden_field_tag "report_location_attributes_longitude"
 
-            #new_report
-              = hidden_field_tag "report_location_attributes_latitude"
-              = hidden_field_tag "report_location_attributes_longitude"
+                .form-group
+                  %p.form-label
+                    Haga click y mueva el marcador donde encontró el foco
+                  #map_div{:style => "position: static;"}
+                    = render :partial => "reports/google_map"
 
-          .form-group
-            %p.form-label
-              Haga click y mueva el marcador donde encontró el foco
-            #map_div{:style => "position: static;"}
-              = render :partial => "reports/google_map"
+              .col-md-6.col-xs-12.ruled-left{"style" => "height: 475px;"}
 
-        .col-md-6.col-xs-12.ruled-left{"style" => "height: 475px;"}
+                %p.form-label
+                  Cargue un CSV
+                = f.file_field :csv, :class => "form-control"
+                %p.light-font.larger-font#location_association{:style => "display: none;"}
+                  Vamos a asociar este csv con
+                  %span#location_address
 
-          %p.form-label
-            Cargue un CSV
-          = f.file_field :csv, :class => "form-control"
-          %p.light-font.larger-font#location_association{:style => "display: none;"}
-            Vamos a asociar este csv con
-            %span#location_address
+                %hr.muted
+                .row
+                  .col-md-12
+                    %p.form-label
+                      = I18n.t("attributes.neighborhood_id")
+                    = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )
 
-          %hr.muted
-          .row
-            .col-md-12
-              %p.form-label
-                = I18n.t("attributes.neighborhood_id")
-              = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )
+                .form-group
+                  = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
+                    %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+                    = I18n.t("views.buttons.upload")
 
-          .form-group
-            = button_tag :type => "submit", :class => "btn btn-success btn-lg submit-button", :style => "width: 100%;" do
-              %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-              = I18n.t("views.buttons.upload")
-
-          .form-group.form-errors
-            %p
+                .form-group.form-errors
+                  %p
 
 
 

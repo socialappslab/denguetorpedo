@@ -35,8 +35,8 @@ es:
         one: Usuario
         other: Usuarios
       neighborhood:
-        one: Barrio
-        other: Barrios
+        one: Comunidad
+        other: Comunidades
       feedback: Mensaje
       house: Casa
       documentation_section: Sección
