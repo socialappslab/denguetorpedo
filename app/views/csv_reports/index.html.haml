@@ -46,16 +46,28 @@
       .panel.panel-default
         %table.table.table-bordered.table-hover.text-center.statistics-table
           %thead
-            %th.text-center
+            %th.text-center{:class => (params[:sort] == 'date' ? 'active' : '' )}
               Fecha de carga
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "asc") ) do
+                %i.fa.fa-angle-up
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "desc") ) do
+                %i.fa.fa-angle-down
             %th.text-center
               = I18n.t("activerecord.models.neighborhood", :count => 1)
-            %th.text-center
+            %th.text-center{:class => (params[:sort] == 'user' ? 'active' : '' )}
               = I18n.t("activerecord.models.user", :count => 1)
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "asc") ) do
+                %i.fa.fa-angle-up
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "desc") ) do
+                %i.fa.fa-angle-down
             %th.text-center
               CSV
-            %th.text-center
+            %th.text-center{:class => (params[:sort] == 'location' ? 'active' : '' )}
               = I18n.t("attributes.location_id")
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "asc") ) do
+                %i.fa.fa-angle-up
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "desc") ) do
+                %i.fa.fa-angle-down
             %th.text-center
               = I18n.t("activerecord.attributes.visit.visited_at")
             %th.text-center
@@ -64,12 +76,12 @@
             - @csvs.each do |csv|
               - visits = csv.visits.order("visited_at ASC").map {|v| v.visited_at.strftime("%Y-%m-%d")}.uniq
               %tr{:data => {"csv_id" => csv.id}}
-                %td{"style" => "width: 10%;"}
+                %td{"style" => "width: 20%;"}
                   = csv.updated_at.strftime("%Y-%m-%d %H:%M")
                 %td
                   = csv.neighborhood.name
                 %td{"style" => "width: 15%;"}
-                  = csv.user && csv.user.name
+                  = csv.user && "#{csv.user.username} (#{csv.user.name})"
                 %td{"style" => "width: 15%;"}
                   = link_to csv.csv.url do
                     = csv.csv_file_name
