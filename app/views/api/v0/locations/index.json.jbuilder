@@ -3,18 +3,25 @@ json.locations @locations do |location|
 
   json.green location.green?
 
-
-  # json.barrel_reports location.reports.where(:breeding_site_id => BreedingSite.find_by_code("B").id) do |report|
-  #   json.(report, :protected, :chemically_treated, :larvae, :pupae)
-  # end
+  if csv = Spreadsheet.find_by_location_id(location.id)
+    json.csv_path csv_report_path(csv)
+  end
 
   json.visits location.visits.order("visited_at ASC").includes(:inspections) do |visit|
     json.timestamp  format_csv_timestamp(visit.visited_at)
-    json.class      class_for_status(visit.identification_type)
+    json.color      color_for_inspection_status(visit.identification_type)
     json.identification_type visit.identification_type
 
-    json.inspections visit.inspections do |ins|
+    json.inspections visit.inspections.includes(:report).order("position ASC") do |ins|
       json.(ins, :identification_type)
+      json.color color_for_inspection_status(ins.identification_type)
+
+      if r = ins.report
+        json.set! :report do
+          json.set! :field_identifier, r.field_identifier
+          json.set! :breeding_site, (r.breeding_site && r.breeding_site.code)
+        end
+      end
     end
 
     barrel_reports = visit.reports.where(:breeding_site_id => BreedingSite.find_by_code("B").id)

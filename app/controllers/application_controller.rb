@@ -194,6 +194,6 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_breadcrumbs
-    @breadcrumbs = [{:name => I18n.t("dashboard.home"), :path => root_path}]
+    @breadcrumbs = [{:name => I18n.t("views.denguechat_engage"), :path => root_path}]
   end
 end

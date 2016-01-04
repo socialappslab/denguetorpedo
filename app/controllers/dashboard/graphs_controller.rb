@@ -9,6 +9,8 @@ class Dashboard::GraphsController < Dashboard::BaseController
   def index
     authorize :dashboard, :index?
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
+
+    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.graphs"), :path => request.path}
   end
 
   #----------------------------------------------------------------------------
@@ -21,6 +23,8 @@ class Dashboard::GraphsController < Dashboard::BaseController
     reports_with_locs = Report.joins(:location).select("latitude, longitude")
     @open_locations   = reports_with_locs.is_open
     @open_locations   = @open_locations.uniq
+
+    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.heatmap"), :path => request.path}
   end
 
   #----------------------------------------------------------------------------

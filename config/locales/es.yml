@@ -348,6 +348,9 @@ es:
       description: Um aplicativo interativo de celular e web para o controle da dengue
       university: "Universidad de California, Berkeley"
     app: DengueChat
+    analytics:
+      house_index: Índice de Casa
+      inspection_index: Índice de Inspección
     denguechat_analytics:
       DengueChat Datos
     denguechat_engage:
@@ -415,7 +418,8 @@ es:
         total_potential_sites: Total criaderos potenciales
         barrel_summary: Resumen de barriles
       navigation:
-        locations: Busca Lugar
+        visits: Visitas
+        locations: Lugares
         heatmap: Mapa de actividad
         graphs: Gráficos
     badges:

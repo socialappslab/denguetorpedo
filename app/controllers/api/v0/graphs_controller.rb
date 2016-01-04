@@ -10,7 +10,6 @@ class API::V0::GraphsController < API::V0::BaseController
   # GET /api/v0/graph/timeseries
 
   def timeseries
-    # Determine the timeframe based on timeframe OR custom date ranges.
     if params[:custom_start_month].present? || params[:custom_start_year].present?
       start_month = params[:custom_start_month] || "01"
       start_year  = params[:custom_start_year]  || "2010"
@@ -125,24 +124,24 @@ class API::V0::GraphsController < API::V0::BaseController
     CSV.generate do |csv|
       csv << [
         "Fecha de visita",
-        "Lugares visitados",
         "Lugares positivos",
         "Lugares potenciales",
-        "Lugares negativos",
-        "Lugares positivos (%)",
-        "Lugares potenciales (%)",
-        "Lugares sin criaderos (%)",
-        I18n.t("attributes.address") + " de lugares positivos",
-        I18n.t("attributes.address") + " de lugares potenciales",
-        I18n.t("attributes.address") + " de lugares negativos"
+        "Lugares sin criaderos",
+        "Total lugares",
+        "% positivos",
+        "% potenciales",
+        "% sin criaderos",
+        "Lugares positivos",
+        "Lugares potenciales",
+        "Lugares sin criaderos"
       ]
       timeseries.each do |series|
         csv << [
           series[:date],
-          series[:total][:count],
           series[:positive][:count],
           series[:potential][:count],
           series[:negative][:count],
+          series[:total][:count],
           series[:positive][:percent],
           series[:potential][:percent],
           series[:negative][:percent],
