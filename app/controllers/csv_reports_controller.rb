@@ -12,7 +12,16 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports
 
   def index
-    @csvs = @current_user.csvs.order("updated_at DESC")
+    if @current_user.coordinator?
+      @csvs = Spreadsheet.order("updated_at DESC")
+
+      if params[:neighborhood_id].present?
+        loc_ids = Location.where(:neighborhood_id => params[:neighborhood_id]).pluck(:id)
+        @csvs = @csvs.where(:location_id => loc_ids)
+      end
+    else
+      @csvs = @current_user.csvs.order("updated_at DESC")
+    end
   end
 
   #----------------------------------------------------------------------------

@@ -46,6 +46,8 @@
             %th.text-center
               Fecha de carga
             %th.text-center
+              = I18n.t("activerecord.models.neighborhood", :count => 1)
+            %th.text-center
               = I18n.t("activerecord.models.user", :count => 1)
             %th.text-center
               CSV
@@ -61,6 +63,8 @@
               %tr{:data => {"csv_id" => csv.id}}
                 %td{"style" => "width: 10%;"}
                   = csv.updated_at.strftime("%Y-%m-%d %H:%M")
+                %td
+                  = csv.neighborhood.name
                 %td{"style" => "width: 15%;"}
                   = csv.user && csv.user.name
                 %td{"style" => "width: 15%;"}
