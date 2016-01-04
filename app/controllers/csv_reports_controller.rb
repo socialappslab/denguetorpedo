@@ -104,7 +104,11 @@ class CsvReportsController < ApplicationController
   private
 
   def redirect_if_no_csv
-    @csv = @current_user.csvs.find_by_id(params[:id])
+    if @current_user.coordinator?
+      @csv = Spreadsheet.find_by_id(params[:id])
+    else
+      @csv = @current_user.csvs.find_by_id(params[:id])
+    end
     if @csv.blank?
       flash[:alert] = "Usted no tiene este CSV!"
       redirect_to csv_reports_path and return
