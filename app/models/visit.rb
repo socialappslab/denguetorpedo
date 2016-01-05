@@ -115,53 +115,41 @@ class Visit < ActiveRecord::Base
     # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
     time_series = []
     visits.each do |visit|
+      # Identify and find a matching entry for the key we're using. If the key
+      # is not present in the time_series, create it.
       # Why Set? Because set is a collection of unordered values with no duplicates.
       # This saves us the time of removing duplicate location ids.
-      distribution = {:positive  => {:locations => Set.new}, :potential => {:locations => Set.new}, :negative  => {:locations => Set.new}, :total => {:locations => Set.new}}
-      distribution[:total][:locations].add(visit.location_id)
+      visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+      series     = time_series.find {|stat| stat[:date] == visit_date}
+      if series.blank?
+        series = {:date => visit_date}
+        [:positive, :potential, :negative, :total].each { |key| series[key] = {:locations => Set.new} }
+        time_series << series
+      end
 
+      # Account for all locations by adding to :total
+      series[:total][:locations].add(visit.location_id)
+
+      # Add to :positive if at least one inspection is positive. Also add to
+      # :potential if at least one inspection is potential.
       if visit_counts_by_type = inspections_by_visit[visit.id]
-        # At this point, we have a bunch of reports (as keys) and an array of statuses
-        # for that report and that specific day, sorted by chronological insertion. We
-        # can assume that the last entry is the most recent for that report.
-        # The visual explanation here is to treat each report as a row in CSV, and choose
-        # the rightmost (elimination) column if it's available.
         pos_reports = visit_counts_by_type[Inspection::Types::POSITIVE]
         pot_reports = visit_counts_by_type[Inspection::Types::POTENTIAL]
-        distribution[:positive][:locations].add(visit.location_id)  if pos_reports.size > 0
-        distribution[:potential][:locations].add(visit.location_id) if pot_reports.size > 0
+        series[:positive][:locations].add(visit.location_id)  if pos_reports.size > 0
+        series[:potential][:locations].add(visit.location_id) if pot_reports.size > 0
       end
 
       # Instead of tracking negative location by presence of N and by whether the negative locations are a
       # superset of both positive locations and potential locations (as we were previously doing), we define
       # a negative location as all locations that are neither positive nor potential.
-      distribution[:negative][:locations] = distribution[:total][:locations] - (distribution[:positive][:locations] + distribution[:potential][:locations])
-
-      # Identify and find a matching entry for the key we're using. If the key
-      # is not present in the time_series, create it.
-      visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
-      series     = time_series.find {|stat| stat[:date] == visit_date}
-      if series.blank?
-        series = {:date => visit_date}
-        [:positive, :potential, :negative, :total].each do |key|
-          series[key] = {:locations => distribution[key][:locations]}
-        end
-
-        time_series << series
-      else
-        [:positive, :potential, :negative, :total].each do |key|
-          series[key][:locations].merge(distribution[key][:locations])
-        end
-      end
+      series[:negative][:locations] = series[:total][:locations] - (series[:positive][:locations] + series[:potential][:locations])
     end
 
-    # Before we return, let's convert the sets to array.
     time_series.each do |ts|
       [:positive, :potential, :negative, :total].each do |key|
         ts[key][:locations] = ts[key][:locations].to_a
       end
     end
-
     return time_series
   end
 
