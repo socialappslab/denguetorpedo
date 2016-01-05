@@ -32,20 +32,14 @@ namespace :csvs do
         location                 = Location.new(:address => address)
         location.neighborhood_id = 8 # TODO: This should change with the directory.
         location.save(:validate => false)
-
-        csv             = Spreadsheet.new
-        csv.csv         = File.open(filepath)
-        csv.user_id     = 253 # This is Harold.
-        csv.location_id = location.id
-        csv.save(:validate => false)
-
-        puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
-        next
+      else
+        location = locations.first
       end
+
 
       # At this point, we have a unique location. If the Spreadsheet instance already exists
       # (by running this rake task previously), then let's skip it.
-      location = locations.first
+
       csv = Spreadsheet.find_by_location_id(location.id)
       if csv.present?
         puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
