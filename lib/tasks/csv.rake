@@ -11,14 +11,22 @@ namespace :csvs do
   # address, attempts to locate CsvReport associated with this address, and creates
   # a new CSV instance with the matched CsvReport.
   task :copy_csv_reports => [:environment] do
+    nonunique_addresses = []
+
     galope = Neighborhood.find_by_name("Galope")
-    copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/galope/*.xlsx", galope)
+    nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/galope/*.xlsx", galope)
 
     la_quinta = Neighborhood.find_by_name("La Quinta")
-    copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/la_quinta/*.xlsx", la_quinta)
+    nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/la_quinta/*.xlsx", la_quinta)
 
     tangara = Neighborhood.find_by_name("Tangará")
-    copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/tangara/*.xlsx", tangara)
+    nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/tangara/*.xlsx", tangara)
+
+    puts "-" * 50
+    puts "There are #{nonunique_addresses.count} non-unique addresses for locations. They are: "
+    puts "nonunique_addresses: #{nonunique_addresses.inspect}"
+    puts "-" * 50
+    puts "\n" * 10
   end
 end
 
@@ -95,11 +103,5 @@ def copy_files_for_neighborhood(path, neighborhood)
     puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
   end
 
-  puts "-" * 50
-  puts "There are #{nonunique_addresses.count} non-unique addresses for locations. They are: "
-  puts "nonunique_addresses: #{nonunique_addresses.inspect}"
-  puts "-" * 50
-  puts "\n" * 10
-
-
+  return nonunique_addresses
 end
