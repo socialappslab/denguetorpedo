@@ -48,7 +48,11 @@ class CsvReportsController < ApplicationController
       end
     end
 
-    @users = @csv.location.neighborhood.users
+    if @current_user.coordinator?
+      @users = User.order("username ASC")
+    else
+      @users = @csv.location.neighborhood.users
+    end
     @breadcrumbs << {:name => @csv.csv_file_name, :path => csv_report_path(@csv)}
   end
 
