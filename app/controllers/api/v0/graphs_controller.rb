@@ -50,7 +50,7 @@ class API::V0::GraphsController < API::V0::BaseController
     end
 
     statistics.each do |shash|
-      [:positive, :potential, :negative].each do |status|
+      [:positive, :potential, :negative, :total].each do |status|
         locations = Location.where(:id => shash[status][:locations]).order("address ASC").pluck(:address)
         shash[status][:locations] = locations
       end
