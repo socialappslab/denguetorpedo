@@ -60,7 +60,6 @@ def copy_files_for_neighborhood(path, neighborhood)
 
     csv = Spreadsheet.find_by_location_id(location.id)
     if csv.present?
-      raise "The CSV already exists = #{location.inspect} | csv = #{csv.inspect}"
       puts "\n\n\nDone with address = #{address} (index = #{index})\n\n\n"
       next
     end
