@@ -133,7 +133,8 @@ class API::V0::GraphsController < API::V0::BaseController
         "% sin criaderos",
         "Lugares positivos",
         "Lugares potenciales",
-        "Lugares sin criaderos"
+        "Lugares sin criaderos",
+        "Lugares"
       ]
       timeseries.each do |series|
         csv << [
@@ -147,7 +148,8 @@ class API::V0::GraphsController < API::V0::BaseController
           series[:negative][:percent],
           series[:positive][:locations].join(","),
           series[:potential][:locations].join(","),
-          series[:negative][:locations].join(",")
+          series[:negative][:locations].join(","),
+          series[:total][:locations].join(",")
         ]
       end
     end
