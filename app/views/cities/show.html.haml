@@ -1,13 +1,19 @@
 = render :partial => "shared/flashes"
 = render :partial => "shared/form_errors", :locals => {:item => @team}
 
+- content_for :scripts do
+  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
+  :javascript
+    $(document).ready(function() {
+      $('[data-toggle="popover"]').hover(function(el) { $(el.currentTarget).popover("toggle"); })
+    })
 
 
 .container{"ng-controller" => "cityCtrl"}
   .row
     .col-md-3
-      .well
-        = link_to image_tag(@city.photo, :style => "width: 306px; margin-left: -19px; margin-top: -19px; margin-right: -19px;"), city_path(@city)
+      .well{:style => "padding-top: 0px; padding-left: 0px; padding-right: 0px;"}
+        = image_tag(@city.photo, :style => "width: 100%;")
         %p.lato-font.text-center{"style" => "font-size: 24px; margin-top: 10px; margin-bottom: 20px;"}
           = @city.name
         = select_tag "city", options_for_select(@cities.map {|c| [c.name, c.id]}), :prompt => "Visita...", :class => "form-control", "ng-model" => "chosenCity"
@@ -69,14 +75,3 @@
           %h1.text-center{"ng-show" => "chartLoading == true"}
             %i.fa.fa-spin.fa-refresh
           #green-locations-chart-minor
-
-
-
-- content_for :scripts do
-  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
-
-
-  :javascript
-    $(document).ready(function() {
-      $('[data-toggle="popover"]').hover(function(el) { $(el.currentTarget).popover("toggle"); })
-    })

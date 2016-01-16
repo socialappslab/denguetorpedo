@@ -1,3 +1,11 @@
+- content_for :scripts do
+  :javascript
+    $(document).ready(function() {
+      $("#neighborhood").change(function(el) {
+        window.location.href = "/neighborhoods/" + el.currentTarget.value;
+      });
+    })
+
 = render :partial => "shared/flashes"
 
 .container

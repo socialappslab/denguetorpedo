@@ -1,14 +1,22 @@
 
 
-.panel.panel-default
-  .panel-body
-    .denguechat-sidebar
-      .sidebar-entity-photo
-        = image_tag(asset_path(@neighborhood.picture), :class => "img-rounded")
-        .sidebar-entity-name
-          = "#{@neighborhood.name}, #{@neighborhood.city.name}, #{@neighborhood.city.state_code}"
-        .sidebar-entity-name
-          = "#{@neighborhood.city.localized_country_name}"
+.row
+  .col-md-3
+    .well{:style => "padding-top: 0px; padding-left: 0px; padding-right: 0px;"}
+
+      = image_tag(@neighborhood.photo, :style => "width: 100%;")
+      %p.lato-font.text-center{"style" => "font-size: 24px; margin-top: 10px; margin-bottom: 20px;"}
+        = "#{@neighborhood.name}, #{@neighborhood.city.name}"
+      = select_tag "neighborhood", options_for_select(@neighborhoods.map {|c| [c.name, c.id]}), :prompt => "Visita...", :class => "form-control"
+
+
+    -# .denguechat-sidebar
+    -#   .sidebar-entity-photo
+    -#     = image_tag(asset_path(@neighborhood.picture), :class => "img-rounded")
+    -#     .sidebar-entity-name
+    -#
+    -#     .sidebar-entity-name
+    -#       = "#{@neighborhood.city.localized_country_name}"
 
 
 .panel.panel-default
