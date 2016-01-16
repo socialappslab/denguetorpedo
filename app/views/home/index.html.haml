@@ -64,6 +64,16 @@
 - content_for :scripts do
   = javascript_include_tag "jquery/fancybox"
 
+  :css
+    .landing-page-banner {
+      background: url("#{@landing_page_photo}") no-repeat center;
+      -webkit-background-size: cover;
+      -moz-background-size:    cover;
+      -o-background-size:      cover;
+      background-size: cover;
+    }
+
+
   :javascript
     $(document).ready(function()
     {
