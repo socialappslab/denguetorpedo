@@ -2,7 +2,7 @@
 = render :partial => "shared/flashes"
 
 
-.landing-page-banner
+.landing-page-banner{:style => "background: url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
   = render :partial => "orange_slider"
 
 .container-silver{:style => "height: 300px;"}
@@ -57,22 +57,10 @@
     .col-md-4.col-md-offset-3{:style => "margin-top: 25px;"}
       = render "home/register_form"
 
-
-
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
   = javascript_include_tag "jquery/fancybox"
-
-  :css
-    .landing-page-banner {
-      background: url("#{asset_path(@landing_page_photo)}") no-repeat center;
-      -webkit-background-size: cover;
-      -moz-background-size:    cover;
-      -o-background-size:      cover;
-      background-size: cover;
-    }
-
 
   :javascript
     $(document).ready(function()

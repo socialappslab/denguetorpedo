@@ -32,7 +32,7 @@ class HomeController < ApplicationController
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited homepage") if Rails.env.production?
     end
 
-    @landing_page_photo = ["landing/landing_1", "landing/landing_2"].sample
+    @landing_page_photo = ["landing_1.png", "landing_2.png"].sample
   end
 
   #----------------------------------------------------------------------------
