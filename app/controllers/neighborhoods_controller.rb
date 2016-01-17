@@ -36,7 +36,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
     loc_count = @neighborhood.locations.count
     @green_houses_percent = loc_count == 0 ? "0%" : "#{(@green_location_count.to_f * 100 / loc_count).round(0)}%"
 
-    if @current_user.city
+    if @current_user && @current_user.city
       @neighborhoods = Neighborhood.where(:city_id => @current_user.city.id).order("name ASC")
     else
       @neighborhoods = Neighborhood.order("name ASC")
