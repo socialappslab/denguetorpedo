@@ -14,10 +14,35 @@
 *= require "ios"
 *= require "panel"
 *= require "jquery/atwho-min"
+*= require "bootstrap/marketing"
 */
 
 @import "variables";
 
+html, body {
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.navbar-brand {
+  padding-top: 5px;
+  padding-right: 0px;
+
+  #logo {
+    height: 40px;
+  }
+}
+
+#dashboard_bar {
+  #logo {
+    height: 50px;
+    margin-top: 17px;
+  }
+}
 
 [ng-click] {
     cursor: pointer;
@@ -93,15 +118,6 @@
   height: 60px;
 }
 
-
-#logo {
-  position: absolute;
-  left: 25px;
-  z-index: 3;
-  height: 70px;
-  top: 5px;
-}
-
 #white_spacer {
   background-color: #ffffff;
   height: 5px;
@@ -120,6 +136,15 @@
   text-align: center;
   border-top: 1px solid #e5e5e5;
 }
+
+#footer {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: white;
+  border-top: 1px solid #e5e5e5;
+}
+
+
 
 .bs-docs-footer-links {
   padding-left: 0;

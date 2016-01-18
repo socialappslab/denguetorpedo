@@ -1,69 +1,48 @@
-.row
-  .navigation-bar
+%nav.navbar.navbar-default
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#header-collapse", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      = link_to (@current_user.present? ? user_path(@current_user) : root_path), :class => "navbar-brand" do
+        = logo_image
 
-    -# Education dropdown
-    .col-md-2.col-md-offset-2{:style => "margin-top: 10px;"}
-      .main_nav_button
-        .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
-          %a{:href => "#"}
-            %h2{style: 'color:black; text-align: center;'}
-              = I18n.t("home_navigation.education.title")
-              %i.fa.fa-caret-down
-            %p{:style => "text-align: center;"}
-              = I18n.t("home_navigation.education.description")
+    #header-collapse.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        %li.dropdown
+          %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+            = I18n.t("home_navigation.education.title")
+            %span.caret
+          %ul.dropdown-menu
+            - if I18n.locale.to_s == User::Locales::SPANISH
+              = render :partial => "home/education_dropdown_es"
+            - else
+              = render :partial => "home/education_dropdown_pt"
 
-        %ul.dropdown-menu
-          - if I18n.locale.to_s == User::Locales::SPANISH
-            = render :partial => "home/education_dropdown_es"
-          - else
-            = render :partial => "home/education_dropdown_pt"
-
-
-
-    -# How-to dropdown
-    .col-md-2{:style => "margin-top: 10px;"}
-      .main_nav_button
-        .dropdown-toggle{ :data => {:toggle=>"dropdown"} }
-          %a{:href => "#"}
-            %h2{style: 'color:black; text-align: center;'}
-              = I18n.t("home_navigation.howto.title")
-              %i.fa.fa-caret-down
-            %p{:style => "text-align: center;"}
-              = I18n.t("home_navigation.howto.description")
-
-        %ul.dropdown-menu
-          - DocumentationSection.order("order_id ASC").each do |section|
-            %li
-              = link_to section.title, howto_path + "##{section.html_id_tag}"
-
-    .col-md-1{:style => "margin-top: 10px;"}
-      .main_nav_button
-        = link_to prizes_path do
-          %h2{style: 'color:black; text-align: center;'}
-            = I18n.t("home_navigation.prizes.title")
-          %p{:style => "text-align: center;"}
-            = I18n.t("attributes.points")
-
-
-    .col-md-4{:style => "text-align: center;"}
-      %div{:style => "margin-top: 20px;"}
-        = form_tag(session_path, :class => "form-inline") do
+        %li.dropdown
+          %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+            = I18n.t("home_navigation.howto.title")
+            %span.caret
+          %ul.dropdown-menu
+            - DocumentationSection.order("order_id ASC").each do |section|
+              %li
+                = link_to section.title, howto_path + "##{section.html_id_tag}"
+        %li
+          = link_to I18n.t("home_navigation.prizes.title") + " " + I18n.t("attributes.points"), prizes_path
+      %ul.nav.navbar-nav.navbar-right
+        = form_tag(session_path, :class => "navbar-form navbar-left") do
           .form-group
             = text_field_tag :username, nil, :placeholder => I18n.t("views.home.login.username"), :class => "form-control", :style => "width: 230px;"
-
           .form-group
-            = password_field_tag :password, nil, :placeholder => I18n.t("activerecord.attributes.user.password"), :class => "form-control", :style => "width: 130px;"
-
-          = submit_tag "Entrar", :class => "btn btn-success"
-        %div{:style => "position:absolute; left: 110; text-align: left; margin-top: -10px;"}
+            = password_field_tag :password, nil, :placeholder => I18n.t("activerecord.attributes.user.password"), :class => "form-control"
+          = submit_tag "Entrar", :class => "btn btn-default"
+        %li
           = link_to I18n.t("login_form.forgot_password"), new_password_reset_path
-
-
-
-
-    .col-md-1
-      .language-options
-        - if I18n.locale.to_s == User::Locales::SPANISH
-          = link_to "Português", "?locale=pt", :style => "display: inline-block; text-align: right;"
-        - else
-          = link_to "Español", "?locale=es", :style => "display: inline-block; text-align: right;"
+        %li
+          - if I18n.locale.to_s == User::Locales::SPANISH
+            = link_to "Português", "?locale=pt", :style => "display: inline-block; text-align: right;"
+          - else
+            = link_to "Español", "?locale=es", :style => "display: inline-block; text-align: right;"

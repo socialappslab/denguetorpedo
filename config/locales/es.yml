@@ -163,15 +163,15 @@ es:
   #----------------
   home_navigation:
     education:
-      title: SEPA MÁS
+      title: Sepa Más
       description: Sobre el dengue
       title_and_description: Sepa más
     howto:
-      title: JUEGUE
+      title: Juegue cómo
       description: ¿Cómo?
       title_and_description: ¿Juegue cómo?
     prizes:
-      title: GANE
+      title: Gane
       description: Puntos
       title_and_description: Gane puntos
 
