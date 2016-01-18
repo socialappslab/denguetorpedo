@@ -52,9 +52,6 @@ GEM
     analytics-ruby (2.0.12)
     angularjs-rails (1.4.4)
     arel (6.0.3)
-    autoprefixer-rails (6.3.1)
-      execjs
-      json
     aws-sdk (1.65.0)
       aws-sdk-v1 (= 1.65.0)
     aws-sdk-v1 (1.65.0)
@@ -66,9 +63,6 @@ GEM
     benchmark-ips (2.3.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bootstrap-sass (3.3.6)
-      autoprefixer-rails (>= 5.2.1)
-      sass (>= 3.3.4)
     builder (3.2.2)
     cancan (1.6.10)
     capybara (2.4.4)
@@ -316,7 +310,6 @@ DEPENDENCIES
   angularjs-rails
   aws-sdk (< 2.0)
   bcrypt-ruby (~> 3.1.2)
-  bootstrap-sass (~> 3.3.6)
   cancan
   capybara
   coffee-rails
