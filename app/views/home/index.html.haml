@@ -52,7 +52,11 @@
           = I18n.t("views.home.activity_description")
 
     .row{:style => "margin-top: 40px; margin-bottom: 40px;"}
-      = render "home/neighborhood_list"
+      - @cities.each_with_index do |city, index|
+        .col-md-3.text-center
+          = link_to city.geographical_name, city_path(city), :class => "lato-font", :style => "font-size: 18px;"
+          = link_to image_tag(city.photo, :style => "width: 200px; height: 200px;", :class => "img-rounded"), city_path(city)
+
 
   %hr.featurette-divider
     .row{:style => "margin-bottom: 80px;"}

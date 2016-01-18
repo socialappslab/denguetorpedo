@@ -524,7 +524,7 @@ es:
       login:
         username: Nombre de usuario o email
       cities:
-        title: "Ciudades usando Dengue Chat"
+        title: "Ciudades usando DengueChat"
       header: "Ciudadanos en el Combate contra el Dengue y la Chikungunya"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
