@@ -14,8 +14,12 @@
           - else
             - num_of_reports_color = "#5cb85c";
 
-          %h1{:style => "color: #{num_of_reports_color};"}
+          %h1{:style => "color: #{num_of_reports_color}; display: inline;"}
             = @green_location_count
+          %p.light-font{:style => "font-size: 16px; display: inline; margin-right: 10px;"}
+            de
+          %h1{:style => "color: #{num_of_reports_color}; display: inline;"}
+            = @locations_count
           %p.light-font
             casas verdes
 
