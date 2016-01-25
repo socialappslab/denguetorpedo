@@ -33,10 +33,9 @@
         %li
           = link_to I18n.t("home_navigation.prizes.title") + " " + I18n.t("attributes.points"), prizes_path
       %ul.nav.navbar-nav.navbar-right
-        = form_tag(session_path, :class => "navbar-form navbar-left") do
+        = form_tag(session_path, :class => "navbar-form navbar-left form-inline") do
           .form-group
-            = text_field_tag :username, nil, :placeholder => I18n.t("views.home.login.username"), :class => "form-control", :style => "width: 230px;"
-          .form-group
+            = text_field_tag :username, nil, :placeholder => I18n.t("views.home.login.username"), :class => "form-control", :style => "min-width: 230px;"
             = password_field_tag :password, nil, :placeholder => I18n.t("activerecord.attributes.user.password"), :class => "form-control"
           = submit_tag "Entrar", :class => "btn btn-default"
         %li
