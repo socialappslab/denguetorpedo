@@ -1,9 +1,14 @@
-.row
-	.col-md-15.col-md-offset-1
-		%h2{style: "margin-left: 15px; margin-top: 40px;"}
-			= I18n.t("views.education.summary")
 
-		- if I18n.locale == :es
-			= render :partial => "home/education_content_es"
-		- else
-			= render :partial => "home/education_content_pt"
+.container
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = I18n.t("views.education.summary")
+        .panel-body
+
+          - if I18n.locale == :es
+            = render :partial => "home/education_content_es"
+          - else
+            = render :partial => "home/education_content_pt"

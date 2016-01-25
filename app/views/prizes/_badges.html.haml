@@ -1,18 +1,15 @@
 .row
-  .col-md-2
+  .col-md-2.col-xs-4
     = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/de_olho.png", :prize_name => I18n.t("views.badges.eye_of_the_mosquito"), :prize_type => User::Points::WATCHER }
 
-  .col-md-2.col-md-offset-2
+  .col-md-2.col-xs-4.col-md-offset-2
     = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/exterminador.png", :prize_name => I18n.t("views.badges.exterminator"), :prize_type => User::Points::EXTERMINATOR }
 
-  .col-md-2.col-md-offset-2
+  .col-md-2.col-xs-4.col-md-offset-2
     = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/guerreiro.png", :prize_name => I18n.t("views.badges.fighter"), :prize_type => User::Points::WARRIOR }
 
-
-
-.row{:style => "margin-top: 20px;"}
-  .col-md-2.col-md-offset-2
+  .col-md-2.col-xs-4.col-md-offset-2
     = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/saudavel.png", :prize_name => I18n.t("views.badges.health_worker"), :prize_type => User::Points::HEALTHWORKER }
 
-  .col-md-2.col-md-offset-2
+  .col-md-2.col-xs-4.col-xs-offset-4.col-md-offset-2
     = render :partial => "prizes/badge", :locals => {:prize_image_location => "badges/cuido.png", :prize_name => I18n.t("views.badges.caretaker"), :prize_type => User::Points::PROTECTOR }
