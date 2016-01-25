@@ -12,26 +12,28 @@
 
     #header-collapse.collapse.navbar-collapse
       %ul.nav.navbar-nav
-        %li.dropdown
-          %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
-            = I18n.t("home_navigation.education.title")
-            %span.caret
-          %ul.dropdown-menu
-            - if I18n.locale.to_s == User::Locales::SPANISH
-              = render :partial => "home/education_dropdown_es"
-            - else
-              = render :partial => "home/education_dropdown_pt"
-
-        %li.dropdown
-          %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
-            = I18n.t("home_navigation.howto.title")
-            %span.caret
-          %ul.dropdown-menu
-            - DocumentationSection.order("order_id ASC").each do |section|
-              %li
-                = link_to section.title, howto_path + "##{section.html_id_tag}"
         %li
-          = link_to I18n.t("home_navigation.prizes.title") + " " + I18n.t("attributes.points"), prizes_path
+          = link_to I18n.t("views.footer.about"), about_path
+        -# %li.dropdown
+        -#   %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+        -#     = I18n.t("home_navigation.education.title")
+        -#     %span.caret
+        -#   %ul.dropdown-menu
+        -#     - if I18n.locale.to_s == User::Locales::SPANISH
+        -#       = render :partial => "home/education_dropdown_es"
+        -#     - else
+        -#       = render :partial => "home/education_dropdown_pt"
+        -#
+        -# %li.dropdown
+        -#   %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+        -#     = I18n.t("home_navigation.howto.title")
+        -#     %span.caret
+        -#   %ul.dropdown-menu
+        -#     - DocumentationSection.order("order_id ASC").each do |section|
+        -#       %li
+        -#         = link_to section.title, howto_path + "##{section.html_id_tag}"
+        -# %li
+        -#   = link_to I18n.t("home_navigation.prizes.title") + " " + I18n.t("attributes.points"), prizes_path
       %ul.nav.navbar-nav.navbar-right
         = form_tag(session_path, :class => "navbar-form navbar-left form-inline") do
           .form-group
