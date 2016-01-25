@@ -40,6 +40,10 @@ html, body {
 
   #logo {
     height: 40px;
+    @media(min-width: 992px) {
+      height: 50px;
+      margin-top: -5px;
+    }
   }
 }
 
@@ -143,11 +147,27 @@ html, body {
   border-top: 1px solid #e5e5e5;
 }
 
+#header {
+  .container-fluid {
+    @media (min-width: 992px) {
+      padding-top: 12px;
+      height: 75px;
+    }
+  }
+}
+
+
 #footer {
   padding-top: 40px;
   padding-bottom: 40px;
   background-color: white;
   border-top: 1px solid #e5e5e5;
+
+  .container-fluid {
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+  }
 }
 
 
