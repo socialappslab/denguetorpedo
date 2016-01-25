@@ -54,9 +54,11 @@ Dengue::Application.configure do
   }
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( jquery/* google/* bootstrap/* google-maps.js csv-ajax.js)
+  config.assets.precompile += %w(google/marker-clusterer.js csv-ajax.js datepicker.js google-maps.js)
+  config.assets.precompile += %w(bootstrap/typeahead.js bootstrap/bootstrap-multiselect.css bootstrap/marketing.css)
+  config.assets.precompile += %w(dashboard.css graphs.css)
   config.assets.precompile += %w( *.png *.jpg )
-  config.assets.precompile += %w( app/* dashboard.css bootstrap/*.css jquery/*.css graphs.css )
+  config.assets.paths << Rails.root.join("app", "assets", "templates")
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

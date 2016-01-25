@@ -5,30 +5,14 @@
 // the compiled file.
 //
 //= require_self
-//= require "feed-interactions"
 //= require angular
 //= require angular-sanitize
 //= require angular-cookies
-//= require "app/app"
-//= require "app/controllers/post_controller"
-//= require "app/controllers/chart_controller"
-//= require_tree ./app/controllers/dashboard
-//= require "app/controllers/house_index_timeseries_controller"
-//= require "app/controllers/dashboard_locations_ctrl"
-//= require "app/controllers/heatmap_controller"
-//= require "app/controllers/csv_verify_controller"
-//= require "app/controllers/city_controller"
-//= require "app/controllers/green_locations_chart_controller"
-//= require "app/controllers/csv_batch_upload_controller"
-//= require "app/directives/remote-link"
-//= require "app/directives/remote-submit"
-//= require "app/directives/compress-image"
-
-
-//= require "jquery/caret-min"
-//= require "jquery/atwho-min"
-
-
+//= require app/app
+//= require_tree ./app/controllers/
+//= require_tree ./app/directives/
+//= require_tree ./jquery/
+//= require feed-interactions
 
 window.denguechat = {};
 

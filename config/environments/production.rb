@@ -59,9 +59,10 @@ Dengue::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( jquery/* google/* bootstrap/*.js google-maps.js csv-ajax.js)
+  config.assets.precompile += %w(google/marker-clusterer.js csv-ajax.js datepicker.js google-maps.js)
+  config.assets.precompile += %w(bootstrap/typeahead.js bootstrap/bootstrap-multiselect.css bootstrap/marketing.css)
+  config.assets.precompile += %w(dashboard.css graphs.css)
   config.assets.precompile += %w( *.png *.jpg )
-  config.assets.precompile += %w( app/* feed.css panel.css cities.css dashboard.css bootstrap/bootstrap-min.css bootstrap/bootstrap-multiselect.css jquery/*.css graphs.css )
   config.assets.paths << Rails.root.join("app", "assets", "templates")
 
   # Disable delivery errors, bad email addresses will be ignored

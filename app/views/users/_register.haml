@@ -1,0 +1,34 @@
+= form_for(@user) do |f|
+  .form-group
+    %p.form-label
+      = f.label :name
+    = f.text_field :name, :class => "form-control"
+
+
+  .form-group
+    %p.form-label
+      = f.label :username
+    .input-group
+      %span.input-group-addon @
+      = f.text_field :username, :class => "form-control"
+
+
+  .form-group
+    %p.form-label
+      = f.label :password
+    = f.password_field :password, :class => "form-control"
+
+  .form-group
+    %p.form-label
+      = f.label :password_confirmation
+    = f.password_field :password_confirmation, :class => "form-control"
+
+  .form-group
+    %p.form-label
+      = f.label :neighborhood_id
+    = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }, :class => "form-control"
+
+  .form-group
+    = button_tag :type => "submit", :class => "btn btn-success btn-large col-md-12 submit-button" do
+      %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+      = button_text
