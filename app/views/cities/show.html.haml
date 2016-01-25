@@ -32,15 +32,7 @@
           %hr.muted.slightly-wide
 
 
-    .col-md-6{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:city_id => @city.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
-      - if @current_user
-        %new-post-custom
-
-      = render :partial => "shared/filter_posts"
-      = render :partial => "shared/feed"
-
-
-    .col-md-3{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
+    .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
       .panel.panel-default
         .panel-heading{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "top", "data-trigger" => "hover"}
           %h3.panel-title
@@ -75,3 +67,11 @@
           %h1.text-center{"ng-show" => "chartLoading == true"}
             %i.fa.fa-spin.fa-refresh
           #green-locations-chart-minor
+
+
+    .col-md-6.col-md-pull-3{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:city_id => @city.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
+      - if @current_user
+        %new-post-custom
+
+      = render :partial => "shared/filter_posts"
+      = render :partial => "shared/feed"
