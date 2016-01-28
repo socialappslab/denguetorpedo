@@ -525,10 +525,10 @@ es:
         username: Nombre de usuario o email
       cities:
         title: "Ciudades usando DengueChat"
-      header: "Ciudadanos en el Combate contra el Dengue y la Chikungunya"
+      header: "Ciudadanos en el Combate contra el Dengue, Zika y la Chikungunya"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
-      teams_description: Únase a equipos para combatir el dengue y la chikungunya y gane puntos
+      teams_description: Únase a equipos para combatir el Dengue, Zika y la Chikungunya y gane puntos
       video_description: "Vea un video"
       activity_description: "Haga clic en una ciudad para ver las actividades del Dengue Chat"
 

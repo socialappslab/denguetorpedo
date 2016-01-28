@@ -13,13 +13,19 @@
         DengueChat
         %span.text-muted Comunidad
       %p.lead{:style => "font-size: 24px; margin-top: 5px;"}
-        Community members use DengueChat to engage their community to combat Dengue and Chikungunya
-      %p.lead
-        %i.fa.fa-comments{:style => "font-size: 24px;"}
-        = I18n.t("views.home.chat_description")
-        %br
-        %i.fa.fa-futbol-o{:style => "font-size: 24px;"}
-        = I18n.t("views.home.teams_description")
+        DengueChat involucra a las  comunidades en la lucha contra el Dengue, el Zika y la Chikungunya
+      .row
+        .col-xs-1
+          %i.fa.fa-comments{:style => "font-size: 36px; margin-right: 20px;"}
+        .col-xs-11
+          %p.lead
+            = I18n.t("views.home.chat_description")
+      .row
+        .col-xs-1
+          %i.fa.fa-futbol-o{:style => "font-size: 36px; margin-right: 20px;"}
+        .col-xs-11
+          %p.lead
+            = I18n.t("views.home.teams_description")
     .col-md-5.col-md-pull-7
       = image_tag asset_path("denguechat_community.png"), :class => "featurette-image img-responsive center-block"
 
@@ -31,13 +37,17 @@
           DengueChat
           %span.text-muted Datos
         %p.lead{:style => "font-size: 24px; margin-top: 5px;"}
-          Organize, analyze and measure progress against Dengue in your community
-        %p.lead
-          %i.fa.fa-wrench{:style => "font-size: 24px;"}
-          Versatile tools to analyze spread and containment of Dengue and Chikungunya
-          %br
-          %i.fa.fa-pie-chart{:style => "font-size: 24px;"}
-          Community and city-level reports to engage leaders
+          Organice, analice y mida el progreso de su comunidad en la reducción del Aedes, el mosquito transmisor de los viruses del Dengue, Zika y la Chikungunya
+        .row
+          .col-xs-1
+            %i.fa.fa-wrench{:style => "font-size: 36px; margin-right: 20px;"}
+          .col-xs-11
+            %p.lead Herramientas versátiles para analizar la expansión o el contenimiento del vector del Dengue, Zika y Chikungunya
+        .row
+          .col-xs-1
+            %i.fa.fa-pie-chart{:style => "font-size: 36px; margin-right: 20px;"}
+          .col-xs-11
+            %p.lead Al nivel de la comunidad o de la ciudad generan reportes para motivar a líderes
 
       .col-md-5
         = image_tag asset_path("denguechat_data.png"), :class => "featurette-image img-responsive center-block"
