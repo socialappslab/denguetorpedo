@@ -7,6 +7,11 @@
     $(document).ready(function() {
       $('[data-toggle="popover"]').hover(function(el) { $(el.currentTarget).popover("toggle"); })
     })
+  :css
+    .popover {
+      position: fixed;
+      z-index: 1000;
+    }
 
 
 .container{"ng-controller" => "cityCtrl"}
