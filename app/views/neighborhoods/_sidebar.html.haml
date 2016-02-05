@@ -5,7 +5,7 @@
   = image_tag(@neighborhood.photo, :style => "width: 100%;")
   %p.lato-font.text-center{"style" => "font-size: 24px; margin-top: 10px; margin-bottom: 20px;"}
     = "#{@neighborhood.name}, #{@neighborhood.city.name}"
-  = select_tag "neighborhood", options_for_select(@neighborhoods.map {|c| [c.name, c.id]}), :prompt => "Visita...", :class => "form-control"
+  = select_tag "neighborhood", options_for_select(@neighborhoods.map {|c| [c.name, c.id]}), :prompt => "Visita otros barrios...", :class => "form-control"
 
 
 -# .denguechat-sidebar
