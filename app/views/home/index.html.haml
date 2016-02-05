@@ -1,8 +1,8 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
 
-
-.landing-page-banner{:style => "background: url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+.opacity-banner
+.landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
   = render :partial => "orange_slider"
 
 
