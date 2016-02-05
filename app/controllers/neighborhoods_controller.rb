@@ -36,11 +36,8 @@ class NeighborhoodsController < NeighborhoodsBaseController
     @locations_count = @neighborhood.locations.count
     @green_houses_percent = @locations_count == 0 ? "0%" : "#{(@green_location_count.to_f * 100 / @locations_count).round(0)}%"
 
-    if @current_user && @current_user.city
-      @neighborhoods = Neighborhood.where(:city_id => @current_user.city.id).order("name ASC")
-    else
-      @neighborhoods = Neighborhood.order("name ASC")
-    end
+    # James requested to display only Managua neighborhoods.
+    @neighborhoods = Neighborhood.where(:city_id => 4).order("name ASC")
     @breadcrumbs << {:name => @neighborhood.name, :path => neighborhood_path(@neighborhood)}
   end
 
