@@ -2,9 +2,8 @@
 * This is a manifest file that'll automatically include all the stylesheets available in this directory
 * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
 * the top of the compiled file, but it's generally better to create a new file per style scope.
-*= require "bootstrap/bootstrap-min"
+*= require bootstrap/bootstrap-min
 *= require home
-*= require jquery.fancybox
 *= require layout
 *= require prizes
 *= require reports
@@ -13,12 +12,48 @@
 *= require users
 *= require feed
 *= require "ios"
-*= require "panel"
 *= require "jquery/atwho-min"
+*= require "bootstrap/marketing"
+*= require about
 */
 
 @import "variables";
 
+.panel-title {
+  font-family: "Lato" sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+
+html, body {
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.navbar-brand {
+  padding-top: 5px;
+  padding-right: 0px;
+
+  #logo {
+    height: 40px;
+    @media(min-width: 992px) {
+      height: 50px;
+      margin-top: -5px;
+    }
+  }
+}
+
+#dashboard_bar {
+  #logo {
+    height: 50px;
+    margin-top: 17px;
+  }
+}
 
 [ng-click] {
     cursor: pointer;
@@ -107,15 +142,6 @@
   height: 60px;
 }
 
-
-#logo {
-  position: absolute;
-  left: 25px;
-  z-index: 3;
-  height: 70px;
-  top: 5px;
-}
-
 #white_spacer {
   background-color: #ffffff;
   height: 5px;
@@ -134,6 +160,31 @@
   text-align: center;
   border-top: 1px solid #e5e5e5;
 }
+
+#header {
+  .container-fluid {
+    @media (min-width: 992px) {
+      padding-top: 12px;
+      height: 75px;
+    }
+  }
+}
+
+
+#footer {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: white;
+  border-top: 1px solid #e5e5e5;
+
+  .container-fluid {
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+  }
+}
+
+
 
 .bs-docs-footer-links {
   padding-left: 0;
@@ -262,33 +313,16 @@ div {
 
 //-----------------------------------------------------------------------------
 // Banner configuration
-
 .landing-page-banner {
-  background: image-url("denguechat.jpg") no-repeat center;
-  -webkit-background-size: cover;
-  -moz-background-size:    cover;
-  -o-background-size:      cover;
-  background-size: cover;
-  height: 630px;
+  height: 750px;
 
   h1 {
     color: white;
-    margin-top: 460px;
-    font-size: 42px; margin-bottom: 20px; text-align: center;
-  }
-
-  .play-video-link {
+    margin-top: 500px;
+    font-size: 42px;
+    margin-bottom: 20px;
     text-align: center;
-
-    a {
-      color: white; font-size: 24px; display: inline-block;
-    }
   }
-}
-
-
-#play_button {
-  color: white;
 }
 
 

@@ -12,7 +12,6 @@ gem 'angularjs-rails'
 gem 'aws-sdk', '< 2.0'
 
 gem 'bcrypt-ruby', '~> 3.1.2'
-gem 'bootstrap-sass', '~> 3.2.0'
 
 # TODO: Should we deprecate this? The only place where we use CanCan is when
 # initializing a user.

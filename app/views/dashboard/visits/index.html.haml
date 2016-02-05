@@ -58,7 +58,7 @@
                 Vista previa
             .col-md-4.pull-right
               %a.btn.btn-block.btn-success{"ng-click" => "generateCsv()", :style => "cursor: hand;"}
-                Generar CSV inform
+                Genere un reporte CSV
 
           .form-errors{:style => "display: block;", "ng-show" => "serverError || serverErrorMessage"}
             %p
@@ -71,11 +71,11 @@
             %th{:style => "width: 10%"}
               Fecha de visita
             %th{:style => "width: 10%"}
-              Lugares positivos
+              Lugares positivos (%)
             %th{:style => "width: 10%"}
-              Lugares potenciales
+              Lugares potenciales (%)
             %th{:style => "width: 10%"}
-              Lugares sin criaderos
+              Lugares sin criaderos (%)
             %th{:style => "width: 10%"}
               Total lugares
             %th{:style => "width: 10%"}

@@ -1,105 +1,109 @@
 /*---------------------------------------------------------------------------*/
 
-.row#dashboard_bar
-  .col-xs-12.dashboard-item.pull-right.visible-xs.visible-sm.hidden-md.hidden-lg
-    .dropdown
-      %button.btn.btn-default.btn-lg.dropdown-toggle{"aria-expanded" => "true", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
-        %i.fa.fa-bars
-        Menu
-      %ul.dropdown-menu{"aria-labelledby" => "dropdownMenu1"}
+.container-fluid
+  .row#dashboard_bar
+    .col-xs-12.dashboard-item.pull-right.visible-xs.visible-sm.hidden-md.hidden-lg
+      .dropdown
+        %button.btn.btn-default.btn-lg.dropdown-toggle{"aria-expanded" => "true", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+          %i.fa.fa-bars
+          Menu
+        %ul.dropdown-menu{"aria-labelledby" => "dropdownMenu1"}
+
+          %li
+            = link_to city_path(@current_user.city) do
+              %i.fa.fa-globe
+              = I18n.t("dashboard.my_city")
+          %li
+            = link_to neighborhood_path(@current_user.neighborhood) do
+              %i.fa.fa-users.fa-2
+              = I18n.t("dashboard.my_community")
+          %li
+            = link_to teams_path do
+              %i.fa.fa-futbol-o
+              = I18n.t("activerecord.models.team", :count => 3)
+          %li
+            = link_to neighborhood_reports_path(@current_user.neighborhood) do
+              %i.fa.fa-map-marker
+              = I18n.t("dashboard.reports")
+          %li
+            = link_to csv_reports_path do
+              %i.fa.fa-table
+              CSV
+          %li
+            = link_to logout_path do
+              %i.fa.fa-2.fa-sign-out
+              = I18n.t("login_form.logout")
+
+    .col-md-1
+      = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
+
+    .col-md-2.dashboard-item.hidden-xs.hidden-sm
+      - header_styling = request.path == city_path(@current_user.city) ? "font-weight:bold;" : ""
+      = link_to city_path(@current_user.city), :style => header_styling do
+        %i.fa.fa-globe
+        = I18n.t("dashboard.my_city")
+
+    .col-md-2.dashboard-item.hidden-xs.hidden-sm
+      - header_styling = request.path == neighborhood_path(@current_user.neighborhood) ? "font-weight:bold;" : ""
+      = link_to neighborhood_path(@current_user.neighborhood), :style => header_styling do
+        %i.fa.fa-users.fa-2
+        = I18n.t("dashboard.my_community")
+
+    .col-md-2.dashboard-item.hidden-xs.hidden-sm
+      - header_styling = request.path == teams_path ? "font-weight:bold; text-align: center;" : ""
+      = link_to teams_path, :style => header_styling do
+        %i.fa.fa-futbol-o
+        = I18n.t("activerecord.models.team", :count => 3)
+
+    .col-md-2.dashboard-item.hidden-xs.hidden-sm
+      - header_styling = request.path == neighborhood_reports_path(@current_user.neighborhood) ? "font-weight:bold; text-align: center;" : ""
+      = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
+        %i.fa.fa-map-marker
+        = I18n.t("dashboard.reports")
+
+    .col-md-1.dashboard-item.hidden-xs.hidden-sm
+      - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
+      = link_to csv_reports_path, :style => header_styling do
+        %i.fa.fa-table
+        CSV
+
+    .col-md-1.dashboard-item.hidden-xs.hidden-sm
+      %a.notifications-toggle{:href => "#"}
+        %i.fa.fa-bell
+        - if @notifications.present?
+          %span.label.label-danger
+            = @notifications.count if @notifications.present?
+        &nbsp;
+
+      = render :partial => "shared/notifications"
+
+
+
+    .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
+      = image_tag(asset_path(@current_user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
+      %ul.dropdown-menu{"style" => "right: 50%;"}
         %li
-          = link_to city_path(@current_user.city) do
-            %i.fa.fa-globe
-            = I18n.t("dashboard.my_city")
+          = link_to user_path(@current_user) do
+            %i.fa.fa-user.fa-2
+            = I18n.t("dashboard.my_profile")
         %li
-          = link_to neighborhood_path(@current_user.neighborhood) do
-            %i.fa.fa-users.fa-2
-            = I18n.t("dashboard.my_community")
-        %li
-          = link_to teams_path do
-            %i.fa.fa-futbol-o
-            = I18n.t("activerecord.models.team", :count => 3)
-        %li
-          = link_to neighborhood_reports_path(@current_user.neighborhood) do
-            %i.fa.fa-map-marker
-            = I18n.t("dashboard.reports")
-        %li
-          = link_to csv_reports_path do
-            %i.fa.fa-table
-            CSV
+          = link_to edit_user_path(@current_user) do
+            %i.fa.fa-gear.fa-2
+            = I18n.t("common_terms.configuration")
+        - if @current_user.coordinator?
+          %li
+            = link_to dashboard_visits_path do
+              %i.fa.fa-line-chart.fa-2
+              = I18n.t("views.denguechat_analytics")
+          %li
+            = link_to coordinator_path do
+              %i.fa.fa-user-secret.fa-2
+              = I18n.t("views.coordinator.home")
+
         %li
           = link_to logout_path do
             %i.fa.fa-2.fa-sign-out
             = I18n.t("login_form.logout")
-
-
-  .col-md-2.col-md-offset-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == city_path(@current_user.city) ? "font-weight:bold;" : ""
-    = link_to city_path(@current_user.city), :style => header_styling do
-      %i.fa.fa-globe
-      = I18n.t("dashboard.my_city")
-
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == neighborhood_path(@current_user.neighborhood) ? "font-weight:bold;" : ""
-    = link_to neighborhood_path(@current_user.neighborhood), :style => header_styling do
-      %i.fa.fa-users.fa-2
-      = I18n.t("dashboard.my_community")
-
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == teams_path ? "font-weight:bold; text-align: center;" : ""
-    = link_to teams_path, :style => header_styling do
-      %i.fa.fa-futbol-o
-      = I18n.t("activerecord.models.team", :count => 3)
-
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == neighborhood_reports_path(@current_user.neighborhood) ? "font-weight:bold; text-align: center;" : ""
-    = link_to neighborhood_reports_path(@current_user.neighborhood), :style => header_styling do
-      %i.fa.fa-map-marker
-      = I18n.t("dashboard.reports")
-
-  .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
-    = link_to csv_reports_path, :style => header_styling do
-      %i.fa.fa-table
-      CSV
-
-  .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    %a.notifications-toggle{:href => "#"}
-      %i.fa.fa-bell
-      - if @notifications.present?
-        %span.label.label-danger
-          = @notifications.count if @notifications.present?
-      &nbsp;
-
-    = render :partial => "shared/notifications"
-
-
-
-  .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
-    = image_tag(asset_path(@current_user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
-    %ul.dropdown-menu{"style" => "right: 50%;"}
-      %li
-        = link_to user_path(@current_user) do
-          %i.fa.fa-user.fa-2
-          = I18n.t("dashboard.my_profile")
-      %li
-        = link_to edit_user_path(@current_user) do
-          %i.fa.fa-gear.fa-2
-          = I18n.t("common_terms.configuration")
-      - if @current_user.coordinator?
-        %li
-          = link_to dashboard_locations_path do
-            %i.fa.fa-line-chart.fa-2
-            = I18n.t("views.denguechat_analytics")
-        %li
-          = link_to coordinator_path do
-            %i.fa.fa-user-secret.fa-2
-            = I18n.t("views.coordinator.home")
-
-      %li
-        = link_to logout_path do
-          %i.fa.fa-2.fa-sign-out
-          = I18n.t("login_form.logout")
 
 
 

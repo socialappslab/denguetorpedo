@@ -1,91 +1,88 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
 
-
-.landing-page-banner
+.opacity-banner
+.landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
   = render :partial => "orange_slider"
 
-.container-silver{:style => "height: 300px;"}
-  .row{:style => "margin-top: 30px;"}
-    .col-md-3.col-md-offset-1{:style => "text-align: center;"}
-      %i.fa.fa-comments{:style => "font-size: 84px;"}
 
-      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
-        = I18n.t("views.home.chat_description")
+.container.marketing
+  .row.featurette{:style => "margin-top: 80px;"}
+    .col-md-7.col-md-push-5
+      %h2.featurette-heading
+        DengueChat
+        %span.text-muted Comunidad
+      %p.lead{:style => "font-size: 24px; margin-top: 5px;"}
+        DengueChat involucra a las  comunidades en la lucha contra el Dengue, el Zika y la Chikungunya
+      .row
+        .col-xs-1
+          %i.fa.fa-comments{:style => "font-size: 36px; margin-right: 20px;"}
+        .col-xs-11
+          %p.lead
+            = I18n.t("views.home.chat_description")
+      .row
+        .col-xs-1
+          %i.fa.fa-futbol-o{:style => "font-size: 36px; margin-right: 20px;"}
+        .col-xs-11
+          %p.lead
+            = I18n.t("views.home.teams_description")
+    .col-md-5.col-md-pull-7
+      = image_tag asset_path("denguechat_community.png"), :class => "featurette-image img-responsive center-block"
 
-    .col-md-4{:style => "text-align: center; margin-top: 50px;"}
-      = link_to I18n.t("common_terms.register"), new_user_path, :class => "btn btn-success btn-xlg"
+  %hr.featurette-divider
+    .row.featurette
+      .col-md-7
 
+        %h2.featurette-heading
+          DengueChat
+          %span.text-muted Datos
+        %p.lead{:style => "font-size: 24px; margin-top: 5px;"}
+          Organice, analice y mida el progreso de su comunidad en la reducción del Aedes, el mosquito transmisor de los viruses del Dengue, Zika y la Chikungunya
+        .row
+          .col-xs-1
+            %i.fa.fa-wrench{:style => "font-size: 36px; margin-right: 20px;"}
+          .col-xs-11
+            %p.lead Herramientas versátiles para analizar la expansión o el contenimiento del vector del Dengue, Zika y Chikungunya
+        .row
+          .col-xs-1
+            %i.fa.fa-pie-chart{:style => "font-size: 36px; margin-right: 20px;"}
+          .col-xs-11
+            %p.lead Al nivel de la comunidad o de la ciudad generan reportes para motivar a líderes
 
-    .col-md-3{:style => "text-align: center;"}
-      %i.fa.fa-futbol-o{:style => "font-size: 84px;"}
-
-      %h2{:style => "color: #333; font-size: 16px; line-height: 25px; margin-top: 20px;"}
-        = I18n.t("views.home.teams_description")
-
-
-/------------------------------------------------------------------------------
-
-/ Render the header, along with a dropdown to other neighborhoods.
-.container-white
-  .row
-    .col-md-12
-      %h2{:style => "color: black; font-size: 32px; text-align: center; margin-top: 10px; margin-bottom: 10px;"}
-        = I18n.t("views.home.cities.title")
-
-  /------------------------------------------------------------------------------
-  / Display a list of neighborhoods.
-
-  .row{:style => "margin-top: 40px; margin-bottom: 40px;"}
-    = render "home/neighborhood_list"
-
-  .row{:style => "margin-top: 60px; margin-bottom: 40px;"}
-    .col-md-12
-      %p{:style => "text-align: center; font-size: 24px;"}
-        = I18n.t("views.home.activity_description")
-
-
-/------------------------------------------------------------------------------
-/ Display a list of teams.
-
-.container-silver
-  .row
-    .col-md-12
-      %h2{:style => "color: black; font-size: 32px; text-align: center; margin-bottom: 20px;"}
-        = I18n.t("common_terms.register")
-  .row
-    .col-md-4.col-md-offset-3{:style => "margin-top: 25px;"}
-      = render "home/register_form"
+      .col-md-5
+        = image_tag asset_path("denguechat_data.png"), :class => "featurette-image img-responsive center-block"
 
 
+  %hr.featurette-divider
+    .row.featurette
+      .col-md-7
+        %h2.featurette-heading{:style => "margin-top: 0px;"}
+          = I18n.t("views.home.cities.title")
+        %p.lead
+          = I18n.t("views.home.activity_description")
+
+    .row{:style => "margin-top: 40px; margin-bottom: 40px;"}
+      - @cities.each_with_index do |city, index|
+        .col-md-3.text-center{:style => "margin-bottom: 40px;"}
+          = link_to image_tag(city.photo, :style => "width: 200px; height: 200px;", :class => "img-rounded"), city_path(city)
+          %br
+          = link_to city.geographical_name, city_path(city), :class => "lato-font larger-font"
+
+  %hr.featurette-divider
+    .row{:style => "margin-bottom: 80px;"}
+      .col-md-4.col-md-offset-4
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title.text-center
+              = I18n.t("common_terms.register")
+          .panel-body
+            = render :partial => "users/register", :locals => {:button_text => I18n.t("common_terms.register")}
 
 /------------------------------------------------------------------------------
 
 - content_for :scripts do
-  = javascript_include_tag "jquery/fancybox"
-
   :javascript
-    $(document).ready(function()
-    {
-
-      $(".fancybox-media").fancybox({
-        maxWidth  : 800,
-        maxHeight : 600,
-        fitToView : false,
-        width   : '70%',
-        height    : '70%',
-        autoSize  : false,
-        closeClick  : false,
-        openEffect  : 'none',
-        closeEffect : 'none'
-      });
-
-
-
-      $("#search-neighborhoods").change(function() {
-        window.location.href = $(this).val()
-      });
-
+    $(document).ready(function() {
       $(".show-more-content-link").on("click", function(eventObj)
       {
           eventObj.preventDefault()

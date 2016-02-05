@@ -2,7 +2,7 @@
 
 .row
   .col-md-4.col-md-offset-4
-    = form_tag password_resets_path, :method => :post, :class => "form-horizontal well" do
+    = form_tag password_resets_path, :method => :post, :class => "well" do
       %h1{:style => "text-align: center; margin-bottom: 20px;"}
         = I18n.t("views.password_resets.new.title")
 
@@ -10,13 +10,11 @@
         = I18n.t("views.password_resets.new.description")
 
       .form-group
-        = label_tag :email, :class => "control-label col-md-4" do
+        = label_tag :email, :class => "control-label" do
           = I18n.t("activerecord.attributes.user.email")
-        .col-md-8
-          = text_field_tag :email, nil, :class => "form-control"
+        = text_field_tag :email, nil, :class => "form-control"
 
       .form-group
-        .col-md-8.col-md-offset-4
-          = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button form-control" do
-            %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-            = I18n.t("views.buttons.submit")
+        = button_tag :type => "submit", :class => "btn btn-success btn-large submit-button form-control" do
+          %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+          = I18n.t("views.buttons.submit")

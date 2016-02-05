@@ -1,6 +1,21 @@
 # -*- encoding : utf-8 -*-
 module ApplicationHelper
 
+  def partners
+    return [
+      ["Bill & Melinda Gates Foundation", "http://www.gatesfoundation.org", "partners/bill_melinda_gates.png"],
+      ["CITRIS", "http://citris-uc.org", "partners/citris.png"],
+      ["Inria", "http://www.inria.fr", "partners/inria.png"],
+      ["Instituto Carlos Slim de la Salud", "http://www.salud.carlosslim.org/", "partners/slim.png"],
+      # ["Instituto Pereira Passos", "http://ipprio.rio.rj.gov.br/", "partners/bill_melinda_gates.png"],
+      # ["Redes da Maré", "http://redesdamare.org.br/", "partners/bill_melinda_gates.png"],
+      # ["Secretaria Municipal de Saúde do Rio de Janeiro", "http://www.rio.rj.gov.br/web/sms", "partners/bill_melinda_gates.png"],
+      ["UBS Optimus Foundation", "http://www.ubs.com/global/en/wealth_management/optimusfoundation.html", "partners/ubs.png"],
+      ["UC Berkeley", "http://www.berkeley.edu/index.html", "partners/berkeley.png"],
+      # ["UFRJ", "http://www.ufrj.br", "partners/bill_melinda_gates.png"]
+    ]
+  end
+
   def calculate_team_users(user)
     team_ids = user.teams.pluck(:id)
     users = User.joins(:team_memberships).where("team_memberships.team_id IN (?)", team_ids).order("username ASC")

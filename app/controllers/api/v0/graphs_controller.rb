@@ -124,9 +124,9 @@ class API::V0::GraphsController < API::V0::BaseController
     CSV.generate do |csv|
       csv << [
         "Fecha de visita",
-        "Lugares positivos",
-        "Lugares potenciales",
-        "Lugares sin criaderos",
+        "Lugares positivos (%)",
+        "Lugares potenciales (%)",
+        "Lugares sin criaderos (%)",
         "Total lugares",
         "% positivos",
         "% potenciales",

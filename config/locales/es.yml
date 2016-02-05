@@ -163,15 +163,15 @@ es:
   #----------------
   home_navigation:
     education:
-      title: SEPA MÁS
+      title: Sepa Más
       description: Sobre el dengue
       title_and_description: Sepa más
     howto:
-      title: JUEGUE
+      title: Juegue cómo
       description: ¿Cómo?
       title_and_description: ¿Juegue cómo?
     prizes:
-      title: GANE
+      title: Gane
       description: Puntos
       title_and_description: Gane puntos
 
@@ -526,11 +526,11 @@ es:
       login:
         username: Nombre de usuario o email
       cities:
-        title: "Ciudades usando Dengue Chat"
-      header: "Ciudadanos en el Combate contra el Dengue y la Chikungunya"
+        title: "Ciudades usando DengueChat"
+      header: "Ciudadanos en el Combate contra el Dengue, Zika y la Chikungunya"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
-      teams_description: Únase a equipos para combatir el dengue y la chikungunya y gane puntos
+      teams_description: Únase a equipos para combatir el Dengue, Zika y la Chikungunya y gane puntos
       video_description: "Vea un video"
       activity_description: "Haga clic en una ciudad para ver las actividades del Dengue Chat"
 
@@ -612,7 +612,7 @@ es:
 
     statistics:
       table:
-        title: Riesgo de Dengue y Chikungunya
+        title: Riesgo de Dengue, Zika y Chikungunya
         sites: Lugares
         clean_sites: Lugares verdes sin criaderos por mas de 14 dias
         negative_sites: Lugares con criaderos eliminados o sin criaderos
@@ -622,7 +622,7 @@ es:
         custom_date: "Escoja fecha"
         unit: Unidad
         disclaimer: "Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales"
-        title: Cambio en Riesgo en Tu Barrio de Dengue y Chikungunya
+        title: Cambio en Riesgo en Tu Barrio de Dengue, Zika y Chikungunya
         time: Tiempo
         percent_of_negative_sites: Lugares sin criaderos
         percent_of_positive_sites: Lugares con criaderos positivos

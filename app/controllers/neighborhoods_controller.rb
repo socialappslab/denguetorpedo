@@ -12,7 +12,6 @@ class NeighborhoodsController < NeighborhoodsBaseController
 
     # Calculate total metrics before we start filtering.
     @total_reports = @reports.count
-    @total_points  = @neighborhood.total_points
 
     # Limit the activity feed to *current* neighborhood members.
     user_ids = @users.pluck(:id)
@@ -33,7 +32,15 @@ class NeighborhoodsController < NeighborhoodsBaseController
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
 
-    @green_location_ranking = GreenLocationSeries.get_latest_count_for_neighborhood(@neighborhood).to_i
+    @green_location_count = GreenLocationSeries.get_latest_count_for_neighborhood(@neighborhood).to_i
+    @locations_count = @neighborhood.locations.count
+    @green_houses_percent = @locations_count == 0 ? "0%" : "#{(@green_location_count.to_f * 100 / @locations_count).round(0)}%"
+
+    if @current_user && @current_user.city
+      @neighborhoods = Neighborhood.where(:city_id => @current_user.city.id).order("name ASC")
+    else
+      @neighborhoods = Neighborhood.order("name ASC")
+    end
     @breadcrumbs << {:name => @neighborhood.name, :path => neighborhood_path(@neighborhood)}
   end
 
