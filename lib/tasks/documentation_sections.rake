@@ -213,7 +213,7 @@ namespace :documentation_sections do
 
     no está en la lista de Tipos de foco, seleccione 'Otro tipo de
 
-    foco'. Ustéd será dirigido a la página 'Contacto DT'. En ella,
+    foco'. Ustéd será dirigido a la página 'Contacto DC'. En ella,
 
     describa el Tipo de foco. Su propuesta será discutida con el equipo
 
@@ -433,7 +433,7 @@ namespace :documentation_sections do
 
     esos casos, debe contactar al equipo de Dengue Torpedo usando el
 
-    enlace 'Contacto DT' (http://www.denguetorpedo.com/feedbacks/new).
+    enlace 'Contacto DC' (http://www.denguetorpedo.com/feedbacks/new).
 
 
     Microblog

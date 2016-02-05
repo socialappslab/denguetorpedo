@@ -47,3 +47,10 @@
             = link_to "Português", "?locale=pt", :style => "display: inline-block; text-align: right;"
           - else
             = link_to "Español", "?locale=es", :style => "display: inline-block; text-align: right;"
+
+
+  - if @breadcrumbs.present?
+    %ol.breadcrumb{:style => "margin-bottom: 0px;"}
+      - @breadcrumbs.each do |bc|
+        %li{:class => "#{request.path == bc[:path] ? 'active' : ''}"}
+          = link_to bc[:name], bc[:path]

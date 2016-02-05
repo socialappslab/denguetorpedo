@@ -48,13 +48,6 @@ html, body {
   }
 }
 
-#dashboard_bar {
-  #logo {
-    height: 50px;
-    margin-top: 17px;
-  }
-}
-
 [ng-click] {
     cursor: pointer;
 }
@@ -100,6 +93,11 @@ html, body {
   border-style: solid;
   border-color: $iosgrey;
   font-size: 19px;
+
+  #logo {
+    height: 50px;
+    margin-top: 17px;
+  }
 
   a {
     line-height: 50px;
