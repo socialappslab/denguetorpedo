@@ -610,7 +610,7 @@ es:
 
     statistics:
       table:
-        title: Riesgo de Dengue y Chikungunya
+        title: Riesgo de Dengue, Zika y Chikungunya
         sites: Lugares
         clean_sites: Lugares verdes sin criaderos por mas de 14 dias
         negative_sites: Lugares con criaderos eliminados o sin criaderos
@@ -620,7 +620,7 @@ es:
         custom_date: "Escoja fecha"
         unit: Unidad
         disclaimer: "Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales"
-        title: Cambio en Riesgo en Tu Barrio de Dengue y Chikungunya
+        title: Cambio en Riesgo en Tu Barrio de Dengue, Zika y Chikungunya
         time: Tiempo
         percent_of_negative_sites: Lugares sin criaderos
         percent_of_positive_sites: Lugares con criaderos positivos
