@@ -365,7 +365,7 @@ es:
       edit_sponsors: Administrar patrocinadores
       edit_prize: Administrar premios
       edit_sms: Administrar DT Torpedos
-      edit_feedback: "Administrar Contacto DT"
+      edit_feedback: "Administrar Contacto DC"
       edit_report: Administrar tipos y métodos
       team_successfully_blocked: Equipo bloqueado exitosamente
       team_successfully_unblocked: Equipo desbloqueado exitosamente
@@ -504,7 +504,7 @@ es:
     footer:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"
-      contact: "Contacto DT"
+      contact: "Contacto DC"
       about: "Sobre DengueChat"
       creator: "Creado por el Social Apps Lab at CITRIS, UC Berkeley"
 
