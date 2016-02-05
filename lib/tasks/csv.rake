@@ -1,10 +1,6 @@
 # encoding: UTF-8
 require "roo"
 
-#------
-# NOTE: This is a one-time rake task that will place all
-# existing users into Mare neighborhood.
-
 namespace :csvs do
   # This task iterates over all files in /tmp/csvs (which should be THE files
   # that Harold's team is using for the entomological survey), identifies the
@@ -13,14 +9,16 @@ namespace :csvs do
   task :copy_csv_reports => [:environment] do
     nonunique_addresses = []
 
-    galope = Neighborhood.find_by_name("Galope")
-    nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/galope/*.xlsx", galope)
-
-    la_quinta = Neighborhood.find_by_name("La Quinta")
-    nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/la_quinta/*.xlsx", la_quinta)
-
-    tangara = Neighborhood.find_by_name("Tangará")
-    nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/tangara/*.xlsx", tangara)
+    [
+      ["Galope", "galope"],
+      ["La Quinta", "la_quinta"],
+      ["Tangará", "tangara"],
+      ["Francisco Meza", "francisco_meza"],
+      ["Ariel Darce", "ariel_darce"]
+    ].each do |n|
+      community = Neighborhood.find_by_name( n[0] )
+      nonunique_addresses += copy_files_for_neighborhood(Rails.root + "lib/nicaragua_csvs_july_december_2015/#{n[1]}/**/*.xlsx", community)
+    end
 
     puts "-" * 50
     puts "There are #{nonunique_addresses.count} non-unique addresses for locations. They are: "
