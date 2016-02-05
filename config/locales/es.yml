@@ -215,7 +215,7 @@ es:
       quantity: "Existencia: %{quantity}"
       expiration: "Plazo: %{time}"
     orange_banner:
-      tagline: Use su celular para eliminar mosquitos – ¡participe en Dengue Chat y gane premios!
+      tagline: Use su celular para eliminar mosquitos – ¡participe en DengueChat y gane premios!
 
 
   #----------------------------------------------------------------------------
@@ -344,7 +344,7 @@ es:
 
   views:
     about:
-      title: Dengue Chat
+      title: DengueChat
       description: Um aplicativo interativo de celular e web para o controle da dengue
       university: "Universidad de California, Berkeley"
     app: DengueChat
@@ -375,13 +375,13 @@ es:
     application:
       success: Éxito!
       head:
-        description: "Dengue Chat es una aplicación social gratiuta para teléfonos celulares sencillos con cámara, ligado a un sitio de red, que promueve iniciativas comunitarias para el control del dengue."
+        description: "DengueChat es una aplicación social gratiuta para teléfonos celulares sencillos con cámara, ligado a un sitio de red, que promueve iniciativas comunitarias para el control del dengue."
       error: "Algo salió mal. Por favor, intente nuevamente."
       devise_errors: "%{num_errors} errores impidieron que el usuario fuera salvado:"
-      login_required: "Regístrese para jugar en Dengue Chat o escriba la identificación con la que se registró"
+      login_required: "Regístrese para jugar en DengueChat o escriba la identificación con la que se registró"
       permission_required: Usted no tiene permiso para acceder a esta página!
       permission_denied: Usted no tiene permiso
-      user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con Dengue Chat."
+      user_blocked: "Su cuenta está bloqueada temporalmente. Por favor, entre en contacto con DengueChat."
       email_invalid: "Correo electrónico incorrecta"
     alerts:
       confirm_leave_team: "¿Está seguor que desea dejar este equipo?"
@@ -425,7 +425,7 @@ es:
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"
-      fighter: "Guerrero Dengue Chat"
+      fighter: "Guerrero DengueChat"
       health_worker: "Comunidad saludable"
       caretaker: "Yo cuido mi comunidad"
     breeding_sites:
@@ -491,7 +491,7 @@ es:
         success: "La sección eliminado exitosamente!"
 
     education:
-      title: Manual Dengue Chat
+      title: Manual DengueChat
       summary: Sumario
     elimination_methods:
       create: "Criar un método de eliminación"
@@ -505,7 +505,7 @@ es:
       code_of_conduct: "Manual de conducta"
       faq: "Preguntas frecuentes"
       contact: "Contacto DT"
-      about: "Sobre Dengue Chat"
+      about: "Sobre DengueChat"
       creator: "Creado por el Social Apps Lab at CITRIS, UC Berkeley"
 
     feed:
@@ -517,7 +517,7 @@ es:
       title: Preguntas Frecuentes
     feedback:
       new:
-        header: Enviar un mensaje al Dengue Chat
+        header: Enviar un mensaje al DengueChat
         max_message_length: "Max 3500 caracteres"
 
     home:
@@ -530,13 +530,13 @@ es:
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
       teams_description: Únase a equipos para combatir el Dengue, Zika y la Chikungunya y gane puntos
       video_description: "Vea un video"
-      activity_description: "Haga clic en una ciudad para ver las actividades del Dengue Chat"
+      activity_description: "Haga clic en una ciudad para ver las actividades del DengueChat"
 
     index:
       how_to_win_prizes: "¿Cómo ganar puntos? Haga clic aquí."
       header_non_logged_in: Puntos y Medallas
-      badge_explanation: Todos ganan medallas en Dengue Chat por puntos acumulados.
-      community_explanation: Cada comunidad de Dengue Chat determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
+      badge_explanation: Todos ganan medallas en DengueChat por puntos acumulados.
+      community_explanation: Cada comunidad de DengueChat determinará los premios apropiados. Dichos premios pueden ser comunitarios e individuales. Todos los premios son donaciones que se ganan al acumular puntos. No hay pagos ni remuneraciones para los participantes.
 
     new:
       header: "Nuevo premio"
@@ -558,7 +558,7 @@ es:
     password_resets:
       new:
         title: Restablecer su contraseña
-        description: "Para restablecer su contraseña, introduzca su correo electrónico debajo. Le enviaremos un correo electrónico con un enlace para restablecer tu contraseña. Si usted no tiene una dirección de correo electrónico, póngase en contacto con su coordinador local de Dengue Chat."
+        description: "Para restablecer su contraseña, introduzca su correo electrónico debajo. Le enviaremos un correo electrónico con un enlace para restablecer tu contraseña. Si usted no tiene una dirección de correo electrónico, póngase en contacto con su coordinador local de DengueChat."
         email: "Teclee su correo electrónico registrado"
       does_not_exist: "El 'token' de cambio de contraseña no existe."
       edit:
@@ -660,7 +660,7 @@ es:
         show_name_as: "Mostrar nombre como"
         sponsor:
           edit_prizes: "Códigos de control de los premios"
-        username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de Dengue Chat y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
+        username_notice: "Ni su correo electrónico, ni su nombre y apellidos se darán a conocer públicamente. Su nombre de usuario aparecerá en los mensajes dentro del sitio de DengueChat y otras personas pueden utilizarlo para enviarle mensajes a través del sistema de mensajería interna. Note que usted puede cambiar su nombre de usuario en cualquier momento."
 
 
 
