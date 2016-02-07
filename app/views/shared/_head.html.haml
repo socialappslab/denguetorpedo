@@ -20,5 +20,7 @@
 / OpenGraph metadata
 %meta{:property => "og:image",       :content => "https://s3.amazonaws.com/dengue-torpedo/misc/fb.png"}
 %meta{:property => "og:site_name",   :content => "DengueChat"}
+%meta{:property => "og:title",      :content => "Ciudadanos en el combate contra el Dengue, Zika y la Chikungunya"}
 %meta{:property => "og:url",         :content => "https://www.denguechat.com#{request.path}"}
+%meta{:property => "og:app_id",      :content => "<%= Rails.env.production? ? '1423593507909037' : '130567007017171' %>"}
 = csrf_meta_tags
