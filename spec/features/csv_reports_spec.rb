@@ -19,10 +19,9 @@ describe "CsvReports", :type => :feature do
     expect {
       page.find("#report_location_attributes_latitude", :visible => false).set(12)
       page.find("#report_location_attributes_longitude", :visible => false).set(12)
-      fill_in "location[address]", :with => "Test"
-      attach_file "csv_report_csv", csv
+      attach_file "spreadsheet_csv", csv
       page.find(".submit-button").click
-    }.to change(CsvReport, :count).by(1)
+    }.to change(Spreadsheet, :count).by(1)
 
   end
 
@@ -34,7 +33,7 @@ describe "CsvReports", :type => :feature do
     end
 
     it "displays an error" do
-      attach_file "csv_report_csv", csv
+      attach_file "spreadsheet_csv", csv
       page.find(".submit-button").click
       sleep 0.2
       expect(page).to have_content( I18n.t("views.csv_reports.flashes.missing_location") )
@@ -46,28 +45,26 @@ describe "CsvReports", :type => :feature do
   describe "Viewing all CSVs" do
     before(:each) do
       5.times do
-        FactoryGirl.create(:csv_report, :user_id => user.id)
+        FactoryGirl.create(:spreadsheet, :user_id => user.id)
       end
 
-      CsvReport.last.update_column(:parsed_at, Time.zone.now)
+      Spreadsheet.last.update_column(:parsed_at, Time.zone.now)
       visit csv_reports_path
     end
 
     it "displays parsing for non-parsed CSV" do
-      (1..4).each do |index|
-        expect( page.all("tr")[index + 1] ).to have_content( I18n.t("views.csv_reports.parsing") )
-      end
+      expect( page ).to have_content( I18n.t("views.csv_reports.parsing") )
     end
 
     it "display View for verified CSV" do
-      CsvReport.last.update_column(:verified_at, Time.zone.now)
+      Spreadsheet.last.update_column(:verified_at, Time.zone.now)
       visit csv_reports_path
-      expect(page.all("tr")[1]).to have_content( I18n.t("views.csv_reports.view") )
+      expect(page.all("tr")[0]).to have_content( "Editar" )
     end
 
     it "displays only your CSV" do
-      u = FactoryGirl.create(:user)
-      FactoryGirl.create(:csv_report, :user => u, :csv_file_name => "test")
+      u = create(:user)
+      create(:spreadsheet, :user => u, :csv_file_name => "test")
       expect(page).not_to have_content("test")
     end
   end

@@ -31,7 +31,10 @@ describe API::V0::GraphsController do
 
       r = build_stubbed(type_of_report, :location_id => location.id, :created_at => date, :neighborhood => neighborhood)
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
       r.update_inspection_for_visit(v)
+      ins = r.inspections.where(:visit_id => v.id).first
+      ins.update_column(:csv_id, 1)
     end
 
     pos_report = build_stubbed(:positive_report, :location_id => loc.id, :created_at => date3)
@@ -39,7 +42,11 @@ describe API::V0::GraphsController do
     pos_report.eliminated_at = date4
     pos_report.elimination_method_id = 1
     v = Visit.find_or_create_visit_for_location_id_and_date(pos_report.location_id, date4)
+    v.update_column(:csv_id, 1)
     pos_report.update_inspection_for_visit(v)
+
+    ins = pos_report.inspections.where(:visit_id => v.id).first
+    ins.update_column(:csv_id, 1)
   end
 
   #---------------------------------------------------------------------------=
@@ -147,8 +154,15 @@ describe API::V0::GraphsController do
     it "returns only those locations associated with the neighborhood" do
       location = create(:location, :address => "Address")
       r = build_stubbed(:positive_report, :location_id => location.id, :created_at => date4, :neighborhood_id => location.neighborhood_id)
+
+      # NOTE: This is necessary to include the visit and inspection counting as part of CSV.
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
       r.update_inspection_for_visit(v)
+
+      # NOTE: This is necessary to include the visit and inspection counting as part of CSV.
+      ins = r.inspections.where(:visit_id => v.id).first
+      ins.update_column(:csv_id, 1)
 
       get :timeseries, :neighborhoods => [location.neighborhood_id].to_json, :timeframe => "-1", :unit => "daily", :format => :json
       data = JSON.parse(response.body)
@@ -178,14 +192,14 @@ describe API::V0::GraphsController do
         get :timeseries, :neighborhoods => [neighborhood.id].to_json, :timeframe => "-1", :unit => "daily", :format => :csv
         raw_csv = response.body
         csv     = CSV.parse(raw_csv)
-        expect(csv[0]).to eq(["Fecha de visita", "Lugares visitados", "Lugares positivos", "Lugares potenciales", "Lugares negativos", "Lugares positivos (%)", "Lugares potenciales (%)", "Lugares sin criaderos (%)", "Dirección de lugares positivos", "Dirección de lugares potenciales", "Dirección de lugares negativos"])
+        expect(csv[0]).to eq(["Fecha de visita", "Lugares positivos (%)", "Lugares potenciales (%)", "Lugares sin criaderos (%)", "Total lugares", "% positivos", "% potenciales", "% sin criaderos", "Lugares positivos", "Lugares potenciales", "Lugares sin criaderos", "Lugares"])
       end
 
       it "returns proper content" do
         get :timeseries, :neighborhoods => [neighborhood.id].to_json, :timeframe => "-1", :unit => "daily", :format => :csv
         raw_csv = response.body
         csv     = CSV.parse(raw_csv)
-        expect(csv.last).to eq([date4.strftime("%Y-%m-%d"), "1", "0", "0", "1", "0", "0", "100", "", "", "Test address"])
+        expect(csv.last).to eq([date4.strftime("%Y-%m-%d"), "0", "0", "1", "1", "0", "0", "100", "", "", "Test address", "Test address"])
       end
     end
 
