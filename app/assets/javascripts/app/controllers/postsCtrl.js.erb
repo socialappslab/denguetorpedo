@@ -1,28 +1,11 @@
 var postListCtrl = function ($scope, $http, $attrs) {
-  $scope.post         = null;
   $scope.posts        = []
   $scope.noMoreData   = false;
   $scope.usernames    = angular.fromJson( $attrs.usernames );
   $scope.hashtags     = angular.fromJson( $attrs.hashtags  );
   $scope.filter       = {hashtag: ""};
 
-  $scope.loadPost = function() {
-    $scope.dataLoading  = true;
-    $scope.errorMessage = false;
-
-    var promise = $http({url: $attrs.postPath, method: "GET"});
-    promise = promise.then(function(response) {
-      $scope.post         = response.data;
-      $scope.errorMessage = false;
-    }, function(response) {
-      $scope.errorMessage = true;
-    })
-    promise.finally(function(response) {
-      $scope.dataLoading  = false;
-    });
-  }
-
-  $scope.loadPosts = function() {
+  var loadPosts = function() {
     var offset = $scope.posts.length;
     $scope.dataLoading  = true;
     $scope.errorMessage = false;
@@ -46,11 +29,7 @@ var postListCtrl = function ($scope, $http, $attrs) {
     });
   }
 
-  if ($attrs.postPath)
-    $scope.loadPost();
-  else
-    $scope.loadPosts();
-
+  loadPosts();
 
   $scope.toggleFilter = function(hashtag) {
     $scope.filter.hashtag = ($scope.filter.hashtag == hashtag ? "" : hashtag)
