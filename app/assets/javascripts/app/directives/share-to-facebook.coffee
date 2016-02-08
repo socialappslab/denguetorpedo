@@ -2,10 +2,14 @@ directive = () ->
   return {
     restrict: "A",
     link: (scope, element, attrs) ->
-      post = scope.post
+      post = angular.fromJson(attrs.post)
 
       title = post.user.display_name + " en DengueChat"
-      description = "\"" + post.content + "\""
+
+      if post.content
+        description = "\"" + String(post.content).replace(/<[^>]+>/gm, '') + "\""
+      else
+        description = null
 
       element.on "click", (event) ->
         FB.ui(
@@ -16,7 +20,6 @@ directive = () ->
           description: description
         , (response) ->
           console.log(response)
-          # GET THE POST ID AND UPDATE facebook_post_id column of the post.
         );
   }
 
