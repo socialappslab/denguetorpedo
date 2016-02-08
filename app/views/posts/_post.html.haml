@@ -31,10 +31,15 @@
         {{post.likes_count}}
 
     - if @current_user.present?
-      &#183;
       %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
+        %i.fa.fa-comment-o
         Comentar
 
+    %a.share-button{"share-to-facebook" => true, "ng-click" => "", :post => "{{post}}"}
+      %i.fa.fa-share
+      Compartir
+
+    - if @current_user.present?
       .pull-right{"ng-show" => "post.user.id == #{@current_user.id} || #{@current_user && @current_user.coordinator?}"}
         %a{"style" => "margin-right: 10px;", "ng-click" => "deletePost(post)", "path" => "post.actions.delete"}
           %span{"ng-hide" => "deleteRequestSubmitted"}

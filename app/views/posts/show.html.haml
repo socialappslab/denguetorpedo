@@ -1,9 +1,10 @@
-.row
-  .col-md-5.col-md-offset-4
-    %div{"ng-controller" => "DCPostListCtrl", "usernames" => User.pluck(:username), "post_path" => api_v0_post_path(@post)}
-      #newsfeed
-        %h1.text-center{"ng-show" => "dataLoading"}
-          %i.fa.fa-refresh.fa-spin
-        .feed-item-complete
-          %div{"post" => "post"}
-            = render :partial => "posts/post"
+.container
+  .row
+    .col-md-6.col-md-offset-3{:style => "margin-bottom: 40px;"}
+      %div{"ng-controller" => "postCtrl", "usernames" => User.pluck(:username), "post_path" => api_v0_post_path(@post)}
+        #newsfeed
+          %h1.text-center{"ng-show" => "dataLoading"}
+            %i.fa.fa-refresh.fa-spin
+          .feed-item-complete
+            %div{"ng-repeat" => "post in posts"}
+              = render :partial => "posts/post"
