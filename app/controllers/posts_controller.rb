@@ -10,6 +10,8 @@ class PostsController < ApplicationController
   def show
     @post = Post.find(params[:id])
 
+    @city = @post.user.city
+
     # Remove the specific notification from the array of @notifications!
     if @current_user
       notification = @notifications.where(:notification_type => "Post").where(:notification_id => @post.id).first
