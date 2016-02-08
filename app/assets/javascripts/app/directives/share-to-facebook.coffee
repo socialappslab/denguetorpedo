@@ -15,7 +15,7 @@ directive = () ->
         FB.ui(
           method: 'feed',
           link: "https://www.denguechat.com" + post.path,
-          # picture: post.photo,
+          picture: post.photo,
           name: title,
           description: description
         , (response) ->
