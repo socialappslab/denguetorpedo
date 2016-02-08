@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class PostsController < ApplicationController
-  before_filter :require_login
+  before_filter :require_login, :except => [:show]
   before_filter :find_by_id,   :only => [:like, :comment]
 
   #----------------------------------------------------------------------------
@@ -11,13 +11,15 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
 
     # Remove the specific notification from the array of @notifications!
-    notification = @notifications.where(:notification_type => "Post").where(:notification_id => @post.id).first
-    notification.update_column(:seen_at, Time.zone.now) if notification.present?
+    if @current_user
+      notification = @notifications.where(:notification_type => "Post").where(:notification_id => @post.id).first
+      notification.update_column(:seen_at, Time.zone.now) if notification.present?
 
-    # NOTE: For now, we're clearing both comments and posts if they visit the post.
-    # This may hold true for a long time.
-    @notifications.where(:notification_type => "Comment").each do |n|
-      n.update_column(:seen_at, Time.zone.now)
+      # NOTE: For now, we're clearing both comments and posts if they visit the post.
+      # This may hold true for a long time.
+      @notifications.where(:notification_type => "Comment").each do |n|
+        n.update_column(:seen_at, Time.zone.now)
+      end
     end
   end
 
