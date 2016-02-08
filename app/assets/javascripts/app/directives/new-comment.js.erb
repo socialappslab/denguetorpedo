@@ -1,0 +1,18 @@
+
+var newCommentDirective = function(){
+  return {
+    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
+    templateUrl: "<%= asset_path('comments/new.html') %>",
+    link: function(scope, element, attrs) {
+      scope.submitButtonCommentDisabled = false;
+
+      angular.element(element).find("textarea").atwho({
+        at: "@",
+        data: scope.usernames,
+        limit: 5
+      })
+    }
+  }
+}
+
+angular.module("denguechat.directives").directive("newComment", newCommentDirective);
