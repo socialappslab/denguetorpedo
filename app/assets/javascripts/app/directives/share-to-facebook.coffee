@@ -20,6 +20,7 @@ directive = () ->
           description: description
         , (response) ->
           console.log(response)
+          analytics.track("Shared post to Facebook", {id: post.id}) if response
         );
   }
 
