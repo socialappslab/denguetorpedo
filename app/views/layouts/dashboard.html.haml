@@ -7,7 +7,6 @@
 
   %body
     #container
-      = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
       = render "layouts/dashboard_analytics"
 
       .push_down
