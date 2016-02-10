@@ -89,18 +89,3 @@
               = I18n.t("common_terms.register")
           .panel-body
             = render :partial => "users/register", :locals => {:button_text => I18n.t("common_terms.register")}
-
-/------------------------------------------------------------------------------
-
-- content_for :scripts do
-  :javascript
-    $(document).ready(function() {
-      $(".show-more-content-link").on("click", function(eventObj)
-      {
-          eventObj.preventDefault()
-
-          var hiddenContent = $(eventObj.currentTarget).parent().find("#hidden-post-content");
-          hiddenContent.css("display", "inline")
-          $(eventObj.currentTarget).hide()
-      })
-    })

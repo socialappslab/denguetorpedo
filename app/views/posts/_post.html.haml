@@ -25,17 +25,16 @@
 
 
   .feed-item-interaction-menu
-    %a.likes_button{"ng-click" => "updateLikesCounter(post)", "ng-style" => "{color: post.liked == true ? '#3498db' : '#8899a6'}"}
+    %a.feed-button{"ng-click" => "updateLikesCounter(post)", "ng-style" => "{color: post.liked == true ? '#3498db' : '#8899a6'}"}
       %i.fa.fa-thumbs-up.like-icon
-      %span
-        {{post.likes_count}}
+      {{post.likes_count}}
 
     - if @current_user.present?
-      %a.comment-button{"ng-click" => "showNewComment = !showNewComment"}
+      %a.feed-button{"ng-click" => "showNewComment = !showNewComment"}
         %i.fa.fa-comment-o
         Comentar
 
-    %a.share-button{"share-to-facebook" => true, "ng-click" => "", :post => "{{post}}"}
+    %a.feed-button{"share-to-facebook" => true, "ng-click" => "", :post => "{{post}}"}
       %i.fa.fa-share
       Compartir
 

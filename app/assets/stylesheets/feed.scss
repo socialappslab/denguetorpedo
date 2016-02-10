@@ -133,10 +133,21 @@
 }
 
 
-.comment-button {
-  margin-left: 15px;
-}
 
-.share-button {
-  margin-left: 15px;
+.feed-button {
+  margin-right: 15px;
+
+  i {
+    width: 100%;
+    display: inline;
+  }
+
+  p {
+    display: inline;
+  }
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
 }
