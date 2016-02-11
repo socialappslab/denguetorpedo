@@ -11,6 +11,7 @@ class GreenLocationSeriesWorker
 
   def perform
     Time.use_zone("America/Guatemala") do
+      all_csv_loc_ids = Spreadsheet.pluck(:location_id)
 
       City.find_each do |city|
         city_green_count = 0
@@ -18,10 +19,12 @@ class GreenLocationSeriesWorker
         # Calculate and add number of green houses for each neighborhood. Keep
         # track of this number to append to city at the end.
         city.neighborhoods.each do |n|
-          locids     = n.locations.pluck(:id).flatten.uniq
+          # Before we add green locations, let's remove any location that is NOT
+          # associated with some CSV. This ensures that the data we're displaying
+          # is scoped to CSVs only.
+          locids = n.locations.pluck(:id).flatten.uniq & all_csv_loc_ids
           green_locs = Location.where(:id => locids).find_all {|loc| loc.green?}
           GreenLocationSeries.add_to_neighborhood_count(n, green_locs.count, Time.zone.now.end_of_day)
-
           city_green_count += green_locs.count
         end
 

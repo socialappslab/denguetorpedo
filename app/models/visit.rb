@@ -38,19 +38,6 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  # TODO: Deprecate? I don't like this algorithm (and it's outdated) but I haven't had time
-  # to check its accuracy.
-  def identification_type
-    id_grouping = self.inspections.select(:identification_type).group(:identification_type).count
-    if id_grouping[Inspection::Types::POSITIVE] && id_grouping[Inspection::Types::POSITIVE] >= 1
-      return Inspection::Types::POSITIVE
-    elsif id_grouping[Inspection::Types::POTENTIAL] && id_grouping[Inspection::Types::POTENTIAL] >= 1
-      return Inspection::Types::POTENTIAL
-    else
-      return Inspection::Types::NEGATIVE
-    end
-  end
-
   def inspection_types
     types = {Inspection::Types::POSITIVE => false, Inspection::Types::POTENTIAL => false, Inspection::Types::NEGATIVE => false}
     id_grouping = self.inspections.select(:identification_type).group(:identification_type).count
