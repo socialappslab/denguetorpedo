@@ -148,7 +148,7 @@ describe "Users", :type => :feature do
       fill_in "user_username", 		 			  :with => "test"
       fill_in "user_password", 						 :with => "abcdefg"
       fill_in "user_password_confirmation", :with => "abcdefg"
-      select("Ariel Darce, Managua", :from => "user_neighborhood_id")
+      select(Neighborhood.first.name, :from => "user_neighborhood_id")
       page.find(".submit-button").click
 
       expect(page).to have_content( I18n.t("activerecord.errors.messages.taken") )

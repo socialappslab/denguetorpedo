@@ -473,6 +473,8 @@ es:
         elimination_date_in_future: "Una fecha de eliminación está en el futuro"
         elimination_date_before_inspection_date: "Una fecha de eliminación está antes de una fecha de inspección"
       delete: Borrar CSV
+      inspection_index: Índice de inspección
+      house_index: Índice casa
       verify_instructions: Para verificar este CSV debes verificar todos los %{count} reportes
       finish_verification: Has terminado de verificar todos los reportes en el CSV. Para finalizar,
       parsing_errors: Procesando con errores
@@ -619,7 +621,7 @@ es:
       chart:
         custom_date: "Escoja fecha"
         unit: Unidad
-        disclaimer: "Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales"
+        disclaimer: "DengueChat enfoca sus acciones en la identificación y eliminación de barriles y otros recipientes de almacenamiento de agua como también de llantas. Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales."
         title: Cambio en Riesgo en Tu Barrio de Dengue, Zika y Chikungunya
         time: Tiempo
         percent_of_negative_sites: Lugares sin criaderos

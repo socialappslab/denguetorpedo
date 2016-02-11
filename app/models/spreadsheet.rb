@@ -3,6 +3,7 @@
 require "roo"
 
 class Spreadsheet < ActiveRecord::Base
+  attr_accessible :user_id
   self.table_name = "csvs"
 
   attr_accessible :csv
@@ -34,6 +35,10 @@ class Spreadsheet < ActiveRecord::Base
     header.map! { |h| h.to_s.downcase.strip.gsub("?", "").gsub(".", "").gsub("¿", "") }
 
     return header
+  end
+
+  def self.permitted_params
+    [:user_id]
   end
 
   #----------------------------------------------------------------------------
@@ -219,7 +224,7 @@ class Spreadsheet < ActiveRecord::Base
     # TODO: This should technically be abstracted into paperclip_defaults.
     # See https://github.com/thoughtbot/paperclip#uri-obfuscation
     # See http://stackoverflow.com/questions/22416990/paperclip-unable-to-change-default-path
-    file_location = (Rails.env.production? ? file.url : file.path)
+    file_location = (Rails.env.production? || Rails.env.staging?) ? file.url : file.path
 
     if File.extname( file.original_filename ) == ".xlsx"
       spreadsheet = Roo::Excelx.new(file_location, :file_warning => :ignore)

@@ -4,6 +4,8 @@
       $("#neighborhood").change(function(el) {
         window.location.href = "/neighborhoods/" + el.currentTarget.value;
       });
+
+      $('[data-toggle="popover"]').hover(function(el) { $(el.currentTarget).popover("toggle"); })
     })
 
 = render :partial => "shared/flashes"

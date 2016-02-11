@@ -9,8 +9,7 @@ describe API::V0::CsvReportsController do
   let(:uploaded_csv)    { ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv)) }
   let(:real_csv)        { ActionDispatch::Http::UploadedFile.new(:tempfile => File.open("spec/support/pruebaAutoreporte4.xlsx"), :filename => File.basename(csv)) }
   let(:csv_params)      {
-    {:csv_report => { :csv => uploaded_csv },
-    :location => {:address => "Test"},
+    {:spreadsheet => { :csv => uploaded_csv },
     :report_location_attributes_latitude => 12.1308585524794,
     :report_location_attributes_longitude => -86.28059864131501,
     :neighborhood_id => Neighborhood.first.id}
@@ -26,7 +25,7 @@ describe API::V0::CsvReportsController do
   it "creates a new CSV file" do
     expect {
       post :create, csv_params
-    }.to change(CsvReport, :count).by(1)
+    }.to change(Spreadsheet, :count).by(1)
   end
 
   it "creates a new location" do
@@ -38,13 +37,13 @@ describe API::V0::CsvReportsController do
   it "creates a location with proper attributes" do
     post :create, csv_params
     l = Location.last
-    expect(l.address).to eq("Test")
+    expect(l.address).to eq("forma_csv_examples")
     expect(l.latitude).to eq(12.1308585524794)
     expect(l.longitude).to eq(-86.280598641315)
   end
 
   it "uses an existing location if address exists" do
-    create(:location, :address => "Test")
+    create(:location, :address => "forma_csv_examples")
     expect {
       post :create, csv_params
     }.not_to change(Location, :count)
@@ -53,22 +52,14 @@ describe API::V0::CsvReportsController do
   it "associates the CSV with the user" do
     post :create, csv_params
 
-    csv = CsvReport.last
+    csv = Spreadsheet.last
     expect(csv.user_id).to eq(user.id)
-  end
-
-  it "associates the CSV with the neighborhood" do
-    n = FactoryGirl.create(:neighborhood)
-    post :create, csv_params.merge(:neighborhood_id => n.id)
-
-    csv = CsvReport.last
-    expect(csv.neighborhood_id).to eq(n.id)
   end
 
   it "queues a CsvParsingJob" do
     expect {
       post :create, csv_params
-    }.to change(CsvParsingWorker.jobs, :count).by(1)
+    }.to change(SpreadsheetParsingWorker.jobs, :count).by(1)
   end
 
   it "creates a location with correct neighborhood" do
@@ -85,10 +76,10 @@ describe API::V0::CsvReportsController do
   end
 
   it "doesn't create new CSV if filenames match" do
-    create(:csv_report, :csv => csv)
+    create(:spreadsheet, :csv => csv)
     expect {
       post :create, csv_params
-    }.not_to change(CsvReport, :count)
+    }.not_to change(Spreadsheet, :count)
   end
 
   #--------------------------------------------------------------------------
@@ -105,19 +96,8 @@ describe API::V0::CsvReportsController do
       expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.missing_location") )
     end
 
-    it "fails on missing location" do
-      csv      = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
-      file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
-
-      post :create, csv_params.merge(:location => {:address => ""})
-      expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.missing_address") )
-    end
-
     it "returns missing CSV error" do
-      csv      = File.open("spec/support/csv/elimination_date_before_inspection_date.xlsx")
-      file_csv =  ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv))
-
-      post :create, csv_params.merge(:csv_report => {})
+      post :create, csv_params.merge(:spreadsheet => {})
       expect( JSON.parse(response.body)["message"] ).to eq( I18n.t("views.csv_reports.flashes.unknown_format") )
     end
   end
@@ -131,14 +111,9 @@ describe API::V0::CsvReportsController do
       csv.save(:validate => false)
     end
 
-    it "updates location address" do
-      put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100 }
-      expect(csv.location.reload.address).to eq("Haha")
-    end
-
-    it "updates location neighborhood" do
-      put :update, :id => csv.id, :location => { :address => "Haha", :neighborhood_id => 100  }
-      expect(csv.location.reload.neighborhood_id).to eq(100)
+    it "updates user ID" do
+      put :update, :id => csv.id, :spreadsheet => {:user_id => 1}
+      expect(csv.reload.user_id).to eq(1)
     end
   end
 
@@ -155,11 +130,6 @@ describe API::V0::CsvReportsController do
       put :verify, :id => csv.id
       expect(csv.reload.verified_at).not_to eq(nil)
     end
-
-    it "returns proper redirect path" do
-      put :verify, :id => csv.id
-      expect( JSON.parse(response.body)["redirect_path"] ).to eq( csv_report_path(csv) )
-    end
   end
 
   #--------------------------------------------------------------------------
@@ -171,7 +141,7 @@ describe API::V0::CsvReportsController do
 
       expect {
         delete :destroy, :id => csv.id
-      }.to change(CsvReport, :count).by(-1)
+      }.to change(Spreadsheet, :count).by(-1)
     end
   end
   #--------------------------------------------------------------------------
@@ -191,7 +161,7 @@ describe API::V0::CsvReportsController do
     end
 
     after(:each) do
-      CsvParsingWorker.drain
+      SpreadsheetParsingWorker.drain
     end
 
     around(:each) do |example|
@@ -203,13 +173,13 @@ describe API::V0::CsvReportsController do
     it "creates N Sidekiq jobs" do
       expect {
         post :batch, :multiple_csv => @multiple_csvs
-      }.to change(CsvParsingWorker.jobs, :count).by(3)
+      }.to change(SpreadsheetParsingWorker.jobs, :count).by(3)
     end
 
     it "doesn't create new CSVs" do
       expect {
         post :batch, :multiple_csv => @multiple_csvs
-      }.not_to change(CsvReport, :count)
+      }.not_to change(Spreadsheet, :count)
     end
 
     describe "with errors" do
@@ -225,7 +195,7 @@ describe API::V0::CsvReportsController do
       it "doesn't create any Sidekiq jobs" do
         expect {
           post :batch, :multiple_csv => @multiple_csvs
-        }.not_to change(CsvParsingWorker.jobs, :count)
+        }.not_to change(SpreadsheetParsingWorker.jobs, :count)
       end
     end
   end

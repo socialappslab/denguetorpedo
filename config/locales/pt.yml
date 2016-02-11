@@ -551,7 +551,7 @@ pt:
         positive_sites: com focos positivos
         potential_sites: com focos potenciais
       chart:
-        disclaimer: "Nota: Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales"
+        disclaimer: "Nota: Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales."
         title: Mudança em Risco em Sua Comunidade de Dengue e Chikungunya
         time: Tempo
         percent_of_negative_sites: Lugares sem focos

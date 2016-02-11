@@ -84,6 +84,8 @@
               Lugares potenciales
             %th{:style => "width: 10%"}
               Lugares sin criaderos
+            %th{:style => "width: 10%"}
+              Lugares
           %tbody
             %tr{"ng-repeat" => "series in timeseries"}
               %td{:style => "width: 10%"}
@@ -107,6 +109,9 @@
                   {{location}}
               %td{:style => "width: 10%"}
                 .show{"ng-repeat" => "location in series.negative.locations"}
+                  {{location}}
+              %td{:style => "width: 10%"}
+                .show{"ng-repeat" => "location in series.total.locations"}
                   {{location}}
         .panel-footer
           Seleccione comunidades, la unidad y el tiempo para generar informe.

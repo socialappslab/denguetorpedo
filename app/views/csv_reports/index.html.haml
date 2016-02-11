@@ -23,57 +23,60 @@
           %h3.panel-title
             Reglas
         .panel-body
-          %p.light-font
+          %p.light-font.large-font
             Suba un nuevo CSV para que DengueChat lo analice.
             Si tiene un CSV con nuevas visitas, por favor súbale usando el mismo
             nombre del CSV original para asegurase que DengueChat tenga los datos completos.
+          %br
+          %p.light-font.large-font
+            Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
+
   .row
     .col-md-12
       .panel.panel-default
         %table.table.table-bordered.table-hover.text-center.statistics-table
           %thead
             %th.text-center
+              Fecha de carga
+            %th.text-center
+              = I18n.t("activerecord.models.user", :count => 1)
+            %th.text-center
               CSV
             %th.text-center
               = I18n.t("attributes.location_id")
-            %th.text-center
-              Fecha de carga
             %th.text-center
               = I18n.t("activerecord.attributes.visit.visited_at")
             %th.text-center
               Condición
           %tbody
-            %tr
-              %td.text-left.light-font
-                Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx 
-              %td
-              %td
-              %td
-              %td
             - @csvs.each do |csv|
               - visits = csv.visits.order("visited_at ASC").map {|v| v.visited_at.strftime("%Y-%m-%d")}.uniq
               %tr{:data => {"csv_id" => csv.id}}
-                %td{"style" => "width: 20%;"}
-                  = link_to csv.csv_file_name, csv.csv.url
-                %td{"style" => "width: 20%;"}
+                %td{"style" => "width: 10%;"}
+                  = csv.updated_at.strftime("%Y-%m-%d %H:%M")
+                %td{"style" => "width: 15%;"}
+                  = csv.user && csv.user.name
+                %td{"style" => "width: 15%;"}
+                  = link_to csv.csv.url do
+                    = csv.csv_file_name
+                    %i.fa.fa-download
+                %td{"style" => "width: 15%;"}
                   = csv.location.address if csv.location.present?
-                %td{"style" => "width: 20%;"}
-                  = csv.created_at.strftime("%Y-%m-%d %H:%M")
-                %td{"style" => "width: 20%;"}
+                %td{"style" => "width: 25%;"}
                   %ul.list-group
                     - visits.each do |visit_date|
                       %li.list-group-item
                         = visit_date
-                %td{"style" => "width: 20%;"}
+                %td{"style" => "width: 25%;"}
                   - if csv.csv_errors.present?
-                    = link_to I18n.t("views.csv_reports.failed_with_errors"), csv_report_path(csv), :class => "btn btn-danger btn-block"
+                    = I18n.t("views.csv_reports.parsing_errors") + ":"
+                    %ul
+                    - @csv.csv_errors.each do |error|
+                      %li{"style" => "font-size: 18px; line-height: 40px;"}
+                        = CsvError.humanized_errors[error.error_type]
                   - elsif csv.parsed_at.blank?
                     = I18n.t("views.csv_reports.parsing") + "..."
-                  - elsif csv.verified_at.blank?
-                    = link_to I18n.t("views.csv_reports.verify"), verify_csv_report_path(csv), :class => "btn btn-warning btn-block"
                   - else
-                    = link_to I18n.t("views.csv_reports.view"), csv_report_path(csv), :class => "btn btn-info btn-block"
-
-                  %hr
-
-                  = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "text-danger", :prompt => I18n.t("common_terms.are_you_sure")
+                    = link_to I18n.t("common_terms.edit"), csv_report_path(csv), :class => "btn btn-warning btn-block"
+                    - if csv.verified_at.present?
+                      = I18n.t("views.csv_reports.verified_time_ago", :time => time_ago_in_words(csv.verified_at))

@@ -16,7 +16,7 @@ var remoteLinkDirective = function($http){
 
         var ajax = $http({url: event.currentTarget.href, method: attrs.method});
         ajax.success(function(response) {
-          alert("Success!");
+          alert("¡Éxito!");
 
           if (response.redirect_path)
             window.location.href = response.redirect_path;

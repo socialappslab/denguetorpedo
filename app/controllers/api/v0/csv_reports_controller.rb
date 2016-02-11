@@ -14,16 +14,11 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
-    address = params[:location][:address]
     if lat.blank? || long.blank?
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422) and return
     end
 
-    if address.blank?
-      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_address"), 422) and return
-    end
-
-    if params[:csv_report].blank?
+    if params[:spreadsheet].blank?
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
     end
 
@@ -31,7 +26,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
     @neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
 
     # Create or find the location.
-    location = Location.find_by_address(address)
+    address  = Spreadsheet.extract_address_from_filepath(params[:spreadsheet][:csv].original_filename)
+    location = Location.where("lower(address) = ?", address.downcase).first
     location = Location.new(:address => address) if location.blank?
     location.latitude  = lat
     location.longitude = long
@@ -39,17 +35,16 @@ class API::V0::CsvReportsController < API::V0::BaseController
     location.save
 
     # Create the CSV.
-    @csv_report = CsvReport.find_by_csv_file_name(params[:csv_report][:csv].original_filename)
-    @csv_report = CsvReport.new if @csv_report.blank?
+    @csv_report = Spreadsheet.find_by_csv_file_name(params[:spreadsheet][:csv].original_filename)
+    @csv_report = Spreadsheet.new if @csv_report.blank?
 
-    @csv_report.csv          = params[:csv_report][:csv]
+    @csv_report.csv          = params[:spreadsheet][:csv]
     @csv_report.user_id      = @current_user.id
-    @csv_report.neighborhood = @neighborhood
     @csv_report.location     = location
     @csv_report.save
 
     # Queue a job to parse the newly created CSV.
-    CsvParsingWorker.perform_async(@csv_report.id)
+    SpreadsheetParsingWorker.perform_async(@csv_report.id)
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
@@ -63,9 +58,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # 2. Making sure that the location exists,
     csvs = []
     params[:multiple_csv].each do |csv|
-      filename = csv.original_filename.split("/").last
-      filename = filename.split(".").first.strip
-      location = Location.where("lower(address) = ?", filename.downcase).first
+      address  = Spreadsheet.extract_address_from_filepath(csv.original_filename)
+      location = Location.where("lower(address) = ?", address.downcase).first
       if location.blank?
         raise API::V0::Error.new("¡Uy! No se pudo encontrar lugar para #{csv.original_filename}", 422) and return
       end
@@ -77,16 +71,15 @@ class API::V0::CsvReportsController < API::V0::BaseController
       csv      = csv_hash[:csv]
       location = csv_hash[:location]
 
-      @csv_report = CsvReport.find_by_csv_file_name(csv.original_filename)
-      @csv_report = CsvReport.new if @csv_report.blank?
+      @csv_report = Spreadsheet.find_by_csv_file_name(csv.original_filename)
+      @csv_report = Spreadsheet.new if @csv_report.blank?
 
       @csv_report.csv             = csv
       @csv_report.user_id         = @current_user.id
-      @csv_report.neighborhood_id = location.neighborhood_id
       @csv_report.location_id     = location.id
       @csv_report.save(:validate => false)
 
-      CsvParsingWorker.perform_async(@csv_report.id)
+      SpreadsheetParsingWorker.perform_async(@csv_report.id)
     end
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
@@ -97,20 +90,15 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # PUT /api/v0/csv_reports/:id
 
   def update
-    @csv      = @current_user.csv_reports.find_by_id(params[:id])
-    @location = @csv.location
-
-    if params[:location].present?
-      @location.address         = params[:location][:address]
-      @location.neighborhood_id = params[:location][:neighborhood_id]
+    @csv = @current_user.csvs.find_by_id(params[:id])
+    if @csv.blank?
+      raise API::V0::Error.new("CSV ya eliminado o no es tu CSV", 422) and return
     end
 
-    @csv.update_column(:neighborhood_id, @location.neighborhood_id)
-
-    if @location.save
-      render :json => {:redirect_path => verify_csv_report_path(@csv)}, :status => 200 and return
+    if @csv.update_attributes(spreadsheet_params)
+      render :json => {:reload => true}, :status => 200 and return
     else
-      raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
+      raise API::V0::Error.new(@csv.errors.full_messages[0], 422) and return
     end
   end
 
@@ -119,7 +107,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # DELETE /api/v0/csv_reports/:id
 
   def destroy
-    @csv = @current_user.csv_reports.find_by_id(params[:id])
+    @csv = @current_user.csvs.find_by_id(params[:id])
     if @csv.blank?
       raise API::V0::Error.new("CSV ya eliminado o no es tu CSV", 422) and return
     end
@@ -135,12 +123,18 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # PUT /api/v0/csv_reports/:id/verify
 
   def verify
-    @csv = @current_user.csv_reports.find(params[:id])
+    @csv = @current_user.csvs.find(params[:id])
     @csv.update_column(:verified_at, Time.zone.now)
-    render :json => {:redirect_path => csv_report_path(@csv)}, :status => 200 and return
+    render :json => {:reload => true}, :status => 200 and return
   end
 
 
   #----------------------------------------------------------------------------
+
+  private
+
+  def spreadsheet_params
+    params.require(:spreadsheet).permit(Spreadsheet.permitted_params)
+  end
 
 end

@@ -34,6 +34,10 @@ class Location < ActiveRecord::Base
     return ""
   end
 
+  def self.permitted_params
+    [:address, :neighborhood_id]
+  end
+
   #----------------------------------------------------------------------------
 
   # We define a green location as

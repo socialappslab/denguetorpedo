@@ -10,9 +10,9 @@ class CsvReport < ActiveRecord::Base
   belongs_to :location
   belongs_to :neighborhood
 
-  has_many :reports, :dependent => :destroy
+  has_many :reports
   has_many :visits, -> {distinct}, :through => :reports
-  has_many :csv_errors, :dependent => :destroy
+  has_many :csv_errors
 
   validates :neighborhood_id, :presence => true
 

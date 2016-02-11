@@ -14,9 +14,9 @@ $(document).ready(function() {
     for (var i = 0; i < form.length; i++)
       fd.append( form[i].name, form[i].value )
 
-    var input = document.getElementById("csv_report_csv");
+    var input = document.getElementById("spreadsheet_csv");
     if (input.files[0])
-      fd.append( 'csv_report[csv]', input.files[0] );
+      fd.append( 'spreadsheet[csv]', input.files[0] );
 
     // Perform the AJAX request.
     url    = $(this).attr("action")
@@ -58,5 +58,18 @@ $(document).ready(function() {
         button.attr("disabled", false);
       }
     })
+  })
+
+  $("#spreadsheet_csv").on("change", function(event) {
+    if ( window.File && window.FileReader && window.FileList && window.Blob ) {
+      var file = event.target.files[0];
+      var filename = file.name.replace("xlsx", "").replace(/\./g, "");
+      $("#location_association").show();
+      $("#location_address").text(filename);
+    } else {
+      alert('The File APIs are not fully supported in this browser.');
+      return false;
+    }
+
   })
 })

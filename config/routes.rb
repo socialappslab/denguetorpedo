@@ -15,7 +15,13 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :reports,     :only => [:index, :create, :destroy]
+      resources :visits,     :only => [:update]
+
+
+      #-------------------------------------------------------------------------
+
+      resources :inspections, :only => [:update]
+      resources :reports,     :only => [:index, :update, :create, :destroy]
 
       #-------------------------------------------------------------------------
 
@@ -39,7 +45,7 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :locations, :only => [:index] do
+      resources :locations, :only => [:index, :update] do
       end
 
       #-------------------------------------------------------------------------
