@@ -55,7 +55,9 @@
                   %td{"style" => "width: 7%;"}
                     {{visit.timestamp}}
                   %td{"style" => "width: 5%;"}
-                    %i.fa.fa-circle{:style => "color: {{visit.color}}"}
+                    %div{"ng-repeat" => "color in visit.colors"}
+                      %i.fa.fa-circle{:style => "color: {{color}}"}
+                      %br
 
 
                   %td{"style" => "width: 15%;"}

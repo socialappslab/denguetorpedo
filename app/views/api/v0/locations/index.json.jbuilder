@@ -9,8 +9,7 @@ json.locations @locations do |location|
 
   json.visits location.visits.order("visited_at ASC").includes(:inspections) do |visit|
     json.timestamp  format_csv_timestamp(visit.visited_at)
-    json.color      color_for_inspection_status(visit.identification_type)
-    json.identification_type visit.identification_type
+    json.colors visit.inspection_types.select {|k,v| v}.map {|k,v| color_for_inspection_status(k)}
 
     json.inspections visit.inspections.includes(:report).order("position ASC") do |ins|
       json.(ins, :identification_type)
