@@ -25,23 +25,6 @@ var ctrl = function ($scope, $http, $attrs) {
   $scope.navigateToReport = function(report) {
     window.location.href = "/neighborhoods/" + report.neighborhood_id + "/reports/" + report.id + "/verify"
   }
-
-  $scope.verifyCsv = function() {
-    var ajax = $http.put("/api/v0/csv_reports/" + $scope.csv.id + "/verify", {"reports": $scope.csv.reports});
-    ajax.success(function(data) {
-      window.alert("Éxito!");
-      window.location.href = data.redirect_path;
-
-    });
-    ajax.error(function(response) {
-      window.alert(response.message)
-    });
-    ajax.then(function(response) {
-    });
-
-    $scope.loading = false;
-
-  }
 };
 
 

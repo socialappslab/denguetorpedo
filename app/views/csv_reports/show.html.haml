@@ -8,7 +8,7 @@
     .col-md-4.col-xs-4
       .pull-right
         - if @csv.verified_at.blank?
-          = link_to I18n.t("views.csv_reports.verify"), "#", :class => "btn btn-lg btn-warning", "ng-click" => "verifyCsv()"
+          = link_to I18n.t("views.csv_reports.verify"), verify_api_v0_csv_report_path(@csv), :class => "btn btn-lg btn-warning", "remote-link" => true, :reload => true, :method => "PUT"
         - else
           = I18n.t("views.csv_reports.verified_time_ago", :time => time_ago_in_words(@csv.verified_at))
         = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(@csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "btn btn-danger btn-lg", :prompt => I18n.t("common_terms.are_you_sure")
