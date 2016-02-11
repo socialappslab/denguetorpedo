@@ -11,6 +11,8 @@ module GreenLocationSeries
   def self.add_green_houses_to_date(city, house_count, end_of_week)
     $redis_pool.with do |redis|
       formatted_date = self.format_date(end_of_week)
+      matches = redis.zscan(self.redis_key_for_city(city), 0, {:match => "#{formatted_date}:*"})[-1]
+      matches.each {|match| redis.zrem(self.redis_key_for_city(city), match[0]) }
       redis.zadd(self.redis_key_for_city(city), formatted_date.to_i, "#{formatted_date}:#{house_count}" )
     end
   end
