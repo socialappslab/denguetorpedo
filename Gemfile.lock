@@ -273,6 +273,9 @@ GEM
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
     slop (3.6.0)
+    spring (1.6.2)
+    spring-commands-rspec (1.0.4)
+      spring (>= 0.9.1)
     sprockets (3.3.2)
       rack (~> 1.0)
     sprockets-rails (2.3.2)
@@ -334,6 +337,7 @@ DEPENDENCIES
   pg
   poltergeist
   protected_attributes
+  pry
   puma
   pundit
   rack-cache
@@ -348,6 +352,8 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   sidekiq
   sinatra
+  spring (~> 1.6.1)
+  spring-commands-rspec
   timecop
   uglifier (>= 1.0.3)
   web-console (~> 2.0)
