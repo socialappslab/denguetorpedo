@@ -32,8 +32,9 @@ class NeighborhoodsController < NeighborhoodsBaseController
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
 
+    all_csv_loc_ids = Spreadsheet.pluck(:location_id)
     @green_location_count = GreenLocationSeries.get_latest_count_for_neighborhood(@neighborhood).to_i
-    @locations_count = @neighborhood.locations.count
+    @locations_count = @neighborhood.locations.find_all {|loc| all_csv_loc_ids.include?(loc.id)}.count
     @green_houses_percent = @locations_count == 0 ? "0%" : "#{(@green_location_count.to_f * 100 / @locations_count).round(0)}%"
 
     # James requested to display only Managua neighborhoods.
