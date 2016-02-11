@@ -1,0 +1,25 @@
+var newPostCustomDirective = function(){
+  return {
+    restrict: "E", // Restrict the template to being called only when using <feed-item> HTML element.
+    templateUrl: "<%= asset_path('posts/new_custom.html') %>",
+    link: function(scope, element, attrs) {
+      scope.submitButtonDisabled = false;
+
+      angular.element(element).find("textarea").atwho({
+        at: "@",
+        data: scope.usernames,
+        limit: 5
+      })
+
+      angular.element(element).find("textarea").atwho({
+        at: "#",
+        data: scope.hashtags,
+        limit: 5
+      })
+    }
+  }
+}
+
+
+// Define the directives on the controller.
+angular.module("denguechat.directives").directive("newPostCustom", newPostCustomDirective);

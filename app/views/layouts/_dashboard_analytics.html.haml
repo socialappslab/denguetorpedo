@@ -1,103 +1,159 @@
-/*---------------------------------------------------------------------------*/
+%nav.navbar.navbar-default#header
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#header-collapse", "data-toggle" => "collapse", :type => "button"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      = link_to (@current_user.present? ? user_path(@current_user) : root_path), :class => "navbar-brand" do
+        = logo_image
 
-.row#dashboard_bar
-  .col-xs-12.dashboard-item.pull-right.visible-xs.visible-sm.hidden-md.hidden-lg
-    .dropdown
-      %button.btn.btn-default.btn-lg.dropdown-toggle{"aria-expanded" => "true", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
-        %i.fa.fa-bars
-        Menu
-      %ul.dropdown-menu{"aria-labelledby" => "dropdownMenu1"}
+    #header-collapse.collapse.navbar-collapse
+      %ul.nav.navbar-nav
         %li
-          = link_to dashboard_visits_path do
+          %a
+        %li.user-navigation
+          - header_styling = request.path == dashboard_visits_path ? "font-weight:bold;" : ""
+          = link_to dashboard_visits_path, :style => header_styling do
             %i.fa.fa-clock-o.fa-2
             = I18n.t("views.dashboard.navigation.visits")
-
         %li
-          = link_to dashboard_locations_path do
+          %a
+        %li.user-navigation
+          - header_styling = request.path == dashboard_locations_path ? "font-weight:bold;" : ""
+          = link_to dashboard_locations_path, :style => header_styling do
             %i.fa.fa-globe
             = I18n.t("views.dashboard.navigation.locations")
-        -# %li
-        -#   = link_to dashboard_graphs_path do
-        -#     %i.fa.fa-futbol-o
-        -#     = I18n.t("views.dashboard.navigation.graphs")
         %li
-          = link_to heatmap_dashboard_graphs_path do
+          %a
+        %li.user-navigation
+          - header_styling = request.path == heatmap_dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
+          = link_to heatmap_dashboard_graphs_path, :style => header_styling do
             %i.fa.fa-map-marker
-            = I18n.t("views.dashboard.navigation.heatmap")
+            =I18n.t("views.dashboard.navigation.heatmap")
         %li
-          = link_to csv_reports_path do
+          %a
+        %li.user-navigation
+          - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
+          = link_to csv_reports_path, :style => header_styling do
             %i.fa.fa-table
             CSV
-        %li
-          = link_to logout_path do
-            %i.fa.fa-2.fa-sign-out
-            = I18n.t("login_form.logout")
-
-
-  .col-md-2.col-md-offset-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == dashboard_visits_path ? "font-weight:bold;" : ""
-    = link_to dashboard_visits_path, :style => header_styling do
-      %i.fa.fa-clock-o.fa-2
-      = I18n.t("views.dashboard.navigation.visits")
-
-
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == dashboard_locations_path ? "font-weight:bold;" : ""
-    = link_to dashboard_locations_path, :style => header_styling do
-      %i.fa.fa-globe
-      = I18n.t("views.dashboard.navigation.locations")
-
-
-  -# .col-md-2.dashboard-item.hidden-xs.hidden-sm
-  -#   - header_styling = request.path == dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
-  -#   = link_to dashboard_graphs_path, :style => header_styling do
-  -#     %i.fa.fa-futbol-o
-  -#     = I18n.t("views.dashboard.navigation.graphs")
-
-  .col-md-2.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == heatmap_dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
-    = link_to heatmap_dashboard_graphs_path, :style => header_styling do
-      %i.fa.fa-map-marker
-      =I18n.t("views.dashboard.navigation.heatmap")
-
-  .col-md-1.dashboard-item.hidden-xs.hidden-sm
-    - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
-    = link_to csv_reports_path, :style => header_styling do
-      %i.fa.fa-table
-      CSV
-
-  .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
-    = image_tag(asset_path(@current_user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
-    %ul.dropdown-menu{"style" => "right: 50%;"}
-      %li
-        = link_to user_path(@current_user) do
-          %i.fa.fa-user.fa-2
-          = I18n.t("dashboard.my_profile")
-      %li
-        = link_to edit_user_path(@current_user) do
-          %i.fa.fa-gear.fa-2
-          = I18n.t("common_terms.configuration")
-      - if @current_user.coordinator?
-        %li
-          = link_to city_path(@current_user.city) do
-            %i.fa.fa-users.fa-2
-            = I18n.t("views.denguechat_engage")
-        %li
-          = link_to coordinator_path do
-            %i.fa.fa-user-secret.fa-2
-            = I18n.t("views.coordinator.home")
-
-      %li
-        = link_to logout_path do
-          %i.fa.fa-2.fa-sign-out
-          = I18n.t("login_form.logout")
 
 
 
+      %ul.nav.navbar-nav.navbar-right
+        = render :partial => "shared/profile_dropdown"
+
+  - if @breadcrumbs.present?
+    %ol.breadcrumb{:style => "margin-bottom: 0px;"}
+      - @breadcrumbs.each do |bc|
+        %li{:class => "#{request.path == bc[:path] ? 'active' : ''}"}
+          = link_to bc[:name], bc[:path]
 
 
-- if @breadcrumbs.present?
-  %ol.breadcrumb
-    - @breadcrumbs.each do |bc|
-      %li{:class => "#{request.path == bc[:path] ? 'active' : ''}"}
-        = link_to bc[:name], bc[:path]
+
+/*---------------------------------------------------------------------------*/
+
+-# .row#dashboard_bar
+-#   .col-xs-12.dashboard-item.pull-right.visible-xs.visible-sm.hidden-md.hidden-lg
+-#     .dropdown
+-#       %button.btn.btn-default.btn-lg.dropdown-toggle{"aria-expanded" => "true", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+-#         %i.fa.fa-bars
+-#         Menu
+-#       %ul.dropdown-menu{"aria-labelledby" => "dropdownMenu1"}
+-#         %li
+-#           = link_to dashboard_visits_path do
+-#             %i.fa.fa-clock-o.fa-2
+-#             = I18n.t("views.dashboard.navigation.visits")
+-#
+-#         %li
+-#           = link_to dashboard_locations_path do
+-#             %i.fa.fa-globe
+-#             = I18n.t("views.dashboard.navigation.locations")
+-#         -# %li
+-#         -#   = link_to dashboard_graphs_path do
+-#         -#     %i.fa.fa-futbol-o
+-#         -#     = I18n.t("views.dashboard.navigation.graphs")
+-#         %li
+-#           = link_to heatmap_dashboard_graphs_path do
+-#             %i.fa.fa-map-marker
+-#             = I18n.t("views.dashboard.navigation.heatmap")
+-#         %li
+-#           = link_to csv_reports_path do
+-#             %i.fa.fa-table
+-#             CSV
+-#         %li
+-#           = link_to logout_path do
+-#             %i.fa.fa-2.fa-sign-out
+-#             = I18n.t("login_form.logout")
+-#
+-#
+-#   .col-md-2.col-md-offset-1.dashboard-item.hidden-xs.hidden-sm
+-#     - header_styling = request.path == dashboard_visits_path ? "font-weight:bold;" : ""
+-#     = link_to dashboard_visits_path, :style => header_styling do
+-#       %i.fa.fa-clock-o.fa-2
+-#       = I18n.t("views.dashboard.navigation.visits")
+-#
+-#
+-#   .col-md-2.dashboard-item.hidden-xs.hidden-sm
+-#     - header_styling = request.path == dashboard_locations_path ? "font-weight:bold;" : ""
+-#     = link_to dashboard_locations_path, :style => header_styling do
+-#       %i.fa.fa-globe
+-#       = I18n.t("views.dashboard.navigation.locations")
+-#
+-#
+-#   -# .col-md-2.dashboard-item.hidden-xs.hidden-sm
+-#   -#   - header_styling = request.path == dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
+-#   -#   = link_to dashboard_graphs_path, :style => header_styling do
+-#   -#     %i.fa.fa-futbol-o
+-#   -#     = I18n.t("views.dashboard.navigation.graphs")
+-#
+-#   .col-md-2.dashboard-item.hidden-xs.hidden-sm
+-#     - header_styling = request.path == heatmap_dashboard_graphs_path ? "font-weight:bold; text-align: center;" : ""
+-#     = link_to heatmap_dashboard_graphs_path, :style => header_styling do
+-#       %i.fa.fa-map-marker
+-#       =I18n.t("views.dashboard.navigation.heatmap")
+-#
+-#   .col-md-1.dashboard-item.hidden-xs.hidden-sm
+-#     - header_styling = request.path == csv_reports_path ? "font-weight:bold; text-align: center;" : ""
+-#     = link_to csv_reports_path, :style => header_styling do
+-#       %i.fa.fa-table
+-#       CSV
+-#
+-#   .col-md-1.dashboard-item.pull-right.hidden-xs.hidden-sm
+-#     = image_tag(asset_path(@current_user.picture), :class => "img-circle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
+-#     %ul.dropdown-menu{"style" => "right: 50%;"}
+-#       %li
+-#         = link_to user_path(@current_user) do
+-#           %i.fa.fa-user.fa-2
+-#           = I18n.t("dashboard.my_profile")
+-#       %li
+-#         = link_to edit_user_path(@current_user) do
+-#           %i.fa.fa-gear.fa-2
+-#           = I18n.t("common_terms.configuration")
+-#       - if @current_user.coordinator?
+-#         %li
+-#           = link_to city_path(@current_user.city) do
+-#             %i.fa.fa-users.fa-2
+-#             = I18n.t("views.denguechat_engage")
+-#         %li
+-#           = link_to coordinator_path do
+-#             %i.fa.fa-user-secret.fa-2
+-#             = I18n.t("views.coordinator.home")
+-#
+-#       %li
+-#         = link_to logout_path do
+-#           %i.fa.fa-2.fa-sign-out
+-#           = I18n.t("login_form.logout")
+-#
+-#
+
+-#
+-#
+-# - if @breadcrumbs.present?
+-#   %ol.breadcrumb
+-#     - @breadcrumbs.each do |bc|
+-#       %li{:class => "#{request.path == bc[:path] ? 'active' : ''}"}
+-#         = link_to bc[:name], bc[:path]

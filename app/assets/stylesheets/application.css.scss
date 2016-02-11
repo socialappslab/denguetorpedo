@@ -72,7 +72,6 @@ html, body {
   color: #428bca;
 }
 
-
 .text-red {
   color: #e74c3c;
 }
@@ -84,6 +83,13 @@ html, body {
 .text-green {
   color: #2ecc71;
 }
+.user-navigation {
+  a {
+    font-size: 18px;
+    color: black !important;
+  }
+}
+
 
 
 #dashboard_bar {
@@ -439,41 +445,11 @@ div {
   }
 }
 
-
-.comment-delete-button {
-  display:inline;
-
-  button {
-    font-size: 14px;
-    color: #333;
-    background-color: inherit !important;
-    padding: 0px;
-    padding-bottom: 2px;
-  }
-}
-
-
-
 .sidebar-row {
   margin-top: 20px;
   overflow-y: scroll;
   // overflow-x: hidden;
   max-height: 500px;
-}
-
-
-
-
-.leave-team-button {
-  display: inline;
-
-  button {
-    background-color: inherit !important; float: right; padding: 0px;
-  }
-
-  i {
-    color: #d9534f; line-height: 50px;
-  }
 }
 
 .notice {

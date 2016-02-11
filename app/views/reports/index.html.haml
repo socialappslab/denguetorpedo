@@ -4,9 +4,9 @@
 /------------------------------------------------------------------------------
 
 - content_for :head do
-  %meta{:property => "og:url",         :content => @locale_specific_url}
-  %meta{:property => "og:title",       :content => I18n.t("views.app")}
+  %meta{:property => "og:title",       :content => "Criaderos"}
   %meta{:property => "og:description", :content => I18n.t("facebook.description")}
+  %meta{:property => "og:type",        :content => "article"}
 
 /------------------------------------------------------------------------------
 

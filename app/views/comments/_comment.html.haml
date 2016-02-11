@@ -1,11 +1,11 @@
 .feed-item-comment
   .row{"style" => "margin-top: 20px; margin-left: 5px; margin-right: 5px;"}
-    .col-md-2
+    .col-sm-2.col-xs-4
       %div{"style" => "display: inline-block;"}
         %a{"ng-href" => "{{comment.user.url}}"}
           %img.img-rounded{"ng-src" => "{{comment.user.photo}}", "style" => "height: 75px; width: 75px;"}
 
-    .col-md-10
+    .col-sm-10.col-xs-8
       .feed-item-bar-new
         .username
           %a{"ng-href" => "{{comment.user.url}}"}

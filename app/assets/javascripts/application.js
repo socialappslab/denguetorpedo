@@ -12,7 +12,7 @@
 //= require_tree ./app/controllers/
 //= require_tree ./app/directives/
 //= require_tree ./jquery/
-//= require feed-interactions
+//= require facebook
 
 window.denguechat = {};
 

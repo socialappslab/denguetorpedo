@@ -10,5 +10,5 @@
 
     .load-more{"ng-hide" => "noMoreData", :style => "margin-top: 20px;"}
       .btn.btn-info.btn-lg{"ng-click" => "loadPosts()"}
-        %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}"}
+        %i.fa.fa-refresh{"ng-class" => "{'fa-spin': dataLoading}", "ng-show" => "dataLoading"}
         Cargar más

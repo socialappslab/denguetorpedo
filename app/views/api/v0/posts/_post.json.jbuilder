@@ -1,5 +1,7 @@
 json.(post, :id, :content, :likes_count)
 
+json.path post_path(post)
+
 if post.photo_file_name.present?
   json.photo     post.photo.url(:large)
 else

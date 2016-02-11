@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   before_action :get_new_notifications
 
   before_action :identify_for_segmentio
-  before_action :get_locale_specific_url
   before_action :set_cookies
   before_action :setup_breadcrumbs
 
@@ -178,11 +177,6 @@ class ApplicationController < ActionController::Base
     else
       @facebook_locale = "pt_BR"
     end
-  end
-
-  def get_locale_specific_url
-    host = (I18n.locale.to_s == User::Locales::PORTUGUESE ? "www.denguetorpedo.com" : "www.denguechat.org")
-    @locale_specific_url = "https://#{host}#{request.path}"
   end
 
   #----------------------------------------------------------------------------
