@@ -69,11 +69,14 @@
                         = visit_date
                 %td{"style" => "width: 25%;"}
                   - if csv.csv_errors.present?
-                    = I18n.t("views.csv_reports.parsing_errors") + ":"
-                    %ul
-                    - @csv.csv_errors.each do |error|
-                      %li{"style" => "font-size: 18px; line-height: 40px;"}
-                        = CsvError.humanized_errors[error.error_type]
+                    = I18n.t("views.csv_reports.parsing_errors")
+                    %ul.list-group
+                      - csv.csv_errors.each do |error|
+                        %li.list-group-item
+                          = CsvError.humanized_errors[error.error_type]
+                    Tienes que borrar el CSV, corregir los errores y volver a subir
+                    = link_to I18n.t("views.csv_reports.delete"), api_v0_csv_report_path(csv), :method => "DELETE", "remote-link" => true, :reload => true, :class => "btn btn-danger btn-block", :prompt => I18n.t("common_terms.are_you_sure")
+
                   - elsif csv.parsed_at.blank?
                     = I18n.t("views.csv_reports.parsing") + "..."
                   - else
