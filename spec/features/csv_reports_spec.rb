@@ -45,7 +45,7 @@ describe "CsvReports", :type => :feature do
   describe "Viewing all CSVs" do
     before(:each) do
       5.times do
-        FactoryGirl.create(:spreadsheet, :user_id => user.id)
+        FactoryGirl.create(:spreadsheet, :user_id => user.id, :location_id => location.id)
       end
 
       Spreadsheet.last.update_column(:parsed_at, Time.zone.now)
@@ -59,7 +59,7 @@ describe "CsvReports", :type => :feature do
     it "display View for verified CSV" do
       Spreadsheet.last.update_column(:verified_at, Time.zone.now)
       visit csv_reports_path
-      expect(page.all("tr")[0]).to have_content( "Editar" )
+      expect(page).to have_content( "Editar" )
     end
 
     it "displays only your CSV" do

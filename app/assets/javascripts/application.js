@@ -6,8 +6,10 @@
 //
 //= require_self
 //= require angular
+//= require angular-animate
+//=require angular-messages
+//= require angular-aria
 //= require angular-sanitize
-//= require angular-cookies
 //= require app/app
 //= require_tree ./app/controllers/
 //= require_tree ./app/directives/

@@ -1,11 +1,21 @@
+- content_for :head do
+  %link{:href => "http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css", :rel => "stylesheet"}/
+- content_for :scripts do
+  %script{:src => "http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"}
+  :javascript
+    angular.module('denguechatApp', [
+      "ngSanitize",
+      'denguechat.directives',
+      'denguechat.controllers',
+      'ngMessages',
+      'ngMaterial'
+    ]);
 = render :partial => "shared/flashes"
-
 .container
-
   .row{:style => "margin-bottom: 20px;"}
     .col-md-8.col-xs-8
       %h1.light-font
-        Sus reportes cargados en CSV
+        CSV
 
     .col-md-4.col-xs-4
       .pull-right
@@ -16,34 +26,67 @@
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
 
-  .row
-    .col-md-12
-      .panel.panel-default
-        .panel-heading
-          %h3.panel-title
-            Reglas
-        .panel-body
-          %p.light-font.large-font
-            Suba un nuevo CSV para que DengueChat lo analice.
-            Si tiene un CSV con nuevas visitas, por favor súbale usando el mismo
-            nombre del CSV original para asegurase que DengueChat tenga los datos completos.
-          %br
-          %p.light-font.large-font
-            Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
+  - if @current_user && @current_user.coordinator?
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              Opciones coordinador
+              .pull-right
+                %i.fa.fa-eye
+                Visible sólo a los coordinadores
+          .panel-body
+            .row
+              .col-md-6
+                %p.form-label
+                  = I18n.t("activerecord.models.user", :count => 2)
+
+                %div{:layout => "column", "ng-cloak" => "", "ng-controller" => "autocompleteCtrl as ctrl", :users => User.order("username ASC").to_json(:only => [:id, :name, :username])}
+                  %md-content.md-padding
+                    %md-autocomplete{"md-items" => "user in ctrl.querySearch(ctrl.searchText)", "md-min-length" => "0", "md-search-text" => "ctrl.searchText", "md-selected-item" => "ctrl.selectedItem", "md-selected-item-change" => "ctrl.selectedItemChange(user)", "md-search-text-change" => "ctrl.selectedTextChange(ctrl.searchText)", "md-item-text" => "ctrl.displayName(user)", :placeholder => "Busque usuarios"}
+                      %md-item-template
+                        %span{"md-highlight-flags" => "^i", "md-highlight-text" => "ctrl.searchText"}
+                          {{ctrl.displayName(user)}}
+                      %md-not-found
+                        No hay resultados de usuario
+
+              .col-md-6
+                %p.form-label
+                  = I18n.t("activerecord.models.neighborhood", :count => 2)
+                %ul.list-group
+                  = link_to "Todas las comunidades", csv_reports_path, :class => "list-group-item #{params[:neighborhood_id].blank? ? 'active' : ''}"
+                  - @current_user.city.neighborhoods.each do |neighborhood|
+                    = link_to csv_reports_path(:neighborhood_id => neighborhood.id), :class => "list-group-item #{params[:neighborhood_id] == neighborhood.id.to_s ? 'active' : ''}" do
+                      = neighborhood.name
 
   .row
     .col-md-12
       .panel.panel-default
         %table.table.table-bordered.table-hover.text-center.statistics-table
           %thead
-            %th.text-center
+            %th.text-center{:class => (params[:sort] == 'date' ? 'active' : '' )}
               Fecha de carga
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "asc") ) do
+                %i.fa.fa-angle-up
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "desc") ) do
+                %i.fa.fa-angle-down
             %th.text-center
+              = I18n.t("activerecord.models.neighborhood", :count => 1)
+            %th.text-center{:class => (params[:sort] == 'user' ? 'active' : '' )}
               = I18n.t("activerecord.models.user", :count => 1)
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "asc") ) do
+                %i.fa.fa-angle-up
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "desc") ) do
+                %i.fa.fa-angle-down
             %th.text-center
               CSV
-            %th.text-center
+            %th.text-center{:class => (params[:sort] == 'location' ? 'active' : '' )}
               = I18n.t("attributes.location_id")
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "asc") ) do
+                %i.fa.fa-angle-up
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "desc") ) do
+                %i.fa.fa-angle-down
             %th.text-center
               = I18n.t("activerecord.attributes.visit.visited_at")
             %th.text-center
@@ -52,10 +95,12 @@
             - @csvs.each do |csv|
               - visits = csv.visits.order("visited_at ASC").map {|v| v.visited_at.strftime("%Y-%m-%d")}.uniq
               %tr{:data => {"csv_id" => csv.id}}
-                %td{"style" => "width: 10%;"}
+                %td{"style" => "width: 20%;"}
                   = csv.updated_at.strftime("%Y-%m-%d %H:%M")
+                %td
+                  = csv.neighborhood.name
                 %td{"style" => "width: 15%;"}
-                  = csv.user && csv.user.name
+                  = csv.user && "#{csv.user.username} (#{csv.user.name})"
                 %td{"style" => "width: 15%;"}
                   = link_to csv.csv.url do
                     = csv.csv_file_name

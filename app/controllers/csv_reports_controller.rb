@@ -12,7 +12,34 @@ class CsvReportsController < ApplicationController
   # GET /csv_reports
 
   def index
-    @csvs = @current_user.csvs.order("updated_at DESC")
+    if @current_user.coordinator?
+      @csvs = Spreadsheet.order("updated_at ASC")
+      @csvs = @csvs.where(:user_id => params[:user_id]) if params[:user_id].present?
+
+      if params[:neighborhood_id].present?
+        loc_ids = Location.where(:neighborhood_id => params[:neighborhood_id]).pluck(:id)
+        @csvs = @csvs.where(:location_id => loc_ids)
+      end
+    else
+      @csvs = @current_user.csvs
+    end
+
+    if params[:sort] == "date"
+      @csvs = @csvs.order("updated_at ASC") if params[:order]  == "asc"
+      @csvs = @csvs.order("updated_at DESC") if params[:order] == "desc"
+    end
+
+    if params[:sort] == "user"
+      ids = User.order("username ASC").pluck(:id)  if params[:order] == "asc"
+      ids = User.order("username DESC").pluck(:id) if params[:order] == "desc"
+      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+    end
+
+    if params[:sort] == "location"
+      ids = Location.order("address ASC").pluck(:id)  if params[:order] == "asc"
+      ids = Location.order("address DESC").pluck(:id) if params[:order] == "desc"
+      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+    end
   end
 
   #----------------------------------------------------------------------------
@@ -81,7 +108,11 @@ class CsvReportsController < ApplicationController
   private
 
   def redirect_if_no_csv
-    @csv = @current_user.csvs.find_by_id(params[:id])
+    if @current_user.coordinator?
+      @csv = Spreadsheet.find_by_id(params[:id])
+    else
+      @csv = @current_user.csvs.find_by_id(params[:id])
+    end
     if @csv.blank?
       flash[:alert] = "Usted no tiene este CSV!"
       redirect_to csv_reports_path and return

@@ -106,6 +106,7 @@ describe Visit do
       # This invokes after_commit callback to create a Visit instance.
       report.save
       v = Visit.find_or_create_visit_for_location_id_and_date(report.location_id, report.created_at)
+      v.update_column(:csv_id, 1)
       report.update_inspection_for_visit(v)
 
 
@@ -130,12 +131,12 @@ describe Visit do
       expect(v.location_id).to eq(report.location.id)
     end
 
-    it "sets the correct identification type" do
+    it "sets the correct inspection types" do
       report.save
       v = Visit.find_or_create_visit_for_location_id_and_date(report.location_id, report.eliminated_at)
       report.update_inspection_for_visit(v)
       v = Visit.last
-      expect(v.identification_type).to eq(Report::Status::NEGATIVE)
+      expect(v.inspection_types).to eq({0=>nil, 1=>nil, 2=>true})
     end
   end
 
@@ -154,10 +155,18 @@ describe Visit do
     it "does not include future data of inspections before a certain date for daily percentages" do
       r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
+
       r.update_inspection_for_visit(v)
+      ins = Inspection.where(:report_id => r.id, :visit_id => v.id).order(:id).last
+      ins.update_column(:csv_id, 1)
+
       r = create(:positive_report, :reporter_id => user.id, :location_id => location.id, :created_at => date2)
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
       r.update_inspection_for_visit(v)
+      ins = Inspection.where(:report_id => r.id, :visit_id => v.id).order(:id).last
+      ins.update_column(:csv_id, 1)
 
       visits = Visit.calculate_time_series_for_locations([location], nil, nil, "daily")
       visits.map {|v| v.delete(:total)}
@@ -180,6 +189,7 @@ describe Visit do
     it "counts a Visit without inspections (usual when the location is marked N)" do
       r = create(:negative_report, :reporter_id => user.id, :location_id => location.id, :created_at => date1)
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
 
       visits = Visit.calculate_time_series_for_locations([location], nil, nil, "daily")
       expect(visits[0][:negative][:count]).to eq(1)
@@ -196,10 +206,17 @@ describe Visit do
     it "calculates identification type without consider past day's reports" do
       r = create(:full_report, :reporter_id => user.id, :location_id => location.id, :larvae => true,    :created_at => date1)
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
       r.update_inspection_for_visit(v)
+      ins = Inspection.where(:report_id => r.id, :visit_id => v.id).order(:id).last
+      ins.update_column(:csv_id, 1)
+
       r = create(:full_report, :reporter_id => user.id, :location_id => location.id, :protected => true, :created_at => date2)
       v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+      v.update_column(:csv_id, 1)
       r.update_inspection_for_visit(v)
+      ins = Inspection.where(:report_id => r.id, :visit_id => v.id).order(:id).last
+      ins.update_column(:csv_id, 1)
 
       visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
       visits.map {|v| v.delete(:total)}
@@ -243,11 +260,14 @@ describe Visit do
       ].each do |h|
         type_of_report = h[0]
         loc_value       = h[1]
-        date           = h[2]
+        date            = h[2]
 
         r = build_stubbed(type_of_report, :location_id => loc_value.id, :created_at => date)
         v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.created_at)
+        v.update_column(:csv_id, 1)
         r.update_inspection_for_visit(v)
+        ins = Inspection.where(:report_id => r.id, :visit_id => v.id).order(:id).last
+        ins.update_column(:csv_id, 1)
       end
 
       pos_report = build_stubbed(:positive_report, :location_id => location.id, :created_at => date3)
@@ -255,7 +275,10 @@ describe Visit do
       pos_report.eliminated_at = date4
       pos_report.elimination_method_id = 1
       v = Visit.find_or_create_visit_for_location_id_and_date(pos_report.location_id, date4)
+      v.update_column(:csv_id, 1)
       pos_report.update_inspection_for_visit(v)
+      ins = Inspection.where(:report_id => pos_report.id, :visit_id => v.id).order(:id).last
+      ins.update_column(:csv_id, 1)
     end
 
     it "returns one time-series point for each date" do
@@ -266,11 +289,6 @@ describe Visit do
       # Let's create a visit 100 days ago to the second location. We're
       # going to ensure that there's only one time point with date1.strftime.
       create(:positive_report, :reporter_id => user.id, :location_id => loc2.id, :created_at => date1)
-      # create(:visit,
-      # :visit_type => Visit::Types::INSPECTION,
-      # :identification_type => Report::Status::POSITIVE,
-      # :location_id => loc2.id,
-      # :visited_at => date1)
 
       date_key = date1.strftime("%Y-%m-%d")
       time_series = Visit.calculate_time_series_for_locations(locations, nil, nil, "daily")
@@ -351,20 +369,13 @@ describe Visit do
       it "returns the correct time-series" do
         visits = Visit.calculate_time_series_for_locations(locations, nil, nil, "monthly")
         visits.map {|v| v.delete(:total)}
-        expect(visits).to eq([
-          {
-            :date=>"2014-10",
-            :positive=>{:count=>0, :percent=>0,  :locations => []},
-            :potential=>{:count=>1, :percent=>50, :locations => [loc2.id]},
-            :negative=>{:count=>1, :percent=>50, :locations => [location.id]}
-          },
-          {
-            :date=>"2015-01",
-            :positive=>{:count=>2, :percent=>67, :locations => [loc2.id, location.id]},
-            :potential=>{:count=>2, :percent=>67, :locations => [location.id, loc3.id]},
-            :negative=>{:count=>1, :percent=>33, :locations => [location.id]}
-          }
-        ])
+        expect(visits[0][:positive][:locations]).to eq([])
+        expect(visits[0][:potential][:locations]).to eq([loc2.id])
+        expect(visits[0][:negative][:locations]).to eq([location.id])
+
+        expect(visits[1][:positive][:locations]).to eq([loc2.id, location.id])
+        expect(visits[1][:potential][:locations]).to eq([location.id, loc3.id])
+        expect(visits[1][:negative][:locations]).to eq([])
       end
 
       it "returns truncated time series when start time is set" do
@@ -376,7 +387,7 @@ describe Visit do
             :date=>"2015-01",
             :positive=>{:count=>2, :percent=>67,  :locations => [loc2.id, location.id]},
             :potential=>{:count=>2, :percent=>67, :locations => [location.id, loc3.id]},
-            :negative=>{:count=>1, :percent=>33,  :locations => [location.id]}
+            :negative=>{:count=>0, :percent=> 0,  :locations => []}
           }
         ])
       end

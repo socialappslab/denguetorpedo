@@ -45,7 +45,7 @@
   }
 
 
-  var ctrl = function ($scope, $http, $cookies, $attrs) {
+  var ctrl = function ($scope, $http, $attrs) {
     $scope.chartLoading = false;
     $scope.noChartData  = false;
     $scope.city         = angular.fromJson($attrs.city);
@@ -84,6 +84,6 @@
   // We use inline annotation to declare services in order to bypass
   // errors when JS gets minified:
   // https://docs.angularjs.org/tutorial/step_05
-  angular.module("denguechat.controllers").controller("greenLocationsChartCtrl", ["$scope", "$http", "$cookies", "$attrs", ctrl]);
+  angular.module("denguechat.controllers").controller("greenLocationsChartCtrl", ["$scope", "$http", "$attrs", ctrl]);
 
 }());

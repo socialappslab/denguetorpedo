@@ -4,7 +4,7 @@ ruby '2.1.2'
 
 # Analytics
 gem "analytics-ruby", '~> 2.0.8', :require => false
-gem 'angularjs-rails'
+gem 'angularjs-rails', "~> 1.4.8"
 
 # File management and manipulation
 # TODO: Update AWS to handle new versions

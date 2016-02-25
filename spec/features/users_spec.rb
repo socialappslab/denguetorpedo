@@ -133,7 +133,7 @@ describe "Users", :type => :feature do
         fill_in "user_password", 						 :with => "abcdefg"
         fill_in "user_password_confirmation", :with => "abcdefg"
 
-        select("Ariel Darce, Managua", :from => "user_neighborhood_id")
+        select("Ariel Darce", :from => "user_neighborhood_id")
         page.find(".submit-button").click
 
         expect(current_path).to eq( teams_path )

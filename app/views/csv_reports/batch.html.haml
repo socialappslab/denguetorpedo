@@ -11,12 +11,15 @@
             = I18n.t("views.csv_reports.batch_upload")
         .panel-body
           %p.light-font.large-font
+            Suba un nuevo CSV para que DengueChat lo analice.
+            Si tiene un CSV con nuevas visitas, por favor súbale usando el mismo
+            nombre del CSV original para asegurase que DengueChat tenga los datos completos.
             Para lotes subir CSV, a) cada ubicación en el CSV previamente se han cargado anteriormente en DengueChat y
             b) el nombre del archivo CSV debe ser de la dirección de ubicación. Por ejemplo si está la posibilidad de
             subir un archivo CSV con la ubicación N001002003, a continuación, asegúrese N001002003 se ha creado anteriormente,
             y el nombre del archivo CSV es N001002003.xlsx. Para cargar y crear una nueva ubicación, vaya a
             = link_to I18n.t("views.buttons.upload_csv").downcase, new_csv_report_path
-
+            Ayuda: Nombre su CSV con el nombre o código del lugar. Ejemplo: N001002003.xlsx
 
           = form_tag batch_api_v0_csv_reports_path, :method => "POST", :multipart => true, "ng-submit" => "batchUpload($event)", :style => "margin-top: 40px;" do
 

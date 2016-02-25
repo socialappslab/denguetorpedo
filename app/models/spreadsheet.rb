@@ -18,6 +18,10 @@ class Spreadsheet < ActiveRecord::Base
   has_many :csv_errors, :dependent => :destroy, :foreign_key => :csv_id
   has_many :inspections, :foreign_key => :csv_id
 
+  def neighborhood
+    return self.location.neighborhood
+  end
+
   # The header of the data must include "fecha de visita" text so we iterate
   # over the rows until we find it.
   def self.calculate_row_index_of_header(spreadsheet)
