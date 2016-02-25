@@ -23,13 +23,13 @@ describe "Notifications", :type => :feature do
     end
 
     it "displays proper message", :js => true do
-      page.find(".notifications-toggle").click
+      page.find(".dropdown a").click
       expect(page).to have_content("Alguien te mencionado en un chat!")
     end
 
     it "redirects to proper URL", :js => true do
-      page.find(".notifications-toggle").click
-      page.find(".notifications a").click
+      page.find(".dropdown a").click
+      page.find(".dropdown-menu a").click
       expect(current_path).to eq(post_path(@post))
     end
 
@@ -71,8 +71,8 @@ describe "Notifications", :type => :feature do
     end
 
     it "redirects to proper URL", :js => true do
-      page.find(".label-danger").click
-      page.find(".notifications a").click
+      page.find(".dropdown a").click
+      page.find(".dropdown-menu a").click
       expect(current_path).to eq(post_path(@post))
     end
 

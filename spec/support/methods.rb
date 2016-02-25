@@ -20,5 +20,6 @@ end
 # Convenience methods for Location testing.
 def add_visit_to_location(location, status, visited_at = nil)
   v = create(:visit, :visited_at => Time.now, :location_id => location.id, :visited_at => visited_at || Time.now)
+  v.update_column(:csv_id, 1)
   create(:inspection, :visit_id => v.id, :report_id => 1, :identification_type => status)
 end

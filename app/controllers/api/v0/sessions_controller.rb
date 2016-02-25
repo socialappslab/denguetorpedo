@@ -19,8 +19,6 @@ class API::V0::SessionsController < API::V0::BaseController
       ds.device_model = device[:model]
       ds.save!
 
-      puts "ds: #{ds.inspect}"
-
       render :json => { :device_session => { :token => ds.token } }, :status => 200
     else
       raise API::V0::Error.new("Invalid email or password. Please try again.", 401) and return

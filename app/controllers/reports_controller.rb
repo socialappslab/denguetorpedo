@@ -317,7 +317,7 @@ class ReportsController < NeighborhoodsBaseController
       # Let's award the user for submitting a report.
       @report.reporter.award_points_for_submitting(@report)
 
-      redirect_to params[:redirect_path] || verify_csv_report_path(@report.csv_report) and return
+      redirect_to params[:redirect_path] || csv_report_path(@report.spreadsheet) and return
     else
       render "verify" and return
     end

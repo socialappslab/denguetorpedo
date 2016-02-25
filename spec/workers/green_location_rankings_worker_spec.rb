@@ -11,12 +11,12 @@ describe GreenLocationRankingsWorker do
     # Create a green location belonging to a user.
     [1.year.ago, 5.months.ago, 1.month.ago].each do |time|
       r = create(:negative_report, :location_id => green_loc.id, :reporter_id => user.id)
-      v = create(:visit, :location_id => green_loc.id, :visited_at => time)
+      v = create(:visit, :location_id => green_loc.id, :visited_at => time, :csv_id => 1)
       create(:inspection, :report_id => r.id, :visit_id => v.id, :identification_type => 2)
     end
 
     r = create(:positive_report, :location_id => loc.id, :reporter_id => user2.id)
-    v = create(:visit, :location_id => loc.id, :visited_at => 1.month.ago)
+    v = create(:visit, :location_id => loc.id, :visited_at => 1.month.ago, :csv_id => 1)
     create(:inspection, :report_id => r.id, :visit_id => v.id, :identification_type => 1)
 
     # We freeze the time in order to avoid a stack level too deep error.

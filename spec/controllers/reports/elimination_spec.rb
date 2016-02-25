@@ -5,7 +5,7 @@ describe ReportsController do
 	let(:neighborhood) { FactoryGirl.create(:neighborhood) }
 	let(:user) 			 { FactoryGirl.create(:user) }
 	let(:location)   { FactoryGirl.create(:location) }
-	let(:csv_report) { FactoryGirl.create(:csv_report) }
+	let(:csv_report) { FactoryGirl.create(:spreadsheet) }
 	let(:report_params) { {:compressed_photo => base64_image_string, :elimination_method_id => report.breeding_site.elimination_methods.first.id, "eliminated_at(3i)"=>"9", "eliminated_at(2i)"=>"8", "eliminated_at(1i)"=>"2015" } }
   let(:inspection_time) { Time.parse("2015-01-01 12:00") }
   let(:report) 	 { FactoryGirl.create(:report, :created_at => inspection_time, :verified_at => Time.zone.now, :protected => true, :larvae => false, :pupae => false, :csv_report_id => csv_report.id, :completed_at => inspection_time, :location_id => location.id, :reporter_id => user.id) }
