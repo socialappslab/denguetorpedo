@@ -1,41 +1,39 @@
-%footer.bs-docs-footer{:role => "contentinfo"}
-  .container
-    .row
-      .col-md-12
-        %p
-          = link_to I18n.t("views.footer.creator"), credit_path
-        %p
-          2014-2015 © Regents of the University of California
+%nav.navbar.navbar-default#footer
+  .container-fluid
+    %ul.nav.navbar-nav
+      %li
+        %p.navbar-text
+          2011-2016 © Regents of the University of California
 
-    %ul.bs-docs-footer-links
-      %li
-        = link_to I18n.t("home_navigation.education.title_and_description"), education_path
-      %li ·
-      %li
-        = link_to I18n.t("home_navigation.howto.title_and_description"), howto_path
-      %li ·
-      %li
-        = link_to I18n.t("home_navigation.prizes.title_and_description"), prizes_path
-      %li ·
       %li
         = link_to I18n.t("views.footer.code_of_conduct"), manual_path
-      %li ·
       %li
-        = link_to I18n.t("views.footer.faq"), faq_path
+        = link_to I18n.t("home_navigation.education.title_and_description"), education_path
+      %li
+        = link_to I18n.t("home_navigation.howto.title_and_description"), howto_path
+      %li
+        = link_to I18n.t("home_navigation.prizes.title_and_description"), prizes_path
 
-      %li ·
-      %li
-        = link_to I18n.t("views.footer.contact"), new_feedback_path
-      %li ·
+    %ul.nav.navbar-nav
       %li
         = link_to I18n.t("views.footer.about"), about_path
+      %li
+        = link_to I18n.t("views.footer.faq"), faq_path
+      %li
+        = link_to I18n.t("views.footer.contact"), "mailto:info@denguechat.com", :target => "_blank", :class => "btn btn-default"
 
 
-  / Scripts
-  // NOTE: We *cannot* load jquery asynchronously since the application.js file
-  // depends on the namespace.
-  = javascript_include_tag "application"
-  %script{:src => "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js", :async => true}
+/ Scripts
+// NOTE: We *cannot* load jquery asynchronously since the application.js file
+// depends on the namespace.
+= javascript_include_tag "application"
+%script{:src => "//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js", :async => true}
 
-  / Yield page-specific scripts.
-  = yield :scripts
+/ Yield page-specific scripts.
+= yield :scripts
+
+:javascript
+  !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
+  analytics.load("z6gNRpVs1D");
+  analytics.page()
+  }}();

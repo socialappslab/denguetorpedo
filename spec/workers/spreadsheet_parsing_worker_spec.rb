@@ -344,77 +344,6 @@ describe SpreadsheetParsingWorker do
 
   #----------------------------------------------------------------------------
 
-  describe "Benchmarking with a week in August", :heavy => true do
-    it "returns data that matches Harold's graphs", :wip => true do
-      neighborhood = Neighborhood.first
-      Dir[Rails.root + "spec/support/august_week_csvs/*.xlsx"].each do |f|
-        csv       = File.open(f)
-        file_name = csv.path.split('/')[-1].gsub('.xlsx', '')
-        location  = create(:location, :address => "#{file_name}", :neighborhood => neighborhood)
-        csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
-        SpreadsheetParsingWorker.perform_async(csv.id)
-      end
-
-      reports = Report.where(:neighborhood_id => neighborhood.id)
-      @visit_ids = reports.joins(:location).pluck("locations.id")
-
-      start_time = Time.parse("2015-08-02")
-      end_time   = Time.parse("2015-08-10")
-      daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, start_time, end_time, "daily")
-      daily_stats.each do |hash|
-        [:potential, :positive, :negative, :total].each do |key|
-          hash[key][:locations] = hash[key][:locations].map {|id| Location.find(id).address}
-        end
-      end
-
-      expect(daily_stats[0][:positive][:locations].count).to eq(1)
-      ["N002002037.."].each do |loc|
-        expect(daily_stats[0][:positive][:locations]).to include(loc)
-      end
-      expect(daily_stats[0][:potential][:locations].count).to eq(0)
-      expect(daily_stats[0][:negative][:locations].count).to eq(0)
-
-      expect(daily_stats[1][:positive][:locations].count).to eq(2)
-      ["N002005110..", "N002004104.."].each do |loc|
-        expect(daily_stats[1][:positive][:locations]).to include(loc)
-      end
-      expect(daily_stats[1][:potential][:locations].count).to eq(5)
-      ["N002006137..", "N002006134..", "N002005121..", "N002003070..", "N002001009.."].each do |loc|
-        expect(daily_stats[1][:potential][:locations]).to include(loc)
-      end
-      expect(daily_stats[1][:negative][:locations].count).to eq(7)
-      ["N002005110..", "N002001009..", "N002006137..", "N002004104..", "N002006134..", "N002005121..", "N002003070.."].each do |loc|
-        expect(daily_stats[1][:negative][:locations]).to include(loc)
-      end
-    end
-
-    it "uploading the same data twice does not change Visits, Inspections or Reports" do
-      csvs = []
-      Dir[Rails.root + "spec/support/august_week_csvs/*.xlsx"].each do |f|
-        csv       = File.open(f)
-        file_name = csv.path.split('/')[-1].gsub('.xlsx', '')
-        location  = create(:location, :address => "#{file_name}", :neighborhood => Neighborhood.first)
-        csv = create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
-        SpreadsheetParsingWorker.perform_async(csv.id)
-        csvs << csv
-      end
-
-      old_report_count = Report.count
-      old_visit_count  = Visit.count
-      old_insp_count   = Inspection.count
-
-      csvs.each do |csv|
-        SpreadsheetParsingWorker.perform_async(csv.id)
-      end
-
-      expect(Report.count).to eq(old_report_count)
-      expect(Visit.count).to eq(old_visit_count)
-      expect(Inspection.count).to eq(old_insp_count)
-    end
-  end
-
-  #----------------------------------------------------------------------------
-
   describe "Benchmarking with July", :heavy => true do
     it "returns data that matches Harold's graphs", :wip => true do
       neighborhood = Neighborhood.first
@@ -480,6 +409,137 @@ describe SpreadsheetParsingWorker do
       expect(daily_stats[4][:negative][:count]).to eq(57)
 
       # puts JSON.pretty_generate(daily_stats)
+    end
+  end
+
+
+  #----------------------------------------------------------------------------
+
+  describe "Benchmarking monthly data with August", :heavy => true do
+    it "returns data that matches Harold's graphs", :wip => true do
+      Dir[Rails.root + "spec/support/august_csvs/*.xlsx"].each do |f|
+        csv      = File.open(f)
+        address = csv.path.split('/')[-1].gsub('.xlsx', '').gsub(".", "")
+
+        location = create(:location, :address => "#{address}")
+        csv = FactoryGirl.create(:spreadsheet, :csv => csv, :user_id => user.id, :location => location)
+        SpreadsheetParsingWorker.perform_async(csv.id)
+      end
+
+      @visit_ids = Location.pluck(:id)
+
+      start_time = Time.parse("2015-08-01")
+      end_time   = Time.parse("2015-08-31")
+      daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, start_time, end_time, "monthly")
+      daily_stats.each do |hash|
+        [:potential, :positive, :negative, :total].each do |key|
+          hash[key][:locations] = hash[key][:locations].map {|id| Location.find(id).address}.sort
+        end
+      end
+
+      data = daily_stats[0]
+      expect(data[:positive][:count]).to eq(12)
+      expect(data[:potential][:count]).to eq(9)
+      expect(data[:negative][:count]).to eq(68)
+      expect(data[:total][:count]).to eq(88)
+
+      ["N002001003",
+      "N002002037",
+      "N002002039",
+      "N002003051",
+      "N002003059",
+      "N002003062",
+      "N002004104",
+      "N002005110",
+      "N002006126",
+      "N002006127",
+      "N002006128",
+      "N002006132"].each do |pos_loc|
+        expect(data[:positive][:locations]).to include(pos_loc)
+      end
+
+      ["N002001009",
+      "N002001013",
+      "N002003070",
+      "N002004103",
+      "N002005117",
+      "N002005121",
+      "N002006126",
+      "N002006134",
+      "N002006137"].each do |pot_loc|
+        expect(data[:potential][:locations]).to include(pot_loc)
+      end
+
+      ["N002001001",
+      "N002001004",
+      "N002001007",
+      "N002001008",
+      "N002001010",
+      "N002001011",
+      "N002001014",
+      "N002001015",
+      "N002001016",
+      "N002001017",
+      "N002001018",
+      "N002001019",
+      "N002001020",
+      "N002001021",
+      "N002001022",
+      "N002001023",
+      "N002001025",
+      "N002001026",
+      "N002002032",
+      "N002002033",
+      "N002002034",
+      "N002002035",
+      "N002002036",
+      "N002002038",
+      "N002002040",
+      "N002002041",
+      "N002002042",
+      "N002002044",
+      "N002002045",
+      "N002002046",
+      "N002002047",
+      "N002002048",
+      "N002002049",
+      "N002003055",
+      "N002003056",
+      "N002003057",
+      "N002003066",
+      "N002003069",
+      "N002003071",
+      "N002004079",
+      "N002004080",
+      "N002004081",
+      "N002004082",
+      "N002004083",
+      "N002004084",
+      "N002004085",
+      "N002004086",
+      "N002004087",
+      "N002004088",
+      "N002004091",
+      "N002004092",
+      "N002004093",
+      "N002004095",
+      "N002004096",
+      "N002004098",
+      "N002005106",
+      "N002005109",
+      "N002005111",
+      "N002005112",
+      "N002005113",
+      "N002005114",
+      "N002005116",
+      "N002005118",
+      "N002006131",
+      "N002006133",
+      "N002006136",
+      "N002006138",
+      "N002006140"].each do |loc|
+        expect(data[:negative][:locations]).to include(loc)
+      end
     end
   end
 

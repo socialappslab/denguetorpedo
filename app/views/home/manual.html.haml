@@ -1,6 +1,9 @@
-.row
-	.col-md-15.col-md-offset-1
-		- if I18n.locale.to_s == User::Locales::PORTUGUESE
-			= render :partial => "home/manual_pt"
-		- else
-			= render :partial => "home/manual_es"
+.container
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-body
+          - if I18n.locale.to_s == User::Locales::PORTUGUESE
+            = render :partial => "home/manual_pt"
+          - else
+            = render :partial => "home/manual_es"

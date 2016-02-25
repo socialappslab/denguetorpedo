@@ -10,19 +10,15 @@
   /-----------------------------------------------------------------------------
 
   %body
+    - if @current_user.present?
+      = render "layouts/dashboard"
+    - else
+      = render "layouts/home_nav"
+
+
     #container
-      = link_to logo_image, (@current_user.present? ? user_path(@current_user) : root_path)
-
-
-      - if @current_user.present?
-        = render "layouts/dashboard"
-      - else
-        = render "layouts/home_nav"
-
       - if !current_page?(root_url)
         .push_down
       = yield
 
-  /-----------------------------------------------------------------------------
-
-  = render :partial => "shared/footer"
+    = render :partial => "shared/footer"

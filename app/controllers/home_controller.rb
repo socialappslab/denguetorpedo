@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     # We're manually ordering this to display the diversity of
     # our cities.
     @cities = City.find_by_sql("SELECT cities.* from cities join
-    (values ('Rio de Janeiro', 1), ('Managua', 2), ('Cuernavaca', 3), ('Tepalcingo', 4)) as cityorder (name, ordering)
+    (values ('Managua', 1), ('Rio de Janeiro', 2), ('Cuernavaca', 3), ('Tepalcingo', 4)) as cityorder (name, ordering)
     ON cities.name = cityorder.name ORDER BY cityorder.ordering")
 
     @neighborhood_select = []
@@ -21,9 +21,9 @@ class HomeController < ApplicationController
 
     # Display the appropriate introduction video on homepage.
     if I18n.locale == :es
-      @introductory_video_on_dengue = "https://www.youtube.com/embed/hwod5NOxiNM?rel=0"
+      @introductory_video_on_dengue = "//www.youtube.com/embed/hwod5NOxiNM?rel=0"
     else
-      @introductory_video_on_dengue = "https://www.youtube.com/embed/o6IY0NjdmZc?rel=0"
+      @introductory_video_on_dengue = "//www.youtube.com/embed/o6IY0NjdmZc?rel=0"
     end
 
     if @current_user.present?
@@ -31,6 +31,8 @@ class HomeController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited homepage") if Rails.env.production?
     end
+
+    @landing_page_photo = (1..6).to_a.map {|index| "landing/landing_#{index}.png"}.sample
   end
 
   #----------------------------------------------------------------------------

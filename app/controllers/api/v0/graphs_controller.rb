@@ -50,7 +50,7 @@ class API::V0::GraphsController < API::V0::BaseController
     end
 
     statistics.each do |shash|
-      [:positive, :potential, :negative].each do |status|
+      [:positive, :potential, :negative, :total].each do |status|
         locations = Location.where(:id => shash[status][:locations]).order("address ASC").pluck(:address)
         shash[status][:locations] = locations
       end
@@ -81,7 +81,7 @@ class API::V0::GraphsController < API::V0::BaseController
     neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
     # start_time   = (5.months + 5.days).ago
     # end_time     = 4.months.ago
-    start_time   = 6.months.ago
+    start_time   = 7.months.ago
     end_time     = (Time.zone.now.beginning_of_month - 2.months).end_of_month
     location_ids = neighborhood.locations.pluck(:id)
 
@@ -124,16 +124,17 @@ class API::V0::GraphsController < API::V0::BaseController
     CSV.generate do |csv|
       csv << [
         "Fecha de visita",
-        "Lugares positivos",
-        "Lugares potenciales",
-        "Lugares sin criaderos",
+        "Lugares positivos (%)",
+        "Lugares potenciales (%)",
+        "Lugares sin criaderos (%)",
         "Total lugares",
         "% positivos",
         "% potenciales",
         "% sin criaderos",
         "Lugares positivos",
         "Lugares potenciales",
-        "Lugares sin criaderos"
+        "Lugares sin criaderos",
+        "Lugares"
       ]
       timeseries.each do |series|
         csv << [
@@ -147,7 +148,8 @@ class API::V0::GraphsController < API::V0::BaseController
           series[:negative][:percent],
           series[:positive][:locations].join(","),
           series[:potential][:locations].join(","),
-          series[:negative][:locations].join(",")
+          series[:negative][:locations].join(","),
+          series[:total][:locations].join(",")
         ]
       end
     end

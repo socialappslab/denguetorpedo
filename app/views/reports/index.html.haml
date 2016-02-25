@@ -4,9 +4,9 @@
 /------------------------------------------------------------------------------
 
 - content_for :head do
-  %meta{:property => "og:url",         :content => @locale_specific_url}
-  %meta{:property => "og:title",       :content => I18n.t("views.app")}
+  %meta{:property => "og:title",       :content => "Criaderos"}
   %meta{:property => "og:description", :content => I18n.t("facebook.description")}
+  %meta{:property => "og:type",        :content => "article"}
 
 /------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@
   .row.page-header-description
     .col-md-12
       %p.description
-        Esta página muestra reportes de criaderos potenciales o positivos en la comunidad. Los datos no incluyen lugares en los que no había criaderos. Para ver cómo es que los criaderos reportados aquí afectan el riesgo de dengue y chikungunya, haga click
+        Esta página muestra reportes de criaderos potenciales o positivos en la comunidad. Los datos no incluyen lugares en los que no había criaderos. Para ver cómo es que los criaderos reportados aquí afectan el riesgo de Dengue, Zika y Chikungunya, haga click
         = link_to "aquí.", neighborhood_path(@neighborhood)
 
 

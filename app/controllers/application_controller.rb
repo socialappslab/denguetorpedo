@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   before_action :get_new_notifications
 
   before_action :identify_for_segmentio
-  before_action :get_locale_specific_url
   before_action :set_cookies
   before_action :setup_breadcrumbs
 
@@ -180,11 +179,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def get_locale_specific_url
-    host = (I18n.locale.to_s == User::Locales::PORTUGUESE ? "www.denguetorpedo.com" : "www.denguechat.org")
-    @locale_specific_url = "https://#{host}#{request.path}"
-  end
-
   #----------------------------------------------------------------------------
 
   private
@@ -194,6 +188,10 @@ class ApplicationController < ActionController::Base
   end
 
   def setup_breadcrumbs
-    @breadcrumbs = [{:name => I18n.t("views.denguechat_engage"), :path => root_path}]
+    if @current_user
+      @breadcrumbs = [{:name => I18n.t("views.denguechat_engage"), :path => root_path}]
+    else
+      @breadcrumbs = []
+    end
   end
 end

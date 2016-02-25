@@ -1,7 +1,8 @@
-= render :partial => "shared/title_banner", :locals => default_navigation_hash.merge(:title => I18n.t("views.index.header_non_logged_in"), :description => I18n.t("views.index.badge_explanation") + " #{ link_to I18n.t("views.index.how_to_win_prizes"), faq_path }")
 
-
-.row
-  .col-md-12.col-md-offset-1
-    %div{style: "margin-top:20px; margin-top: 40px;"}
+.container
+  .row
+    .col-md-12
+      = render :partial => "shared/title_banner", :locals => default_navigation_hash.merge(:title => I18n.t("views.index.header_non_logged_in"), :description => I18n.t("views.index.badge_explanation") + " #{ link_to I18n.t("views.index.how_to_win_prizes"), faq_path }")
+  .row{:style => "margin-top: 40px;"}
+    .col-md-12
       = render :partial => "prizes/badges"

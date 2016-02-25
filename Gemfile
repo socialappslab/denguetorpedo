@@ -12,7 +12,6 @@ gem 'angularjs-rails', "~> 1.4.8"
 gem 'aws-sdk', '< 2.0'
 
 gem 'bcrypt-ruby', '~> 3.1.2'
-gem 'bootstrap-sass', '~> 3.2.0'
 
 # TODO: Should we deprecate this? The only place where we use CanCan is when
 # initializing a user.
@@ -30,6 +29,7 @@ gem "http_accept_language"
 gem "jbuilder"
 gem 'paperclip', '~> 4.2.0'
 gem "pg"
+gem "pry"
 # Needed for a smooth upgrade from Rails 3.2 to Rails 4.0
 # http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html
 gem 'protected_attributes'
@@ -64,9 +64,17 @@ group :test do
   gem 'guard-rspec'
   gem 'launchy', :require => false
   gem "poltergeist"
+  gem "spring", "~> 1.6.1"
   gem 'rspec-rails'
   gem "timecop", :require => false
 end
+
+#------------------------------------------------------------------------------
+
+group :development, :test do
+  gem 'spring-commands-rspec'
+end
+
 
 #------------------------------------------------------------------------------
 

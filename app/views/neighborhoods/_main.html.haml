@@ -8,24 +8,34 @@
   %table.table.table-bordered
     %tbody.point-progress
       %tr
-        %td.text-center{:style => "width: 33%;"}
-          %h1.text-success-light
-            = @total_points
-          %p.light-font
-            = I18n.t("activerecord.attributes.user.total_points", :count => @total_points)
+        %td.text-center{:style => "width: 50%;"}
+          - if @green_location_count.blank? || @green_location_count == 0
+            - num_of_reports_color = "#d9534f";
+          - else
+            - num_of_reports_color = "#5cb85c";
 
-        %td.text-center{:style => "width: 33%;"}
-          - if @green_location_ranking.blank? || @green_location_ranking == 0
+          %h1{:style => "color: #{num_of_reports_color}; display: inline;"}
+            = @green_location_count
+          %p.light-font{:style => "font-size: 16px; display: inline; margin-right: 10px;"}
+            de
+          %h1{:style => "color: #{num_of_reports_color}; display: inline;"}
+            = @locations_count
+          %p.light-font{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+            casas verdes
+            %i.fa.fa-question-circle{"style" => "color: #8E8E93;"}
+
+        %td.text-center{:style => "width: 30%;"}
+          - if @green_location_count.blank? || @green_location_count == 0
             - num_of_reports_color = "#d9534f";
           - else
             - num_of_reports_color = "#5cb85c";
 
           %h1{:style => "color: #{num_of_reports_color};"}
-            = @green_location_ranking
+            = @green_houses_percent
           %p.light-font
-            casas verdes
+            porcentaje casas verdes
 
-        %td.text-center{:style => "width: 33%;"}
+        %td.text-center{:style => "width: 20%;"}
           %h1.text-success-light
             = @total_reports
           %p.light-font
@@ -74,7 +84,6 @@
   .panel-footer
     %p.light-font.large-font
       = I18n.t("views.statistics.chart.disclaimer")
-
 
 .row
   .col-md-12{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:neighborhood_id => @neighborhood.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => @neighborhood.id}

@@ -1,90 +1,93 @@
-.row
-  .col-md-8.col-md-offset-1
-    %h1
-      = I18n.t("views.faq.title")
+.container
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = I18n.t("views.faq.title")
+        .panel-body
+          - if I18n.locale.to_s == User::Locales::PORTUGUESE
+            %h2 Sobre o Dengue Torpedo
+            .col-md-offset-1
+              %h3{style: "font-weight:bold;"} O que é o Dengue Torpedo?
+              %p
+                O Dengue Torpedo é um aplicativo social e gratuito para telefones celulares básicos com câmeras que promove iniciativas comunitárias para a prevenção da dengue. Para saber mais sobre o projeto leia <a class="users" href="/about">Sobre o Dengue Torpedo</a>.
+              %br
 
-    - if I18n.locale.to_s == User::Locales::PORTUGUESE
-      %h2 Sobre o Dengue Torpedo
-      .col-md-offset-1
-        %h3{style: "font-weight:bold;"} O que é o Dengue Torpedo?
-        %p
-          O Dengue Torpedo é um aplicativo social e gratuito para telefones celulares básicos com câmeras que promove iniciativas comunitárias para a prevenção da dengue. Para saber mais sobre o projeto leia <a class="users" href="/about">Sobre o Dengue Torpedo</a>.
-        %br
+              %h3{style: "font-weight:bold;"} Quanto custa jogar?
+              %p
+                O Dengue Torpedo é gratuito e ao ser jogado acumula pontos que podem ser trocados por prêmios.
+              %br
 
-        %h3{style: "font-weight:bold;"} Quanto custa jogar?
-        %p
-          O Dengue Torpedo é gratuito e ao ser jogado acumula pontos que podem ser trocados por prêmios.
-        %br
+              %h3{style: "font-weight:bold;"} Quem pode jogar?
+              %p
+                Pode jogar qualquer morador com celular com câmera digital e computador com acesso à internet. Entretanto, na fase atual estamos testando o aplicativo em um grupo da Comunidade da Maré.
+              %br
 
-        %h3{style: "font-weight:bold;"} Quem pode jogar?
-        %p
-          Pode jogar qualquer morador com celular com câmera digital e computador com acesso à internet. Entretanto, na fase atual estamos testando o aplicativo em um grupo da Comunidade da Maré.
-        %br
+              %h3{style: "font-weight:bold;"} O que eu preciso ter para jogar?
+              %p
+                Para jogar é necessário ter um telefone celular com câmera, uma conta de e-mail e acesso à internet.
+              %br
 
-        %h3{style: "font-weight:bold;"} O que eu preciso ter para jogar?
-        %p
-          Para jogar é necessário ter um telefone celular com câmera, uma conta de e-mail e acesso à internet.
-        %br
+            %h2 Sobre o sistema de pontuação.
+            .col-md-offset-1
+              %h3{style: "font-weight:bold;"} Onde eu troco meus pontos?
+              %p
+                Você pode trocar os seu pontos por prêmios. Cada prêmio necessita de um tipo de pontuação. Verifique a lista completa <a class="users" href="#{prizes_path}">no link prêmios</a>.
+                Para utilizar os seus pontos você deve clicar no cupom do prêmio solicitado, imprimir e levar para o estabelecimento que patrocina o prêmio junto com documento válido com foto [ex.: RG].
+              %br
 
-      %h2 Sobre o sistema de pontuação.
-      .col-md-offset-1
-        %h3{style: "font-weight:bold;"} Onde eu troco meus pontos?
-        %p
-          Você pode trocar os seu pontos por prêmios. Cada prêmio necessita de um tipo de pontuação. Verifique a lista completa <a class="users" href="#{prizes_path}">no link prêmios</a>.
-          Para utilizar os seus pontos você deve clicar no cupom do prêmio solicitado, imprimir e levar para o estabelecimento que patrocina o prêmio junto com documento válido com foto [ex.: RG].
-        %br
+              %h3{style: "font-weight:bold;"} Qual o limite de prêmios por participante?
+              %p
+                Cada prêmio possui um estoque e regra específica de troca. Consulte as regras na lista dos <a class="users" href="#{prizes_path}">prêmios</a>.
+              %br
 
-        %h3{style: "font-weight:bold;"} Qual o limite de prêmios por participante?
-        %p
-          Cada prêmio possui um estoque e regra específica de troca. Consulte as regras na lista dos <a class="users" href="#{prizes_path}">prêmios</a>.
-        %br
+              %h3{style: "font-weight:bold;"} Posso juntar pontos com outros jogadores, como vizinhos, para trocar por prêmios mais altos?
+              %p
+                Os pontos são intransferíveis e, no momento, não há como acumular pontos com outros jogadores.
+          - else
+            %h2
+              Sobre DengueChat
+            .col-md-offset-1
+              %h3{style: "font-weight:bold;"} ¿Qué es DengueChat?
+              %p
+                DengueChat es una aplicación social y gratuita para teléfonos celulares
+                con cámaras que promueve iniciativas comunitarias para la prevención del
+                dengue. Para saber más sobre el proyecto lea Sobre o DengueChat.
 
-        %h3{style: "font-weight:bold;"} Posso juntar pontos com outros jogadores, como vizinhos, para trocar por prêmios mais altos?
-        %p
-          Os pontos são intransferíveis e, no momento, não há como acumular pontos com outros jogadores.
-    - else
-      %h2
-        Sobre Dengue Chat
-      .col-md-offset-1
-        %h3{style: "font-weight:bold;"} ¿Qué es Dengue Chat?
-        %p
-          Dengue Chat es una aplicación social y gratuita para teléfonos celulares
-          con cámaras que promueve iniciativas comunitarias para la prevención del
-          dengue. Para saber más sobre el proyecto lea Sobre o Dengue Chat.
+              %br
 
-        %br
+              %h3{style: "font-weight:bold;"} ¿Cuánto cuesta jugar?
+              %p
+                DengueChat es gratuito.
+              %br
 
-        %h3{style: "font-weight:bold;"} ¿Cuánto cuesta jugar?
-        %p
-          Dengue Chat es gratuito.
-        %br
+              %h3{style: "font-weight:bold;"} ¿Quién puede jugar?
+              %p
+                Puede jugar cualquier persona con celular con cámara digital y acceso
+                a una computadora con conexión a internét. En la fase actual estamos
+                probando la aplicación en las comunidades de Maré en Brasil, la
+                Tepalcingo en México,  y en tres barrios de Managua en Nicaragua.
 
-        %h3{style: "font-weight:bold;"} ¿Quién puede jugar?
-        %p
-          Puede jugar cualquier persona con celular con cámara digital y acceso
-          a una computadora con conexión a internét. En la fase actual estamos
-          probando la aplicación en las comunidades de Maré en Brasil, la
-          Tepalcingo en México,  y en tres barrios de Managua en Nicaragua.
+              %br
 
-        %br
+              %h3{style: "font-weight:bold;"} ¿Qué hay que tener para jugar?
+              %p
+                Para jugar es necesario tener una cámara digital y acceso a internet.
+                Una cámara de teléfono celular es suficiente.
 
-        %h3{style: "font-weight:bold;"} ¿Qué hay que tener para jugar?
-        %p
-          Para jugar es necesario tener una cámara digital y acceso a internet.
-          Una cámara de teléfono celular es suficiente.
+              %br
 
-        %br
+            %h2 Sobre el sistema de puntuación
+            .col-md-offset-1
+              %h3{style: "font-weight:bold;"} ¿Hay un límite de puntos por participante?
+              %p
+                No hay límite de puntos por participante o por equipo.
+              %br
 
-      %h2 Sobre el sistema de puntuación
-      .col-md-offset-1
-        %h3{style: "font-weight:bold;"} ¿Hay un límite de puntos por participante?
-        %p
-          No hay límite de puntos por participante o por equipo.
-        %br
-
-        %h3{style: "font-weight:bold;"} ¿Cómo se asignan los puntos?
-        %p
-          Hay distintos puntajes para distintos tipos de criadero y para distintos
-          métodos de destrucción. Pasados ciertos límites, los participantes
-          recibirán reconocimientos por sus puntos obtenidos.
-        %br
+              %h3{style: "font-weight:bold;"} ¿Cómo se asignan los puntos?
+              %p
+                Hay distintos puntajes para distintos tipos de criadero y para distintos
+                métodos de destrucción. Pasados ciertos límites, los participantes
+                recibirán reconocimientos por sus puntos obtenidos.
+              %br
