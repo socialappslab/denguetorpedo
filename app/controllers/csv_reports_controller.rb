@@ -40,6 +40,11 @@ class CsvReportsController < ApplicationController
       ids = Location.order("address DESC").pluck(:id) if params[:order] == "desc"
       @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
     end
+
+    @pagination_count = @csvs.count
+    @pagination_limit = 20
+    offset = (params[:page].to_i || 0) * @pagination_limit
+    @csvs = @csvs.limit(@pagination_limit).offset(offset)
   end
 
   #----------------------------------------------------------------------------
