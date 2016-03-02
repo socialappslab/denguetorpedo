@@ -33,15 +33,19 @@
                   = I18n.t("activerecord.models.user", :count => 2)
 
                 %div{:layout => "column", "ng-cloak" => "", "ng-controller" => "autocompleteCtrl as ctrl", :users => @users.to_json(:only => [:id, :name, :username])}
-                  %h1.text-center{"ng-show" => "loadingPage"}
-                    %i.fa.fa-spin.fa-refresh
-                  %md-content.md-padding{"ng-hide" => "loadingPage"}
-                    %md-autocomplete{"md-items" => "user in ctrl.querySearch(ctrl.searchText)", "md-min-length" => "0", "md-search-text" => "ctrl.searchText", "md-selected-item" => "ctrl.selectedItem", "md-selected-item-change" => "ctrl.selectedItemChange(user)", "md-search-text-change" => "ctrl.selectedTextChange(ctrl.searchText)", "md-item-text" => "ctrl.displayName(user)", :placeholder => "Busque usuarios"}
-                      %md-item-template
-                        %span{"md-highlight-flags" => "^i", "md-highlight-text" => "ctrl.searchText"}
-                          {{ctrl.displayName(user)}}
-                      %md-not-found
-                        No hay resultados de usuario
+                  -# %h1.text-center{"ng-show" => "loadingPage"}
+                  -#   %i.fa.fa-spin.fa-refresh
+                  %md-content.md-padding
+                    .form-inline.text-center
+                      .form-group
+                        %md-autocomplete{"md-items" => "user in ctrl.querySearch(ctrl.searchText)", "md-min-length" => "0", "md-search-text" => "ctrl.searchText", "md-selected-item" => "ctrl.selectedItem", "md-item-text" => "ctrl.displayName(user)", :placeholder => "Busque usuarios"}
+                          %md-item-template
+                            %span{"md-highlight-flags" => "^i", "md-highlight-text" => "ctrl.searchText"}
+                              {{ctrl.displayName(user)}}
+                          %md-not-found
+                            No hay resultados de usuario
+                      %a.btn.btn-success{"ng-click" => "loadUserCSV()"}
+                        Buscar
 
                 %br
                 %p.form-label
