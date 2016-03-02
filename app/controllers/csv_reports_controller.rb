@@ -13,13 +13,18 @@ class CsvReportsController < ApplicationController
 
   def index
     if @current_user.coordinator?
-      @csvs = Spreadsheet.order("updated_at ASC")
-      @csvs = @csvs.where(:user_id => params[:user_id]) if params[:user_id].present?
+      @csvs  = Spreadsheet.order("updated_at ASC")
+      @csvs  = @csvs.where(:user_id => params[:user_id]) if params[:user_id].present?
+      @users = User.order("username ASC")
 
       if params[:neighborhood_id].present?
         loc_ids = Location.where(:neighborhood_id => params[:neighborhood_id]).pluck(:id)
         @csvs = @csvs.where(:location_id => loc_ids)
       end
+    elsif @current_user.delegator?
+      @csvs  = Spreadsheet.order("updated_at ASC")
+      @csvs  = @csvs.where(:user_id => params[:user_id]) if params[:user_id].present?
+      @users = @current_user.neighborhood.users
     else
       @csvs = @current_user.csvs
     end

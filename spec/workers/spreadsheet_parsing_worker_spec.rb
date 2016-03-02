@@ -124,19 +124,19 @@ describe SpreadsheetParsingWorker do
 
     it "correctly sets inspection type" do
       ls = Visit.where("DATE(visited_at) = ?", "2014-12-24").first
-      expect(ls.reload.identification_type).to eq(Report::Status::POSITIVE)
+      expect(ls.inspection_types[Inspection::Types::POSITIVE]).to eq(true)
 
       # NOTE: These should be positive since the above location status is positive,
       # and still hasn't been eliminated.
       ls = Visit.where("DATE(visited_at) = ?", "2014-12-31").first
-      expect(ls.identification_type).to eq(Report::Status::POTENTIAL)
+      expect(ls.inspection_types[Inspection::Types::POTENTIAL]).to eq(true)
 
       # TODO: Perhaps we should instead think of Visit as Visits that
       # essentially categorize each visit as POSITIVE, POTENTIAL, or NEGATIVE.
       # The status of a location is then dependent on whether each visit resolved
       # its status... We would need to define what "resolved" means in this context.
       ls = Visit.where("DATE(visited_at) = ?", "2015-01-10").first
-      expect(ls.identification_type).to eq(Report::Status::NEGATIVE)
+      expect(ls.inspection_types[Inspection::Types::NEGATIVE]).to eq(true)
     end
 
     it "correctly sets the health report" do

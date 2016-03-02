@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
     VERIFIER    = "verificador"
     RESIDENT    = "morador"
     VISITOR     = "visitante"
+    DELEGATE    = "delegado"
   end
 
   # A user gets points for the following:
@@ -199,6 +200,10 @@ class User < ActiveRecord::Base
 
   def coordinator?
     return self.role == User::Types::COORDINATOR
+  end
+
+  def delegator?
+    self.role == User::Types::DELEGATE
   end
 
   def verifier?

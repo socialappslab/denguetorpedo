@@ -4,8 +4,6 @@
     self.users         = angular.fromJson($attrs.users);
     self.querySearch   = querySearch;
     self.displayName   = displayName;
-    self.selectedItemChange = selectedItemChange;
-    self.selectedTextChange = selectedTextChange;
     self.selectedItem  = selectedItem();
     $scope.loadingPage = false;
 
@@ -42,35 +40,15 @@
       }
     }
 
-    function selectedItemChange (user) {
-      var path = window.location.href;
-      if (user !== undefined) {
-        $scope.loadingPage = true;
-
-        if (path.indexOf("?") === -1)
-          window.location.href = path + "?user_id=" + user.id;
-        else
-          window.location.href = path + "&user_id=" + user.id;
+    $scope.loadUserCSV = function() {
+      if (self.selectedItem) {
+        window.location.href =  window.location.pathname + "?user_id=" + self.selectedItem.id;
+      } else {
+        var match = window.location.href.match(/(\?|\&)user_id=(.*)/g);
+        if (match != null)
+          window.location.href = window.location.href.replace(match[0], "")
       }
     }
-
-    function selectedTextChange (text) {
-      var path = window.location.href;
-      if (text == "") {
-        var match = path.match(/&user_id=(.*)/g);
-        if (match != null) {
-          $scope.loadingPage = true;
-          window.location.href = path.replace(match[0], "")
-        }
-
-        var match = path.match(/\?user_id=(.*)/g);
-        if (match != null) {
-          $scope.loadingPage = true;
-          window.location.href = path.replace(match[0], "")
-        }
-      }
-    }
-
 
     /**
      * Create filter function for a query string
