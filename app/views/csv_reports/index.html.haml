@@ -26,23 +26,25 @@
           %i.fa.fa-file
           = I18n.t("views.buttons.upload_csv")
 
-  - if @current_user && @current_user.coordinator?
+  - if @current_user.coordinator? || @current_user.delegator?
     .row
       .col-md-12
         .panel.panel-default
           .panel-heading
             %h3.panel-title
-              Opciones coordinador
+              Opciones
+              = @current_user.coordinator? ? "coordenador" : "delegado"
               .pull-right
                 %i.fa.fa-eye
-                Visible sólo a los coordinadores
+                Visible sólo a los
+                = @current_user.coordinator? ? "coordinadores" : "delegados"
           .panel-body
             .row
               .col-md-6
                 %p.form-label
                   = I18n.t("activerecord.models.user", :count => 2)
 
-                %div{:layout => "column", "ng-cloak" => "", "ng-controller" => "autocompleteCtrl as ctrl", :users => User.order("username ASC").to_json(:only => [:id, :name, :username])}
+                %div{:layout => "column", "ng-cloak" => "", "ng-controller" => "autocompleteCtrl as ctrl", :users => @users.to_json(:only => [:id, :name, :username])}
                   %h1.text-center{"ng-show" => "loadingPage"}
                     %i.fa.fa-spin.fa-refresh
                   %md-content.md-padding{"ng-hide" => "loadingPage"}
@@ -53,17 +55,22 @@
                       %md-not-found
                         No hay resultados de usuario
 
+                %br
+                %p.form-label
+                  Páginas
                 .text-center
                   = render :partial => "csv_reports/pagination"
 
-              .col-md-6
-                %p.form-label
-                  = I18n.t("activerecord.models.neighborhood", :count => 2)
-                %ul.list-group
-                  = link_to "Todas las comunidades", csv_reports_path, :class => "list-group-item #{params[:neighborhood_id].blank? ? 'active' : ''}"
-                  - @current_user.city.neighborhoods.each do |neighborhood|
-                    = link_to csv_reports_path(:neighborhood_id => neighborhood.id), :class => "list-group-item #{params[:neighborhood_id] == neighborhood.id.to_s ? 'active' : ''}" do
-                      = neighborhood.name
+              - if @current_user.coordinator?
+                .col-md-6
+                  %p.form-label
+                    = I18n.t("activerecord.models.neighborhood", :count => 2)
+                  %ul.list-group
+                    = link_to "Todas las comunidades", csv_reports_path, :class => "list-group-item #{params[:neighborhood_id].blank? ? 'active' : ''}"
+                    - @current_user.city.neighborhoods.each do |neighborhood|
+                      = link_to csv_reports_path(:neighborhood_id => neighborhood.id), :class => "list-group-item #{params[:neighborhood_id] == neighborhood.id.to_s ? 'active' : ''}" do
+                        = neighborhood.name
+
 
   .row
     .col-md-12
