@@ -4,7 +4,9 @@ require "rails_helper"
 describe API::V0::CsvReportsController do
   render_views
 
-  let(:user) 						{ FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:user) 						{ create(:user, :neighborhood_id => Neighborhood.first.id) }
+  let(:coordinator) 		{ create(:coordinator) }
+  let(:delegator) 			{ create(:delegator) }
   let(:csv) 			      { File.open("spec/support/forma_csv_examples.xlsx") }
   let(:uploaded_csv)    { ActionDispatch::Http::UploadedFile.new(:tempfile => csv, :filename => File.basename(csv)) }
   let(:real_csv)        { ActionDispatch::Http::UploadedFile.new(:tempfile => File.open("spec/support/pruebaAutoreporte4.xlsx"), :filename => File.basename(csv)) }
@@ -129,6 +131,44 @@ describe API::V0::CsvReportsController do
     it "sets verified_at column" do
       put :verify, :id => csv.id
       expect(csv.reload.verified_at).not_to eq(nil)
+    end
+  end
+
+  describe "Coordinator access" do
+    let!(:csv)      { FactoryGirl.build(:parsed_csv, :user => user) }
+
+    before(:each) do
+      csv.save(:validate => false)
+      cookies[:auth_token] = coordinator.auth_token
+    end
+
+    it "allows them to update a CSV" do
+      put :update, :id => csv.id, :spreadsheet => {:user_id => 1}
+      expect(response.status).to eq(200)
+    end
+
+    it "allows them to verify a CSV" do
+      put :verify, :id => csv.id
+      expect(response.status).to eq(200)
+    end
+  end
+
+  describe "Delegator access" do
+    let!(:csv)      { FactoryGirl.build(:parsed_csv, :user => user) }
+
+    before(:each) do
+      csv.save(:validate => false)
+      cookies[:auth_token] = delegator.auth_token
+    end
+
+    it "allows them to update a CSV" do
+      put :update, :id => csv.id, :spreadsheet => {:user_id => 1}
+      expect(response.status).to eq(200)
+    end
+
+    it "allows them to verify a CSV" do
+      put :verify, :id => csv.id
+      expect(response.status).to eq(200)
     end
   end
 

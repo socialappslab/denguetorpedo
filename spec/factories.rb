@@ -25,7 +25,7 @@ FactoryGirl.define do
 
 	factory :spreadsheet do
 		factory :parsed_csv do
-			csv Rack::Test::UploadedFile.new('spec/support/nicaragua_csv/N002001003.xlsx', 'text/csv')
+			csv Rack::Test::UploadedFile.new('spec/support/nicaragua_csv/N002001003.xlsx', 'text/xlsx')
 			parsed_at { Time.zone.now }
 			association :location
 			association :user
@@ -145,6 +145,10 @@ FactoryGirl.define do
 
 		factory :coordinator do
 			role User::Types::COORDINATOR
+		end
+
+    factory :delegator do
+			role User::Types::DELEGATE
 		end
 
 		factory :sponsor do

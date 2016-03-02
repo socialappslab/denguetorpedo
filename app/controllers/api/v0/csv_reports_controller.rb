@@ -3,6 +3,7 @@
 class API::V0::CsvReportsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
   before_filter :current_user
+  before_filter :identify_csv, :only => [:update, :verify]
   before_filter :set_locale
 
   #----------------------------------------------------------------------------
@@ -90,7 +91,6 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # PUT /api/v0/csv_reports/:id
 
   def update
-    @csv = @current_user.csvs.find_by_id(params[:id])
     if @csv.blank?
       raise API::V0::Error.new("CSV ya eliminado o no es tu CSV", 422) and return
     end
@@ -123,7 +123,6 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # PUT /api/v0/csv_reports/:id/verify
 
   def verify
-    @csv = @current_user.csvs.find(params[:id])
     @csv.update_column(:verified_at, Time.zone.now)
     render :json => {:reload => true}, :status => 200 and return
   end
@@ -135,6 +134,14 @@ class API::V0::CsvReportsController < API::V0::BaseController
 
   def spreadsheet_params
     params.require(:spreadsheet).permit(Spreadsheet.permitted_params)
+  end
+
+  def identify_csv
+    if @current_user.coordinator? || @current_user.delegator?
+      @csv = Spreadsheet.find_by_id(params[:id])
+    else
+      @csv = @current_user.csvs.find_by_id(params[:id])
+    end
   end
 
 end
