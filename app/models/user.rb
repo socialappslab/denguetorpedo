@@ -127,6 +127,10 @@ class User < ActiveRecord::Base
     return self.notifications.where(:seen_at => nil)
   end
 
+  def total_points
+    [self.attributes[:total_points], 0].max
+  end
+
   # A user's points consist of two things:
   # 1. The total_points column, and
   # 2. The 250*N calculation, where N is the number of green houses.
