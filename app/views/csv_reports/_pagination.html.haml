@@ -1,0 +1,41 @@
+- last_offset    = (@pagination_count / @pagination_limit).to_i
+- current_offset = params[:page].to_i
+
+%ul.pagination.pagination-lg
+  - if last_offset < 5
+    - (0..last_offset).each do |offset|
+      %li{:class => (offset == current_offset) ? "disabled" : ""}
+        = link_to "#{offset + 1}", :page => offset, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]
+
+  - else
+
+    - if current_offset < 4
+      - (0..4).each do |offset|
+        %li{:class => (offset == current_offset) ? "disabled" : ""}
+          = link_to "#{offset + 1}", :page => offset, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]
+      %li
+        = link_to csv_reports_path(:page => last_offset, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-right
+          &nbsp;
+    - elsif current_offset > last_offset - 4
+      %li
+        = link_to csv_reports_path(:page => 0, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-left
+          &nbsp;
+
+      - ((last_offset - 4)..last_offset). each do |offset|
+        %li{:class => (offset == current_offset) ? "disabled" : ""}
+          = link_to "#{offset + 1}", :page => offset, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]
+
+    - else
+      %li
+        = link_to csv_reports_path(:page => 0, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]), :html => {:style => "padding-right: 15px;"} do
+          %i.fa.fa-chevron-left
+          &nbsp;
+      - ((current_offset - 2)..(current_offset + 2)).each do |offset|
+        %li{:class => (offset == current_offset) ? "disabled" : ""}
+          = link_to "#{offset + 1}", :page => offset, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]
+      %li
+        = link_to csv_reports_path(:page => last_offset, :neighborhood_id => params[:neighborhood_id], :user_id => params[:user_id]), :style => "padding-right: 15px;" do
+          %i.fa.fa-chevron-right
+          &nbsp;

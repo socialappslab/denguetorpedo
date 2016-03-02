@@ -1,7 +1,7 @@
 - content_for :head do
-  %link{:href => "http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css", :rel => "stylesheet"}/
+  %link{:href => "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css", :rel => "stylesheet"}/
 - content_for :scripts do
-  %script{:src => "http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"}
+  %script{:src => "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"}
   :javascript
     angular.module('denguechatApp', [
       "ngSanitize",
@@ -43,13 +43,18 @@
                   = I18n.t("activerecord.models.user", :count => 2)
 
                 %div{:layout => "column", "ng-cloak" => "", "ng-controller" => "autocompleteCtrl as ctrl", :users => User.order("username ASC").to_json(:only => [:id, :name, :username])}
-                  %md-content.md-padding
+                  %h1.text-center{"ng-show" => "loadingPage"}
+                    %i.fa.fa-spin.fa-refresh
+                  %md-content.md-padding{"ng-hide" => "loadingPage"}
                     %md-autocomplete{"md-items" => "user in ctrl.querySearch(ctrl.searchText)", "md-min-length" => "0", "md-search-text" => "ctrl.searchText", "md-selected-item" => "ctrl.selectedItem", "md-selected-item-change" => "ctrl.selectedItemChange(user)", "md-search-text-change" => "ctrl.selectedTextChange(ctrl.searchText)", "md-item-text" => "ctrl.displayName(user)", :placeholder => "Busque usuarios"}
                       %md-item-template
                         %span{"md-highlight-flags" => "^i", "md-highlight-text" => "ctrl.searchText"}
                           {{ctrl.displayName(user)}}
                       %md-not-found
                         No hay resultados de usuario
+
+                .text-center
+                  = render :partial => "csv_reports/pagination"
 
               .col-md-6
                 %p.form-label
