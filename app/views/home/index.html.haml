@@ -3,7 +3,30 @@
 
 .opacity-banner
 .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
-  = render :partial => "orange_slider"
+  .row
+    .col-md-8.col-md-offset-2
+      %h1{:style => "text-transform: uppercase;"}
+        = I18n.t("views.home.header")
+
+
+  .row
+    .col-md-12.text-center
+      = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal" do
+        %i.fa.fa-play-circle
+        = I18n.t("views.home.video_description")
+      = link_to "Aprende más", about_path, :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
+
+  #video-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} &times;
+          %h4.modal-title
+            &nbsp;
+        .modal-body
+          %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
+
 
 
 .container.marketing
@@ -67,7 +90,7 @@
 
   %hr.featurette-divider
     .row.featurette
-      .col-md-7
+      .col-md-12
         %h2.featurette-heading{:style => "margin-top: 0px;"}
           = I18n.t("views.home.cities.title")
         %p.lead
