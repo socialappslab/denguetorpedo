@@ -1,33 +1,40 @@
 = render :partial => "shared/flashes"
 
 .container
-	.row
-		.col-md-6.col-xs-6
-			%h1.light-font
-				= I18n.t("views.coordinator.manage_users")
+  .row
+    .col-md-6.col-xs-6
+      %h1.light-font
+        = I18n.t("views.coordinator.manage_users")
 
-		.col-md-6.col-xs-6
-			%p.description
-				.pull-right
-					= render :partial => "shared/filter_by_community"
+    .col-md-6.col-xs-6
+      %p.description
+        .pull-right
+          = render :partial => "shared/filter_by_community"
 
 
-	.row
-		.col-md-12
-			.panel.panel-default
-				%table.table.table-bordered
-					%thead
-						%th
-							= I18n.t("activerecord.attributes.user.username")
-						%th
-							= I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
-						%th
-							Fecha de creación
-					- @users.each do |user|
-						%tr
-							%td
-								= link_to user.username, edit_user_path(user)
-							%td
-								= link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_coordinator_user_path(user), method: "PUT", data: { confirm: I18n.t("views.alerts.confirm")}
-							%td
-								= user.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")
+  .row
+    .col-md-12
+      .panel.panel-default
+        %table.table.table-bordered
+          %thead
+            %th
+              = I18n.t("activerecord.attributes.user.username")
+            %th
+              = I18n.t("views.admin.block") + "/" + I18n.t("views.admin.unblock")
+            %th Fecha de creación
+          - @users.each do |user|
+            %tr
+              %td
+                = link_to user.username, edit_user_path(user)
+              %td
+                = link_to (user.is_blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block") ), block_coordinator_user_path(user), method: "PUT", data: { confirm: I18n.t("views.alerts.confirm")}
+              %td
+                = form_for user, :method => "PUT" do |f|
+                  = hidden_field_tag "redirect_path", request.path
+                  .form-inline
+                    .form-group
+                      = f.select :role, options_for_select([ [User::Types::COORDINATOR, User::Types::COORDINATOR] , [User::Types::DELEGATE, User::Types::DELEGATE], [User::Types::RESIDENT, User::Types::RESIDENT] ], :selected => user.role), {}, :class => "form-control"
+                      = f.submit I18n.t("views.buttons.save"), "class" => "btn btn-success"
+
+              %td
+                = user.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M %Z")

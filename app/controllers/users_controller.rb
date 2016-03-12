@@ -114,7 +114,7 @@ class UsersController < ApplicationController
       end
 
       @user.update_column(:is_fully_registered, true) unless @user.is_fully_registered == true
-      redirect_to edit_user_path(@user), :flash => { :notice => I18n.t("views.users.edit.success_flash") }
+      redirect_to params[:redirect_path] || edit_user_path(@user), :flash => { :notice => I18n.t("views.users.edit.success_flash") }
     else
       render "edit" and return
     end
