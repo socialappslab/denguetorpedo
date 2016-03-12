@@ -5,7 +5,7 @@
       annotations: {
         alwaysOutside: true
       },
-      width: 614,
+      width: 500,
       height: 350,
       chartArea: {
         left: 50,
