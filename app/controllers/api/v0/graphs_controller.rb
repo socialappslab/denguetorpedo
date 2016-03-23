@@ -79,10 +79,8 @@ class API::V0::GraphsController < API::V0::BaseController
 
   def locations
     neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
-    # start_time   = (5.months + 5.days).ago
-    # end_time     = 4.months.ago
-    start_time   = 7.months.ago
-    end_time     = (Time.zone.now.beginning_of_month - 2.months).end_of_month
+    start_time   = 8.months.ago.beginning_of_month
+    end_time     = (Time.zone.now.beginning_of_month - 1.months).end_of_month
     location_ids = neighborhood.locations.pluck(:id)
 
     Time.use_zone("America/Guatemala") do
