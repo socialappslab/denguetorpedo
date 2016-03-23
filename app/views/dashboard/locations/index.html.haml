@@ -43,6 +43,9 @@
                 %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 10%;"}
                   {{ location.address }}
                   .show
+                    %a{"ng-href" => "{{location.neighborhood.path}}", "target" => "_blank"}
+                      {{location.neighborhood.name}}
+                  .show
                     %span{"ng-if" => "location.csv_path"}
                       %a{"ng-href" => "{{location.csv_path}}", "target" => "_blank"}
                         CSV
