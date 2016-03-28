@@ -1,0 +1,62 @@
+ctrl = ($scope, $http, $attrs, Location) ->
+  $scope.data         = {locations: [], filteredLocations: [], filter: "all", loading: true, error: false}
+  $scope.data.neighborhood = angular.fromJson($attrs.neighborhood);
+
+  mapOptions = {
+    zoom: 13,
+    streetViewControl: false,
+    disableDoubleClickZoom: true,
+    center: new google.maps.LatLng($scope.data.neighborhood.latitude, $scope.data.neighborhood.longitude)
+  };
+
+  # // Initialize the map, and add the geographical layer to it.
+  $scope.data.map = new google.maps.Map(document.getElementById('gmap'), mapOptions);
+  $scope.data.mapCluster = new MarkerClusterer($scope.data.map, [], {
+    styles: [{
+      url: "<%= asset_path('markers/flat_orange') %>",
+      height: 30,
+      width: 30,
+      textColor: '#ffffff',
+      textSize: 15,
+    }]
+  });
+
+
+  req = Location.api($attrs.path).query().$promise;
+  req.then (response) ->
+    $scope.data.locations         = response
+    $scope.data.filteredLocations = $scope.data.locations
+    displayMap($scope.data)
+  , (response) -> $scope.data.error = true
+  req.finally (response) -> $scope.data.loading = false;
+
+  $scope.filterBy = (type) ->
+    $scope.data.filter = type
+
+  $scope.$watch "data.filter", (newValue) ->
+    if newValue == "all"
+      $scope.data.filteredLocations = $scope.data.locations
+    else
+      $scope.data.filteredLocations = []
+      for loc in $scope.data.locations
+        $scope.data.filteredLocations.push(loc) if loc[newValue]
+    displayMap($scope.data)
+    return
+
+displayMap = (data) ->
+  data.mapCluster.clearMarkers()
+  markers = []
+  for location in data.filteredLocations
+    latitude  = location.latitude;
+    longitude = location.longitude;
+    markerLoc = new google.maps.LatLng(latitude, longitude);
+    marker = new google.maps.Marker({
+      position: markerLoc,
+      map: data.map,
+      draggable: false,
+      animation: google.maps.Animation.DROP,
+      icon: "<%= asset_path('markers/orange_marker') %>"
+    });
+    data.mapCluster.addMarker(marker)
+
+angular.module("denguechat.controllers").controller("heatmapCtrl", ["$scope", "$http", "$attrs", "Location", ctrl]);
