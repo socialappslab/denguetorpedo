@@ -113,7 +113,7 @@ describe API::V0::PostsController do
     it "remove points from the user" do
       before_points = user.total_points
       delete "destroy", :id => blog_post.id
-      expect(user.reload.total_points).to eq(before_points - User::Points::POST_CREATED)
+      expect(user.reload.total_points).to eq([0, before_points - User::Points::POST_CREATED].max)
     end
 
     it "remove points from team" do

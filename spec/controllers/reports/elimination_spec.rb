@@ -44,7 +44,7 @@ describe ReportsController do
 	it "awards the eliminating user" do
 		before_points = user.total_points
 		put :eliminate, :neighborhood_id => neighborhood.id, :id => report.id, :has_after_photo => 1, :report => report_params
-		expect(user.reload.total_points).to eq(before_points + report.breeding_site.elimination_methods.first.points)
+		expect(user.reload.total_points).to be(before_points + report.breeding_site.elimination_methods.first.points)
 	end
 
 	it "allows to eliminate report without after photo" do
