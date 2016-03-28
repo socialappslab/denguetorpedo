@@ -23,6 +23,16 @@ class API::V0::LocationsController < API::V0::BaseController
     render "api/v0/locations/index" and return
   end
 
+  #----------------------------------------------------------------------------
+  # GET /api/v0/locations/house-index
+  def house_index
+    city   = @current_user.city
+    nids   = city.neighborhoods.pluck(:id)
+    locids_from_visits = Visit.where("csv_id IS NOT NULL").pluck(:location_id)
+
+    @locations = Location.where(:neighborhood_id => nids).where(:id => locids_from_visits)
+  end
+
 
   #----------------------------------------------------------------------------
   # PUT /api/v0/locations/:id

@@ -9,10 +9,12 @@
 //= require angular-animate
 //=require angular-messages
 //= require angular-aria
+//= require angular-resource
 //= require angular-sanitize
 //= require app/app
 //= require_tree ./app/controllers/
 //= require_tree ./app/directives/
+//= require_tree ./app/services/
 //= require_tree ./jquery/
 //= require facebook
 

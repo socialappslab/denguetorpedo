@@ -46,6 +46,7 @@ Dengue::Application.routes.draw do
       #-------------------------------------------------------------------------
 
       resources :locations, :only => [:index, :update] do
+        get "house-index", :on => :collection, :action => "house_index"
       end
 
       #-------------------------------------------------------------------------

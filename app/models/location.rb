@@ -40,6 +40,15 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  # This returns the so-called "house index" which can either be positive/potential
+  # or without breeding sites.
+  def inspection_types
+    latest_visit = self.visits.order("visited_at DESC").limit(1).first
+    return {Inspection::Types::POSITIVE => false, Inspection::Types::POTENTIAL => false, Inspection::Types::NEGATIVE => false} if latest_visit.blank?
+
+    return latest_visit.inspection_types
+  end
+
   # We define a green location as
   # a) having green status for at least 2 consecutive visits, and
   # b) the span of green visits is at least 2 months.

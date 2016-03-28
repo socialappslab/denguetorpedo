@@ -1,11 +1,13 @@
 (function () {
   angular.module('denguechat.directives', []);
   angular.module('denguechat.controllers', []);
+  angular.module('denguechat.services', ["ngResource"]);
 
   angular.module('denguechatApp', [
     "ngSanitize",
     'denguechat.directives',
     'denguechat.controllers',
+    "denguechat.services",
     'ngMessages',
     'ngMaterial'
   ]);
