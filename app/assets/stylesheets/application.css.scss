@@ -36,11 +36,11 @@ html, body {
 }
 
 .navbar-brand {
-  padding-top: 5px;
-  padding-right: 0px;
+  padding-top: 4px;
 
   #logo {
     height: 40px;
+    display: inline;
     @media(min-width: 992px) {
       height: 50px;
       margin-top: -5px;

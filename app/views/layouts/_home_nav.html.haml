@@ -9,10 +9,12 @@
         %span.icon-bar
       = link_to (@current_user.present? ? user_path(@current_user) : root_path), :class => "navbar-brand" do
         = logo_image
+        %p{:style => "display: inline;"}
+          DengueChat
 
     #header-collapse.collapse.navbar-collapse
       %ul.nav.navbar-nav
-        %li
+        %li{:style => "font-size: 18px; margin-left: 20px;", :class => "#{request.path == about_path ? 'active' : ''}"}
           = link_to I18n.t("views.footer.about"), about_path
       %ul.nav.navbar-nav.navbar-right
         = form_tag(session_path, :class => "navbar-form navbar-left form-inline") do
