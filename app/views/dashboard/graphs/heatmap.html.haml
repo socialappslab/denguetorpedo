@@ -1,18 +1,32 @@
-- content_for :dashboard_content do
-  .container{"ng-controller" => "heatmapCtrl", "neighborhood" => @neighborhood.to_json, "style" => "margin-bottom: 20px;"}
-    .row
-      .col-md-12
-        #map_div
-          #loading
-            .fa.fa-refresh.fa-spin
-          #gmap
-
-/------------------------------------------------------------------------------
+- content_for :head do
+  %script{:src => "//maps.googleapis.com/maps/api/js?v=AIzaSyDGcpQfu7LSPkd9AJnQ0cztYylHa-fyE18&libraries=visualization"}
 
 - content_for :scripts do
   = javascript_include_tag "google/marker-clusterer"
 
-  :javascript
-    var openLocations       = #{@open_locations.to_json(:only => [:latitude, :longitude])}
-    var communityLatitude   = #{@neighborhood.latitude}
-    var communityLongitude  = #{@neighborhood.longitude}
+- content_for :dashboard_content do
+  .container{"ng-controller" => "heatmapCtrl", "ng-cloak" => "", "path" => house_index_api_v0_locations_path, "neighborhood" => @neighborhood.to_json(:only => [:latitude, :longitude]), "style" => "margin-bottom: 20px;"}
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-body
+            %p.form-label{:style => "display: inline-block;"}
+              Filtrar por
+            .pull-right{"ng-show" => "data.locations.length > 0"}
+              %p.form-label{:style => "display: inline-block;"}
+                Viendo {{data.filteredLocations.length}} lugares
+
+            %ul.nav.nav-pills
+              - filter_types.each do |type|
+                %li{:role => "presentation", "ng-class" => "{'active': data.filter == '#{type[0]}'}"}
+                  %a{"ng-click" => "filterBy('#{type[0]}')"}
+                    = type[1]
+              %li.pull-right{"ng-show" => "data.loading"}
+                %h1
+                  %i.fa.fa-refresh.fa-spin
+              %li.pull-right{"ng-show" => "data.error"}
+                %h2.text-danger
+                  Algo salió mal en nuestro extremo. Por favor, inténtelo de nuevo
+            %hr
+            #map_div
+              #gmap

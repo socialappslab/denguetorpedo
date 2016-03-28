@@ -10,4 +10,13 @@ module DashboardHelper
       [I18n.t("views.dashboard.navigation.heatmap"), heatmap_dashboard_graphs_path, "fa-globe"]
     ]
   end
+
+  def filter_types
+    return [
+      ["all", "Todos"],
+      ["positive", "Positivos"],
+      ["potential", "Potenciales"],
+      ["negative", "Negativos"]
+    ]
+  end
 end
