@@ -32,10 +32,37 @@ class NeighborhoodsController < NeighborhoodsBaseController
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a neighborhood page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
 
+    # Identify locations associated with this neighborhood.
     all_csv_loc_ids = Spreadsheet.pluck(:location_id)
+    location_ids    = @neighborhood.locations.find_all {|loc| all_csv_loc_ids.include?(loc.id)}.map {|loc| loc.id}.uniq
+
+    # Calculate the green houses.
     @green_location_count = GreenLocationSeries.get_latest_count_for_neighborhood(@neighborhood).to_i
-    @locations_count = @neighborhood.locations.find_all {|loc| all_csv_loc_ids.include?(loc.id)}.count
+    @locations_count      = location_ids.count
     @green_houses_percent = @locations_count == 0 ? "0%" : "#{(@green_location_count.to_f * 100 / @locations_count).round(0)}%"
+
+    # Calculates positive eliminated % and potential eliminated %.
+    # ins_ids     = Visit.where("visits.csv_id IS NOT NULL").where(:location_id => location_ids).includes(:inspections).pluck("inspections.id").compact.uniq
+    # Report.includes(:inspections)
+    @totals = {:positive => {:eliminated => Set.new, :total => Set.new}, :potential => {:eliminated => Set.new, :total => Set.new}}
+    report_ids  = @neighborhood.reports.where(:location_id => location_ids).pluck(:id)
+    inspections = Inspection.where("csv_id IS NOT NULL").where(:report_id => report_ids).order("position DESC").to_a
+    report_ids.each do |r_id|
+      types = inspections.find_all {|ins| ins.report_id == r_id}.map {|ins| ins.identification_type}
+      if types.include?(Inspection::Types::POSITIVE)
+        @totals[:positive][:total].add(r_id)
+        @totals[:positive][:eliminated].add(r_id) if types.first == Inspection::Types::NEGATIVE
+      end
+
+      if types.include?(Inspection::Types::POTENTIAL)
+        @totals[:potential][:total].add(r_id)
+        @totals[:potential][:eliminated].add(r_id) if types.first == Inspection::Types::NEGATIVE
+      end
+    end
+
+    [:positive, :potential].each do |key|
+      @totals[key][:ratio] = @totals[key][:total].length == 0 ? 0 : (@totals[key][:eliminated].length.to_f / @totals[key][:total].length)
+    end
 
     # James requested to display only Managua neighborhoods.
     @neighborhoods = Neighborhood.where(:city_id => 4).order("name ASC")

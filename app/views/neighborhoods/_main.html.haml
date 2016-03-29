@@ -8,38 +8,40 @@
   %table.table.table-bordered
     %tbody.point-progress
       %tr
-        %td.text-center{:style => "width: 50%;"}
-          - if @green_location_count.blank? || @green_location_count == 0
-            - num_of_reports_color = "#d9534f";
-          - else
-            - num_of_reports_color = "#5cb85c";
-
-          %h1{:style => "color: #{num_of_reports_color}; display: inline;"}
-            = @green_location_count
-          %p.light-font{:style => "font-size: 16px; display: inline; margin-right: 10px;"}
-            de
-          %h1{:style => "color: #{num_of_reports_color}; display: inline;"}
-            = @locations_count
-          %p.light-font{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
-            casas verdes
-            %i.fa.fa-question-circle{"style" => "color: #8E8E93;"}
-
-        %td.text-center{:style => "width: 30%;"}
-          - if @green_location_count.blank? || @green_location_count == 0
-            - num_of_reports_color = "#d9534f";
-          - else
-            - num_of_reports_color = "#5cb85c";
-
-          %h1{:style => "color: #{num_of_reports_color};"}
+        %td.text-center{:style => "width: 50%; vertical-align: middle;", :rowspan => 2}
+          %h1.light-font{:style => "display: inline-block;"}
             = @green_houses_percent
           %p.light-font
-            porcentaje casas verdes
+            = @green_location_count
+            de
+            = @locations_count
 
-        %td.text-center{:style => "width: 20%;"}
-          %h1.text-success-light
-            = @total_reports
+          %p.light-font{:style => "color: #bdc3c7;", "data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+            casas verdes
+            %i.fa.fa-question-circle
+
+        %td.text-center{:style => "width: 50%;"}
+          %h1.light-font{:style => "display: inline-block;"}
+            = (@totals[:positive][:ratio] * 100).round(0).to_s + "%"
           %p.light-font
-            = I18n.t("dashboard.reports")
+            = @totals[:positive][:eliminated].length
+            de
+            = @totals[:positive][:total].length
+
+          %p.light-font{:style => "color: #bdc3c7;", "data-content" => "Displays currently eliminated breeding sites that were labeled as positive at some point", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+            criaderos positivos eliminados
+            %i.fa.fa-question-circle
+      %tr
+        %td.text-center{:style => "width: 50%;"}
+          %h1.light-font{:style => "display: inline-block;"}
+            = (@totals[:potential][:ratio] * 100).round(0).to_s + "%"
+          %p.light-font
+            = @totals[:potential][:eliminated].length
+            de
+            = @totals[:potential][:total].length
+          %p.light-font{:style => "color: #bdc3c7;", "data-content" => "Displays currently eliminated breeding sites that were labeled as potential at some point", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+            criaderos potenciales eliminados
+            %i.fa.fa-question-circle
 
 
 
