@@ -46,8 +46,8 @@ RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = true
 
   # This option ensures that we fail fast. It mimicks the hooks.rb behavior for our Cucumber suite.
-  config.fail_fast     = true
-  config.color = true
+  config.fail_fast = false
+  config.color     = true
 
   # NOTE: This must be on the top of RSpec declaration, above any other config.before
   # declaration.

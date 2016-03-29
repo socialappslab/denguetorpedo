@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216211551) do
+ActiveRecord::Schema.define(version: 20160328233314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,13 +49,6 @@ ActiveRecord::Schema.define(version: 20151216211551) do
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true, using: :btree
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true, using: :btree
 
-  create_table "badges", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "prize_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "breeding_sites", force: :cascade do |t|
     t.string   "description_in_pt", limit: 255
     t.string   "description_in_es", limit: 255
@@ -63,15 +56,6 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.datetime "updated_at"
     t.string   "string_id",         limit: 255
     t.string   "code",              limit: 255
-  end
-
-  create_table "buy_ins", force: :cascade do |t|
-    t.integer  "group_buy_in_id"
-    t.integer  "user_id"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.boolean  "accepted"
-    t.boolean  "expired",         default: false, null: false
   end
 
   create_table "cities", force: :cascade do |t|
@@ -87,22 +71,6 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.string   "country",            limit: 255
   end
 
-  create_table "ckeditor_assets", force: :cascade do |t|
-    t.string   "data_file_name",    limit: 255, null: false
-    t.string   "data_content_type", limit: 255
-    t.integer  "data_file_size"
-    t.integer  "assetable_id"
-    t.string   "assetable_type",    limit: 30
-    t.string   "type",              limit: 30
-    t.integer  "width"
-    t.integer  "height"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-  end
-
-  add_index "ckeditor_assets", ["assetable_type", "assetable_id"], name: "idx_ckeditor_assetable", using: :btree
-  add_index "ckeditor_assets", ["assetable_type", "type", "assetable_id"], name: "idx_ckeditor_assetable_type", using: :btree
-
   create_table "comments", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "commentable_id"
@@ -114,15 +82,6 @@ ActiveRecord::Schema.define(version: 20151216211551) do
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
-
-  create_table "contacts", force: :cascade do |t|
-    t.string   "title",      limit: 255
-    t.string   "email",      limit: 255
-    t.string   "name",       limit: 255
-    t.text     "message"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
 
   create_table "conversations", force: :cascade do |t|
     t.text     "name"
@@ -214,24 +173,6 @@ ActiveRecord::Schema.define(version: 20151216211551) do
     t.datetime "updated_at",             null: false
   end
 
-  create_table "feedbacks", force: :cascade do |t|
-    t.string   "title",      limit: 255
-    t.string   "email",      limit: 255
-    t.string   "name",       limit: 255
-    t.text     "message"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  create_table "feeds", force: :cascade do |t|
-    t.string   "target_type",  limit: 255
-    t.integer  "target_id"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.integer  "user_id"
-    t.integer  "feed_type_cd"
-  end
-
   create_table "houses", force: :cascade do |t|
     t.datetime "created_at",                                                 null: false
     t.datetime "updated_at",                                                 null: false
@@ -265,20 +206,6 @@ ActiveRecord::Schema.define(version: 20151216211551) do
 
   add_index "likes", ["likeable_id", "likeable_type"], name: "index_likes_on_likeable_id_and_likeable_type", using: :btree
   add_index "likes", ["user_id", "likeable_id", "likeable_type"], name: "index_likes_on_user_id_and_likeable_id_and_likeable_type", unique: true, using: :btree
-
-  create_table "location_statuses", id: false, force: :cascade do |t|
-    t.integer  "id",                              null: false
-    t.integer  "location_id"
-    t.integer  "status"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "dengue_count"
-    t.integer  "chik_count"
-    t.string   "health_report",       limit: 255
-    t.integer  "identification_type"
-    t.datetime "identified_at"
-    t.datetime "cleaned_at"
-  end
 
   create_table "locations", force: :cascade do |t|
     t.string   "address",         limit: 255
