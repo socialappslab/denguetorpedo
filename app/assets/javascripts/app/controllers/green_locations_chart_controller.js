@@ -5,11 +5,11 @@
     var dateColumn = dataTable.addColumn("string", "Semana")
     var numberColumn = dataTable.addColumn("number", "Casas Verdes")
     dataTable.addColumn({'type': 'string', 'role': 'tooltip'})
-    dataTable.addColumn({type: 'string', role: 'annotation'});
+    // dataTable.addColumn({type: 'string', role: 'annotation'});
 
     for (var i = 0; i < data.length; i++) {
       var tooltipText = data[i].start_week + " a " + data[i].end_week + " : " + data[i].count + " casas verdes";
-      dataTable.addRow([data[i].start_week, data[i].count, tooltipText, ""])
+      dataTable.addRow([data[i].start_week, data[i].count, tooltipText])
     }
 
     var element = document.getElementById(chartID);
@@ -39,7 +39,7 @@
       options.hAxis.textPosition = 'none';
 
 
-    var chart = new google.visualization.ColumnChart(document.getElementById(chartID));
+    var chart = new google.visualization.LineChart(document.getElementById(chartID));
     var view = new google.visualization.DataView(dataTable);
     chart.draw(view, options);
   }
