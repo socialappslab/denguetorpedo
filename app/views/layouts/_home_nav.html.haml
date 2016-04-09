@@ -9,7 +9,7 @@
         %span.icon-bar
       = link_to (@current_user.present? ? user_path(@current_user) : root_path), :class => "navbar-brand" do
         = logo_image
-        %p{:style => "display: inline;"}
+        %p{:style => "display: inline; font-weight: bold; font-size: 20px;"}
           DengueChat
 
     #header-collapse.collapse.navbar-collapse
