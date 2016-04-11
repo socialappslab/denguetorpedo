@@ -14,9 +14,13 @@ directive = (User) ->
   return {
     restrict: "A",
     link: (scope, element, attrs) ->
+      element.popover({html: true, template: templateHTML, placement: "left"})
       element.hover () ->
+        window.test = element
         User.get({id: attrs.userId}).$promise.then (response) ->
-          element.popover({html: true, template: templateHTML, content: tableHTML(response.points, response.report_count, response.green_location_ranking), placement: "left"}).popover("show");
+          popover = element.data("bs.popover");
+          popover.options.content = tableHTML(response.points, response.report_count, response.green_location_ranking);
+          popover.show();
       , () -> element.popover("hide")
   }
 
