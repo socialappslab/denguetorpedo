@@ -64,7 +64,7 @@
                     = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
                   %td{"style" => "vertical-align: middle;"}
                     .light-font
-                      = link_to user.username, user_path(user)
+                      = link_to user.username, user_path(user), "score-popover" => "", :user_id => user.id
                   %td{"style" => "vertical-align: middle;"}
                     %p.largest-font.heavy-font.text-right.green
                       = ranking_hash[:score].to_i

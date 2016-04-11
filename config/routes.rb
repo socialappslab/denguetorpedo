@@ -5,7 +5,9 @@ Dengue::Application.routes.draw do
 
   namespace :api, :defaults => { :format => :json } do
     namespace :v0 do
-      #-------------------------------------------------------------------------
+      resources :users, :only => [] do
+        get "scores"
+      end
 
       resources :sessions,    :only => [:create] do
         collection do
