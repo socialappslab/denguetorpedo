@@ -103,7 +103,7 @@ class API::V0::GraphsController < API::V0::BaseController
     # We will pad empty data with green locations = 0.
     while start_time < end_time
       if @series.find {|s| s[:date].strftime("%Y%W") == start_time.end_of_week.strftime("%Y%W")}.blank?
-        @series << {:date => start_time.end_of_week, :green_houses => 0}
+        @series << {:date => start_time.end_of_week, :green_houses => nil}
       end
 
       start_time += 1.week

@@ -1,5 +1,5 @@
 json.green_locations @series do |series|
-  json.count series[:green_houses].to_i
+  json.count series[:green_houses] ? series[:green_houses].to_i : nil
 
   if series[:date].year == Time.now.year
     json.start_week series[:date].beginning_of_week.strftime("%m-%d")
