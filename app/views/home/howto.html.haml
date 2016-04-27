@@ -1,42 +1,39 @@
 .container
   .row
-    .col-md-12
-      .panel.panel-default
-        .panel-heading
-          %h3.panel-title
-            = I18n.t("views.education.title")
-        .panel-body
-          %h2
-            = I18n.t("views.education.summary")
-          %ul{style: "list-style-type:circle; margin-left:30px;"}
-            - @sections.each do |ds|
-              %li
-                = link_to ds.title, "##{ds.html_id_tag}"
+    .col-md-10.col-md-offset-1{:style => "margin-bottom: 40px;"}
+      %iframe{:src => "https://docs.google.com/document/d/1gnGRs9pMmkWjoI-52L6Ak49O3apKRFNcl8_XUIIGKRg/pub?embedded=true", :style => "width: 100%; height: 100%;"}
 
-          %br
-          %br
-          - if @current_user && @current_user.coordinator?
-            = link_to new_documentation_section_path, :style => "font-size: 20px;" do
-              %i.fa.fa-plus
-              = I18n.t("views.documentation_sections.new.title")
-
-          %br
-          %br
-          %br
-          .accordion#accordion1
-            - @sections.each do |ds|
-              .accordion-group
-                .accordion-heading{style: "padding:10px;", id: "#{ds.html_id_tag}"}
-                  .row
-                    .col-md-8
-                      %h1{style: "color: black;"}
-                        = ds.title
-                    .col-md-4{style: "text-align: right;"}
-                      - if @current_user && @current_user.coordinator?
-                        = link_to I18n.t("views.buttons.edit"), edit_documentation_section_path(ds)
-
-
-
-                #cadastrar.accordion-body
-                  .accordion-inner{style: "padding: 9px 25px;"}
-                    = ds.content.gsub(" ", "&nbsp;").gsub("\n",'<br />').html_safe
+  -# %h2
+  -#   = I18n.t("views.education.summary")
+  -# %ul{style: "list-style-type:circle; margin-left:30px;"}
+  -#   - @sections.each do |ds|
+  -#     %li
+  -#       = link_to ds.title, "##{ds.html_id_tag}"
+  -#
+  -# %br
+  -# %br
+  -# - if @current_user && @current_user.coordinator?
+  -#   = link_to new_documentation_section_path, :style => "font-size: 20px;" do
+  -#     %i.fa.fa-plus
+  -#     = I18n.t("views.documentation_sections.new.title")
+  -#
+  -# %br
+  -# %br
+  -# %br
+  -# .accordion#accordion1
+  -#   - @sections.each do |ds|
+  -#     .accordion-group
+  -#       .accordion-heading{style: "padding:10px;", id: "#{ds.html_id_tag}"}
+  -#         .row
+  -#           .col-md-8
+  -#             %h1{style: "color: black;"}
+  -#               = ds.title
+  -#           .col-md-4{style: "text-align: right;"}
+  -#             - if @current_user && @current_user.coordinator?
+  -#               = link_to I18n.t("views.buttons.edit"), edit_documentation_section_path(ds)
+  -#
+  -#
+  -#
+  -#       #cadastrar.accordion-body
+  -#         .accordion-inner{style: "padding: 9px 25px;"}
+  -#           = ds.content.gsub(" ", "&nbsp;").gsub("\n",'<br />').html_safe
