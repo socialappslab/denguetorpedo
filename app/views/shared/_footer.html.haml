@@ -2,25 +2,19 @@
   .container-fluid
     %ul.nav.navbar-nav
       %li
-        %p.navbar-text
-          2011-2016 © Regents of the University of California
-
-      %li
         = link_to I18n.t("views.footer.code_of_conduct"), manual_path
       %li
-        = link_to I18n.t("home_navigation.education.title_and_description"), education_path
-      %li
-        = link_to I18n.t("home_navigation.howto.title_and_description"), howto_path
-      %li
-        = link_to I18n.t("home_navigation.prizes.title_and_description"), prizes_path
-
-    %ul.nav.navbar-nav
-      %li
         = link_to I18n.t("views.footer.about"), about_path
+      %li
+        = link_to I18n.t("home_navigation.education.title_and_description"), education_path
       %li
         = link_to I18n.t("views.footer.faq"), faq_path
       %li
         = link_to I18n.t("views.footer.contact"), "mailto:info@denguechat.com", :target => "_blank", :class => "btn btn-default"
+    %ul.nav.navbar-nav
+      %li
+        %p.navbar-text
+          2016 © Regents of the University of California
 
 
 / Scripts

@@ -1,9 +1,4 @@
 .container
   .row
-    .col-md-12
-      .panel.panel-default
-        .panel-body
-          - if I18n.locale.to_s == User::Locales::PORTUGUESE
-            = render :partial => "home/manual_pt"
-          - else
-            = render :partial => "home/manual_es"
+    .col-md-10.col-md-offset-1{:style => "margin-bottom: 40px;"}
+      %iframe{:src => "https://docs.google.com/document/d/1gnGRs9pMmkWjoI-52L6Ak49O3apKRFNcl8_XUIIGKRg/pub?embedded=true", :style => "width: 100%; height: 100%;"}

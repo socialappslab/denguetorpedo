@@ -165,7 +165,7 @@ es:
     education:
       title: Sepa Más
       description: Sobre el dengue
-      title_and_description: Sepa más
+      title_and_description: "El Villano: Aedes Aegypti"
     howto:
       title: Juegue cómo
       description: ¿Cómo?
@@ -504,10 +504,10 @@ es:
         error: Nombre de usuario o contraseña incorrecta
 
     footer:
-      code_of_conduct: "Manual de conducta"
+      code_of_conduct: "Guía de usuario"
       faq: "Preguntas frecuentes"
       contact: "Contacto DC"
-      about: "Sobre"
+      about: "Sobre DengueChat"
       creator: "Creado por el Social Apps Lab at CITRIS, UC Berkeley"
 
     feed:
