@@ -8,7 +8,7 @@
 
     .feed-item-bar-new{:style => "display: inline-block;"}
       .username{:style => "padding-left: 5px;"}
-        %a{"ng-href" => "{{post.user.url}}", "score-popover" => "", :user_id => "{{post.user.id}}" }
+        %a{"ng-href" => "{{post.user.url}}", :user_id => "{{post.user.id}}" }
           {{post.user.display_name}}
         %a{"ng-href" => "{{post.user.neighborhood.url}}", :style => "color: #8899a6; font-weight: 300;"}
           {{post.user.neighborhood.geographical_display_name}}
