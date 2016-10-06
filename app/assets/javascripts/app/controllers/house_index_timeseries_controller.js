@@ -11,9 +11,9 @@
         left: 50,
         right: 50,
         top: 50,
-        bottom: 0,
+        bottom: 50,
         width: "90%",
-        height: "70%"
+        height: "100%"
       },
       hAxis: {
         showTextEvery: parseInt(data.getNumberOfRows() / 4)
