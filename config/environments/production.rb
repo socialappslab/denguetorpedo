@@ -82,7 +82,7 @@ Dengue::Application.configure do
   # Mailer
   #-------
   config.action_mailer.delivery_method     = :smtp
-  config.action_mailer.default_url_options = { host: "www.denguetorpedo.org", protocol: "https" }
+  config.action_mailer.default_url_options = { host: "www.denguechat.com", protocol: "https" }
   config.action_mailer.smtp_settings = {
     :user_name => ENV['SENDGRID_USERNAME'],
     :password => ENV['SENDGRID_PASSWORD'],
