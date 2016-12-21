@@ -92,5 +92,10 @@ module Dengue
       Sprockets::Engines #force autoloading
       Sprockets.register_engine '.haml', HamlTemplate
     end
+
+    # NOTE: This is the long-term solution to using JwtAuth. For now,
+    # we will decode and encode in the controller.
+    # See: https://auth0.com/blog/ruby-authentication-secure-rack-apps-with-jwt/
+    # config.middleware.use "JwtAuth"
   end
 end
