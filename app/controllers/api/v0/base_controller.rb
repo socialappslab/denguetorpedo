@@ -19,7 +19,12 @@ class API::V0::BaseController < ApplicationController
 
   #----------------------------------------------------------------------------
 
-  private
+  protected
+
+  def current_user_via_jwt
+    scopes, user = request.env.values_at :scopes, :user
+    @current_user = User.find_by_username(user["username"])
+  end
 
   def authenticate_user_via_jwt
     begin
@@ -38,6 +43,8 @@ class API::V0::BaseController < ApplicationController
       raise API::V0::Error.new('The token does not have a valid "issued at" time.', 403) and return
     end
   end
+
+  private
 
   def authenticate_user_via_device_token
     token = request.env["DengueChat-API-V0-Device-Session-Token"]
