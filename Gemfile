@@ -27,6 +27,8 @@ gem "foreman"
 gem 'haml'
 gem "http_accept_language"
 gem "jbuilder"
+gem 'jwt'
+
 gem 'paperclip', '~> 4.2.0'
 gem "pg"
 gem "pry"
