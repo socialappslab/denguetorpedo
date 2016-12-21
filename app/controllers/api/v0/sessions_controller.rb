@@ -6,20 +6,11 @@ class API::V0::SessionsController < API::V0::BaseController
   #----------------------------------------------------------------------------
   # POST /api/v0/sessions
   def create
-    device = params[:device]
-
     user = User.find_by_username( params[:username] )
     user = User.find_by_email( params[:username] ) if user.nil?
 
-    if user.present? && user.authenticate(params[:password]) && device
-      ds         = DeviceSession.new
-      ds.user_id = user.id
-      ds.token   = SecureRandom.uuid
-      ds.device_name  = device[:device]
-      ds.device_model = device[:model]
-      ds.save!
-
-      render :json => { :device_session => { :token => ds.token } }, :status => 200
+    if user.present? && user.authenticate(params[:password])
+      render :json => { :token => token(user) }, :status => 200
     else
       raise API::V0::Error.new("Invalid email or password. Please try again.", 401) and return
     end
