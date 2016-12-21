@@ -7,6 +7,33 @@ class User < ActiveRecord::Base
   :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked,
   :carrier, :prepaid, :points, :total_points, :name
 
+
+  #----------------------------------------------------------------------------
+
+  def jwt_token
+    return JWT.encode(self.payload, ENV['JWT_SECRET'], 'HS256')
+  end
+
+  def payload
+    if self.role == Types::COORDINATOR
+      scopes = ['add_visits', 'change_visits', 'remove_visits', 'add_houses', 'change_houses', 'remove_houses', 'add_inspections', 'change_inspections', 'remove_inspections', 'add_breeding_sites', 'change_breeding_sites', 'remove_breeding_sites']
+    else
+      scopes = ['add_visits', 'change_visits', 'add_houses', 'change_houses', 'add_inspections', 'change_inspections', 'add_breeding_sites', 'change_breeding_sites']
+    end
+
+    {
+      exp: Time.now.to_i + 2 * 60 * 60,
+      iat: Time.now.to_i,
+      iss: ENV['JWT_ISSUER'],
+      scopes: scopes,
+      user: {
+        id:       self.id,
+        username: self.username,
+        email:    self.email
+      }
+    }
+  end
+
   #----------------------------------------------------------------------------
 
   ROLES = ["morador", "logista", "visitante"]
