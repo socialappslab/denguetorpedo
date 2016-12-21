@@ -1,6 +1,37 @@
 # -*- encoding : utf-8 -*-
 class API::V0::LocationsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
+  before_action :authenticate_user_via_jwt, :only => [:search, :mobile, :show]
+  before_action :current_user_via_jwt,      :only => [:search, :mobile, :show]
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/locations/search
+
+  def search
+    raise API::V0::Error.new("You need to enter an address", 422) and return if params[:address].blank?
+
+    @locations = Location.where("lower(address) LIKE ?", "%#{params[:address].strip.downcase}%").order("address ASC").limit(20)
+    if @locations.blank?
+      raise API::V0::Error.new("No pudo encontrar lugar con la dirección #{params[:address]}", 422) and return
+    end
+  end
+
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/locations/mobile
+  # TODO: See if you can replace #index with this method, but beware that #index
+  # is used by DashboardController.
+
+  def mobile
+    @locations = @current_user.neighborhood.locations.joins(:visits).order("visits.visited_at DESC").limit(20)
+  end
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/locations/:id
+
+  def show
+    @location = @current_user.neighborhood.locations.find_by_id(params[:id])
+  end
 
   #----------------------------------------------------------------------------
   # GET /api/v0/locations
@@ -8,7 +39,6 @@ class API::V0::LocationsController < API::V0::BaseController
   # * neighborhood_id
   # * CSV data
   def index
-
     location_ids = []
     params[:addresses].split(",").each do |address|
       loc = Location.where("lower(address) = ?", address.strip.downcase).first
