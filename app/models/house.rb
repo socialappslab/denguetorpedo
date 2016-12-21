@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 
+# NOTE: THis is deprecated
 class House < ActiveRecord::Base
   attr_accessible :name, :profile_photo, :address, :user, :user_id, :house_type, :location_id, :location_attributes, :neighborhood_id
 
