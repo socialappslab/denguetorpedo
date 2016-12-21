@@ -11,8 +11,17 @@ class API::V0::VisitsController < API::V0::BaseController
     scopes, user = request.env.values_at :scopes, :user
 
     @user = User.find_by_username(user['username'])
-    @visits = Visit.limit(25)
-    render :json => {:visits => @visits} and return
+    @visits = Visit.order("visited_at DESC").limit(25)
+  end
+
+  #----------------------------------------------------------------------------
+  # GET api/v0/visits/:id
+
+  def show
+    scopes, user = request.env.values_at :scopes, :user
+
+    @user = User.find_by_username(user['username'])
+    @visit = Visit.find(params[:id])
   end
 
   #----------------------------------------------------------------------------

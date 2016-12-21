@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+require "rack/cors"
+
+
 $stdout.sync = true
 Dengue::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
@@ -61,4 +64,15 @@ Dengue::Application.configure do
   }
 
   #----------------------------------------------------------------------------
+
+  # See: https://github.com/cyu/rack-cors
+  # NOTE: THis is only needed in development.rb because production Ionic is
+  # using file:// and not http://
+  # See http://blog.ionic.io/handling-cors-issues-in-ionic/
+  config.middleware.insert_before 0, "Rack::Cors" do
+    allow do
+      origins 'localhost:8100'
+      resource '*', :headers => :any, :methods => [:get, :put, :post, :options, :delete]
+    end
+  end
 end
