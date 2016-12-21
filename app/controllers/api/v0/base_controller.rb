@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class API::V0::BaseController < ApplicationController
-  # before_action :authenticate_user_via_device_token
-  before_action :authenticate_user_via_jwt
+  before_action :authenticate_user_via_device_token
   before_action :set_locale
 
   #----------------------------------------------------------------------------

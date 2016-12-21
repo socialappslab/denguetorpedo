@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::VisitsController < API::V0::BaseController
-  # skip_before_action :authenticate_user_via_device_token
-  # before_action :authenticate_user_via_jwt, :only => [:index]
+  skip_before_action :authenticate_user_via_device_token
+  before_action :authenticate_user_via_jwt, :only => [:index, :show]
   before_action :current_user, :only => [:update]
 
   #----------------------------------------------------------------------------

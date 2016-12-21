@@ -5,28 +5,16 @@ describe API::V0::SessionsController do
   let!(:user) { FactoryGirl.create(:user, :neighborhood_id => Neighborhood.first.id) }
 
   describe "Successful authentication" do
-    it "creates a new DeviceSession instance" do
-      expect {
-        post :create, :username => user.username, :password => user.password, :device => {:name => "Android"}
-      }.to change(DeviceSession, :count).by(1)
-    end
-
-    it "creates a new token for the device" do
-      post :create, :username => user.username, :password => user.password, :device => {:name => "Android"}
-      expect(DeviceSession.last.token).to_not eq(nil)
-    end
-
-    it "associates the user to the new device session" do
-      post :create, :username => user.username, :password => user.password, :device => {:name => "Android"}
-      expect(DeviceSession.last.user_id).to eq(user.id)
+    it "creates a new token" do
+      post :create, :username => user.username, :password => user.password
+      expect(JSON.parse(response.body)["token"]).not_to eq(nil)
     end
   end
 
   describe "Failed authentication" do
-    it "avoids creating a new DeviceSession" do
-      expect {
-        post :create, :username => user.username, :password => "abc", :device => {:name => "Android"}
-      }.to_not change(DeviceSession, :count)
+    it "returns proper error message" do
+      post :create, :username => user.username, :password => "abc"
+      expect(JSON.parse(response.body)["message"]).to eq("Invalid email or password. Please try again.")
     end
   end
 end
