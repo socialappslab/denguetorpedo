@@ -29,6 +29,14 @@ class Inspection < ActiveRecord::Base
     }
   end
 
+  def self.color_for_inspection_status
+    {
+      Inspection::Types::POSITIVE  => "#e74c3c",
+      Inspection::Types::POTENTIAL => "#f1c40f",
+      Inspection::Types::NEGATIVE  => "#2ecc71"
+    }
+  end
+
   #----------------------------------------------------------------------------
 
   def conditionally_destroy_visit

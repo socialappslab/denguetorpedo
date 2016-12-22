@@ -49,6 +49,18 @@ class Visit < ActiveRecord::Base
     return types
   end
 
+  # This combs through all inspections, returning the most conservative estimate.
+  def classification
+    hash = self.inspection_types
+    return Inspection::Types::POSITIVE  if hash[Inspection::Types::POSITIVE] == true
+    return Inspection::Types::POTENTIAL if hash[Inspection::Types::POTENTIAL] == true
+    return Inspection::Types::NEGATIVE  if hash[Inspection::Types::NEGATIVE] == true
+  end
+
+  def color
+    return Inspection.color_for_inspection_status[self.classification]
+  end
+
   def self.find_or_create_visit_for_location_id_and_date(location_id, date)
     return nil if location_id.blank?
     return nil if date.blank?
