@@ -10,8 +10,10 @@ class API::V0::VisitsController < API::V0::BaseController
   def index
     scopes, user = request.env.values_at :scopes, :user
 
-    @user = User.find_by_username(user['username'])
-    @visits = Visit.order("visited_at DESC").limit(25)
+    @user   = User.find_by_username(user['username'])
+    locids  = @user.locations.pluck(:id)
+    locids += @user.csvs.pluck(:id)
+    @visits = Visit.where(:location_id => locids.uniq).order("visited_at DESC").limit(25)
   end
 
   #----------------------------------------------------------------------------
