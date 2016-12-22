@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
   has_many :teams, :through => :team_memberships
 
   has_many :notifications, :dependent => :destroy, :class_name => "UserNotification"
-  has_many :csv_reports, :dependent => :destroy
+  has_many :csv_reports, :dependent => :destroy # TODO: I think we should deprecate it at some point.
   has_many :csvs, :dependent => :destroy, :class_name => "Spreadsheet"
 
   has_and_belongs_to_many :conversations

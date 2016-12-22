@@ -17,7 +17,9 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :visits,     :only => [:index, :show, :update]
+      resources :visits,     :only => [:index, :show, :update] do
+        get "search", :on => :collection
+      end
 
 
       #-------------------------------------------------------------------------

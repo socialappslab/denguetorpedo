@@ -5,6 +5,20 @@ class API::V0::VisitsController < API::V0::BaseController
   before_action :current_user, :only => [:update]
 
   #----------------------------------------------------------------------------
+  # GET /api/v0/visits/search
+
+  def search
+    raise API::V0::Error.new("You need to enter a date", 422) and return if params[:date].blank?
+    begin
+      date = Time.parse(params[:date])
+    rescue
+      raise API::V0::Error.new("We couldn't parse the date. Can you change the format?", 422) and return
+    end
+
+    @visits = Visit.where("DATE(visited_at) = ?", date.strftime("%Y-%m-%d")).order("visited_at DESC").limit(20)
+  end
+
+  #----------------------------------------------------------------------------
   # GET api/v0/visits
 
   def index
