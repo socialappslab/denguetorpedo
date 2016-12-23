@@ -63,6 +63,22 @@ class API::V0::LocationsController < API::V0::BaseController
     @locations = Location.where(:neighborhood_id => nids).where(:id => locids_from_visits)
   end
 
+  #----------------------------------------------------------------------------
+  # POST /api/v0/locations/
+
+  def create
+    @location = Location.where("LOWER(address) = ?", params[:location][:address].strip.downcase)
+    if @location.present?
+      raise API::V0::Error.new("Location with that address already exists. Try searching for it!", 422) and return
+    end
+
+    @location = Location.new(params[:location])
+    if @location.save
+      render :json => @location.to_json, :status => 200 and return
+    else
+      raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
+    end
+  end
 
   #----------------------------------------------------------------------------
   # PUT /api/v0/locations/:id
