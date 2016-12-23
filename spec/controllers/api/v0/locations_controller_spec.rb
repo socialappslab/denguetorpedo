@@ -29,4 +29,27 @@ describe API::V0::LocationsController do
       expect(location.reload.neighborhood_id).to eq(100)
     end
   end
+
+  #--------------------------------------------------------------------------
+
+  describe "Creating a location" do
+    let(:location) { create(:location) }
+    let(:user)     { create(:user) }
+
+    before(:each) do
+      API::V0::BaseController.any_instance.stub(:authenticate_user_via_jwt).and_return(true)
+      API::V0::BaseController.any_instance.stub(:current_user_via_jwt).and_return(user)
+    end
+
+    it "fails if address exists" do
+      post :create,  :location => { :address => location.address, :neighborhood_id => 100 }
+      expect(JSON.parse(response.body)["message"]).to eq("Location with that address already exists. Try searching for it!")
+    end
+
+    it "creates a location" do
+      expect {
+        post :create,  :location => { :address => "test", :neighborhood_id => 100 }
+      }.to change(Location, :count).by(1)
+    end
+  end
 end

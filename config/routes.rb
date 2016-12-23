@@ -49,10 +49,11 @@ Dengue::Application.routes.draw do
 
       #-------------------------------------------------------------------------
 
-      resources :locations, :only => [:index, :show, :update] do
+      resources :locations, :only => [:index, :show, :update, :create] do
         get "house-index", :on => :collection, :action => "house_index"
         get "search", :on => :collection
         get "mobile", :on => :collection
+        get "questions", :on => :collection
       end
 
       #-------------------------------------------------------------------------
