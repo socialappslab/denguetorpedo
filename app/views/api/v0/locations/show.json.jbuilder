@@ -1,5 +1,5 @@
 json.location do
-  json.(@location, :id, :neighborhood_id, :address, :latitude, :longitude)
+  json.(@location, :id, :neighborhood_id, :address, :latitude, :longitude, :questions)
 
   json.visits @location.visits.order("visited_at DESC").includes(:inspections) do |visit|
     json.(visit, :id, :classification, :color)
@@ -7,7 +7,4 @@ json.location do
 
     json.inspections_count visit.inspections.count
   end
-
 end
-
-json.location_questions HouseQuiz.questions.as_json
