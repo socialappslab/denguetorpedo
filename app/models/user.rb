@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
     end
 
     {
-      exp: Time.now.to_i + 2 * 60 * 60,
+      exp: Time.now.to_i + 24 * 60 * 60,
       iat: Time.now.to_i,
       iss: ENV['JWT_ISSUER'],
       scopes: scopes,
