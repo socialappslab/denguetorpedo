@@ -1,16 +1,8 @@
 # -*- encoding : utf-8 -*-
 class API::V0::LocationsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
-  before_action :authenticate_user_via_jwt, :only => [:search, :mobile, :show, :create]
-  before_action :current_user_via_jwt,      :only => [:search, :mobile, :show, :create]
-
-
-  #----------------------------------------------------------------------------
-  # GET /api/v0/locations/questions
-
-  def questions
-    render :json => {:questions => HouseQuiz.questions.as_json}, :status => :ok and return
-  end
+  before_action :authenticate_user_via_jwt, :only => [:search, :mobile, :show, :create, :questions]
+  before_action :current_user_via_jwt,      :only => [:search, :mobile, :show, :create, :questions]
 
   #----------------------------------------------------------------------------
   # GET /api/v0/locations/search
@@ -57,6 +49,7 @@ class API::V0::LocationsController < API::V0::BaseController
       location_ids << loc.id
     end
 
+    # TODO: How do we scope locations to a user?
     @locations = Location.where(:id => location_ids).order("address ASC").includes(:visits, :reports)
     render "api/v0/locations/index" and return
   end
@@ -95,6 +88,19 @@ class API::V0::LocationsController < API::V0::BaseController
     @location = Location.find_by_id(params[:id])
     if @location.update_attributes(location_params)
       render :json => {:reload => true}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
+  # PUT /api/v0/locations/:id/questions
+
+  def questions
+    @location = Location.find_by_id(params[:location_id])
+    @location.questions = params[:questions]
+    if @location.save
+      render :json => {}, :status => 200 and return
     else
       raise API::V0::Error.new(@location.errors.full_messages[0], 422) and return
     end
