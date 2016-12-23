@@ -24,6 +24,11 @@ class ApplicationController < ActionController::Base
 
   #-------------------------------------------------------------------------------------------------
 
+  # Skip checking forgery for JSON requests (e.g. mobile app).
+  # See: http://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html
+  protect_from_forgery unless: -> { request.format.json? }
+
+
   def set_cookies
     if cookies[:chart].blank?
       cookies[:chart] = {"timeframe" => "3", "positive" => "1", "potential" => "1", "negative" => "1", "percentages" => "daily"}.to_json

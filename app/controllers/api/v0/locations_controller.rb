@@ -1,8 +1,16 @@
 # -*- encoding : utf-8 -*-
 class API::V0::LocationsController < API::V0::BaseController
   skip_before_filter :authenticate_user_via_device_token
-  before_action :authenticate_user_via_jwt, :only => [:search, :mobile, :show]
-  before_action :current_user_via_jwt,      :only => [:search, :mobile, :show]
+  before_action :authenticate_user_via_jwt, :only => [:search, :mobile, :show, :create]
+  before_action :current_user_via_jwt,      :only => [:search, :mobile, :show, :create]
+
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/locations/questions
+
+  def questions
+    render :json => {:questions => HouseQuiz.questions.as_json}, :status => :ok and return
+  end
 
   #----------------------------------------------------------------------------
   # GET /api/v0/locations/search
