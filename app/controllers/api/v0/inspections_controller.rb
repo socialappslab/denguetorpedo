@@ -11,16 +11,17 @@ class API::V0::InspectionsController < API::V0::BaseController
     visit = Visit.find_by_id(params[:inspection][:visit_id])
 
     # Let's create an associated report.
-    r = Report.new(params[:inspection].slice(:chemically_treated, :larvae, :pupae, :protected, :breeding_site_id, :before_photo))
+    r = Report.new(params[:inspection].slice(:chemically_treated, :larvae, :pupae, :protected, :breeding_site_id))
     r.report          = params[:inspection][:location]
     r.reporter_id     = @current_user.id
     r.location_id     = visit.location_id
     r.neighborhood_id = @current_user.neighborhood_id
+    r.before_photo    = prepare_base64_image_for_paperclip(params[:inspection][:before_photo]) if params[:inspection][:before_photo]
 
-    # puts "r: #{r.breeding_site_id}"
     unless r.save
       raise API::V0::Error.new(r.errors.full_messages[0], 403)
     end
+
 
     # At this point, a report exists. Let's create the associated Inspection.
 
