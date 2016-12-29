@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::VisitsController < API::V0::BaseController
   skip_before_action :authenticate_user_via_device_token
-  before_action :authenticate_user_via_jwt, :only => [:index, :show]
+  before_action :authenticate_user_via_jwt, :only => [:create, :index, :show]
   before_action :current_user, :only => [:update]
 
   #----------------------------------------------------------------------------
@@ -37,8 +37,52 @@ class API::V0::VisitsController < API::V0::BaseController
     scopes, user = request.env.values_at :scopes, :user
 
     @user = User.find_by_username(user['username'])
-    @visit = Visit.find(params[:id])
+    @visit = Visit.find_by_id(params[:id])
   end
+
+  #----------------------------------------------------------------------------
+  # POST api/v0/visits
+
+  # There are two different requests coming in:
+  # 1. The location_id is known.
+  # 2. The location_id is not known, but location_address is supplied.
+  def create
+    if params[:visit][:location_address].present?
+      location = Location.where("LOWER(address) = ?", params[:visit][:location_address].strip.downcase).first
+      raise API::V0::Error.new("We couldn't find that location. Please try again.", 403) if location.blank?
+      location_id = location.id
+    else
+      location_id = params[:visit][:location_id]
+    end
+
+    # At this point, the location is known.
+    @visit = Visit.new(:location_id => location_id)
+
+    visited_at = nil
+    begin
+      visited_at = Time.zone.parse(params[:visit][:visited_at])
+    rescue
+      raise API::V0::Error.new("We couldn't parse the date. Please try again!", 403) and return
+    end
+
+    if visited_at.nil?
+      raise API::V0::Error.new("We couldn't parse the date. Please try again!", 403) and return
+    end
+
+    existing_visit = Visit.find_by_location_id_and_date(location_id, visited_at)
+    if existing_visit.present?
+      raise API::V0::Error.new("A visit with this date and location already exists!", 403)
+    end
+
+    # At this point, a visit with this location and date doesn't exist. Let's create it.
+    @visit.visited_at = visited_at
+    if @visit.save
+      render :json => {}, :status => 200 and return
+    else
+      raise API::V0::Error.new(@visit.errors.full_messages[0], 403)
+    end
+  end
+
 
   #----------------------------------------------------------------------------
   # GET api/v0/visits/:id
