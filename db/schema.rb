@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161223163100) do
+ActiveRecord::Schema.define(version: 20161229191121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(version: 20161223163100) do
     t.integer "identification_type"
     t.integer "position",            default: 0
     t.integer "csv_id"
+    t.string  "source"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -218,6 +219,7 @@ ActiveRecord::Schema.define(version: 20161223163100) do
     t.string   "street_name",     limit: 255, default: ""
     t.string   "street_number",   limit: 255, default: ""
     t.json     "questions"
+    t.string   "source"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -365,6 +367,7 @@ ActiveRecord::Schema.define(version: 20161223163100) do
     t.integer  "likes_count",                           default: 0
     t.string   "field_identifier",          limit: 255
     t.integer  "csv_id"
+    t.string   "source"
   end
 
   add_index "reports", ["eliminator_id"], name: "index_reports_on_eliminator_id", using: :btree
@@ -456,6 +459,7 @@ ActiveRecord::Schema.define(version: 20161223163100) do
     t.datetime "visited_at"
     t.integer  "parent_visit_id"
     t.integer  "csv_id"
+    t.string   "source"
   end
 
 end
