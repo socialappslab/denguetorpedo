@@ -76,6 +76,7 @@ class API::V0::VisitsController < API::V0::BaseController
 
     # At this point, a visit with this location and date doesn't exist. Let's create it.
     @visit.visited_at = visited_at
+    @visit.source     = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
     if @visit.save
       render :json => {}, :status => 200 and return
     else
