@@ -65,9 +65,7 @@ class Visit < ActiveRecord::Base
     return nil if location_id.blank?
     return nil if date.blank?
 
-    v = Visit.where(:location_id => location_id)
-    v = v.where(:visited_at => (date.beginning_of_day..date.end_of_day))
-    v = v.order("visited_at DESC").first
+    v = self.class.find_by_location_id_and_date(location_id, date)
     if v.blank?
       v             = Visit.new
       v.location_id = location_id
@@ -76,6 +74,12 @@ class Visit < ActiveRecord::Base
     end
 
     return v
+  end
+
+  def self.find_by_location_id_and_date(location_id, date)
+    visits = Visit.where(:location_id => location_id)
+    visits = visits.where(:visited_at => (date.beginning_of_day..date.end_of_day))
+    return visits.order("visited_at DESC").first
   end
 
   #----------------------------------------------------------------------------
