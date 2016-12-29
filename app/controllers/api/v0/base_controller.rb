@@ -26,6 +26,12 @@ class API::V0::BaseController < ApplicationController
     @current_user = User.find_by_username(user["username"])
   end
 
+  def authenticate_user_via_cookies_or_jwt
+    return current_user() if cookies[:auth_token]
+    authenticate_user_via_jwt()
+    return current_user_via_jwt()
+  end
+
   def authenticate_user_via_jwt
     begin
       bearer = request.env.fetch('HTTP_AUTHORIZATION', '').slice(7..-1)
