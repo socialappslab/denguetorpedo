@@ -4,8 +4,8 @@ class API::V0::PostsController < API::V0::BaseController
 
   # NOTE: We're starting to blend API calls from mobile and web which is why
   # we have to start checking for cookies[:auth_token] or JWT.
-  before_action :current_user, :except => [:index]
-  before_action :authenticate_user_via_cookies_or_jwt, :only => [:index]
+  before_action :current_user, :except => [:index, :create, :like]
+  before_action :authenticate_user_via_cookies_or_jwt, :only => [:index, :create, :like]
 
   #----------------------------------------------------------------------------
   # GET api/v0/posts
