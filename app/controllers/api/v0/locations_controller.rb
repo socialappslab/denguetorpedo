@@ -74,6 +74,7 @@ class API::V0::LocationsController < API::V0::BaseController
     end
 
     @location = Location.new(params[:location])
+    @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
     if @location.save
       render :json => @location.to_json, :status => 200 and return
     else

@@ -17,6 +17,7 @@ class API::V0::InspectionsController < API::V0::BaseController
     r.location_id     = visit.location_id
     r.neighborhood_id = @current_user.neighborhood_id
     r.before_photo    = prepare_base64_image_for_paperclip(params[:inspection][:before_photo]) if params[:inspection][:before_photo]
+    r.source          = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
 
     unless r.save
       raise API::V0::Error.new(r.errors.full_messages[0], 403)
@@ -30,6 +31,7 @@ class API::V0::InspectionsController < API::V0::BaseController
     @inspection.identification_type = r.original_status
     @inspection.position = visit.inspections.count + 1
     @inspection.visit    = visit
+    @inspection.source   = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
     if @inspection.save
       render :json => {}, :status => 200 and return
     else
