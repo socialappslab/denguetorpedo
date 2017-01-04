@@ -2,7 +2,12 @@
 class API::V0::VisitsController < API::V0::BaseController
   skip_before_action :authenticate_user_via_device_token
   before_action :authenticate_user_via_jwt, :only => [:create, :index, :show]
-  before_action :current_user, :only => [:update]
+
+  # NOTE: We're starting to blend API calls from mobile and web which is why
+  # we have to start checking for cookies[:auth_token] or JWT.
+  # before_action :current_user, :only => [:update]
+  before_action :authenticate_user_via_cookies_or_jwt, :only => [:update]
+
 
   #----------------------------------------------------------------------------
   # GET /api/v0/visits/search
@@ -86,10 +91,18 @@ class API::V0::VisitsController < API::V0::BaseController
 
 
   #----------------------------------------------------------------------------
-  # GET api/v0/visits/:id
+  # PUT api/v0/visits/:id
 
   def update
     @visit = Visit.find_by_id(params[:id])
+
+    @location = Location.where("LOWER(address) = ?", params[:visit][:location_address].strip.downcase).first
+    if @location.blank?
+      raise API::V0::Error.new("We couldn't find a location with that address. Please try again.", 403) and return
+    end
+
+    @visit.location_id = @location.id
+
     if @visit.update_attributes(params[:visit])
       render :json => {:reload => true}, :status => 200 and return
     else

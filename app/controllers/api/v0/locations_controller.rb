@@ -30,7 +30,7 @@ class API::V0::LocationsController < API::V0::BaseController
   # GET /api/v0/locations/:id
 
   def show
-    @location = @current_user.neighborhood.locations.find_by_id(params[:id])
+    @location = @current_user.neighborhood.locations.where("LOWER(address) = ?", params[:id].downcase).first
   end
 
   #----------------------------------------------------------------------------

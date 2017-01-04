@@ -21,7 +21,7 @@ class Location < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def questions
-    attr_questions = self.attributes["questions"]
+    attr_questions = self.attributes["questions"] || []
     quiz_questions = self.class.default_questions
     quiz_questions.each do |question|
       matching_q = attr_questions.find {|q| q["code"] == question[:code]}
