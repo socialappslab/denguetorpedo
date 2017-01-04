@@ -20,6 +20,7 @@ class API::V0::SessionsController < API::V0::BaseController
             :id   => user.neighborhood_id,
             :name => user.neighborhood.geographical_display_name
           },
+          :breeding_sites => BreedingSite.all.as_json(:only => [:id], :methods => [:description]),
           :neighborhoods => Neighborhood.all.as_json(:only => [:id, :name]),
           :total_points  => user.total_total_points,
           :green_locations => GreenLocationRankings.score_for_user(user).to_i
