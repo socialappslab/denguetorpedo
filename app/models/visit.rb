@@ -65,7 +65,7 @@ class Visit < ActiveRecord::Base
     return nil if location_id.blank?
     return nil if date.blank?
 
-    v = self.class.find_by_location_id_and_date(location_id, date)
+    v = self.find_by_location_id_and_date(location_id, date)
     if v.blank?
       v             = Visit.new
       v.location_id = location_id
