@@ -191,6 +191,11 @@ class Spreadsheet < ActiveRecord::Base
           next
         end
 
+        if parsed_current_visited_at.blank?
+          CsvError.create(:csv_id => self.id, :error_type => CsvError::Types::UNPARSEABLE_DATE)
+          next
+        end
+
         if parsed_current_visited_at.future?
           CsvError.create(:csv_id => self.id, :error_type => CsvError::Types::VISIT_DATE_IN_FUTURE)
           next
