@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161229191121) do
+ActiveRecord::Schema.define(version: 20170125171511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,12 +189,14 @@ ActiveRecord::Schema.define(version: 20161229191121) do
   end
 
   create_table "inspections", force: :cascade do |t|
-    t.integer "visit_id"
-    t.integer "report_id"
-    t.integer "identification_type"
-    t.integer "position",            default: 0
-    t.integer "csv_id"
-    t.string  "source"
+    t.integer  "visit_id"
+    t.integer  "report_id"
+    t.integer  "identification_type"
+    t.integer  "position",            default: 0
+    t.integer  "csv_id"
+    t.string   "source"
+    t.datetime "last_synced_at"
+    t.integer  "last_sync_seq"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -220,6 +222,8 @@ ActiveRecord::Schema.define(version: 20161229191121) do
     t.string   "street_number",   limit: 255, default: ""
     t.json     "questions"
     t.string   "source"
+    t.datetime "last_synced_at"
+    t.integer  "last_sync_seq"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -281,6 +285,8 @@ ActiveRecord::Schema.define(version: 20161229191121) do
     t.string   "photo_content_type", limit: 255
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
+    t.datetime "last_synced_at"
+    t.integer  "last_sync_seq"
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
@@ -460,6 +466,8 @@ ActiveRecord::Schema.define(version: 20161229191121) do
     t.integer  "parent_visit_id"
     t.integer  "csv_id"
     t.string   "source"
+    t.datetime "last_synced_at"
+    t.integer  "last_sync_seq"
   end
 
 end
