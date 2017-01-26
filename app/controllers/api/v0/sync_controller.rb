@@ -4,15 +4,8 @@ class API::V0::SyncController < API::V0::BaseController
   before_action :authenticate_user_via_jwt
   before_action :current_user_via_jwt
 
-
   #-------------------------------------------------------------------------------------------------
-  # GET /api/v0/sync?event_id=...
-
-  def posts
-  end
-
-  #-------------------------------------------------------------------------------------------------
-  # GET /api/v0/sync/measurement?event_id=...
+  # GET /api/v0/sync/post
 
   # Two keys come in:
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
@@ -24,21 +17,14 @@ class API::V0::SyncController < API::V0::BaseController
       p_params = result["doc"].with_indifferent_access
       pid      = p_params[:id]
 
-      puts "\n\n\npid: #{pid}\n\n\n"
-      puts "@post = Post.find_by_id(pid): #{Post.find_by_id(pid)}\n\n\n\n"
-
       # If the post is present, then we can only really update a like or comment on it.
       if pid.present? && @post = Post.find_by_id(pid)
 
-        puts "\n\n\n\np_params[:liked]: #{p_params[:liked]}\n\n\n\n"
         if p_params[:liked].to_s.present?
           existing_like = @post.likes.find {|like| like.user_id == @current_user.id }
-          puts "existing_like: #{existing_like.inspect}\n\n\n\n"
           if existing_like.present? && p_params[:liked].to_s == "false"
-            puts "Like exists and liked = false"
             existing_like.destroy
           elsif existing_like.blank? && p_params[:liked].to_s == "true"
-            puts "No like exists and liked = true"
             Like.create(:user_id => @current_user.id, :likeable_id => @post.id, :likeable_type => Post.name)
             Analytics.track( :user_id => @current_user.id, :event => "Liked a post", :properties => {:post => @post.id}) if Rails.env.production?
           end
@@ -69,6 +55,7 @@ class API::V0::SyncController < API::V0::BaseController
         end
 
         if @post.save
+          @post.update_column(:created_at, Time.parse(p_params[:created_at]) )
           # Now that we know the post is valid, let's go ahead and notify the mentioned
           # users.
           mentioned_users.each do |u|
