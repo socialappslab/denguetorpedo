@@ -9,6 +9,10 @@ Dengue::Application.routes.draw do
         get "scores"
       end
 
+      resource :sync, :only => [:show], :controller => :sync do
+        put :post
+      end
+
       resources :sessions,    :only => [:create] do
         collection do
           get "current"
