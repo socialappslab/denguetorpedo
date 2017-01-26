@@ -91,57 +91,25 @@ class API::V0::SyncController < API::V0::BaseController
   # Two keys come in:
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
   # 2. sync_status which contains last_synced_at timestamp, if any.
-  def measurement
-    @event = @screening_company.events.find_by_id(params[:event_id])
-
-    # We extract a few things
-    last_synced_at = sync_status_params[:last_synced_at]
-    if last_synced_at.present?
-      # DO STUFF...What?
-    end
-
-    # Iterate over each change to the measurement, storing it in
-    # TODO: How many changes will there be???
+  def location
     changes_params["results"].each do |result|
-      m_params = result["doc"].with_indifferent_access
-      mid      = m_params[:id]
-      if mid.present?
-        @measurement = @event.measurements.find_by_id(mid)
+      p_params = result["doc"].with_indifferent_access
+      id       = p_params[:id]
 
-        params_to_save = m_params.slice(*Clovi::Measurement.phi_attributes).except(:fasting_glucose, :nonfasting_glucose).permit(*Clovi::Measurement.phi_attributes)
-        if m_params[:fasting_glucose]
-          params_to_save.merge!({:fasting => true, :glucose => m_params[:fasting_glucose]})
-        elsif m_params[:nonfasting_glucose]
-          params_to_save.merge!({:fasting => false, :glucose => m_params[:nonfasting_glucose]})
-        end
-
-        @measurement.attributes = params_to_save
-        if @measurement.save
-          begin
-            @measurement.sync(params_to_save, current_screener)
-          rescue Clovi::Error::TrueVaultNoSuchDocumentError => err
-            raise API::V0::Error.new(err.message, 422) and return
-          rescue StandardError => e
-            Rails.logger.error "[StandardError] Output = #{e.inspect}"
-            raise API::V0::Error.new("Something went wrong on our end. Please try again!", 422) and return
-          end
-        else
-          raise "SOMETHING WENT WRONG #{@measurement.inspect}" and return
-        end
+      # If the post is present, then we can only really update a like or comment on it.
+      if id.present? && @location = Location.find_by_id(id)
+        @location.update_attributes(p_params)
       else
-        # TODO:
-        # If the participant_id does not exist, then this
-        # means the participant was created via offline storage.
-        # We need to match the document ID to the participant in
-        # our database.
-        raise "This measurement does not exist... TODO" and return
+        @location = Location.new(p_params)
+        @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
+        @location.save
       end
     end
 
     # At this point, all measurements have saved. Let's update the column.
     @last_seq       = changes_params[:last_seq]
     @last_synced_at = Time.now.utc
-    @measurement.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
+    @location.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
   end
 
   #-------------------------------------------------------------------------------------------------
