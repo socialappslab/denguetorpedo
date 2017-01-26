@@ -1,4 +1,4 @@
-json.(post, :id, :content, :likes_count)
+json.(post, :id, :user_id, :content, :likes_count, :neighborhood_id, :created_at)
 
 json.path post_path(post)
 

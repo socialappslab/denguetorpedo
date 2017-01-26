@@ -14,6 +14,7 @@ class API::V0::SessionsController < API::V0::BaseController
       render :json => {
         :token => user.jwt_token,
         :user => {
+          :id => user.id,
           :display_name  => user.display_name,
           :profile_photo => user.profile_photo.url(:thumbnail),
           :neighborhood  => {
