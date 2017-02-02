@@ -5,7 +5,7 @@ class API::V0::SyncController < API::V0::BaseController
   before_action :current_user_via_jwt
 
   #-------------------------------------------------------------------------------------------------
-  # GET /api/v0/sync/post
+  # PUT /api/v0/sync/post
 
   # Two keys come in:
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
@@ -73,7 +73,7 @@ class API::V0::SyncController < API::V0::BaseController
 
 
   #-------------------------------------------------------------------------------------------------
-  # GET /api/v0/sync/measurement?event_id=...
+  # PUT /api/v0/sync/measurement?event_id=...
 
   # Two keys come in:
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
@@ -98,6 +98,65 @@ class API::V0::SyncController < API::V0::BaseController
     @last_synced_at = Time.now.utc
     @location.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
   end
+
+  #-------------------------------------------------------------------------------------------------
+  # PUT /api/v0/sync/visit?event_id=...
+
+  # Two keys come in:
+  # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
+  # 2. sync_status which contains last_synced_at timestamp, if any.
+  def visit
+    raise "AHHAHA"
+    changes_params["results"].each do |result|
+      p_params = result["doc"].with_indifferent_access
+      id       = p_params[:id]
+
+      # If the post is present, then we can only really update a like or comment on it.
+      if id.present? && @visit = Visit.find_by_id(id)
+        @visit.update_attributes(p_params)
+      else
+        # TODO
+        # @location = Location.new(p_params)
+        # @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
+        # @location.save
+      end
+    end
+
+    # At this point, all measurements have saved. Let's update the column.
+    @last_seq       = changes_params[:last_seq]
+    @last_synced_at = Time.now.utc
+    @visit.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
+  end
+
+  #-------------------------------------------------------------------------------------------------
+  # PUT /api/v0/sync/inspection
+
+  # Two keys come in:
+  # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
+  # 2. sync_status which contains last_synced_at timestamp, if any.
+  def inspection
+    raise "AHHAHA"
+    changes_params["results"].each do |result|
+      p_params = result["doc"].with_indifferent_access
+      id       = p_params[:id]
+
+      # If the post is present, then we can only really update a like or comment on it.
+      if id.present? && @inspection = Inspection.find_by_id(id)
+        @inspection.update_attributes(p_params)
+      else
+        # TODO
+        # @location = Location.new(p_params)
+        # @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
+        # @location.save
+      end
+    end
+
+    # At this point, all measurements have saved. Let's update the column.
+    @last_seq       = changes_params[:last_seq]
+    @last_synced_at = Time.now.utc
+    @inspection.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
+  end
+
 
   #-------------------------------------------------------------------------------------------------
 

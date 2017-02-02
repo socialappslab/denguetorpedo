@@ -1,3 +1,4 @@
+
 # -*- encoding : utf-8 -*-
 class API::V0::PostsController < API::V0::BaseController
   skip_before_action :authenticate_user_via_device_token
