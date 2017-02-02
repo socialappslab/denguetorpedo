@@ -12,6 +12,8 @@ Dengue::Application.routes.draw do
       resource :sync, :only => [:show], :controller => :sync do
         put :post
         put :location
+        put :visit
+        put :inspection
       end
 
       resources :sessions,    :only => [:create] do
