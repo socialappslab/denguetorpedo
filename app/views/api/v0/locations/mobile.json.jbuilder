@@ -1,12 +1,12 @@
 json.locations @locations do |location|
-  json.(location, :id, :neighborhood_id, :address)
-  json.neighborhood do
-    json.name location.neighborhood && location.neighborhood.name
-  end
+  json.partial! "api/v0/locations/location", :location => location
 
   json.green location.green?
 
   visits = location.visits.order("visited_at DESC")
   json.last_visited_at visits.first && visits.first.visited_at.strftime("%Y-%m-%d")
-  json.visits_count visits.count
+
+  json.visits location.visits.order("visited_at ASC").includes(:inspections) do |visit|
+    json.partial! "api/v0/visits/visit", :visit => visit
+  end
 end
