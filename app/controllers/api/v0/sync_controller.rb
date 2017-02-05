@@ -35,7 +35,7 @@ class API::V0::SyncController < API::V0::BaseController
         @post.user_id         = @current_user.id
         @post.neighborhood_id = Neighborhood.find(p_params[:neighborhood_id]).id
 
-        base64_image = p_params[:compressed_photo]
+        base64_image = p_params[:photo]
         if base64_image.present?
           filename             = @current_user.display_name.underscore + "_post_photo.jpg"
           paperclip_image      = prepare_base64_image_for_paperclip(base64_image, filename)
@@ -85,6 +85,7 @@ class API::V0::SyncController < API::V0::BaseController
 
       # If the post is present, then we can only really update a like or comment on it.
       if id.present? && @location = Location.find_by_id(id)
+        @location.questions = p_params[:questions] if p_params[:questions].present?
         @location.update_attributes(p_params)
       else
         @location = Location.new(p_params)
@@ -106,19 +107,29 @@ class API::V0::SyncController < API::V0::BaseController
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
   # 2. sync_status which contains last_synced_at timestamp, if any.
   def visit
-    raise "AHHAHA"
     changes_params["results"].each do |result|
       p_params = result["doc"].with_indifferent_access
       id       = p_params[:id]
 
       # If the post is present, then we can only really update a like or comment on it.
       if id.present? && @visit = Visit.find_by_id(id)
-        @visit.update_attributes(p_params)
+        t = Time.zone.parse(p_params[:visited_at])
+        @visit.update_column(:visited_at, t)
       else
-        # TODO
-        # @location = Location.new(p_params)
-        # @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
-        # @location.save
+        location = Location.find_by_id(p_params[:location_id])
+        if location.blank?
+          raise API::V0::Error.new("We couldn't find an associated location!", 422) and return
+        end
+
+        t = Time.zone.parse(p_params[:visited_at])
+        @visit = location.visits.where("DATE(visited_at) = ?", t.strftime("%Y-%m-%d")).first
+        if @visit.blank?
+          @visit = Visit.new(:location_id => location.id)
+          @visit.source = "mobile"
+        end
+
+        @visit.visited_at = t
+        @visit.save!
       end
     end
 
