@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class Location < ActiveRecord::Base
-  attr_accessible :address, :street_type, :questions :street_name, :street_number, :latitude, :longitude, :neighborhood_id
+  attr_accessible :address, :street_type, :questions, :street_name, :street_number, :latitude, :longitude, :neighborhood_id
 
   #----------------------------------------------------------------------------
 
