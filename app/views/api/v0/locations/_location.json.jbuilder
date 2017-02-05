@@ -4,3 +4,5 @@ json.neighborhood do
   json.name n.name
   json.path neighborhood_path(n)
 end
+
+json.user_id @current_user.id
