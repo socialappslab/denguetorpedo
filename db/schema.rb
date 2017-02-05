@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205205937) do
+ActiveRecord::Schema.define(version: 20170205212010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -408,6 +408,17 @@ ActiveRecord::Schema.define(version: 20170205205937) do
     t.boolean  "blocked"
     t.integer  "points",                                 default: 0
   end
+
+  create_table "user_locations", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "location_id"
+    t.datetime "assigned_at"
+    t.string   "source"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_locations", ["user_id", "location_id"], name: "index_user_locations_on_user_id_and_location_id", unique: true, using: :btree
 
   create_table "user_notifications", force: :cascade do |t|
     t.integer  "user_id"
