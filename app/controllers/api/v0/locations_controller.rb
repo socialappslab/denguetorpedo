@@ -23,7 +23,7 @@ class API::V0::LocationsController < API::V0::BaseController
   # is used by DashboardController.
 
   def mobile
-    @locations = @current_user.neighborhood.locations.joins(:visits).order("visits.visited_at DESC").limit(20)
+    @locations = @current_user.locations.joins(:visits).order("visits.visited_at DESC")
   end
 
   #----------------------------------------------------------------------------
