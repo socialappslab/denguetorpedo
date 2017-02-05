@@ -53,6 +53,12 @@ class SpreadsheetParsingWorker
     # Let's iterate over the rows and create/update reports.
     #------
 
+    # Create a User Location corresponding to this user.
+    ul = UserLocation.find_by_user_id_and_location_id(@csv.user_id, location.id)
+    if ul.blank?
+      ul = UserLocation.create(:user_id => @csv.user_id, :location_id => location.id, :source => "csv", :assigned_at => Time.zone.now)
+    end
+
     # At this point, we do not have any errors. Let's iterate over each row, and
     # create/update the reports accordingly.
     current_visited_at = nil

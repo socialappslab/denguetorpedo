@@ -35,6 +35,12 @@ class API::V0::CsvReportsController < API::V0::BaseController
     location.neighborhood_id = @neighborhood.id
     location.save
 
+    # Create a User Location corresponding to this user.
+    ul = UserLocation.find_by_user_id_and_location_id(@current_user.id, location.id)
+    if ul.blank?
+      ul = UserLocation.create(:user_id => @current_user.id, :location_id => location.id, :source => "csv", :assigned_at => Time.zone.now)
+    end
+
     # Create the CSV.
     @csv_report = Spreadsheet.find_by_csv_file_name(params[:spreadsheet][:csv].original_filename)
     @csv_report = Spreadsheet.new if @csv_report.blank?

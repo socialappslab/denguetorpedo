@@ -14,6 +14,9 @@ class Location < ActiveRecord::Base
   has_many :reports, :dependent => :destroy
   has_many :visits,  :dependent => :destroy
 
+  has_many :user_locations
+  has_many :users, :through => :user_locations
+
   #----------------------------------------------------------------------------
 
   BASE_URI = "http://pgeo2.rio.rj.gov.br/ArcGIS2/rest/services/Geocode/DBO.Loc_composto/GeocodeServer/findAddressCandidates"

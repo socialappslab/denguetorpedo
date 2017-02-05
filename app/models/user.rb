@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
   :is_fully_registered, :is_health_agent, :role, :gender, :is_blocked,
   :carrier, :prepaid, :points, :total_points, :name
 
+  has_many :user_locations
+  has_many :locations, :through => :user_locations
+
 
   #----------------------------------------------------------------------------
 
@@ -287,10 +290,10 @@ class User < ActiveRecord::Base
   # NOTE: We do not count CSV uploaded locations as proper locations
   # because that might force the wrong incentives (e.g. upload many CSV reports
   # and reap rewards for other people's work).
-  def locations
-    loc_ids     = self.reports.pluck(:location_id)
-    return Location.where(:id => loc_ids)
-  end
+  # def locations
+  #   loc_ids     = self.reports.pluck(:location_id)
+  #   return Location.where(:id => loc_ids)
+  # end
 
   def green_locations
     self.locations.find_all {|l| l.green?}

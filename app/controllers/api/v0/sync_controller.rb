@@ -92,6 +92,12 @@ class API::V0::SyncController < API::V0::BaseController
         @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
         @location.save
       end
+
+      ul = UserLocation.find_by_user_id_and_location_id(@current_user.id, @location.id)
+      if ul.blank?
+        ul = UserLocation.create(:user_id => @current_user.id, :location_id => @location.id, :source => "mobile", :assigned_at => Time.zone.now)
+      end
+
     end
 
     # At this point, all measurements have saved. Let's update the column.
