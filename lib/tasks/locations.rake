@@ -72,4 +72,19 @@ namespace :locations do
       ls.save
     end
   end
+
+
+  task :backfill_user_locations => :environment do
+    User.find_each do |u|
+      loc_ids = u.reports.pluck(:location_id)
+      locs    = Location.where(:id => loc_ids)
+      locs.each do |loc|
+        ul = UserLocation.find_by_user_id_and_location_id(u.id, loc.id)
+        if ul.blank?
+          UserLocation.create!(:user_id => u.id, :location_id => loc.id, :source => "web", :assigned_at => loc.created_at)
+        end
+      end
+    end
+  end
+
 end
