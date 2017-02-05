@@ -71,7 +71,8 @@ Dengue::Application.configure do
   # See http://blog.ionic.io/handling-cors-issues-in-ionic/
   config.middleware.insert_before 0, "Rack::Cors" do
     allow do
-      origins 'localhost:8100'
+      # origins 'localhost:8100', "192.168.86.196"
+      origins "*"
       resource '*', :headers => :any, :methods => [:get, :put, :post, :options, :delete]
     end
   end
