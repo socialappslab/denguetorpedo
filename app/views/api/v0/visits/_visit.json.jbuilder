@@ -1,17 +1,15 @@
-json.(visit, :id, :classification, :color)
+json.(visit, :id, :location_id, :classification, :color)
 json.visited_at visit.visited_at.strftime("%Y-%m-%d")
 json.location visit.location && visit.location.address
 json.inspections visit.inspections.includes(:report).order("position ASC") do |ins|
-  json.(ins, :id, :identification_type)
+  json.(ins, :id, :position, :identification_type)
   json.color Inspection.color_for_inspection_status[ins.identification_type]
+
+  json.created_at ins.report.created_at
 
   if r = ins.report
     json.set! :report do
-      json.(r, :field_identifier, :report)
-      json.breeding_site do
-        json.code r.breeding_site && r.breeding_site.code
-        json.description r.breeding_site.description_in_es
-      end
+      json.partial! "api/v0/sync/report", :r => r
     end
   end
 end
