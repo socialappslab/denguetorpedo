@@ -124,10 +124,15 @@ class API::V0::SyncController < API::V0::BaseController
         t = Time.zone.parse(p_params[:visited_at])
         @visit.update_column(:visited_at, t)
       else
-        location = Location.find_by_id(p_params[:location_id])
+        location = Location.find_by_id(p_params[:location][:id])
         if location.blank?
-          raise API::V0::Error.new("We couldn't find an associated location!", 422) and return
+          location = Location.where("LOWER(address) = ?", p_params[:location][:address].downcase).first
+          if location.blank?
+            raise API::V0::Error.new("We couldn't find an associated location!", 422) and return
+          end
         end
+
+        p_params.delete(:location)
 
         t = Time.zone.parse(p_params[:visited_at])
         @visit = location.visits.where("DATE(visited_at) = ?", t.strftime("%Y-%m-%d")).first
