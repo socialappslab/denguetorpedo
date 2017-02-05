@@ -146,19 +146,61 @@ class API::V0::SyncController < API::V0::BaseController
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)
   # 2. sync_status which contains last_synced_at timestamp, if any.
   def inspection
-    raise "AHHAHA"
     changes_params["results"].each do |result|
       p_params = result["doc"].with_indifferent_access
       id       = p_params[:id]
 
-      # If the post is present, then we can only really update a like or comment on it.
+
+      breeding_site      = p_params[:report].delete(:breeding_site)
+      elimination_method = p_params[:report].delete(:elimination_method)
+
       if id.present? && @inspection = Inspection.find_by_id(id)
-        @inspection.update_attributes(p_params)
+        @report = @inspection.report
+        @report.breeding_site_id = breeding_site[:id]
+
+        if p_params[:report][:before_photo].present? && p_params[:report][:before_photo].exclude?("base64")
+          p_params[:report].delete(:before_photo)
+        end
+        if p_params[:report][:after_photo].present? && p_params[:report][:after_photo].exclude?("base64")
+          p_params[:report].delete(:after_photo)
+        end
+
+        @report.attributes = p_params[:report]
+        @report.save(:validate => false)
+
+        if p_params[:report][:eliminated_at].present?
+          t = Time.zone.parse(p_params[:report][:eliminated_at])
+          @report.eliminated_at         = t
+          @report.elimination_method_id = elimination_method[:id]
+
+
+          # Create the elimination inspection.
+          ins = Inspection.new(:visit_id => @inspection.visit_id, :report_id => @inspection.report_id)
+          ins.source              = "mobile"
+          ins.identification_type = Inspection::Types::NEGATIVE
+          ins.position            = @inspection.position + 1
+          ins.save
+        end
       else
-        # TODO
-        # @location = Location.new(p_params)
-        # @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
-        # @location.save
+        # TODO: Need to create report.
+        @report = Report.new(p_params[:report])
+        @report.source = "mobile"
+        @report.breeding_site_id = breeding_site[:id]
+        # r.report             = p_params[:report][:report]
+        # r.field_identifier   = p_params[:report][:field_identifier]
+        # r.breeding_site_id   = p_params[:report][:breeding_site][:id]
+        # r.protected          = p_params[:report][:protected]
+        # r.chemically_treated = p_params[:report][:chemical]
+        # r.larvae             = p_params[:report][:larvae]
+        # r.pupae              = p_params[:report][:pupae]
+        @report.last_synced_at = @last
+        @report.save(:validate => false)
+
+        # Create the corresponding inspection.
+        @inspection = Inspection.new(:report_id => @report.id, :visit_id => p_params[:visit_id])
+        @inspection.identification_type = @report.original_status
+        @inspection.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
+        @inspection.save
       end
     end
 
@@ -166,6 +208,7 @@ class API::V0::SyncController < API::V0::BaseController
     @last_seq       = changes_params[:last_seq]
     @last_synced_at = Time.now.utc
     @inspection.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
+    @report.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq}) if @report.present?
   end
 
 
