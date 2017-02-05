@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170125171511) do
+ActiveRecord::Schema.define(version: 20170205205937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -374,6 +374,8 @@ ActiveRecord::Schema.define(version: 20170125171511) do
     t.string   "field_identifier",          limit: 255
     t.integer  "csv_id"
     t.string   "source"
+    t.datetime "last_synced_at"
+    t.integer  "last_sync_seq"
   end
 
   add_index "reports", ["eliminator_id"], name: "index_reports_on_eliminator_id", using: :btree
