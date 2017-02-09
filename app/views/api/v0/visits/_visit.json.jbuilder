@@ -11,7 +11,7 @@ json.inspections visit.inspections.includes(:report).order("position ASC") do |i
 
   json.created_at ins.report.created_at
 
-  if r = ins.report && r.breeding_site.present?
+  if r = ins.report && r.try(:breeding_site)
     json.set! :report do
       json.partial! "api/v0/sync/report", :r => r
     end
