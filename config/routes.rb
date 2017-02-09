@@ -319,6 +319,7 @@ Dengue::Application.routes.draw do
 
   get "/.well-known/acme-challenge/ycpXvA_hBDFfViNaOsc6VHbQrBcJSUmbrywmHiFctqM" => 'home#letsencrypt'
   get "/.well-known/acme-challenge/1RECxPjQHY70hoA-SrQ3T2QpdccYtzCT2Zfupdz0NS0" => "home#letsencrypt"
+  get "/.well-known/acme-challenge/VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI" => "home#letsencrypt"
 
 
   #----------------------------------------------------------------------------
