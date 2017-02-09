@@ -5,6 +5,11 @@ class HomeController < ApplicationController
   #----------------------------------------------------------------------------
   # GET /
 
+  def letsencrypt
+    # use your code here, not mine
+    render text: "Yfsd5KqBPxUspPVjO4owzV6xzV0QQ01RHRx0H6EvNEo.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+  end
+
   def index
     @user = User.new
 

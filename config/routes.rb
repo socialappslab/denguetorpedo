@@ -317,5 +317,7 @@ Dengue::Application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/7XpBp7Bgd2cd'
 
+  get "/.well-known/acme-challenge/Yfsd5KqBPxUspPVjO4owzV6xzV0QQ01RHRx0H6EvNEo" => 'home#letsencrypt'
+
   #----------------------------------------------------------------------------
 end
