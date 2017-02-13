@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
-  get "/.well-known/acme-challenge/F-ubBf3U4lD05EoHLFFuOFO568-ASpOi9LMXDM4ceL8" => 'home#letsencrypt'
+  get "/.well-known/acme-challenge/Lwd1Vc0qiU-wEcgnVBXLreXHaFq-xGPhcCSphU5e1I8" => 'home#letsencrypt'
   # get "/.well-known/acme-challenge/1RECxPjQHY70hoA-SrQ3T2QpdccYtzCT2Zfupdz0NS0" => "home#letsencrypt"
   # get "/.well-known/acme-challenge/VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI" => "home#letsencrypt"
 
