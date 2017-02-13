@@ -7,8 +7,8 @@ class HomeController < ApplicationController
 
   def letsencrypt
     # use your code here, not mine
-    render text: "Lwd1Vc0qiU-wEcgnVBXLreXHaFq-xGPhcCSphU5e1I8.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
-    # render text: "1RECxPjQHY70hoA-SrQ3T2QpdccYtzCT2Zfupdz0NS0.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+    # render text: "Lwd1Vc0qiU-wEcgnVBXLreXHaFq-xGPhcCSphU5e1I8.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+    render text: "1xOr7Tms_eX9S1EA-w8wRrZBVWcSaFXXGu4F-5zUU0o.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
     # render text: "VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
   end
 
