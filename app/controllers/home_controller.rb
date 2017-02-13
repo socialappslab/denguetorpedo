@@ -10,7 +10,7 @@ class HomeController < ApplicationController
   end
 
   def denguechatorg
-    render text: "1xOr7Tms_eX9S1EA-w8wRrZBVWcSaFXXGu4F-5zUU0o.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+    render text: "NQZ2h9DRjE6_f1tZgaQQXv9vssioYYrBvex1oBk8YnE.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
   end
 
   def index
