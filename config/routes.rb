@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
-  get "/.well-known/acme-challenge/oHvDnrFKp7LYBAY7N06dcJQWoiHCETDZ7NfDnag4qBQ" => 'home#denguechatcom'
+  get "/.well-known/acme-challenge/6iEbJmeMKc1BB34je4Wu1MtrDZemh3cB3YqpHjlp7cc" => 'home#denguechatcom'
   get "/.well-known/acme-challenge/NQZ2h9DRjE6_f1tZgaQQXv9vssioYYrBvex1oBk8YnE" => "home#denguechatorg"
 
   #----------------------------------------------------------------------------

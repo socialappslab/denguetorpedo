@@ -6,7 +6,7 @@ class HomeController < ApplicationController
   # GET /
 
   def denguechatcom
-    render text: "oHvDnrFKp7LYBAY7N06dcJQWoiHCETDZ7NfDnag4qBQ.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+    render text: "6iEbJmeMKc1BB34je4Wu1MtrDZemh3cB3YqpHjlp7cc.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
   end
 
   def denguechatorg
