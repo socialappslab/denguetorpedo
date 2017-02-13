@@ -1,7 +1,13 @@
 # -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
+  get "/.well-known/acme-challenge/F-ubBf3U4lD05EoHLFFuOFO568-ASpOi9LMXDM4ceL8" => 'home#letsencrypt'
+  # get "/.well-known/acme-challenge/1RECxPjQHY70hoA-SrQ3T2QpdccYtzCT2Zfupdz0NS0" => "home#letsencrypt"
+  # get "/.well-known/acme-challenge/VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI" => "home#letsencrypt"
+
   #----------------------------------------------------------------------------
   # API routes.
+
+
 
   namespace :api, :defaults => { :format => :json } do
     namespace :v0 do
@@ -316,10 +322,6 @@ Dengue::Application.routes.draw do
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/7XpBp7Bgd2cd'
-
-  get "/.well-known/acme-challenge/ycpXvA_hBDFfViNaOsc6VHbQrBcJSUmbrywmHiFctqM" => 'home#letsencrypt'
-  get "/.well-known/acme-challenge/1RECxPjQHY70hoA-SrQ3T2QpdccYtzCT2Zfupdz0NS0" => "home#letsencrypt"
-  get "/.well-known/acme-challenge/VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI" => "home#letsencrypt"
 
 
   #----------------------------------------------------------------------------

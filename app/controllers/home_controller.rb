@@ -7,9 +7,9 @@ class HomeController < ApplicationController
 
   def letsencrypt
     # use your code here, not mine
-    # render text: "ycpXvA_hBDFfViNaOsc6VHbQrBcJSUmbrywmHiFctqM.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+    render text: "F-ubBf3U4lD05EoHLFFuOFO568-ASpOi9LMXDM4ceL8.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
     # render text: "1RECxPjQHY70hoA-SrQ3T2QpdccYtzCT2Zfupdz0NS0.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
-    render text: "VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
+    # render text: "VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI.x63o5CYgK-zeqySMz_nJt3vKipih1P5E2ooiiS6t1ec"
   end
 
   def index
