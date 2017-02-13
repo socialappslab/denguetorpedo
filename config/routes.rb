@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
-  # get "/.well-known/acme-challenge/Lwd1Vc0qiU-wEcgnVBXLreXHaFq-xGPhcCSphU5e1I8" => 'home#letsencrypt'
-  get "/.well-known/acme-challenge/1xOr7Tms_eX9S1EA-w8wRrZBVWcSaFXXGu4F-5zUU0o" => "home#letsencrypt"
-  # get "/.well-known/acme-challenge/VtxG_RDJj64tCN9vQr2UXUH5Mi9Ld60yXrBT5B4dyrI" => "home#letsencrypt"
+  get "/.well-known/acme-challenge/Lwd1Vc0qiU-wEcgnVBXLreXHaFq-xGPhcCSphU5e1I8" => 'home#denguechatcom'
+  get "/.well-known/acme-challenge/1xOr7Tms_eX9S1EA-w8wRrZBVWcSaFXXGu4F-5zUU0o" => "home#denguechatorg"
 
   #----------------------------------------------------------------------------
   # API routes.
