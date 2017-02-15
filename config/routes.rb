@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 Dengue::Application.routes.draw do
   get "/.well-known/acme-challenge/6iEbJmeMKc1BB34je4Wu1MtrDZemh3cB3YqpHjlp7cc" => 'home#denguechatcom'
-  get "/.well-known/acme-challenge/NQZ2h9DRjE6_f1tZgaQQXv9vssioYYrBvex1oBk8YnE" => "home#denguechatorg"
+  get "/.well-known/acme-challenge/ltdIJyoTltE4aw-IK6K2WnlSMZStTZgvlmYAmKOyNwg" => "home#denguechatorg"
 
   #----------------------------------------------------------------------------
   # API routes.
