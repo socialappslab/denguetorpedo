@@ -215,8 +215,8 @@ class API::V0::SyncController < API::V0::BaseController
       else
 
         # At this point, this is a new inspection/report. Let's ensure that the visit exists.
-        @visit = Visit.find_by_id(p_params[:visit_id]) if p_params[:visit_id].present?
-        @visit = Visit.find_by_pouchdb_id(p_params[:visit_pouchdb_id]) if p_params[:visit_pouchdb_id].present?
+        @visit = Visit.find_by_id(p_params[:visit][:id]) if p_params[:visit][:id].present?
+        @visit = Visit.find_by_pouchdb_id(p_params[:visit][:pouchdb_id]) if p_params[:visit][:pouchdb_id].present?
         if @visit.blank?
           raise StandardError.new("We couldn't find an associated visit for this inspection from ID or PouchDB ID!") and return
         end
