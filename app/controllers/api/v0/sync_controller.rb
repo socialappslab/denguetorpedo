@@ -83,24 +83,28 @@ class API::V0::SyncController < API::V0::BaseController
       p_params = result["doc"].with_indifferent_access
       id       = p_params[:id]
 
-      # If the post is present, then we can only really update a like or comment on it.
+      # If the location's id exists and the location is found, then let's update the
+      # location.
       if id.present? && @location = Location.find_by_id(id)
         @location.questions = p_params[:questions] if p_params[:questions].present?
         @location.update_attributes(p_params)
       else
-        puts "\n\n\n Location was not found. Creating... \n\n\n"
-        @location = Location.new(p_params)
-        @location.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
+        # At this point, the location's ID does not exist which means this is a new location.
+        # Let's store it, and the pouchdb_id corresponding, to it.
+        @location            = Location.new(p_params)
+        @location.pouchdb_id = p_params["_id"]
+        @location.source     = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
         @location.save(:validate => false)
       end
+
+      @location.pouchdb_id = p_params["_id"]
+      @location.save(:validate => false)
 
       ul = UserLocation.find_by_user_id_and_location_id(@current_user.id, @location.id)
       if ul.blank?
         ul = UserLocation.create(:user_id => @current_user.id, :location_id => @location.id, :source => "mobile", :assigned_at => Time.zone.now)
       end
     end
-
-    puts "LOcation is: #{@location.inspect}"
 
     # At this point, all measurements have saved. Let's update the column.
     @last_seq       = changes_params[:last_seq]
@@ -119,21 +123,29 @@ class API::V0::SyncController < API::V0::BaseController
       p_params = result["doc"].with_indifferent_access
       id       = p_params[:id]
 
-      # If the post is present, then we can only really update a like or comment on it.
+      # If the incoming visit object has an ID, then we should just update
+      # its visited_at (the only thing that can change)
       if id.present? && @visit = Visit.find_by_id(id)
         t = Time.zone.parse(p_params[:visited_at])
         @visit.update_column(:visited_at, t)
       else
-        location = Location.find_by_id(p_params[:location][:id])
+        # At this point, the visit does not exist. Let's check if its corresponding
+        # location exists. We do this 2 ways:
+        # 1. Check if :id exists
+        # 2. Check if :_id (pouchdb_id) exists.
+        # If neither exist, then we fail.
+        if p_params[:location].blank?
+          raise StandardError.new("The visit sync object must supply a Location key!") and return
+        end
+
+        # NOTE: We fail if we can't find the ID or PouchDB ID of a location.
+        location = Location.find_by_id(p_params[:location][:id]) if p_params[:location][:id].present?
+        location = Location.find_by_pouchdb_id(p_params[:location]["_id"]) if p_params[:location]["_id"].present?
         if location.blank?
-          location = Location.where("LOWER(address) = ?", p_params[:location][:address].downcase).first
-          if location.blank?
-            raise API::V0::Error.new("We couldn't find an associated location!", 422) and return
-          end
+          raise StandardError.new("We couldn't find an associated location for this visit from ID or PouchDB ID!") and return
         end
 
         p_params.delete(:location)
-
         t = Time.zone.parse(p_params[:visited_at])
         @visit = location.visits.where("DATE(visited_at) = ?", t.strftime("%Y-%m-%d")).first
         if @visit.blank?
@@ -144,6 +156,9 @@ class API::V0::SyncController < API::V0::BaseController
         @visit.visited_at = t
         @visit.save!
       end
+
+      @visit.pouchdb_id = p_params["_id"]
+      @visit.save(:validate => false)
     end
 
     # At this point, all measurements have saved. Let's update the column.
@@ -195,22 +210,23 @@ class API::V0::SyncController < API::V0::BaseController
           ins.save
         end
       else
-        # TODO: Need to create report.
+
+        # At this point, this is a new inspection/report. Let's ensure that the visit exists.
+        @visit = Visit.find_by_id(p_params[:visit_id]) if p_params[:visit_id].present?
+        @visit = Visit.find_by_pouchdb_id(p_params[:visit_pouchdb_id]) if p_params[:visit_pouchdb_id].present?
+        if @visit.blank?
+          raise StandardError.new("We couldn't find an associated visit for this inspection from ID or PouchDB ID!") and return
+        end
+
+        # At this point, the visit exists.
         @report = Report.new(p_params[:report])
         @report.source = "mobile"
         @report.breeding_site_id = breeding_site[:id]
-        # r.report             = p_params[:report][:report]
-        # r.field_identifier   = p_params[:report][:field_identifier]
-        # r.breeding_site_id   = p_params[:report][:breeding_site][:id]
-        # r.protected          = p_params[:report][:protected]
-        # r.chemically_treated = p_params[:report][:chemical]
-        # r.larvae             = p_params[:report][:larvae]
-        # r.pupae              = p_params[:report][:pupae]
         @report.last_synced_at = @last
         @report.save(:validate => false)
 
         # Create the corresponding inspection.
-        @inspection = Inspection.new(:report_id => @report.id, :visit_id => p_params[:visit_id])
+        @inspection = Inspection.new(:report_id => @report.id, :visit_id => @visit.id)
         @inspection.identification_type = @report.original_status
         @inspection.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
         @inspection.save

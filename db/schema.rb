@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205212010) do
+ActiveRecord::Schema.define(version: 20170318222754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,7 @@ ActiveRecord::Schema.define(version: 20170205212010) do
     t.string   "source"
     t.datetime "last_synced_at"
     t.integer  "last_sync_seq"
+    t.string   "pouchdb_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -481,6 +482,7 @@ ActiveRecord::Schema.define(version: 20170205212010) do
     t.string   "source"
     t.datetime "last_synced_at"
     t.integer  "last_sync_seq"
+    t.string   "pouchdb_id"
   end
 
 end
