@@ -140,7 +140,7 @@ class API::V0::SyncController < API::V0::BaseController
 
         # NOTE: We fail if we can't find the ID or PouchDB ID of a location.
         location = Location.find_by_id(p_params[:location][:id]) if p_params[:location][:id].present?
-        location = Location.find_by_pouchdb_id(p_params[:location]["_id"]) if p_params[:location]["_id"].present?
+        location = Location.find_by_pouchdb_id(p_params[:location][:pouchdb_id]) if p_params[:location][:pouchdb_id].present?
         if location.blank?
           raise StandardError.new("We couldn't find an associated location for this visit from ID or PouchDB ID!") and return
         end
