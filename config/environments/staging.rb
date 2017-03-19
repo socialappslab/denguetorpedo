@@ -6,7 +6,7 @@ Dengue::Application.configure do
   config.cache_classes = true
 
   # Full error reports are disabled.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local = false
 
   #----------------------------------------------------------------------------
   # Asset Compression and Compilation (JavaScripts and CSS)
@@ -18,6 +18,8 @@ Dengue::Application.configure do
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = false
 
+  config.eager_load = true
+
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
 
@@ -26,7 +28,7 @@ Dengue::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = false
 
   # See everything in the log (default is :info)
   config.log_level = :debug
@@ -42,21 +44,25 @@ Dengue::Application.configure do
 
   # Configure Rack::Cache to use Dalli Memcached client.
   client = Dalli::Client.new((ENV["MEMCACHIER_SERVERS"] || "").split(","),
-                             :username => ENV["MEMCACHIER_USERNAME"],
-                             :password => ENV["MEMCACHIER_PASSWORD"],
-                             :failover => true,
-                             :socket_timeout => 1.5,
-                             :socket_failure_delay => 0.2,
-                             :value_max_bytes => 10485760)
+                           :username => ENV["MEMCACHIER_USERNAME"],
+                           :password => ENV["MEMCACHIER_PASSWORD"],
+                           :failover => true,
+                           :socket_timeout => 1.5,
+                           :socket_failure_delay => 0.2,
+                           :value_max_bytes => 10485760)
   config.action_dispatch.rack_cache = {
     :metastore    => client,
     :entitystore  => client
   }
 
+  # Enable serving of images, stylesheets, and JavaScripts from an asset server
+  # config.action_controller.asset_host = "http://assets.example.com"
+
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( jquery/* google/* bootstrap/*.js google-maps.js csv-ajax.js)
+  config.assets.precompile += %w(google/marker-clusterer.js csv-ajax.js datepicker.js google-maps.js)
+  config.assets.precompile += %w(bootstrap/typeahead.js bootstrap/bootstrap-multiselect.css bootstrap/marketing.css)
+  config.assets.precompile += %w(dashboard.css graphs.css)
   config.assets.precompile += %w( *.png *.jpg )
-  config.assets.precompile += %w( app/* feed.css panel.css cities.css dashboard.css bootstrap/bootstrap-min.css bootstrap/bootstrap-multiselect.css jquery/*.css graphs.css )
   config.assets.paths << Rails.root.join("app", "assets", "templates")
 
   # Disable delivery errors, bad email addresses will be ignored
@@ -69,31 +75,28 @@ Dengue::Application.configure do
   # the I18n.default_locale when a translation can not be found)
   config.i18n.fallbacks = true
 
-
-
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  # Gmail SMTP
+  #----------------------------------------------------------------------------
+  # Mailer
+  #-------
   config.action_mailer.delivery_method     = :smtp
-  config.action_mailer.default_url_options = { host: "denguetorpedo-staging.herokuapp.com", protocol: "http" }
-
-  config.action_mailer.delivery_method = :smtp
-  # Gmail SMTP server setup
+  config.action_mailer.default_url_options = { host: "www.denguechat.com", protocol: "https" }
   config.action_mailer.smtp_settings = {
-    :address => "smtp.gmail.com",
-    :enable_starttls_auto => true,
+    :user_name => ENV['SENDGRID_USERNAME'],
+    :password => ENV['SENDGRID_PASSWORD'],
+    :domain => 'denguechat.org',
+    :address => 'smtp.sendgrid.net',
     :port => 587,
-    :domain => 'reportdengue@gmail.com',
     :authentication => :plain,
-    :user_name => 'reportdengue',
-    :password => 'dengue@!$'
+    :enable_starttls_auto => true
   }
 
-  # Paperclip gem: ImageMagic path
+  #----------------------------------------------------------------------------
+  # Paperclip
+  #----------
   Paperclip.options[:command_path] = "/usr/local/bin/convert"
-
-  # S3 Credential
   config.paperclip_defaults = {
     :storage => :s3,
     :s3_protocol => :https,
@@ -104,4 +107,5 @@ Dengue::Application.configure do
     }
   }
 
+  #----------------------------------------------------------------------------
 end
