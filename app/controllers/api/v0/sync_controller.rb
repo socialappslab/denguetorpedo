@@ -178,6 +178,9 @@ class API::V0::SyncController < API::V0::BaseController
       p_params = result["doc"].with_indifferent_access
       id       = p_params[:id]
 
+      # If the report is blank then continue.
+      next if p_params[:report].blank?
+
 
       breeding_site      = p_params[:report].delete(:breeding_site)
       elimination_method = p_params[:report].delete(:elimination_method)
