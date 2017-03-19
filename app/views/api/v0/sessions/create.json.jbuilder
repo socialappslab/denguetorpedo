@@ -4,7 +4,7 @@ json.user do
   json.(@user, :id, :display_name)
   json.profile_photo @user.profile_photo.url(:thumbnail)
   json.neighborhood do
-    json.(@user.neighborhood, :id, :geographical_display_name)
+    json.(@user.neighborhood, :id, :city_id, :geographical_display_name)
     json.questions HouseQuiz.questions
   end
 
