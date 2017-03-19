@@ -422,6 +422,7 @@ es:
         locations: Lugares
         heatmap: Mapa de actividad
         graphs: Gráficos
+        sync: Sincronizar
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"

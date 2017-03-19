@@ -40,6 +40,13 @@
           = link_to csv_reports_path, :style => header_styling do
             %i.fa.fa-table
             CSV
+        %li
+          %a
+        %li.user-navigation
+          - header_styling = request.path == dashboard_sync_index_path ? "font-weight:bold; text-align: center;" : ""
+          = link_to dashboard_sync_index_path, :style => header_styling do
+            %i.fa.fa-refresh
+            =I18n.t("views.dashboard.navigation.sync")
 
 
 

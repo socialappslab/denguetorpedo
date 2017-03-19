@@ -99,6 +99,7 @@ Dengue::Application.routes.draw do
     resources :locations, :only => [:index]
     resources :reports,   :only => [:index]
     resources :visits,    :only => [:index]
+    resources :sync,    :only => [:index]
     resources :graphs,    :only => [:index] do
       collection do
         get "heatmap"
