@@ -5,6 +5,9 @@ json.user do
   json.profile_photo @user.profile_photo.url(:thumbnail)
   json.neighborhood do
     json.(@user.neighborhood, :id, :city_id, :geographical_display_name)
+    json.city do
+      json.(@user.neighborhood.city, :name, :state, :localized_country_name)
+    end
     json.questions HouseQuiz.questions
   end
 
