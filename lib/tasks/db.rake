@@ -39,7 +39,7 @@ namespace :db do
   task :restore => :environment do |t, args|
     cmd = nil
     with_config do |app, host, db, user|
-      cmd = "pg_restore --clean --verbose --no-owner --no-acl --dbname cloviflow_development #{Rails.root}/db/#{db}.dump"
+      cmd = "pg_restore --clean --verbose --no-owner --no-acl --dbname #{db} #{Rails.root}/db/#{db}.dump"
     end
     puts cmd
     exec cmd
