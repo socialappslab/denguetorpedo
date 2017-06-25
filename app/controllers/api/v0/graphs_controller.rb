@@ -56,6 +56,7 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
+    @statistics = statistics
     respond_to do |format|
       format.csv do
         filename = neighborhoods.map {|n| n.name.gsub(" ", "_").downcase}.join("_") + "_visita_datos.csv"
@@ -63,7 +64,7 @@ class API::V0::GraphsController < API::V0::BaseController
       end
 
       format.json do
-        render :json => statistics.as_json, :status => 200 and return
+        render "api/v0/graph/timeseries" and return
       end
     end
 
@@ -84,9 +85,9 @@ class API::V0::GraphsController < API::V0::BaseController
     location_ids = neighborhood.locations.pluck(:id)
 
     Time.use_zone("America/Guatemala") do
-      statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:percentages])
-      statistics.unshift([I18n.t('views.statistics.chart.time'), I18n.t('views.statistics.chart.percent_of_positive_sites'), I18n.t('views.statistics.chart.percent_of_potential_sites'), I18n.t('views.statistics.chart.percent_of_negative_sites')])
-      render :json => {:data => statistics.as_json}, :status => 200 and return
+      statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
+      @statistics = statistics
+      render "api/v0/graph/timeseries" and return
     end
   end
 

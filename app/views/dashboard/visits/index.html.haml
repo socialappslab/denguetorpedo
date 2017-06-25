@@ -1,3 +1,7 @@
+- content_for :scripts do
+  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
+
+
 - content_for :dashboard_content do
 
   .row{:style => "margin-top: 20px;", "ng-controller" => "dashboardTimeSeriesCtrl", :path => timeseries_api_v0_graph_path}
@@ -20,7 +24,7 @@
                     = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'monthly'}" do
                       = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "options.unit"
                       En un mes
-              %td{:rowspan => 2, :style => "width: 65%"}
+              %td{:rowspan => 3, :style => "width: 65%"}
                 %p.form-label
                   Comunidades
                 %ul.list-group
@@ -51,6 +55,27 @@
                     = select_tag nil, options_for_select( (2010..Time.zone.now.year).map {|i| [i, i]} ), "ng-model" => "options.customEndYear"
 
 
+            %tr
+              %td{:style => "width: 35%"}
+                %p.form-label
+                  = I18n.t("views.statistics.chart.type")
+                .chart-filters{:style => "margin-top: 0px;"}
+                  .checkbox
+                    %label
+                      %input{:type => "checkbox", "ng-model" => "options.positive"}
+                        = I18n.t("common_terms.positive")
+                  .checkbox
+                    %label
+                      %input{:type => "checkbox", "ng-model" => "options.potential"}
+                        = I18n.t("common_terms.potential")
+                  .checkbox
+                    %label
+                      %input{:type => "checkbox", "ng-model" => "options.negative"}
+                        = I18n.t("common_terms.negative")
+
+
+
+
 
           .row{:style => "margin-top: 20px;"}
             .col-md-4
@@ -66,52 +91,135 @@
           %h1.text-center{"ng-show" => "loading"}
             %i.fa.fa-refresh.fa-spin
 
-        %table.table.table-bordered{"ng-show" => "timeseries.length > 0"}
+
+
+          %hr
+
+
+          .chart
+            %h3.panel-title{"ng-show" => "state.chart"}
+              = I18n.t('views.statistics.chart.title')
+
+            .legend{:style => "margin-left: 0px; margin-top: 0px;", "ng-show" => "state.chart"}
+              .row
+                .col-xs-4
+                  %span.chart-legend.red
+                  %span.chart-label.light-font
+                    = I18n.t('views.statistics.chart.percent_of_positive_sites')
+                  -# %br
+
+                .col-xs-4
+                  %span.chart-legend.yellow
+                  %span.chart-label.light-font
+                    = I18n.t('views.statistics.chart.percent_of_potential_sites')
+                  -# %br
+
+                .col-xs-4
+                  %span.chart-legend.green
+                  %span.chart-label.light-font
+                    = I18n.t('views.statistics.chart.percent_of_negative_sites')
+            %hr
+
+            #timeseries
+              %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+              %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+                = I18n.t("common_terms.no_data")
+              #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
+
+
+        %table.table.table-bordered.table-responsive{"ng-show" => "timeseries.length > 0"}
           %thead
             %th{:style => "width: 10%"}
-              Fecha de visita
-            %th{:style => "width: 10%"}
-              Lugares positivos (%)
-            %th{:style => "width: 10%"}
-              Lugares potenciales (%)
-            %th{:style => "width: 10%"}
-              Lugares sin criaderos (%)
-            %th{:style => "width: 10%"}
-              Total lugares
-            %th{:style => "width: 10%"}
-              Lugares positivos
-            %th{:style => "width: 10%"}
-              Lugares potenciales
-            %th{:style => "width: 10%"}
-              Lugares sin criaderos
-            %th{:style => "width: 10%"}
-              Lugares
+              Data
+            %th{"ng-repeat" => "series in timeseries"}
+              {{series.date}}
+
           %tbody
-            %tr{"ng-repeat" => "series in timeseries"}
-              %td{:style => "width: 10%"}
-                {{series.date}}
-              %td{:style => "width: 10%"}
-                {{series.positive.count}}
-                ({{series.positive.percent}} %)
-              %td{:style => "width: 10%"}
-                {{series.potential.count}}
-                ({{series.potential.percent}} %)
-              %td{:style => "width: 10%"}
-                {{series.negative.count}}
-                ({{series.negative.percent}} %)
-              %td{:style => "width: 8%"}
+            %tr
+              %td Lugares positivos
+              %td{"ng-repeat" => "series in timeseries"}
+                {{series.positive.percent}}% ({{series.positive.count}})
+            %tr
+              %td Lugares potenciales
+              %td{"ng-repeat" => "series in timeseries"}
+                {{series.potential.percent}}% ({{series.potential.count}})
+            %tr
+              %td Lugares sin criaderos
+              %td{"ng-repeat" => "series in timeseries"}
+                {{series.negative.percent}}% ({{series.negative.count}})
+            %tr
+              %td Total lugares
+              %td{"ng-repeat" => "series in timeseries"}
                 {{series.total.count}}
-              %td{:style => "width: 10%"}
+            %tr
+              %td Lugares positivos
+              %td{"ng-repeat" => "series in timeseries"}
                 .show{"ng-repeat" => "location in series.positive.locations"}
                   {{location}}
-              %td{:style => "width: 10%"}
+            %tr
+              %td Lugares potenciales
+              %td{"ng-repeat" => "series in timeseries"}
                 .show{"ng-repeat" => "location in series.potential.locations"}
                   {{location}}
-              %td{:style => "width: 10%"}
+            %tr
+              %td Lugares sin criaderos
+              %td{"ng-repeat" => "series in timeseries"}
                 .show{"ng-repeat" => "location in series.negative.locations"}
                   {{location}}
-              %td{:style => "width: 10%"}
+            %tr
+              %td Lugares
+              %td{"ng-repeat" => "series in timeseries"}
                 .show{"ng-repeat" => "location in series.total.locations"}
                   {{location}}
+
+
+          -# %thead
+          -#   %th{:style => "width: 10%"}
+          -#     Fecha de visita
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares positivos (%)
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares potenciales (%)
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares sin criaderos (%)
+          -#   %th{:style => "width: 10%"}
+          -#     Total lugares
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares positivos
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares potenciales
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares sin criaderos
+          -#   %th{:style => "width: 10%"}
+          -#     Lugares
+          -# %tbody
+          -#   %tr{"ng-repeat" => "series in timeseries"}
+          -#     %td{:style => "width: 10%"}
+          -#       {{series.date}}
+          -#     %td{:style => "width: 10%"}
+          -#       {{series.positive.count}}
+          -#       ({{series.positive.percent}} %)
+          -#     %td{:style => "width: 10%"}
+          -#       {{series.potential.count}}
+          -#       ({{series.potential.percent}} %)
+          -#     %td{:style => "width: 10%"}
+          -#       {{series.negative.count}}
+          -#       ({{series.negative.percent}} %)
+          -#     %td{:style => "width: 8%"}
+          -#       {{series.total.count}}
+          -#     %td{:style => "width: 10%"}
+          -#       .show{"ng-repeat" => "location in series.positive.locations"}
+          -#         {{location}}
+          -#     %td{:style => "width: 10%"}
+          -#       .show{"ng-repeat" => "location in series.potential.locations"}
+          -#         {{location}}
+          -#     %td{:style => "width: 10%"}
+          -#       .show{"ng-repeat" => "location in series.negative.locations"}
+          -#         {{location}}
+          -#     %td{:style => "width: 10%"}
+          -#       .show{"ng-repeat" => "location in series.total.locations"}
+          -#         {{location}}
+
+
         .panel-footer
           Seleccione comunidades, la unidad y el tiempo para generar informe.

@@ -56,13 +56,29 @@
         .col-xs-4
           .chart-filters{:style => "margin-top: 0px;"}
             .btn-group
-              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'daily'}" do
-                = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "chartOptions.percentages"
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'daily'}" do
+                = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "options.unit"
                 En un dia
-              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': chartOptions.percentages === 'monthly'}" do
-                = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "chartOptions.percentages"
+              = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'monthly'}" do
+                = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "options.unit"
                 En un mes
+
+
+          .chart-filters{:style => "margin-top: 0px;"}
+            .checkbox
+              %label
+                %input{:type => "checkbox", "ng-model" => "options.positive"}
+                  = I18n.t("common_terms.positive")
+            .checkbox
+              %label
+                %input{:type => "checkbox", "ng-model" => "options.potential"}
+                  = I18n.t("common_terms.potential")
+            .checkbox
+              %label
+                %input{:type => "checkbox", "ng-model" => "options.negative"}
+                  = I18n.t("common_terms.negative")
         .col-xs-8
+
           .legend{:style => "margin-left: 0px; margin-top: 0px;"}
             %span.chart-legend.red
             %span.chart-label.light-font
@@ -82,6 +98,39 @@
         %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
           = I18n.t("common_terms.no_data")
         #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
+
+      %hr
+
+      %a.btn.btn-default.btn-xs{"ng-click" => "state.showTable = !state.showTable"}
+        Mostrar mesa
+
+      %table.table.table-bordered.table-responsive{"ng-show" => "timeseries.length > 0 && state.showTable"}
+        %thead
+          %th{:style => "width: 10%"}
+            Data
+          %th{"ng-repeat" => "series in timeseries"}
+            {{series.date}}
+
+        %tbody
+          %tr
+            %td Lugares positivos
+            %td{"ng-repeat" => "series in timeseries"}
+              {{series.positive.percent}}% ({{series.positive.count}})
+          %tr
+            %td Lugares potenciales
+            %td{"ng-repeat" => "series in timeseries"}
+              {{series.potential.percent}}% ({{series.potential.count}})
+          %tr
+            %td Lugares sin criaderos
+            %td{"ng-repeat" => "series in timeseries"}
+              {{series.negative.percent}}% ({{series.negative.count}})
+          %tr
+            %td Total lugares
+            %td{"ng-repeat" => "series in timeseries"}
+              {{series.total.count}}
+
+
+
 
   .panel-footer
     %p.light-font.large-font
