@@ -13,8 +13,6 @@ class Inspection < ActiveRecord::Base
   :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
   :protected, :chemically_treated, :larvae, :field_identifier
 
-
-
   module Types
     POSITIVE  = 0
     POTENTIAL = 1
@@ -51,6 +49,7 @@ class Inspection < ActiveRecord::Base
 
   attr_accessor :save_without_before_photo
   attr_accessor :save_without_after_photo
+  attr_accessor :save_without_elimination_method
 
   #----------------------------------------------------------------------------
   # Associations

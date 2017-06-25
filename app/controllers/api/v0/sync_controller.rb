@@ -233,7 +233,6 @@ class API::V0::SyncController < API::V0::BaseController
     @last_seq       = changes_params[:last_seq]
     @last_synced_at = Time.now.utc
     @inspection.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
-    @report.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq}) if @report.present?
   end
 
 
