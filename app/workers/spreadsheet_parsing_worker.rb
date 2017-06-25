@@ -84,7 +84,7 @@ class SpreadsheetParsingWorker
       # If the breeding code is N or X then we will NOT create a report. Otherwise,
       # we will, *and* we may also add a unique identifier to the report.
       raw_breeding_code = row_content[:breeding_site].strip.downcase
-      next if Spreadsheet.clean_breeding_site_codes.include?(raw_breeding_code)
+      # next if Spreadsheet.clean_breeding_site_codes.include?(raw_breeding_code)
 
       # At this point, we have a valid breeding code. Let's parse and start creating
       # the report.
@@ -100,20 +100,79 @@ class SpreadsheetParsingWorker
       # Add to reports only if the code doesn't equal "negative" code.
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
 
-      # If this is an existing report, then let's update a subset of properties
-      # on this report.
-      r = @csv.reports.find_by_field_identifier(field_id) if field_id.present?
-      if r.present?
-        r.report             = description
-        r.breeding_site_id   = breeding_site.id if breeding_site.present?
-        r.protected          = row_content[:protected]
-        r.chemically_treated = row_content[:chemical]
-        r.larvae             = row_content[:larvae]
-        r.pupae              = row_content[:pupae]
-        r.csv_uuid           = uuid
-        r.csv_id             = @csv.id
-        r.save(:validate => false)
-      else
+      # # If this is an existing report, then let's update a subset of properties
+      # # on this report.
+      # r = @csv.reports.find_by_field_identifier(field_id) if field_id.present?
+      # if r.present?
+      #   r.report             = description
+      #   r.breeding_site_id   = breeding_site.id if breeding_site.present?
+      #   r.protected          = row_content[:protected]
+      #   r.chemically_treated = row_content[:chemical]
+      #   r.larvae             = row_content[:larvae]
+      #   r.pupae              = row_content[:pupae]
+      #   r.csv_uuid           = uuid
+      #   r.csv_id             = @csv.id
+      #   r.save(:validate => false)
+      # else
+      #   # At this point, this isn't a report with a field identifier. Because
+      #   # we're parsing the whole CSV, there are two options:
+      #   # 1. This report has been previously created from a previous upload.
+      #   #    In this case, we should be able to identify it through the UUID. The
+      #   #    only attributes we should update is whether it has been eliminated,
+      #   #    which we do further down.
+      #   # 2. The other possibility is that this is a new report. In this case, we
+      #   #    create it with all attributes, and leave the checking of eliminated_at
+      #   #    further down.
+      #   r = @csv.reports.find_by_csv_uuid(uuid)
+      #   if r.blank?
+      #     r            = Report.new
+      #     r.field_identifier   = field_id
+      #     r.created_at         = current_visited_at
+      #     r.report             = description
+      #     r.breeding_site_id   = breeding_site.id if breeding_site.present?
+      #     r.protected          = row_content[:protected]
+      #     r.chemically_treated = row_content[:chemical]
+      #     r.larvae             = row_content[:larvae]
+      #     r.pupae              = row_content[:pupae]
+      #     r.location_id        = location.id
+      #     r.neighborhood_id    = @neighborhood.id
+      #     r.reporter_id        = @csv.user_id
+      #     r.csv_id             = @csv.id
+      #     r.csv_uuid           = uuid
+      #     r.eliminated_at      = eliminated_at
+      #     r.save(:validate => false)
+      #   end
+      # end
+      #
+      # # Create an inspection regardless if eliminated_at is present or not. This
+      # # ensures that we have a 1-1 correspondence between a row and an inspection.
+      # find_or_create_visit_and_inspection(@csv, current_visited_at, r)
+
+      # Create an inspection regardless if eliminated_at is present or not. This
+      # ensures that we have a 1-1 correspondence between a row and an inspection.
+      # find_or_create_visit_and_inspection(@csv, current_visited_at, r)
+      v = Visit.find_or_create_visit_for_location_id_and_date(@csv.location_id, current_visited_at)
+      v.update_column(:csv_id, @csv.id)
+
+      if Spreadsheet.clean_breeding_site_codes.include?(raw_breeding_code)
+        ins                    = Inspection.new
+        ins.inspected_at       = current_visited_at
+        ins.identification_type = Inspection::Types::NEGATIVE
+        ins.location_id        = location.id
+        ins.reporter_id        = @csv.user_id
+        ins.csv_id             = @csv.id
+        ins.position           = @csv.inspections.count
+        ins.save(:validate => false)
+
+        next
+      end
+
+
+
+      # We only update existing inspections if eliminated_at property is present.
+      # Otherwise, let's create a new inspection.
+      ins = @csv.inspections.find_by(:field_identifier => field_id, :visit_id => v.id) if field_id.present?
+      if ins.blank?
         # At this point, this isn't a report with a field identifier. Because
         # we're parsing the whole CSV, there are two options:
         # 1. This report has been previously created from a previous upload.
@@ -123,68 +182,43 @@ class SpreadsheetParsingWorker
         # 2. The other possibility is that this is a new report. In this case, we
         #    create it with all attributes, and leave the checking of eliminated_at
         #    further down.
-        r = @csv.reports.find_by_csv_uuid(uuid)
-        if r.blank?
-          r            = Report.new
-          r.field_identifier   = field_id
-          r.created_at         = current_visited_at
-          r.report             = description
-          r.breeding_site_id   = breeding_site.id if breeding_site.present?
-          r.protected          = row_content[:protected]
-          r.chemically_treated = row_content[:chemical]
-          r.larvae             = row_content[:larvae]
-          r.pupae              = row_content[:pupae]
-          r.location_id        = location.id
-          r.neighborhood_id    = @neighborhood.id
-          r.reporter_id        = @csv.user_id
-          r.csv_id             = @csv.id
-          r.csv_uuid           = uuid
-          r.eliminated_at      = eliminated_at
-          r.save(:validate => false)
+        ins = @csv.inspections.find_by_csv_uuid(uuid)
+        if ins.blank?
+          ins                    = Inspection.new
+          ins.field_identifier   = field_id
+          ins.inspected_at       = current_visited_at
+          ins.description        = description
+          ins.breeding_site_id   = breeding_site.id if breeding_site.present?
+          ins.protected          = row_content[:protected]
+          ins.chemically_treated = row_content[:chemical]
+          ins.larvae             = row_content[:larvae]
+          ins.pupae               = row_content[:pupae]
+          ins.identification_type = ins.original_status
+          ins.location_id        = location.id
+          ins.reporter_id        = @csv.user_id
+          ins.csv_id             = @csv.id
+          ins.csv_uuid           = uuid
+          ins.position           = @csv.inspections.count
+          ins.save(:validate => false)
         end
       end
 
-      # Create an inspection regardless if eliminated_at is present or not. This
-      # ensures that we have a 1-1 correspondence between a row and an inspection.
-      find_or_create_visit_and_inspection(@csv, current_visited_at, r)
+      if ins.present?
+        ins.visit_id = v.id
+        ins.csv_id   = @csv.id
+        ins.identification_type = ins.original_status
+        ins.position = @csv.inspections.count
+        ins.save(:validate => false)
+      end
 
-      # We create a special "followup" visit for reports with a field identifier.
-      # All other reports are assumed to be new.
+      # At this point,
       if eliminated_at.present?
-        r.eliminated_at = eliminated_at
-        r.save(:validate => false)
-
-        # Create an inspection whose position is dependent on the existing inspections
-        # associated with this report.
-        find_or_create_visit_and_elimination_inspection(@csv, eliminated_at, r)
+        ins.eliminated_at = eliminated_at
+        ins.save(:validate => false)
       end
     end
 
     @csv.parsed_at = Time.zone.now
     @csv.save
-  end
-
-  def find_or_create_visit_and_inspection(csv, date, report)
-    v = Visit.find_or_create_visit_for_location_id_and_date(csv.location_id, date)
-    v.update_column(:csv_id, csv.id)
-
-    ins = Inspection.find_by_visit_id_and_report_id(v.id, report.id)
-    ins = Inspection.new(:visit_id => v.id, :report_id => report.id) if ins.blank?
-    ins.csv_id              = csv.id
-    ins.identification_type = report.original_status
-    ins.position            = csv.inspections.count
-    ins.save
-  end
-
-  def find_or_create_visit_and_elimination_inspection(csv, date, report)
-    v = Visit.find_or_create_visit_for_location_id_and_date(csv.location_id, date)
-    v.update_column(:csv_id, csv.id)
-
-    ins = Inspection.find_by_visit_id_and_report_id_and_identification_type(v.id, report.id, Inspection::Types::NEGATIVE)
-    ins = Inspection.new(:visit_id => v.id, :report_id => report.id) if ins.blank?
-    ins.csv_id              = csv.id
-    ins.identification_type = Inspection::Types::NEGATIVE
-    ins.position            = csv.inspections.count
-    ins.save
   end
 end

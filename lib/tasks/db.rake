@@ -24,4 +24,37 @@ namespace :db do
       Rake::Task['db:migrate'].invoke
     end
   end
+
+  task :dump, [:db_url] => :environment do |t, args|
+    raise "You need to supply a Heroku URL by running heroku config:get DATABASE_URL -a denguetorpedo!" if args[:db_url].blank?
+
+    cmd = nil
+    with_config do |app, host, db, user|
+      cmd = "pg_dump --verbose --no-owner --no-acl --format=c #{args[:db_url]} > #{Rails.root}/db/#{db}.dump"
+    end
+    puts cmd
+    exec cmd
+  end
+
+  task :restore => :environment do |t, args|
+    cmd = nil
+    with_config do |app, host, db, user|
+      cmd = "pg_restore --clean --verbose --no-owner --no-acl --dbname #{db} #{Rails.root}/db/#{db}.dump"
+    end
+    puts cmd
+    exec cmd
+  end
+
+  #----------------------------------------------------------------------------
+
+  private
+
+  #----------------------------------------------------------------------------
+
+  def with_config
+    yield Rails.application.class.parent_name.underscore,
+      ActiveRecord::Base.connection_config[:host],
+      ActiveRecord::Base.connection_config[:database],
+      ActiveRecord::Base.connection_config[:username]
+  end
 end

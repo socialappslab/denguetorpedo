@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170318222754) do
+ActiveRecord::Schema.define(version: 20170624040429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -192,11 +192,35 @@ ActiveRecord::Schema.define(version: 20170318222754) do
     t.integer  "visit_id"
     t.integer  "report_id"
     t.integer  "identification_type"
-    t.integer  "position",            default: 0
+    t.integer  "position",                  default: 0
     t.integer  "csv_id"
     t.string   "source"
     t.datetime "last_synced_at"
     t.integer  "last_sync_seq"
+    t.integer  "reporter_id"
+    t.integer  "eliminator_id"
+    t.integer  "location_id"
+    t.integer  "breeding_site_id"
+    t.integer  "elimination_method_id"
+    t.text     "description"
+    t.boolean  "protected"
+    t.boolean  "chemically_treated"
+    t.boolean  "larvae"
+    t.boolean  "pupae"
+    t.string   "field_identifier"
+    t.string   "before_photo_file_name"
+    t.string   "before_photo_content_type"
+    t.integer  "before_photo_file_size"
+    t.datetime "before_photo_updated_at"
+    t.string   "after_photo_file_name"
+    t.string   "after_photo_content_type"
+    t.integer  "after_photo_file_size"
+    t.datetime "after_photo_updated_at"
+    t.datetime "inspected_at"
+    t.datetime "eliminated_at"
+    t.string   "csv_uuid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "likes", force: :cascade do |t|

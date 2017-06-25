@@ -16,16 +16,16 @@ of specific pages. These videos are compressed as .swf files in `/videos`
 directory.
 
 ## Getting Started
-(the section below is under update, email @animeshpathak or @dman7 if you are having problems)
-
-We strongly recommend Mac OS X or GNU/Linux (the below has been tested with XUbuntu) as your development environment.
-
-After `git clone` or `git checkout`, you need to do the following:
-* `bundle install`
-* `bundle exec rake db:migrate`
-* `bundle exec rake db:development:prepare`
-* `bundle exec foreman start`
-
+TODO TODO
 
 ## Database Architecture
 Conceptually, a `Visit` instance to some `Location` instance will generate many breeding site `Report`s. A `Report` instance defines the evolution of a breeding site and so will change over several `Visit`s. The `Inspection` instance defines the state of the breeding site at any given time by associating the `Report` with a `Visit` (and vice versa).
+
+## Moving from Report to Inspection
+As of June 23, 2017, we create a 1-1 association between Report and Inspection.
+This association means we're carefully setting different data on 2 different models, as can be observed in SpreadsheetParserWorker:
+
+https://github.com/socialappslab/denguetorpedo/blob/d3eb4573b8eaf869c75b10dff639d14e624ce6c7/app/workers/spreadsheet_parsing_worker.rb#L105-L149
+
+To simplify this and accelerate development, I propose we deprecate Report model
+in favor of Inspection. To achieve this, I propose we migrate the columns on Report to Inspection, and 

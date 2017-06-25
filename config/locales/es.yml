@@ -419,7 +419,7 @@ es:
         barrel_summary: Resumen de barriles
       navigation:
         visits: Visitas
-        locations: Lugares
+        locations: Casas
         heatmap: Mapa de actividad
         graphs: Gráficos
         sync: Sincronizar
@@ -614,21 +614,22 @@ es:
     statistics:
       table:
         title: Riesgo de Dengue, Zika y Chikungunya
-        sites: Lugares
-        clean_sites: Lugares verdes sin criaderos por mas de 14 dias
-        negative_sites: Lugares con criaderos eliminados o sin criaderos
-        positive_sites: Lugares con criaderos positivos
-        potential_sites: Lugares con criaderos potenciales
+        sites: Casas
+        clean_sites: Casas verdes sin criaderos por mas de 14 dias
+        negative_sites: Casas con criaderos eliminados o sin criaderos
+        positive_sites: Casas con criaderos positivos
+        potential_sites: Casas con criaderos potenciales
       chart:
         custom_date: "Escoja fecha"
         unit: Unidad
         disclaimer: "DengueChat enfoca sus acciones en la identificación y eliminación de barriles y otros recipientes de almacenamiento de agua como también de llantas. Un lugar puede ser contado doble si tiene criaderos positivos y también potenciales."
         title: Cambio en Riesgo en Tu Barrio de Dengue, Zika y Chikungunya
         time: Tiempo
-        percent_of_negative_sites: Lugares sin criaderos
-        percent_of_positive_sites: Lugares con criaderos positivos
-        percent_of_potential_sites: Lugares con criaderos potenciales
-        percent_of_green_sites: Porcentaje de lugares sin criaderos por mas de 14 dias
+        type: Tipo
+        percent_of_negative_sites: Casas sin criaderos
+        percent_of_positive_sites: Casas con criaderos positivos
+        percent_of_potential_sites: Casas con criaderos potenciales
+        percent_of_green_sites: Porcentaje de casas sin criaderos por mas de 14 dias
         filters:
           positive_inspection: "Positividad - inspección"
           potential_inspection: "Potencialidad - inspección"
@@ -639,8 +640,8 @@ es:
             one: "1 mes"
             other: "%{count} meses"
           percentages:
-            cumulative: Porcentaje acumulado relativo a todos los lugares visitados
-            daily: Porcentaje relativo a los lugares visitados en un dia
+            cumulative: Porcentaje acumulado relativo a todos los casas visitados
+            daily: Porcentaje relativo a los casas visitados en un dia
 
     user_mailer:
       password_reset:
