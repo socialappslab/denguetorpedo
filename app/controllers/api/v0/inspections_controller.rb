@@ -11,13 +11,16 @@ class API::V0::InspectionsController < API::V0::BaseController
     visit = Visit.find_by_id(params[:inspection][:visit_id])
 
     # Let's create an associated report.
-    r = Report.new(params[:inspection].slice(:chemically_treated, :larvae, :pupae, :protected, :breeding_site_id))
-    r.report          = params[:inspection][:location]
+    r = Inspection.new(params[:inspection].slice(:chemically_treated, :larvae, :pupae, :protected, :breeding_site_id))
+    r.description     = params[:inspection][:location]
     r.reporter_id     = @current_user.id
     r.location_id     = visit.location_id
-    r.neighborhood_id = @current_user.neighborhood_id
     r.before_photo    = prepare_base64_image_for_paperclip(params[:inspection][:before_photo]) if params[:inspection][:before_photo]
     r.source          = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
+    r.identification_type = r.original_status
+    r.position = visit.inspections.count + 1
+    r.visit    = visit
+    @inspection = r
 
     unless r.save
       raise API::V0::Error.new(r.errors.full_messages[0], 403)
@@ -25,13 +28,6 @@ class API::V0::InspectionsController < API::V0::BaseController
 
 
     # At this point, a report exists. Let's create the associated Inspection.
-
-    @inspection          = Inspection.new
-    @inspection.report   = r
-    @inspection.identification_type = r.original_status
-    @inspection.position = visit.inspections.count + 1
-    @inspection.visit    = visit
-    @inspection.source   = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
     if @inspection.save
       render :json => {}, :status => 200 and return
     else

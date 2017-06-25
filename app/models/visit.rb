@@ -106,14 +106,14 @@ class Visit < ActiveRecord::Base
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
     inspections_by_visit = {}
     # inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
-    inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
+    inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL").where(:visit_id => visits.pluck(:id)).select(:visit_id, :identification_type)
     inspections.map do |ins|
       inspections_by_visit[ins.visit_id] ||= {
         Inspection::Types::POSITIVE  => Set.new,
         Inspection::Types::POTENTIAL => Set.new,
         Inspection::Types::NEGATIVE  => Set.new
       }
-      inspections_by_visit[ins.visit_id][ins.identification_type].add(ins.report_id)
+      inspections_by_visit[ins.visit_id][ins.identification_type].add(ins.id)
     end
 
     # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
@@ -156,6 +156,72 @@ class Visit < ActiveRecord::Base
     end
     return time_series
   end
+
+
+  # #----------------------------------------------------------------------------
+  #
+  # # This method separates the location_ids into a visit date and, within that, into
+  # # identification type (positive, potential, negative).
+  # def self.segment_locations_by_date_and_type(location_ids, start_time, end_time, scale)
+  #   # NOTE: We *cannot* query by start_time here since we would be ignoring the full
+  #   # history of the locations. Instead, we do it at the end.
+  #   # visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
+  #   visits       = Visit.select("id, visited_at, location_id").where("csv_id IS NOT NULL").where(:location_id => location_ids).order("visited_at ASC")
+  #   return [] if visits.blank?
+  #
+  #   # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
+  #   inspections_by_visit = {}
+  #   # inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
+  #   inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
+  #   inspections.map do |ins|
+  #     inspections_by_visit[ins.visit_id] ||= {
+  #       Inspection::Types::POSITIVE  => Set.new,
+  #       Inspection::Types::POTENTIAL => Set.new,
+  #       Inspection::Types::NEGATIVE  => Set.new
+  #     }
+  #     inspections_by_visit[ins.visit_id][ins.identification_type].add(ins.report_id)
+  #   end
+  #
+  #   # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
+  #   time_series = []
+  #   visits.each do |visit|
+  #     # Identify and find a matching entry for the key we're using. If the key
+  #     # is not present in the time_series, create it.
+  #     # Why Set? Because set is a collection of unordered values with no duplicates.
+  #     # This saves us the time of removing duplicate location ids.
+  #     visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
+  #     series     = time_series.find {|stat| stat[:date] == visit_date}
+  #     if series.blank?
+  #       series = {:date => visit_date}
+  #       [:positive, :potential, :negative, :total].each { |key| series[key] = {:locations => Set.new} }
+  #       time_series << series
+  #     end
+  #
+  #     # Account for all locations by adding to :total
+  #     series[:total][:locations].add(visit.location_id)
+  #
+  #     # Add to :positive if at least one inspection is positive. Also add to
+  #     # :potential if at least one inspection is potential.
+  #     if visit_counts_by_type = inspections_by_visit[visit.id]
+  #       pos_reports = visit_counts_by_type[Inspection::Types::POSITIVE]
+  #       pot_reports = visit_counts_by_type[Inspection::Types::POTENTIAL]
+  #       series[:positive][:locations].add(visit.location_id)  if pos_reports.size > 0
+  #       series[:potential][:locations].add(visit.location_id) if pot_reports.size > 0
+  #     end
+  #
+  #     # Instead of tracking negative location by presence of N and by whether the negative locations are a
+  #     # superset of both positive locations and potential locations (as we were previously doing), we define
+  #     # a negative location as all locations that are neither positive nor potential.
+  #     series[:negative][:locations] = series[:total][:locations] - (series[:positive][:locations] + series[:potential][:locations])
+  #   end
+  #
+  #   time_series.each do |ts|
+  #     [:positive, :potential, :negative, :total].each do |key|
+  #       ts[key][:locations] = ts[key][:locations].to_a
+  #     end
+  #   end
+  #   return time_series
+  # end
 
   #----------------------------------------------------------------------------
 

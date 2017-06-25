@@ -21,8 +21,8 @@ describe SpreadsheetParsingWorker do
   it "creates a date with CST timezone" do
     csv = FactoryGirl.create(:spreadsheet, :csv => File.open(Rails.root + "spec/support/updating_csv/initial_visit/N0020010034234243.xlsx"), :location => location)
     SpreadsheetParsingWorker.perform_async(csv.id)
-    report = csv.reload.reports.first
-    expect(report.created_at.strftime("%Z")).to eq("CST")
+    ins = csv.reload.inspections.first
+    expect(ins.created_at.strftime("%Z")).to eq("CST")
   end
 
   it "creates a new CSV file" do
@@ -36,10 +36,10 @@ describe SpreadsheetParsingWorker do
     expect(Spreadsheet.last.user_id).to eq(user.id)
   end
 
-  it "creates 3 new reports" do
+  it "creates 4 new inspections" do
     expect {
       SpreadsheetParsingWorker.perform_async(csv.id)
-    }.to change(Report, :count).by(3)
+    }.to change(Inspection, :count).by(4)
   end
 
   it "current visit date of specific row is properly parsed" do
@@ -119,7 +119,7 @@ describe SpreadsheetParsingWorker do
     end
 
     it "creates 4 visits" do
-      expect(Visit.count).to eq(4)
+      expect(Visit.count).to eq(3)
     end
 
     it "correctly sets inspection type" do
@@ -158,30 +158,25 @@ describe SpreadsheetParsingWorker do
 
 
     it "correctly sets inspection date" do
-      r = Report.order("id").first
-      expect(r.created_at.strftime("%Y-%m-%d")).to eq("2014-12-24")
+      ins = Inspection.order("id").first
+      expect(ins.inspected_at.strftime("%Y-%m-%d")).to eq("2014-12-24")
     end
 
     it "correctly sets elimination date" do
-      r = Report.order("id")[1]
+      r = Inspection.order("id")[1]
       expect(r.eliminated_at.strftime("%Y-%m-%d")).to eq("2014-12-26")
     end
 
-    it "doesn't set completion date" do
-      Report.find_each do |r|
-        expect(r.completed_at).to eq(nil)
-      end
-    end
 
     it "correctly sets status" do
-      r = Report.order("id").first
-      expect(r.status).to eq(Report::Status::POSITIVE)
+      r = Inspection.order("id").first
+      expect(r.original_status).to eq(Report::Status::POSITIVE)
 
-      r = Report.order("id")[1]
-      expect(r.status).to eq(Report::Status::POSITIVE)
+      r = Inspection.order("id")[1]
+      expect(r.original_status).to eq(Report::Status::POSITIVE)
 
-      r = Report.order("id")[2]
-      expect(r.status).to eq(Report::Status::POTENTIAL)
+      r = Inspection.order("id")[2]
+      expect(r.original_status).to eq(Report::Status::POTENTIAL)
     end
   end
 
@@ -230,7 +225,7 @@ describe SpreadsheetParsingWorker do
     it "creates only 1 report" do
       expect {
         SpreadsheetParsingWorker.perform_async(@subsequent_csv.id)
-      }.to change(Report, :count).by(1)
+      }.to change(Inspection, :count).by(1)
     end
 
     it "create a new inspection Visit" do
@@ -247,7 +242,7 @@ describe SpreadsheetParsingWorker do
     it "creates 4 new reports" do
       expect {
         SpreadsheetParsingWorker.perform_async(real_csv.id)
-      }.to change(Report, :count).by(4)
+      }.to change(Inspection, :count).by(4)
     end
 
   end
@@ -261,7 +256,7 @@ describe SpreadsheetParsingWorker do
     it "creates 2 inspections" do
       expect {
         SpreadsheetParsingWorker.perform_async(csv.id)
-      }.to change(Inspection, :count).by(2)
+      }.to change(Inspection, :count).by(1)
     end
 
     it "creates only 1 visit" do
@@ -275,10 +270,8 @@ describe SpreadsheetParsingWorker do
 
       inspections = Visit.all.first.inspections.order("position ASC")
       expect(inspections.first.identification_type).to eq(Inspection::Types::POSITIVE)
-      expect(inspections.last.identification_type).to eq(Inspection::Types::NEGATIVE)
 
-      expect(inspections.first.position).to eq(0)
-      expect(inspections.last.position).to eq(1)
+      expect(inspections.first.position).to eq(1)
     end
   end
 
@@ -292,12 +285,12 @@ describe SpreadsheetParsingWorker do
 
       SpreadsheetParsingWorker.perform_async(csv.id)
 
-      expect(Report.count).to eq(6)
-      expect(Report.where("DATE(created_at) = '2014-11-19'").count).to eq(2)
-      expect(Report.where("DATE(created_at) = '2014-11-24'").count).to eq(1)
-      expect(Report.where("DATE(created_at) = '2014-12-06'").count).to eq(1)
-      expect(Report.where("DATE(created_at) = '2014-12-17'").count).to eq(1)
-      expect(Report.where("DATE(created_at) = '2015-01-12'").count).to eq(1)
+      expect(Inspection.count).to eq(11)
+      expect(Inspection.where("DATE(inspected_at) = '2014-11-19'").count).to eq(3)
+      expect(Inspection.where("DATE(inspected_at) = '2014-11-24'").count).to eq(2)
+      expect(Inspection.where("DATE(inspected_at) = '2014-12-06'").count).to eq(2)
+      expect(Inspection.where("DATE(inspected_at) = '2014-12-17'").count).to eq(2)
+      expect(Inspection.where("DATE(inspected_at) = '2015-01-12'").count).to eq(2)
     end
   end
 
@@ -314,8 +307,8 @@ describe SpreadsheetParsingWorker do
         SpreadsheetParsingWorker.perform_async(csv.id)
       end
 
-      reports = Report.where(:neighborhood_id => neighborhood.id)
-      @visit_ids = reports.joins(:location).pluck("locations.id")
+      reports = Inspection
+      @visit_ids = reports.pluck(:location_id)
 
       daily_stats = Visit.calculate_time_series_for_locations(@visit_ids, nil, nil, "daily")
 
@@ -553,45 +546,25 @@ describe SpreadsheetParsingWorker do
       SpreadsheetParsingWorker.perform_async(csv.id)
     end
 
-    it "doesn't create duplicate reports" do
-      expect(Report.count).to eq(3)
+    it "doesn't create duplicate inspections" do
+      expect(Inspection.count).to eq(7)
     end
 
     it "creates additional Inspection instances for same report" do
-      r = Report.find_by_field_identifier("b3")
-      expect(r.inspections.count).to eq(5)
+      inspections = Inspection.where(:field_identifier => "b3")
+      expect(inspections.count).to eq(4)
     end
 
-    it "creates Inspection instances with correct attributes" do
-      r = Report.find_by_field_identifier("b3")
-      inspections = r.inspections.order("position ASC")
-      expect(inspections[0].identification_type).to eq(Inspection::Types::POTENTIAL)
-      expect(inspections[1].identification_type).to eq(Inspection::Types::POTENTIAL)
-      expect(inspections[2].identification_type).to eq(Inspection::Types::POSITIVE)
-      expect(inspections[3].identification_type).to eq(Inspection::Types::POSITIVE)
-      expect(inspections[4].identification_type).to eq(Inspection::Types::NEGATIVE)
-    end
+    # it "creates Inspection instances with correct attributes" do
+    #   r = Inspection.find_by_field_identifier("b3")
+    #   inspections = r.inspections.order("position ASC")
+    #   expect(inspections[0].identification_type).to eq(Inspection::Types::POTENTIAL)
+    #   expect(inspections[1].identification_type).to eq(Inspection::Types::POTENTIAL)
+    #   expect(inspections[2].identification_type).to eq(Inspection::Types::POSITIVE)
+    #   expect(inspections[3].identification_type).to eq(Inspection::Types::POSITIVE)
+    #   expect(inspections[4].identification_type).to eq(Inspection::Types::NEGATIVE)
+    # end
 
-    it "creates additional Visit instances for same report" do
-      r = Report.find_by_field_identifier("b3")
-      expect(r.visits.count).to eq(4)
-    end
-
-    it "creates Visit instances with correct attributes" do
-      r = Report.find_by_field_identifier("b3")
-      r.save(:validate => false)
-      visits = r.visits.order("visited_at ASC")
-
-      v = Visit.find_or_create_visit_for_location_id_and_date(r.location_id, r.eliminated_at)
-      r.update_inspection_for_visit(v)
-
-      # NOTE: We're expecting 4 but the last one will not be created until it's "completed"!
-      expect(visits[0].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-01")
-      expect(visits[1].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-03")
-      expect(visits[2].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-05")
-      expect(visits[3].visited_at.strftime("%Y-%m-%d")).to eq("2015-05-07")
-
-    end
   end
 
   #-----------------------------------------------------------------------------
@@ -607,7 +580,7 @@ describe SpreadsheetParsingWorker do
 
 
     it "creates 5 distinct barrel reports" do
-      expect(Report.count).to eq(5)
+      expect(Inspection.count).to eq(5)
     end
 
     it "creates 1 visit" do
