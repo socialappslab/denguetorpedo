@@ -1,75 +1,5 @@
 (function() {
 
-  var googleChartOptions = function(chartID, data) {
-    var options =  {
-      annotations: {
-        alwaysOutside: true
-      },
-      width: 500,
-      height: 350,
-      chartArea: {
-        left: 50,
-        right: 50,
-        top: 50,
-        bottom: 50,
-        width: "90%",
-        height: "100%"
-      },
-      hAxis: {
-        showTextEvery: parseInt(data.getNumberOfRows() / 4)
-      },
-      vAxis: {
-        format: "#\'%\'"
-      },
-      legend: {
-        position: "none",
-        alignment: "start",
-        textStyle: {
-          fontSize: "15"
-        }
-      },
-      colors: ["#e74c3c", "#f1c40f", "#2ecc71"],
-      tooltip: { isHtml: true }
-    };
-    return options;
-  }
-
-  function drawChart(chartID, rawData, unit) {
-    var dataTable    = new google.visualization.DataTable();
-
-    // Create the type columns for the table.
-    var columnNames = rawData.shift();
-    dataTable.addColumn("string", columnNames[0])
-    for (var i = 1; i < columnNames.length; i++) {
-      dataTable.addColumn("number", columnNames[i]);
-      dataTable.addColumn({type: 'string', role: 'annotation'});
-      dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
-    }
-
-    // Iterate over the raw data.
-    for (var i = 0; i < rawData.length; i++) {
-      var rowIndex = dataTable.addRow( [
-        rawData[i].date,
-        rawData[i].positive.percent,
-        customAnnotationForPercent(rawData[i].positive.percent, unit),
-        customToolTipForData(rawData[i]),
-        rawData[i].potential.percent,
-        customAnnotationForPercent(rawData[i].potential.percent, unit),
-        customToolTipForData(rawData[i]),
-        rawData[i].negative.percent,
-        customAnnotationForPercent(rawData[i].negative.percent, unit),
-        customToolTipForData(rawData[i])
-      ] )
-      dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
-    }
-
-
-    var view    = new google.visualization.DataView(dataTable);
-    var options = googleChartOptions(chartID, dataTable)
-    var chart   = new google.visualization.ColumnChart(document.getElementById(chartID));
-    chart.draw(view, options);
-  }
-
   // Let's not display the annotations for now.
   var customAnnotationForPercent = function(percent, unit) {
     if (unit == "monthly")
@@ -93,22 +23,20 @@
   var chartCtrl = function ($scope, $http, $attrs) {
     $scope.chartLoading = false;
     $scope.noChartData  = false;
-    $scope.chartOptions = {"percentages": "monthly"}
-
+    $scope.state = {showTable: false}
+    $scope.options       = {neighborhood_id: $attrs.neighborhoodId, unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true};
     $scope.refreshChartWithParams = function() {
       $scope.chartLoading = true;
 
-      var params = {};
-      params.neighborhood_id =  $attrs.neighborhoodId;
-      params.percentages     = $scope.chartOptions.percentages;
-
-      var ajax = $http({url: $attrs.path, method: "GET", params: params });
+      var ajax = $http({url: $attrs.path, method: "GET", params: $scope.options });
       ajax.success(function(response) {
-        if (response.data.length <= 1) {
+        $scope.timeseries = response.timeseries
+
+        if (response.timeseries.length <= 1) {
           $scope.noChartData = true;
         } else {
           $scope.noChartData = false;
-          drawChart("timeseries-chart", response.data, $scope.chartOptions.percentages)
+          drawChart("timeseries-chart", response, $scope.options.unit)
         }
       });
       ajax.error(function(response) {
@@ -120,8 +48,139 @@
     }
 
     $scope.refreshChartWithParams();
-    $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
-    {
+
+
+    function drawChart(chartID, rawData, unit) {
+      var dataTable    = new google.visualization.DataTable();
+
+      // Create the type columns for the table.
+      dataTable.addColumn("string", rawData.header.time);
+
+      if ($scope.options.positive) {
+        dataTable.addColumn("number", rawData.header.positive);
+        dataTable.addColumn({type: 'string', role: 'annotation'});
+        dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+      }
+
+      if ($scope.options.potential) {
+        dataTable.addColumn("number", rawData.header.potential);
+        dataTable.addColumn({type: 'string', role: 'annotation'});
+        dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+      }
+
+      if ($scope.options.negative) {
+        dataTable.addColumn("number", rawData.header.negative);
+        dataTable.addColumn({type: 'string', role: 'annotation'});
+        dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+      }
+
+      // Iterate over the raw data.
+      rawData = rawData.timeseries
+      for (var i = 0; i < rawData.length; i++) {
+        row = [
+          rawData[i].date
+        ]
+
+        if ($scope.options.positive) {
+          row = row.concat([
+            rawData[i].positive.percent,
+            customAnnotationForPercent(rawData[i].positive.percent, unit),
+            customToolTipForData(rawData[i])
+          ])
+        }
+
+        if ($scope.options.potential) {
+          row = row.concat([
+            rawData[i].potential.percent,
+            customAnnotationForPercent(rawData[i].potential.percent, unit),
+            customToolTipForData(rawData[i])
+          ])
+        }
+
+        if ($scope.options.negative) {
+          row = row.concat([
+            rawData[i].negative.percent,
+            customAnnotationForPercent(rawData[i].negative.percent, unit),
+            customToolTipForData(rawData[i])
+          ])
+        }
+
+        var rowIndex = dataTable.addRow(row)
+        console.log(row)
+        dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
+      }
+
+
+      var view    = new google.visualization.DataView(dataTable);
+      var options = googleChartOptions(chartID, dataTable)
+      var chart   = new google.visualization.ColumnChart(document.getElementById(chartID));
+      chart.draw(view, options);
+    }
+
+    var googleChartOptions = function(chartID, data) {
+      colors = []
+      if ($scope.options.positive)
+        colors.push("#e74c3c")
+      if ($scope.options.potential)
+        colors.push("#f1c40f")
+      if ($scope.options.negative)
+        colors.push("#2ecc71")
+
+
+      var options =  {
+        annotations: {
+          alwaysOutside: true
+        },
+        width: 500,
+        height: 350,
+        chartArea: {
+          left: 50,
+          right: 50,
+          top: 50,
+          bottom: 50,
+          width: "90%",
+          height: "100%"
+        },
+        hAxis: {
+          showTextEvery: parseInt(data.getNumberOfRows() / 4)
+        },
+        vAxis: {
+          format: "#\'%\'"
+        },
+        legend: {
+          position: "none",
+          alignment: "start",
+          textStyle: {
+            fontSize: "15"
+          }
+        },
+        colors: colors,
+        tooltip: { isHtml: true }
+      };
+      return options;
+    }
+
+
+
+    $scope.$watch("options.unit", function(newValue, oldValue) {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams();
+    });
+
+    $scope.$watch("options.positive", function(newValue, oldValue) {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams();
+    });
+
+    $scope.$watch("options.potential", function(newValue, oldValue) {
+      if (newValue === oldValue)
+        return;
+      $scope.refreshChartWithParams();
+    });
+
+    $scope.$watch("options.negative", function(newValue, oldValue) {
       if (newValue === oldValue)
         return;
       $scope.refreshChartWithParams();

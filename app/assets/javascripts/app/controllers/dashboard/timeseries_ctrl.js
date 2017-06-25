@@ -2,7 +2,7 @@ var ctrl = function ($scope, $http, $attrs) {
   $scope.loading       = false;
   $scope.neighborhoods = [];
   $scope.timeseries    = [];
-  $scope.options       = {unit: "monthly", timeframe: "6"};
+  $scope.options       = {unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true};
   $scope.customDateRange = false;
   $scope.chartLoading = false;
   $scope.noChartData  = false;
@@ -88,6 +88,15 @@ var ctrl = function ($scope, $http, $attrs) {
 
 
   var googleChartOptions = function(chartID, data) {
+    colors = []
+    if ($scope.options.positive)
+      colors.push("#e74c3c")
+    if ($scope.options.potential)
+      colors.push("#f1c40f")
+    if ($scope.options.negative)
+      colors.push("#2ecc71")
+
+
     var options =  {
       annotations: {
         alwaysOutside: true
@@ -115,7 +124,7 @@ var ctrl = function ($scope, $http, $attrs) {
           fontSize: "15"
         }
       },
-      colors: ["#e74c3c", "#f1c40f", "#2ecc71"],
+      colors: colors,
       tooltip: { isHtml: true }
     };
     return options;
@@ -125,10 +134,28 @@ var ctrl = function ($scope, $http, $attrs) {
     var dataTable    = new google.visualization.DataTable();
 
     // Create the type columns for the table.
-    var columnNames = rawData.header;
-    dataTable.addColumn("string", columnNames[0])
-    for (var i = 1; i < columnNames.length; i++) {
-      dataTable.addColumn("number", columnNames[i]);
+    // var columnNames = ;
+    // dataTable.addColumn("string", columnNames[0])
+    // for (var i = 1; i < columnNames.length; i++) {
+    //
+    // }
+
+    dataTable.addColumn("string", rawData.header.time);
+
+    if ($scope.options.positive) {
+      dataTable.addColumn("number", rawData.header.positive);
+      dataTable.addColumn({type: 'string', role: 'annotation'});
+      dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+    }
+
+    if ($scope.options.potential) {
+      dataTable.addColumn("number", rawData.header.potential);
+      dataTable.addColumn({type: 'string', role: 'annotation'});
+      dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+    }
+
+    if ($scope.options.negative) {
+      dataTable.addColumn("number", rawData.header.negative);
       dataTable.addColumn({type: 'string', role: 'annotation'});
       dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
     }
@@ -136,21 +163,37 @@ var ctrl = function ($scope, $http, $attrs) {
     // Iterate over the raw data.
     rawData = rawData.timeseries
     for (var i = 0; i < rawData.length; i++) {
-      var rowIndex = dataTable.addRow( [
-        rawData[i].date,
-        rawData[i].positive.percent,
-        customAnnotationForPercent(rawData[i].positive.percent, unit),
-        customToolTipForData(rawData[i]),
-        rawData[i].potential.percent,
-        customAnnotationForPercent(rawData[i].potential.percent, unit),
-        customToolTipForData(rawData[i]),
-        rawData[i].negative.percent,
-        customAnnotationForPercent(rawData[i].negative.percent, unit),
-        customToolTipForData(rawData[i])
-      ] )
+      row = [
+        rawData[i].date
+      ]
+
+      if ($scope.options.positive) {
+        row = row.concat([
+          rawData[i].positive.percent,
+          customAnnotationForPercent(rawData[i].positive.percent, unit),
+          customToolTipForData(rawData[i])
+        ])
+      }
+
+      if ($scope.options.potential) {
+        row = row.concat([
+          rawData[i].potential.percent,
+          customAnnotationForPercent(rawData[i].potential.percent, unit),
+          customToolTipForData(rawData[i])
+        ])
+      }
+
+      if ($scope.options.negative) {
+        row = row.concat([
+          rawData[i].negative.percent,
+          customAnnotationForPercent(rawData[i].negative.percent, unit),
+          customToolTipForData(rawData[i])
+        ])
+      }
+
+      var rowIndex = dataTable.addRow( row )
       dataTable.setRowProperty(rowIndex, "rowData", rawData[i]);
     }
-
 
     var view    = new google.visualization.DataView(dataTable);
     var options = googleChartOptions(chartID, dataTable)
@@ -176,43 +219,6 @@ var ctrl = function ($scope, $http, $attrs) {
     s += "</tbody></table>"
     return s;
   }
-
-
-
-
-    // $scope.refreshChartWithParams = function() {
-    //   $scope.chartLoading = true;
-    //
-    //   var params = {};
-    //   params.neighborhood_id =  $attrs.neighborhoodId;
-    //   params.percentages     = $scope.chartOptions.percentages;
-    //
-    //   var ajax = $http({url: $attrs.path, method: "GET", params: params });
-    //   ajax.success(function(response) {
-    //     if (response.data.length <= 1) {
-    //       $scope.noChartData = true;
-    //     } else {
-    //       $scope.noChartData = false;
-    //       drawChart("timeseries-chart", response.data, $scope.chartOptions.percentages)
-    //     }
-    //   });
-    //   ajax.error(function(response) {
-    //     $scope.chartLoading = false;
-    //   });
-    //   ajax.then(function(response) {
-    //     $scope.chartLoading = false;
-    //   });
-    // }
-    //
-    // $scope.refreshChartWithParams();
-    // $scope.$watch("chartOptions.percentages", function(newValue, oldValue)
-    // {
-    //   if (newValue === oldValue)
-    //     return;
-    //   $scope.refreshChartWithParams();
-    // });
-    //
-
 
 };
 
