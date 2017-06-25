@@ -32,6 +32,9 @@ class API::V0::ReportsController < API::V0::BaseController
   # POST /api/v0/reports
 
   def create
+    raise API::V0::Error.new("We've disabled creating reports for now!", 403)
+
+    # TODO: Deprecate
     paperclip_image = nil
     if params[:report][:before_photo]
       base64_image = params[:report][:before_photo]
