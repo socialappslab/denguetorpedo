@@ -186,8 +186,7 @@ class API::V0::SyncController < API::V0::BaseController
       elimination_method = p_params[:report].delete(:elimination_method)
 
       if id.present? && @inspection = Inspection.find_by_id(id)
-        @report = @inspection.report
-        @report.breeding_site_id = breeding_site[:id]
+        @inspection.breeding_site_id = breeding_site[:id]
 
         if p_params[:report][:before_photo].present? && p_params[:report][:before_photo].exclude?("base64")
           p_params[:report].delete(:before_photo)
@@ -196,21 +195,18 @@ class API::V0::SyncController < API::V0::BaseController
           p_params[:report].delete(:after_photo)
         end
 
-        @report.attributes = p_params[:report]
-        @report.save(:validate => false)
+        # TODO: This may be buggy.
+        @inspection.attributes.merge!(p_params[:report])
+        @inspection.identification_type = @inspection.status
+        @inspection.source = "mobile"
+
+        @inspection.save(:validate => false)
 
         if p_params[:report][:eliminated_at].present?
           t = Time.zone.parse(p_params[:report][:eliminated_at])
-          @report.eliminated_at         = t
-          @report.elimination_method_id = elimination_method[:id]
-
-
-          # Create the elimination inspection.
-          ins = Inspection.new(:visit_id => @inspection.visit_id, :report_id => @inspection.report_id)
-          ins.source              = "mobile"
-          ins.identification_type = Inspection::Types::NEGATIVE
-          ins.position            = @inspection.position + 1
-          ins.save
+          @inspection.eliminated_at         = t
+          @inspection.elimination_method_id = elimination_method[:id]
+          @inspection.save(:validate => false)
         end
       else
 
@@ -222,17 +218,14 @@ class API::V0::SyncController < API::V0::BaseController
         end
 
         # At this point, the visit exists.
-        @report = Report.new(p_params[:report])
-        @report.source = "mobile"
-        @report.breeding_site_id = breeding_site[:id]
-        @report.last_synced_at = @last
-        @report.save(:validate => false)
-
-        # Create the corresponding inspection.
-        @inspection = Inspection.new(:report_id => @report.id, :visit_id => @visit.id)
+        @inspection = Inspection.new(p_params[:report])
+        @inspection.source = "mobile"
+        @inspection.breeding_site_id = breeding_site[:id]
+        @inspection.last_synced_at = @last
         @inspection.identification_type = @report.original_status
-        @inspection.source = "mobile" # Right now, this API endpoint is only used by our mobile endpoint.
-        @inspection.save
+        @inspection.visit_id = @visit.id
+        @inspection.source = "mobile"
+        @inspection.save(:validate => false)
       end
     end
 
