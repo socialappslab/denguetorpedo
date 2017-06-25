@@ -56,6 +56,7 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
+    @statistics = statistics
     respond_to do |format|
       format.csv do
         filename = neighborhoods.map {|n| n.name.gsub(" ", "_").downcase}.join("_") + "_visita_datos.csv"
@@ -63,7 +64,7 @@ class API::V0::GraphsController < API::V0::BaseController
       end
 
       format.json do
-        render :json => statistics.as_json, :status => 200 and return
+        render "api/v0/graph/timeseries" and return
       end
     end
 
