@@ -362,3 +362,9 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   web-console (~> 2.0)
   yuicompressor
+
+RUBY VERSION
+   ruby 2.1.2p95
+
+BUNDLED WITH
+   1.15.1
