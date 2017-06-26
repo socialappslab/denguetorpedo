@@ -43,6 +43,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
+
+
   #----------------------------------------------------------------------------
 
   rescue_from CanCan::AccessDenied do |exception|
