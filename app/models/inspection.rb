@@ -153,6 +153,27 @@ class Inspection < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def breeding_site_picture
+    if self.before_photo_file_name.nil?
+      return nil
+    end
+
+    return self.before_photo.url(:medium)
+  end
+
+  #----------------------------------------------------------------------------
+
+  def elimination_method_picture
+    if self.after_photo_file_name.nil?
+      return nil
+    end
+
+    return self.after_photo.url(:medium)
+  end
+
+
+  #----------------------------------------------------------------------------
+
   private
 
   # Since the CSV report doesn't encode the *time of day*, we
