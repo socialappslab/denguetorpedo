@@ -12,7 +12,10 @@ class City < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  has_many   :neighborhoods
+  has_many :neighborhoods
+  has_many :city_blocks
+  has_many :locations
+  has_many :districts
 
   #----------------------------------------------------------------------------
 

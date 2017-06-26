@@ -5,12 +5,14 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  validates :address,         :presence => true
-  validates :neighborhood_id, :presence => true
+  validates_presence_of :address, :neighborhood_id, :city_id
 
   #----------------------------------------------------------------------------
 
   belongs_to :neighborhood
+  belongs_to :district
+  belongs_to :city
+  belongs_to :city_block
   has_many :reports, :dependent => :destroy
   has_many :visits,  :dependent => :destroy
 
