@@ -1,0 +1,47 @@
+.container
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-body
+          - if @selected_membership.admin?
+            = form_for(@organization) do |f|
+              .form-group
+                %p.bold
+                  = f.label :name
+                = f.text_field :name, :class => "form-control"
+
+              .form-group
+                = button_tag :type => "submit", :class => "btn btn-success btn-large col-md-12 submit-button" do
+                  %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+                  = I18n.t("views.buttons.submit")
+            %hr
+
+          .row
+            .col-xs-6.text-center
+              %h1
+                = @organization.users.count
+              %p
+                = I18n.t("dashboard.settings.sections.users")
+            .col-xs-6.text-center
+              %h1
+                = @organization.teams.count
+              %p
+                = I18n.t("dashboard.settings.sections.teams")
+
+        -# %ul
+        -#   %li.link
+        -#     = link_to I18n.t("views.coordinator.register_user"), new_coordinator_user_path
+        -#   %li.link
+        -#     = link_to I18n.t("views.coordinator.manage_users"), coordinator_users_path
+        -#   %li.link
+        -#     = link_to I18n.t("views.coordinator.manage_teams"), coordinator_teams_path
+        -#   -# %li.link
+        -#   -#   = link_to I18n.t("views.admin.register_prize"), new_prize_path
+        -#   %li.link
+        -#     = link_to I18n.t("views.coordinator.new_news"), new_coordinator_notice_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.edit_prize"), premios_admin_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.edit_feedback"), feedbacks_path
+          -# %li.link
+          -#   = link_to I18n.t("views.admin.edit_report"), breeding_sites_path
