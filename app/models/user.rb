@@ -280,8 +280,9 @@ class User < ActiveRecord::Base
 
   def picture
     if self.profile_photo_file_name.nil?
-      return "default_images/default_sponsor_image.jpg" if self.role == User::Types::SPONSOR
-      return "default_images/profile_default_image.png"
+      email = self.email || (self.username + "@mailinator.com")
+      gravatar_id = Digest::MD5.hexdigest(email)
+      return "https://gravatar.com/avatar/#{gravatar_id}.png?r=pg&s=80&d=retro"
     end
 
     return self.profile_photo.url(:large)
