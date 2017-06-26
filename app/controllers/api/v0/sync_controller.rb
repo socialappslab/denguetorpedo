@@ -224,7 +224,7 @@ class API::V0::SyncController < API::V0::BaseController
         @inspection.source = "mobile"
         @inspection.breeding_site_id = breeding_site[:id]
         @inspection.last_synced_at = @last
-        @inspection.identification_type = @report.original_status
+        @inspection.identification_type = @inspection.original_status
         @inspection.visit_id = @visit.id
         @inspection.source = "mobile"
         @inspection.save(:validate => false)
