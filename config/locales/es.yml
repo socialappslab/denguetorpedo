@@ -28,6 +28,8 @@ es:
     breeding_site_id: Tipo de criadero
   activerecord:
     models:
+      organization:
+        name: "Organización"
       report:
         one: Criadero
         other: Criaderos

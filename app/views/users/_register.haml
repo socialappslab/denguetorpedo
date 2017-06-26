@@ -1,12 +1,12 @@
 = form_for(@user) do |f|
   .form-group
-    %p.form-label
+    %p.bold
       = f.label :name
     = f.text_field :name, :class => "form-control"
 
 
   .form-group
-    %p.form-label
+    %p.bold
       = f.label :username
     .input-group
       %span.input-group-addon @
@@ -14,19 +14,25 @@
 
 
   .form-group
-    %p.form-label
+    %p.bold
       = f.label :password
     = f.password_field :password, :class => "form-control"
 
   .form-group
-    %p.form-label
+    %p.bold
       = f.label :password_confirmation
     = f.password_field :password_confirmation, :class => "form-control"
 
   .form-group
-    %p.form-label
+    %p.bold
+      = label_tag :organization_id, I18n.t("activerecord.models.organization.name")
+    = select_tag :organization_id, options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control"
+
+
+  .form-group
+    %p.bold
       = f.label :neighborhood_id
-    = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, { :prompt => I18n.t("attributes.neighborhood_id") }, :class => "form-control"
+    = f.select :neighborhood_id, Neighborhood.all.map { |n| [n.name, n.id] }, {}, :class => "form-control"
 
   .form-group
     = button_tag :type => "submit", :class => "btn btn-success btn-large col-md-12 submit-button" do

@@ -57,6 +57,10 @@ class ApplicationController < ActionController::Base
     I18n.locale = :en
   end
 
+  def identify_selected_membership
+    @selected_membership = current_user.selected_membership()
+  end
+
   #----------------------------------------------------------------------------
 
   def set_csrf_cookie_for_ng
