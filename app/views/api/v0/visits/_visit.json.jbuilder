@@ -9,11 +9,26 @@ json.inspections visit.inspections.includes(:report).order("position ASC") do |i
   json.(ins, :id, :position, :identification_type)
   json.color Inspection.color_for_inspection_status[ins.identification_type]
 
-  json.created_at ins.report.created_at
+  r = ins
+  json.set! :report do
+    json.(r, :field_identifier, :eliminated_at, :description, :protected, :chemically_treated, :larvae, :pupae)
 
-  if r = ins.report && r.try(:breeding_site)
-    json.set! :report do
-      json.partial! "api/v0/sync/report", :r => r
+    json.report r.description
+
+    json.before_photo r.breeding_site_picture
+    json.after_photo  r.elimination_method_picture
+
+    json.breeding_site do
+      json.(r.breeding_site, :id, :code)
+      json.description r.breeding_site.description_in_es
     end
+
+    if r.elimination_method.present?
+      json.elimination_method do
+        json.(r.elimination_method, :id)
+        json.description r.elimination_method.description_in_es
+      end
+    end
+
   end
 end
