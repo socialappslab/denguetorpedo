@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class PasswordResetsController < ApplicationController
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /password_resets/new
