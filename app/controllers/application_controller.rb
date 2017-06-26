@@ -63,6 +63,12 @@ class ApplicationController < ActionController::Base
     @selected_membership = current_user.selected_membership()
   end
 
+  # See: https://github.com/elabs/pundit#customize-pundit-user
+  def pundit_user
+    @selected_membership || current_user
+  end
+
+
   #----------------------------------------------------------------------------
 
   def set_csrf_cookie_for_ng

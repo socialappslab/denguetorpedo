@@ -50,4 +50,11 @@ namespace :cleanup do
 
     org2 = Organization.find_or_create_by(:name => "AMOS")
   end
+
+  task :associate_teams_to_org => :environment do |t|
+    org = Organization.find_or_create_by(:name => "Instituto de Ciencias Sostenibles")
+    Team.find_each do |team|
+      team.update_column(:organization_id, org.id)
+    end
+  end
 end
