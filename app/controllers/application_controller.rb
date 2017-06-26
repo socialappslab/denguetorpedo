@@ -69,6 +69,10 @@ class ApplicationController < ActionController::Base
     @selected_membership || current_user
   end
 
+  def calculate_header_variables
+    @all_neighborhoods = Neighborhood.order("name ASC")
+    @all_cities        = City.order("name ASC")
+  end
 
   #----------------------------------------------------------------------------
 

@@ -8,6 +8,7 @@ class OrganizationsController < ApplicationController
   before_filter :identify_selected_membership
   before_filter :update_breadcrumbs
   after_filter :verify_authorized
+  before_action :calculate_header_variables
 
 
   #----------------------------------------------------------------------------
