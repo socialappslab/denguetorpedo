@@ -2,6 +2,10 @@
 require 'rack/test'
 
 FactoryGirl.define do
+  factory :organization do
+    name "SSI"
+  end
+
 	factory :breeding_site do
 		description_in_pt "Test"
 		description_in_es "Test"
