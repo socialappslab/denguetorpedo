@@ -220,7 +220,8 @@ class API::V0::SyncController < API::V0::BaseController
         end
 
         # At this point, the visit exists.
-        params = p_params[:report].delete(:report)
+        params = p_params[:report]
+        params.delete(:report)
         @inspection = Inspection.new(params)
         @inspection.source = "mobile"
         @inspection.breeding_site_id = breeding_site[:id]
