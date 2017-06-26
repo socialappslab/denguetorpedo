@@ -30,9 +30,10 @@
 
       var ajax = $http({url: $attrs.path, method: "GET", params: $scope.options });
       ajax.success(function(response) {
+        console.log(response)
         $scope.timeseries = response.timeseries
 
-        if (response.timeseries.length <= 1) {
+        if (response.timeseries.length < 1) {
           $scope.noChartData = true;
         } else {
           $scope.noChartData = false;
