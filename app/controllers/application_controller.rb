@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_action :current_user
+  before_action :identify_selected_membership
   before_action :set_locale
   before_action :get_new_notifications
 
@@ -60,7 +61,7 @@ class ApplicationController < ActionController::Base
   end
 
   def identify_selected_membership
-    @selected_membership = current_user.selected_membership()
+    @selected_membership = @current_user.selected_membership() if @current_user.present?
   end
 
   # See: https://github.com/elabs/pundit#customize-pundit-user
