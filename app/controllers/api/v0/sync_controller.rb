@@ -180,32 +180,28 @@ class API::V0::SyncController < API::V0::BaseController
       p_params = result["doc"].with_indifferent_access
       id       = p_params[:id]
 
-      # If the report is blank then continue.
-      next if p_params[:report].blank?
-
-
-      breeding_site      = p_params[:report].delete(:breeding_site)
-      elimination_method = p_params[:report].delete(:elimination_method)
+      breeding_site      = p_params.delete(:breeding_site)
+      elimination_method = p_params.delete(:elimination_method)
 
       if id.present? && @inspection = Inspection.find_by_id(id)
         @inspection.breeding_site_id = breeding_site[:id]
 
-        if p_params[:report][:before_photo].present? && p_params[:report][:before_photo].exclude?("base64")
-          p_params[:report].delete(:before_photo)
+        if p_params[:before_photo].present? && p_params[:before_photo].exclude?("base64")
+          p_params.delete(:before_photo)
         end
-        if p_params[:report][:after_photo].present? && p_params[:report][:after_photo].exclude?("base64")
-          p_params[:report].delete(:after_photo)
+        if p_params[:after_photo].present? && p_params[:after_photo].exclude?("base64")
+          p_params.delete(:after_photo)
         end
 
         # TODO: This may be buggy.
-        @inspection.attributes.merge!(p_params[:report])
+        @inspection.attributes.merge!(p_params)
         @inspection.identification_type = @inspection.status
         @inspection.source = "mobile"
 
         @inspection.save(:validate => false)
 
-        if p_params[:report][:eliminated_at].present?
-          t = Time.zone.parse(p_params[:report][:eliminated_at])
+        if p_params[:eliminated_at].present?
+          t = Time.zone.parse(p_params[:eliminated_at])
           @inspection.eliminated_at         = t
           @inspection.elimination_method_id = elimination_method[:id]
           @inspection.save(:validate => false)
@@ -220,9 +216,8 @@ class API::V0::SyncController < API::V0::BaseController
         end
 
         # At this point, the visit exists.
-        params = p_params[:report]
-        params.delete(:report)
-        @inspection = Inspection.new(params)
+        p_params.delete(:report)
+        @inspection = Inspection.new(p_params)
         @inspection.source = "mobile"
         @inspection.breeding_site_id = breeding_site[:id]
         @inspection.last_synced_at = @last
@@ -231,12 +226,14 @@ class API::V0::SyncController < API::V0::BaseController
         @inspection.source = "mobile"
         @inspection.save(:validate => false)
       end
+
+      # At this point, all measurements have saved. Let's update the column.
+      @last_seq       = changes_params[:last_seq]
+      @last_synced_at = Time.now.utc
+      @inspection.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
     end
 
-    # At this point, all measurements have saved. Let's update the column.
-    @last_seq       = changes_params[:last_seq]
-    @last_synced_at = Time.now.utc
-    @inspection.update_columns({:last_synced_at => @last_synced_at, :last_sync_seq => @last_seq})
+
   end
 
 
