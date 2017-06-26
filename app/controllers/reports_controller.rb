@@ -9,6 +9,7 @@ class ReportsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen,        :only   => [:index]
   before_filter :ensure_coordinator,        :only   => [:coordinator_edit, :coordinator_update]
   before_filter :update_breadcrumb,         :except => [:like, :comment]
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/:neighborhood_id/reports

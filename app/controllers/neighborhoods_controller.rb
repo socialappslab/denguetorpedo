@@ -3,6 +3,7 @@ class NeighborhoodsController < NeighborhoodsBaseController
   before_filter :ensure_team_chosen, :only => [:show]
   before_filter :calculate_ivars,    :only => [:show]
   before_filter :update_breadcrumb,  :except => [:invitation, :contact]
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /neighborhoods/1

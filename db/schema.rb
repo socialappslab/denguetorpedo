@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170624040429) do
+ActiveRecord::Schema.define(version: 20170626073830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,6 +69,13 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.datetime "photo_updated_at"
     t.string   "time_zone",          limit: 255
     t.string   "country",            limit: 255
+  end
+
+  create_table "city_blocks", force: :cascade do |t|
+    t.string  "name"
+    t.integer "neighborhood_id"
+    t.integer "district_id"
+    t.integer "city_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -141,6 +148,11 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.string   "device_model", limit: 255
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+  end
+
+  create_table "districts", force: :cascade do |t|
+    t.string  "name"
+    t.integer "city_id"
   end
 
   create_table "documentation_sections", force: :cascade do |t|
@@ -249,7 +261,27 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.datetime "last_synced_at"
     t.integer  "last_sync_seq"
     t.string   "pouchdb_id"
+    t.integer  "city_block_id"
+    t.integer  "city_id"
+    t.string   "location_type"
   end
+
+  add_index "locations", ["city_block_id"], name: "index_locations_on_city_block_id", using: :btree
+  add_index "locations", ["city_id"], name: "index_locations_on_city_id", using: :btree
+
+  create_table "memberships", force: :cascade do |t|
+    t.integer  "organization_id"
+    t.integer  "user_id"
+    t.string   "role",            default: "morador"
+    t.boolean  "blocked",         default: false
+    t.boolean  "active",          default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "memberships", ["organization_id", "user_id"], name: "index_memberships_on_organization_id_and_user_id", unique: true, using: :btree
+  add_index "memberships", ["organization_id"], name: "index_memberships_on_organization_id", using: :btree
+  add_index "memberships", ["user_id"], name: "index_memberships_on_user_id", using: :btree
 
   create_table "messages", force: :cascade do |t|
     t.text     "body"
@@ -270,7 +302,10 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.integer  "city_id"
     t.float    "latitude"
     t.float    "longitude"
+    t.integer  "district_id"
   end
+
+  add_index "neighborhoods", ["district_id"], name: "index_neighborhoods_on_district_id", using: :btree
 
   create_table "notices", force: :cascade do |t|
     t.string   "title",              limit: 255, default: ""
@@ -296,6 +331,12 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.boolean  "read",                   default: false
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -432,7 +473,10 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.datetime "updated_at",                                         null: false
     t.boolean  "blocked"
     t.integer  "points",                                 default: 0
+    t.integer  "organization_id"
   end
+
+  add_index "teams", ["organization_id"], name: "index_teams_on_organization_id", using: :btree
 
   create_table "user_locations", force: :cascade do |t|
     t.integer  "user_id"

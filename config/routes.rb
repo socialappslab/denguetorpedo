@@ -126,6 +126,13 @@ Dengue::Application.routes.draw do
     resources :notices, :only => [:new, :create, :show, :edit, :update, :destroy]
   end
 
+  resources :organizations, :only => [:update] do
+    get :settings, :on => :collection
+    get "users", :on => :collection
+    get "teams", :on => :collection
+    put "membership/:id", :on => :collection, :action => "membership", :as => :membership
+  end
+
   #----------------------------------------------------------------------------
   # Landing Pages routes.
 

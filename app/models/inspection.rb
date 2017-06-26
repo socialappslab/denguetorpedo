@@ -80,13 +80,13 @@ class Inspection < ActiveRecord::Base
   validates :location_id,      :presence => true
   validates :description,      :presence => true
   validates :reporter_id,      :presence => true
-  validates :breeding_site_id, :presence => true
-  validates :elimination_method_id, :presence => {:on => :update}, :unless => Proc.new {|file| self.save_without_elimination_method == true}
+  # validates :breeding_site_id, :presence => true
+  # validates :elimination_method_id, :presence => {:on => :update}, :unless => Proc.new {|file| self.save_without_elimination_method == true}
 
   # validates :before_photo,     :presence => {:on => :create}, :unless => Proc.new {|file| self.save_without_before_photo == true}
   # validates :after_photo,           :presence => {:on => :update}, :unless => Proc.new {|file| self.save_without_after_photo == true}
-  # validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
-  # validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_after_photo == true}
+  validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
+  validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_after_photo == true}
 
   validate :created_at,    :inspected_in_the_past?
   # validate :created_at,    :inspected_after_two_thousand_fourteen?

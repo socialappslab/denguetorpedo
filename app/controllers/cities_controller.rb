@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class CitiesController < ApplicationController
   include GreenLocationRankings
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /cities

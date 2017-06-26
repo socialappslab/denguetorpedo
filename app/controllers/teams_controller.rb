@@ -4,12 +4,13 @@ class TeamsController < ApplicationController
   before_filter :identify_neighborhood,            :except => [:administer]
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
   before_filter :update_breadcrumb
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /teams
 
   def index
-    @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
+    @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
     @team  = Team.new
 
     # Calculate ranking for each team.

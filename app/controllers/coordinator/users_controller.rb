@@ -4,16 +4,16 @@ class Coordinator::UsersController < Coordinator::BaseController
   #----------------------------------------------------------------------------
   # GET /coordinator/users
 
-  def index
-    authorize! :assign_roles, User
-
-    @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
-    @users        = User.order("username ASC")
-
-    @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
-
-    @breadcrumbs << {:name => I18n.t("views.coordinator.manage_users"), :path => coordinator_users_path}
-  end
+  # def index
+  #   authorize! :assign_roles, User
+  #
+  #   @neighborhood = Neighborhood.find_by_id( params[:neighborhood_id] )
+  #   @users        = User.order("username ASC")
+  #
+  #   @users = @users.where(:neighborhood_id => @neighborhood.id) if @neighborhood.present?
+  #
+  #   @breadcrumbs << {:name => I18n.t("views.coordinator.manage_users"), :path => coordinator_users_path}
+  # end
 
   #----------------------------------------------------------------------------
   # GET /coordinator/users/:id/block

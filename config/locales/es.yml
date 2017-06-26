@@ -28,6 +28,8 @@ es:
     breeding_site_id: Tipo de criadero
   activerecord:
     models:
+      organization:
+        name: "Organización"
       report:
         one: Criadero
         other: Criaderos
@@ -186,6 +188,13 @@ es:
     my_community: Mi Comunidad
     reports: Criaderos
     my_city: Mi Ciudad
+    analytics: Datos
+    organization:
+      name: "Organización"
+      sections:
+        general: General
+        users: Usuarios
+        teams: Equipos
 
 
   #----------------------------------------------------------------------------
@@ -356,6 +365,7 @@ es:
     denguechat_engage:
       DengueChat Comunidad
     admin:
+      actions: Acciónes
       block: 'Bloquear'
       delete: Eliminar
       unblock: 'Desbloquear'

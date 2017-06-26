@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   before_filter :ensure_team_chosen,        :only => [:show]
   before_filter :identify_user,             :only => [:edit, :update, :show]
   before_filter :ensure_proper_permissions, :only => [:index, :phones, :destroy]
+  before_action :calculate_header_variables
 
 
   #----------------------------------------------------------------------------
@@ -63,14 +64,21 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
-    if @user.save
 
+    if params[:organization_id].blank?
+      flash[:alert] = "Debe seleccionar una organización"
+      render new_user_path(@user) and return
+    end
+
+    if @user.save
       # Set the default language based on selected neighborhood.
       if @user.neighborhood && @user.neighborhood.spanish?
         @user.update_column(:locale, User::Locales::SPANISH)
       else
         @user.update_column(:locale, User::Locales::PORTUGUESE)
       end
+
+      Membership.create(:user_id => @user.id, :organization_id => params[:organization_id], :active => true)
 
       cookies[:auth_token] = @user.auth_token
       flash[:notice] = I18n.t("views.users.create_success_flash") + " " + I18n.t("views.teams.call_to_action_flash")

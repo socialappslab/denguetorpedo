@@ -7,6 +7,7 @@ class CsvReportsController < ApplicationController
   before_filter :require_login
   before_filter :update_breadcrumb
   before_filter :redirect_if_no_csv, :only => [:show, :verify]
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /csv_reports
