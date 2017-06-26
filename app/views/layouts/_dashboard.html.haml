@@ -47,6 +47,10 @@
           = link_to csv_reports_path, :style => header_styling do
             %i.fa.fa-table
             CSV
+        %li.user-navigation{:class => "#{request.params["controller"] == "organizations" ? 'active' : ''}"}
+          = link_to settings_organizations_path do
+            %i.fa.fa-cog
+            = I18n.t("dashboard.organization.name")
 
       %ul.nav.navbar-nav.navbar-right
         - if @notifications.present?
@@ -67,6 +71,30 @@
 
 
         = render :partial => "shared/profile_dropdown"
+
+
+
+  - if @current_user && @current_user.selected_membership.try(:manager?) && request.params["controller"] == "organizations"
+    %nav.navbar.navbar-default#subheader
+      / Brand and toggle get grouped for better mobile display
+      .navbar-header
+        %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#subheader-collapse", "data-toggle" => "collapse", :type => "button"}
+          %span.sr-only Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+
+      #subheader-collapse.collapse.navbar-collapse
+        %ul.nav.navbar-nav.user-navigation
+          %li.user-navigation{:class => "#{settings_organizations_path == request.path ? 'active' : ''}"}
+            = link_to settings_organizations_path do
+              = I18n.t("dashboard.organization.sections.general")
+          %li.user-navigation{:class => "#{users_organizations_path == request.path ? 'active' : ''}"}
+            = link_to users_organizations_path do
+              = I18n.t("dashboard.organization.sections.users")
+          %li.user-navigation{:class => "#{teams_organizations_path == request.path ? 'active' : ''}"}
+            = link_to teams_organizations_path do
+              = I18n.t("dashboard.organization.sections.teams")
 
 
   - if @breadcrumbs.present?

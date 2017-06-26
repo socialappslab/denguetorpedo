@@ -43,6 +43,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
+
+
   #----------------------------------------------------------------------------
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -60,6 +62,12 @@ class ApplicationController < ActionController::Base
   def identify_selected_membership
     @selected_membership = current_user.selected_membership()
   end
+
+  # See: https://github.com/elabs/pundit#customize-pundit-user
+  def pundit_user
+    @selected_membership || current_user
+  end
+
 
   #----------------------------------------------------------------------------
 

@@ -9,7 +9,7 @@ class TeamsController < ApplicationController
   # GET /teams
 
   def index
-    @teams = Team.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
+    @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
     @team  = Team.new
 
     # Calculate ranking for each team.

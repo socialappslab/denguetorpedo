@@ -1,0 +1,29 @@
+.container
+  -# .row
+  -#   .col-md-6
+  -#   .col-md-6
+  -#     %p.description
+  -#       .pull-right
+  -#         = render :partial => "shared/filter_by_community"
+
+
+  .row
+    .col-md-12
+      .panel.panel-default
+        %table.table.table-bordered
+          %thead
+            %th
+              DengueChat ID
+            %th
+              = I18n.t("activerecord.models.team", :count => 1)
+            %th
+              = I18n.t("views.admin.actions")
+          - @teams.each do |team|
+            %tr
+              %td
+                = team.id
+              %td
+                = team.name
+              %td{:style => "margin-left:10px;"}
+                - link_text = (team.blocked ? I18n.t("views.admin.unblock") : I18n.t("views.admin.block"))
+                = link_to link_text, block_coordinator_team_path(team), data: { confirm: I18n.t("views.alerts.confirm")}, :class => "btn btn-xs btn-danger"
