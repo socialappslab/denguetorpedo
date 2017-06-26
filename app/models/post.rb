@@ -36,6 +36,8 @@ class Post < ActiveRecord::Base
   # Iterate over the post's content, updating the Redis set of the corresponding
   # hashtags. This will run only once, on create.
   def add_hashtags
+    return unless self.content.present?
+
     self.content.scan(/#\w*/).each do |hashtag|
       Hashtag.add_post_to_hashtag(self, hashtag)
     end
@@ -44,6 +46,8 @@ class Post < ActiveRecord::Base
   # Iterate over the post's content, updating the Redis set of the corresponding
   # hashtags. This will run only once, on create.
   def update_hashtags
+    return unless self.content.present?
+
     self.content.scan(/#\w*/).each do |hashtag|
       Hashtag.remove_post_from_hashtag(self, hashtag)
     end

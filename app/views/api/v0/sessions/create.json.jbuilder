@@ -2,7 +2,7 @@
 json.user do
   json.token @user.jwt_token
   json.(@user, :id, :display_name)
-  json.profile_photo @user.profile_photo.url(:thumbnail)
+  json.picture @user.picture
   json.neighborhood do
     json.(@user.neighborhood, :id, :name, :city_id, :geographical_display_name)
     json.city do
