@@ -45,12 +45,14 @@ class API::V0::SyncController < API::V0::BaseController
         # Iterate over the content, identifying mentions by @, and then wrapping
         # the valid usernames with <a> HTML tag.
         mentioned_users = []
-        @post.content.scan(/@\w*/).each do |mention|
-          u = User.find_by_username( mention.gsub("@","") )
+        if @post.content.present?
+          @post.content.scan(/@\w*/).each do |mention|
+            u = User.find_by_username( mention.gsub("@","") )
 
-          if u.present?
-            @post.content.gsub!(mention, "<a href='#{user_path(u)}'>#{mention}</a>")
-            mentioned_users << u
+            if u.present?
+              @post.content.gsub!(mention, "<a href='#{user_path(u)}'>#{mention}</a>")
+              mentioned_users << u
+            end
           end
         end
 
