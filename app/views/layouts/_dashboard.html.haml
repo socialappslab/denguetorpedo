@@ -71,10 +71,11 @@
           = link_to csv_reports_path, :style => header_styling do
             %i.fa.fa-table
             CSV
-        %li.user-navigation{:class => "#{request.params["controller"] == "organizations" ? 'active' : ''}"}
-          = link_to settings_organizations_path do
-            %i.fa.fa-cog
-            = I18n.t("dashboard.organization.name")
+        - if @selected_membership.manager?
+          %li.user-navigation{:class => "#{request.params["controller"] == "organizations" ? 'active' : ''}"}
+            = link_to settings_organizations_path do
+              %i.fa.fa-cog
+              = I18n.t("dashboard.organization.name")
 
       %ul.nav.navbar-nav.navbar-right
         - if @notifications.present?
