@@ -88,10 +88,10 @@ class Inspection < ActiveRecord::Base
   validates_attachment :before_photo, content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_before_photo == true}
   validates_attachment :after_photo,  content_type: { content_type: /\Aimage\/.*\Z/ }, :unless => Proc.new {|file| self.save_without_after_photo == true}
 
-  validate :created_at,    :inspected_in_the_past?
+  # validate :created_at,    :inspected_in_the_past?
   # validate :created_at,    :inspected_after_two_thousand_fourteen?
-  validate :eliminated_at, :eliminated_after_creation?
-  validate :eliminated_at, :eliminated_in_the_past?
+  # validate :eliminated_at, :eliminated_after_creation?
+  # validate :eliminated_at, :eliminated_in_the_past?
 
 
   #----------------------------------------------------------------------------
