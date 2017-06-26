@@ -41,4 +41,13 @@ namespace :cleanup do
       inspection.save!
     end
   end
+
+  task :create_organizations => :environment do |t|
+    org = Organization.find_or_create_by(:name => "Instituto de Ciencias Sostenibles")
+    User.find_each do |user|
+      Membership.find_or_create_by(:user_id => user.id, :organization_id => org.id, :role => user.role, :blocked => user.is_blocked, :active => true)
+    end
+
+    org2 = Organization.find_or_create_by(:name => "AMOS")
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170624040429) do
+ActiveRecord::Schema.define(version: 20170625233821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -251,6 +251,20 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.string   "pouchdb_id"
   end
 
+  create_table "memberships", force: :cascade do |t|
+    t.integer  "organization_id"
+    t.integer  "user_id"
+    t.string   "role",            default: "morador"
+    t.boolean  "blocked",         default: false
+    t.boolean  "active",          default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "memberships", ["organization_id", "user_id"], name: "index_memberships_on_organization_id_and_user_id", unique: true, using: :btree
+  add_index "memberships", ["organization_id"], name: "index_memberships_on_organization_id", using: :btree
+  add_index "memberships", ["user_id"], name: "index_memberships_on_user_id", using: :btree
+
   create_table "messages", force: :cascade do |t|
     t.text     "body"
     t.integer  "user_id"
@@ -296,6 +310,12 @@ ActiveRecord::Schema.define(version: 20170624040429) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.boolean  "read",                   default: false
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "posts", force: :cascade do |t|
