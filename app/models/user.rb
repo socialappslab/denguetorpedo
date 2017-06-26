@@ -9,9 +9,14 @@ class User < ActiveRecord::Base
 
   has_many :user_locations
   has_many :locations, :through => :user_locations
-
+  has_many :memberships
+  has_many :organizations, :through => :memberships
 
   #----------------------------------------------------------------------------
+
+  def selected_membership
+    return self.memberships.find_by(:active => true)
+  end
 
   def jwt_token
     return JWT.encode(self.payload, ENV['JWT_SECRET'], 'HS256')
