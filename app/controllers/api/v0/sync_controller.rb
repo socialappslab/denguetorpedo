@@ -153,6 +153,8 @@ class API::V0::SyncController < API::V0::BaseController
         if @visit.blank?
           @visit = Visit.new(:location_id => location.id)
           @visit.source = "mobile"
+        else
+          @visit.update_column(:source, "mobile")
         end
 
         @visit.visited_at = t
