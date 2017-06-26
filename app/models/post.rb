@@ -22,7 +22,7 @@ class Post < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   validates :user_id, :presence => true
-  validates :content, :presence => true, :length => {:minimum => 1}
+  validates :content, :presence => true, :length => {:minimum => 1}, :unless => Proc.new {|file| self.photo_file_size.present? }
   validates_attachment :photo, content_type: { content_type: /\Aimage\/.*\Z/ }
 
   #----------------------------------------------------------------------------

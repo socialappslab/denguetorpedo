@@ -16,13 +16,14 @@ class API::V0::SessionsController < API::V0::BaseController
     else
       raise API::V0::Error.new("Invalid email or password. Please try again.", 401) and return
     end
-
   end
 
   #----------------------------------------------------------------------------
   # GET /api/v0/sessions/current
 
   def current
+    @user = @current_user
+    render "api/v0/sessions/create" and return
   end
 
   #----------------------------------------------------------------------------

@@ -11,6 +11,10 @@ json.user do
     json.questions HouseQuiz.questions
   end
 
+  json.city do
+    json.(@user.neighborhood.city, :name, :state, :localized_country_name)
+  end
+
   json.breeding_sites BreedingSite.order("description_in_es ASC") do |bs|
     json.(bs, :id, :description)
     json.elimination_methods bs.elimination_methods.order("description_in_es ASC") do |em|
