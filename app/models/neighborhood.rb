@@ -27,6 +27,8 @@ class Neighborhood < ActiveRecord::Base
   belongs_to :coordinator, :class_name => "User"
   has_many :posts
 
+  belongs_to :district
+
   #----------------------------------------------------------------------------
 
   validates :name,    :presence => true

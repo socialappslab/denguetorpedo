@@ -14,18 +14,42 @@
       %ul.nav.navbar-nav.user-navigation
         %li
           %a
-        %li.user-navigation
-          - header_styling = request.path == city_path(@current_user.city) ? "font-weight:bold;" : ""
-          = link_to city_path(@current_user.city), :style => header_styling do
+        -# %li.user-navigation{:class => "#{request.path == city_path(@current_user.city) ? 'active' : ''}"}
+        -#   = link_to city_path(@current_user.city), :style => header_styling do
+        -#     %i.fa.fa-globe
+        -#     = I18n.t("dashboard.my_city")
+        %li.dropdown.text-center.user-navigation{:class => "#{request.params["controller"] == "cities" ? 'active' : ''}"}
+          = link_to city_path(@current_user.city), :data => {:toggle=>"dropdown"} do
             %i.fa.fa-globe
             = I18n.t("dashboard.my_city")
+            %i.fa.fa-angle-down
+          %ul.dropdown-menu
+            %li
+              = link_to city_path(@current_user.city) do
+                = I18n.t("dashboard.my_city")
+            %li.divider
+            - @all_cities.each do |city|
+              %li
+                = link_to city_path(city) do
+                  = city.name
+
+
         %li
           %a
-        %li.user-navigation
-          - header_styling = request.path == neighborhood_path(@current_user.neighborhood) ? "font-weight:bold;" : ""
-          = link_to neighborhood_path(@current_user.neighborhood), :style => header_styling do
-            %i.fa.fa-users.fa-2
+        %li.dropdown.text-center.user-navigation{:class => "#{request.params["controller"] == "neighborhoods" ? 'active' : ''}"}
+          = link_to neighborhood_path(@current_user.neighborhood), :data => {:toggle=>"dropdown"} do
+            %i.fa.fa-globe
             = I18n.t("dashboard.my_community")
+            %i.fa.fa-angle-down
+          %ul.dropdown-menu
+            %li
+              = link_to neighborhood_path(@current_user.neighborhood) do
+                = I18n.t("dashboard.my_community")
+            %li.divider
+            - @all_neighborhoods.each do |n|
+              %li
+                = link_to neighborhood_path(n) do
+                  = n.name
         %li
           %a
         %li.user-navigation
@@ -47,10 +71,11 @@
           = link_to csv_reports_path, :style => header_styling do
             %i.fa.fa-table
             CSV
-        %li.user-navigation{:class => "#{request.params["controller"] == "organizations" ? 'active' : ''}"}
-          = link_to settings_organizations_path do
-            %i.fa.fa-cog
-            = I18n.t("dashboard.organization.name")
+        - if @selected_membership.manager?
+          %li.user-navigation{:class => "#{request.params["controller"] == "organizations" ? 'active' : ''}"}
+            = link_to settings_organizations_path do
+              %i.fa.fa-cog
+              = I18n.t("dashboard.organization.name")
 
       %ul.nav.navbar-nav.navbar-right
         - if @notifications.present?

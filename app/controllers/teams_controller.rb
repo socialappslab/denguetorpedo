@@ -4,6 +4,7 @@ class TeamsController < ApplicationController
   before_filter :identify_neighborhood,            :except => [:administer]
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
   before_filter :update_breadcrumb
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
   # GET /teams

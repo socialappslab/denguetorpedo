@@ -57,4 +57,42 @@ namespace :cleanup do
       team.update_column(:organization_id, org.id)
     end
   end
+
+  task :populate_city_for_locations => :environment do
+    Location.find_each do |loc|
+      next if loc.city_id.present?
+      puts "loc = #{loc.inspect}"
+      loc.update_column(:city_id, loc.neighborhood.city_id)
+    end
+  end
+
+  task :cleanup_districts => :environment do
+    managua = City.find_by(:name => "Managua")
+
+    bad_city_definition = City.find_by(:name => "Managua Distrito 3")
+    d = District.find_or_create_by(:name => "Distrito 3", :city_id => managua.id)
+
+    bad_city_definition.neighborhoods.find_each do |n|
+      n.update_column(:city_id, managua.id)
+      n.update_column(:district_id, d.id)
+    end
+
+    bad_city_definition.locations.find_each do |loc|
+      loc.update_column(:city_id, managua.id)
+      loc.update_column(:district_id, d.id)
+    end
+
+    bad_city_definition = City.find_by(:name => "Managua Distrito 6")
+    d = District.find_or_create_by(:name => "Distrito 6", :city_id => managua.id)
+
+    bad_city_definition.neighborhoods.find_each do |n|
+      n.update_column(:city_id, managua.id)
+      n.update_column(:district_id, d.id)
+    end
+
+    bad_city_definition.locations.find_each do |loc|
+      loc.update_column(:city_id, managua.id)
+      loc.update_column(:district_id, d.id)
+    end
+  end
 end
