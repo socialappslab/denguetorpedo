@@ -1,6 +1,11 @@
 
 /------------------------------------------------------------------------------
 
+- content_for :scripts do
+  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
+
+/------------------------------------------------------------------------------
+
 .panel.panel-default
   .panel-heading
     %h3.panel-title
@@ -50,7 +55,7 @@
   .panel-heading
     %h3.panel-title
       = I18n.t('views.statistics.chart.title')
-  .panel-body{"ng-controller" => "houseIndexTimeseriesCtrl", "path" => locations_api_v0_graph_path, "neighborhood_id" => @neighborhood.id}
+  .panel-body{"ng-controller" => "communityTimeseriesCtrl", "neighborhood_id" => @neighborhood.id}
     .chart
       .row
         .col-xs-4
@@ -152,9 +157,3 @@
       .col-md-12
         = render :partial => "shared/news_feed"
         = render :partial => "shared/feed"
-
-
-/------------------------------------------------------------------------------
-
-- content_for :scripts do
-  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}

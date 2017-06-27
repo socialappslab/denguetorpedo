@@ -1,4 +1,5 @@
-var ctrl = function ($scope, $http, $attrs) {
+
+angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$scope", "$http", "$attrs", "TimeSeries", function ($scope, $http, $attrs, TimeSeries) {
   $scope.loading       = false;
   $scope.neighborhoods = [];
   $scope.timeseries    = [];
@@ -7,7 +8,6 @@ var ctrl = function ($scope, $http, $attrs) {
   $scope.chartLoading = false;
   $scope.noChartData  = false;
   $scope.state = {chart: false}
-
 
   var prepareParams = function() {
     // General params.
@@ -29,7 +29,7 @@ var ctrl = function ($scope, $http, $attrs) {
     return params;
   }
 
-  $scope.generatePreview = function() {
+  $scope.refreshChartWithParams = function() {
     $scope.loading     = true;
     $scope.serverError = false;
     $scope.serverErrorMessage = null;
@@ -37,12 +37,8 @@ var ctrl = function ($scope, $http, $attrs) {
 
     var params = prepareParams()
 
-    var promise   = $http({
-      url: $attrs.path,
-      method: "GET",
-      params: params
-    });
-    promise = promise.then(function(response) {
+    req = TimeSeries.get({params: params}).$promise
+    req.then(function(response) {
       $scope.timeseries = response.data.timeseries;
       if ($scope.timeseries.length === 0)
         $scope.serverErrorMessage = "Sin datos";
@@ -54,16 +50,11 @@ var ctrl = function ($scope, $http, $attrs) {
         $scope.noChartData = false;
         drawChart("timeseries-chart", response.data, $scope.options.unit)
       }
-
-
-    }, function(response) {
-      $scope.serverError = true;
-      $scope.serverErrorMessage = response.data.message;
     })
-
-    promise.finally(function(response) {
-      $scope.loading = false;
+    req.catch(function(res) {
+      $scope.$emit(denguechat.error, response)
     })
+    req.finally(function(res) { $scope.loading = false; })
   }
 
   $scope.generateCsv = function() {
@@ -84,8 +75,6 @@ var ctrl = function ($scope, $http, $attrs) {
       $scope.neighborhoods.splice(index, 1)
     }
   }
-
-
 
   var googleChartOptions = function(chartID, data) {
     colors = []
@@ -219,8 +208,4 @@ var ctrl = function ($scope, $http, $attrs) {
     s += "</tbody></table>"
     return s;
   }
-
-};
-
-
-angular.module("denguechat.controllers").controller("dashboardTimeSeriesCtrl", ["$scope", "$http", "$attrs", ctrl]);
+}]);

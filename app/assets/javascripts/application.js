@@ -19,7 +19,12 @@
 //= require_tree ./jquery/
 //= require facebook
 
-window.denguechat = {};
+window.denguechat = {
+  error: "error",
+  success: "success",
+}
+
+
 
 $(document).ready(function()
 {
