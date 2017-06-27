@@ -1,5 +1,5 @@
 (function () {
-  angular.module('denguechat.directives', []);
+  angular.module('denguechat.directives', ["ui-notification"]);
   angular.module('denguechat.controllers', []);
   angular.module('denguechat.services', ["ngResource"]);
 
@@ -9,8 +9,42 @@
     'denguechat.controllers',
     "denguechat.services",
     'ngMessages',
-    'ngMaterial'
-  ]);
+    'ngMaterial',
+    'ui-notification'
+  ]).run(["$rootScope", "Notification", function($rootScope, Notification) {
+
+    $rootScope.$on(onpoint.success, function(event, response) {
+      Notification.success({message: "Success!", positionY: 'top', positionX: 'right'});
+      if (response.reload)
+        window.location.reload()
+      if (response.redirect_path)
+        window.location.href = response.redirect_path
+    })
+
+    $rootScope.$on(onpoint.error, function(event, response) {
+      if (response.status == 500) {
+        alert("Something failed when parsing this image. Notify dmitriskj@gmail.com and include the image.")
+        return
+      }
+
+      if (response.status == 422) {
+        alert(response.data.error)
+        return
+      }
+
+
+
+      if (response.status == 0 || response.status == 500)
+        message = "Something went wrong on our end. Please try again!"
+      else if (response.responseJSON)
+        message = response.responseJSON.error
+      else
+        message = response.data.error
+      Notification.error({message: message, positionY: 'top', positionX: 'right'});
+    })
+
+
+  }])
 
 }());
 
