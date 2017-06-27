@@ -27,6 +27,11 @@
         return
       }
 
+      if (response.data) {
+        alert(response.data.message)
+        return
+      }
+
       if (response.status == 422) {
         alert(response.data.error)
         return

@@ -26,9 +26,10 @@ angular.module("denguechat.controllers").controller("organizationUsersCtrl", ["$
     req.finally (res) -> $scope.state.loading = false;
 
 
-  $scope.createUser = () ->
-    req = User.create({user: $scope.user}).$promise
+  $scope.createUser = ($event) ->
+    req = User.save({user: $scope.user}).$promise
     req.then (res) ->
-      console.log(res)
+      $scope.$emit(denguechat.success, res)
+      window.location.reload()
     req.catch (res) -> $scope.$emit(denguechat.error, res)
 ]);

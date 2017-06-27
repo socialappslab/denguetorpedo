@@ -18,7 +18,7 @@
                 %a.btn.btn-success{"data-target" => "#new-user", "data-toggle" => "modal"} Agregar nuevo usuario
                 #new-user.modal.fade{:role => "dialog"}
                   .modal-dialog.wide-modal
-                    %form{"ng-submit" => "createUser()"}
+                    %form{"ng-submit" => "createUser($event)"}
                       .modal-content
                         .modal-header
                           %button.close{"data-dismiss" => "modal", :type => "button"} ×
@@ -47,7 +47,7 @@
                               Orále! El password de nuevo usuario vas a hacer 1234567. Se pueden cambiar desde login.
 
                         .modal-footer
-                          %button{:type => "submit", :class => "btn btn-success btn-large col-md-12 submit-button"}
+                          %button{:type => "submit", :class => "btn btn-success btn-large col-md-12 "}
                             Guardar
 
           %h1{"ng-if" => "state.loading"}
@@ -80,6 +80,8 @@
                 {{membership.user.email}}
                 %br
                 {{membership.user.full_name}}
+                %br
+                {{membership.user.neighborhood}}
             %td
               %form.form-inline
                 %select#inlineFormCustomSelect.form-control{"ng-model" => "membership.role", "ng-options" => "u.value as (u.value) for u in options.roles", "ng-change" => "changeRole(membership)"}
