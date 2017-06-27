@@ -10,7 +10,7 @@ class Dashboard::GraphsController < Dashboard::BaseController
     authorize :dashboard, :index?
     @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
 
-    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.graphs"), :path => request.path}
+    # @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.graphs"), :path => request.path}
   end
 
   #----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ class Dashboard::GraphsController < Dashboard::BaseController
 
   def heatmap
     authorize :dashboard, :index?
-    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.heatmap"), :path => request.path}
+    # @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.heatmap"), :path => request.path}
   end
 
   #----------------------------------------------------------------------------

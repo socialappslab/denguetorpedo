@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Dashboard::BaseController < ApplicationController
-  layout "layouts/dashboard"
+  # layout "layouts/dashboard"
 
   #----------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ class Dashboard::BaseController < ApplicationController
   before_filter :authorize_user
   before_filter :set_navigational_components
   before_action :setup_breadcrumbs
+  before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
 
@@ -40,7 +41,8 @@ class Dashboard::BaseController < ApplicationController
   end
 
   def setup_breadcrumbs
-    @breadcrumbs = [{:name => I18n.t("views.denguechat_analytics"), :path => root_path}]
+    @breadcrumbs = nil
+    # @breadcrumbs = [{:name => I18n.t("views.denguechat_analytics"), :path => root_path}]
   end
 
   #----------------------------------------------------------------------------

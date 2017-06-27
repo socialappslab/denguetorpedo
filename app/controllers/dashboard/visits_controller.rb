@@ -8,7 +8,7 @@ class Dashboard::VisitsController < Dashboard::BaseController
     authorize :dashboard, :index?
     @city = @current_user.city
 
-    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.visits"), :path => request.path}
+    # @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.visits"), :path => request.path}
   end
 
   #----------------------------------------------------------------------------

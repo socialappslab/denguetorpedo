@@ -76,7 +76,7 @@
             = link_to settings_organizations_path do
               %i.fa.fa-cog
               = I18n.t("dashboard.organization.name")
-          %li.user-navigation{:class => "#{request.params["controller"] == "dashboard" ? 'active' : ''}"}
+          %li.user-navigation{:class => "#{request.params["controller"].include?("dashboard") ? 'active' : ''}"}
             = link_to dashboard_visits_path do
               %i.fa.fa-line-chart.fa-2
               = I18n.t("views.denguechat_analytics")
@@ -138,27 +138,61 @@
 
 
 
-  - if @current_user && @current_user.selected_membership.try(:manager?) && request.params["controller"] == "organizations"
-    %nav.navbar.navbar-default#subheader
-      / Brand and toggle get grouped for better mobile display
-      .navbar-header
-        %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#subheader-collapse", "data-toggle" => "collapse", :type => "button"}
-          %span.sr-only Toggle navigation
-          %span.icon-bar
-          %span.icon-bar
-          %span.icon-bar
+  - if @current_user && @current_user.selected_membership.try(:manager?)
+    - if request.params["controller"] == "organizations"
+      %nav.navbar.navbar-default#subheader
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#subheader-collapse", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
 
-      #subheader-collapse.collapse.navbar-collapse
-        %ul.nav.navbar-nav.user-navigation
-          %li.user-navigation{:class => "#{settings_organizations_path == request.path ? 'active' : ''}"}
-            = link_to settings_organizations_path do
-              = I18n.t("dashboard.organization.sections.general")
-          %li.user-navigation{:class => "#{users_organizations_path == request.path ? 'active' : ''}"}
-            = link_to users_organizations_path do
-              = I18n.t("dashboard.organization.sections.users")
-          %li.user-navigation{:class => "#{teams_organizations_path == request.path ? 'active' : ''}"}
-            = link_to teams_organizations_path do
-              = I18n.t("dashboard.organization.sections.teams")
+        #subheader-collapse.collapse.navbar-collapse
+          %ul.nav.navbar-nav.user-navigation
+            %li.user-navigation{:class => "#{settings_organizations_path == request.path ? 'active' : ''}"}
+              = link_to settings_organizations_path do
+                = I18n.t("dashboard.organization.sections.general")
+            %li.user-navigation{:class => "#{users_organizations_path == request.path ? 'active' : ''}"}
+              = link_to users_organizations_path do
+                = I18n.t("dashboard.organization.sections.users")
+            %li.user-navigation{:class => "#{teams_organizations_path == request.path ? 'active' : ''}"}
+              = link_to teams_organizations_path do
+                = I18n.t("dashboard.organization.sections.teams")
+
+
+    - if request.params["controller"].include?("dashboard")
+      %nav.navbar.navbar-default#subheader
+
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#header-collapse", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+
+        #subheader-collapse.collapse.navbar-collapse
+          %ul.nav.navbar-nav.user-navigation
+            %li.user-navigation{:class => "#{dashboard_visits_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_visits_path do
+                %i.fa.fa-clock-o.fa-2
+                = I18n.t("views.dashboard.navigation.visits")
+            %li.user-navigation{:class => "#{dashboard_locations_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_locations_path do
+                %i.fa.fa-globe
+                = I18n.t("views.dashboard.navigation.locations")
+            %li.user-navigation{:class => "#{heatmap_dashboard_graphs_path == request.path ? 'active' : ''}"}
+              = link_to heatmap_dashboard_graphs_path do
+                %i.fa.fa-map-marker
+                = I18n.t("views.dashboard.navigation.heatmap")
+            %li.user-navigation{:class => "#{dashboard_sync_index_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_sync_index_path do
+                %i.fa.fa-refresh
+                = I18n.t("views.dashboard.navigation.sync")
+
+
 
 
   - if @breadcrumbs.present?
