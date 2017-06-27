@@ -12,7 +12,7 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
   var prepareParams = function() {
     // General params.
     var params = {
-      neighborhoods: JSON.stringify($scope.neighborhoods),
+      neighborhoods: $scope.neighborhoods,
       unit: $scope.options.unit
     };
 

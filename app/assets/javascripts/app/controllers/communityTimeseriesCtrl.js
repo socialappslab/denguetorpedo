@@ -1,8 +1,15 @@
 angular.module("denguechat.controllers").controller("communityTimeseriesCtrl", ["$scope", "$http", "$attrs", "TimeSeries", function ($scope, $http, $attrs, TimeSeries) {
   $scope.chartLoading = false;
   $scope.noChartData  = false;
-  $scope.state = {showTable: false}
-  $scope.options       = {neighborhood_id: $attrs.neighborhoodId, unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true};
+  $scope.state        = {showTable: false}
+  $scope.options      = {
+    neighborhoods: [$attrs.neighborhoodId],
+    unit: "monthly",
+    timeframe: "6",
+    positive: true,
+    potential: true,
+    negative: true
+  };
 
   $scope.refreshChartWithParams = function() {
     $scope.chartLoading = true;
@@ -19,7 +26,6 @@ angular.module("denguechat.controllers").controller("communityTimeseriesCtrl", [
     })
     req.finally(function(res) { $scope.chartLoading = false; })
   }
-
   $scope.refreshChartWithParams();
 
   // Let's not display the annotations for now.
