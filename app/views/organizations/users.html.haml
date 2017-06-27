@@ -75,11 +75,11 @@
             %td {{membership.user_id}}
             %td
               %a{"ng-href" => "{{membership.user.edit_user_path}}"}
-                Nombre de usuario: {{membership.user.username}}
+                {{membership.user.username}}
                 %br
-                Email: {{membership.user.email}}
+                {{membership.user.email}}
                 %br
-                Nombre: {{membership.user.full_name}}
+                {{membership.user.full_name}}
             %td
               %form.form-inline
                 %select#inlineFormCustomSelect.form-control{"ng-model" => "membership.role", "ng-options" => "u.value as (u.value) for u in options.roles", "ng-change" => "changeRole(membership)"}
