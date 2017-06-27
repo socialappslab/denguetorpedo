@@ -26,6 +26,15 @@
 }
 
 
+p {
+  &.bold {
+    font-weight: bold;
+  }
+  &.large-font {
+    font-size: 16px;
+  }
+}
+
 html, body {
   font-family: "Helvetica Neue", sans-serif;
 }

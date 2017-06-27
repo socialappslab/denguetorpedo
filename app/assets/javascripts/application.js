@@ -11,7 +11,7 @@
 //= require angular-aria
 //= require angular-resource
 //= require angular-sanitize
-//= require "angular/ui-notification"
+//= require "ui-notification"
 //= require app/app
 //= require_tree ./app/controllers/
 //= require_tree ./app/directives/
