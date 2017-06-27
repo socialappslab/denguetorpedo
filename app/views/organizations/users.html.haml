@@ -12,6 +12,44 @@
     .col-md-12
       .panel.panel-default
         .panel-body
+          .row
+            .col-md-12
+              .pull-right
+                %a.btn.btn-success{"data-target" => "#new-user", "data-toggle" => "modal"} Agregar nuevo usuario
+                #new-user.modal.fade{:role => "dialog"}
+                  .modal-dialog.wide-modal
+                    %form{"ng-submit" => "createUser()"}
+                      .modal-content
+                        .modal-header
+                          %button.close{"data-dismiss" => "modal", :type => "button"} ×
+                          %h2.modal-title{:style => "display: inline-block;"}
+                            Agregar Usuario
+
+                        .modal-body
+                          .form-group
+                            %p.bold
+                              = label_tag I18n.t("attributes.name")
+                            %input{:type => "text", "ng-model" => "user.name", :class => "form-control"}
+                          .form-group
+                            %p.bold
+                              = label_tag I18n.t("activerecord.attributes.user.username")
+                            .input-group
+                              %span.input-group-addon @
+                              %input{:type => "text", "ng-model" => "user.username", :class => "form-control"}
+                          .form-group
+                            %p.bold
+                              = label_tag I18n.t("attributes.neighborhood_id")
+                            %select#inlineFormCustomSelect.form-control{"ng-model" => "user.neighborhood_id", "ng-options" => "n.id as (n.name) for n in options.neighborhoods"}
+
+                          %hr
+                          .form-group
+                            %p.help-text.bold
+                              Orále! El password de nuevo usuario vas a hacer 1234567. Se pueden cambiar desde login.
+
+                        .modal-footer
+                          %button{:type => "submit", :class => "btn btn-success btn-large col-md-12 submit-button"}
+                            Guardar
+
           %h1{"ng-if" => "state.loading"}
             %i.fa.fa-refresh.fa-spin
           %p.large-font.bold Filtrar por ciudad

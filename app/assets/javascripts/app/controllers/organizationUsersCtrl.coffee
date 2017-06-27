@@ -1,5 +1,6 @@
 angular.module("denguechat.controllers").controller("organizationUsersCtrl", ["$scope", "$http", "$attrs", "User", "usersInit", ($scope, $http, $attrs, User, usersInit) ->
   $scope.users = []
+  $scope.user  = {}
   $scope.state = {loading: false}
 
   $scope.options = usersInit
@@ -25,4 +26,9 @@ angular.module("denguechat.controllers").controller("organizationUsersCtrl", ["$
     req.finally (res) -> $scope.state.loading = false;
 
 
+  $scope.createUser = () ->
+    req = User.create({user: $scope.user}).$promise
+    req.then (res) ->
+      console.log(res)
+    req.catch (res) -> $scope.$emit(denguechat.error, res)
 ]);
