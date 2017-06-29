@@ -14,7 +14,8 @@
   ]).run(["$rootScope", "Notification", function($rootScope, Notification) {
 
     $rootScope.$on(denguechat.success, function(event, response) {
-      Notification.success({message: "Success!", positionY: 'top', positionX: 'right'});
+      console.log(response)
+      Notification.success({message: "¡Éxito!", positionY: 'top', positionX: 'right'});
       if (response.reload)
         window.location.reload()
       if (response.redirect_path)
@@ -22,27 +23,13 @@
     })
 
     $rootScope.$on(denguechat.error, function(event, response) {
-      if (response.status == 500) {
-        alert("Something went wrong on our end. Please try again or contact dmitriskj@gmail.com")
-        return
-      }
-
-      if (response.data) {
-        alert(response.data.message)
-        return
-      }
-
-      if (response.status == 422) {
-        alert(response.data.error)
-        return
-      }
-
-
 
       if (response.status == 0 || response.status == 500)
-        message = "Something went wrong on our end. Please try again!"
+        message = "Algo salió mal en nuestro extremo. Inténtelo de nuevo o póngase en contacto con dmitriskj@gmail.com"
       else if (response.responseJSON)
         message = response.responseJSON.error
+      else if (response.data)
+        message = response.data.message
       else
         message = response.data.error
       Notification.error({message: message, positionY: 'top', positionX: 'right'});
