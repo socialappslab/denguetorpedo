@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class API::V0::UsersController < API::V0::BaseController
-  skip_before_filter :authenticate_user_via_device_token
+  skip_before_action :authenticate_user_via_device_token, :only => [:index, :create, :membership, :update, :scores]
+  before_filter :authenticate_user_via_cookies_or_jwt,    :only => [:update]
   before_action :calculate_header_variables
 
   #----------------------------------------------------------------------------
@@ -44,11 +45,6 @@ class API::V0::UsersController < API::V0::BaseController
   def create
     @organization = current_user.selected_membership.organization
 
-    @user = User.find_by(:username => params[:user][:username])
-    if @user.present?
-      raise API::V0::Error.new("Usuario con nombre de usuario #{params[:user][:username]} ya existe!", 422) and return
-    end
-
     # At this point, the user does NOT exist. Let's create them here.
     @user          = User.new(params[:user])
     @user.password = "1234567"
@@ -58,6 +54,21 @@ class API::V0::UsersController < API::V0::BaseController
       render :json => {}, :status => :ok and return
     else
       raise API::V0::Error.new(@user.errors.full_messages[0], 422) and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
+  # PUT /api/v0/users/:id
+
+  def update
+    @current_user.name            = params[:user][:name]
+    @current_user.email           = params[:user][:email]
+    @current_user.username        = params[:user][:username]
+    @current_user.neighborhood_id = params[:user][:neighborhood_id]
+    if @current_user.save
+      render :json => {}, :status => :ok and return
+    else
+      raise API::V0::Error.new(@current_user.errors.full_messages[0], 422) and return
     end
   end
 
