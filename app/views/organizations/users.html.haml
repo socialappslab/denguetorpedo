@@ -50,16 +50,17 @@
                           %button{:type => "submit", :class => "btn btn-success btn-large col-md-12 "}
                             Guardar
 
-          %h1{"ng-if" => "state.loading"}
-            %i.fa.fa-refresh.fa-spin
           %p.large-font.bold Filtrar por ciudad
           %form.form-inline
             %select#inlineFormCustomSelect.form-control{"ng-model" => "options.city_id", "ng-options" => "city.id as (city.name) for city in options.cities", "ng-change" => "loadUsers()"}
-
+              %option{:value => ""}
           %p.large-font.bold Filtrar por comunidad
           %form.form-inline
             %select#inlineFormCustomSelect.form-control{"ng-model" => "options.neighborhood_id", "ng-options" => "n.id as (n.name) for n in options.neighborhoods", "ng-change" => "loadUsers()"}
+              %option{:value => ""}
 
+          %h1.text-center{"ng-if" => "state.loading"}
+            %i.fa.fa-refresh.fa-spin
 
       .panel.panel-default
         %table.table.table-bordered
