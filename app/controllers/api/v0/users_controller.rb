@@ -30,7 +30,7 @@ class API::V0::UsersController < API::V0::BaseController
     @organization = current_user.selected_membership.organization
     authorize @organization
 
-    @membership = @organization.memberships.find_by(:id => params[:id])
+    @membership      = @organization.memberships.find_by(:user_id => params[:id])
     @membership.role = params[:membership][:role]
     if @membership.save
       render :json => {}, :status => :ok and return
