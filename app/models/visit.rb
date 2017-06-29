@@ -87,6 +87,7 @@ class Visit < ActiveRecord::Base
   # This calculates the daily percentage of houses that were visited on that day.
   def self.calculate_time_series_for_locations(location_ids, start_time, end_time, scale)
     time_series = Visit.segment_locations_by_date_and_type(location_ids, start_time, end_time, scale)
+
     time_series = Visit.calculate_statistics_for_time_series(time_series)
     time_series = Visit.filter_time_series_by_range(time_series, start_time, end_time, scale)
     return time_series

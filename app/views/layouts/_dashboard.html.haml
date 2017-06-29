@@ -76,6 +76,11 @@
             = link_to settings_organizations_path do
               %i.fa.fa-cog
               = I18n.t("dashboard.organization.name")
+          %li.user-navigation{:class => "#{request.params["controller"].include?("dashboard") ? 'active' : ''}"}
+            = link_to dashboard_visits_path do
+              %i.fa.fa-line-chart.fa-2
+              = I18n.t("views.denguechat_analytics")
+
 
       %ul.nav.navbar-nav.navbar-right
         - if @notifications.present?
@@ -95,31 +100,99 @@
                         Alguien te mencionado en un comentario!
 
 
-        = render :partial => "shared/profile_dropdown"
+        %li.dropdown.text-center
+          = image_tag(asset_path(@current_user.picture), :class => "img-circle dropdown-toggle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
+          %ul.dropdown-menu{"style" => "right: 50%;"}
+            %li.disabled
+              = link_to user_path(@current_user), :class => "disabled" do
+                = @current_user.selected_membership.organization.name
+            %li.divider
+            %li
+              = link_to user_path(@current_user) do
+                -# %i.fa.fa-user.fa-2
+                = I18n.t("dashboard.my_profile")
+            %li.divider
+            %li
+              = link_to edit_user_path(@current_user) do
+                -# %i.fa.fa-gear.fa-2
+                = I18n.t("common_terms.configuration")
+            %li.divider
+            -# - if @current_user.coordinator?
+            -#   - is_dashboard = request[:controller].include?("dashboard")
+            -#   %li
+            -#     = link_to is_dashboard ? city_path(@current_user.city) : dashboard_visits_path do
+            -#       -# %i.fa.fa-line-chart.fa-2
+            -#       = is_dashboard ? I18n.t("views.denguechat_engage") : I18n.t("views.denguechat_analytics")
+            -#   %li.divider
+            -#   %li
+            -#     = link_to coordinator_path do
+            -#       -# %i.fa.fa-user-secret.fa-2
+            -#       = I18n.t("views.coordinator.home")
+            -#   %li.divider
+
+            %li
+              = link_to logout_path do
+                -# %i.fa.fa-2.fa-sign-out
+                = I18n.t("login_form.logout")
 
 
 
-  - if @current_user && @current_user.selected_membership.try(:manager?) && request.params["controller"] == "organizations"
-    %nav.navbar.navbar-default#subheader
-      / Brand and toggle get grouped for better mobile display
-      .navbar-header
-        %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#subheader-collapse", "data-toggle" => "collapse", :type => "button"}
-          %span.sr-only Toggle navigation
-          %span.icon-bar
-          %span.icon-bar
-          %span.icon-bar
 
-      #subheader-collapse.collapse.navbar-collapse
-        %ul.nav.navbar-nav.user-navigation
-          %li.user-navigation{:class => "#{settings_organizations_path == request.path ? 'active' : ''}"}
-            = link_to settings_organizations_path do
-              = I18n.t("dashboard.organization.sections.general")
-          %li.user-navigation{:class => "#{users_organizations_path == request.path ? 'active' : ''}"}
-            = link_to users_organizations_path do
-              = I18n.t("dashboard.organization.sections.users")
-          %li.user-navigation{:class => "#{teams_organizations_path == request.path ? 'active' : ''}"}
-            = link_to teams_organizations_path do
-              = I18n.t("dashboard.organization.sections.teams")
+  - if @current_user && @current_user.selected_membership.try(:manager?)
+    - if request.params["controller"] == "organizations"
+      %nav.navbar.navbar-default#subheader
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#subheader-collapse", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+
+        #subheader-collapse.collapse.navbar-collapse
+          %ul.nav.navbar-nav.user-navigation
+            %li.user-navigation{:class => "#{settings_organizations_path == request.path ? 'active' : ''}"}
+              = link_to settings_organizations_path do
+                = I18n.t("dashboard.organization.sections.general")
+            %li.user-navigation{:class => "#{users_organizations_path == request.path ? 'active' : ''}"}
+              = link_to users_organizations_path do
+                = I18n.t("dashboard.organization.sections.users")
+            %li.user-navigation{:class => "#{teams_organizations_path == request.path ? 'active' : ''}"}
+              = link_to teams_organizations_path do
+                = I18n.t("dashboard.organization.sections.teams")
+
+
+    - if request.params["controller"].include?("dashboard")
+      %nav.navbar.navbar-default#subheader
+
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#header-collapse", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+
+        #subheader-collapse.collapse.navbar-collapse
+          %ul.nav.navbar-nav.user-navigation
+            %li.user-navigation{:class => "#{dashboard_visits_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_visits_path do
+                %i.fa.fa-clock-o.fa-2
+                = I18n.t("views.dashboard.navigation.visits")
+            %li.user-navigation{:class => "#{dashboard_locations_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_locations_path do
+                %i.fa.fa-globe
+                = I18n.t("views.dashboard.navigation.locations")
+            %li.user-navigation{:class => "#{heatmap_dashboard_graphs_path == request.path ? 'active' : ''}"}
+              = link_to heatmap_dashboard_graphs_path do
+                %i.fa.fa-map-marker
+                = I18n.t("views.dashboard.navigation.heatmap")
+            %li.user-navigation{:class => "#{dashboard_sync_index_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_sync_index_path do
+                %i.fa.fa-refresh
+                = I18n.t("views.dashboard.navigation.sync")
+
+
 
 
   - if @breadcrumbs.present?

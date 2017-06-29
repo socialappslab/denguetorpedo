@@ -17,7 +17,7 @@ directive = (User) ->
       element.popover({html: true, template: templateHTML, placement: "left"})
       element.hover () ->
         window.test = element
-        User.get({id: attrs.userId}).$promise.then (response) ->
+        User.scores({id: attrs.userId}).$promise.then (response) ->
           popover = element.data("bs.popover");
           popover.options.content = tableHTML(response.points, response.report_count, response.green_location_ranking);
           popover.show();

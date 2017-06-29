@@ -11,6 +11,6 @@ class Dashboard::SyncController < Dashboard::BaseController
     @visits    = Visit.where(:source => "mobile").order("visited_at DESC").includes(:location)
     @reports   = Report.where(:source => "mobile").order("created_at DESC")
 
-    @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.sync"), :path => request.path}
+    # @breadcrumbs << {:name => I18n.t("views.dashboard.navigation.sync"), :path => request.path}
   end
 end

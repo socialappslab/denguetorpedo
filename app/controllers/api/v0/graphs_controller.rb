@@ -36,40 +36,37 @@ class API::V0::GraphsController < API::V0::BaseController
       raise API::V0::Error.new("Debe seleccionar al menos un comunidad", 422) and return
     end
 
+    # TODO: Remove
+    # neighborhoods = []
+    # JSON.parse(params[:neighborhoods]).each do |nparams|
+    #   neighborhoods << Neighborhood.find_by_id(nparams)
+    # end
+    raise "params[:neighborhoods] = #{params[:neighborhoods].inspect}"
+    neighborhoods = Neighborhood.where(:id => params[:neighborhoods]).includes(:locations)
+    location_ids  = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
 
-    neighborhoods = []
-    JSON.parse(params[:neighborhoods]).each do |nparams|
-      neighborhoods << Neighborhood.find_by_id(nparams)
-    end
-    location_ids = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
-
-    if params[:unit] == "daily"
-      statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, "daily")
-    else
-      statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, "monthly")
-    end
-
-    statistics.each do |shash|
+    # unit is either daily or monthly
+    @statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
+    @statistics.each do |shash|
       [:positive, :potential, :negative, :total].each do |status|
         locations = Location.where(:id => shash[status][:locations]).order("address ASC").pluck(:address)
         shash[status][:locations] = locations
       end
     end
 
-    @statistics = statistics
     respond_to do |format|
       format.csv do
         filename = neighborhoods.map {|n| n.name.gsub(" ", "_").downcase}.join("_") + "_visita_datos.csv"
-        send_data generate_csv_for_timeseries(statistics), :filename => filename
+        send_data generate_csv_for_timeseries(@@statistics), :filename => filename
       end
 
       format.json do
-        render "api/v0/graph/timeseries" and return
+        Time.use_zone("America/Guatemala") do
+          render "api/v0/graph/timeseries" and return
+        end
       end
     end
-
   end
-
 
   #----------------------------------------------------------------------------
   # GET /api/v0/graph/locations
@@ -77,19 +74,18 @@ class API::V0::GraphsController < API::V0::BaseController
   # * timeframe (required),
   # * percentages (required),
   # * neighborhood_id (optional).
-
-  def locations
-    neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
-    start_time   = 8.months.ago.beginning_of_month
-    end_time     = (Time.zone.now.beginning_of_month - 1.months).end_of_month
-    location_ids = neighborhood.locations.pluck(:id)
-
-    Time.use_zone("America/Guatemala") do
-      statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
-      @statistics = statistics
-      render "api/v0/graph/timeseries" and return
-    end
-  end
+  # def locations
+  #   neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
+  #   start_time   = 8.months.ago.beginning_of_month
+  #   end_time     = Time.zone.now.end_of_month
+  #   location_ids = neighborhood.locations.pluck(:id)
+  #
+  #   Time.use_zone("America/Guatemala") do
+  #     statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
+  #     @statistics = statistics
+  #     render "api/v0/graph/timeseries" and return
+  #   end
+  # end
 
   #----------------------------------------------------------------------------
   # GET /api/v0/graph/green_locations

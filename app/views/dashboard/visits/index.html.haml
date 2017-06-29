@@ -4,7 +4,7 @@
 
 - content_for :dashboard_content do
 
-  .row{:style => "margin-top: 20px;", "ng-controller" => "dashboardTimeSeriesCtrl", :path => timeseries_api_v0_graph_path}
+  .row{:style => "margin-top: 20px;", "ng-controller" => "adminTimeseriesCtrl"}
     .col-md-10.col-md-offset-1
       .panel.panel-default
         .panel-heading
@@ -79,7 +79,7 @@
 
           .row{:style => "margin-top: 20px;"}
             .col-md-4
-              %a.btn.btn-block.btn-success{"ng-click" => "generatePreview()", :style => "cursor: hand;"}
+              %a.btn.btn-block.btn-success{"ng-click" => "refreshChartWithParams()", :style => "cursor: hand;"}
                 Vista previa
             .col-md-4.pull-right
               %a.btn.btn-block.btn-success{"ng-click" => "generateCsv()", :style => "cursor: hand;"}

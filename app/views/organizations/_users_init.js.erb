@@ -1,0 +1,11 @@
+angular.module('denguechat.services').service('usersInit', function(){
+  return {
+    "roles": <%= [
+      {:value => Membership::Roles::ADMIN} ,
+      {:value => Membership::Roles::COORDINATOR},
+      {:value => Membership::Roles::RESIDENT}
+    ].to_json.html_safe %>,
+    "cities": <%= @all_cities.to_json(:only => [:id, :name]).html_safe %>,
+    "neighborhoods": <%= @all_neighborhoods.to_json(:only => [:id, :name]).html_safe %>,
+  }
+});

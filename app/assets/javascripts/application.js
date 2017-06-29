@@ -11,6 +11,7 @@
 //= require angular-aria
 //= require angular-resource
 //= require angular-sanitize
+//= require "ui-notification"
 //= require app/app
 //= require_tree ./app/controllers/
 //= require_tree ./app/directives/
@@ -18,7 +19,12 @@
 //= require_tree ./jquery/
 //= require facebook
 
-window.denguechat = {};
+window.denguechat = {
+  error: "error",
+  success: "success",
+}
+
+
 
 $(document).ready(function()
 {

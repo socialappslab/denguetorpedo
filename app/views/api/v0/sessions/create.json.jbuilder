@@ -1,7 +1,7 @@
 
 json.user do
   json.token @user.jwt_token
-  json.(@user, :id, :display_name)
+  json.(@user, :id, :name, :username, :email, :neighborhood_id, :display_name)
   json.picture @user.picture
   json.neighborhood do
     json.(@user.neighborhood, :id, :name, :city_id, :geographical_display_name)

@@ -10,8 +10,9 @@ Dengue::Application.routes.draw do
 
   namespace :api, :defaults => { :format => :json } do
     namespace :v0 do
-      resources :users, :only => [] do
+      resources :users, :only => [:index, :create, :update] do
         get "scores"
+        put "membership", :on => :member
       end
 
       resource :sync, :only => [:show], :controller => :sync do
@@ -130,7 +131,6 @@ Dengue::Application.routes.draw do
     get :settings, :on => :collection
     get "users", :on => :collection
     get "teams", :on => :collection
-    put "membership/:id", :on => :collection, :action => "membership", :as => :membership
   end
 
   #----------------------------------------------------------------------------

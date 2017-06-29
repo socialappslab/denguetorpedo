@@ -30,22 +30,6 @@ class OrganizationsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
-  # PUT /settings/membership/:id
-
-  def membership
-    authorize @organization
-
-    @membership = @organization.memberships.find_by(:id => params[:id])
-    @membership.role = params[:membership][:role]
-    if @membership.save
-      redirect_to users_settings_path and return
-    else
-      @memberships = @organization.memberships.includes(:user)
-      render users_settings_path and return
-    end
-  end
-
-  #----------------------------------------------------------------------------
   # GET /settings/teams
 
   def teams

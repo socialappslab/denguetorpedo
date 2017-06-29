@@ -1,5 +1,5 @@
 (function () {
-  angular.module('denguechat.directives', []);
+  angular.module('denguechat.directives', ["ui-notification"]);
   angular.module('denguechat.controllers', []);
   angular.module('denguechat.services', ["ngResource"]);
 
@@ -9,8 +9,34 @@
     'denguechat.controllers',
     "denguechat.services",
     'ngMessages',
-    'ngMaterial'
-  ]);
+    // 'ngMaterial',
+    'ui-notification'
+  ]).run(["$rootScope", "Notification", function($rootScope, Notification) {
+
+    $rootScope.$on(denguechat.success, function(event, response) {
+      console.log(response)
+      Notification.success({message: "¡Éxito!", positionY: 'top', positionX: 'right'});
+      if (response.reload)
+        window.location.reload()
+      if (response.redirect_path)
+        window.location.href = response.redirect_path
+    })
+
+    $rootScope.$on(denguechat.error, function(event, response) {
+
+      if (response.status == 0 || response.status == 500)
+        message = "Algo salió mal en nuestro extremo. Inténtelo de nuevo o póngase en contacto con dmitriskj@gmail.com"
+      else if (response.responseJSON)
+        message = response.responseJSON.error
+      else if (response.data)
+        message = response.data.message
+      else
+        message = response.data.error
+      Notification.error({message: message, positionY: 'top', positionX: 'right'});
+    })
+
+
+  }])
 
 }());
 
