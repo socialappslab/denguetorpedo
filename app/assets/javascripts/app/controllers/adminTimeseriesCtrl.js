@@ -12,7 +12,7 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
   var prepareParams = function() {
     // General params.
     var params = {
-      neighborhoods: $scope.neighborhoods,
+      neighborhoods: JSON.stringify($scope.neighborhoods),
       unit: $scope.options.unit
     };
 
@@ -37,22 +37,23 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
 
     var params = prepareParams()
 
-    req = TimeSeries.get({params: params}).$promise
+    console.log(params)
+    req = TimeSeries.get(params).$promise
     req.then(function(response) {
-      $scope.timeseries = response.data.timeseries;
+      $scope.timeseries = response.timeseries;
       if ($scope.timeseries.length === 0)
         $scope.serverErrorMessage = "Sin datos";
 
-      if (response.data.length <= 1) {
+      if ($scope.timeseries.length <= 1) {
         $scope.noChartData = true;
       } else {
         $scope.state.chart = true
         $scope.noChartData = false;
-        drawChart("timeseries-chart", response.data, $scope.options.unit)
+        drawChart("timeseries-chart", response, $scope.options.unit)
       }
     })
     req.catch(function(res) {
-      $scope.$emit(denguechat.error, response)
+      $scope.$emit(denguechat.error, res)
     })
     req.finally(function(res) { $scope.loading = false; })
   }
@@ -74,6 +75,8 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
     else {
       $scope.neighborhoods.splice(index, 1)
     }
+
+    console.log($scope.neighborhoods)
   }
 
   var googleChartOptions = function(chartID, data) {

@@ -32,7 +32,8 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
-    if JSON.parse(params[:neighborhoods]).blank?
+    nids = params[:neighborhoods] && JSON.parse(params[:neighborhoods])
+    if nids.blank?
       raise API::V0::Error.new("Debe seleccionar al menos un comunidad", 422) and return
     end
 
@@ -41,8 +42,8 @@ class API::V0::GraphsController < API::V0::BaseController
     # JSON.parse(params[:neighborhoods]).each do |nparams|
     #   neighborhoods << Neighborhood.find_by_id(nparams)
     # end
-    raise "params[:neighborhoods] = #{params[:neighborhoods].inspect}"
-    neighborhoods = Neighborhood.where(:id => params[:neighborhoods]).includes(:locations)
+
+    neighborhoods = Neighborhood.where(:id => nids).includes(:locations)
     location_ids  = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
 
     # unit is either daily or monthly

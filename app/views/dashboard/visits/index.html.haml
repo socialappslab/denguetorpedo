@@ -2,9 +2,10 @@
   %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
 
 
-- content_for :dashboard_content do
+.container-fluid
 
-  .row{:style => "margin-top: 20px;", "ng-controller" => "adminTimeseriesCtrl"}
+
+  .row{"ng-controller" => "adminTimeseriesCtrl"}
     .col-md-10.col-md-offset-1
       .panel.panel-default
         .panel-heading

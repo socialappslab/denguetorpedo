@@ -1,66 +1,66 @@
-- content_for :dashboard_content do
-  .container
-    .row
-      .col-md-12
-        .panel.panel-default
-          .panel-heading
-            %h3.panel-title
-              Visitas (limited to 100)
-          %ul.list-group
-            - @visits.each do |visit|
-              %li.list-group-item
-                %h2.list-group-item-heading
-                  = visit.visited_at.strftime("%b %d, %Y")
-                %p.list-group-item-text
-                  Hogar:
-                  = visit.location.try(:address)
-                  = "(#{visit.location.try(:latitude)}, #{visit.location.try(:longitude)})"
-                %p.list-group-item-text
-                  Last synced at:
-                  = visit.last_synced_at.strftime("%H:%M %b %d, %Y")
-                %p.list-group-item-text
-                  Last sync sequence:
-                  = visit.last_sync_seq
 
-        .panel.panel-default
-          .panel-heading
-            %h3.panel-title
-              Hogares (limited to 100)
-          %ul.list-group
-            - @locations.each do |location|
-              %li.list-group-item
-                %h2.list-group-item-heading
-                  = location.address
-                %p.list-group-item-text
-                  Visita:
-                  = location.visits.map {|v| v.visited_at.strftime("%b %d, %Y")}.join(", ")
-                %p.list-group-item-text
-                  Last synced at:
-                  = location.last_synced_at.strftime("%H:%M %b %d, %Y")
-                %p.list-group-item-text
-                  Last sync sequence:
-                  = location.last_sync_seq
+.container
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            Visitas (limited to 100)
+        %ul.list-group
+          - @visits.each do |visit|
+            %li.list-group-item
+              %h2.list-group-item-heading
+                = visit.visited_at.strftime("%b %d, %Y")
+              %p.list-group-item-text
+                Hogar:
+                = visit.location.try(:address)
+                = "(#{visit.location.try(:latitude)}, #{visit.location.try(:longitude)})"
+              %p.list-group-item-text
+                Last synced at:
+                = visit.last_synced_at.strftime("%H:%M %b %d, %Y")
+              %p.list-group-item-text
+                Last sync sequence:
+                = visit.last_sync_seq
+
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            Hogares (limited to 100)
+        %ul.list-group
+          - @locations.each do |location|
+            %li.list-group-item
+              %h2.list-group-item-heading
+                = location.address
+              %p.list-group-item-text
+                Visita:
+                = location.visits.map {|v| v.visited_at.strftime("%b %d, %Y")}.join(", ")
+              %p.list-group-item-text
+                Last synced at:
+                = location.last_synced_at.strftime("%H:%M %b %d, %Y")
+              %p.list-group-item-text
+                Last sync sequence:
+                = location.last_sync_seq
 
 
 
-        .panel.panel-default
-          .panel-heading
-            %h3.panel-title
-              Criaderos (limited to 100)
-          %ul.list-group
-            - @reports.each do |report|
-              %li.list-group-item
-                %h2.list-group-item-heading
-                  = report.breeding_site.try(:description_in_es)
-                %p.list-group-item-text
-                  Visita:
-                  = report.initial_visit.try(:strftime, "%b %d, %Y")
-                %p.list-group-item-text
-                  Hogar:
-                  = report.location.try(:address)
-                %p.list-group-item-text
-                  Last synced at:
-                  = report.last_synced_at.strftime("%H:%M %b %d, %Y")
-                %p.list-group-item-text
-                  Last sync sequence:
-                  = report.last_sync_seq
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            Criaderos (limited to 100)
+        %ul.list-group
+          - @reports.each do |report|
+            %li.list-group-item
+              %h2.list-group-item-heading
+                = report.breeding_site.try(:description_in_es)
+              %p.list-group-item-text
+                Visita:
+                = report.initial_visit.try(:strftime, "%b %d, %Y")
+              %p.list-group-item-text
+                Hogar:
+                = report.location.try(:address)
+              %p.list-group-item-text
+                Last synced at:
+                = report.last_synced_at.strftime("%H:%M %b %d, %Y")
+              %p.list-group-item-text
+                Last sync sequence:
+                = report.last_sync_seq

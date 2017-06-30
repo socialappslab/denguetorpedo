@@ -1,101 +1,100 @@
-- content_for :dashboard_content do
-  %div{"ng-controller" => "dashboardLocationsCtrl", :path => api_v0_locations_path}
 
-    .row
-      .col-md-10.col-md-offset-1
-        .panel.panel-default{:style => "margin-top: 20px;"}
-          .panel-heading
-            %h3.panel-title
-              Busca Lugar
-          .panel-body
-            .input-group
-              %span.input-group-addon
-                .fa.fa-search
-              %input.form-control{"ng-model" => "addresses", :placeholder => "Añada hasta 20 Códigos de lugar, cada uno separado por una coma. Encuentre los códigos en la página de Visita.", :type => "text"}/
-              %span.input-group-btn
-                %button.btn.btn-success{:type => "button", "ng-click" => "searchLocations()"} Busca
+.container-fluid{"ng-controller" => "dashboardLocationsCtrl", :path => api_v0_locations_path}
+  .row
+    .col-md-10.col-md-offset-1
+      .panel.panel-default{:style => "margin-top: 20px;"}
+        .panel-heading
+          %h3.panel-title
+            Busca Lugar
+        .panel-body
+          .input-group
+            %span.input-group-addon
+              .fa.fa-search
+            %input.form-control{"ng-model" => "addresses", :placeholder => "Añada hasta 20 Códigos de lugar, cada uno separado por una coma. Encuentre los códigos en la página de Visita.", :type => "text"}/
+            %span.input-group-btn
+              %button.btn.btn-success{:type => "button", "ng-click" => "searchLocations()"} Busca
 
-            .form-errors{"ng-show" => "serverError || serverErrorMessage", :style => "display: block;"}
-              %p
-                {{serverErrorMessage}}
-            %h1.text-center{"ng-show" => "loading"}
-              %i.fa.fa-refresh.fa-spin
+          .form-errors{"ng-show" => "serverError || serverErrorMessage", :style => "display: block;"}
+            %p
+              {{serverErrorMessage}}
+          %h1.text-center{"ng-show" => "loading"}
+            %i.fa.fa-refresh.fa-spin
 
-          %table.table.table-bordered.table-hover.text-center.statistics-table{"ng-hide" => "loading || locations.length === 0"}
-            %thead
-              %th.text-center
-                = I18n.t("attributes.location_id")
-              -# %th.text-center
-              -#   = I18n.t("views.dashboard.locations.visit_summary")
-              %th.text-center
-                = I18n.t("views.dashboard.locations.visit_date")
-              %th.text-center
-                = I18n.t("views.analytics.house_index")
-              %th.text-center
-                = I18n.t("views.analytics.inspection_index")
+        %table.table.table-bordered.table-hover.text-center.statistics-table{"ng-hide" => "loading || locations.length === 0"}
+          %thead
+            %th.text-center
+              = I18n.t("attributes.location_id")
+            -# %th.text-center
+            -#   = I18n.t("views.dashboard.locations.visit_summary")
+            %th.text-center
+              = I18n.t("views.dashboard.locations.visit_date")
+            %th.text-center
+              = I18n.t("views.analytics.house_index")
+            %th.text-center
+              = I18n.t("views.analytics.inspection_index")
 
-              -# %th.text-center
-              -#   = I18n.t("dashboard.reports")
-              -# %th.text-center
-              -#   = I18n.t("views.dashboard.locations.barrel_summary")
-            %tbody
-              %tr.thick-border{"ng-repeat-start" => "location in locations"}
-                %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 10%;"}
-                  {{ location.address }}
-                  .show
-                    %a{"ng-href" => "{{location.neighborhood.path}}", "target" => "_blank"}
-                      {{location.neighborhood.name}}
-                  .show
-                    %span{"ng-if" => "location.csv_path"}
-                      %a{"ng-href" => "{{location.csv_path}}", "target" => "_blank"}
-                        CSV
-                        %i.fa.fa-external-link
-                %td{"ng-if" => "location.visits.length === 0"}
-                %td{"ng-if" => "location.visits.length === 0"}
-                %td{"ng-if" => "location.visits.length === 0"}
-                %td{"ng-if" => "location.visits.length === 0"}
-                %tr{"ng-repeat" => "visit in location.visits", "ng-if" => "location.visits.length !== 0"}
-                  %td{"style" => "width: 7%;"}
-                    {{visit.timestamp}}
-                  %td{"style" => "width: 5%;"}
-                    %div{"ng-repeat" => "color in visit.colors"}
-                      %i.fa.fa-circle{:style => "color: {{color}}"}
-                      %br
-
-
-                  %td{"style" => "width: 15%;"}
-                    %div{"ng-if" => "visit.inspections.length !== 0"}
-                      %div{"ng-repeat" => "inspection in visit.inspections", :style => "color: {{inspection.color}}"}
-                        %i.fa.fa-circle
-                        {{inspection.report.breeding_site}}
-                        %span{"ng-if" => "inspection.report.field_identifier"}
-                          ({{inspection.report.field_identifier}})
+            -# %th.text-center
+            -#   = I18n.t("dashboard.reports")
+            -# %th.text-center
+            -#   = I18n.t("views.dashboard.locations.barrel_summary")
+          %tbody
+            %tr.thick-border{"ng-repeat-start" => "location in locations"}
+              %td{:rowspan => "{{location.visits.length + 1}}", "style" => "width: 10%;"}
+                {{ location.address }}
+                .show
+                  %a{"ng-href" => "{{location.neighborhood.path}}", "target" => "_blank"}
+                    {{location.neighborhood.name}}
+                .show
+                  %span{"ng-if" => "location.csv_path"}
+                    %a{"ng-href" => "{{location.csv_path}}", "target" => "_blank"}
+                      CSV
+                      %i.fa.fa-external-link
+              %td{"ng-if" => "location.visits.length === 0"}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %td{"ng-if" => "location.visits.length === 0"}
+              %tr{"ng-repeat" => "visit in location.visits", "ng-if" => "location.visits.length !== 0"}
+                %td{"style" => "width: 7%;"}
+                  {{visit.timestamp}}
+                %td{"style" => "width: 5%;"}
+                  %div{"ng-repeat" => "color in visit.colors"}
+                    %i.fa.fa-circle{:style => "color: {{color}}"}
+                    %br
 
 
-                  -# %td{"style" => "width: 15%;"}
-                  -#   {{ (visit.inspections | filter:{identification_type:0}).length }}
-                  -#   = I18n.t("views.dashboard.locations.total_positive_sites").downcase
-                  -#   %br
-                  -#   {{ (visit.inspections | filter:{identification_type:1}).length }}
-                  -#   = I18n.t("views.dashboard.locations.total_potential_sites").downcase
-                  -#
-                  -# %td.text-left{"style" => "width: 15%;"}
-                  -#   {{ visit.barrel_reports.total}}
-                  -#   Total,
-                  -#   {{ visit.barrel_reports.protected }}
-                  -#   = I18n.t("activerecord.attributes.report.protected") + ","
-                  -#   {{ visit.barrel_reports.unprotected }}
-                  -#   = I18n.t("activerecord.attributes.report.unprotected")
-                  -#   %br
-                  -#   {{ visit.barrel_reports.larvae }}
-                  -#   = I18n.t("activerecord.attributes.report.larvae") + ","
-                  -#   {{ visit.barrel_reports.pupae }}
-                  -#   = I18n.t("activerecord.attributes.report.pupae") + ","
-                  -#   {{ visit.barrel_reports.chemically_treated }}
-                  -#   = I18n.t("activerecord.attributes.report.chemically_treated")
+                %td{"style" => "width: 15%;"}
+                  %div{"ng-if" => "visit.inspections.length !== 0"}
+                    %div{"ng-repeat" => "inspection in visit.inspections", :style => "color: {{inspection.color}}"}
+                      %i.fa.fa-circle
+                      {{inspection.report.breeding_site}}
+                      %span{"ng-if" => "inspection.report.field_identifier"}
+                        ({{inspection.report.field_identifier}})
 
 
-              %tr{"ng-repeat-end" => true}
+                -# %td{"style" => "width: 15%;"}
+                -#   {{ (visit.inspections | filter:{identification_type:0}).length }}
+                -#   = I18n.t("views.dashboard.locations.total_positive_sites").downcase
+                -#   %br
+                -#   {{ (visit.inspections | filter:{identification_type:1}).length }}
+                -#   = I18n.t("views.dashboard.locations.total_potential_sites").downcase
+                -#
+                -# %td.text-left{"style" => "width: 15%;"}
+                -#   {{ visit.barrel_reports.total}}
+                -#   Total,
+                -#   {{ visit.barrel_reports.protected }}
+                -#   = I18n.t("activerecord.attributes.report.protected") + ","
+                -#   {{ visit.barrel_reports.unprotected }}
+                -#   = I18n.t("activerecord.attributes.report.unprotected")
+                -#   %br
+                -#   {{ visit.barrel_reports.larvae }}
+                -#   = I18n.t("activerecord.attributes.report.larvae") + ","
+                -#   {{ visit.barrel_reports.pupae }}
+                -#   = I18n.t("activerecord.attributes.report.pupae") + ","
+                -#   {{ visit.barrel_reports.chemically_treated }}
+                -#   = I18n.t("activerecord.attributes.report.chemically_treated")
 
-          .panel-footer
-            Busca hasta 20 lugares a la vez. Añade el código de lugar separado por una coma
+
+            %tr{"ng-repeat-end" => true}
+
+        .panel-footer
+          Busca hasta 20 lugares a la vez. Añade el código de lugar separado por una coma
