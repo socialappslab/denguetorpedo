@@ -3,7 +3,7 @@ angular.module("denguechat.controllers").controller("communityTimeseriesCtrl", [
   $scope.noChartData  = false;
   $scope.state        = {showTable: false}
   $scope.options      = {
-    neighborhoods: [$attrs.neighborhoodId],
+    neighborhoods: JSON.stringify([$attrs.neighborhoodId]),
     unit: "monthly",
     timeframe: "6",
     positive: true,
@@ -14,7 +14,7 @@ angular.module("denguechat.controllers").controller("communityTimeseriesCtrl", [
   $scope.refreshChartWithParams = function() {
     $scope.chartLoading = true;
 
-    req = TimeSeries.get({params: $scope.options}).$promise;
+    req = TimeSeries.get($scope.options).$promise;
     req.then(function(response) {
       $scope.timeseries  = response.timeseries
       $scope.noChartData = (response.timeseries.length == 0);
