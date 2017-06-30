@@ -15,7 +15,13 @@ class User < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def selected_membership
-    return self.memberships.find_by(:active => true)
+    active_m = self.memberships.find_by(:active => true)
+    if active_m.blank?
+      active_m = self.memberships.first
+      active_m.update_column(:active, true)
+    end
+
+    return active_m
   end
 
   def jwt_token

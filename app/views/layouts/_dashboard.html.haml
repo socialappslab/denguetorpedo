@@ -102,35 +102,31 @@
 
         %li.dropdown.text-center
           = image_tag(asset_path(@current_user.picture), :class => "img-circle dropdown-toggle", :style => "height: 50px; width: 50px;", :data => {:toggle=>"dropdown"})
-          %ul.dropdown-menu{"style" => "right: 50%;"}
-            %li.disabled
-              = link_to user_path(@current_user), :class => "disabled" do
-                = @current_user.selected_membership.organization.name
-            %li.divider
-            %li
+          %ul.list-group.dropdown-menu{"style" => "right: 50%;"}
+            %li.list-group-item
               = link_to user_path(@current_user) do
                 -# %i.fa.fa-user.fa-2
                 = I18n.t("dashboard.my_profile")
-            %li.divider
-            %li
+            -# %li.list-group-item
+            %li.list-group-item
               = link_to edit_user_path(@current_user) do
                 -# %i.fa.fa-gear.fa-2
                 = I18n.t("common_terms.configuration")
-            %li.divider
-            -# - if @current_user.coordinator?
-            -#   - is_dashboard = request[:controller].include?("dashboard")
-            -#   %li
-            -#     = link_to is_dashboard ? city_path(@current_user.city) : dashboard_visits_path do
-            -#       -# %i.fa.fa-line-chart.fa-2
-            -#       = is_dashboard ? I18n.t("views.denguechat_engage") : I18n.t("views.denguechat_analytics")
-            -#   %li.divider
-            -#   %li
-            -#     = link_to coordinator_path do
-            -#       -# %i.fa.fa-user-secret.fa-2
-            -#       = I18n.t("views.coordinator.home")
-            -#   %li.divider
 
-            %li
+            %li.list-group-item.disabled
+              %a Organizaciones
+
+            - @current_user.memberships.each do |m|
+              %li.list-group-item
+                = link_to switch_users_path(:membership_id => m.id) do
+                  = m.organization.name
+                  - if m.active
+                    %span.badge{:style => "background-color: #468847;"}
+                      %i.fa.fa-check
+
+
+
+            %li.list-group-item
               = link_to logout_path do
                 -# %i.fa.fa-2.fa-sign-out
                 = I18n.t("login_form.logout")

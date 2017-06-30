@@ -22,6 +22,18 @@ class UsersController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /users/switch
+
+  # This action is responsible for setting cookie settings for a user.
+  def switch
+    @current_user.selected_membership.update_column(:active, false)
+    @current_user.memberships.find_by(:id => params[:membership_id]).update_column(:active, true)
+
+    redirect_to :back and return
+  end
+
+
+  #----------------------------------------------------------------------------
   # GET /users/1/
 
   def show

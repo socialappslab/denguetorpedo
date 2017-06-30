@@ -182,6 +182,8 @@ Dengue::Application.routes.draw do
     resources :conversations, :only => [:index, :show]
     resources :messages,      :only => [:create]
 
+    get "switch", :on => :collection
+
     collection do
       post "set-cookies", :action => "set_neighborhood_cookie", :as => :set_cookies
     end
