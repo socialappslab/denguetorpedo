@@ -157,7 +157,7 @@
               = link_to teams_organizations_path do
                 = I18n.t("dashboard.organization.sections.teams")
 
-
+  - if @current_user && @current_user.selected_membership.try(:admin?)
     - if request.params["controller"].include?("dashboard")
       %nav.navbar.navbar-default#subheader
 
