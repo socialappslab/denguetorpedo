@@ -1,12 +1,13 @@
 class DashboardPolicy
-  attr_reader :user, :record
+  attr_reader :membership, :record
 
-  def initialize(user, record)
-    @user   = user
+  def initialize(membership, record)
+    @membership = membership
     @record = record
   end
 
   def index?
-    return user.coordinator?
+    return false if @membership.blank?
+    return @membership.manager?
   end
 end
