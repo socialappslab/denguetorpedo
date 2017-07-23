@@ -28,6 +28,12 @@ es:
     breeding_site_id: Tipo de criadero
   activerecord:
     models:
+      city:
+        one: Ciudad
+        other: Ciudades
+      district:
+        one: Distrito
+        other: Distritos
       organization:
         name: "Organización"
       report:
@@ -57,9 +63,6 @@ es:
         one: Equipo
         other: Equipos
       location: Dirección
-      city:
-        one: Ciudad
-        other: Ciudades
     attributes:
       user:
         username: "Nombre de usuario"

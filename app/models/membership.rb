@@ -15,8 +15,20 @@ class Membership < ActiveRecord::Base
   def options
     city = self.user.city
 
+    n_hash = Neighborhood.order("name ASC").as_json(:only => [:id, :name])
+    n_hash.map! {|n| n.merge(:code => "neighborhood", :category => I18n.t("activerecord.models.neighborhood.one") )}
+
+    d_hash = District.order("name ASC").as_json(:only => [:id, :name])
+    d_hash.map! {|n| n.merge(:code => "district", :category => I18n.t("activerecord.models.district.one") )}
+
+    c_hash = City.order("name ASC").as_json(:only => [:id, :name])
+    c_hash.map! {|n| n.merge(:code => "city", :category => I18n.t("activerecord.models.city.one") )}
+
     return {
-      :neighborhoods => city.neighborhoods.as_json(:only => [:id, :name])
+      :neighborhoods => n_hash,
+      :cities => c_hash,
+      :districts => d_hash,
+      :analytics_options => (n_hash + c_hash + d_hash)
     }
   end
 
