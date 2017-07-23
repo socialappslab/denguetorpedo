@@ -46,10 +46,10 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
     $scope.serverError = false;
     $scope.serverErrorMessage = null;
     $scope.timeseries    = [];
+    $scope.noChartData  = false;
 
     var params = prepareParams()
 
-    console.log(params)
     req = TimeSeries.get(params).$promise
     req.then(function(response) {
       $scope.timeseries = response.timeseries;
