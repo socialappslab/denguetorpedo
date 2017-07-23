@@ -1,0 +1,5 @@
+angular.module('denguechat.services').service('analyticsInit', function(){
+  return {
+    "options": <%= @selected_membership.options.to_json.html_safe %>
+  }
+});

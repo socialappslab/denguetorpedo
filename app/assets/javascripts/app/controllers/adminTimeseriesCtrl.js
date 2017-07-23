@@ -1,18 +1,30 @@
 
-angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$scope", "$http", "$attrs", "TimeSeries", function ($scope, $http, $attrs, TimeSeries) {
+angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$scope", "$http", "$attrs", "TimeSeries", "analyticsInit", function ($scope, $http, $attrs, TimeSeries, analyticsInit) {
   $scope.loading       = false;
   $scope.neighborhoods = [];
   $scope.timeseries    = [];
-  $scope.options       = {unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true};
+  $scope.options       = {unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true, neighborhoods: []};
   $scope.customDateRange = false;
   $scope.chartLoading = false;
   $scope.noChartData  = false;
   $scope.state = {chart: false}
 
+  $scope.analytics_options = analyticsInit.options
+  $scope.cities     = []
+
+  $scope.tagTransform = function(newTag) {
+    return null
+  }
+
   var prepareParams = function() {
+    nids = []
+    for (var i = 0; i < $scope.options.neighborhoods.length; i++) {
+      nids.push($scope.options.neighborhoods[i].id)
+    }
+
     // General params.
     var params = {
-      neighborhoods: JSON.stringify($scope.neighborhoods),
+      neighborhoods: JSON.stringify(nids),
       unit: $scope.options.unit
     };
 
@@ -34,10 +46,10 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
     $scope.serverError = false;
     $scope.serverErrorMessage = null;
     $scope.timeseries    = [];
+    $scope.noChartData  = false;
 
     var params = prepareParams()
 
-    console.log(params)
     req = TimeSeries.get(params).$promise
     req.then(function(response) {
       $scope.timeseries = response.timeseries;
@@ -64,20 +76,20 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
     $scope.serverErrorMessage = null;
     var params = prepareParams()
 
-    window.location.href = $attrs.path + ".csv?" + $.param(params)
+    window.location.href = "/api/v0/graph/timeseries.csv?" + $.param(params)
   }
 
 
-  $scope.toggleNeighborhood = function(id) {
-    index = $scope.neighborhoods.indexOf(id)
-    if (index === -1)
-      $scope.neighborhoods.push(id)
-    else {
-      $scope.neighborhoods.splice(index, 1)
-    }
-
-    console.log($scope.neighborhoods)
-  }
+  // $scope.toggleNeighborhood = function(id) {
+  //   index = $scope.neighborhoods.indexOf(id)
+  //   if (index === -1)
+  //     $scope.neighborhoods.push(id)
+  //   else {
+  //     $scope.neighborhoods.splice(index, 1)
+  //   }
+  //
+  //   console.log($scope.neighborhoods)
+  // }
 
   var googleChartOptions = function(chartID, data) {
     colors = []

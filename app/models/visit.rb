@@ -124,8 +124,14 @@ class Visit < ActiveRecord::Base
       # is not present in the time_series, create it.
       # Why Set? Because set is a collection of unordered values with no duplicates.
       # This saves us the time of removing duplicate location ids.
-      visit_date = (scale == "monthly") ? visit.visited_at.strftime("%Y-%m") : visit.visited_at.strftime("%Y-%m-%d")
-      series     = time_series.find {|stat| stat[:date] == visit_date}
+      visit_date = visit.visited_at.strftime("%Y-%m-%d")
+      if scale == "yearly"
+        visit_date = visit.visited_at.strftime("%Y")
+      elsif scale == "monthly"
+        visit_date = visit.visited_at.strftime("%Y-%m")
+      end
+
+      series = time_series.find {|stat| stat[:date] == visit_date}
       if series.blank?
         series = {:date => visit_date}
         [:positive, :potential, :negative, :total].each { |key| series[key] = {:locations => Set.new} }

@@ -58,7 +58,7 @@ class API::V0::GraphsController < API::V0::BaseController
     respond_to do |format|
       format.csv do
         filename = neighborhoods.map {|n| n.name.gsub(" ", "_").downcase}.join("_") + "_visita_datos.csv"
-        send_data generate_csv_for_timeseries(@@statistics), :filename => filename
+        send_data generate_csv_for_timeseries(@statistics), :filename => filename
       end
 
       format.json do

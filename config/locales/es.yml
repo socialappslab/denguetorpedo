@@ -647,8 +647,8 @@ es:
           potential_followup: "Potencialidad - seguimiento"
           all_time: "Todo el tiempo"
           months:
-            one: "1 mes"
-            other: "%{count} meses"
+            one: "Último 1 mes"
+            other: "Últimos %{count} meses"
           percentages:
             cumulative: Porcentaje acumulado relativo a todos los casas visitados
             daily: Porcentaje relativo a los casas visitados en un dia
