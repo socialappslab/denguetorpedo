@@ -12,6 +12,15 @@ class Membership < ActiveRecord::Base
     ADMIN       = "admin"
   end
 
+  def options
+    city = self.user.city
+
+    return {
+      :neighborhoods => city.neighborhoods.as_json(:only => [:id, :name])
+    }
+  end
+
+
   def coordinator?
     return self.role == Roles::COORDINATOR
   end
