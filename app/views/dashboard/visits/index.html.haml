@@ -41,6 +41,9 @@
                     = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'monthly'}" do
                       = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "options.unit"
                       En un mes
+                    = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'yearly'}" do
+                      = radio_button_tag "chart[percentages]", "yearly", nil, "ng-model" => "options.unit"
+                      En un año
               .col-sm-4
                 %p.black
                   = I18n.t("views.statistics.chart.time")
@@ -122,7 +125,8 @@
                 %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
                 %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
                   = I18n.t("common_terms.no_data")
-                #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
+                %div{"ng-hide" => "chartLoading || noChartData"}
+                  #timeseries-chart
 
           %li.list-group-item{"ng-show" => "timeseries.length > 0"}
 
