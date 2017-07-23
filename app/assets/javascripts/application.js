@@ -12,6 +12,7 @@
 //= require angular-resource
 //= require angular-sanitize
 //= require "ui-notification"
+//= require select.js
 //= require app/app
 //= require_tree ./app/controllers/
 //= require_tree ./app/directives/
