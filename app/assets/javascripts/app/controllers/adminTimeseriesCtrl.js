@@ -41,6 +41,7 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
   }
 
   $scope.refreshChartWithParams = function() {
+    $scope.timeseries  = []
     $scope.loading     = true;
     $scope.serverError = false;
     $scope.serverErrorMessage = null;

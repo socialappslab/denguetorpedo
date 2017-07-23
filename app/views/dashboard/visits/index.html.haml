@@ -101,7 +101,7 @@
               %h3.panel-title{"ng-show" => "state.chart"}
                 = I18n.t('views.statistics.chart.title')
 
-              .legend{:style => "margin-left: 0px; margin-top: 0px;", "ng-show" => "state.chart"}
+              .legend{:style => "margin-left: 0px; margin-top: 0px;", "ng-show" => "timeseries.length > 0"}
                 .row
                   .col-xs-4
                     %span.chart-legend.red
