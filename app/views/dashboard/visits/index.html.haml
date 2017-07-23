@@ -23,9 +23,9 @@
             %p.black
               Comunidades
 
-            %ui-select.form-control{:multiple => "", "ng-model" => "options.neighborhoods", :tagging => "tagTransform", :theme => "select2", :title => "Filtrar por comunidad"}
+            %ui-select.form-control{:multiple => "", "ng-model" => "options.geographies", :tagging => "tagTransform", :theme => "select2", :title => "Filtrar por comunidad"}
               %ui-select-match {{$item.name}}
-              %ui-select-choices{ "minimum-input-length" => 1, :repeat => "city in analytics_options.neighborhoods | propsFilter: {name: $select.search}"}
+              %ui-select-choices{"group-by" => "groupBy", "minimum-input-length" => 1, :repeat => "city in analytics_options.analytics_options | propsFilter: {name: $select.search}"}
                 %span{"ng-bind-html" => "city.name | highlight: $select.search"}
 
           %li.list-group-item

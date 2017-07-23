@@ -3,28 +3,27 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
   $scope.loading       = false;
   $scope.neighborhoods = [];
   $scope.timeseries    = [];
-  $scope.options       = {unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true, neighborhoods: []};
+  $scope.options       = {unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true, geographies: []};
   $scope.customDateRange = false;
   $scope.chartLoading = false;
   $scope.noChartData  = false;
   $scope.state = {chart: false}
 
   $scope.analytics_options = analyticsInit.options
-  $scope.cities     = []
 
   $scope.tagTransform = function(newTag) {
     return null
   }
 
-  var prepareParams = function() {
-    nids = []
-    for (var i = 0; i < $scope.options.neighborhoods.length; i++) {
-      nids.push($scope.options.neighborhoods[i].id)
-    }
+  $scope.groupBy = function(item) {
+    console.log(item)
+    return item.category
+  }
 
+  var prepareParams = function() {
     // General params.
     var params = {
-      neighborhoods: JSON.stringify(nids),
+      geographies: JSON.stringify($scope.options.geographies),
       unit: $scope.options.unit
     };
 
