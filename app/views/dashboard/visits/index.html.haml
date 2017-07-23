@@ -89,10 +89,6 @@
                 .pull-right
                   %a.btn.btn-success{"ng-click" => "refreshChartWithParams()", :style => "cursor: hand;"}
                     Vista previa
-
-            .form-errors{:style => "display: block;", "ng-show" => "serverError || serverErrorMessage"}
-              %p
-                {{serverErrorMessage || "Algo salió mal. Por favor, intente nuevamente."}}
             %h1.text-center{"ng-show" => "loading"}
               %i.fa.fa-refresh.fa-spin
 
@@ -123,13 +119,18 @@
 
               #timeseries
                 %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+
+                .form-errors{:style => "display: block;", "ng-show" => "!noChartData && (serverError || serverErrorMessage)"}
+                  %p
+                    {{serverErrorMessage || "Algo salió mal. Por favor, intente nuevamente."}}
+
+
                 %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
                   = I18n.t("common_terms.no_data")
                 %div{"ng-hide" => "chartLoading || noChartData"}
                   #timeseries-chart
 
           %li.list-group-item{"ng-show" => "timeseries.length > 0"}
-
             %a.btn.btn-success{"ng-click" => "generateCsv()", :style => "cursor: hand;"}
               %i.fa.fa-download
               Descargar
