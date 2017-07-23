@@ -32,19 +32,34 @@ class API::V0::GraphsController < API::V0::BaseController
       end
     end
 
-    nids = params[:neighborhoods] && JSON.parse(params[:neighborhoods])
-    if nids.blank?
+    # NOTE: We're sending a geographies object that encapsulates the 'category' type
+    # we should search against.
+    nids        = params[:neighborhoods] && JSON.parse(params[:neighborhoods])
+    geographies = params[:geographies] && JSON.parse(params[:geographies])
+    if nids.blank? && geographies.blank?
       raise API::V0::Error.new("Debe seleccionar al menos un comunidad", 422) and return
     end
 
-    # TODO: Remove
-    # neighborhoods = []
-    # JSON.parse(params[:neighborhoods]).each do |nparams|
-    #   neighborhoods << Neighborhood.find_by_id(nparams)
-    # end
+    if nids.present?
+      neighborhoods = Neighborhood.where(:id => nids).includes(:locations)
+      location_ids  = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
+    else
+      location_ids = []
 
-    neighborhoods = Neighborhood.where(:id => nids).includes(:locations)
-    location_ids  = neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
+      nids          = geographies.find_all {|g| g["code"] == "neighborhood" }.map {|g| g["id"]}
+      neighborhoods = Neighborhood.where(:id => nids).includes(:locations)
+      location_ids += neighborhoods.map {|n| n.locations.pluck(:id)}.flatten.uniq
+
+      cids   = geographies.find_all {|g| g["code"] == "city" }.map {|g| g["id"]}
+      cities = City.where(:id => cids)
+      location_ids += cities.map {|item| item.locations.pluck(:id)}.flatten.uniq
+
+      dids = geographies.find_all {|g| g["code"] == "district" }.map {|g| g["id"]}
+      districts = District.where(:id => dids)
+      location_ids += districts.map {|item| item.locations.pluck(:id)}.flatten.uniq
+
+      location_ids.uniq!
+    end
 
     # unit is either daily or monthly
     @statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
