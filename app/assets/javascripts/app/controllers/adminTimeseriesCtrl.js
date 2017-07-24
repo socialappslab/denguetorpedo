@@ -3,6 +3,7 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
   $scope.loading       = false;
   $scope.neighborhoods = [];
   $scope.timeseries    = [];
+  $scope.odds_ratios   = [];
   $scope.options       = {unit: "monthly", timeframe: "6", positive: true, potential: true, negative: true, geographies: []};
   $scope.customDateRange = false;
   $scope.chartLoading = false;
@@ -42,6 +43,7 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
 
   $scope.refreshChartWithParams = function() {
     $scope.timeseries  = []
+    $scope.odds_ratios  = []
     $scope.loading     = true;
     $scope.serverError = false;
     $scope.serverErrorMessage = null;
@@ -52,7 +54,9 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
 
     req = TimeSeries.get(params).$promise
     req.then(function(response) {
-      $scope.timeseries = response.timeseries;
+      $scope.timeseries  = response.timeseries;
+      $scope.odds_ratios = response.odds_ratios;
+
       if ($scope.timeseries.length === 0)
         $scope.serverErrorMessage = "Sin datos";
 

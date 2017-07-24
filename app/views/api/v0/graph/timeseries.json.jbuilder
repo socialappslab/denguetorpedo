@@ -4,4 +4,5 @@ json.header do
   json.potential I18n.t('views.statistics.chart.percent_of_potential_sites')
   json.negative  I18n.t('views.statistics.chart.percent_of_negative_sites')
 end
-json.timeseries @statistics
+json.timeseries  @statistics
+json.odds_ratios @odds_ratios
