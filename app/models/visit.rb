@@ -112,9 +112,13 @@ class Visit < ActiveRecord::Base
       inspections_by_visit[ins.visit_id] ||= {
         Inspection::Types::POSITIVE  => Set.new,
         Inspection::Types::POTENTIAL => Set.new,
-        Inspection::Types::NEGATIVE  => Set.new
+        Inspection::Types::NEGATIVE  => Set.new,
+        :protected => Set.new,
+        :chemically_treated => Set.new
       }
       inspections_by_visit[ins.visit_id][ins.identification_type].add(ins.id)
+      inspections_by_visit[ins.visit_id][:protected].add(ins.id) if ins.protected
+      inspections_by_visit[ins.visit_id][:chemically_treated].add(ins.id) if ins.chemically_treated
     end
 
     # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
@@ -134,12 +138,11 @@ class Visit < ActiveRecord::Base
       series = time_series.find {|stat| stat[:date] == visit_date}
       if series.blank?
         series = {:date => visit_date}
-        [:positive, :potential, :negative, :total].each { |key| series[key] = {:locations => Set.new} }
+        [:positive, :potential, :negative, :protected, :chemically_treated, :total].each do |key|
+          series[key] = {:locations => Set.new}
+        end
         time_series << series
       end
-
-      # Account for all locations by adding to :total
-      series[:total][:locations].add(visit.location_id)
 
       # Add to :positive if at least one inspection is positive. Also add to
       # :potential if at least one inspection is potential.
@@ -148,7 +151,13 @@ class Visit < ActiveRecord::Base
         pot_reports = visit_counts_by_type[Inspection::Types::POTENTIAL]
         series[:positive][:locations].add(visit.location_id)  if pos_reports.size > 0
         series[:potential][:locations].add(visit.location_id) if pot_reports.size > 0
+
+        series[:chemically_treated][:locations].add(visit.location_id) if visit_counts_by_type[:chemically_treated].size > 0
+        series[:protected][:locations].add(visit.location_id) if visit_counts_by_type[:protected].size > 0
       end
+
+      # Account for all locations by adding to :total
+      series[:total][:locations].add(visit.location_id)
 
       # Instead of tracking negative location by presence of N and by whether the negative locations are a
       # superset of both positive locations and potential locations (as we were previously doing), we define
@@ -156,8 +165,9 @@ class Visit < ActiveRecord::Base
       series[:negative][:locations] = series[:total][:locations] - (series[:positive][:locations] + series[:potential][:locations])
     end
 
+    # Convert set notation to array.
     time_series.each do |ts|
-      [:positive, :potential, :negative, :total].each do |key|
+      [:positive, :potential, :negative, :protected, :chemically_treated, :total].each do |key|
         ts[key][:locations] = ts[key][:locations].to_a
       end
     end
@@ -232,14 +242,28 @@ class Visit < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
+  def self.calculate_statistics_for_odds_ratio(time_series)
+    time_series.each do |day_statistic|
+      [:positive_protected, :positive_not_protected, :not_positive_protected, :not_positive_not_protected,
+       :positive_chemically_treated, :positive_not_chemically_treated, :not_positive_chemically_treated, :not_positive_not_chemically_treated].each do |key|
+        day_statistic[key][:count] = day_statistic[key][:locations].count
+      end
+    end
+
+    return time_series
+  end
+
+
+  #----------------------------------------------------------------------------
+
   def self.calculate_statistics_for_time_series(time_series)
     time_series.each do |day_statistic|
-      [:positive, :potential, :negative, :total].each do |key|
+      [:positive, :potential, :negative, :chemically_treated, :protected, :total].each do |key|
         day_statistic[key][:count] = day_statistic[key][:locations].count
       end
 
       total = day_statistic[:total][:count]
-      [:positive, :potential, :negative].each do |key|
+      [:positive, :potential, :chemically_treated, :protected, :negative].each do |key|
         day_statistic[key][:percent] = (total == 0 ? 0 : (day_statistic[key][:count].to_f / total * 100).round(0)  )
       end
     end
