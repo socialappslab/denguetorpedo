@@ -64,11 +64,13 @@ class API::V0::GraphsController < API::V0::BaseController
     # unit is either daily or monthly
     @statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
     @statistics.each do |shash|
-      [:positive, :potential, :negative, :total].each do |status|
+      [:positive, :potential, :chemically_treated, :protected, :negative, :total].each do |status|
         locations = Location.where(:id => shash[status][:locations]).order("address ASC").pluck(:address)
         shash[status][:locations] = locations
       end
     end
+
+    @odds_ratios = Visit.calculate_odds_ratio_for_locations(location_ids, start_time, end_time, params[:unit])
 
     respond_to do |format|
       format.csv do

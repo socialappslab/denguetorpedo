@@ -130,12 +130,90 @@
                 %div{"ng-hide" => "chartLoading || noChartData"}
                   #timeseries-chart
 
+          %li.list-group-item{"ng-show" => "odds_ratios.length > 0"}
+            %p.black
+              Odds Ratio de Barril
+            %p.help-text
+              NOTE: Potential barrels are not included in the count
+
+            %table.show.table.table-bordered.table-responsive{:style => "margin-top: 20px;"}
+              %thead
+                %th{"ng-repeat" => "odds_ratio in odds_ratios"}
+                  {{odds_ratio.date}}
+
+              %tbody
+                %tr
+                  %td{"ng-repeat" => "odds_ratio in odds_ratios"}
+                    %table.table.table-bordered
+                      %thead
+                        %th
+                        %th Positivo
+                        %th No Positivo
+                      %tr
+                        %td{:style => "font-weight:bold;"} Protegido
+                        %td {{odds_ratio.positive_protected.count}}
+                        %td {{odds_ratio.not_positive_protected.count}}
+                      %tr
+                        %td{:style => "font-weight:bold;"} No Protegido
+                        %td {{odds_ratio.positive_not_protected.count}}
+                        %td {{odds_ratio.not_positive_not_protected.count}}
+
+                %tr
+                  %td{"ng-repeat" => "odds_ratio in odds_ratios"}
+                    %table.table.table-bordered
+                      %thead
+                        %th
+                        %th Positivo
+                        %th No Positivo
+                      %tr
+                        %td{:style => "font-weight:bold;"} No Protegido
+                        %td {{odds_ratio.positive_not_protected.count}}
+                        %td {{odds_ratio.not_positive_not_protected.count}}
+                      %tr
+                        %td{:style => "font-weight:bold;"} Protegido
+                        %td {{odds_ratio.positive_protected.count}}
+                        %td {{odds_ratio.not_positive_protected.count}}
+
+                %tr
+                  %td{"ng-repeat" => "odds_ratio in odds_ratios"}
+                    %table.table.table-bordered
+                      %thead
+                        %th
+                        %th Positivo
+                        %th No Positivo
+                      %tr
+                        %td{:style => "font-weight:bold;"} Abatizado
+                        %td {{odds_ratio.positive_chemically_treated.count}}
+                        %td {{odds_ratio.not_positive_chemically_treated.count}}
+                      %tr
+                        %td{:style => "font-weight:bold;"} No Abatizado
+                        %td {{odds_ratio.positive_not_chemically_treated.count}}
+                        %td {{odds_ratio.not_positive_not_chemically_treated.count}}
+
+                %tr
+                  %td{"ng-repeat" => "odds_ratio in odds_ratios"}
+                    %table.table.table-bordered
+                      %thead
+                        %th
+                        %th Positivo
+                        %th No Positivo
+                      %tr
+                        %td{:style => "font-weight:bold;"} No Abatizado
+                        %td {{odds_ratio.positive_not_chemically_treated.count}}
+                        %td {{odds_ratio.not_positive_not_chemically_treated.count}}
+                      %tr
+                        %td{:style => "font-weight:bold;"} Abatizado
+                        %td {{odds_ratio.positive_chemically_treated.count}}
+                        %td {{odds_ratio.not_positive_chemically_treated.count}}
+
+
+
           %li.list-group-item{"ng-show" => "timeseries.length > 0"}
             %a.btn.btn-success{"ng-click" => "generateCsv()", :style => "cursor: hand;"}
               %i.fa.fa-download
               Descargar
 
-            %table.table.table-bordered.table-responsive{:style => "margin-top: 20px;"}
+            %table.show.table.table-bordered.table-responsive{:style => "margin-top: 20px;"}
               %thead
                 %th{:style => "width: 10%"}
                   Data
