@@ -85,6 +85,15 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   # This calculates the daily percentage of houses that were visited on that day.
+  def self.calculate_odds_ratio_for_locations(location_ids, start_time, end_time, scale)
+    time_series = Visit.odds_ratio(location_ids, scale)
+    time_series = Visit.calculate_statistics_for_odds_ratio(time_series)
+    time_series = Visit.filter_time_series_by_range(time_series, start_time, end_time, scale)
+    return time_series
+  end
+
+
+  # This calculates the daily percentage of houses that were visited on that day.
   def self.calculate_time_series_for_locations(location_ids, start_time, end_time, scale)
     time_series = Visit.segment_locations_by_date_and_type(location_ids, start_time, end_time, scale)
 
@@ -171,6 +180,108 @@ class Visit < ActiveRecord::Base
         ts[key][:locations] = ts[key][:locations].to_a
       end
     end
+    return time_series
+  end
+
+  #----------------------------------------------------------------------------
+
+  # This method separates the location_ids into a visit date and, within that, into
+  # identification type (positive, potential, negative).
+  def self.odds_ratio(location_ids, scale, string_id = "barrel")
+    # NOTE: We *cannot* query by start_time here since we would be ignoring the full
+    # history of the locations. Instead, we do it at the end.
+    # visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
+    visits       = Visit.where("csv_id IS NOT NULL OR source = ?", "mobile").where(:location_id => location_ids).order("visited_at ASC")
+    return [] if visits.blank?
+
+    # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
+    inspections_by_visit = {}
+    # inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
+    inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL OR source = ?", "mobile").where(:visit_id => visits.pluck(:id))
+    inspections.map do |ins|
+      next unless ins.breeding_site.try(:string_id) == string_id
+
+      inspections_by_visit[ins.visit_id] ||= {
+        Inspection::Types::POSITIVE  => Set.new,
+        Inspection::Types::POTENTIAL => Set.new,
+        Inspection::Types::NEGATIVE  => Set.new,
+        :protected => Set.new,
+        :chemically_treated => Set.new
+      }
+      inspections_by_visit[ins.visit_id][ins.identification_type].add(ins.id)
+
+      # This is solely used for Odds-Ratio.
+      inspections_by_visit[ins.visit_id][:protected].add(ins.id) if ins.protected
+      inspections_by_visit[ins.visit_id][:chemically_treated].add(ins.id) if ins.chemically_treated
+    end
+
+    # NOTE: We assume here that there is a 1-1 correspondence between visit and day.
+    time_series = []
+    visits.each do |visit|
+      # Identify and find a matching entry for the key we're using. If the key
+      # is not present in the time_series, create it.
+      # Why Set? Because set is a collection of unordered values with no duplicates.
+      # This saves us the time of removing duplicate location ids.
+      visit_date = visit.visited_at.strftime("%Y-%m-%d")
+      if scale == "yearly"
+        visit_date = visit.visited_at.strftime("%Y")
+      elsif scale == "monthly"
+        visit_date = visit.visited_at.strftime("%Y-%m")
+      end
+
+      series = time_series.find {|stat| stat[:date] == visit_date}
+      if series.blank?
+        series = {:date => visit_date}
+        [:total, :positive_protected, :positive_not_protected, :not_positive_protected, :not_positive_not_protected,
+         :positive_chemically_treated, :positive_not_chemically_treated, :not_positive_chemically_treated, :not_positive_not_chemically_treated].each do |key|
+          series[key] = {:locations => Set.new}
+        end
+        time_series << series
+      end
+
+      # Add to :positive if at least one inspection is positive. Also add to
+      # :potential if at least one inspection is potential.
+      if visit_counts_by_type = inspections_by_visit[visit.id]
+        # NOTE: Josefina said specifically that if it's potential, you do NOT
+        # treat it as positive.
+        pos  = (visit_counts_by_type[Inspection::Types::POSITIVE].size > 0)
+        prot = visit_counts_by_type[:protected].size > 0
+        chem = visit_counts_by_type[:chemically_treated].size > 0
+
+
+        if pos && prot
+          series[:positive_protected][:locations].add(visit.location_id)
+        elsif pos && !prot
+          series[:positive_not_protected][:locations].add(visit.location_id)
+        elsif !pos && prot
+          series[:not_positive_protected][:locations].add(visit.location_id)
+        elsif !pos && !prot
+          series[:not_positive_not_protected][:locations].add(visit.location_id)
+        end
+
+        if pos && chem
+          series[:positive_chemically_treated][:locations].add(visit.location_id)
+        elsif pos && !chem
+          series[:positive_not_chemically_treated][:locations].add(visit.location_id)
+        elsif !pos && chem
+          series[:not_positive_chemically_treated][:locations].add(visit.location_id)
+        elsif !pos && !chem
+          series[:not_positive_not_chemically_treated][:locations].add(visit.location_id)
+        end
+      end
+
+      # Account for all locations by adding to :total
+      series[:total][:locations].add(visit.location_id)
+    end
+
+    # Convert set notation to array.
+    time_series.each do |ts|
+      [:total, :positive_protected, :positive_not_protected, :not_positive_protected, :not_positive_not_protected,
+       :positive_chemically_treated, :positive_not_chemically_treated, :not_positive_chemically_treated, :not_positive_not_chemically_treated].each do |key|
+        ts[key][:locations] = ts[key][:locations].to_a
+      end
+    end
+
     return time_series
   end
 
