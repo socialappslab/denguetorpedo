@@ -1,4 +1,5 @@
 json.(visit, :id, :location_id, :classification, :color)
+json.questions visit.questionnaire_with_answers(@current_user.selected_membership)
 json.visited_at visit.visited_at.strftime("%Y-%m-%d")
 
 json.location do
@@ -29,6 +30,5 @@ json.inspections visit.inspections.includes(:report).order("position ASC") do |i
         json.description r.elimination_method.description_in_es
       end
     end
-
   end
 end

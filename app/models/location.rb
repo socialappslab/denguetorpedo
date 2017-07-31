@@ -25,9 +25,19 @@ class Location < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def questions
+  def self.questionnaire_for_membership(membership)
+    if membership.organization_id == 3
+      return LocationQuestionnaire.questions_for_colombia
+    elsif [1, 2].include?(membership.organization_id)
+      return LocationQuestionnaire.questions_for_nicaragua
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
+  def questionnaire_with_answers(membership)
     attr_questions = self.attributes["questions"] || []
-    quiz_questions = self.class.default_questions
+    quiz_questions = self.class.questionnaire_for_membership(membership)
     quiz_questions.each do |question|
       matching_q = attr_questions.find {|q| q["code"] == question[:code]}
       question.merge!(:answer => matching_q["answer"]) if matching_q.present?

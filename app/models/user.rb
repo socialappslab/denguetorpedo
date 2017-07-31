@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
     return active_m
   end
 
+  #----------------------------------------------------------------------------
+
   def jwt_token
     return JWT.encode(self.payload, ENV['JWT_SECRET'], 'HS256')
   end

@@ -8,7 +8,11 @@ json.user do
     json.city do
       json.(@user.neighborhood.city, :name, :state, :localized_country_name)
     end
-    json.questions HouseQuiz.questions
+  end
+
+  if @user.selected_membership.present?
+    json.visit_questionnaire    Visit.questionnaire_for_membership(@user.selected_membership)
+    json.location_questionnaire Location.questionnaire_for_membership(@user.selected_membership)
   end
 
   json.city do
