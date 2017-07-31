@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170626073830) do
+ActiveRecord::Schema.define(version: 20170731205514) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -551,6 +551,7 @@ ActiveRecord::Schema.define(version: 20170626073830) do
     t.datetime "last_synced_at"
     t.integer  "last_sync_seq"
     t.string   "pouchdb_id"
+    t.json     "questions"
   end
 
 end
