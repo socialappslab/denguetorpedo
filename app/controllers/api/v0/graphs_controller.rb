@@ -65,8 +65,9 @@ class API::V0::GraphsController < API::V0::BaseController
     @statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
     @statistics.each do |shash|
       [:positive, :potential, :chemically_treated, :protected, :negative, :total].each do |status|
-        locations = Location.where(:id => shash[status][:locations]).order("address ASC").pluck(:address)
-        shash[status][:locations] = locations
+        locations = Location.where(:id => shash[status][:locations]).order("address ASC")
+        shash[status][:locations] = locations.pluck(:address)
+        shash[status][:coordinates]  = locations.map {|loc| {:latitude => loc.latitude, :longitude => loc.longitude}}
       end
     end
 
