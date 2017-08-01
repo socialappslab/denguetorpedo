@@ -1,0 +1,115 @@
+angular.module("denguechat.controllers").controller("analyticsHeatmapCtrl", ["$scope", "$http", "$attrs", "Location", ($scope, $http, $attrs, Location) ->
+  $scope.data         = {locations: [], filteredLocations: [], chosenSeries: {}, filter: "all", loading: true, error: false}
+  $scope.data.neighborhood = angular.fromJson($attrs.neighborhood);
+  $scope.markers = []
+
+  # displayMap = (data) ->
+  #   data.mapCluster.clearMarkers()
+  #   markers = []
+  #   for location in data.filteredLocations
+  #     latitude  = location.latitude;
+  #     longitude = location.longitude;
+  #     markerLoc = new google.maps.LatLng(latitude, longitude);
+  #     marker = new google.maps.Marker({
+  #       position: markerLoc,
+  #       map: data.map,
+  #       draggable: false,
+  #       animation: google.maps.Animation.DROP,
+  #       # icon: "<%= asset_path('markers/orange_marker') %>"
+  #       map_icon_label: '<span class="map-icon map-icon-point-of-interest"></span>'
+  #     });
+  #     data.mapCluster.addMarker(marker)
+
+
+  mapOptions = {
+    zoom: 13,
+    streetViewControl: false,
+    disableDoubleClickZoom: true,
+    center: new google.maps.LatLng($scope.data.neighborhood.latitude, $scope.data.neighborhood.longitude)
+  };
+
+  # // Initialize the map, and add the geographical layer to it.
+  $scope.data.map = new google.maps.Map(document.getElementById('google-map'), mapOptions);
+  $scope.data.mapCluster = new MarkerClusterer($scope.data.map, [], {
+    styles: [{
+      url: "<%= asset_path('markers/flat_orange') %>",
+      height: 30,
+      width: 30,
+      textColor: '#ffffff',
+      textSize: 15,
+    }]
+  });
+
+
+  $scope.filterBy = (type) ->
+    $scope.data.filter = type
+
+  # $scope.$watch "data.filter", (newValue) ->
+  #   if newValue == "all"
+  #     $scope.data.filteredLocations = $scope.data.locations
+  #   else
+  #     $scope.data.filteredLocations = []
+  #     for loc in $scope.data.locations
+  #       $scope.data.filteredLocations.push(loc) if loc[newValue]
+  #   displayMap($scope.data)
+  #   return
+
+  $scope.reloadMap = () ->
+    # $scope.data.mapCluster.clearMarkers()
+    for marker in $scope.markers
+      console.log(marker)
+      marker.setMap(null)
+
+    if $scope.options.positive
+      for loc in $scope.data.chosenSeries.positive.coordinates
+        markerLoc = new google.maps.LatLng(loc.latitude, loc.longitude);
+        marker = new Marker({
+          position: markerLoc,
+          map: $scope.data.map,
+          draggable: false,
+          animation: google.maps.Animation.DROP,
+          icon: { path: MAP_PIN, fillColor: "#e74c3c", fillOpacity: 1, strokeColor: '', strokeWeight: 0 },
+        });
+        $scope.markers.push(marker)
+        # $scope.data.mapCluster.addMarker(marker)
+
+    if $scope.options.potential
+      for loc in $scope.data.chosenSeries.potential.coordinates
+        markerLoc = new google.maps.LatLng(loc.latitude, loc.longitude);
+        marker = new Marker({
+          position: markerLoc,
+          map: $scope.data.map,
+          draggable: false,
+          animation: google.maps.Animation.DROP,
+          icon: { path: MAP_PIN, fillColor: "#f1c40f", fillOpacity: 1, strokeColor: '', strokeWeight: 0 },
+        });
+        $scope.markers.push(marker)
+        # $scope.data.mapCluster.addMarker(marker)
+
+    if $scope.options.negative
+      for loc in $scope.data.chosenSeries.negative.coordinates
+        markerLoc = new google.maps.LatLng(loc.latitude, loc.longitude);
+        marker = new Marker({
+          position: markerLoc,
+          map: $scope.data.map,
+          draggable: false,
+          animation: google.maps.Animation.DROP,
+          icon: { path: MAP_PIN, fillColor: '#2ecc71', fillOpacity: 1, strokeColor: '', strokeWeight: 0 },
+          # map_icon_label: '<span class="map-icon map-icon-circle map-icon-negative"></span>'
+        });
+        $scope.markers.push(marker)
+        # $scope.data.mapCluster.addMarker(marker)
+
+    $scope.data.loading = false;
+
+  $scope.selectSeries = (series) ->
+    $scope.data.chosenSeries = series;
+    $scope.reloadMap()
+
+  # This is solely used to trigger a map view once we know $scope.timeseries exists.
+  $scope.$watch "state.chart", (oldValue, newValue) ->
+    if (newValue)
+      $scope.data.chosenSeries = $scope.timeseries[0]
+      $scope.reloadMap()
+
+]);
