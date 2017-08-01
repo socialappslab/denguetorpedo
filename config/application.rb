@@ -80,6 +80,10 @@ module Dengue
     # See http://stackoverflow.com/questions/7770327/adding-haml-to-the-rails-asset-pipeline
     config.assets.paths << Rails.root.join("app", "assets", "templates")
 
+    # See https://gist.github.com/anotheruiguy/7379570
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
+
+
     class HamlTemplate < Tilt::HamlTemplate
       def prepare
         @options = @options.merge :format => :html5
