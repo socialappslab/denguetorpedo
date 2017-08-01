@@ -17,7 +17,6 @@ angular.module("denguechat.controllers").controller("adminTimeseriesCtrl", ["$sc
   }
 
   $scope.groupBy = function(item) {
-    console.log(item)
     return item.category
   }
 

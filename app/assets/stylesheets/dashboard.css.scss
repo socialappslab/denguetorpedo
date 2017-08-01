@@ -71,3 +71,26 @@
     color: white;
   }
 }
+
+.map-icon-label .map-icon {
+  font-size: 24px;
+	color: #FFFFFF;
+	line-height: 48px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.map-icon-label .map-icon-circle {
+  &.map-icon-positive {
+    color: rgb(231, 76, 60);
+  }
+
+  &.map-icon-potential {
+    color: rgb(241, 196, 15);
+  }
+
+  &.map-icon-negative {
+    color: rgb(46, 204, 113);
+  }
+
+}

@@ -1,7 +1,15 @@
 - content_for :scripts do
   %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
+  %script{:src => "//maps.googleapis.com/maps/api/js?key=AIzaSyBYz_KnHFhBa2zc21IJAyzkZ_CbyJjvfrI&libraries=visualization"}
+
   %script
     = render "dashboard/visits/analytics_init.js.erb"
+
+  = javascript_include_tag "google/marker-clusterer"
+
+  = stylesheet_link_tag "map-icons.min"
+  = javascript_include_tag "map-icons.min"
+
 
 
 
@@ -91,6 +99,36 @@
                     Vista previa
             %h1.text-center{"ng-show" => "loading"}
               %i.fa.fa-refresh.fa-spin
+
+          %li.list-group-item{"ng-if" => "timeseries.length > 0"}
+            %div{"ng-controller" => "analyticsHeatmapCtrl", "neighborhood" => @neighborhood.to_json(:only => [:latitude, :longitude])}
+              %ul.nav.nav-pills{:style => "margin-bottom: 10px;"}
+                %li{:role => "presentation", "ng-repeat" => "series in timeseries", "ng-class" => "{'active': data.chosenSeries.date == series.date}"}
+                  %a{"ng-click" => "selectSeries(series)"}
+                    {{series.date}}
+
+                %li.pull-right{"ng-show" => "data.loading"}
+                  %h1
+                    %i.fa.fa-refresh.fa-spin
+                %li.pull-right{"ng-show" => "data.error"}
+                  %h2.text-danger
+                    Algo salió mal en nuestro extremo. Por favor, inténtelo de nuevo
+
+
+              #map_div
+                #google-map
+            -# %div{"ng-controller" => "heatmapCtrl", "ng-cloak" => "", "path" => house_index_api_v0_locations_path, "neighborhood" => @neighborhood.to_json(:only => [:latitude, :longitude])}
+            -#   %ul.nav.nav-pills
+            -#     %li.pull-right{"ng-show" => "data.loading"}
+            -#       %h1
+            -#         %i.fa.fa-refresh.fa-spin
+            -#     %li.pull-right{"ng-show" => "data.error"}
+            -#       %h2.text-danger
+            -#         Algo salió mal en nuestro extremo. Por favor, inténtelo de nuevo
+            -#
+            -#   #map_div
+            -#     #gmap
+
 
           %li.list-group-item
             .chart
