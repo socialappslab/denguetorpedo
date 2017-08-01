@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 
 class Dashboard::VisitsController < Dashboard::BaseController
+  before_filter :identify_neighborhood, :only => [:index]
+
   #----------------------------------------------------------------------------
   # GET /dashboard/visits
 
