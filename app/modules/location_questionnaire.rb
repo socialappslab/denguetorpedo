@@ -18,19 +18,19 @@ module LocationQuestionnaire
           {:id => 8, :body => "Ladera"},
           {:id => 9, :body => "Otro"}
         ]
-      },
-
-      {
-        :code => "public_space_direction",
-        :body => "¿Cuál es la dirección del espacio público?",
-        :type => "radio",
-        :answer_choices => [
-          {:id => 1, :body => "CL"},
-          {:id => 2, :body => "KR"},
-          {:id => 3, :body => "CS"},
-          {:id => 4, :body => "BARRIO"}
-        ]
       }
+
+      # {
+      #   :code => "public_space_direction",
+      #   :body => "¿Cuál es la dirección del espacio público?",
+      #   :type => "radio",
+      #   :answer_choices => [
+      #     {:id => 1, :body => "CL"},
+      #     {:id => 2, :body => "KR"},
+      #     {:id => 3, :body => "CS"},
+      #     {:id => 4, :body => "BARRIO"}
+      #   ]
+      # }
     ]
   end
 
