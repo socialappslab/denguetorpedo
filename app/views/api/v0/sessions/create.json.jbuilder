@@ -6,7 +6,7 @@ json.user do
   json.neighborhood do
     json.(@user.neighborhood, :id, :name, :city_id, :geographical_display_name)
     json.city do
-      json.(@user.neighborhood.city, :name, :state, :localized_country_name)
+      json.(@user.neighborhood.city, :name, :state, :country, :localized_country_name)
     end
   end
 
