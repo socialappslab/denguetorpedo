@@ -1,7 +1,5 @@
 source 'http://rubygems.org'
 
-ruby '2.1.2'
-
 # Analytics
 gem "analytics-ruby", '~> 2.0.8', :require => false
 gem 'angularjs-rails', "~> 1.4.8"
@@ -35,7 +33,7 @@ gem "pry"
 # Needed for a smooth upgrade from Rails 3.2 to Rails 4.0
 # http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html
 gem 'protected_attributes'
-gem "puma"
+gem "puma", "2.11.2"
 gem "pundit"
 gem 'rails', "4.2"
 gem 'rails_autolink'

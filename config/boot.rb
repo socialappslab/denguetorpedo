@@ -10,4 +10,4 @@ ENV['RACK_ENV'] ||= ENV['RAILS_ENV']
 
 # YAML parsing fix
 require 'yaml'
-YAML::ENGINE.yamler= 'syck'
+# YAML::ENGINE.yamler= 'syck'
