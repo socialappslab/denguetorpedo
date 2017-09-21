@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+require "rack/cors"
+
+
 Dengue::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 

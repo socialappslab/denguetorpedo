@@ -35,6 +35,7 @@ gem "pry"
 gem 'protected_attributes'
 gem "puma", "2.11.2"
 gem "pundit"
+gem "rack-cors", :require => false
 gem 'rails', "4.2"
 gem 'rails_autolink'
 gem 'rails-i18n'
@@ -52,7 +53,6 @@ group :development do
   gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git", :require => false
   gem 'rack-mini-profiler', :require => false
   gem 'web-console', '~> 2.0'
-  gem "rack-cors", :require => false
 end
 
 #------------------------------------------------------------------------------
