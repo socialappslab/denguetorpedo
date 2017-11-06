@@ -27,4 +27,22 @@ class API::V0::SessionsController < API::V0::BaseController
   end
 
   #----------------------------------------------------------------------------
+
+  #----------------------------------------------------------------------------
+  # GET /api/v0/sessions/registrations
+
+  def registrations
+    @organization = Organization.find_by_name("Test Neighborhood")
+
+    # At this point, the user does NOT exist. Let's create them here.
+    @user          = User.new(params[:user])
+    if @user.save
+      Membership.create(:user_id => @user.id, :organization_id => @organization.id, :role => Membership::Roles::RESIDENT, :active => true)
+      render :json => {}, :status => :ok and return
+    else
+      raise API::V0::Error.new(@user.errors.full_messages[0], 422) and return
+    end
+  end
+
+  #----------------------------------------------------------------------------
 end
