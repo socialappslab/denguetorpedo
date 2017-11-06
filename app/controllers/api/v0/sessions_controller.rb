@@ -32,7 +32,7 @@ class API::V0::SessionsController < API::V0::BaseController
   # GET /api/v0/sessions/registrations
 
   def registrations
-    @organization = Organization.find_by_name("Test Neighborhood")
+    @organization = Organization.find_by_id(params[:user].neighborhood_id)
 
     # At this point, the user does NOT exist. Let's create them here.
     @user          = User.new(params[:user])
