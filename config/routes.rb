@@ -25,6 +25,7 @@ Dengue::Application.routes.draw do
       resources :sessions,    :only => [:create] do
         collection do
           get "current"
+          post "registrations"
         end
       end
 
