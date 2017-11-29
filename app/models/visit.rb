@@ -41,7 +41,7 @@ class Visit < ActiveRecord::Base
 
   def self.questionnaire_for_membership(membership)
     if membership.organization_id == 3
-      return []
+      return VisitQuestionnaire.questions_for_colombia
     else
       return VisitQuestionnaire.questions_for_nicaragua
     end
