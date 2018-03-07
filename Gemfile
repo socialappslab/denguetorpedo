@@ -50,7 +50,7 @@ gem "yuicompressor"
 #------------------------------------------------------------------------------
 
 group :development do
-  gem 'derailed_benchmarks', :git => "git@github.com:schneems/derailed_benchmarks.git", :require => false
+  gem 'derailed_benchmarks', :git => "https://github.com/schneems/derailed_benchmarks.git", :require => false
   gem 'rack-mini-profiler', :require => false
   gem 'web-console', '~> 2.0'
 end
