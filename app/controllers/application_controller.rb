@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
 
   def set_time_zone(&block)
     if current_user
-      Time.use_zone(current_user.neighborhood.city.time_zone, &block)
+      Time.use_zone(TZInfo::Timezone.get(current_user.neighborhood.city.time_zone), &block)
     else
       Time.use_zone("America/Guatemala", &block)
     end
