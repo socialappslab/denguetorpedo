@@ -18,7 +18,7 @@ class Dashboard::BaseController < ApplicationController
 
   protected
 
-  def identify_neighborhood
+  def 
     # Identify the neighborhood that the user is interested in.
     neighborhood_id = cookies[:neighborhood_id] || @current_user.neighborhood_id
     @neighborhood   = Neighborhood.find_by_id(neighborhood_id)

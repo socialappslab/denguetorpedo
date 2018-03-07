@@ -47,6 +47,8 @@ gem 'sinatra', :require => nil
 gem 'uglifier', '>= 1.0.3'
 gem "yuicompressor"
 
+gem "tzinfo"
+
 #------------------------------------------------------------------------------
 
 group :development do
