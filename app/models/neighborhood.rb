@@ -1,8 +1,9 @@
 # -*- encoding : utf-8 -*-
 
 class Neighborhood < ActiveRecord::Base
-  attr_accessible :name, :photo, :city_id, :latitude, :longitude, :as => :admin
 
+  attr_accessible :name, :photo, :city_id, :latitude, :longitude, :as => :admin
+  
   #----------------------------------------------------------------------------
 
   module Names
@@ -39,6 +40,7 @@ class Neighborhood < ActiveRecord::Base
   has_attached_file :photo, :styles => { :large => ["400x400", :jpg], :thumbnail => "150x150" }
   do_not_validate_attachment_file_type :photo
 
+  
   #----------------------------------------------------------------------------
   # Geographical data
   #------------------
@@ -49,6 +51,10 @@ class Neighborhood < ActiveRecord::Base
 
   def mexican?
     return self.country == City::Countries::MEXICO
+  end
+
+  def paraguayan?
+    return self.country == City::Countries::PARAGUAY
   end
 
   def brazilian?
@@ -74,6 +80,8 @@ class Neighborhood < ActiveRecord::Base
       return "America/Mexico_City"
     elsif self.nicaraguan?
       return "America/Guatemala"
+    elsif self.paraguayan?
+      return "America/Asuncion"
     elsif brazilian?
       return "America/Sao_Paulo"
     end

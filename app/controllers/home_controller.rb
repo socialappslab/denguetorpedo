@@ -21,7 +21,6 @@ class HomeController < ApplicationController
     @cities = City.find_by_sql("SELECT cities.* from cities join
     (values ('Managua', 1), ('Rio de Janeiro', 2), ('Cuernavaca', 3), ('Tepalcingo', 4)) as cityorder (name, ordering)
     ON cities.name = cityorder.name ORDER BY cityorder.ordering")
-
     @neighborhood_select = []
     @cities.each do |c|
       @neighborhood_select += c.neighborhoods.order("name ASC").map {|n| ["#{n.name}, #{c.name}", n.id]}
