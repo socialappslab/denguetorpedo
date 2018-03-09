@@ -28,6 +28,8 @@ class Location < ActiveRecord::Base
   def self.questionnaire_for_membership(membership)
     if membership.organization_id == 3
       return LocationQuestionnaire.questions_for_colombia
+    elsif membership.organization_id == 5
+      return LocationQuestionnaire.questions_for_paraguay     
     elsif [1, 2].include?(membership.organization_id)
       return LocationQuestionnaire.questions_for_nicaragua
     end
