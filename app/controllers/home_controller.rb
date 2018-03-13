@@ -18,11 +18,15 @@ class HomeController < ApplicationController
 
     # We're manually ordering this to display the diversity of
     # our cities.
-    @cities = City.find_by_sql("SELECT cities.* from cities join
-    (values ('Managua', 1), ('Rio de Janeiro', 2), ('Cuernavaca', 3), ('Tepalcingo', 4)) as cityorder (name, ordering)
+    @citiesThatUsed = City.find_by_sql("SELECT cities.* from cities join
+    (values ('Rio de Janeiro', 1), ('Cuernavaca', 2), ('Tepalcingo', 3)) as cityorder (name, ordering)
     ON cities.name = cityorder.name ORDER BY cityorder.ordering")
+    
+    @citiesUsing = City.find_by_sql("SELECT cities.* from cities join
+      (values ('Managua', 1), ('Asunción', 2), ('Armenia', 3)) as cityorder (name, ordering)
+      ON cities.name = cityorder.name ORDER BY cityorder.ordering")
     @neighborhood_select = []
-    @cities.each do |c|
+    @citiesThatUsed.each do |c|
       @neighborhood_select += c.neighborhoods.order("name ASC").map {|n| ["#{n.name}, #{c.name}", n.id]}
     end
 

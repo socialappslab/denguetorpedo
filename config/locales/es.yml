@@ -539,14 +539,17 @@ es:
     home:
       login:
         username: Nombre de usuario o email
-      cities:
+      cities_using:
         title: "Ciudades usando DengueChat"
+      cities_that_used:
+        title:  "Ciudades que usaron DengueChat"
       header: "Ciudadanos en el Combate contra Dengue, Zika y Chikungunya"
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
       teams_description: Únase a equipos para combatir Dengue, Zika y Chikungunya y gane puntos
       video_description: "Vea un video"
-      activity_description: "Haga clic en una ciudad para ver las actividades del DengueChat"
+      activity_description_using: "Haga click en una ciudad para ver las actividades del DengueChat"
+      activity_description_used: "Haga click en uno de los sitios de experimentación piloto para ver sus actividades pasadas"
 
     index:
       how_to_win_prizes: "¿Cómo ganar puntos? Haga clic aquí."
@@ -690,3 +693,4 @@ es:
     mexico: México
     nicaragua: Nicaragua
     paraguay: Paraguay
+    colombia: Colombia
