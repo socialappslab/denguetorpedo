@@ -33,6 +33,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
     location.latitude  = lat
     location.longitude = long
     location.neighborhood_id = @neighborhood.id
+    location.city_id = @neighborhood.city_id
     location.save
 
     # Create a User Location corresponding to this user.
