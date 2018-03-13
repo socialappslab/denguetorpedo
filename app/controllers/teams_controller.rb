@@ -65,7 +65,8 @@ class TeamsController < ApplicationController
   def create
     @team                 = Team.new(params[:team])
     @team.neighborhood_id = @neighborhood.id
-
+    @team.organization_id = current_user.selected_membership.organization_id
+    
     base64_image = params[:team][:compressed_photo]
     if base64_image.present?
       filename            = "team_profile_photo.jpg"
