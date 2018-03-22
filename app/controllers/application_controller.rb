@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   before_action :identify_selected_membership
   before_action :set_locale
   before_action :get_new_notifications
+  before_action :calculate_header_variables
 
   before_action :identify_for_segmentio
   before_action :set_cookies
