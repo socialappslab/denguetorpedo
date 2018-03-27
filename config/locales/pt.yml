@@ -28,6 +28,8 @@ pt:
       report:
         one: Foco
         other: Focos
+      organization:
+        name: "Organização"
       user:
         one: Usuário
         other: Usuários
@@ -429,14 +431,18 @@ pt:
     home:
       login:
         username: Nome de usuário ou email
-      cities:
+      cities_using:
         title: "Cidades usando Dengue Torpedo"
+      cities_that_used:
+        title: "Cidades que usaram Dengue Torpedo"
       header: Cidadãos no combate à Dengue e ao Chikungunya
       cellphone_description: "Use o seu celular par identificar focos de mosquitos"
       chat_description: Troque mensagens entre seus amigos para colaborar no controle dos focos de mosquitos
       teams_description: "Entre numa equipe para combater a dengue e a chikungunya e ganhe pontos"
       video_description: "Veja um video"
-      activity_description: "Clique numa cidade para ver as atividades do Dengue Torpedo"
+      activity_description_used: "Clique em um dos sites de experimentação piloto para ver suas atividades passadas"
+      activity_description_using: "Clique numa cidade para ver as atividades do DengueChat"
+      
     footer:
       code_of_conduct: "Manual de Conduta"
       faq: "Perguntas frequentes"
@@ -580,3 +586,4 @@ pt:
     brazil: Brasil
     mexico: México
     nicaragua: Nicarágua
+    paraguay: Paraguai

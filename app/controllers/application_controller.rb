@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   before_action :identify_selected_membership
   before_action :set_locale
   before_action :get_new_notifications
+  before_action :calculate_header_variables
 
   before_action :identify_for_segmentio
   before_action :set_cookies
@@ -38,7 +39,7 @@ class ApplicationController < ActionController::Base
 
   def set_time_zone(&block)
     if current_user
-      Time.use_zone(current_user.neighborhood.city.time_zone, &block)
+      Time.use_zone(TZInfo::Timezone.get(current_user.neighborhood.city.time_zone), &block)
     else
       Time.use_zone("America/Guatemala", &block)
     end

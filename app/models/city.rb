@@ -8,9 +8,10 @@ class City < ActiveRecord::Base
     MEXICO    = "Mexico"
     BRAZIL    = "Brazil"
     NICARAGUA = "Nicaragua"
+    PARAGUAY = "Paraguay"
   end
 
-  #----------------------------------------------------------------------------
+  #----------------------------------------------------------------------------  
 
   has_many :neighborhoods
   has_many :city_blocks
@@ -35,17 +36,11 @@ class City < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def localized_country_name
-    if self.country == Countries::MEXICO
-      return I18n.t('countries.mexico')
-    elsif self.country == Countries::NICARAGUA
-      return I18n.t('countries.nicaragua')
-    else
-      return I18n.t('countries.brazil')
-    end
+    I18n.t("countries.#{self.country.downcase}")
   end
 
   def geographical_name
-    return "#{self.name}, #{self.localized_country_name}"
+    "#{self.name}, #{self.localized_country_name}"
   end
 
   #----------------------------------------------------------------------------
