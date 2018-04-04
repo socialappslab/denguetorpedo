@@ -15,9 +15,9 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
-    if lat.blank? || long.blank?
-      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422) and return
-    end
+    # if lat.blank? || long.blank? estas tres lineas tambien deben ser descomentadas luego del desarrollo
+    #   raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422) and return
+    # end
 
     if params[:spreadsheet].blank?
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
@@ -52,7 +52,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
     @csv_report.save
 
     # Queue a job to parse the newly created CSV.
-    SpreadsheetParsingWorker.perform_async(@csv_report.id)
+    SpreadsheetParsingWorker.perform(@csv_report.id) #el metodo perform originalmente debe ser llamado perform_async luego del desarrollo.
 
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end

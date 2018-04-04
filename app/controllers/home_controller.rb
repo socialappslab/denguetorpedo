@@ -15,7 +15,6 @@ class HomeController < ApplicationController
 
   def index
     @user = User.new
-
     # We're manually ordering this to display the diversity of
     # our cities.
     @citiesThatUsed = City.find_by_sql("SELECT cities.* from cities join

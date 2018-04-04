@@ -98,9 +98,12 @@ class Spreadsheet < ActiveRecord::Base
     }
   end
 
-  def self.extract_breeding_site_from_row(row_content)
+  def extract_breeding_site_from_row(row_content)
     type = row_content[:breeding_site].strip.downcase
-
+    organizationBreedingSite = OrganizationBreedingSite.by_organization_code(self.user.selected_membership.organization_id,type)
+    if !organizationBreedingSite.empty?       
+       breeding_site = BreedingSite.find(organizationBreedingSite.first.breeding_site_id)
+    else
     if type.include?("a")
       breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
     elsif type.include?("b")
@@ -114,8 +117,16 @@ class Spreadsheet < ActiveRecord::Base
     elsif type.include?("t")
       breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::SMALL_CONTAINER)
     end
-
+    end
     return breeding_site
+  end
+
+  def extract_organization_breeding_site_from_row(row_content)
+    type = row_content[:breeding_site].strip.downcase
+    organizationBreedingSite = OrganizationBreedingSite.by_organization_code(self.user.selected_membership.organization_id,type)
+    if !organizationBreedingSite.empty?
+      return organizationBreedingSite.first         
+    end    
   end
 
   #----------------------------------------------------------------------------
@@ -170,7 +181,7 @@ class Spreadsheet < ActiveRecord::Base
       next if row_content[:breeding_site].blank?
 
       type = row_content[:breeding_site].strip.downcase
-      if Spreadsheet.accepted_breeding_site_codes.exclude?(type[0])
+      if self.accepted_breeding_site_codes.exclude?(type)
         CsvError.create(:csv_id => self.id, :error_type => CsvError::Types::UNKNOWN_CODE)
       end
     end
@@ -234,7 +245,8 @@ class Spreadsheet < ActiveRecord::Base
     # See https://github.com/thoughtbot/paperclip#uri-obfuscation
     # See http://stackoverflow.com/questions/22416990/paperclip-unable-to-change-default-path
     file_location = (Rails.env.production? || Rails.env.staging?) ? file.url : file.path
-
+    puts "file.path #{file.path}"
+    puts "file.url #{file.url}"
     if File.extname( file.original_filename ) == ".xlsx"
       spreadsheet = Roo::Excelx.new(file_location, :file_warning => :ignore)
     end
@@ -246,8 +258,13 @@ class Spreadsheet < ActiveRecord::Base
     return ["n"]
   end
 
-  def self.accepted_breeding_site_codes
-    return ["a", "b", "l", "m", "p", "t", "x"] + self.clean_breeding_site_codes
+  def accepted_breeding_site_codes
+    breedingSitesCodes = self.user.selected_membership.organization.organizations_breeding_sites
+    if breedingSitesCodes 
+      return breedingSitesCodes.map {|t| t.code.downcase } + Spreadsheet.clean_breeding_site_codes
+    else
+      return ["a", "b", "l", "m", "p", "t", "x"] + Spreadsheet.clean_breeding_site_codes
+    end
   end
 
 end
