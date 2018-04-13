@@ -102,7 +102,7 @@ class Spreadsheet < ActiveRecord::Base
     type = row_content[:breeding_site].strip.downcase
     organizationBreedingSite = OrganizationBreedingSite.by_organization_code(self.user.selected_membership.organization_id,type)
     if !organizationBreedingSite.empty?       
-       breeding_site = BreedingSite.find(organizationBreedingSite.first.breeding_site_id)
+       breeding_site = organizationBreedingSite.breeding_site
     else
     if type.include?("a")
       breeding_site = BreedingSite.find_by_string_id(BreedingSite::Types::DISH)
@@ -122,7 +122,7 @@ class Spreadsheet < ActiveRecord::Base
   end
 
   def extract_organization_breeding_site_from_row(row_content)
-    type = row_content[:breeding_site].strip.downcase
+    type = row_content[:breeding_site].strip.upcase
     organizationBreedingSite = OrganizationBreedingSite.by_organization_code(self.user.selected_membership.organization_id,type)
     if !organizationBreedingSite.empty?
       return organizationBreedingSite.first         
@@ -244,11 +244,10 @@ class Spreadsheet < ActiveRecord::Base
     # TODO: This should technically be abstracted into paperclip_defaults.
     # See https://github.com/thoughtbot/paperclip#uri-obfuscation
     # See http://stackoverflow.com/questions/22416990/paperclip-unable-to-change-default-path
-    file_location = (Rails.env.production? || Rails.env.staging?) ? file.url : file.path
-    puts "file.path #{file.path}"
-    puts "file.url #{file.url}"
+    # file_location = (Rails.env.production? || Rails.env.staging?) ? file.url : file.path
+
     if File.extname( file.original_filename ) == ".xlsx"
-      spreadsheet = Roo::Excelx.new(file_location, :file_warning => :ignore)
+      spreadsheet = Roo::Excelx.new(file.url, :file_warning => :ignore)
     end
 
     return spreadsheet
@@ -261,7 +260,7 @@ class Spreadsheet < ActiveRecord::Base
   def accepted_breeding_site_codes
     breedingSitesCodes = self.user.selected_membership.organization.organizations_breeding_sites
     if breedingSitesCodes 
-      return breedingSitesCodes.map {|t| t.code.downcase } + Spreadsheet.clean_breeding_site_codes
+      return breedingSitesCodes.map {|t| t.code.downcase } + ["a", "b", "l", "m", "p", "t", "x"] + Spreadsheet.clean_breeding_site_codes
     else
       return ["a", "b", "l", "m", "p", "t", "x"] + Spreadsheet.clean_breeding_site_codes
     end

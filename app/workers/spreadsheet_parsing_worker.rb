@@ -1,11 +1,11 @@
 require "sidekiq"
 
 class SpreadsheetParsingWorker
-  # include Sidekiq::Worker estas dos lineas deben ser descomentadas al finalizar el desarrollo
+  include Sidekiq::Worker 
 
-  # sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true 
+  sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true 
 
-  def self.perform(csv_id) #hice que sea un metodo de clase solamente para probar desde la consola proveyendo un id cualquiera
+  def perform(csv_id)
     # Make sure that we're parsing relative to the correct timezone.
     Time.zone = "America/Guatemala"
 
@@ -20,9 +20,7 @@ class SpreadsheetParsingWorker
     address       = location.address
 
     # Identify the file content type.
-    # aca se produce el error relacionado al path inexistente
     spreadsheet = Spreadsheet.load_spreadsheet( @csv.csv )
-    # de aqui para abajo el codigo ya no es ejecutado    
     unless spreadsheet
       CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::UNKNOWN_FORMAT)
       return
@@ -94,12 +92,10 @@ class SpreadsheetParsingWorker
       # breeding_site = Spreadsheet.extract_breeding_site_from_row(row_content)
       breeding_site = @csv.extract_breeding_site_from_row(row_content)
       organization_breeding_site = @csv.extract_organization_breeding_site_from_row(row_content)
-
       # We say that the report has a field identifier if the breeding site CSV column
       # also has an integer associated with it.
       field_id = nil
-      field_id = raw_breeding_code if raw_breeding_code =~ /\d/
-
+      field_id = raw_breeding_code if (raw_breeding_code && !organization_breeding_site.present?) =~ /\d/
       # Add to reports only if the code doesn't equal "negative" code.
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
 
