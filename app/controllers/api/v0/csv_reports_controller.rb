@@ -15,7 +15,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
-    if lat.blank? || long.blank?
+    if lat.blank? || long.blank? estas tres lineas tambien deben ser descomentadas luego del desarrollo
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.missing_location"), 422) and return
     end
 

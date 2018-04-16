@@ -5,6 +5,7 @@ class BreedingSite < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   has_many :elimination_methods, :dependent => :destroy
+  has_many :organizations_breeding_sites, class_name: "OrganizationsBreedingSites"
   accepts_nested_attributes_for :elimination_methods, :allow_destroy => true
 
   #----------------------------------------------------------------------------

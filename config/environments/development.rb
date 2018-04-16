@@ -68,7 +68,7 @@ Dengue::Application.configure do
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
   }
-
+  
   #----------------------------------------------------------------------------
 
   # See: https://github.com/cyu/rack-cors

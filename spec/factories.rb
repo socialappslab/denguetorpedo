@@ -1,7 +1,10 @@
 # -*- encoding : utf-8 -*-
 require 'rack/test'
 
-FactoryGirl.define do
+FactoryGirl.define do  factory :organizations_breeding_sites_join_table do
+    
+  end
+
   factory :organization do
     name "SSI"
   end

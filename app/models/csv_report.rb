@@ -237,7 +237,7 @@ class CsvReport < ActiveRecord::Base
   end
 
   def self.accepted_breeding_site_codes
-    return ["a", "b", "l", "m", "p", "t", "x"] + self.clean_breeding_site_codes
-  end
+      return ["a", "b", "l", "m", "p", "t", "x"] + self.clean_breeding_site_codes
+    end
 
 end

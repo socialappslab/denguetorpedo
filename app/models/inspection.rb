@@ -59,6 +59,7 @@ class Inspection < ActiveRecord::Base
   belongs_to :breeding_site
   belongs_to :elimination_method
 
+  belongs_to :organizations_breeding_sites, class_name: "OrganizationBreedingSite", foreign_key: "organization_breeding_site_id"
   belongs_to :visit
   belongs_to :report
   belongs_to :spreadsheet, :foreign_key => "csv_id"
