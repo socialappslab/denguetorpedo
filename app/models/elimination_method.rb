@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class EliminationMethod < ActiveRecord::Base
   belongs_to :breeding_site
-
+  has_many :organization_elimination_method, class_name: "OrganizationEliminationMethod"
   #----------------------------------------------------------------------------
 
   validates :points, :presence => true

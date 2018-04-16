@@ -69,6 +69,7 @@ class Inspection < ActiveRecord::Base
   belongs_to :eliminator,  :class_name => "User"
   belongs_to :spreadsheet, :foreign_key => "csv_id"
 
+  belongs_to :organization_elimination_method, class_name: "OrganizationEliminationMethod", foreign_key: "organization_elimination_method_id"
 
   #----------------------------------------------------------------------------
   # Validations
