@@ -1,7 +1,10 @@
 # -*- encoding : utf-8 -*-
 require 'rack/test'
 
-FactoryGirl.define do
+FactoryGirl.define do  factory :organization_elimination_method do
+    
+  end
+
   factory :organization do
     name "SSI"
   end
