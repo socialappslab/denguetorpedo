@@ -21,6 +21,8 @@
     }
 
     function displayName (user) {
+      if (!user)
+        return ""
       return user.username + " (" + user.name + ")";
     }
 
