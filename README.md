@@ -123,3 +123,20 @@ CSV inspection instance here:
 If it doesn't exist, then a new `Inspection` instance is created with that field identifier!
 
 NOTE: To understand how an `Inspection` differs from a `Visit`, I recommend reading the top-level comment in `inspection.rb` model.
+
+### Example
+It turns out that the parsing code already allows for breeding codes like `B7`.
+
+What it does is to extract the letter (`B`) and map it to an existing `BreedingSite` instance with that code (so make sure if you introduce a new letter that you create a corresponding `BreedingSite` in production with that code.
+
+If a number is present, like it is in `B7`, then the parser will use `b7` as a "field identifier" and create an `Inspection` instance with the `field_identifier` column set to `b7`.
+
+So let's take an example: Paraguay creates a new code, say H, and you create a new `BreedingSite` instance like: `BreedingSite.create(..., :code => "H", ...)`. Then, Paraguay users upload CSV that have `tipo` column with entries like `H32`. This will create a new `Inspection` instance with `field_identifier="H32"`. You can then query the DB and get all inspections for a specific CSV:
+
+```
+# Get all inspections associated to this CSV
+@csv.inspections
+
+# Get data on the different breeding sites and frequency
+@csv.inspections.pluck(:field_identifier)`
+```
