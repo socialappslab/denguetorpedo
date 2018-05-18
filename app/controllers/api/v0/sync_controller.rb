@@ -56,7 +56,7 @@ class API::V0::SyncController < API::V0::BaseController
           end
         end
 
-        if @post.save
+        if @post.save!
           @post.update_column(:created_at, Time.parse(p_params[:created_at]) )
           # Now that we know the post is valid, let's go ahead and notify the mentioned
           # users.
@@ -244,10 +244,14 @@ class API::V0::SyncController < API::V0::BaseController
   private
 
   def changes_params
+    # Allow any key to be passed.
     params.require(:changes)
+    # params.fetch(:changes, {}).permit!
   end
 
   def sync_status_params
+    # Allow any key to be passed.
     params.require(:sync_status)
+    # params.fetch(:sync_status, {}).permit!
   end
 end
