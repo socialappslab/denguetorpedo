@@ -113,7 +113,7 @@ FactoryGirl.define do
 	end
 
 	factory :team_membership
-
+	factory :membership
 
 	factory :user_notification do
 		medium UserNotification::Mediums::WEB
