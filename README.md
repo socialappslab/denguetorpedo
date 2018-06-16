@@ -28,4 +28,11 @@ This association means we're carefully setting different data on 2 different mod
 https://github.com/socialappslab/denguetorpedo/blob/d3eb4573b8eaf869c75b10dff639d14e624ce6c7/app/workers/spreadsheet_parsing_worker.rb#L105-L149
 
 To simplify this and accelerate development, I propose we deprecate Report model
-in favor of Inspection. To achieve this, I propose we migrate the columns on Report to Inspection, and 
+in favor of Inspection. To achieve this, I propose we migrate the columns on Report to Inspection, and
+
+
+## Accessing DengueChat
+1. Navigate to http://149.165.156.246:9002/#/containers
+2. Ask Cristhian for creds
+3. Click Containers > denguetorpedo > console > Connect
+4. cd home/dengue/denguetorpedo
