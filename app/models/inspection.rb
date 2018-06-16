@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
-# An inspection is a conceptual connection between a visit and an individual report.
-# In other words, a visit has many reports though some inspection. Conversely,
-# a report has many visits through several inspections.
+# An inspection is a conceptual connection between a visit and some breeding site.
+# In other words, a visit has many breeding sites through some inspection.
 #
 # NOTE: The primary key is (report_id, visit_id).
 # NOTE: Inspection times are defined in the associated report.
@@ -63,7 +62,7 @@ class Inspection < ActiveRecord::Base
   belongs_to :report
   belongs_to :spreadsheet, :foreign_key => "csv_id"
 
-  # The following associations define all stakeholders in the reporting
+  # The following associations define all stakeholders in the sing
   # process.
   belongs_to :reporter,    :class_name => "User"
   belongs_to :eliminator,  :class_name => "User"

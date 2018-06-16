@@ -75,7 +75,7 @@ class API::V0::SyncController < API::V0::BaseController
 
 
   #-------------------------------------------------------------------------------------------------
-  # PUT /api/v0/sync/measurement?event_id=...
+  # PUT /api/v0/sync/location?event_id=...
 
   # Two keys come in:
   # 1. changes which is the Changes Feed in PouchDB (https://pouchdb.com/guides/changes.html)

@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 # A "Visit" instance is the real-world representation of a physical
 # visit to some location. A visit, naturally, has several inspections
-# throughout the house and over several dates. Each inspection creates
-# a report on the site.
+# throughout the house and over several dates.
 #
 # The following properties are defined on the model:
 # * dengue cases,
@@ -43,7 +42,7 @@ class Visit < ActiveRecord::Base
     if membership.organization_id == 3
       return VisitQuestionnaire.questions_for_colombia
     elsif membership.organization_id == 5
-      return VisitQuestionnaire.questions_for_paraguay      
+      return VisitQuestionnaire.questions_for_paraguay
     else
       return VisitQuestionnaire.questions_for_nicaragua
     end
