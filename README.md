@@ -289,12 +289,12 @@ The general process is:
 4. Updates `parsed_at` column of `Spreadsheet` instance.
 
 ### One-by-one
-The functionality for one-by-one is located at `http://localhost:5000/csv_reports/new`. The view is managed by `csv_reports/new` and the controller is located at `api/v0/csv_reports_controller.rb`.
+The functionality for one-by-one is located at http://localhost:5000/csv_reports/new. The view is managed by `csv_reports/new` and the controller is located at `api/v0/csv_reports_controller.rb`.
 
 The controller really just does the formality of creating the Spreadsheet instance. It then hands the work off to `SpreadsheetParsingWorker.perform_async(@csv_report.id)`, which will be discussed below.
 
 ### Batch
-The functionality for batch is located at `http://localhost:5000/csv_reports/batch`. The view is managed by `csv_reports/batch` and the controller is located `api/v0/csv_reports_controller.rb`.
+The functionality for batch is located at http://localhost:5000/csv_reports/batch. The view is managed by `csv_reports/batch` and the controller is located `api/v0/csv_reports_controller.rb`.
 
 The controller's function is really similar one-by-one in that it creates the
 Spreadsheet instance and hands the heavy lifting to `SpreadsheetParsingWorker.perform_async(@csv_report.id)`
@@ -366,7 +366,7 @@ CSV inspection instance here:
 
 ```
 @csv.inspections.find_by(:field_identifier => field_id, :visit_id => v.id)
-``
+```
 
 If it doesn't exist, then a new `Inspection` instance is created with that field identifier!
 
@@ -422,3 +422,16 @@ As of 2014-07-18, this setup is only deployed in Rio de Janeiro, Brazil.
 We're keeping a visual history of denguetorpedo.com by taking video snapshots
 of specific pages. These videos are compressed as .swf files in `/videos`
 directory.
+
+
+## Dealing with Redis service
+If you ever need to restore a Redis database to Portainer, then follow these directions:
+
+0. Turn off redis server using `redis-cli -a password` and then run the command `shutdown nosave` (https://redis.io/commands/shutdown) to avoid save the information (NOTE: This is for empty databases).
+1. Save the database into dump.rdb
+2. scp it into the Docker instance. The data directory for `http://149.165.156.246:9002/#/containers/c8d6d52908c81238ee12d702feb2bd1f6857edc12a3a8734d516fb0f9d54a00a/console` is presently `/opt/bitnami/redis/data`.
+3. Run chown redis:redis dump.rdb && chmod 660 dump.rdb
+4. Restart the Docker container
+5. Run `reids-cli -a [password]` and then run the command `BGREWRITEAOF`. Run `info` and make sure that `aof_rewrite_in_progress` is 0 (e.g. it finished)
+6. Now restart the Docker container.
+7. Make sure that `dump.rdb` has some size (otherwise, it means it was overwritten).
