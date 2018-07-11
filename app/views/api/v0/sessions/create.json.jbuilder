@@ -26,6 +26,8 @@ json.user do
     end
   end
 
+  json.breeding_sites_codes @user.selected_membership.organization.organizations_breeding_sites
+  
   json.neighborhoods Neighborhood.order("name ASC") do |n|
     json.(n, :id, :name)
   end

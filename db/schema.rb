@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312171712) do
+ActiveRecord::Schema.define(version: 20180403181708) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(version: 20180312171712) do
     t.integer  "visit_id"
     t.integer  "report_id"
     t.integer  "identification_type"
-    t.integer  "position",                  default: 0
+    t.integer  "position",                         default: 0
     t.integer  "csv_id"
     t.string   "source"
     t.datetime "last_synced_at"
@@ -233,6 +233,7 @@ ActiveRecord::Schema.define(version: 20180312171712) do
     t.string   "csv_uuid"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "organization_breeding_site_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -338,6 +339,13 @@ ActiveRecord::Schema.define(version: 20180312171712) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.jsonb    "breeding_sites_codes"
+  end
+
+  create_table "organizations_breeding_sites", force: :cascade do |t|
+    t.integer "organization_id"
+    t.integer "breeding_site_id"
+    t.text    "description",      default: ""
+    t.string  "code"
   end
 
   create_table "posts", force: :cascade do |t|

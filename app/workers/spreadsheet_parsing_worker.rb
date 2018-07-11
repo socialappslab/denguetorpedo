@@ -1,9 +1,9 @@
 require "sidekiq"
 
 class SpreadsheetParsingWorker
-  include Sidekiq::Worker
+  include Sidekiq::Worker 
 
-  sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true
+  sidekiq_options :queue => :csv_parsing, :retry => true, :backtrace => true 
 
   def perform(csv_id)
     # Make sure that we're parsing relative to the correct timezone.
@@ -36,15 +36,14 @@ class SpreadsheetParsingWorker
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
     header = Spreadsheet.extract_header_from_spreadsheet(spreadsheet)
-
     #--------------------------------------------------------------------------
     # At this point, we know that there is at least one row. Let's see if there
     # are any incorrect breeding site codes.
     @csv.check_for_breeding_site_errors(rows)
-
     # Iterate over the rows, checking if any dates are invalid.
+    # puts "@csv.csv_errors1 #{@csv.csv_errors.to_yaml}"
     @csv.check_for_date_errors(rows)
-
+    # puts "@csv.csv_errors2 #{@csv.csv_errors.to_yaml}"
     # If there are any errors, we can't proceed so let's offload right now and let
     # the user re-upload when they've fixed the errors.
     return if @csv.csv_errors.present?
@@ -90,13 +89,13 @@ class SpreadsheetParsingWorker
       # the report.
       uuid          = Spreadsheet.generate_uuid_from_row_index_and_address(row, row_index, address)
       description   = Spreadsheet.generate_description_from_row_content(row_content)
-      breeding_site = Spreadsheet.extract_breeding_site_from_row(row_content)
-
+      # breeding_site = Spreadsheet.extract_breeding_site_from_row(row_content)
+      breeding_site = @csv.extract_breeding_site_from_row(row_content)
+      organization_breeding_site = @csv.extract_organization_breeding_site_from_row(row_content)
       # We say that the report has a field identifier if the breeding site CSV column
       # also has an integer associated with it.
       field_id = nil
-      field_id = raw_breeding_code if raw_breeding_code =~ /\d/
-
+      field_id = raw_breeding_code if (raw_breeding_code && !organization_breeding_site.present?) =~ /\d/
       # Add to reports only if the code doesn't equal "negative" code.
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
 
@@ -189,6 +188,7 @@ class SpreadsheetParsingWorker
           ins.inspected_at       = current_visited_at
           ins.description        = description
           ins.breeding_site_id   = breeding_site.id if breeding_site.present?
+          ins.organization_breeding_site_id = organization_breeding_site.id if organization_breeding_site.present?
           ins.protected          = row_content[:protected]
           ins.chemically_treated = row_content[:chemical]
           ins.larvae             = row_content[:larvae]
