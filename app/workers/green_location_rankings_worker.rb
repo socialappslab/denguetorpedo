@@ -1,5 +1,5 @@
 require "sidekiq"
-require ::File.expand_path('../../modules/green_location_rankings',  __FILE__)
+include GreenLocationRankings
 
 # This method runs every day and updates the Redis datastore responsible for
 # calculating green location rankings.
