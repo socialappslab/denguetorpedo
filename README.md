@@ -79,14 +79,21 @@ Currently, DengueChat uses Redis to display Green House charts. Why? Because
 the calculations required to display these charts are intensive, and so are
 delegated to run daily, in the background, and the results stores in an Redis in-memory store.
 
-Make sure that the following Sidekiq workers are running:
+Make sure that the following Sidekiq workers are running (look at the Sidekiq dashboard to see if they are scheduled, e.g., https://www.denguechat.org/7XpBp7Bgd2cd/scheduled):
 
 ```
 app/workers/green_location_rankings_worker.rb
 app/workers/green_location_series_worker.rb
 ```
 
-These should be running every day (they do once you start them first) and calculate the Number of Green Houses for that day.
+These should be running every day (they do once you start them first) and calculate the Number of Green Houses for that day. If they are not scheduled to run, make sure you run them at least once manually. Each workers schedules himself to run again in a day at the end of the process.  
+
+```
+require "sidekiq"
+include GreenLocationSeries
+GreenLocationSeriesWorker.new.perform
+include GreenLocationRankings GreenLocationRankingsWorker.new.perform
+```
 
 It is very hard to reconstruct this data from scratch because it would require
 you to know what visits and inspections were created on what date, and how that corresponds to previous inspections and visits. Doable but very hard. For this reason, I highly recommend restoring from Redis backup.
