@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312171712) do
+ActiveRecord::Schema.define(version: 20180925180543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20180312171712) do
     t.integer "neighborhood_id"
     t.integer "district_id"
     t.integer "city_id"
+    t.text    "polygon"
   end
 
   create_table "comments", force: :cascade do |t|
