@@ -58,7 +58,7 @@ class TeamsController < ApplicationController
     end
 
     @breadcrumbs << {:name => @team.name, :path => team_path(@team)}
-    respond_with @team,  @total_reports, @total_points 
+    respond_with @team
   end
 
 
