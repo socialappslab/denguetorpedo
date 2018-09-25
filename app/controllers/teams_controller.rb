@@ -5,6 +5,7 @@ class TeamsController < ApplicationController
   before_filter :ensure_proper_permissions, :only => [:administer, :block]
   before_filter :update_breadcrumb
   before_action :calculate_header_variables
+  respond_to :html, :json
 
   #----------------------------------------------------------------------------
   # GET /teams
@@ -26,6 +27,7 @@ class TeamsController < ApplicationController
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited teams page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
+    respond_with @team_rankings
   end
 
   #----------------------------------------------------------------------------
@@ -56,6 +58,7 @@ class TeamsController < ApplicationController
     end
 
     @breadcrumbs << {:name => @team.name, :path => team_path(@team)}
+    respond_with @team,  @total_reports, @total_points 
   end
 
 
