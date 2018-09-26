@@ -24,6 +24,7 @@ gem "foreman"
 
 gem 'haml'
 gem "http_accept_language"
+gem 'responders', '~> 2.0'
 gem "jbuilder"
 gem 'jwt'
 
