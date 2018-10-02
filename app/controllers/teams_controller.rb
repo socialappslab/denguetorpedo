@@ -6,13 +6,19 @@ class TeamsController < ApplicationController
   before_filter :update_breadcrumb
   before_action :calculate_header_variables
   respond_to :html, :json
+  skip_before_filter :require_login, :only => [:show, :index]
+  skip_before_filter :identify_neighborhood, :only => [:show, :index]
 
   #----------------------------------------------------------------------------
   # GET /teams
 
   def index
-    @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
-    @team  = Team.new
+
+    if @current_user.present?
+      @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
+    else
+      @teams = Team.where(:blocked => [nil, false])
+    end
 
     # Calculate ranking for each team.
     if params[:sort].present? && params[:sort].downcase == "name"
