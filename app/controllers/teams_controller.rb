@@ -30,7 +30,7 @@ class TeamsController < ApplicationController
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited teams page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
-    else
+    elsif @neighborhood.present?
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited teams page", :properties => {:neighborhood => @neighborhood.name}) if Rails.env.production?
     end
     respond_with @team_rankings
