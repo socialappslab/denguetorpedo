@@ -13,6 +13,7 @@ class TeamsController < ApplicationController
   # GET /teams
 
   def index
+    @logger = Rails.logger
 
     if @current_user.present?
       @neighborhood = @current_user.neighborhood
@@ -24,9 +25,13 @@ class TeamsController < ApplicationController
     # Calculate ranking for each team.
     if params[:sort].present? && params[:sort].downcase == "name"
       @team_rankings = @teams.order("name").map {|t| [t, t.points]}
+      @logger.info "Calculated team rankings..."
+      @logger.info @team_rankings
     else
       team_rankings  = @teams.map {|t| [t, t.points]}
       @team_rankings = team_rankings.sort {|a, b| a[1] <=> b[1]}.reverse
+      @logger.info "Calculated team rankings..."
+      @logger.info @team_rankings
     end
 
     if @current_user.present?
