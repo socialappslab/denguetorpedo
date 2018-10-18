@@ -14,7 +14,7 @@ class TeamsController < ApplicationController
 
   def index
     @logger = Rails.logger
-
+    @team = Team.new
     if @current_user.present?
       @neighborhood = @current_user.neighborhood
       @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
