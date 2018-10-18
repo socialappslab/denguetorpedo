@@ -15,7 +15,7 @@ class TeamsController < ApplicationController
   def index
 
     if @current_user.present?
-      @neighborhood = @team.neighborhood
+      @neighborhood = @current_user.neighborhood
       @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
     else
       @teams = Team.where(:blocked => [nil, false])
