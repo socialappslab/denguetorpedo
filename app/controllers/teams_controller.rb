@@ -15,6 +15,7 @@ class TeamsController < ApplicationController
   def index
 
     if @current_user.present?
+      @neighborhood = @team.neighborhood
       @teams = current_user.selected_membership.organization.teams.where(:neighborhood_id => @neighborhood.id).where(:blocked => [nil, false])
     else
       @teams = Team.where(:blocked => [nil, false])
@@ -40,6 +41,7 @@ class TeamsController < ApplicationController
   # GET /teams/1
 
   def show
+    @logger = Rails.logger
     @post = Post.new
 
     # Load associations.
@@ -51,6 +53,7 @@ class TeamsController < ApplicationController
     @users   = @team.users
     user_ids = @users.pluck(:id)
 
+    @logger.debug
     @reports = Report.where("reporter_id IN (?) OR eliminator_id IN (?)", user_ids, user_ids)
     @reports = @reports.displayable.completed
 
@@ -59,8 +62,12 @@ class TeamsController < ApplicationController
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?
+      @logger.info "Using neighborhood of current user..."
+      @neighborhood = @current_user.neighborhood
     else
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited a team page", :properties => {:team => @team.name}) if Rails.env.production?
+      @logger.info "Using neighborhood of team..."
+      @neighborhood = @team.neighborhood
     end
 
     @breadcrumbs << {:name => @team.name, :path => team_path(@team)}
