@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180925180543) do
+ActiveRecord::Schema.define(version: 20181112162211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -339,6 +339,12 @@ ActiveRecord::Schema.define(version: 20180925180543) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.jsonb    "breeding_sites_codes"
+  end
+
+  create_table "parameters", force: :cascade do |t|
+    t.integer "organization_id"
+    t.string  "key"
+    t.text    "value"
   end
 
   create_table "posts", force: :cascade do |t|
