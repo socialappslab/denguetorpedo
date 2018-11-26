@@ -72,6 +72,7 @@ class SpreadsheetParsingWorker
         current_visited_at = Time.zone.parse( row_content[:visited_at] )
         v = Visit.find_or_create_visit_for_location_id_and_date(location.id, current_visited_at)
         v.update_column(:health_report, row_content[:health_report])
+        v.update_column(:questions, row_content[:comments])
         v.update_column(:csv_id, @csv.id)
       end
 

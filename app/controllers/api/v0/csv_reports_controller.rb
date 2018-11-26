@@ -93,6 +93,32 @@ class API::V0::CsvReportsController < API::V0::BaseController
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
 
+  def self.batch(params)
+    # Let's iterate over each uploaded CSV, and
+    # 1. Parsing the file name,
+    # 2. Making sure that the location exists,
+      csv = params[:csv]
+      address  = Spreadsheet.extract_address_from_filepath(params[:file_name])
+
+      location = Location.where("lower(address) = ?", address.downcase).first
+      if location.blank?
+        return;
+      end
+
+      
+      @csv_report = Spreadsheet.find_by_csv_file_name(params[:file_name])
+      @csv_report = Spreadsheet.new if @csv_report.blank?
+
+      @csv_report.csv             = params[:csv]
+      @csv_report.user_id         = params[:username] != nil ? User.find_by_username(params[:username]).id  : Membership.where(organization_id: params[:organization_id]).sample.user_id
+      @csv_report.location_id     = location.id
+      @csv_report.csv_content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      @csv_report.save(:validate => false)
+
+      SpreadsheetParsingWorker.perform_async(@csv_report.id)
+
+    # render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
+  end
 
   #----------------------------------------------------------------------------
   # PUT /api/v0/csv_reports/:id

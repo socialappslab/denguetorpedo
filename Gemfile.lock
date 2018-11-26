@@ -261,6 +261,9 @@ GEM
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    rubyXL (3.3.30)
+      nokogiri (>= 1.4.4)
+      rubyzip (>= 1.1.6)
     rubyzip (1.1.7)
     sass (3.4.21)
     sass-rails (5.0.3)
@@ -360,6 +363,7 @@ DEPENDENCIES
   rollbar (~> 2.2.1)
   roo
   rspec-rails
+  rubyXL
   sass-rails (~> 5.0)
   sidekiq
   sinatra
@@ -372,4 +376,4 @@ DEPENDENCIES
   yuicompressor
 
 BUNDLED WITH
-   1.16.4
+   1.17.1
