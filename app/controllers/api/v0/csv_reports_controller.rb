@@ -93,6 +93,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
 
+  #nuevo metodo estatico invocado por el parser odk
   def self.batch(params)
     # Let's iterate over each uploaded CSV, and
     # 1. Parsing the file name,
@@ -110,6 +111,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report = Spreadsheet.new if @csv_report.blank?
 
       @csv_report.csv             = params[:csv]
+      #si esta definido un usuario por defecto en los parametros, el mismo es usado, si no, se asigna la carga del csv a un usuario seleccionado de manera aleatoria
       @csv_report.user_id         = params[:username] != nil ? User.find_by_username(params[:username]).id  : Membership.where(organization_id: params[:organization_id]).sample.user_id
       @csv_report.location_id     = location.id
       @csv_report.csv_content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
