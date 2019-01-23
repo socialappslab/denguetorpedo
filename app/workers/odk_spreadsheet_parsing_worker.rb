@@ -64,21 +64,21 @@ class OdkSpreadsheetParsingWorker
                   end
         
 
-                  visitDate =  visitArray[0].insert(6,'20')
-                  visitStatus =  visitArray[1]
-                  visitHostGender =  visitArray[2]
-                  visitHostAge =  visitArray[3]
-                  visitServicesFumigation =  visitArray[4]
-                  visitServicesLarvicide=  visitArray[5]
-                  visitObs =  visitArray[6]
-                  visitAutoreporte =  visitArray[7]
-                  visitAutoreporteNumberDengue =  visitArray[8]
-                  visitAutoreporteNumberChik =  visitArray[9]
-                  visitAutoreporteNumberZika =  visitArray[10]
-                  visitAutoreporteZikaNumberPregnant = visitArray[11]
-                  visitAutoreporteSymptoms = visitArray[12]
-                  visitAutoreporteSymptomsGender = visitArray[13]
-                  visitAutoreporteSymptomsList = visitArray[14]
+                  visitDate =  visitArray[9].insert(6,'20')
+                  visitStatus =  visitArray[10]
+                  visitHostGender =  visitArray[11]
+                  visitHostAge =  visitArray[12]
+                  visitServicesLarvicide =   visitArray[13].strip != "" ? visitArray[13] : visitArray[33]
+                  visitServicesFumigation =   visitArray[14].strip != "" ? visitArray[14] : visitArray[34]
+                  visitObs =  visitArray[15].strip != "" ? visitArray[15] : visitArray[24]
+                  visitAutoreporte =  visitArray[16].strip != "" ? visitArray[16] : visitArray[25]
+                  visitAutoreporteNumberDengue =  visitArray[17].strip != "" ? visitArray[17] : visitArray[26]
+                  visitAutoreporteNumberChik =  visitArray[18].strip != "" ? visitArray[18] : visitArray[27]
+                  visitAutoreporteNumberZika =  visitArray[19].strip != "" ? visitArray[19] : visitArray[28]
+                  visitAutoreporteZikaNumberPregnant =  visitArray[20].strip != "" ? visitArray[20] : visitArray[29]
+                  visitAutoreporteSymptoms = visitArray[21].strip != "" ? visitArray[21] : visitArray[30]
+                  visitAutoreporteSymptomsGender = visitArray[22].strip != "" ? visitArray[22] : visitArray[31]
+                  visitAutoreporteSymptomsList = visitArray[23].strip != "" ? visitArray[23] : visitArray[32]
                   questions = []             
       
                   inspectionsPerVisit[visitId].each_with_index do |inspection,inspectionIndex|
@@ -113,17 +113,19 @@ class OdkSpreadsheetParsingWorker
                   end
 
                   #se crea temporalmente el archivo y luego se sube a la instancia S3 
-                  workbook.write("#{Rails.root}/#{locations[locationId][0].split(',')[6]}.xlsx")
+
+                  fileName = locations[locationId][0].split(',')[6].trim != "" ?  locations[locationId][0].split(',')[6][0..7] : locations[locationId][0].split(',')[7].trim != "" ? locations[locationId][0].split(',')[7][0..7] : locations[locationId][0].split(',')[8][0..7]
+                  workbook.write("#{Rails.root}/#{fileName}.xlsx")
                   upload =  ActionDispatch::Http::UploadedFile.new({
-                    :filename => "#{locations[locationId][0].split(',')[6]}.xlsx",
+                    :filename => "#{fileName}.xlsx",
                     :content_type => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    :tempfile => File.new("#{Rails.root}/#{locations[locationId][0].split(',')[6]}.xlsx")
+                    :tempfile => File.new("#{Rails.root}/#{fileName}.xlsx")
                   })
                 
                   #usamos el archivo generado para el procesamiento normal del csv
-                  API::V0::CsvReportsController.batch(:csv => upload,:file_name => "#{locations[locationId][0].split(',')[6]}.xlsx", :username => defaultUser, :organization_id => organizationId)
+                  API::V0::CsvReportsController.batch(:csv => upload,:file_name => "#{fileName}.xlsx", :username => defaultUser, :organization_id => organizationId)
                   #se elimina el archivo generado localmente
-                  File.delete("#{Rails.root}/#{locations[locationId][0].split(',')[6]}.xlsx") if File.exist?("#{Rails.root}/#{locations[locationId][0].split(',')[6]}.xlsx")
+                  File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx")
                 end              
               end       
             end
