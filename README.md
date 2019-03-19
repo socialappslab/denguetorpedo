@@ -95,13 +95,6 @@ GreenLocationSeriesWorker.new.perform
 include GreenLocationRankings GreenLocationRankingsWorker.new.perform
 ```
 
-It is very hard to reconstruct this data from scratch because it would require
-you to know what visits and inspections were created on what date, and how that corresponds to previous inspections and visits. Doable but very hard. For this reason, I highly recommend restoring from Redis backup.
-
-The Redis backup, taken on June 15, 2018, is available at this URL:
-
-https://drive.google.com/open?id=16Ti3b8IOcXZ0b7NsenGZsHo5eAXNWhTC
-
 You can verify if workers are running by visiting `www.denguechat.org/7XpBp7Bgd2cd`.
 
 To understand what data is displayed from Redis, visit https://www.denguechat.org/cities/5 and notice the chart "Gráfico de casas verdes". This chart uses the API endpoint `GET /api/v0/graph/green_locations`
@@ -109,6 +102,19 @@ located in `/api/v0/graphs_controller.rb` and the `GreenLocationSeries` model
 that uses Redis data that is generated from `GreenLocationSeriesWorker`.
 
 Now, look at the table "Casas Verdes", which displays the users with top green houses. This data is fetched from `GreenLocationRankings` model that uses Redis data that is generated from `GreenLocationRankingsWorker`.
+
+## REDIS backups
+
+It is very hard to reconstruct this data from scratch because it would require
+you to know what visits and inspections were created on what date, and how that corresponds to previous inspections and visits. Doable but very hard. For this reason, I highly recommend restoring from Redis backup.
+
+The Redis backup taken on June 15, 2018 (before migration first migration out of HEROKU) is available at this [Google Drive URL](https://drive.google.com/open?id=16Ti3b8IOcXZ0b7NsenGZsHo5eAXNWhTC)
+
+To restore REDIS, you can follow this [how-to](https://community.pivotal.io/s/article/How-to-Backup-and-Restore-Open-Source-Redis). To follow this how-to to restore a backup in the docker container of our [DengueChat Docker Compose](https://github.com/socialappslab/denguechat-compose), you have to build the container and start it once, then: 
+
+1. Enter the container: `docker exec -t /bin/sh denguetorpedo-redis`
+2. Edit the configuration to set the variable `appendonly` to `no`: `nano /opt/bitnami/redis/etc/redis.conf`
+3. Follow the how-to we suggested above. 
 
 ## REDIS KEYS
 
@@ -141,8 +147,7 @@ The following is a list of keys we use in REDIS, with examples of their values:
   2) "253"
   3) "826"
 
-  "neighborhoods:__NEIGHBORHODDID__:green_locations:timeseries:daily" => [ZSET] daily number of green houses for neighborhood
-
+"neighborhoods:__NEIGHBORHODDID__:green_locations:timeseries:daily" => [ZSET] daily number of green houses for neighborhood
 ```
 
 ## Mobile App
