@@ -79,7 +79,7 @@ Currently, DengueChat uses Redis to display Green House charts. Why? Because
 the calculations required to display these charts are intensive, and so are
 delegated to run daily, in the background, and the results stores in an Redis in-memory store.
 
-Make sure that the following Sidekiq workers are running (look at the Sidekiq dashboard to see if they are scheduled, e.g., https://www.denguechat.org/7XpBp7Bgd2cd/scheduled):
+Make sure that the following Sidekiq workers are running (look at the Sidekiq dashboard to see if they are scheduled, e.g., https://www.denguechat.org/7XpBp7Bgd2cd/scheduled or http://localhost:5000/7XpBp7Bgd2cd/scheduled):
 
 ```
 app/workers/green_location_rankings_worker.rb
@@ -94,8 +94,6 @@ include GreenLocationSeries
 GreenLocationSeriesWorker.new.perform
 include GreenLocationRankings GreenLocationRankingsWorker.new.perform
 ```
-
-You can verify if workers are running by visiting `www.denguechat.org/7XpBp7Bgd2cd`.
 
 To understand what data is displayed from Redis, visit https://www.denguechat.org/cities/5 and notice the chart "Gráfico de casas verdes". This chart uses the API endpoint `GET /api/v0/graph/green_locations`
 located in `/api/v0/graphs_controller.rb` and the `GreenLocationSeries` model
