@@ -155,7 +155,7 @@ class OdkSpreadsheetParsingWorker
         end
       end
     end
-    # OdkSpreadsheetParsingWorker.perform_in(1.day)
+    OdkSpreadsheetParsingWorker.perform_in(1.day)
   end
 end
 
