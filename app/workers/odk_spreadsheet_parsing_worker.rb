@@ -6,7 +6,7 @@ class OdkSpreadsheetParsingWorker
   include Sidekiq::Worker
   sidekiq_options :queue => :odk_parsing, :retry => true, :backtrace => true
   
-  def self.perform 
+  def perform 
     locations = nil
     inspectionsPerVisit = nil
 
