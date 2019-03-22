@@ -6,6 +6,14 @@ class OdkSpreadsheetParsingWorker
   include Sidekiq::Worker
   sidekiq_options :queue => :odk_parsing, :retry => true, :backtrace => true
 
+  @@parameter_keys = {
+      :locationsUrlKey => "organization.data.locations.url",
+      :visitsUrlKey => "organization.data.visits.url",
+      :inspectionsUrlKey => "organization.data.inspections.url",
+      :xmlFormUrlKey => "organization.data.xml-form",
+      :defaultUserKey => "organization.sync.default-user"
+  }
+
   @@location_fields_dict = {
       :lFormId => ["KEY"],
       :lName => ["data-location-location_code_manual", "data-location-location_code", "data-location_data-location_code_manual"],
@@ -107,15 +115,21 @@ class OdkSpreadsheetParsingWorker
     # 4. A XMLForm specification (to use to store information that is not currently in the model of DengueChat)
     # # Run the parser only if all 4 URLs are set
     organizations.each do |organizationId, parameters|
-      if (!parameters["organization.data.visits.url"].nil? && !parameters["organization.data.locations.url"].nil? && !parameters["organization.data.inspections.url"].nil? && !parameters["organization.data.xml-form"].nil?)
+      visitsUrlKey = @@parameter_keys[:visitsUrlKey]
+      locationsUrlKey = @@parameter_keys[:locationsUrlKey]
+      inspectionsUrlKey = @@parameter_keys[:inspectionsUrlKey]
+      xmlFormUrlKey = @@parameter_keys[:xmlFormUrlKey]
+      defaultUserKey = @@parameter_keys[:defaultUserKey]
+
+      if (!parameters[visitsUrlKey].nil? && !parameters[locationsUrlKey].nil? && !parameters[inspectionsUrlKey].nil?)
         # Read the XML form spec
-        xmldoc = parameters["organization.data.xml-form"] != nil ? Nokogiri::HTML(open(parameters["organization.data.xml-form"][0].value)) : nil
+        xmldoc = parameters[xmlFormUrlKey] != nil ? Nokogiri::HTML(open(parameters[xmlFormUrlKey][0].value)) : nil
         # Read who the default user to upload this data should be
-        defaultUser =  parameters["organization.sync.default-user"] != nil ? parameters["organization.sync.default-user"][0].value : nil
+        defaultUser =  parameters[defaultUserKey] != nil ? parameters[defaultUserKey][0].value : nil
 
         # Read locations
         locationsHeader = []
-        open(parameters["organization.data.locations.url"][0].value) do |locationsFile|
+        open(parameters[locationsUrlKey][0].value) do |locationsFile|
           tempLocationFile = locationsFile.read
           locationsHeader = tempLocationFile.split($/)[0].sub(/\r/,'').split(",")
           columnOfLocationFormId = locationsHeader.index(@@location_fields_dict[:lFormId][0])
@@ -343,12 +357,16 @@ class OdkSpreadsheetParsingWorker
                   Rails.logger.debug "[OdkSpreadsheetParsingWorker] Temporary XLSX file: "+"#{Rails.root}/#{fileName}.xlsx"
                   Rails.logger.debug "[OdkSpreadsheetParsingWorker] Upload response: "+"#{upload.to_s}"
                   # Use the generated CSV and then re-use excel parsing to upload the data
-                  # ToDo: Revisa CSV Report code to process all data correctly
+                  # ToDo: When a visit as 0 inspections but was effective, add the N type of breeding site
+                  # ToDo: Persist list of processed location, visit, and inpsection form ids
+                  # ToDo: Persist list of un-processed location, visit, and inpsection form ids, along with a comment as to why
+                  # ToDo: associate csv_uuid with location form id (the main ID of the ODK form)
+                  # ToDo: check that all the locations for Asunción exist in database
+                  # ToDo: Revise CSV Report code to process all data correctly
                   # ToDo: Process inspection pictures if there are (extract the URL, donwload and save)
                   # ToDo: Process inspection larvae pictures if there are (extract the URL, donwload and save)
                   # ToDo: If a breeding site code is the same than that found in same location with same code, consider it the same br site
                   # ToDo: find a way to store also the Closed or Rejected visited (for statistics purposes)
-                  # ToDo: Persist processed visit form ids and inspection form ids
                   # ToDo: integrate a CSV parsing library (to prevent issues with quoting, double-quoting, different types of separators, etc.)
                   API::V0::CsvReportsController.batch(
                       :csv => upload,
