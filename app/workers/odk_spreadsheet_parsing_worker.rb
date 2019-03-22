@@ -85,7 +85,7 @@ class OdkSpreadsheetParsingWorker
     return key.sub(/-/,'/')
   end
 
-  def perform
+  def self.perform
     locations = nil
     inspectionsPerVisit = nil
     Rails.logger.debug "[OdkSpreadsheetParsingWorker] Started the ODK synchronization worker..."
@@ -353,10 +353,10 @@ class OdkSpreadsheetParsingWorker
                   API::V0::CsvReportsController.batch(
                       :csv => upload,
                       :file_name => "#{fileName}.xlsx",
-                      :username => (!User.find_by_username(locations[locationId][0].split(',')[locationsHeader.index("data-user_denguechat")]).eql? nil) ?
-                                       locations[locationId][0].split(',')[locationsHeader.index("data-user_denguechat")] : defaultUser,
+                      :username => (!User.find_by_username(locations[locationId][0].split(',')[locationsHeader.index(@@location_fields_dict[:lUser][0])]).eql? nil) ?
+                                       locations[locationId][0].split(',')[locationsHeader.index(@@location_fields_dict[:lUser][0])] : defaultUser,
                       :organization_id => organizationId)
-                  Delete the local file
+                  # Delete the local file
                   File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx")
                 end
               end
