@@ -82,7 +82,7 @@ class OdkSpreadsheetParsingWorker
   end
 
   def self.key_to_xpath(key)
-    return key.sub(/-/,'/')
+    return key.gsub(/-/,'/')
   end
 
   def self.perform
