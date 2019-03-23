@@ -93,12 +93,30 @@ class API::V0::CsvReportsController < API::V0::BaseController
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
 
-  #nuevo metodo estatico invocado por el parser odk
+  # Static method called upon by the ODK sync worker
   def self.batch(params)
+    # ToDo: associate csv_uuid with location form id (the main ID of the ODK form)
+    # ToDo: check that all the locations for Asunción exist in database
+    # ToDo: Process inspection pictures if there are (extract the URL, donwload and save)
+    # ToDo: Process inspection larvae pictures if there are (extract the URL, donwload and save)
+    # ToDo: If a breeding site code is the same than that found in same location with same code, consider it the same br site
+    # ToDo: integrate a CSV parsing library (to prevent issues with quoting, double-quoting, different types of separators, etc.)
+    # Use the generated CSV and then re-use excel parsing to upload the data
     # Let's iterate over each uploaded CSV, and
     # 1. Parsing the file name,
     # 2. Making sure that the location exists,
       csv = params[:csv]
+      file_name = params[:file_name]
+      username = params[:username]
+      source = params[:source]
+      organization_id = params[:organization_id]
+      contains_photo_urls = params[:contains_photo_urls]
+      username_per_locations = params[:username_per_locations]
+      contains_photo_urls     = contains_photo_urls.nil? ? false : contains_photo_urls
+      username_per_locations  = username_per_locations.nil? ? false : username_per_locations
+      source                  = source.nil? ? "" : source
+
+
       address  = Spreadsheet.extract_address_from_filepath(params[:file_name])
 
       location = Location.where("lower(address) = ?", address.downcase).first
@@ -107,17 +125,21 @@ class API::V0::CsvReportsController < API::V0::BaseController
       end
 
       
-      @csv_report = Spreadsheet.find_by_csv_file_name(params[:file_name])
+      @csv_report = Spreadsheet.find_by_csv_file_name(file_name)
       @csv_report = Spreadsheet.new if @csv_report.blank?
 
-      @csv_report.csv             = params[:csv]
+      @csv_report.csv                     = csv
+
+      user = User.find_by_username(username)
+
       #si esta definido un usuario por defecto en los parametros, el mismo es usado, si no, se asigna la carga del csv a un usuario seleccionado de manera aleatoria
-      @csv_report.user_id         = params[:username] != nil ? User.find_by_username(params[:username]).id  : Membership.where(organization_id: params[:organization_id]).sample.user_id
+      @csv_report.user_id         = user != nil ? user.id  : Membership.where(organization_id: organization_id).sample.user_id
       @csv_report.location_id     = location.id
       @csv_report.csv_content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       @csv_report.save(:validate => false)
 
-      SpreadsheetParsingWorker.perform_async(@csv_report.id)
+      Rails.logger.debug "CSV report saved, starting parsing of the excel CSV: #{@csv_report.id}"
+      SpreadsheetParsingWorker.perform_async(@csv_report.id, contains_photo_urls, username_per_locations, source)  # use .perform for local testing in rails console
 
     # render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end

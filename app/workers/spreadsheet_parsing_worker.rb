@@ -7,10 +7,15 @@ class SpreadsheetParsingWorker
 
   def perform(csv_id)
     # Make sure that we're parsing relative to the correct timezone.
+    Rails.logger.debug "Parsing of CSV started: #{csv_id}"
     Time.zone = "America/Guatemala"
 
     @csv   = Spreadsheet.find_by_id(csv_id)
     return if @csv.blank?
+    # Flags to use in parsing of the CSV spreadsheet
+    @csv.contains_photo_urls    = contains_photo_urls
+    @csv.username_per_locations = username_per_locations
+    @csv.source                 = source
 
     # Reset any verification we may have done.
     @csv.verified_at = nil
@@ -72,7 +77,8 @@ class SpreadsheetParsingWorker
         current_visited_at = Time.zone.parse( row_content[:visited_at] )
         v = Visit.find_or_create_visit_for_location_id_and_date(location.id, current_visited_at)
         v.update_column(:health_report, row_content[:health_report])
-        v.update_column(:questions, row_content[:comments])
+        v.update_column(:questions, row_content[:questions])
+        v.update_column(:source, @csv.source)
         v.update_column(:csv_id, @csv.id)
       end
 
@@ -90,7 +96,11 @@ class SpreadsheetParsingWorker
       # At this point, we have a valid breeding code. Let's parse and start creating
       # the report.
       uuid          = Spreadsheet.generate_uuid_from_row_index_and_address(row, row_index, address)
-      description   = Spreadsheet.generate_description_from_row_content(row_content)
+
+      description   = row_content[:description]
+      if (description.nil? || description == "")
+        Spreadsheet.generate_description_from_row_content(row_content)
+      end
       breeding_site = Spreadsheet.extract_breeding_site_from_row(row_content)
 
       # We say that the report has a field identifier if the breeding site CSV column
@@ -99,6 +109,8 @@ class SpreadsheetParsingWorker
       field_id = raw_breeding_code if raw_breeding_code =~ /\d/
 
       # Add to reports only if the code doesn't equal "negative" code.
+      # ToDo: if same breeding site code is found in the same location in subsequent visits
+      # can we consider them to be the same?
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
 
       # # If this is an existing report, then let's update a subset of properties
@@ -161,10 +173,15 @@ class SpreadsheetParsingWorker
         ins.identification_type = Inspection::Types::NEGATIVE
         ins.location_id        = location.id
         ins.reporter_id        = @csv.user_id
+        if (@csv.username_per_locations)
+          id = row_content[:repoterUserId]
+          if (!id.nil?)
+            ins.reporter_id = id
+          end
+        end
         ins.csv_id             = @csv.id
         ins.position           = @csv.inspections.count
         ins.save(:validate => false)
-
         next
       end
 
@@ -197,6 +214,13 @@ class SpreadsheetParsingWorker
           ins.identification_type = ins.original_status
           ins.location_id        = location.id
           ins.reporter_id        = @csv.user_id
+          if (@csv.username_per_locations)
+            id = row_content[:repoterUserId]
+            if (!id.nil?)
+              ins.reporter_id = id
+            end
+          end
+          ins.source             = @csv.source
           ins.csv_id             = @csv.id
           ins.csv_uuid           = uuid
           ins.position           = @csv.inspections.count
