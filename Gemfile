@@ -27,7 +27,7 @@ gem "http_accept_language"
 gem 'responders', '~> 2.0'
 gem "jbuilder"
 gem 'jwt'
-
+gem 'rubyXL'
 gem 'paperclip', '~> 4.2.0'
 gem "pg"
 gem "pry"
@@ -49,6 +49,7 @@ gem 'uglifier', '>= 1.0.3'
 gem "yuicompressor"
 
 gem "tzinfo"
+gem "byebug"
 
 #------------------------------------------------------------------------------
 

@@ -65,6 +65,7 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    byebug (11.0.1)
     cancan (1.6.10)
     capybara (2.4.4)
       mime-types (>= 1.16)
@@ -261,6 +262,9 @@ GEM
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    rubyXL (3.3.30)
+      nokogiri (>= 1.4.4)
+      rubyzip (>= 1.1.6)
     rubyzip (1.1.7)
     sass (3.4.21)
     sass-rails (5.0.3)
@@ -321,6 +325,7 @@ DEPENDENCIES
   angularjs-rails (~> 1.4.8)
   aws-sdk (< 2.0)
   bcrypt-ruby (~> 3.1.2)
+  byebug
   cancan
   capybara
   coffee-rails
@@ -360,6 +365,7 @@ DEPENDENCIES
   rollbar (~> 2.2.1)
   roo
   rspec-rails
+  rubyXL
   sass-rails (~> 5.0)
   sidekiq
   sinatra
@@ -372,4 +378,4 @@ DEPENDENCIES
   yuicompressor
 
 BUNDLED WITH
-   1.16.4
+   1.17.1
