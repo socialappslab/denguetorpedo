@@ -306,6 +306,9 @@ class OdkSpreadsheetParsingWorker
           # Extracting data from inspection related fields
           brsCode = extract_data_from_record(tempInspection, inspectionsHeader, @@brsCodeKeys, 0) #tipo de criadero data-visit_group-inspection-breeding_site_code
           brsCodeAmount = extract_data_from_record(tempInspection, inspectionsHeader, @@brsCodeAmountKeys, 0) #tipo de criadero data-visit_group-inspection-breeding_site_code
+          if brsCodeAmount == ""
+            brsCodeAmount = "1"
+          end
           brsCodeFinal = brsCode+brsCodeAmount.to_s
           if (visitIndex == 0 && inspCount == 0 && (brsCode.nil? || brsCode.strip == ""))
             brsCodeFinal = "N" # If a visit has only one empty inspection record, then these is mapped as a negative (N) breeding site
