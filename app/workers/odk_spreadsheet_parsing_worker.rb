@@ -207,7 +207,6 @@ class OdkSpreadsheetParsingWorker
     lFormEndTime      = extract_data_from_record(locationArray, locationsHeader, @@lEndTimeKeys, 0).strip
     lFormDate         = extract_data_from_record(locationArray, locationsHeader, @@lFormDateKeys, 0).strip
     lFormDeviceId     = extract_data_from_record(locationArray, locationsHeader, @@lDeviceIdKeys, 0).strip
-
     # Rails.logger.debug "[OdkSpreadsheetParsingWorker] About to process #{inspCount.to_s} inspections for visit #{visitId}"
     # Extract data related to the VISIT from the visitArray
     # ToDo: once integrated and with data cleaned, eliminate or think  of better way to handle  fallbacks
@@ -439,6 +438,7 @@ class OdkSpreadsheetParsingWorker
           locationName = key
           workbook = nil
           worksheet = nil
+          visitStartingRow = 4
           # If location does not exist in DengueChat, do not process any of its forms
           locationEntity = Location.find_by_address(locationName)
           isLocationMissing = read_key_from_redis(organizationId, "location", "missing:name", locationName)
@@ -460,8 +460,6 @@ class OdkSpreadsheetParsingWorker
                 local_count = visitsByForm.nil? ? 0 : visitsByForm.length
                 count_visits = count_visits+local_count
                 if (local_count > 0)
-                  visitStartingRow = 4
-                  firstVisitToProcess = true
                   visitsByForm.each_with_index do |visit, visitIndex|
                     visitArray  = visit.split(",")
                     visitFormId = extract_data_from_record(visitArray, visitsHeader, @@vFormIdKeys, 0)
@@ -484,8 +482,8 @@ class OdkSpreadsheetParsingWorker
                       else
                         # If we are processing the first location form and first visit, we have to
                         # start the creation of the XLS file to import
-                        if workbook.nil? && firstVisitToProcess
-                          puts "Starting the workbook for location #{locationName}"
+                        if workbook.nil?
+                          puts "# Processing: #{key}=>#{formId}=>#{visitFormId}=>#{visitDate}=>#{visitStatus}=>Starting the workbook at row #{visitStartingRow}..."
                           workbook = RubyXL::Workbook.new
                           worksheet = workbook[0]
                           worksheet.add_cell(0,0,"Código o dirreción")
@@ -495,7 +493,6 @@ class OdkSpreadsheetParsingWorker
                           @@dengue_chat_csv_header_keys.each_with_index  do |columnTitle, index|
                             worksheet.add_cell(3, index, columnTitle) # add all the headers of the CSV in the third row
                           end
-                          firstVisitToProcess = false
                         end
                         worksheetRowPointer = prepare_and_process_denguechat_csv(organizationId, xmldoc, locationArray,
                                                                                  locationsHeader, visitArray,
@@ -503,6 +500,7 @@ class OdkSpreadsheetParsingWorker
                                                                                  inspectionsArray, inspectionsHeader,
                                                                                  worksheet, visitStartingRow)
                         visitStartingRow = worksheetRowPointer+1
+
                         persist_key_to_redis(organizationId,"visit","processed",visitFormId)
                       end
                     else
@@ -514,7 +512,7 @@ class OdkSpreadsheetParsingWorker
               else
                 persist_key_to_redis(organizationId, "location", "failed:repeated", formId)
               end # if !locationsIds.include? formId
-              puts "#{formId}: Finished Location with this form ID"
+              puts "# Processing: #{key}=>#{formId}=>Finished..."
             end # locationFormsEach
 
             # Now that all forms of these location has been processed, save and import the Excel file
