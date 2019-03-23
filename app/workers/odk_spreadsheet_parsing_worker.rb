@@ -7,9 +7,10 @@ class OdkSpreadsheetParsingWorker
   sidekiq_options :queue => :odk_parsing, :retry => true, :backtrace => true
 
   @@dengue_chat_csv_header_keys = ["Fecha de visita (YYYY-MM-DD)" ,"Auto-reporte dengue/chik",	"Tipo de criadero",
-                              "Localización", "¿Protegido?", "¿Abatizado?", "¿Larvas?", "¿Pupas?", "¿Foto de criadero?",
-                              "Fecha de eliminación (YYYY-MM-DD)",	"¿Foto de eliminación?",
-                              "Comentarios sobre tipo y/o eliminación", "Foto de larvas", "Respuestas Adicionales"]
+                                   "Localización", "¿Protegido?", "¿Abatizado?", "¿Larvas?", "¿Pupas?",
+                                   "¿Foto de criadero?", "Fecha de eliminación (YYYY-MM-DD)",	"¿Foto de eliminación?",
+                                   "Comentarios sobre tipo y/o eliminación", "Foto de larvas", "Respuestas Adicionales",
+                                   "Form User", "Form Team"]
   @@parameter_keys = {
       :locationsUrlKey => "organization.data.locations.url",
       :visitsUrlKey => "organization.data.visits.url",
@@ -22,7 +23,11 @@ class OdkSpreadsheetParsingWorker
       :lFormId => ["KEY"],
       :lName => ["data-location-location_code_manual", "data-location-location_code", "data-location_data-location_code_manual"],
       :lTeam => ["data-phonenumber"],
-      :lUser => ["data-username"]
+      :lUser => ["data-username"],
+      :lStartTime => ["data-start"],
+      :lEndTime => ["data-end"],
+      :lFormDate => ["data-today"],
+      :lDeviceId => ["data-deviceid"]
   }
 
   @@visit_fields_dict = {
@@ -67,6 +72,10 @@ class OdkSpreadsheetParsingWorker
   @@lNameKeys = @@location_fields_dict[:lName]
   @@lTeamKeys = @@location_fields_dict[:lTeam]
   @@lUserKeys = @@location_fields_dict[:lUser]
+  @@lStartTimeKeys = @@location_fields_dict[:lStartTime]
+  @@lEndTimeKeys = @@location_fields_dict[:lEndTime]
+  @@lFormDateKeys = @@location_fields_dict[:lFormDate]
+  @@lDeviceIdKeys = @@location_fields_dict[:lDeviceId]
   # Prepare VISIT field keys to retrieve from CSV files
   @@vStatusKeys = @@visit_fields_dict[:vStatus] # => if 'E', process visit
   @@vFormIdKeys = @@visit_fields_dict[:vFormId]
@@ -181,13 +190,20 @@ class OdkSpreadsheetParsingWorker
     return finalFile
   end
 
-  def self.prepare_and_process_denguechat_csv(organizationId, xmldoc, visitArray, visitsHeader, visitIndex,
+  def self.prepare_and_process_denguechat_csv(organizationId, xmldoc, locationArray, locationsHeader, visitArray, visitsHeader, visitIndex,
       inspectionsArray, inspectionsHeader, worksheet, visitStartingRow)
     worksheetRowPointer = visitStartingRow
     visitId = extract_data_from_record(visitArray, visitsHeader, @@vFormIdKeys, 0)
     visitParentFormId = extract_data_from_record(visitArray, visitsHeader, @@vParentFormIdKeys, 0)
     inspCount = inspectionsArray.nil? ? 0 : inspectionsArray.length
     visitStatus = extract_data_from_record(visitArray,visitsHeader, @@vStatusKeys, 0)
+    lFormUser = extract_data_from_record(locationArray, locationsHeader, @@lUserKeys, 0)
+    lFormTeam = extract_data_from_record(locationArray, locationsHeader, @@lTeamKeys, 0)
+    lFormStartTime = extract_data_from_record(locationArray, locationsHeader, @@lStartTimeKeys, 0)
+    lFormEndTime = extract_data_from_record(locationArray, locationsHeader, @@lEndTimeKeys, 0)
+    lFormDate = extract_data_from_record(locationArray, locationsHeader, @@lFormDateKeys, 0)
+    lFormDeviceId = extract_data_from_record(locationArray, locationsHeader, @@lDeviceIdKeys, 0)
+
     # Rails.logger.debug "[OdkSpreadsheetParsingWorker] About to process #{inspCount.to_s} inspections for visit #{visitId}"
     # Extract data related to the VISIT from the visitArray
     # ToDo: once integrated and with data cleaned, eliminate or think  of better way to handle  fallbacks
@@ -267,7 +283,14 @@ class OdkSpreadsheetParsingWorker
       questions.push({:code => @@vAutorepSympKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vAutorepSympKeys[0])), :answer => visitAutorepSymptoms})
       questions.push({:code => @@vAutorepSympGenderKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vAutorepSympGenderKeys[0])), :answer => visitAutorepSymptomsGender})
       questions.push({:code => @@vAutorepSympListKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vAutorepSympListKeys[0])), :answer => visitAutorepSymptomsList})
+      questions.push({:code => @@lFormDateKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lFormDateKeys[0])), :answer => lFormDate})
+      questions.push({:code => @@lStartTimeKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lStartTimeKeys[0])), :answer => lFormStartTime})
+      questions.push({:code => @@lEndTimeKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lEndTimeKeys[0])), :answer => lFormEndTime})
+      questions.push({:code => @@lDeviceIdKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lDeviceIdKeys[0])), :answer => lFormDeviceId})
       worksheet.add_cell(worksheetRowPointer, 13, JSON.generate(questions)) # "Respuestas Adicionales" NOT in DengueChat Excel CSV Form
+      worksheet.add_cell(worksheetRowPointer, 14, lFormUser)
+      worksheet.add_cell(worksheetRowPointer, 15, lFormTeam)
+
     end
 
     if inspCount > 0
@@ -456,20 +479,17 @@ class OdkSpreadsheetParsingWorker
                           puts "Starting the workbook for location #{locationName}"
                           workbook = RubyXL::Workbook.new
                           worksheet = workbook[0]
-                          dengueChatCSVHeader = ["Fecha de visita (YYYY-MM-DD)" ,"Auto-reporte dengue/chik",	"Tipo de criadero",
-                                                 "Localización", "¿Protegido?", "¿Abatizado?", "¿Larvas?", "¿Pupas?", "¿Foto de criadero?",
-                                                 "Fecha de eliminación (YYYY-MM-DD)",	"¿Foto de eliminación?",
-                                                 "Comentarios sobre tipo y/o eliminación", "Foto de larvas", "Respuestas Adicionales"]
                           worksheet.add_cell(0,0,"Código o dirreción")
                           worksheet.add_cell(0,1,locationName)
                           worksheet.add_cell(1,0,"Permiso")
                           worksheet.add_cell(1,1,"1")
-                          dengueChatCSVHeader.each_with_index  do |columnTitle, index|
+                          @@dengue_chat_csv_header_keys.each_with_index  do |columnTitle, index|
                             worksheet.add_cell(3, index, columnTitle) # add all the headers of the CSV in the third row
                           end
                           firstVisitToProcess = false
                         end
-                        worksheetRowPointer = prepare_and_process_denguechat_csv(organizationId, xmldoc, visitArray,
+                        worksheetRowPointer = prepare_and_process_denguechat_csv(organizationId, xmldoc, locationArray,
+                                                                                 locationsHeader, visitArray,
                                                                                  visitsHeader, visitIndex,
                                                                                  inspectionsArray, inspectionsHeader,
                                                                                  worksheet, visitStartingRow)
@@ -516,7 +536,10 @@ class OdkSpreadsheetParsingWorker
                 :csv => upload,
                 :file_name => "#{fileName}.xlsx",
                 :username => defaultUser,
-                :organization_id => organizationId)
+                :organization_id => organizationId,
+                :source => "ODK Form",
+                :contains_photo_urls => true,
+                :username_per_locations => true)
             # Delete the local file
             #File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx")
           end # if workbook.nil?
