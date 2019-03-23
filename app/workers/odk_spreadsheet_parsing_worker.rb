@@ -116,7 +116,9 @@ class OdkSpreadsheetParsingWorker
     if (!key.nil? && key != "")
       fieldPosition = headerArray.index(key)
       if (!fieldPosition.nil? && fieldPosition > -1)
-        return recordArray[fieldPosition]
+        result = recordArray[fieldPosition]
+        result = !result.nil? ? result.strip : ""
+        return result
       else
         return ""
       end
