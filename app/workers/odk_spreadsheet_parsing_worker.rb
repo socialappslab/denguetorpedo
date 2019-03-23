@@ -339,10 +339,10 @@ class OdkSpreadsheetParsingWorker
           worksheet.add_cell(worksheetRowPointer, 10, brsEliminationPhoto) # 10 => "¿Foto de eliminación?" => collected in URL form (but excel csv expects just a boolean)
           worksheet.add_cell(worksheetRowPointer, 11, brsObs) # "Comentarios sobre tipo y/o eliminación" in DengueChat Excel CSV Form
           worksheet.add_cell(worksheetRowPointer, 12, brsLarvaPictureUrl) # "Foto de la Larva" NOT in DengueChat Excel CSV Form
-          puts "[OdkSpreadsheetParsingWorker] Added row to workwheet: [#{vDate}|#{vAutorepFinal}|#{brsCodeFinal}|#{brsProtected}|#{brsLarvae}|#{brsPupae}|#{brsEliminationDate}|#{brsObs}]"
+          Rails.logger.debug "[OdkSync]  Added row to workwheet: [#{vDate}|#{vAutorepFinal}|#{brsCodeFinal}|#{brsProtected}|#{brsLarvae}|#{brsPupae}|#{brsEliminationDate}|#{brsObs}]"
           persist_key_to_redis(organizationId, "inspection", "processed", inspectionFormId)
         else
-          puts "[OdkSpreadsheetParsingWorker] This inspection is repeated: [#{vDate}|#{vAutorepFinal}|#{brsCodeFinal}|#{brsProtected}|#{brsLarvae}|#{brsPupae}|#{brsEliminationDate}|#{brsObs}] (#{inspectionFormId})"
+          Rails.logger.debug "[OdkSync]  This inspection is repeated: [#{vDate}|#{vAutorepFinal}|#{brsCodeFinal}|#{brsProtected}|#{brsLarvae}|#{brsPupae}|#{brsEliminationDate}|#{brsObs}] (#{inspectionFormId})"
           persist_key_to_redis(organizationId, "inspection", "failed:repeated", inspectionFormId)
         end
       end
@@ -483,7 +483,6 @@ class OdkSpreadsheetParsingWorker
                         # If we are processing the first location form and first visit, we have to
                         # start the creation of the XLS file to import
                         if workbook.nil?
-                          puts "# Processing: #{key}=>#{formId}=>#{visitFormId}=>#{visitDate}=>#{visitStatus}=>Starting the workbook at row #{visitStartingRow}..."
                           workbook = RubyXL::Workbook.new
                           worksheet = workbook[0]
                           worksheet.add_cell(0,0,"Código o dirreción")
@@ -512,7 +511,7 @@ class OdkSpreadsheetParsingWorker
               else
                 persist_key_to_redis(organizationId, "location", "failed:repeated", formId)
               end # if !locationsIds.include? formId
-              puts "# Processing: #{key}=>#{formId}=>Finished..."
+              Rails.logger.debug "[OdkSync] Processing: #{key}=>#{formId}=>Finished..."
             end # locationFormsEach
 
             # Now that all forms of these location has been processed, save and import the Excel file
@@ -526,7 +525,6 @@ class OdkSpreadsheetParsingWorker
                                                                   :tempfile => File.new("#{Rails.root}/#{fileName}.xlsx")
                                                               })
 
-              Rails.logger.debug "[OdkSpreadsheetParsingWorker] Temporary XLSX file: "+"#{Rails.root}/#{fileName}.xlsx"
               # Use the generated CSV and then re-use excel parsing to upload the data
               API::V0::CsvReportsController.batch(
                   :csv => upload,
@@ -537,12 +535,12 @@ class OdkSpreadsheetParsingWorker
                   :contains_photo_urls => true,
                   :username_per_locations => true)
               # Delete the local file
-              #File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx")
+              File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx") # comment for testing and control
             end # if workbook.nil?
           end
-          puts "Finished synchronization of forms for location #{key}: proccessed #{count_forms} forms, #{count_visits} visits, and #{count_inspections} inspections."
+          Rails.logger.debug "[OdkSync] Finished synchronization of forms for location #{key}: proccessed #{count_forms} forms, #{count_visits} visits, and #{count_inspections} inspections."
         end # locations.each
-        puts "Finished synchronization of ODK forms for organization #{organizationId}. Proccessed #{total_forms} forms."
+        Rails.logger.debug "[OdkSync] Finished synchronization of ODK forms for organization #{organizationId}. Proccessed #{total_forms} forms."
       end
     end
     OdkSpreadsheetParsingWorker.perform_in(1.day)
