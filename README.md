@@ -110,6 +110,40 @@ that uses Redis data that is generated from `GreenLocationSeriesWorker`.
 
 Now, look at the table "Casas Verdes", which displays the users with top green houses. This data is fetched from `GreenLocationRankings` model that uses Redis data that is generated from `GreenLocationRankingsWorker`.
 
+## REDIS KEYS
+
+The following is a list of keys we use in REDIS, with examples of their values: 
+
+```
+"processes" => [SET] process names of sidekiq processes
+"queues" => [SET] key names of sidekiq workers
+"schedule" => [ZSET] workers in schedule
+"stat:failed" => [STRING] number of stats calculations that failed
+"stat:failed:__DATE__" => [STRING] number of stats calculations that failed on DATE
+"stat:processed" => [STRING] number of stats calculations that were processed 
+"stat:processed:__DATE__" => [STRING] number of stats calculations that were processed on DATE
+"__IP or DOMAIN__:15:8076773734be" => [HASH] infor about last running of workers
+"__IP or DOMAIN__:15:8076773734be:workers" => [HASH] sidekiq workers
+"cities:__CITYID__:green_locations:timeseries:weekly" => [ZSET] Contains the weekly count of green houses for CITYID, over the past 30 weeks 
+
+  127.0.0.1:6379> zrange "cities:4:green_locations:timeseries:weekly" 25 30
+  1) "20190210:478"
+  2) "20190217:478"
+  3) "20190224:478"
+  4) "20190303:478"
+  5) "20190310:478"
+  6) "20190317:478"
+
+"green_location_rankings:__CITYNAME__" => [ZSET] Contains a set of green houses calculations
+
+  127.0.0.1:6379> zrange "green_location_rankings:managua" 230 233  
+  1) "337"
+  2) "253"
+  3) "826"
+
+  "neighborhoods:__NEIGHBORHODDID__:green_locations:timeseries:daily" => [ZSET] daily number of green houses for neighborhood
+
+```
 
 ## Mobile App
 The mobile app is stored in separate repositories, but communicates with this repo through several API endpoints. Most of the API endpoints are self-explanatory, as they fetch the location, visit or inspections.

@@ -6,7 +6,9 @@ class Spreadsheet < ActiveRecord::Base
   attr_accessible :user_id
   self.table_name = "csvs"
 
-  attr_accessible :csv
+  attr_accessor :source, :contains_photo_urls, :username_per_locations
+
+  attr_accessible :csv, :source, :contains_photo_urls, :username_per_locations
   has_attached_file :csv
   do_not_validate_attachment_file_type :csv
 
@@ -74,27 +76,59 @@ class Spreadsheet < ActiveRecord::Base
   def self.extract_content_from_row(row)
     visited_at         = row.select {|k,v| k.include?("fecha de visita")}.values[0].to_s
     room               = row["localización"].to_s
-    breeding_site     = row.select {|k,v| k.include?("tipo")}.values[0].to_s
+    breeding_site      = row.select {|k,v| k.include?("tipo")}.values[0].to_s
     is_protected       = row['protegido'].to_i
     is_pupae           = row["pupas"].to_i
     is_larvae          = row["larvas"].to_i
     is_chemical        = row["abatizado"].to_i
     eliminated_at      = row.select {|k,v| k.include?("fecha de elimina")}.values[0].to_s
-    comments           = row.select {|k,v| k.include?("comentarios")}.values[0].to_s
+    comments           = row.select {|k,v| k.include?("comentarios")}.values[0].to_s # Use for description of inspection
 
     disease_report     = row.select {|k,v| k.include?("reporte")}.values[0].to_s
     disease_report     = nil if disease_report.blank?
+    reporter           = row.select {|k,v| k.include?("user")}.values[0].to_s
+    team               = row.select {|k,v| k.include?("team")}.values[0].to_s # ToDo: process team ids if they exist
+    questions          = row.select {|k,v| k.include?("respuestas")}.values[0].to_s
+    br_site_pic        = row.select {|k,v| k.include?("foto de criadero")}.values[0].to_s
+    br_site_elim_pic   = row.select {|k,v| k.include?("foto de elimina")}.values[0].to_s
+    br_site_larva_pic  = row.select {|k,v| k.include?("foto de larva")}.values[0].to_s # ToDo: add larva pictures to model
+
+    reporterUserId = nil
+    if (!reporter.nil?)
+      reporterUser = User.find_by_username(reporter.downcase)
+      if (!reporterUser.nil?)
+        reporterUserId = reporterUser.id
+      end
+    end
+
+    reporterTeamId = nil
+    if (!team.nil?)
+      reporterTeam = Team.find_by_name(team)
+      if (!reporterTeam.nil?)
+        reporterTeam = Team.find_by_id(team)
+        if (!reporterTeam.nil?)
+          reporterTeamId = reporterTeam.id
+        end
+      end
+    end
+
     return {
-      :visited_at    => visited_at,
-      :health_report => disease_report,
-      :room          => room,
-      :breeding_site => breeding_site,
-      :protected     => is_protected,
-      :pupae         => is_pupae,
-      :larvae        => is_larvae,
-      :chemical      => is_chemical,
-      :eliminated_at => eliminated_at,
-      :comments      => comments
+      :visited_at        => visited_at,
+      :health_report     => disease_report,
+      :room              => room,
+      :breeding_site     => breeding_site,
+      :protected         => is_protected,
+      :pupae             => is_pupae,
+      :larvae            => is_larvae,
+      :chemical          => is_chemical,
+      :eliminated_at     => eliminated_at,
+      :comments          => comments,
+      :questions         => questions,
+      :br_site_pic       => br_site_pic,
+      :br_site_elim_pic  => br_site_elim_pic,
+      :br_site_larva_pic => br_site_larva_pic,
+      :reporter          => reporterUserId,
+      :reporterTeam      => reporterTeamId
     }
   end
 
