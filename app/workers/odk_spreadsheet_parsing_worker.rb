@@ -141,7 +141,9 @@ class OdkSpreadsheetParsingWorker
   end
 
   def self.key_to_xpath(key)
-    return key.gsub(/-/,'/')
+    # e.g., '//*[@id="/data/visit_group/visit_form/services_fumigation:label"]'
+    path = key.gsub(/-/,'/')
+    return xpath = '//*[@id="/'+path+':label"]'
   end
 
   def self.extract_record_array_by_key(groupedLines, key, separator)
@@ -193,33 +195,33 @@ class OdkSpreadsheetParsingWorker
   def self.prepare_and_process_denguechat_csv(organizationId, xmldoc, locationArray, locationsHeader, visitArray, visitsHeader, visitIndex,
       inspectionsArray, inspectionsHeader, worksheet, visitStartingRow)
     worksheetRowPointer = visitStartingRow
-    visitId = extract_data_from_record(visitArray, visitsHeader, @@vFormIdKeys, 0)
-    visitParentFormId = extract_data_from_record(visitArray, visitsHeader, @@vParentFormIdKeys, 0)
-    inspCount = inspectionsArray.nil? ? 0 : inspectionsArray.length
-    visitStatus = extract_data_from_record(visitArray,visitsHeader, @@vStatusKeys, 0)
-    lFormUser = extract_data_from_record(locationArray, locationsHeader, @@lUserKeys, 0)
-    lFormTeam = extract_data_from_record(locationArray, locationsHeader, @@lTeamKeys, 0)
-    lFormStartTime = extract_data_from_record(locationArray, locationsHeader, @@lStartTimeKeys, 0)
-    lFormEndTime = extract_data_from_record(locationArray, locationsHeader, @@lEndTimeKeys, 0)
-    lFormDate = extract_data_from_record(locationArray, locationsHeader, @@lFormDateKeys, 0)
-    lFormDeviceId = extract_data_from_record(locationArray, locationsHeader, @@lDeviceIdKeys, 0)
+    visitId           = extract_data_from_record(visitArray, visitsHeader, @@vFormIdKeys, 0).strip
+    visitParentFormId = extract_data_from_record(visitArray, visitsHeader, @@vParentFormIdKeys, 0).strip
+    inspCount         = inspectionsArray.nil? ? 0 : inspectionsArray.length
+    visitStatus       = extract_data_from_record(visitArray,visitsHeader, @@vStatusKeys, 0).strip
+    lFormUser         = extract_data_from_record(locationArray, locationsHeader, @@lUserKeys, 0).strip
+    lFormTeam         = extract_data_from_record(locationArray, locationsHeader, @@lTeamKeys, 0).strip
+    lFormStartTime    = extract_data_from_record(locationArray, locationsHeader, @@lStartTimeKeys, 0).strip
+    lFormEndTime      = extract_data_from_record(locationArray, locationsHeader, @@lEndTimeKeys, 0).strip
+    lFormDate         = extract_data_from_record(locationArray, locationsHeader, @@lFormDateKeys, 0).strip
+    lFormDeviceId     = extract_data_from_record(locationArray, locationsHeader, @@lDeviceIdKeys, 0).strip
 
     # Rails.logger.debug "[OdkSpreadsheetParsingWorker] About to process #{inspCount.to_s} inspections for visit #{visitId}"
     # Extract data related to the VISIT from the visitArray
     # ToDo: once integrated and with data cleaned, eliminate or think  of better way to handle  fallbacks
     vDate = extract_data_from_record(visitArray, visitsHeader, @@vDateKeys, 0).insert(6, '20')
     vAutorep = extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0).strip != "" ?
-                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0) :
-                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 1)
+                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0).strip :
+                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 1).strip
     vAutorepDengue = extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0).strip != "" ?
-                         extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0) :
-                         extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 1)
+                         extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0).strip :
+                         extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 1).strip
     vAutorepChik = extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0).strip != "" ?
-                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0) :
-                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 1)
+                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0).strip :
+                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 1).strip
     vAutorepZika = extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0).strip != "" ?
-                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0) :
-                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 1)
+                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0).strip :
+                       extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 1).strip
     vAutorepFinal = ""
     if (vAutorep.strip == "1")
       if (vAutorepDengue != "" && vAutorepDengue != "0")
@@ -233,28 +235,29 @@ class OdkSpreadsheetParsingWorker
       end
     end
     visitObs =  extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip != "" ?
-                    extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0) :
-                    extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0)
-    visitHostGender =  extract_data_from_record(visitArray, visitsHeader, @@vHostGenderKeys, 0)
-    visitHostAge =  extract_data_from_record(visitArray, visitsHeader, @@vHostAgeKeys, 0)
+                    extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip :
+                    extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip
+    visitObs = visitObs.nil? ? "" : visitObs.force_encoding('iso-8859-1').encode('utf-8')
+    visitHostGender =  extract_data_from_record(visitArray, visitsHeader, @@vHostGenderKeys, 0).strip
+    visitHostAge =  extract_data_from_record(visitArray, visitsHeader, @@vHostAgeKeys, 0).strip
     visitLarvicide =   extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0).strip != "" ?
-                           extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0) :
-                           extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 1)
+                           extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0).strip :
+                           extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 1).strip
     visitServices =   extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0).strip != "" ?
-                          extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0) :
-                          extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 1)
+                          extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0).strip :
+                          extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 1).strip
     visitAutorepPregnant =  extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0).strip != "" ?
-                                extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0) :
-                                extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 1)
+                                extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0).strip :
+                                extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 1).strip
     visitAutorepSymptoms = extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0).strip != "" ?
-                               extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0) :
-                               extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 1)
+                               extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0).strip :
+                               extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 1).strip
     visitAutorepSymptomsGender = extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 0).strip != "" ?
-                                     extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 0) :
-                                     extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 1)
+                                     extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 0).strip :
+                                     extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 1).strip
     visitAutorepSymptomsList = extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0).strip != "" ?
-                                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0) :
-                                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 1)
+                                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0).strip :
+                                   extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 1).strip
     questions = []
 
     # Insert VISIT DATA into the workbook
@@ -267,8 +270,8 @@ class OdkSpreadsheetParsingWorker
     # They are stored in the questions field of the DC model, using the XMLForm specs to include both
     # the form field name and the form field description (i.e., the actual question that was made)
     if(xmldoc != nil )
-      questions.push({:code => @@vFormIdKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vFormIdKeys[0])), :answer => visitId})
-      questions.push({:code => @@vParentFormIdKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vParentFormIdKeys[0])), :answer => visitParentFormId})
+      questions.push({:code => @@vFormIdKeys[0], :body => "ODK Visit Form ID", :answer => visitId})
+      questions.push({:code => @@vParentFormIdKeys[0], :body => "ODK Location Form ID", :answer => visitParentFormId})
       questions.push({:code => @@vStatusKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vStatusKeys[0])), :answer => visitStatus})
       questions.push({:code => @@vHostGenderKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vHostGenderKeys[0])), :answer => visitHostGender})
       questions.push({:code => @@vHostAgeKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vHostAgeKeys[0])), :answer => visitHostAge})
@@ -283,10 +286,10 @@ class OdkSpreadsheetParsingWorker
       questions.push({:code => @@vAutorepSympKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vAutorepSympKeys[0])), :answer => visitAutorepSymptoms})
       questions.push({:code => @@vAutorepSympGenderKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vAutorepSympGenderKeys[0])), :answer => visitAutorepSymptomsGender})
       questions.push({:code => @@vAutorepSympListKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@vAutorepSympListKeys[0])), :answer => visitAutorepSymptomsList})
-      questions.push({:code => @@lFormDateKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lFormDateKeys[0])), :answer => lFormDate})
-      questions.push({:code => @@lStartTimeKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lStartTimeKeys[0])), :answer => lFormStartTime})
-      questions.push({:code => @@lEndTimeKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lEndTimeKeys[0])), :answer => lFormEndTime})
-      questions.push({:code => @@lDeviceIdKeys[0], :body => extract_desc_from_xmlform(xmldoc, key_to_xpath(@@lDeviceIdKeys[0])), :answer => lFormDeviceId})
+      questions.push({:code => @@lFormDateKeys[0], :body => "Form Upload Date", :answer => lFormDate})
+      questions.push({:code => @@lStartTimeKeys[0], :body => "Form Starting Time", :answer => lFormStartTime})
+      questions.push({:code => @@lEndTimeKeys[0], :body => "Form End time", :answer => lFormEndTime})
+      questions.push({:code => @@lDeviceIdKeys[0], :body => "Form Device ID", :answer => lFormDeviceId})
       worksheet.add_cell(worksheetRowPointer, 13, JSON.generate(questions)) # "Respuestas Adicionales" NOT in DengueChat Excel CSV Form
       worksheet.add_cell(worksheetRowPointer, 14, lFormUser)
       worksheet.add_cell(worksheetRowPointer, 15, lFormTeam)
@@ -313,16 +316,17 @@ class OdkSpreadsheetParsingWorker
           if (visitIndex == 0 && inspCount == 0 && (brsCode.nil? || brsCode.strip == ""))
             brsCodeFinal = "N" # If a visit has only one empty inspection record, then these is mapped as a negative (N) breeding site
           end
-          brsLocalization = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLocalizationKeys, 0)
-          brsProtected = extract_data_from_record(tempInspection, inspectionsHeader, @@brsProtectedKeys, 0) #protegido? data-visit_group-inspection-br_protected
-          brsLarvicide = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLarvicideKeys, 0)
-          brsLarvae = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLarvaeKeys, 0) #larvas? data-visit_group-inspection-br_larvae
-          brsPupae = extract_data_from_record(tempInspection, inspectionsHeader, @@brsPupaeKeys, 0) #pupas? data-visit_group-inspection-br_pupae
-          brsEliminationDate = extract_data_from_record(tempInspection, inspectionsHeader,@@brsEliminationDateKeys, 0) #fecha de eliminacion data-visit_group-inspection-br_elimination_date
-          brsEliminationPhoto = extract_data_from_record(tempInspection, inspectionsHeader, @@brsEliminationPhotoKeys, 0)
-          brsObs = extract_data_from_record(tempInspection, inspectionsHeader, @@brsObsKeys, 0)
-          brsPictureUrl = extract_data_from_record(tempInspection, inspectionsHeader, @@brsPictureUrlKeys, 0)
-          brsLarvaPictureUrl = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLarvaPictureUrlKeys, 0)
+          brsLocalization = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLocalizationKeys, 0).strip
+          brsProtected = extract_data_from_record(tempInspection, inspectionsHeader, @@brsProtectedKeys, 0).strip #protegido? data-visit_group-inspection-br_protected
+          brsLarvicide = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLarvicideKeys, 0).strip
+          brsLarvae = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLarvaeKeys, 0).strip #larvas? data-visit_group-inspection-br_larvae
+          brsPupae = extract_data_from_record(tempInspection, inspectionsHeader, @@brsPupaeKeys, 0).strip #pupas? data-visit_group-inspection-br_pupae
+          brsEliminationDate = extract_data_from_record(tempInspection, inspectionsHeader,@@brsEliminationDateKeys, 0).strip #fecha de eliminacion data-visit_group-inspection-br_elimination_date
+          brsEliminationPhoto = extract_data_from_record(tempInspection, inspectionsHeader, @@brsEliminationPhotoKeys, 0).strip
+          brsObs = extract_data_from_record(tempInspection, inspectionsHeader, @@brsObsKeys, 0).strip
+          # brsObs=brsObs.force_encoding('iso-8859-1').encode('utf-8')
+          brsPictureUrl = extract_data_from_record(tempInspection, inspectionsHeader, @@brsPictureUrlKeys, 0).strip
+          brsLarvaPictureUrl = extract_data_from_record(tempInspection, inspectionsHeader, @@brsLarvaPictureUrlKeys, 0).strip
           worksheet.add_cell(worksheetRowPointer, 2, brsCodeFinal) # 	"Tipo de criadero" in DengueChat Excel CSV Form
           worksheet.add_cell(worksheetRowPointer, 3, brsLocalization) # 3 => "Localización" => not available in current ODK Form
           worksheet.add_cell(worksheetRowPointer, 4, brsProtected) # "¿Protegido?" in DengueChat Excel CSV Form
@@ -373,7 +377,7 @@ class OdkSpreadsheetParsingWorker
   # Todo: i.e., if the value at line.split(",")[columnOfVisitKey] is not valid, try with the next column number in the array of @@inspection_fields_dict[:iVisitFormParent]
   # ToDo: this applies to all the places where we are referring to columns in the CSV
 
-  def self.perform
+  def perform # def self.perform for local testing in rails console
     Rails.logger.debug "[OdkSpreadsheetParsingWorker] Started the ODK synchronization worker..."
 
     # Read organizations grouped by the configuration parameters
@@ -478,7 +482,7 @@ class OdkSpreadsheetParsingWorker
                       else
                         # If we are processing the first location form and first visit, we have to
                         # start the creation of the XLS file to import
-                        if locationFormIndex == 0 && firstVisitToProcess
+                        if workbook.nil? && firstVisitToProcess
                           puts "Starting the workbook for location #{locationName}"
                           workbook = RubyXL::Workbook.new
                           worksheet = workbook[0]
@@ -510,42 +514,32 @@ class OdkSpreadsheetParsingWorker
               end # if !locationsIds.include? formId
               puts "#{formId}: Finished Location with this form ID"
             end # locationFormsEach
+
+            # Now that all forms of these location has been processed, save and import the Excel file
+            if (!workbook.nil? && !locationName.nil? && locationName.strip != "")
+              # Temporary Excel file generated and upload it to the S3 server
+              fileName=locationName
+              workbook.write("#{Rails.root}/#{fileName}.xlsx")
+              upload = ActionDispatch::Http::UploadedFile.new({
+                                                                  :filename => "#{fileName}.xlsx",
+                                                                  :content_type => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                                                  :tempfile => File.new("#{Rails.root}/#{fileName}.xlsx")
+                                                              })
+
+              Rails.logger.debug "[OdkSpreadsheetParsingWorker] Temporary XLSX file: "+"#{Rails.root}/#{fileName}.xlsx"
+              # Use the generated CSV and then re-use excel parsing to upload the data
+              API::V0::CsvReportsController.batch(
+                  :csv => upload,
+                  :file_name => "#{fileName}.xlsx",
+                  :username => defaultUser,
+                  :organization_id => organizationId,
+                  :source => "ODK Form",
+                  :contains_photo_urls => true,
+                  :username_per_locations => true)
+              # Delete the local file
+              #File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx")
+            end # if workbook.nil?
           end
-
-          # Now that all forms of these location has been processed, save and import the Excel file
-          if (!workbook.nil?)
-            # Temporary Excel file generated and upload it to the S3 server
-            fileName=locationName
-            workbook.write("#{Rails.root}/#{fileName}.xlsx")
-            upload = ActionDispatch::Http::UploadedFile.new({
-                                                                :filename => "#{fileName}.xlsx",
-                                                                :content_type => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                                                :tempfile => File.new("#{Rails.root}/#{fileName}.xlsx")
-                                                            })
-
-            Rails.logger.debug "[OdkSpreadsheetParsingWorker] Temporary XLSX file: "+"#{Rails.root}/#{fileName}.xlsx"
-            # ToDo: associate csv_uuid with location form id (the main ID of the ODK form)
-            # ToDo: check that all the locations for Asunción exist in database
-            # ToDo: Revise CSV Report code to process all data correctly
-            # ToDo: Process inspection pictures if there are (extract the URL, donwload and save)
-            # ToDo: Process inspection larvae pictures if there are (extract the URL, donwload and save)
-            # ToDo: If a breeding site code is the same than that found in same location with same code, consider it the same br site
-            # ToDo: find a way to store also the Closed or Rejected visited (for statistics purposes)
-            # ToDo: integrate a CSV parsing library (to prevent issues with quoting, double-quoting, different types of separators, etc.)
-
-            # Use the generated CSV and then re-use excel parsing to upload the data
-            # ToDo: change the CsvReportsController to consider a username for each inspection in the CSV itself
-            API::V0::CsvReportsController.batch(
-                :csv => upload,
-                :file_name => "#{fileName}.xlsx",
-                :username => defaultUser,
-                :organization_id => organizationId,
-                :source => "ODK Form",
-                :contains_photo_urls => true,
-                :username_per_locations => true)
-            # Delete the local file
-            #File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx")
-          end # if workbook.nil?
           puts "Finished synchronization of forms for location #{key}: proccessed #{count_forms} forms, #{count_visits} visits, and #{count_inspections} inspections."
         end # locations.each
         puts "Finished synchronization of ODK forms for organization #{organizationId}. Proccessed #{total_forms} forms."
