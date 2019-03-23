@@ -16,3 +16,7 @@ db/development.dump
 
 # Ignore application configuration
 /config/application.yml
+
+forms copy/
+
+*.xlsx
