@@ -111,9 +111,9 @@ class API::V0::CsvReportsController < API::V0::BaseController
       source = params[:source]
       organization_id = params[:organization_id]
       contains_photo_urls = params[:contains_photo_urls]
-      username_per_locations = params[:username_per_locations]
+      username_per_inspections = params[:username_per_inspections]
       contains_photo_urls     = contains_photo_urls.nil? ? false : contains_photo_urls
-      username_per_locations  = username_per_locations.nil? ? false : username_per_locations
+      username_per_inspections  = username_per_inspections.nil? ? false : username_per_inspections
       source                  = source.nil? ? "" : source
 
 
@@ -137,7 +137,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report.location_id     = location.id
       @csv_report.csv_content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       @csv_report.contains_photo_urls = contains_photo_urls
-      @csv_report.username_per_locations = username_per_locations
+      @csv_report.username_per_inspections = username_per_inspections
       @csv_report.source = source
       @csv_report.save(:validate => false)
 

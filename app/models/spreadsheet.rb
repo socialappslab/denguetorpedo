@@ -6,9 +6,7 @@ class Spreadsheet < ActiveRecord::Base
   attr_accessible :user_id
   self.table_name = "csvs"
 
-  attr_accessor :source, :contains_photo_urls, :username_per_locations
-
-  attr_accessible :csv, :source, :contains_photo_urls, :username_per_locations
+  attr_accessible :csv, :source, :contains_photo_urls, :username_per_inspections
   has_attached_file :csv
   do_not_validate_attachment_file_type :csv
 

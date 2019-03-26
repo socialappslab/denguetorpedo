@@ -513,7 +513,7 @@ module OdkSpreadsheetParsing
                 :organization_id => organizationId,
                 :source => "ODK Form",
                 :contains_photo_urls => true,
-                :username_per_locations => true)
+                :username_per_inspections => true)
             # Delete the local file
             File.delete("#{Rails.root}/#{fileName}.xlsx") if File.exist?("#{Rails.root}/#{fileName}.xlsx") # comment for testing and control
           end # if workbook.nil?

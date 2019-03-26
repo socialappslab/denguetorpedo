@@ -186,7 +186,7 @@ class SpreadsheetParsingWorker
         ins.identification_type = Inspection::Types::NEGATIVE
         ins.location_id        = location.id
         ins.reporter_id        = reporter_user_id.nil? ? @csv.user_id : reporter_user_id
-        if (@csv.username_per_locations)
+        if (@csv.username_per_inspections)
           id = row_content[:repoterUserId]
           if (!id.nil?)
             ins.reporter_id = id
@@ -227,7 +227,7 @@ class SpreadsheetParsingWorker
           ins.identification_type = ins.original_status
           ins.location_id        = location.id
           ins.reporter_id        = @csv.user_id
-          if (@csv.username_per_locations)
+          if (@csv.username_per_inspections)
             id = row_content[:repoterUserId]
             if (!id.nil?)
               ins.reporter_id = id
