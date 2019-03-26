@@ -543,7 +543,7 @@ class OdkSpreadsheetParsingWorker
         Rails.logger.debug "[OdkSync] Finished synchronization of ODK forms for organization #{organizationId}. Proccessed #{total_forms} forms."
       end
     end
-    OdkSpreadsheetParsingWorker.perform_in(1.day)
+    OdkSpreadsheetParsingWorker.perform_in(7.day)
   end
 end
 
