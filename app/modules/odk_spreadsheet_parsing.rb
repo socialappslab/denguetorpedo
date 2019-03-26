@@ -213,20 +213,21 @@ module OdkSpreadsheetParsing
     # Rails.logger.debug "[OdkSpreadsheetParsingWorker] About to process #{inspCount.to_s} inspections for visit #{visitId}"
     # Extract data related to the VISIT from the visitArray
     # ToDo: once integrated and with data cleaned, eliminate or think  of better way to handle  fallbacks
-    vDate = self.extract_data_from_record(visitArray, visitsHeader, @@vDateKeys, 0).insert(6, '20')
-    vAutorep = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0).strip != "" ?
-                   self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0).strip :
-                   self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 1).strip
-    vAutorepDengue = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0).strip != "" ?
-                         self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0).strip :
-                         self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 1).strip
-    vAutorepChik = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0).strip != "" ?
-                       self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0).strip :
-                       self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 1).strip
-    vAutorepZika = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0).strip != "" ?
-                       self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0).strip :
-                       self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 1).strip
-    vAutorepFinal = ""
+    vDate             = self.extract_data_from_record(visitArray, visitsHeader, @@vDateKeys, 0).insert(6, '20')
+    vAutorep          = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0).strip != "" ?
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 0).strip :
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepKeys, 1).strip
+    vAutorepDengue    = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0).strip != "" ?
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 0).strip :
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepDengueKeys, 1).strip
+    vAutorepChik      = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0).strip != "" ?
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 0).strip :
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepChikKeys, 1).strip
+    vAutorepZika      = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0).strip != "" ?
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 0).strip :
+                            self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepZikaKeys, 1).strip
+    vAutorepFinal     = ""
+
     if (vAutorep.strip == "1")
       if (vAutorepDengue != "" && vAutorepDengue != "0")
         vAutorepFinal = vAutorepFinal + vAutorepDengue + "D"
@@ -238,30 +239,31 @@ module OdkSpreadsheetParsing
         vAutorepFinal = vAutorepFinal + vAutorepZika + "Z"
       end
     end
-    visitObs =  self.extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip != "" ?
-                    self.extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip :
-                    self.extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip
-    visitObs = visitObs.nil? ? "" : visitObs.force_encoding('iso-8859-1').encode('utf-8')
-    visitHostGender =  self.extract_data_from_record(visitArray, visitsHeader, @@vHostGenderKeys, 0).strip
-    visitHostAge =  self.extract_data_from_record(visitArray, visitsHeader, @@vHostAgeKeys, 0).strip
-    visitLarvicide =   self.extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0).strip != "" ?
-                           self.extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0).strip :
-                           self.extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 1).strip
-    visitServices =   self.extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0).strip != "" ?
-                          self.extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0).strip :
-                          self.extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 1).strip
-    visitAutorepPregnant =  self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0).strip != "" ?
-                                self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0).strip :
-                                self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 1).strip
-    visitAutorepSymptoms = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0).strip != "" ?
-                               self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0).strip :
-                               self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 1).strip
-    visitAutorepSymptomsGender = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 0).strip != "" ?
+
+    visitObs                    =  self.extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip != "" ?
+                                       self.extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip :
+                                       self.extract_data_from_record(visitArray, visitsHeader, @@vObsKeys, 0).strip
+    visitObs                    = visitObs.nil? ? "" : visitObs.force_encoding('iso-8859-1').encode('utf-8')
+    visitHostGender             =  self.extract_data_from_record(visitArray, visitsHeader, @@vHostGenderKeys, 0).strip
+    visitHostAge                =  self.extract_data_from_record(visitArray, visitsHeader, @@vHostAgeKeys, 0).strip
+    visitLarvicide              =  self.extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0).strip != "" ?
+                                       self.extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 0).strip :
+                                       self.extract_data_from_record(visitArray, visitsHeader, @@vLarvicideKeys, 1).strip
+    visitServices               =   self.extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0).strip != "" ?
+                                        self.extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 0).strip :
+                                        self.extract_data_from_record(visitArray, visitsHeader, @@vFumigationKeys, 1).strip
+    visitAutorepPregnant        =  self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0).strip != "" ?
+                                       self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 0).strip :
+                                       self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepPregnantKeys, 1).strip
+    visitAutorepSymptoms        = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0).strip != "" ?
+                                      self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 0).strip :
+                                      self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympKeys, 1).strip
+    visitAutorepSymptomsGender  = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 0).strip != "" ?
                                      self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 0).strip :
                                      self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympGenderKeys, 1).strip
-    visitAutorepSymptomsList = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0).strip != "" ?
-                                   self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0).strip :
-                                   self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 1).strip
+    visitAutorepSymptomsList    = self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0).strip != "" ?
+                                      self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 0).strip :
+                                      self.extract_data_from_record(visitArray, visitsHeader, @@vAutorepSympListKeys, 1).strip
     questions = []
 
     # Insert VISIT DATA into the workbook
