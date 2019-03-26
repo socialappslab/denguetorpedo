@@ -111,9 +111,9 @@ class API::V0::CsvReportsController < API::V0::BaseController
       source = params[:source]
       organization_id = params[:organization_id]
       contains_photo_urls = params[:contains_photo_urls]
-      username_per_locations = params[:username_per_locations]
+      username_per_inspections = params[:username_per_inspections]
       contains_photo_urls     = contains_photo_urls.nil? ? false : contains_photo_urls
-      username_per_locations  = username_per_locations.nil? ? false : username_per_locations
+      username_per_inspections  = username_per_inspections.nil? ? false : username_per_inspections
       source                  = source.nil? ? "" : source
 
 
@@ -136,10 +136,13 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report.user_id         = user != nil ? user.id  : Membership.where(organization_id: organization_id).sample.user_id
       @csv_report.location_id     = location.id
       @csv_report.csv_content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      @csv_report.contains_photo_urls = contains_photo_urls
+      @csv_report.username_per_inspections = username_per_inspections
+      @csv_report.source = source
       @csv_report.save(:validate => false)
 
       Rails.logger.debug "CSV report saved, starting parsing of the excel CSV: #{@csv_report.id}"
-      SpreadsheetParsingWorker.perform_async(@csv_report.id, contains_photo_urls, username_per_locations, source)  # use .perform for local testing in rails console
+      SpreadsheetParsingWorker.perform_async(@csv_report.id)  # use .perform for local testing in rails console
 
     # render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end

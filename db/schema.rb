@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181112162211) do
+ActiveRecord::Schema.define(version: 20190326153100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,9 @@ ActiveRecord::Schema.define(version: 20181112162211) do
     t.datetime "csv_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "source"
+    t.boolean  "contains_photo_urls",      default: false
+    t.boolean  "username_per_inspections", default: false
   end
 
   create_table "device_sessions", force: :cascade do |t|

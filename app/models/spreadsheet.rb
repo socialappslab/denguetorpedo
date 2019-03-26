@@ -6,9 +6,7 @@ class Spreadsheet < ActiveRecord::Base
   attr_accessible :user_id
   self.table_name = "csvs"
 
-  attr_accessor :source, :contains_photo_urls, :username_per_locations
-
-  attr_accessible :csv, :source, :contains_photo_urls, :username_per_locations
+  attr_accessible :csv, :source, :contains_photo_urls, :username_per_inspections
   has_attached_file :csv
   do_not_validate_attachment_file_type :csv
 
@@ -152,6 +150,24 @@ class Spreadsheet < ActiveRecord::Base
     return breeding_site
   end
 
+
+  def self.extract_user_id_from_row(row_content)
+    user_id=nil
+    if (!row_content[:reporter].nil?)
+      user_id = row_content[:reporter]
+    end
+    return user_id
+  end
+
+
+  def self.extract_team_id_from_row(row_content)
+    team=nil
+    if (!row_content[:reporterTeam].nil?)
+      team = row_content[:reporterTeam]
+    end
+
+    return team
+  end
   #----------------------------------------------------------------------------
 
   def self.generate_description_from_row_content(row_content)
@@ -269,6 +285,11 @@ class Spreadsheet < ActiveRecord::Base
     # See http://stackoverflow.com/questions/22416990/paperclip-unable-to-change-default-path
     file_location = (Rails.env.production? || Rails.env.staging?) ? file.url : file.path
 
+    if (Rails.env.development? && ( file_location.nil? || !File.exists?(file_location) ) )
+      file_location = file.url
+    end
+
+    Rails.logger.debug "Loading CSV file into spreadsheet: #{file_location}"
     if File.extname( file.original_filename ) == ".xlsx"
       spreadsheet = Roo::Excelx.new(file_location, :file_warning => :ignore)
     end
