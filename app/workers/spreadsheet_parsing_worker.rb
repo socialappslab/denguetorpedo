@@ -7,15 +7,12 @@ class SpreadsheetParsingWorker
 
   def perform(csv_id)
     # Make sure that we're parsing relative to the correct timezone.
-    Rails.logger.debug "Parsing of CSV started: #{csv_id}"
+    Rails.logger.info "Parsing of CSV started. Loading existing CSV with ID: #{csv_id}"
     Time.zone = "America/Guatemala"
 
     @csv   = Spreadsheet.find_by_id(csv_id)
     return if @csv.blank?
-    # Flags to use in parsing of the CSV spreadsheet
-    @csv.contains_photo_urls    = contains_photo_urls
-    @csv.username_per_locations = username_per_locations
-    @csv.source                 = source
+    Rails.logger.info "CSV was found..."
 
     # Reset any verification we may have done.
     @csv.verified_at = nil
@@ -27,6 +24,7 @@ class SpreadsheetParsingWorker
     # Identify the file content type.
     spreadsheet = Spreadsheet.load_spreadsheet( @csv.csv )
     unless spreadsheet
+      Rails.logger.info "Error while parsing of CSV #{csv_id}: Spreadsheet not loaded, Unknown format..."
       CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::UNKNOWN_FORMAT)
       return
     end
@@ -34,10 +32,12 @@ class SpreadsheetParsingWorker
     # Error out if there are no reports extracted.
     rows = Spreadsheet.extract_rows_from_spreadsheet(spreadsheet)
     if rows.blank?
+      Rails.logger.info "Error while parsing of CSV #{csv_id}: Missing Visits..."
       CsvError.create(:csv_id => @csv.id, :error_type => CsvError::Types::MISSING_VISITS)
       return
     end
 
+    Rails.logger.info "No errors loading the CSV into a Spreadsheet. Loaded #{rows.length}"
     # The start index is essentially the number of rows that are occupied by
     # location metadata (including address, permission to record, etc)
     header = Spreadsheet.extract_header_from_spreadsheet(spreadsheet)
@@ -47,13 +47,16 @@ class SpreadsheetParsingWorker
     # are any incorrect breeding site codes.
     @csv.check_for_breeding_site_errors(rows)
 
+    Rails.logger.info "No errors in breeding sites..."
     # Iterate over the rows, checking if any dates are invalid.
     @csv.check_for_date_errors(rows)
 
+    Rails.logger.info "No errors in dates..."
     # If there are any errors, we can't proceed so let's offload right now and let
     # the user re-upload when they've fixed the errors.
     return if @csv.csv_errors.present?
 
+    Rails.logger.info "No errors in spreadsheet..."
     #--------------------------------------------------------------------------
     # Let's iterate over the rows and create/update reports.
     #------
@@ -61,13 +64,16 @@ class SpreadsheetParsingWorker
     # Create a User Location corresponding to this user.
     ul = UserLocation.find_by_user_id_and_location_id(@csv.user_id, location.id)
     if ul.blank?
+      Rails.logger.info "User locaitn is blank, creating a new one..."
       ul = UserLocation.create(:user_id => @csv.user_id, :location_id => location.id, :source => "csv", :assigned_at => Time.zone.now)
     end
 
     # At this point, we do not have any errors. Let's iterate over each row, and
     # create/update the reports accordingly.
     current_visited_at = nil
+    Rails.logger.info "Starting to parse the spreadsheet (rows = #{rows.length})"
     rows.each_with_index do |row, row_index|
+      Rails.logger.info "Parsing row #{row_index}/#{rows.length}"
       row_content = Spreadsheet.extract_content_from_row(row)
 
       # Let's begin by creating a visit, if applicable. We create a visit
@@ -76,6 +82,7 @@ class SpreadsheetParsingWorker
       if row_content[:visited_at].present? && current_visited_at != row_content[:visited_at]
         current_visited_at = Time.zone.parse( row_content[:visited_at] )
         v = Visit.find_or_create_visit_for_location_id_and_date(location.id, current_visited_at)
+        Rails.logger.info "Visit created/found #{v.visited_at} (#{v.id})"
         v.update_column(:health_report, row_content[:health_report])
         v.update_column(:questions, row_content[:questions])
         v.update_column(:source, @csv.source)
@@ -87,6 +94,7 @@ class SpreadsheetParsingWorker
       # parse and store the visit date, and then make a decision on whether to
       # continue parsing the remaining columns.
       next if row_content[:breeding_site].blank?
+      Rails.logger.info "Processing breeding sites: #{row_content[:breeding_site]}"
 
       # If the breeding code is N or X then we will NOT create a report. Otherwise,
       # we will, *and* we may also add a unique identifier to the report.
@@ -112,6 +120,10 @@ class SpreadsheetParsingWorker
       # ToDo: if same breeding site code is found in the same location in subsequent visits
       # can we consider them to be the same?
       eliminated_at = Time.zone.parse( row_content[:eliminated_at] ) if row_content[:eliminated_at].present?
+
+      reporter_user_id = Spreadsheet.extract_user_id_from_row(row_content)
+      # ToDo: add team to inspections
+      reporter_team_id = Spreadsheet.extract_team_id_from_row(row_content)
 
       # # If this is an existing report, then let's update a subset of properties
       # # on this report.
@@ -166,13 +178,14 @@ class SpreadsheetParsingWorker
       # find_or_create_visit_and_inspection(@csv, current_visited_at, r)
       v = Visit.find_or_create_visit_for_location_id_and_date(@csv.location_id, current_visited_at)
       v.update_column(:csv_id, @csv.id)
+      Rails.logger.info "Creating visit for location and date: #{@csv.location_id}, #{current_visited_at}"
 
       if Spreadsheet.clean_breeding_site_codes.include?(raw_breeding_code)
         ins                    = Inspection.new
         ins.inspected_at       = current_visited_at
         ins.identification_type = Inspection::Types::NEGATIVE
         ins.location_id        = location.id
-        ins.reporter_id        = @csv.user_id
+        ins.reporter_id        = reporter_user_id.nil? ? @csv.user_id : reporter_user_id
         if (@csv.username_per_locations)
           id = row_content[:repoterUserId]
           if (!id.nil?)
