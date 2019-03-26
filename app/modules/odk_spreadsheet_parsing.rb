@@ -295,9 +295,6 @@ module OdkSpreadsheetParsing
       questions.push({:code => @@lEndTimeKeys[0], :body => "Form End time", :answer => lFormEndTime})
       questions.push({:code => @@lDeviceIdKeys[0], :body => "Form Device ID", :answer => lFormDeviceId})
       worksheet.add_cell(worksheetRowPointer, 13, JSON.generate(questions)) # "Respuestas Adicionales" NOT in DengueChat Excel CSV Form
-      worksheet.add_cell(worksheetRowPointer, 14, lFormUser)
-      worksheet.add_cell(worksheetRowPointer, 15, lFormTeam)
-
     end
 
     if inspCount > 0
@@ -342,6 +339,8 @@ module OdkSpreadsheetParsing
           worksheet.add_cell(worksheetRowPointer, 10, brsEliminationPhoto) # 10 => "¿Foto de eliminación?" => collected in URL form (but excel csv expects just a boolean)
           worksheet.add_cell(worksheetRowPointer, 11, brsObs) # "Comentarios sobre tipo y/o eliminación" in DengueChat Excel CSV Form
           worksheet.add_cell(worksheetRowPointer, 12, brsLarvaPictureUrl) # "Foto de la Larva" NOT in DengueChat Excel CSV Form
+          worksheet.add_cell(worksheetRowPointer, 14, lFormUser)
+          worksheet.add_cell(worksheetRowPointer, 15, lFormTeam)
           Rails.logger.debug "[OdkSync]  Added row to workwheet: [#{vDate}|#{vAutorepFinal}|#{brsCodeFinal}|#{brsProtected}|#{brsLarvae}|#{brsPupae}|#{brsEliminationDate}|#{brsObs}]"
           persist_key_to_redis(organizationId, "inspection", "processed", inspectionFormId)
         else
@@ -373,6 +372,8 @@ module OdkSpreadsheetParsing
       worksheet.add_cell(worksheetRowPointer, 10, brsEliminationPhoto) # 10 => "¿Foto de eliminación?" => collected in URL form (but excel csv expects just a boolean)
       worksheet.add_cell(worksheetRowPointer, 11, brsObs) # "Comentarios sobre tipo y/o eliminación" in DengueChat Excel CSV Form
       worksheet.add_cell(worksheetRowPointer, 12, brsLarvaPictureUrl) # "Foto de la Larva" NOT in DengueChat Excel CSV Form
+      worksheet.add_cell(worksheetRowPointer, 14, lFormUser)
+      worksheet.add_cell(worksheetRowPointer, 15, lFormTeam)
     end
     return worksheetRowPointer
   end

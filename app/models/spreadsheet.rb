@@ -152,12 +152,11 @@ class Spreadsheet < ActiveRecord::Base
 
 
   def self.extract_user_id_from_row(row_content)
-    username=nil
+    user_id=nil
     if (!row_content[:reporter].nil?)
-      username = row_content[:reporter]
+      user_id = row_content[:reporter]
     end
-
-    return username
+    return user_id
   end
 
 

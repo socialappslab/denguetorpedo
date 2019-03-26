@@ -125,54 +125,6 @@ class SpreadsheetParsingWorker
       # ToDo: add team to inspections
       reporter_team_id = Spreadsheet.extract_team_id_from_row(row_content)
 
-      # # If this is an existing report, then let's update a subset of properties
-      # # on this report.
-      # r = @csv.reports.find_by_field_identifier(field_id) if field_id.present?
-      # if r.present?
-      #   r.report             = description
-      #   r.breeding_site_id   = breeding_site.id if breeding_site.present?
-      #   r.protected          = row_content[:protected]
-      #   r.chemically_treated = row_content[:chemical]
-      #   r.larvae             = row_content[:larvae]
-      #   r.pupae              = row_content[:pupae]
-      #   r.csv_uuid           = uuid
-      #   r.csv_id             = @csv.id
-      #   r.save(:validate => false)
-      # else
-      #   # At this point, this isn't a report with a field identifier. Because
-      #   # we're parsing the whole CSV, there are two options:
-      #   # 1. This report has been previously created from a previous upload.
-      #   #    In this case, we should be able to identify it through the UUID. The
-      #   #    only attributes we should update is whether it has been eliminated,
-      #   #    which we do further down.
-      #   # 2. The other possibility is that this is a new report. In this case, we
-      #   #    create it with all attributes, and leave the checking of eliminated_at
-      #   #    further down.
-      #   r = @csv.reports.find_by_csv_uuid(uuid)
-      #   if r.blank?
-      #     r            = Report.new
-      #     r.field_identifier   = field_id
-      #     r.created_at         = current_visited_at
-      #     r.report             = description
-      #     r.breeding_site_id   = breeding_site.id if breeding_site.present?
-      #     r.protected          = row_content[:protected]
-      #     r.chemically_treated = row_content[:chemical]
-      #     r.larvae             = row_content[:larvae]
-      #     r.pupae              = row_content[:pupae]
-      #     r.location_id        = location.id
-      #     r.neighborhood_id    = @neighborhood.id
-      #     r.reporter_id        = @csv.user_id
-      #     r.csv_id             = @csv.id
-      #     r.csv_uuid           = uuid
-      #     r.eliminated_at      = eliminated_at
-      #     r.save(:validate => false)
-      #   end
-      # end
-      #
-      # # Create an inspection regardless if eliminated_at is present or not. This
-      # # ensures that we have a 1-1 correspondence between a row and an inspection.
-      # find_or_create_visit_and_inspection(@csv, current_visited_at, r)
-
       # Create an inspection regardless if eliminated_at is present or not. This
       # ensures that we have a 1-1 correspondence between a row and an inspection.
       # find_or_create_visit_and_inspection(@csv, current_visited_at, r)
@@ -186,12 +138,6 @@ class SpreadsheetParsingWorker
         ins.identification_type = Inspection::Types::NEGATIVE
         ins.location_id        = location.id
         ins.reporter_id        = reporter_user_id.nil? ? @csv.user_id : reporter_user_id
-        if (@csv.username_per_inspections)
-          id = row_content[:repoterUserId]
-          if (!id.nil?)
-            ins.reporter_id = id
-          end
-        end
         ins.csv_id             = @csv.id
         ins.position           = @csv.inspections.count
         ins.save(:validate => false)
@@ -226,13 +172,7 @@ class SpreadsheetParsingWorker
           ins.pupae               = row_content[:pupae]
           ins.identification_type = ins.original_status
           ins.location_id        = location.id
-          ins.reporter_id        = @csv.user_id
-          if (@csv.username_per_inspections)
-            id = row_content[:repoterUserId]
-            if (!id.nil?)
-              ins.reporter_id = id
-            end
-          end
+          ins.reporter_id        = reporter_user_id.nil? ? @csv.user_id : reporter_user_id
           ins.source             = @csv.source
           ins.csv_id             = @csv.id
           ins.csv_uuid           = uuid
