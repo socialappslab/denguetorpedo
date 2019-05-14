@@ -479,3 +479,8 @@ If you ever need to restore a Redis database to Portainer, then follow these dir
 5. Run `reids-cli -a [password]` and then run the command `BGREWRITEAOF`. Run `info` and make sure that `aof_rewrite_in_progress` is 0 (e.g. it finished)
 6. Now restart the Docker container.
 7. Make sure that `dump.rdb` has some size (otherwise, it means it was overwritten).
+
+# TopaDengue Contributions
+Through the TopaDengue project, funded by Conacyt PINV15-188, we added the following features: 
+- Visits and Logistics Module
+- Sync component
