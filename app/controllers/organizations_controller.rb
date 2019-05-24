@@ -39,6 +39,13 @@ class OrganizationsController < ApplicationController
   end
 
   #----------------------------------------------------------------------------
+  # GET /settings/assignments
+
+  def assignments
+    authorize @organization
+  end
+
+  #----------------------------------------------------------------------------
   # PUT /organizations/:id
 
   def update

@@ -90,6 +90,8 @@ Dengue::Application.routes.draw do
         get "green_locations"
         get "timeseries"
       end
+
+      resources :assignments, only: [:index, :create, :update, :destroy]
     end
   end
 
@@ -132,6 +134,7 @@ Dengue::Application.routes.draw do
     get :settings, :on => :collection
     get "users", :on => :collection
     get "teams", :on => :collection
+    get "assignments", on: :collection
   end
 
   #----------------------------------------------------------------------------
