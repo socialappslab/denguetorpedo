@@ -53,26 +53,16 @@
                     <thead>
                         <tr>
                             <th>Manzana</th>
-                            <th>Visitas</th>
                             <th>Última visita</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <% @future_assignments.each do |a| %>
                         <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
+                            <td><%= a.city_block.name %></td>
+                            <td><%= a.date.strftime("%F") %></td>
                         </tr>
-                        <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
-                        </tr>
-                        <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
-                        </tr>
+                        <% end %>
                     </tbody>
                 </table>
             </div>

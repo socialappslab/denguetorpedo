@@ -44,6 +44,7 @@ class OrganizationsController < ApplicationController
   def assignments
     authorize @organization
     @city = current_user.city
+    @future_assignments = Assignment.where('date > ?', DateTime.now).order(date: 'desc').limit(3)
   end
 
   #----------------------------------------------------------------------------
