@@ -43,6 +43,7 @@ class OrganizationsController < ApplicationController
 
   def assignments
     authorize @organization
+    @city = current_user.city
   end
 
   #----------------------------------------------------------------------------

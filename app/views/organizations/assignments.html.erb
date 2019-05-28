@@ -12,21 +12,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <% @city.last_visited_city_blocks.each do |cb| %>
                         <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
+                            <td><%= cb['city_block_name'] %></td>
+                            <td><%= cb['visit_count'] %></td>
+                            <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
                         </tr>
-                        <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
-                        </tr>
-                        <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
-                        </tr>
+                        <% end %>
                     </tbody>
                 </table>
             </div>
@@ -43,21 +35,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <% @city.less_visited_city_blocks.each do |cb| %>
                         <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
+                            <td><%= cb['city_block_name'] %></td>
+                            <td><%= cb['visit_count'] %></td>
+                            <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
                         </tr>
-                        <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
-                        </tr>
-                        <tr>
-                            <td>15960</td>
-                            <td>4</td>
-                            <td>2019-01-10</td>
-                        </tr>
+                        <% end %>
                     </tbody>
                 </table>
             </div>
