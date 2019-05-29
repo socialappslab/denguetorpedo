@@ -22,8 +22,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="col-md-4">
             <div class="panel panel-default assignments">
                 <h2>Manzanas menos recorridas</h2>
                 <table class="table">
@@ -46,38 +44,65 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="panel panel-default assignments">
-                <h2>Recorridos para hoy</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Manzana</th>
-                            <th>Última visita</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% @future_assignments.each do |a| %>
-                        <tr>
-                            <td><%= a.city_block.name %></td>
-                            <td><%= a.date.strftime("%F") %></td>
-                        </tr>
-                        <% end %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-7 col-md-12">
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <iframe src="https://www.google.com/maps/d/embed?mid=1yFzerNxM1S_7kcnXAwU43WnpWR9C3ZQ8" width="100%" height="640"></iframe>
             </div>
         </div>
-        <div class="col-lg-5 col-md-12">
-            <div class="panel panel-default">
-                here be ui
+    </div>
+    <div class="panel-group" role="tablist">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" data-toggle="collapse" href="#organizacion">
+                <h2>Organizar recorridos y tareas</h2>
+            </div>
+            <div id="organizacion" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="panel panel-default">
+                                <form style="padding:2rem">
+                                    <div class="form-group">
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Seleccione la manzana a recorrer</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Actividad a realizar</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Voluntarios</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <button class="btn btn-success">Asignar</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-default assignments">
+                                <h2>Recorridos para hoy</h2>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Manzana</th>
+                                            <th>Última visita</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% @future_assignments.each do |a| %>
+                                        <tr>
+                                            <td><%= a.city_block.name %></td>
+                                            <td><%= a.date.strftime("%F") %></td>
+                                        </tr>
+                                        <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
