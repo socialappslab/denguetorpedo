@@ -63,7 +63,7 @@
                                 <form style="padding:2rem" action="<%= assignments_post_organizations_url %>" method="post">
                                     <div class="form-group">
                                         <div class="input-group date" id="datetimepicker">
-                                            <input type="text" class="form-control" name="date">
+                                            <input type="text" class="form-control" name="date" required>
                                             <span class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </span>
@@ -71,15 +71,19 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Seleccione la manzana a recorrer</label>
-                                        <input type="text" class="form-control" id="city_blocks" name="blocks" data-role="tagsinput">
+                                        <%= select_tag "block", options_from_collection_for_select(@city_blocks, :id, :name), class: "form-control" %>
                                     </div>
                                     <div class="form-group">
                                         <label>Actividad a realizar</label>
-                                        <input type="text" class="form-control" name="task">
+                                        <input type="text" class="form-control" id="task" name="task" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Voluntarios</label>
-                                        <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput">
+                                        <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observaciones</label>
+                                        <textarea class="form-control" id="notes" name="notes"></textarea>
                                     </div>
                                     <input type="hidden" id="assignment_id">
                                     <button class="btn btn-success">Asignar</button>
@@ -88,12 +92,14 @@
                         </div>
                         <div class="col-md-4">
                             <div class="panel panel-default assignments">
-                                <h2>Recorridos para hoy</h2>
+                                <h2>Recorridos de hoy</h2>
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Manzana</th>
-                                            <th>Última visita</th>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                            <th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -101,6 +107,8 @@
                                         <tr>
                                             <td><%= a.city_block.name %></td>
                                             <td><%= a.date.strftime("%F") %></td>
+                                            <td><%= a.status %></td>
+                                            <td><a href="#"><i class="fa fa-edit"></i></a></td>
                                         </tr>
                                         <% end %>
                                     </tbody>
@@ -134,33 +142,14 @@
 
 <script>
 $(document).ready(function() {
-    var blocks = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('block_name'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: '<%= city_blocks_json_organizations_url(city_id: @city.id, format: :json) %>'
-    });
-    blocks.initialize();
     
     var volunteers = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: '<%= volunteers_json_organizations_url(format: :json) %>'
+        prefetch: '<%= volunteers_json_organizations_url(city_id: @city.id, format: :json) %>'
     });
     volunteers.initialize();
 
-    console.log(blocks);
-
-    var elt = $('#city_blocks');
-    elt.tagsinput({
-        itemValue: 'id',
-        itemText: 'block_name',
-        typeaheadjs: {
-            name: 'blocks',
-            displayKey: 'block_name',
-            source: blocks.ttAdapter()
-        }
-    });
-    
     var elt = $('#volunteers');
     elt.tagsinput({
         itemValue: 'id',

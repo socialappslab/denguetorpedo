@@ -44,39 +44,42 @@ class OrganizationsController < ApplicationController
   def assignments
     authorize @organization
     @city = current_user.city
-    @future_assignments = Assignment.where('date > ?', DateTime.now).order(date: 'desc').limit(3)
+    @city_blocks = @city.city_blocks.order(name: "asc")
+    @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc').limit(3)
   end
 
   def assignments_post
-    
-  end
-
-  def city_blocks
-    blocks = City.find(params[:city_id]).city_blocks
-    @city_blocks = []
-    blocks.each do |b|
-      block = {}
-      block[:id] = b.id
-      block[:block_name] = b.name
-      @city_blocks << block
+    city_block = CityBlock.find(params[:block].to_i)
+    users = User.where(id: params[:volunteers].split(',').map{|v|v.to_i})
+    @assignment = Assignment.new(task: params[:task], notes: params[:notes], date: DateTime.parse(params[:date]))
+    @assignment.city_block = city_block
+    @assignment.users = users
+    if @assignment.save
+      flash[:notice] = "Asignación creada con éxito"
+      redirect_to :assignments_organizations
+    else
+      flash[:error] = "Ocurrió un error al guardar. Favor intentar de nuevo"
+      render :assignments
     end
-    render json: @city_blocks.to_json, status: 200
   end
 
   def volunteers
-    users = User.all
+    neighborhoods = City.find(params[:city_id]).neighborhoods
     @volunteers = []
-    users.each do |u|
-      volunteer = {}
-      volunteer[:id] = u.id
-      if u.first_name.blank? && u.last_name.blank?
-        volunteer[:name] = u.name
-      else
-        volunteer[:name] = "#{u.first_name} #{u.last_name}"
+    neighborhoods.each do |n|
+      n.users.each do |u|
+        volunteer = {}
+        volunteer[:id] = u.id
+        if u.first_name.blank? && u.last_name.blank?
+          volunteer[:name] = u.name
+        else
+          volunteer[:name] = "#{u.first_name} #{u.last_name}"
+        end
+        volunteer[:picture] = u.picture
+        @volunteers << volunteer
       end
-      volunteer[:picture] = u.picture
-      @volunteers << volunteer
     end
+    @volunteers = @volunteers.uniq{ |v|v[:id]}.sort_by{|v|v[:id]}
     render json: @volunteers.to_json, status: 200
   end
 
