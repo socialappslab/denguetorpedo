@@ -18,7 +18,12 @@
 //= require_tree ./app/directives/
 //= require_tree ./app/services/
 //= require_tree ./jquery/
+//= require_tree ./bootstrap
 //= require facebook
+//= require moment
+//= require moment/es
+//= require bootstrap-datetimepicker
+//= require twitter/typeahead
 
 window.denguechat = {
   error: "error",

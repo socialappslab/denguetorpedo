@@ -16,7 +16,12 @@
 *= require "bootstrap/marketing"
 *= require "ui-notification/angular-ui-notification-min"
 *= require about
+*= require "bootstrap/bootstrap-tagsinput.css"
+*= require bootstrap-datetimepicker
+*= require "typeahead"
 */
+
+div.bootstrap-tagsinput { width: 100% }
 
 @import "variables";
 
