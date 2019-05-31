@@ -87,7 +87,7 @@ class City < ActiveRecord::Base
         ) as visit_statistics
     group by city_block_name, neighborhood_id, neighborhood_name
     order by last_visit_date desc
-    limit 3;
+    limit 5;
     ")
   end
 
@@ -133,7 +133,7 @@ class City < ActiveRecord::Base
         ) as visit_statistics
     group by city_block_name, neighborhood_id, neighborhood_name
     order by sum(visit_count) asc, last_visit_date desc
-    limit 3;
+    limit 5;
     ")
   end
 

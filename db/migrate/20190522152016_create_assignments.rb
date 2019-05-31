@@ -3,8 +3,8 @@ class CreateAssignments < ActiveRecord::Migration
     create_table :assignments do |t|
       t.string :task
       t.references :city_block, index: true
-      t.date :date
-      t.string :status
+      t.datetime :date
+      t.string :status, default: 'pendiente'
       t.text :notes
 
       t.timestamps null: false

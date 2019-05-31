@@ -3,12 +3,12 @@
 # encoding: utf-8
 
 class OrganizationsController < ApplicationController
-  before_filter :require_login, except: [:city_blocks, :volunteers, :assignments_post]
-  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignments_post]
-  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignments_post]
-  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignments_post]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignments_post]
-  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignments_post]
+  before_filter :require_login, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
+  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
+  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
+  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
+  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
 
 
   #----------------------------------------------------------------------------
@@ -45,17 +45,30 @@ class OrganizationsController < ApplicationController
     authorize @organization
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
-    @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc').limit(3)
+    @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
+  end
+
+  def assignment
+    @assignment = Assignment.find(params[:id])
+    render json: @assignment.to_json(include: :city_block, include: :users), status: 200
   end
 
   def assignments_post
     city_block = CityBlock.find(params[:block].to_i)
     users = User.where(id: params[:volunteers].split(',').map{|v|v.to_i})
-    @assignment = Assignment.new(task: params[:task], notes: params[:notes], date: DateTime.parse(params[:date]))
+    if !params[:assignment_id].blank?
+      @assignment = Assignment.find(params[:assignment_id])
+    else
+      @assignment = Assignment.new()
+    end
+    @assignment.task = params[:task]
+    @assignment.notes = params[:notes]
+    @assignment.status = params[:status]
+    @assignment.date = DateTime.parse(params[:date])
     @assignment.city_block = city_block
     @assignment.users = users
     if @assignment.save
-      flash[:notice] = "Asignación creada con éxito"
+      flash[:notice] = "Asignación guardada con éxito"
       redirect_to :assignments_organizations
     else
       flash[:error] = "Ocurrió un error al guardar. Favor intentar de nuevo"
