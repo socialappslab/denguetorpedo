@@ -3,12 +3,12 @@
 # encoding: utf-8
 
 class OrganizationsController < ApplicationController
-  before_filter :require_login, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
-  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
-  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
-  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
-  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignments_post, :assignment]
+  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment]
+  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment]
+  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment]
+  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment]
+  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment]
 
 
   #----------------------------------------------------------------------------
@@ -54,6 +54,7 @@ class OrganizationsController < ApplicationController
   end
 
   def assignments_post
+    authorize @organization
     city_block = CityBlock.find(params[:block].to_i)
     users = User.where(id: params[:volunteers].split(',').map{|v|v.to_i})
     if !params[:assignment_id].blank?
@@ -64,7 +65,12 @@ class OrganizationsController < ApplicationController
     @assignment.task = params[:task]
     @assignment.notes = params[:notes]
     @assignment.status = params[:status]
-    @assignment.date = DateTime.parse(params[:date])
+    logger.info(current_user.neighborhood.city.time_zone)
+    set_time_zone do
+      logger.info("#{params[:date]} #{Time.zone.formatted_offset}")
+      @assignment.date = DateTime.parse("#{params[:date]} #{Time.zone.formatted_offset}")
+      logger.info(@assignment.date)
+    end
     @assignment.city_block = city_block
     @assignment.users = users
     if @assignment.save
@@ -122,5 +128,13 @@ class OrganizationsController < ApplicationController
 
   def update_breadcrumbs
     @breadcrumbs = nil
+  end
+
+  def set_time_zone(&block)
+    if current_user
+      Time.use_zone(TZInfo::Timezone.get(current_user.neighborhood.city.time_zone), &block)
+    else
+      Time.use_zone("America/Guatemala", &block)
+    end
   end
 end
