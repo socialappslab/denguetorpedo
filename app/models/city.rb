@@ -78,7 +78,7 @@ class City < ActiveRecord::Base
                 from visits v, locations l, neighborhoods n
                 where
                     v.location_id = l.id
-                    and l.city_id = 9
+                    and l.city_id = #{self.id}
                     and l.neighborhood_id = n.id
                     and l.city_block_id is null
                 group by l.address, l.id, l.neighborhood_id, n.name
@@ -111,7 +111,7 @@ class City < ActiveRecord::Base
                 where
                     v.location_id = l.id
                     and l.city_block_id = cb.id
-                    and cb.city_id = 9
+                    and cb.city_id = #{self.id}
                     and cb.neighborhood_id = n.id
                 group by cb.id, cb.name, cb.neighborhood_id, n.name
                 order by count(*) desc
