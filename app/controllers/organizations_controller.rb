@@ -67,18 +67,27 @@ class OrganizationsController < ApplicationController
     @assignment.status = params[:status]
     logger.info(current_user.neighborhood.city.time_zone)
     set_time_zone do
-      logger.info("#{params[:date]} #{Time.zone.formatted_offset}")
       @assignment.date = DateTime.parse("#{params[:date]} #{Time.zone.formatted_offset}")
-      logger.info(@assignment.date)
     end
     @assignment.city_block = city_block
     @assignment.users = users
-    if @assignment.save
-      flash[:notice] = "Asignación guardada con éxito"
-      redirect_to :assignments_organizations
-    else
-      flash[:error] = "Ocurrió un error al guardar. Favor intentar de nuevo"
+    if @assignment.status == 'pendiente' && @assignment.date.beginning_of_day < DateTime.now.beginning_of_day
+      flash[:error] = "No se puede agregar un recorrido como pendiente en una fecha anterior a la actual"
+      @city = current_user.city
+      @city_blocks = @city.city_blocks.order(name: "asc")
+      @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
       render :assignments
+    else
+      if @assignment.save
+        flash[:notice] = "Asignación guardada con éxito"
+        redirect_to :assignments_organizations
+      else
+        flash[:error] = "Ocurrió un error al guardar. Favor intentar de nuevo"
+        @city = current_user.city
+        @city_blocks = @city.city_blocks.order(name: "asc")
+        @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
+        render :assignments
+      end
     end
   end
 

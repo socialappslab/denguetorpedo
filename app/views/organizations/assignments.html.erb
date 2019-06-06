@@ -1,4 +1,16 @@
 <div class="container" id="assignments-page">
+    <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= flash[:notice] %>
+    </div>
+    <% end %>
+    <% if flash[:error] %>    
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= flash[:error] %>
+    </div>
+    <% end %>
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-default assignments">
@@ -60,7 +72,7 @@
                     <div class="row">
                         <div class="col-md-8">
                             <div class="panel panel-default">
-                                <form style="padding:2rem" action="<%= assignments_post_organizations_url %>" method="post">
+                                <%= form_tag assignments_post_organizations_url, method: :post, style: "padding: 2rem" do %>
                                     <div class="form-group">
                                         <div class="input-group date" id="datetimepicker">
                                             <input type="text" class="form-control" name="date" id="date" required>
@@ -96,7 +108,7 @@
                                     <button class="btn btn-default" type="reset" id="cancelar-asignar" style="display:none">Cancelar</button>
                                     <button class="btn btn-success" id="editar-asignar" style="display:none">Editar asignación</button>
                                     <button class="btn btn-success" id="guardar-asignar">Asignar</button>
-                                </form>
+                                <% end %>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -209,7 +221,7 @@ $(document).ready(function() {
 });
 
 function emptyFields() {
-    $("input, textarea").val("");
+    $("input[name!=authenticity_token], textarea").val("");
     $("#volunteers").tagsinput('removeAll');
     $("#block").val($("#block option:first").val());
     $("#status").val('pendiente');
