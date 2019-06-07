@@ -14,9 +14,10 @@
 // Include external JavaScript *after* external CSS to parallelize download.
 %script{:src => "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js", :type => "text/javascript"}
 -# = javascript_include_tag "jquery.min"
-%link{:href => "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css", :rel => "stylesheet"}/
+%link{:href => "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css", :rel => "stylesheet"}
+%link{href: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css", rel: "stylesheet"}
 
-/ Custom head definitions
+// Custom head definitions
 = yield :head if content_for(:head)
 
 / OpenGraph metadata

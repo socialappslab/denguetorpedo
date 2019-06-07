@@ -1,0 +1,8 @@
+{
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "terminal.integrated.shellArgs.windows": ["-Command", "docker exec -it -w /home/dengue/denguetorpedo denguetorpedo /bin/bash"],
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "terminal.integrated.shellArgs.linux": ["-c", "docker exec -it -w /home/dengue/denguetorpedo denguetorpedo /bin/bash"],
+    "terminal.integrated.shell.osx": "/bin/bash",
+    "terminal.integrated.shellArgs.osx": ["-c", "docker exec -it -w /home/dengue/denguetorpedo denguetorpedo /bin/bash"],
+}
