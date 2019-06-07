@@ -25,4 +25,12 @@ class OrganizationPolicy
   def membership?
     return resource.manager?
   end
+  
+  def assignments?
+    return resource.manager?
+  end
+
+  def assignments_post?
+    return resource.manager?
+  end
 end

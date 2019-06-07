@@ -1,0 +1,236 @@
+<div class="container" id="assignments-page">
+    <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= flash[:notice] %>
+    </div>
+    <% end %>
+    <% if flash[:error] %>    
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= flash[:error] %>
+    </div>
+    <% end %>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default assignments">
+                <h2>Últimos recorridos</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Manzana</th>
+                            <th>Visitas</th>
+                            <th>Última visita</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @city.last_visited_city_blocks.each do |cb| %>
+                        <tr>
+                            <td><%= cb['city_block_name'] %></td>
+                            <td><%= cb['visit_count'] %></td>
+                            <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel panel-default assignments">
+                <h2>Manzanas menos recorridas</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Manzana</th>
+                            <th>Visitas</th>
+                            <th>Última visita</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @city.less_visited_city_blocks.each do |cb| %>
+                        <tr>
+                            <td><%= cb['city_block_name'] %></td>
+                            <td><%= cb['visit_count'] %></td>
+                            <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <iframe src="https://www.google.com/maps/d/embed?mid=1yFzerNxM1S_7kcnXAwU43WnpWR9C3ZQ8" width="100%" height="640"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group" role="tablist">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" data-toggle="collapse" href="#organizacion">
+                <h2>Organizar recorridos y tareas</h2>
+            </div>
+            <div id="organizacion" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="panel panel-default">
+                                <%= form_tag assignments_post_organizations_url, method: :post, style: "padding: 2rem" do %>
+                                    <div class="form-group">
+                                        <div class="input-group date" id="datetimepicker">
+                                            <input type="text" class="form-control" name="date" id="date" required>
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Seleccione la manzana a recorrer</label>
+                                        <%= select_tag "block", options_from_collection_for_select(@city_blocks, :id, :name), class: "form-control" %>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Estado</label>
+                                        <select name="status" id="status" class="form-control">
+                                            <option value="pendiente">Pendiente</option>
+                                            <option value="realizado">Realizado</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Actividad a realizar</label>
+                                        <input type="text" class="form-control" id="task" name="task" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Voluntarios</label>
+                                        <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observaciones</label>
+                                        <textarea class="form-control" id="notes" name="notes"></textarea>
+                                    </div>
+                                    <input type="hidden" name="assignment_id" id="assignment_id">
+                                    <button class="btn btn-default" type="reset" id="cancelar-asignar" style="display:none">Cancelar</button>
+                                    <button class="btn btn-success" id="editar-asignar" style="display:none">Editar asignación</button>
+                                    <button class="btn btn-success" id="guardar-asignar">Asignar</button>
+                                <% end %>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-default assignments">
+                                <h2>Recorridos de hoy</h2>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Manzana</th>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                            <th>&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% @future_assignments.each do |a| %>
+                                        <tr>
+                                            <td><%= a.city_block.name %></td>
+                                            <td><%= a.date.strftime("%F %R") %></td>
+                                            <td><%= a.status.capitalize %></td>
+                                            <td><a href="javascript:void(0)" class="edit-assignment" data-assignment="<%= a.id %>"><i class="fa fa-edit"></i></a></td>
+                                        </tr>
+                                        <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#datetimepicker").datetimepicker({
+            useCurrent: true,
+            icons: {
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-screenshot',
+                clear: 'fa fa-trash'
+            }
+        });
+    });
+</script>
+
+<script>
+$(document).ready(function() {
+    
+    var volunteers = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: '<%= volunteers_json_organizations_url(city_id: @city.id, format: :json) %>'
+    });
+    volunteers.initialize();
+
+    var elt = $('#volunteers');
+    elt.tagsinput({
+        itemValue: 'id',
+        itemText: 'name',
+        typeaheadjs: {
+            name: 'volunteers',
+            displayKey: 'name',
+            source: volunteers.ttAdapter()
+        }
+    });
+})
+</script>
+
+<script>
+$(document).ready(function() {
+    $(".edit-assignment").on("click", function() {
+        disableFields();
+        var assignmentId = parseInt($(this).data("assignment"));
+        $.get("/organizations/assignment/"+assignmentId+".json", function(data) {
+            emptyFields();
+            $("#editar-asignar").show();
+            $("#cancelar-asignar").show();
+            $("#guardar-asignar").hide();
+            $("#assignment_id").val(data.id);
+            $("#task").val(data.task);
+            $("#block").val(data.city_block_id);
+            $("#date").val(moment(data.date).format("DD/MM/YYYY HH:mm"));
+            $("#status").val(data.status);
+            $("#notes").val(data.notes);
+            var elt = $("#volunteers");
+            for(var v of data.users) {
+                var vname;
+                if (v.first_name === '' && v.last_name === '') vname = v.name;
+                else vname = v.first_name + " " + v.last_name;
+                elt.tagsinput('add', { "id": parseInt(v.id), "name": vname, "picture": null });
+            }
+            enableFields();
+        });
+    });
+
+    $("#cancelar-asignar").on("click", function() {
+        $("#assignment_id").val("");
+        $("#editar-asignar").hide();
+        $("#cancelar-asignar").hide();
+        $("#guardar-asignar").show();
+        $("#volunteers").tagsinput("removeAll");
+    });
+});
+
+function emptyFields() {
+    $("input[name!=authenticity_token], textarea").val("");
+    $("#volunteers").tagsinput('removeAll');
+    $("#block").val($("#block option:first").val());
+    $("#status").val('pendiente');
+}
+
+function disableFields() {
+    $("input, textarea, select").attr("readonly",true);
+}
+function enableFields() {
+    $("input, textarea, select").attr("readonly",false);
+}
+</script>
