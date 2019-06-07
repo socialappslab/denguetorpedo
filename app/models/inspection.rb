@@ -170,6 +170,21 @@ class Inspection < ActiveRecord::Base
     return self.after_photo.url(:medium)
   end
 
+  #----------------------------------------------------------------------------
+
+  def reporters
+    assignments = Assignment.joins(:city_block).where("city_blocks.name LIKE ? AND date::date = ?", self.location.address[0..4], self.inspected_at.beginning_of_day)
+    reporters = []
+    #if !self.reporter.nil?
+    #  reporters << self.reporter
+    #end
+    assignments.each do |assignment|
+      assignment.users.each do |user|
+        reporters << user
+      end
+    end
+    return reporters.uniq{ |r| r.id }
+  end
 
   #----------------------------------------------------------------------------
 
