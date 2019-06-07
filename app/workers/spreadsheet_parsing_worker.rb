@@ -194,6 +194,13 @@ class SpreadsheetParsingWorker
         ins.eliminated_at = eliminated_at
         ins.save(:validate => false)
       end
+
+      # Assign submit points to all reporters
+      if is.present? && ins.reporters.length > 0
+        ins.reporters.each do |reporter|
+          reporter.award_points_for_submitting
+        end
+      end
     end
 
     @csv.parsed_at = Time.zone.now
