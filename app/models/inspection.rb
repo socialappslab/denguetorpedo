@@ -68,6 +68,8 @@ class Inspection < ActiveRecord::Base
   belongs_to :eliminator,  :class_name => "User"
   belongs_to :spreadsheet, :foreign_key => "csv_id"
 
+  has_many :likes, :as => :likeable, :dependent => :destroy
+
 
   #----------------------------------------------------------------------------
   # Validations
@@ -91,6 +93,12 @@ class Inspection < ActiveRecord::Base
   # validate :created_at,    :inspected_after_two_thousand_fourteen?
   # validate :eliminated_at, :eliminated_after_creation?
   # validate :eliminated_at, :eliminated_in_the_past?
+
+  scope :displayable, -> { where("larvae = ? OR pupae = ? OR protected = ? OR protected IS NULL", true, true, false) }
+  scope :completed,   -> { where("verified_at IS NOT NULL") }
+  scope :incomplete,  -> { where("verified_at IS NULL") }
+  scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
+  scope :is_open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
 
 
   #----------------------------------------------------------------------------
@@ -172,6 +180,18 @@ class Inspection < ActiveRecord::Base
 
 
   #----------------------------------------------------------------------------
+
+  def eliminated?
+    return (self.eliminated_at.present? && self.elimination_method_id.present?)
+  end
+
+  def open?
+    return (self.eliminated_at.blank? || self.elimination_method_id.blank?)
+  end
+
+  def verified?
+    return self.verified_at.present?
+  end
 
   private
 
