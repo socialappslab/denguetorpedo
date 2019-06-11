@@ -9,7 +9,7 @@ class GreenLocationRankingsWorker
 
   sidekiq_options :queue => :ranking, :retry => true, :backtrace => true
 
-  def self.perform
+  def perform
     User.find_each do |u|
       current_score = GreenLocationRankings.score_for_user(u)
       new_score     = u.green_locations.count
