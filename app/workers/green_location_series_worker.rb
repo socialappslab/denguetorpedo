@@ -36,7 +36,7 @@ class GreenLocationSeriesWorker
         end
       end
 
-      #GreenLocationSeriesWorker.perform_in(1.day)
+      GreenLocationSeriesWorker.perform_in(1.day)
     end
   end
 end
