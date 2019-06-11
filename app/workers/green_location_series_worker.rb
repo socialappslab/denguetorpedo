@@ -9,7 +9,7 @@ class GreenLocationSeriesWorker
 
   sidekiq_options :queue => :timeseries, :retry => true, :backtrace => true
 
-  def perform
+  def self.perform
     Time.use_zone("America/Guatemala") do
       all_csv_loc_ids = Spreadsheet.pluck(:location_id)
 
@@ -36,7 +36,7 @@ class GreenLocationSeriesWorker
         end
       end
 
-      GreenLocationSeriesWorker.perform_in(1.day)
+      #GreenLocationSeriesWorker.perform_in(1.day)
     end
   end
 end

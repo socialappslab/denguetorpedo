@@ -40,7 +40,7 @@
       options.hAxis.textPosition = 'none';
 
 
-    var chart = new google.visualization.ColumnChart(document.getElementById(chartID));
+    var chart = new google.visualization.LineChart(document.getElementById(chartID));
     var view = new google.visualization.DataView(dataTable);
     chart.draw(view, options);
   }
