@@ -15,6 +15,10 @@
         <div class="col-md-4">
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
+                <div class="form-group">
+                    <label>Seleccione el barrio</label>
+                    <%= select_tag "block", options_from_collection_for_select(@all_neighborhoods, :id, :name), class: "form-control" %>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
