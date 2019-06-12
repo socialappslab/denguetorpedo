@@ -17,7 +17,7 @@
                 <h2>Últimos recorridos</h2>
                 <div class="form-group">
                     <label>Seleccione el barrio</label>
-                    <%= select_tag "block", options_from_collection_for_select(@all_neighborhoods, :id, :name), class: "form-control" %>
+                    <%= select_tag "block", options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
                 </div>
                 <table class="table">
                     <thead>
@@ -40,6 +40,10 @@
             </div>
             <div class="panel panel-default assignments">
                 <h2>Manzanas menos recorridas</h2>
+                <div class="form-group">
+                    <label>Seleccione el barrio</label>
+                    <%= select_tag "block", options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
