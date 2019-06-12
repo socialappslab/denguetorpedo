@@ -64,8 +64,10 @@ class Inspection < ActiveRecord::Base
 
   # The following associations define all stakeholders in the sing
   # process.
-  belongs_to :reporter,    :class_name => "User"
-  belongs_to :eliminator,  :class_name => "User"
+  belongs_to :reporter,          :class_name => "User"
+  belongs_to :eliminator,        :class_name => "User"
+  belongs_to :verifier,          :class_name => "User"
+  belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :spreadsheet, :foreign_key => "csv_id"
 
   has_many :likes, :as => :likeable, :dependent => :destroy

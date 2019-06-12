@@ -15,9 +15,9 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:neighborhood_id/reports
 
   def index
-    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
-    @reports = @reports.displayable.completed
-    @reports = @reports.order("created_at DESC")
+    @reports = Inspection.includes(:likes, :location).joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
+    @reports = @reports.displayable
+    @reports = @reports.order("inspections.created_at DESC")
 
     # Now, let's filter by type of report chosen.
     if params[:reports].present?
@@ -35,7 +35,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Bypass method definitions for open/eliminated locations by directly
     # chaining AR queries here.
-    reports_with_locs     = Report.joins(:location).select("latitude, longitude")
+    reports_with_locs     = Inspection.joins(:location).select("latitude, longitude")
     @open_locations       = reports_with_locs.is_open
     @eliminated_locations = reports_with_locs.eliminated
 
@@ -130,7 +130,7 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/edit
 
   def edit
-    @report = Report.find(params[:id])
+    @report = Inspection.find(params[:id])
     @breadcrumbs << {:name => @report.id, :path => edit_neighborhood_report_path(@neighborhood, @report)}
   end
 
@@ -163,7 +163,7 @@ class ReportsController < NeighborhoodsBaseController
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
       visit = Visit.find_or_create_visit_for_location_id_and_date(@report.location_id, @report.eliminated_at)
-      Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => Inspection::Types::NEGATIVE)
+      #Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => Inspection::Types::NEGATIVE)
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_eliminating(@report)
@@ -352,7 +352,7 @@ class ReportsController < NeighborhoodsBaseController
   private
 
   def find_by_id
-    @report = Report.find(params[:id])
+    @report = Inspection.find(params[:id])
   end
 
   def ensure_coordinator
