@@ -72,6 +72,8 @@ class Inspection < ActiveRecord::Base
 
   has_many :likes, :as => :likeable, :dependent => :destroy
 
+  alias_attribute :prepared_at, :completed_at
+
 
   #----------------------------------------------------------------------------
   # Validations
@@ -81,7 +83,7 @@ class Inspection < ActiveRecord::Base
   # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
   validates :location_id,      :presence => true
-  validates :description,      :presence => true
+  #validates :description,      :presence => true
   validates :reporter_id,      :presence => true
   # validates :breeding_site_id, :presence => true
   # validates :elimination_method_id, :presence => {:on => :update}, :unless => Proc.new {|file| self.save_without_elimination_method == true}
