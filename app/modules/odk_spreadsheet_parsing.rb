@@ -296,8 +296,8 @@ module OdkSpreadsheetParsing
       questions.push({:code => @@lStartTimeKeys[0], :body => "Form Starting Time", :answer => lFormStartTime})
       questions.push({:code => @@lEndTimeKeys[0], :body => "Form End time", :answer => lFormEndTime})
       questions.push({:code => @@lDeviceIdKeys[0], :body => "Form Device ID", :answer => lFormDeviceId})
-      worksheet.add_cell(worksheetRowPointer, 13, JSON.generate(questions)) # "Respuestas Adicionales" NOT in DengueChat Excel CSV Form
     end
+    worksheet.add_cell(worksheetRowPointer, 13, JSON.generate(questions)) # "Respuestas Adicionales" NOT in DengueChat Excel CSV Form
 
     if inspCount > 0
       inspectionsDuplicateArrayController = []
