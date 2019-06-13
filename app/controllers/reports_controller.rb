@@ -63,7 +63,7 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:id/reports/new
 
   def new
-    @report          = Report.new
+    @report          = Inspection.new
     @report.location = Location.new
 
     @breadcrumbs << {:name => I18n.t("common_terms.create_a_report"), :path => new_neighborhood_report_path(@neighborhood)}
@@ -78,13 +78,15 @@ class ReportsController < NeighborhoodsBaseController
     # we're going to use before_photo_compressed attribute.
     params[:report].except!(:before_photo)
 
-    @report                 = Report.new(params[:report])
+    @report                 = Inspection.new(params[:inspection])
     @report.reporter_id     = @current_user.id
-    @report.neighborhood_id = @neighborhood.id
 
     # Set location, and validate on its attributes
+    logger.info(params[:location])
     @location        = find_or_create_location_from_params(params[:location])
+    @location.city = @current_user.city
     @report.location = @location
+    @report.location.neighborhood_id = @neighborhood.id
     render "new" and return unless @location.update_attributes(params[:location])
 
     # Set the before photo
@@ -115,7 +117,7 @@ class ReportsController < NeighborhoodsBaseController
 
       # Let's associate a visit and inspection.
       visit = Visit.find_or_create_visit_for_location_id_and_date(@report.location_id, @report.created_at)
-      Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => @report.original_status)
+      #Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => @report.original_status)
 
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
