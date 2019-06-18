@@ -200,6 +200,18 @@ class Inspection < ActiveRecord::Base
     return self.verified_at.present?
   end
 
+  #----------------------------------------------------------------------------
+
+  def get_previous_similar_inspection
+    last_similar = Inspection.joins(:location, :visit).where("inspections.breeding_site_id = ? and locations.address = ? and visits.visited_at < ?", self.breeding_site_id, self.location.address, self.visit.visited_at).order("visits.visited_at DESC").first rescue nil
+    unless last_similar.blank?
+      self.previous_similar_inspection = last_similar
+      self.save
+    end
+  end
+
+  #----------------------------------------------------------------------------
+
   private
 
   # Since the CSV report doesn't encode the *time of day*, we

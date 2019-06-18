@@ -194,6 +194,9 @@ class SpreadsheetParsingWorker
         ins.eliminated_at = eliminated_at
         ins.save(:validate => false)
       end
+
+      # Get previous similar inspection
+      ins.get_previous_similar_inspection
     end
 
     @csv.parsed_at = Time.zone.now
