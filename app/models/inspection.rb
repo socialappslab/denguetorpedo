@@ -210,6 +210,12 @@ class Inspection < ActiveRecord::Base
     end
   end
 
+  def self.get_all_previous_similar_inspections
+    Inspection.all.each do |ins|
+      ins.get_previous_similar_inspection
+    end
+  end
+
   #----------------------------------------------------------------------------
 
   private
