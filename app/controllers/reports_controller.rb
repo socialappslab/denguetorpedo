@@ -15,7 +15,7 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:neighborhood_id/reports
 
   def index
-    @reports = Inspection.includes(:likes, :location).joins(:location).where("locations.neighborhood_id = ?", @neighborhood.id)
+    @reports = Inspection.includes(:likes, :location).joins(:location).where("locations.neighborhood_id = ? and previous_similar_inspection_id is null", @neighborhood.id)
     @reports = @reports.displayable
     @reports = @reports.order("inspections.created_at DESC")
 

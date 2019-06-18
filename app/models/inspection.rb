@@ -10,7 +10,7 @@ class Inspection < ActiveRecord::Base
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
   :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
-  :protected, :chemically_treated, :larvae, :field_identifier, :description
+  :protected, :chemically_treated, :larvae, :field_identifier, :description, :previous_similar_inspection_id
 
   module Types
     POSITIVE  = 0
@@ -69,6 +69,7 @@ class Inspection < ActiveRecord::Base
   belongs_to :verifier,          :class_name => "User"
   belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :spreadsheet, :foreign_key => "csv_id"
+  belongs_to :previous_similar_inspection, class_name: "Inspection"
 
   has_many :likes, :as => :likeable, :dependent => :destroy
 
@@ -103,6 +104,8 @@ class Inspection < ActiveRecord::Base
   scope :incomplete,  -> { where("verified_at IS NULL") }
   scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
   scope :is_open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
+
+  scope :similar_inspections_by_id, lambda { |inspection_id| joins(:previous_similar_inspection).where("inspections.previous_similar_inspection_id = ?", inspection_id)}
 
 
   #----------------------------------------------------------------------------
