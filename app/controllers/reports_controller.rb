@@ -111,6 +111,7 @@ class ReportsController < NeighborhoodsBaseController
       # TODO: Deprecate completed_at
       @report.update_column(:completed_at, Time.zone.now)
       @report.update_column(:verified_at,  Time.zone.now)
+      @report.get_previous_similar_inspection
 
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
