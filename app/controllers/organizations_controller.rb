@@ -49,6 +49,7 @@ class OrganizationsController < ApplicationController
   end
 
   def assignment
+    @barrio = params[:id_barrio]
     @assignment = Assignment.find(params[:id])
     render json: @assignment.to_json(include: :city_block, include: :users), status: 200
   end
@@ -109,6 +110,10 @@ class OrganizationsController < ApplicationController
     end
     @volunteers = @volunteers.uniq{ |v|v[:id]}.sort_by{|v|v[:id]}
     render json: @volunteers.to_json, status: 200
+  end
+
+  def prueba
+    @barrio = params[:id_barrio]
   end
 
   #----------------------------------------------------------------------------
