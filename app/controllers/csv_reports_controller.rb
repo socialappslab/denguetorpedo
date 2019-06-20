@@ -31,20 +31,22 @@ class CsvReportsController < ApplicationController
     end
 
     if params[:sort] == "date"
-      @csvs = @csvs.order("updated_at ASC") if params[:order]  == "asc"
-      @csvs = @csvs.order("updated_at DESC") if params[:order] == "desc"
+      @csvs = @csvs.reorder("updated_at ASC") if params[:order]  == "asc"
+      @csvs = @csvs.reorder("updated_at DESC") if params[:order] == "desc"
     end
 
     if params[:sort] == "user"
-      ids = User.order("username ASC").pluck(:id)  if params[:order] == "asc"
-      ids = User.order("username DESC").pluck(:id) if params[:order] == "desc"
-      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+      #ids = User.reorder("username ASC").pluck(:id)  if params[:order] == "asc"
+      #ids = User.reorder("username DESC").pluck(:id) if params[:order] == "desc"
+      #@csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+      @csvs = @csvs.joins(:user).reorder("users.username #{params[:order]}")
     end
 
     if params[:sort] == "location"
-      ids = Location.order("address ASC").pluck(:id)  if params[:order] == "asc"
-      ids = Location.order("address DESC").pluck(:id) if params[:order] == "desc"
-      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+      #ids = Location.reorder("address ASC").pluck(:id)  if params[:order] == "asc"
+      #ids = Location.reorder("address DESC").pluck(:id) if params[:order] == "desc"
+      #@csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+      @csvs = @csvs.joins(:location).reorder("locations.address #{params[:order]}")
     end
 
     @pagination_count = @csvs.count
