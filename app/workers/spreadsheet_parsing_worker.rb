@@ -195,6 +195,17 @@ class SpreadsheetParsingWorker
         ins.save(:validate => false)
       end
 
+      # Check if ODK
+      if ins.source == 'ODK Form'
+        require 'open-uri'
+        unless row_content[:br_site_pic].blank?
+          ins.update_attribute(:before_photo, open(row_content[:br_site_pic])) rescue false
+        end
+        unless row_content[:br_site_elim_pic].blank?
+          ins.update_attribute(:before_photo, open(row_content[:br_site_elim_pic])) rescue false
+        end
+      end
+
       # Get previous similar inspection
       ins.get_previous_similar_inspection
     end
