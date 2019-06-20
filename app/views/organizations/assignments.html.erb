@@ -19,11 +19,6 @@
                     <div class="form-group">
                         <label>Seleccione el barrio</label>
                         <%= select_tag "id_barrio", options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name) ,class: "form-control"%>
-                        <select name="barrio" id="barrio">
-                          <option value="50" selected>Value 1</option> 
-                          <option value="51" >Value 2</option>
-                          <option value="52">Value 3</option>
-                        </select>
                     </div>
 
 
@@ -36,8 +31,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
-                            <% @city.last_visited_city_blocks_barrios(50).each do |cb| %>
+                            <% @barrios %>
+                            <% @city.last_visited_city_blocks_barrios(@barrios.to_i).each do |cb| %>
                             
                             <tr>
                                 <td><%= cb['city_block_name'] %></td>
@@ -255,9 +250,16 @@ function enableFields() {
 </script>
 <script>
     $('#id_barrio').change(function() { 
-        barrio = $(this).val();
-        
-        alert(barrio); 
+        id_barrio = $(this).val();
+
+        $.ajax({
+          url: "/organizations/assignments",
+          type: "get",
+          data: {id_barrio :id_barrio},
+          contentType: 'json'
+        });
+        alert(id_barrio); 
 
     });
+        
 </script>

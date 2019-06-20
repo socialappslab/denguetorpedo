@@ -43,13 +43,22 @@ class OrganizationsController < ApplicationController
 
   def assignments
     authorize @organization
+    @barrios = params[:id_barrio]
+    
+    if params[:id_barrio].to_s == ""
+      @barrios = 50
+    end
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
+
+  end
+
+  def assignmentbarrio
+    @barrios = params[:id_barrio]
   end
 
   def assignment
-    @barrio = params[:id_barrio]
     @assignment = Assignment.find(params[:id])
     render json: @assignment.to_json(include: :city_block, include: :users), status: 200
   end
