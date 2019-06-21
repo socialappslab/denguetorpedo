@@ -71,26 +71,30 @@
           %thead
             %th.text-center{:class => (params[:sort] == 'date' ? 'active' : '' )}
               Fecha de carga
-              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "asc") ) do
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "asc", search_location: params[:search_location]) ) do
                 %i.fa.fa-angle-up
-              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "desc") ) do
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "date", :order => "desc", search_location: params[:search_location]) ) do
                 %i.fa.fa-angle-down
             %th.text-center
               = I18n.t("activerecord.models.neighborhood", :count => 1)
             %th.text-center{:class => (params[:sort] == 'user' ? 'active' : '' )}
               = I18n.t("activerecord.models.user", :count => 1)
-              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "asc") ) do
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "asc", search_location: params[:search_location]) ) do
                 %i.fa.fa-angle-up
-              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "desc") ) do
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "user", :order => "desc", search_location: params[:search_location]) ) do
                 %i.fa.fa-angle-down
             %th.text-center
               CSV
             %th.text-center{:class => (params[:sort] == 'location' ? 'active' : '' )}
               = I18n.t("attributes.location_id")
-              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "asc") ) do
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "asc", search_location: params[:search_location]) ) do
                 %i.fa.fa-angle-up
-              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "desc") ) do
+              = link_to csv_reports_path( params.slice(:neighborhood_id, :user_id).merge(:sort => "location", :order => "desc", search_location: params[:search_location]) ) do
                 %i.fa.fa-angle-down
+              .location-search
+                = text_field_tag "location", params[:search_location]
+                %button#location-search
+                  %i.fa.fa-search
             %th.text-center
               = I18n.t("activerecord.attributes.visit.visited_at")
             %th.text-center
@@ -132,3 +136,31 @@
                     = link_to I18n.t("common_terms.edit"), csv_report_path(csv), :class => "btn btn-warning btn-block"
                     - if csv.verified_at.present?
                       = I18n.t("views.csv_reports.verified_time_ago", :time => time_ago_in_words(csv.verified_at))
+
+:javascript
+  $(document).ready(function() {
+    $("#location-search").click(function() {
+      var search_location = $("input[name=location]").val();
+      var current = location.search;
+      if (current == "") {
+        location.href = location.origin + location.pathname + "&search_location=" + search_location;
+      } else {
+        if (current.includes("search_location")) {
+          var params = current.substr(1).split("&");
+          for (var param of params) {
+            var new_search = params.map(function(item) {
+                var k = item.split("=")[0];
+                var v = item.split("=")[1];
+                if (k == 'search_location') {
+                    v = escape(search_location);
+                };
+              return k+"="+v;
+            });
+            location.href = location.origin + location.pathname + "?" + new_search.join("&");
+          }
+        } else {
+          location.href = location.origin + location.pathname + current + "&search_location=" + search_location;
+        }
+      }
+    })
+  });

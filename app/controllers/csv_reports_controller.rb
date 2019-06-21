@@ -30,6 +30,10 @@ class CsvReportsController < ApplicationController
       @csvs = @current_user.csvs
     end
 
+    unless params[:search_location].blank?
+      @csvs = @csvs.joins(:location).where("locations.address LIKE ?", "%#{params[:search_location]}%")
+    end
+
     if params[:sort] == "date"
       @csvs = @csvs.reorder("updated_at ASC") if params[:order]  == "asc"
       @csvs = @csvs.reorder("updated_at DESC") if params[:order] == "desc"
@@ -114,6 +118,9 @@ class CsvReportsController < ApplicationController
     else
       render "show" and return
     end
+  end
+
+  def sync_errors
   end
 
   #----------------------------------------------------------------------------
