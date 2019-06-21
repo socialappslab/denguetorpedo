@@ -5,7 +5,7 @@
 
 class CsvReportsController < ApplicationController
   before_filter :require_login
-  before_filter :update_breadcrumb
+  before_filter :update_breadcrumb, except: [:sync_errors]
   before_filter :redirect_if_no_csv, :only => [:show, :verify]
   before_action :calculate_header_variables
 
@@ -121,6 +121,29 @@ class CsvReportsController < ApplicationController
   end
 
   def sync_errors
+    @breadcrumbs << { name: I18n.t("views.buttons.odk_sync") }
+    @keys = $redis_pool.with do |redis|
+      redis.keys "organization:*"
+    end
+    @smembers = {}
+    @keys.each do |key|
+      @smembers[key] = $redis_pool.with do |redis|
+        redis.smembers key
+      end
+    end
+  end
+
+  def delete_key
+    if !params[:key].blank? && !params[:member].blank?
+      $redis_pool.with do |redis|
+        redis.srem(params[:key],params[:member])
+      end
+      flash[:notice] = "Clave eliminada."
+      redirect_to odk_sync_errors_path
+    else
+      flash[:error] = "No se puede eliminar la clave porque no existe."
+      redirect_to odk_sync_errors_path
+    end
   end
 
   #----------------------------------------------------------------------------

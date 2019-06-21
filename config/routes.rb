@@ -214,6 +214,9 @@ Dengue::Application.routes.draw do
     end
   end
 
+  get "odk_sync_errors", to: "csv_reports#sync_errors"
+  delete "odk_sync_errors/:key/:member", to: "csv_reports#delete_key", as: "delete_odk_key_member"
+
   #----------------------------------------------------------------------------
   # Neighborhoods
   resources :neighborhoods, :only => [:show] do
