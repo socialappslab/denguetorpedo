@@ -253,13 +253,12 @@ function enableFields() {
         id_barrio = $(this).val();
 
         $.ajax({
-          url: "/organizations/assignments",
+          url: "/organizations/assignments/barrio/"+id_barrio,
           type: "get",
-          data: {id_barrio :id_barrio},
+          //data: {id_barrio :id_barrio},
           contentType: 'json'
         });
-        alert(id_barrio); 
-
+        //alert(id_barrio);     
     });
         
 </script>

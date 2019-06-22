@@ -136,7 +136,7 @@ Dengue::Application.routes.draw do
     get "teams", :on => :collection
     get "assignments", on: :collection
     get "assignment/:id", to: "organizations#assignment", on: :collection, as: :assignment
-    get "assignmentbarrio/:id_barrio", to: "organizations#assignmentbarrio", on: :collection, as: :assignmentsbarrio
+    get "assignments/barrio/:id_barrio", to: "organizations#assignmentsbarrio", on: :collection
     post "assignments", to: "organizations#assignments_post", on: :collection, as: :assignments_post
     get "volunteers/:city_id", to: "organizations#volunteers", on: :collection, as: :volunteers_json
   end

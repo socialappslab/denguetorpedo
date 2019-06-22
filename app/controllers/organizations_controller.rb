@@ -3,12 +3,12 @@
 # encoding: utf-8
 
 class OrganizationsController < ApplicationController
-  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment]
-  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment]
-  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment]
-  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment]
-  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment]
+  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment,:assignmentsbarrio]
+  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment,:assignmentsbarrio]
+  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :assignmentsbarrio]
+  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :assignmentsbarrio]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :assignmentsbarrio]
+  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :assignmentsbarrio]
 
 
   #----------------------------------------------------------------------------
@@ -44,18 +44,20 @@ class OrganizationsController < ApplicationController
   def assignments
     authorize @organization
     @barrios = params[:id_barrio]
-    
+     
     if params[:id_barrio].to_s == ""
       @barrios = 50
-    end
+    end 
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
 
   end
 
-  def assignmentbarrio
+
+  def assignmentsbarrio
     @barrios = params[:id_barrio]
+    render json: @barrios.to_json, status: 200
   end
 
   def assignment
@@ -119,10 +121,6 @@ class OrganizationsController < ApplicationController
     end
     @volunteers = @volunteers.uniq{ |v|v[:id]}.sort_by{|v|v[:id]}
     render json: @volunteers.to_json, status: 200
-  end
-
-  def prueba
-    @barrio = params[:id_barrio]
   end
 
   #----------------------------------------------------------------------------
