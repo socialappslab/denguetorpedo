@@ -42,10 +42,6 @@ class OrganizationsController < ApplicationController
 
   def assignments
     authorize @organization
-    @barrios = params[:id_barrio]
-    if params[:id_barrio].to_s == ""
-      @barrios = 50
-    end 
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
@@ -53,7 +49,11 @@ class OrganizationsController < ApplicationController
   end
 
   def ultimos_recorridos_list
-    @barrios = City.find(params[:city_id]).last_visited_city_blocks_barrios(params[:id_barrio])
+    if params[:id_barrio].to_i === 0
+      @barrios = City.find(params[:city_id]).last_visited_city_blocks
+    else  
+      @barrios = City.find(params[:city_id]).last_visited_city_blocks_barrios(params[:id_barrio])
+    end
     render json: @barrios.to_json, status:200
   end
 

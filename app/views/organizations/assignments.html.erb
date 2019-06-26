@@ -18,10 +18,8 @@
                 <%= form_tag do %>
                     <div class="form-group">
                         <label>Seleccione el barrio</label>
-                        <%= select_tag "id_barrio", options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name) ,class: "form-control"%>
+                        <%= select_tag "id_barrio", content_tag(:option,'Todos',:value=>"0".to_i)+options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name) ,class: "form-control"%>
                     </div>
-
-
                     <table>
                         <thead>
                             <tr>
@@ -31,7 +29,7 @@
                             </tr>
                         </thead>
                         <tbody id="ultimos_recorrido">
-                            <% @city.last_visited_city_blocks_barrios(@barrios.to_i).each do |cb| %>
+                            <% @city.last_visited_city_blocks.each do |cb| %>
                             
                             <tr>
                                 <td><%= cb['city_block_name'] %></td>
@@ -262,4 +260,5 @@ function enableFields() {
             });
         });
     });
+    
 </script>
