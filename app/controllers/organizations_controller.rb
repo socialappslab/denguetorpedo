@@ -3,12 +3,12 @@
 # encoding: utf-8
 
 class OrganizationsController < ApplicationController
-  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list]
-  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list]
-  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list]
-  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list]
-  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list]
+  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
+  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
+  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
+  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
+  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
   
   #----------------------------------------------------------------------------
   # GET /settings
@@ -55,6 +55,15 @@ class OrganizationsController < ApplicationController
       @barrios = City.find(params[:city_id]).last_visited_city_blocks_barrios(params[:id_barrio])
     end
     render json: @barrios.to_json, status:200
+  end
+
+  def menos_recorridos_list
+    if params[:id_barrio].to_i === 0
+      @barrios_menos = City.find(params[:city_id]).less_visited_city_blocks
+    else
+      @barrios_menos = City.find(params[:city_id]).less_visited_city_blocks_barrios(params[:id_barrio])
+    end
+    render json: @barrios_menos.to_json, status:200
   end
 
   def assignment

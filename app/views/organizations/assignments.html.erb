@@ -15,12 +15,11 @@
         <div class="col-md-4">
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
-                <%= form_tag do %>
                     <div class="form-group">
                         <label>Seleccione el barrio</label>
                         <%= select_tag "id_barrio", content_tag(:option,'Todos',:value=>"0".to_i)+options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name) ,class: "form-control"%>
                     </div>
-                    <table>
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Manzana</th>
@@ -30,7 +29,6 @@
                         </thead>
                         <tbody id="ultimos_recorrido">
                             <% @city.last_visited_city_blocks.each do |cb| %>
-                            
                             <tr>
                                 <td><%= cb['city_block_name'] %></td>
                                 <td><%= cb['visit_count'] %></td>
@@ -39,13 +37,12 @@
                             <% end %>
                         </tbody>
                     </table>
-                <% end %>
             </div>
             <div class="panel panel-default assignments">
                 <h2>Manzanas menos recorridas</h2>
                 <div class="form-group">
                     <label>Seleccione el barrio</label>
-                    <%= select_tag "block_barrios_menos", options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
+                    <%= select_tag "block_barrios_menos", content_tag(:option,'Todos',:value=>"0".to_i)+ options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
                 </div>
                 <table class="table">
                     <thead>
@@ -55,7 +52,7 @@
                             <th>Última visita</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="barrios_menos">
                         <% @city.less_visited_city_blocks.each do |cb| %>
                         <tr>
                             <td><%= cb['city_block_name'] %></td>
@@ -260,5 +257,20 @@ function enableFields() {
             });
         });
     });
-    
+</script>
+<script>
+    $(document).ready(function(){
+        $('#block_barrios_menos').change(function() {  
+            var cuerpo = $("#barrios_menos");
+            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barriomenos/"+$(this).val(), function(data) {
+                cuerpo.html("");
+                for (var item of data) {
+                    var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                    fila.append("<td>"+item.city_block_name+"</td>");
+                    fila.append("<td>"+item.visit_count+"</td>");
+                    fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+	            }
+            });
+        });
+    });
 </script>
