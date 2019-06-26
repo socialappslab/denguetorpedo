@@ -30,8 +30,7 @@
                                 <th>Última visita</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <% @barrios %>
+                        <tbody id="ultimos_recorrido">
                             <% @city.last_visited_city_blocks_barrios(@barrios.to_i).each do |cb| %>
                             
                             <tr>
@@ -249,17 +248,20 @@ function enableFields() {
 }
 </script>
 <script>
-    $('#id_barrio').change(function() { 
-        id_barrio = $(this).val();
+    $(document).ready(function(){
+        $('#id_barrio').change(function() {  
+            var cuerpo = $("#ultimos_recorrido");
+            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barrio/"+$(this).val(), function(data) {
+                cuerpo.html("");
+                for (var item of data) {
+                    var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                    fila.append("<td>"+item.city_block_name+"</td>");
+                    fila.append("<td>"+item.visit_count+"</td>");
+                    fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+	            }
+            });
 
-        $.ajax({
-          url: "/organizations/assignments",
-          type: "get",
-          data: {id_barrio :id_barrio},
-          contentType: 'json'
         });
-        alert(id_barrio); 
-
-    });
         
+    });
 </script>
