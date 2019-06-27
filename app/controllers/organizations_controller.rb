@@ -56,7 +56,7 @@ class OrganizationsController < ApplicationController
     if params[:id_barrio].to_i === 0
       @barrios = City.find(params[:city_id]).last_visited_city_blocks
     else  
-      @barrios = City.find(params[:city_id]).last_visited_city_blocks_barrios(params[:id_barrio])
+      @barrios = City.find(params[:city_id]).last_visited_city_blocks_barrios(params[:id_barrio], params[:city_id])
     end
     render json: @barrios.to_json, status:200
   end

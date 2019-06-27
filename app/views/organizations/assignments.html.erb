@@ -15,7 +15,7 @@
         <div class="col-md-4">
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
-                <%= select_tag "id_city", content_tag(:option,'Todos',:value=>"0".to_i)+options_from_collection_for_select(@all_cities, :id, :name) ,class: "form-control"%>    
+                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name) ,class: "form-control"%>    
            </div> 
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
@@ -251,7 +251,10 @@ function enableFields() {
     $(document).ready(function(){
         $('#id_barrio').change(function() {  
             var cuerpo = $("#ultimos_recorrido");
-            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barrio/"+$(this).val()+"/"+, function(data) {
+            var obtener_valor  = $(this).val().split("-");
+            var id_barrio_nuevo = obtener_valor[0];
+            var idciudad = obtener_valor[1];
+            $.get("/organizations/assignments/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
                 cuerpo.html("");
                 for (var item of data) {
                     var fila = cuerpo.append("<tr id='"+item.id+"'/>");
@@ -268,7 +271,8 @@ function enableFields() {
     $(document).ready(function(){
         $('#block_barrios_menos').change(function() {  
             var cuerpo = $("#barrios_menos");
-            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barriomenos/"+$(this).val()+"/"+, function(data) {
+            
+            $.get("/organizations/assignments/9/barriomenos/"+$(this).val(), function(data) {
                 cuerpo.html("");
                 for (var item of data) {
                     var fila = cuerpo.append("<tr id='"+item.id+"'/>");
@@ -286,11 +290,14 @@ function enableFields() {
     $(document).ready(function(){
         $('#id_city').change(function() {  
             var cuerpo = $("#id_barrio");
+            var cuerpo_tabla = $("#ultimos_recorrido");
             $.get("/organizations/assignments/cityselect/"+$(this).val(), function(data) {
                 cuerpo.html("");
+                cuerpo_tabla.html("");
+                var fila = cuerpo.append("<option value = '0-0'>Seleccione</option>");
+                
                 for (var item of data) {
-                    var fila = cuerpo.append("<tr id='"+item.id+"'/>");
-                    fila.append("<option value = "+item.id+" > "+item.name+"</option>");
+                    fila.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
                 }
             });
         });
