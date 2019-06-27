@@ -45,7 +45,7 @@ class City < ActiveRecord::Base
 
   #----------------------------------------------------------------------------
 
-  def last_visited_city_blocks
+  def last_visited_city_blocks 
     stats = ActiveRecord::Base.connection.execute("
     select 
         city_block_name, 
@@ -137,7 +137,7 @@ class City < ActiveRecord::Base
     ")
   end
 
-  def last_visited_city_blocks_barrios(id_barrio)
+  def last_visited_city_blocks_barrios(id_barrio, id_ciudad)
     stats = ActiveRecord::Base.connection.execute("
     select 
         city_block_name, 
@@ -157,7 +157,7 @@ class City < ActiveRecord::Base
                 where
                     v.location_id = l.id
                     and l.city_block_id = cb.id
-                    and cb.city_id = 9
+                    and cb.city_id = #{id_ciudad}
                     and cb.neighborhood_id = #{id_barrio}
                 group by cb.id, cb.name, cb.neighborhood_id, n.name
                 order by count(*) desc
@@ -170,7 +170,7 @@ class City < ActiveRecord::Base
                 from visits v, locations l, neighborhoods n
                 where
                     v.location_id = l.id
-                    and l.city_id = #{self.id}
+                    and l.city_id = #{id_ciudad}
                     and l.neighborhood_id = #{id_barrio}
                     and l.city_block_id is null
                 group by l.address, l.id, l.neighborhood_id, n.name

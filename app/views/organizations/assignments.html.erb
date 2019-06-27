@@ -13,9 +13,13 @@
     <% end %>
     <div class="row">
         <div class="col-md-4">
+            <div id= "select_city" class="form-group">
+                <label>Seleccione una ciudad</label>
+                <%= select_tag "id_city", content_tag(:option,'Todos',:value=>"0".to_i)+options_from_collection_for_select(@all_cities, :id, :name) ,class: "form-control"%>    
+           </div> 
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
-                    <div class="form-group">
+                    <div id= "barrios_select" class="form-group">
                         <label>Seleccione el barrio</label>
                         <%= select_tag "id_barrio", content_tag(:option,'Todos',:value=>"0".to_i)+options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name) ,class: "form-control"%>
                     </div>
@@ -40,7 +44,7 @@
             </div>
             <div class="panel panel-default assignments">
                 <h2>Manzanas menos recorridas</h2>
-                <div class="form-group">
+                <div id = "barrios_select2" class="form-group">
                     <label>Seleccione el barrio</label>
                     <%= select_tag "block_barrios_menos", content_tag(:option,'Todos',:value=>"0".to_i)+ options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
                 </div>
@@ -242,11 +246,12 @@ function enableFields() {
     $("input, textarea, select").attr("readonly",false);
 }
 </script>
+
 <script>
     $(document).ready(function(){
         $('#id_barrio').change(function() {  
             var cuerpo = $("#ultimos_recorrido");
-            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barrio/"+$(this).val(), function(data) {
+            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barrio/"+$(this).val()+"/"+, function(data) {
                 cuerpo.html("");
                 for (var item of data) {
                     var fila = cuerpo.append("<tr id='"+item.id+"'/>");
@@ -258,11 +263,12 @@ function enableFields() {
         });
     });
 </script>
+
 <script>
     $(document).ready(function(){
         $('#block_barrios_menos').change(function() {  
             var cuerpo = $("#barrios_menos");
-            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barriomenos/"+$(this).val(), function(data) {
+            $.get("/organizations/assignments/"+"<%= @city.id  %>"+"/barriomenos/"+$(this).val()+"/"+, function(data) {
                 cuerpo.html("");
                 for (var item of data) {
                     var fila = cuerpo.append("<tr id='"+item.id+"'/>");
@@ -270,6 +276,22 @@ function enableFields() {
                     fila.append("<td>"+item.visit_count+"</td>");
                     fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
 	            }
+            });
+        });
+    });
+</script>
+ 
+
+<script>
+    $(document).ready(function(){
+        $('#id_city').change(function() {  
+            var cuerpo = $("#id_barrio");
+            $.get("/organizations/assignments/cityselect/"+$(this).val(), function(data) {
+                cuerpo.html("");
+                for (var item of data) {
+                    var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                    fila.append("<option value = "+item.id+" > "+item.name+"</option>");
+                }
             });
         });
     });

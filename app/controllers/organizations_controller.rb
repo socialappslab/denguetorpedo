@@ -3,12 +3,12 @@
 # encoding: utf-8
 
 class OrganizationsController < ApplicationController
-  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
-  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
-  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
-  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
-  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list]
+  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
+  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
+  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
+  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
+  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
   
   #----------------------------------------------------------------------------
   # GET /settings
@@ -46,6 +46,10 @@ class OrganizationsController < ApplicationController
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
 
+  end
+  def city_select
+    @ciudades = City.find(params[:id_city]).neighborhoods
+    render json: @ciudades.to_json, status:200
   end
 
   def ultimos_recorridos_list
