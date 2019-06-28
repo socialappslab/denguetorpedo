@@ -15,13 +15,13 @@
         <div class="col-md-4">
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
-                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, 9) ,class: "form-control"%>    
+                <%= select_tag "id_city", content_tag(:option,'Seleccione',:value=>"0".to_i)+options_from_collection_for_select(@all_cities, :id, :name) ,class: "form-control"%>    
            </div> 
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
                     <div id= "barrios_select" class="form-group">
                         <label>Seleccione el barrio</label>
-                        <%= select_tag "id_barrio", content_tag(:option,'Todos',:value=>"0".to_i)+options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name) ,class: "form-control"%>
+                        <%= select_tag "id_barrio", content_tag(:option,'Seleccione',:value=>"0-0"), class: "form-control"%>
                     </div>
                     <table class="table">
                         <thead>
@@ -32,13 +32,6 @@
                             </tr>
                         </thead>
                         <tbody id="ultimos_recorrido">
-                            <% @city.last_visited_city_blocks.each do |cb| %>
-                            <tr>
-                                <td><%= cb['city_block_name'] %></td>
-                                <td><%= cb['visit_count'] %></td>
-                                <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
-                            </tr>
-                            <% end %>
                         </tbody>
                     </table>
             </div>
@@ -46,7 +39,7 @@
                 <h2>Manzanas menos recorridas</h2>
                 <div class="form-group">
                     <label>Seleccione el barrio</label>
-                    <%= select_tag "block_barrios_menos", content_tag(:option,'Todos',:value=>"0".to_i)+ options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
+                    <%= select_tag "block_barrios_menos", content_tag(:option,'Seleccione',:value=>"0-0"), class: "form-control" %>
                 </div>
                 <table class="table">
                     <thead>
@@ -57,13 +50,6 @@
                         </tr>
                     </thead>
                     <tbody id="barrios_menos">
-                        <% @city.less_visited_city_blocks.each do |cb| %>
-                        <tr>
-                            <td><%= cb['city_block_name'] %></td>
-                            <td><%= cb['visit_count'] %></td>
-                            <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
-                        </tr>
-                        <% end %>
                     </tbody>
                 </table>
             </div>
