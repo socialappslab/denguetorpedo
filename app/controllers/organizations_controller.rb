@@ -48,8 +48,12 @@ class OrganizationsController < ApplicationController
 
   end
   def city_select
-    @ciudades = City.find(params[:id_city]).neighborhoods
-    render json: @ciudades.to_json, status:200
+    if params[:id_city].to_i === 0
+      render json: nil, status:200
+    else
+      @ciudades = City.find(params[:id_city]).neighborhoods
+      render json: @ciudades.to_json, status:200
+    end
   end
 
   def ultimos_recorridos_list

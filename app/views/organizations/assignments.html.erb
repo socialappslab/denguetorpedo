@@ -21,7 +21,7 @@
                 <h2>Últimos recorridos</h2>
                     <div id= "barrios_select" class="form-group">
                         <label>Seleccione el barrio</label>
-                        <%= select_tag "id_barrio", content_tag(:option,'Seleccione',:value=>"0-0"), class: "form-control"%>
+                        <%= select_tag "id_barrio", content_tag(:option,'',:value=>"0-0"), class: "form-control"%>
                     </div>
                     <table class="table">
                         <thead>
@@ -39,7 +39,7 @@
                 <h2>Manzanas menos recorridas</h2>
                 <div class="form-group">
                     <label>Seleccione el barrio</label>
-                    <%= select_tag "block_barrios_menos", content_tag(:option,'Seleccione',:value=>"0-0"), class: "form-control" %>
+                    <%= select_tag "block_barrios_menos", content_tag(:option,'',:value=>"0-0"), class: "form-control" %>
                 </div>
                 <table class="table">
                     <thead>
@@ -240,15 +240,20 @@ function enableFields() {
             var obtener_valor  = $(this).val().split("-");
             var id_barrio_nuevo = obtener_valor[0];
             var idciudad = obtener_valor[1];
-            $.get("/organizations/assignments/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
+            if(idciudad == 0){
                 cuerpo.html("");
-                for (var item of data) {
-                    var fila = cuerpo.append("<tr id='"+item.id+"'/>");
-                    fila.append("<td>"+item.city_block_name+"</td>");
-                    fila.append("<td>"+item.visit_count+"</td>");
-                    fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
-	            }
-            });
+            }else{
+                $.get("/organizations/assignments/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
+                    cuerpo.html("");
+                    for (var item of data) {
+                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                        fila.append("<td>"+item.city_block_name+"</td>");
+                        fila.append("<td>"+item.visit_count+"</td>");
+                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+                    }
+                });
+            }
+            
         });
     });
 </script>
@@ -260,15 +265,19 @@ function enableFields() {
             var obtener_valor  = $(this).val().split("-");
             var id_barrio_nuevo = obtener_valor[0];
             var idciudad = obtener_valor[1];
-            $.get("/organizations/assignments/"+idciudad+"/barriomenos/"+id_barrio_nuevo, function(data) {
+            if(idciudad == 0){
                 cuerpo.html("");
-                for (var item of data) {
-                    var fila = cuerpo.append("<tr id='"+item.id+"'/>");
-                    fila.append("<td>"+item.city_block_name+"</td>");
-                    fila.append("<td>"+item.visit_count+"</td>");
-                    fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
-	            }
-            });
+            }else{
+                $.get("/organizations/assignments/"+idciudad+"/barriomenos/"+id_barrio_nuevo, function(data) {
+                    cuerpo.html("");
+                    for (var item of data) {
+                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                        fila.append("<td>"+item.city_block_name+"</td>");
+                        fila.append("<td>"+item.visit_count+"</td>");
+                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+                    }
+                });
+            }
         });
     });
 </script>
@@ -286,12 +295,15 @@ function enableFields() {
                 cuerpo_select2.html("");
                 cuerpo_ultimos.html("");
                 cuerpo_menos.html("");
-                var fila1 = cuerpo_select1.append("<option value = '0-0'>Seleccione</option>");
-                var fila2 = cuerpo_select2.append("<option value = '0-0'>Seleccione</option>");
-                for (var item of data) {
-                    fila1.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
-                    fila2.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                var fila1 = cuerpo_select1.append("<option value='0-0' Seleccione/>");
+                var fila2 = cuerpo_select2.append("<option value='0-0' Seleccione/>");
+                if(data != null){
+                    for (var item of data) {
+                        fila1.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                        fila2.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                    }
                 }
+                
             });
         });
     });
