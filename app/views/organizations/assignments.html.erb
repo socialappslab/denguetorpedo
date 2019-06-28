@@ -44,7 +44,7 @@
             </div>
             <div class="panel panel-default assignments">
                 <h2>Manzanas menos recorridas</h2>
-                <div id = "barrios_select2" class="form-group">
+                <div class="form-group">
                     <label>Seleccione el barrio</label>
                     <%= select_tag "block_barrios_menos", content_tag(:option,'Todos',:value=>"0".to_i)+ options_from_collection_for_select(@all_neighborhoods.where("city_id = ?", 9 ), :id, :name, 1), class: "form-control" %>
                 </div>
@@ -271,8 +271,10 @@ function enableFields() {
     $(document).ready(function(){
         $('#block_barrios_menos').change(function() {  
             var cuerpo = $("#barrios_menos");
-            
-            $.get("/organizations/assignments/9/barriomenos/"+$(this).val(), function(data) {
+            var obtener_valor  = $(this).val().split("-");
+            var id_barrio_nuevo = obtener_valor[0];
+            var idciudad = obtener_valor[1];
+            $.get("/organizations/assignments/"+idciudad+"/barriomenos/"+id_barrio_nuevo, function(data) {
                 cuerpo.html("");
                 for (var item of data) {
                     var fila = cuerpo.append("<tr id='"+item.id+"'/>");
@@ -289,17 +291,20 @@ function enableFields() {
 <script>
     $(document).ready(function(){
         $('#id_city').change(function() {  
-            var cuerpo = $("#id_barrio");
+            var cuerpo_select1 = $("#id_barrio");
             var cuerpo_ultimos = $("#ultimos_recorrido");
             var cuerpo_menos = $("#barrios_menos");
+            var cuerpo_select2 = $(block_barrios_menos);
             $.get("/organizations/assignments/cityselect/"+$(this).val(), function(data) {
-                cuerpo.html("");
+                cuerpo_select1.html("");
+                cuerpo_select2.html("");
                 cuerpo_ultimos.html("");
                 cuerpo_menos.html("");
-                var fila = cuerpo.append("<option value = '0-0'>Seleccione</option>");
-                
+                var fila1 = cuerpo_select1.append("<option value = '0-0'>Seleccione</option>");
+                var fila2 = cuerpo_select2.append("<option value = '0-0'>Seleccione</option>");
                 for (var item of data) {
-                    fila.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                    fila1.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                    fila2.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
                 }
             });
         });
