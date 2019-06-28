@@ -15,7 +15,7 @@
         <div class="col-md-4">
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
-                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name) ,class: "form-control"%>    
+                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, 9) ,class: "form-control"%>    
            </div> 
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
@@ -290,10 +290,12 @@ function enableFields() {
     $(document).ready(function(){
         $('#id_city').change(function() {  
             var cuerpo = $("#id_barrio");
-            var cuerpo_tabla = $("#ultimos_recorrido");
+            var cuerpo_ultimos = $("#ultimos_recorrido");
+            var cuerpo_menos = $("#barrios_menos");
             $.get("/organizations/assignments/cityselect/"+$(this).val(), function(data) {
                 cuerpo.html("");
-                cuerpo_tabla.html("");
+                cuerpo_ultimos.html("");
+                cuerpo_menos.html("");
                 var fila = cuerpo.append("<option value = '0-0'>Seleccione</option>");
                 
                 for (var item of data) {
