@@ -140,7 +140,6 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function() {
         $("#datetimepicker").datetimepicker({
@@ -158,17 +157,14 @@
         });
     });
 </script>
-
 <script>
 $(document).ready(function() {
-    
     var volunteers = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: '<%= volunteers_json_organizations_url(city_id: @city.id, format: :json) %>'
     });
     volunteers.initialize();
-
     var elt = $('#volunteers');
     elt.tagsinput({
         itemValue: 'id',
@@ -181,7 +177,6 @@ $(document).ready(function() {
     });
 })
 </script>
-
 <script>
 $(document).ready(function() {
     $(".edit-assignment").on("click", function() {
