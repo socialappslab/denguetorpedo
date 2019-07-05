@@ -25,7 +25,17 @@ class CitiesController < ApplicationController
     end
 
     # Let's try to retrieve
-    @green_location_rankings = GreenLocationRankings.top_ten_for_city(@city)
+    #@green_location_rankings = GreenLocationRankings.top_ten_for_city(@city)
+    @green_location_rankings = User.find_by_sql("select * from users where neighborhood_id IN(
+      select n.id from 
+        neighborhoods as n
+        join
+        Cities as c
+      ON n.city_id = c.id
+      where n.city_id = 9
+    )
+    ORDER BY total_points DESC 
+    LIMIT (5)")
     @neighborhood_rankings = @neighborhoods.map do |n|
       {:id => n.id, :score => GreenLocationSeries.get_latest_count_for_neighborhood(n).to_i}
     end

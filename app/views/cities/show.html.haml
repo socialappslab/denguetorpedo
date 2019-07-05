@@ -51,22 +51,23 @@
         - if @green_location_rankings.blank?
           .panel-body
             %p.lato-font.large-font.text-center
-              No hay casas verdes
+              No hay puntos
         - else
+        
           %table.table.green-houses
             %tbody
-              - @green_location_rankings.each do |ranking_hash|
-                - user = ranking_hash[:user]
-                - next if user.blank?
+              - @green_location_rankings.each do |user_prueba|
+                
+                - next if user_prueba.blank?
                 %tr
                   %td{"style" => "vertical-align: middle;"}
-                    = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
+                    = image_tag(user_prueba.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
                   %td{"style" => "vertical-align: middle;"}
                     .light-font
-                      = link_to user.username, user_path(user), :user_id => user.id
+                      = user_prueba.username
                   %td{"style" => "vertical-align: middle;"}
                     %p.largest-font.heavy-font.text-right.green
-                      = ranking_hash[:score].to_i
+                      = user_prueba.total_points.to_i
 
       .panel.panel-default
         .panel-heading
