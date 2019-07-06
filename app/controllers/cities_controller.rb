@@ -32,7 +32,7 @@ class CitiesController < ApplicationController
         join
         Cities as c
       ON n.city_id = c.id
-      where n.city_id = 9
+      where n.city_id ="+@city.id.to_s+"
     )
     ORDER BY total_points DESC 
     LIMIT (5)")
