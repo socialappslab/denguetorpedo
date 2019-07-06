@@ -26,7 +26,7 @@ class CitiesController < ApplicationController
 
     # Let's try to retrieve
     #@green_location_rankings = GreenLocationRankings.top_ten_for_city(@city)
-    @green_location_rankings = User.find_by_sql("select * from users where neighborhood_id IN(
+    @rankings_points = User.find_by_sql("select * from users where neighborhood_id IN(
       select n.id from 
         neighborhoods as n
         join

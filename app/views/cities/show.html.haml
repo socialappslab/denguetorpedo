@@ -45,10 +45,10 @@
       .panel.panel-default
         .panel-heading{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
           %h3.panel-title
-            Casas Verdes
+            Ranking de Puntos
             .pull-right
               %i.fa.fa-question-circle{"style" => "color: #8E8E93;"}
-        - if @green_location_rankings.blank?
+        - if @rankings_points.blank?
           .panel-body
             %p.lato-font.large-font.text-center
               No hay puntos
@@ -56,18 +56,18 @@
         
           %table.table.green-houses
             %tbody
-              - @green_location_rankings.each do |user_prueba|
+              - @rankings_points.each do |user|
                 
-                - next if user_prueba.blank?
+                - next if user.blank?
                 %tr
                   %td{"style" => "vertical-align: middle;"}
-                    = image_tag(user_prueba.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
+                    = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
                   %td{"style" => "vertical-align: middle;"}
                     .light-font
-                      = user_prueba.username
+                      = user.username
                   %td{"style" => "vertical-align: middle;"}
                     %p.largest-font.heavy-font.text-right.green
-                      = user_prueba.total_points.to_i
+                      = user.total_points.to_i
 
       .panel.panel-default
         .panel-heading
