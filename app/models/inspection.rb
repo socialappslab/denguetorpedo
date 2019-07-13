@@ -10,7 +10,7 @@ class Inspection < ActiveRecord::Base
   :location, :location_attributes, :breeding_site, :eliminator_id, :verifier_id,
   :location_id, :reporter, :sms, :is_credited, :credited_at, :completed_at,
   :verifier, :resolved_verifier, :eliminator, :eliminated_at, :csv_report_id,
-  :protected, :chemically_treated, :larvae, :field_identifier
+  :protected, :chemically_treated, :larvae, :field_identifier, :description, :previous_similar_inspection_id
 
   module Types
     POSITIVE  = 0
@@ -64,9 +64,16 @@ class Inspection < ActiveRecord::Base
 
   # The following associations define all stakeholders in the sing
   # process.
-  belongs_to :reporter,    :class_name => "User"
-  belongs_to :eliminator,  :class_name => "User"
+  belongs_to :reporter,          :class_name => "User"
+  belongs_to :eliminator,        :class_name => "User"
+  belongs_to :verifier,          :class_name => "User"
+  belongs_to :resolved_verifier, :class_name => "User"
   belongs_to :spreadsheet, :foreign_key => "csv_id"
+  belongs_to :previous_similar_inspection, class_name: "Inspection"
+
+  has_many :likes, :as => :likeable, :dependent => :destroy
+
+  alias_attribute :prepared_at, :completed_at
 
 
   #----------------------------------------------------------------------------
@@ -77,7 +84,7 @@ class Inspection < ActiveRecord::Base
   # * After adding a picture if the user tries to submit again they'll get an error about having to provide
   #  a description. Despite the fact that the description field in filled AND the model object shows it as not being blank
   validates :location_id,      :presence => true
-  validates :description,      :presence => true
+  #validates :description,      :presence => true
   validates :reporter_id,      :presence => true
   # validates :breeding_site_id, :presence => true
   # validates :elimination_method_id, :presence => {:on => :update}, :unless => Proc.new {|file| self.save_without_elimination_method == true}
@@ -91,6 +98,14 @@ class Inspection < ActiveRecord::Base
   # validate :created_at,    :inspected_after_two_thousand_fourteen?
   # validate :eliminated_at, :eliminated_after_creation?
   # validate :eliminated_at, :eliminated_in_the_past?
+
+  scope :displayable, -> { where("larvae = ? OR pupae = ? OR protected = ? OR protected IS NULL", true, true, false) }
+  scope :completed,   -> { where("verified_at IS NOT NULL") }
+  scope :incomplete,  -> { where("verified_at IS NULL") }
+  scope :eliminated,  -> { where("eliminated_at IS NOT NULL AND elimination_method_id IS NOT NULL") }
+  scope :is_open,        -> { where("eliminated_at IS NULL OR elimination_method_id IS NULL") }
+
+  scope :similar_inspections_by_id, lambda { |inspection_id| joins(:previous_similar_inspection).where("inspections.previous_similar_inspection_id = ?", inspection_id)}
 
 
   #----------------------------------------------------------------------------
@@ -184,6 +199,36 @@ class Inspection < ActiveRecord::Base
       end
     end
     return reporters.uniq{ |r| r.id }
+  end
+
+  #----------------------------------------------------------------------------
+
+  def eliminated?
+    return (self.eliminated_at.present? && self.elimination_method_id.present?)
+  end
+
+  def open?
+    return (self.eliminated_at.blank? || self.elimination_method_id.blank?)
+  end
+
+  def verified?
+    return self.verified_at.present?
+  end
+
+  #----------------------------------------------------------------------------
+
+  def get_previous_similar_inspection
+    last_similar = Inspection.joins(:location, :visit).where("inspections.breeding_site_id = ? and locations.address = ? and visits.visited_at < ?", self.breeding_site_id, self.location.address, self.visit.visited_at).order("visits.visited_at DESC").first rescue nil
+    unless last_similar.blank?
+      self.previous_similar_inspection = last_similar
+      self.save
+    end
+  end
+
+  def self.get_all_previous_similar_inspections
+    Inspection.all.each do |ins|
+      ins.get_previous_similar_inspection
+    end
   end
 
   #----------------------------------------------------------------------------

@@ -126,6 +126,10 @@ class User < ActiveRecord::Base
   has_many :created_reports,    :class_name => "Report", :foreign_key => "reporter_id",   :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
   has_many :verified_reports,   :class_name => "Report", :foreign_key => "verifier_id",   :dependent => :nullify
+  
+  has_many :created_inspections,    :class_name => "Inspection", :foreign_key => "reporter_id",   :dependent => :nullify
+  has_many :eliminated_inspections, :class_name => "Inspection", :foreign_key => "eliminator_id", :dependent => :nullify
+  has_many :verified_inspections,   :class_name => "Inspection", :foreign_key => "verifier_id",   :dependent => :nullify
 
   has_many :posts, :dependent => :destroy
   has_many :comments, :through => :posts

@@ -5,7 +5,7 @@
 
 class CsvReportsController < ApplicationController
   before_filter :require_login
-  before_filter :update_breadcrumb
+  before_filter :update_breadcrumb, except: [:sync_errors]
   before_filter :redirect_if_no_csv, :only => [:show, :verify]
   before_action :calculate_header_variables
 
@@ -30,21 +30,27 @@ class CsvReportsController < ApplicationController
       @csvs = @current_user.csvs
     end
 
+    unless params[:search_location].blank?
+      @csvs = @csvs.joins(:location).where("locations.address LIKE ?", "%#{params[:search_location]}%")
+    end
+
     if params[:sort] == "date"
-      @csvs = @csvs.order("updated_at ASC") if params[:order]  == "asc"
-      @csvs = @csvs.order("updated_at DESC") if params[:order] == "desc"
+      @csvs = @csvs.reorder("updated_at ASC") if params[:order]  == "asc"
+      @csvs = @csvs.reorder("updated_at DESC") if params[:order] == "desc"
     end
 
     if params[:sort] == "user"
-      ids = User.order("username ASC").pluck(:id)  if params[:order] == "asc"
-      ids = User.order("username DESC").pluck(:id) if params[:order] == "desc"
-      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+      #ids = User.reorder("username ASC").pluck(:id)  if params[:order] == "asc"
+      #ids = User.reorder("username DESC").pluck(:id) if params[:order] == "desc"
+      #@csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+      @csvs = @csvs.joins(:user).reorder("users.username #{params[:order]}")
     end
 
     if params[:sort] == "location"
-      ids = Location.order("address ASC").pluck(:id)  if params[:order] == "asc"
-      ids = Location.order("address DESC").pluck(:id) if params[:order] == "desc"
-      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+      #ids = Location.reorder("address ASC").pluck(:id)  if params[:order] == "asc"
+      #ids = Location.reorder("address DESC").pluck(:id) if params[:order] == "desc"
+      #@csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+      @csvs = @csvs.joins(:location).reorder("locations.address #{params[:order]}")
     end
 
     @pagination_count = @csvs.count
@@ -111,6 +117,32 @@ class CsvReportsController < ApplicationController
       redirect_to csv_reports_path and return
     else
       render "show" and return
+    end
+  end
+
+  def sync_errors
+    @breadcrumbs << { name: I18n.t("views.buttons.odk_sync") }
+    @keys = $redis_pool.with do |redis|
+      redis.keys "organization:*"
+    end
+    @smembers = {}
+    @keys.each do |key|
+      @smembers[key] = $redis_pool.with do |redis|
+        redis.smembers key
+      end
+    end
+  end
+
+  def delete_key
+    if !params[:key].blank? && !params[:member].blank?
+      $redis_pool.with do |redis|
+        redis.srem(params[:key],params[:member])
+      end
+      flash[:notice] = "Clave eliminada."
+      redirect_to odk_sync_errors_path
+    else
+      flash[:error] = "No se puede eliminar la clave porque no existe."
+      redirect_to odk_sync_errors_path
     end
   end
 

@@ -54,6 +54,8 @@ gem "byebug"
 gem 'momentjs-rails'
 gem 'bootstrap3-datetimepicker-rails'
 
+gem 'jquery-rails'
+
 #------------------------------------------------------------------------------
 
 group :development do
