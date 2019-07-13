@@ -64,6 +64,8 @@ GEM
     benchmark-ips (2.7.2)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap3-datetimepicker-rails (4.17.47)
+      momentjs-rails (>= 2.8.1)
     builder (3.2.2)
     byebug (11.0.1)
     cancan (1.6.10)
@@ -154,6 +156,8 @@ GEM
     mime-types (2.6.1)
     mini_portile (0.6.2)
     minitest (5.8.0)
+    momentjs-rails (2.20.1)
+      railties (>= 3.1)
     multi_json (1.11.2)
     nenv (0.2.0)
     newrelic_rpm (3.13.0.299)
@@ -325,6 +329,7 @@ DEPENDENCIES
   angularjs-rails (~> 1.4.8)
   aws-sdk (< 2.0)
   bcrypt-ruby (~> 3.1.2)
+  bootstrap3-datetimepicker-rails
   byebug
   cancan
   capybara
@@ -346,6 +351,7 @@ DEPENDENCIES
   kgio
   launchy
   memcachier
+  momentjs-rails
   newrelic_rpm
   paperclip (~> 4.2.0)
   pg
