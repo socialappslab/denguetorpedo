@@ -195,6 +195,27 @@ class SpreadsheetParsingWorker
         ins.eliminated_at = eliminated_at
         ins.save(:validate => false)
       end
+
+      # Check if ODK
+      if ins.source == 'ODK Form'
+        require 'open-uri'
+        unless row_content[:br_site_pic].blank?
+          ins.update_attribute(:before_photo, open(row_content[:br_site_pic])) rescue false
+        end
+        unless row_content[:br_site_elim_pic].blank?
+          ins.update_attribute(:before_photo, open(row_content[:br_site_elim_pic])) rescue false
+        end
+      end
+
+      # Get previous similar inspection
+      ins.get_previous_similar_inspection
+
+      # Assign submit points to all reporters
+      if is.present? && ins.reporters.length > 0
+        ins.reporters.each do |reporter|
+          reporter.award_points_for_submitting
+        end
+      end
     end
 
     @csv.parsed_at = Time.zone.now

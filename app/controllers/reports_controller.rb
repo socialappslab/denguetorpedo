@@ -15,9 +15,9 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:neighborhood_id/reports
 
   def index
-    @reports = Report.includes(:likes, :location).where(:neighborhood_id => @neighborhood.id)
-    @reports = @reports.displayable.completed
-    @reports = @reports.order("created_at DESC")
+    @reports = Inspection.includes(:likes, :location).joins(:location).where("locations.neighborhood_id = ? and previous_similar_inspection_id is null", @neighborhood.id)
+    @reports = @reports.displayable
+    @reports = @reports.order("inspections.created_at DESC")
 
     # Now, let's filter by type of report chosen.
     if params[:reports].present?
@@ -35,7 +35,7 @@ class ReportsController < NeighborhoodsBaseController
 
     # Bypass method definitions for open/eliminated locations by directly
     # chaining AR queries here.
-    reports_with_locs     = Report.joins(:location).select("latitude, longitude")
+    reports_with_locs     = Inspection.joins(:location).select("latitude, longitude")
     @open_locations       = reports_with_locs.is_open
     @eliminated_locations = reports_with_locs.eliminated
 
@@ -63,7 +63,7 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/:id/reports/new
 
   def new
-    @report          = Report.new
+    @report          = Inspection.new
     @report.location = Location.new
 
     @breadcrumbs << {:name => I18n.t("common_terms.create_a_report"), :path => new_neighborhood_report_path(@neighborhood)}
@@ -78,13 +78,15 @@ class ReportsController < NeighborhoodsBaseController
     # we're going to use before_photo_compressed attribute.
     params[:report].except!(:before_photo)
 
-    @report                 = Report.new(params[:report])
+    @report                 = Inspection.new(params[:inspection])
     @report.reporter_id     = @current_user.id
-    @report.neighborhood_id = @neighborhood.id
 
     # Set location, and validate on its attributes
+    logger.info(params[:location])
     @location        = find_or_create_location_from_params(params[:location])
+    @location.city = @current_user.city
     @report.location = @location
+    @report.location.neighborhood_id = @neighborhood.id
     render "new" and return unless @location.update_attributes(params[:location])
 
     # Set the before photo
@@ -109,13 +111,14 @@ class ReportsController < NeighborhoodsBaseController
       # TODO: Deprecate completed_at
       @report.update_column(:completed_at, Time.zone.now)
       @report.update_column(:verified_at,  Time.zone.now)
+      @report.get_previous_similar_inspection
 
       flash[:should_render_social_media_buttons] = true
       flash[:notice] = I18n.t("activerecord.success.report.create")
 
       # Let's associate a visit and inspection.
       visit = Visit.find_or_create_visit_for_location_id_and_date(@report.location_id, @report.created_at)
-      Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => @report.original_status)
+      #Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => @report.original_status)
 
       # Finally, let's award the user for submitting a report.
       @current_user.award_points_for_submitting(@report)
@@ -130,7 +133,7 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/edit
 
   def edit
-    @report = Report.find(params[:id])
+    @report = Inspection.find(params[:id])
     @breadcrumbs << {:name => @report.id, :path => edit_neighborhood_report_path(@neighborhood, @report)}
   end
 
@@ -159,11 +162,11 @@ class ReportsController < NeighborhoodsBaseController
     @report.after_photo   = data
     @report.eliminator_id = @current_user.id
 
-    if @report.update_attributes(params[:report])
+    if @report.update_attributes(params[:inspection])
       Analytics.track( :user_id => @current_user.id, :event => "Eliminated a report", :properties => {:neighborhood => @neighborhood.name} ) if Rails.env.production?
 
       visit = Visit.find_or_create_visit_for_location_id_and_date(@report.location_id, @report.eliminated_at)
-      Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => Inspection::Types::NEGATIVE)
+      #Inspection.create(:visit_id => visit.id, :report_id => @report.id, :identification_type => Inspection::Types::NEGATIVE)
 
       # Let's award the user for submitting a report.
       @current_user.award_points_for_eliminating(@report)
@@ -178,7 +181,7 @@ class ReportsController < NeighborhoodsBaseController
   # GET /neighborhoods/1/reports/1/coordinator-edit
 
   def coordinator_edit
-    @report = Report.find(params[:id])
+    @report = Inspection.find(params[:id])
 
     if @report.location.blank?
       @report.location = Location.new
@@ -191,25 +194,25 @@ class ReportsController < NeighborhoodsBaseController
   # PUT /neighborhoods/1/reports/1/coordinator-update
 
   def coordinator_update
-    @report = Report.find(params[:id])
-
+    @report = Inspection.find(params[:id])
+    
     # Parse the created_at column.
-    created_at = Time.zone.parse(params[:report][:created_at])
+    created_at = Time.zone.parse(params[:inspection][:created_at])
     created_at = Time.zone.now if created_at.blank?
     @report.created_at = created_at
-    params[:report].delete(:created_at)
+    params[:inspection].delete(:created_at)
 
     # Parse the completed_at column.
-    completed_at = Time.zone.parse(params[:report][:completed_at])
+    completed_at = Time.zone.parse(params[:inspection][:completed_at])
     completed_at = Time.zone.now if completed_at.blank?
     @report.completed_at = completed_at
-    params[:report].delete(:completed_at)
+    params[:inspection].delete(:completed_at)
 
     # Parse the eliminated_at column.
-    eliminated_at = Time.zone.parse(params[:report][:eliminated_at])
+    eliminated_at = Time.zone.parse(params[:inspection][:eliminated_at])
     eliminated_at = Time.zone.now if eliminated_at.blank?
     @report.eliminated_at = eliminated_at
-    params[:report].delete(:eliminated_at)
+    params[:inspection].delete(:eliminated_at)
 
     base64_image = params[:report][:compressed_photo]
     params[:report].delete(:compressed_photo)
@@ -219,7 +222,7 @@ class ReportsController < NeighborhoodsBaseController
       @report.after_photo = data
     end
 
-    @report.assign_attributes(params[:report])
+    @report.assign_attributes(params[:inspection])
     @report.save(:validate => false)
 
     flash[:notice] = I18n.t("common_terms.saved")
@@ -244,11 +247,11 @@ class ReportsController < NeighborhoodsBaseController
       count -= 1
       liked  = false
     else
-      Like.create(:user_id => @current_user.id, :likeable_id => @report.id, :likeable_type => Report.name)
+      Like.create(:user_id => @current_user.id, :likeable_id => @report.id, :likeable_type => Inspection.name)
       count += 1
       liked  = true
 
-      Analytics.track( :user_id => @current_user.id, :event => "Liked a report", :properties => {:report => @report.id}) if Rails.env.production?
+      Analytics.track( :user_id => @current_user.id, :event => "Liked an inspection", :properties => {:inspection => @report.id}) if Rails.env.production?
     end
 
     render :json => {'count' => count.to_s, 'liked' => liked} and return
@@ -352,7 +355,7 @@ class ReportsController < NeighborhoodsBaseController
   private
 
   def find_by_id
-    @report = Report.find(params[:id])
+    @report = Inspection.find(params[:id])
   end
 
   def ensure_coordinator

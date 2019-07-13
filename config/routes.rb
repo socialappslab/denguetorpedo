@@ -214,6 +214,9 @@ Dengue::Application.routes.draw do
     end
   end
 
+  get "odk_sync_errors", to: "csv_reports#sync_errors"
+  delete "odk_sync_errors/:key/:member", to: "csv_reports#delete_key", as: "delete_odk_key_member"
+
   #----------------------------------------------------------------------------
   # Neighborhoods
   resources :neighborhoods, :only => [:show] do
@@ -222,10 +225,10 @@ Dengue::Application.routes.draw do
       post "contact"
     end
 
-    resources :reports, :except => [:update, :destroy] do
+    resources :reports, path: "inspections", :except => [:update, :destroy] do
       member do
         get  "coordinator-edit", :action => :coordinator_edit, :as => :coordinator_edit
-        put  "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
+        patch  "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
         put  "eliminate"
         put  "prepare"
         post "like"

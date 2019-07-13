@@ -24,6 +24,7 @@
 //= require moment/es
 //= require bootstrap-datetimepicker
 //= require twitter/typeahead
+//= require jquery_ujs
 
 window.denguechat = {
   error: "error",
