@@ -135,13 +135,13 @@ class Visit < ActiveRecord::Base
     # NOTE: We *cannot* query by start_time here since we would be ignoring the full
     # history of the locations. Instead, we do it at the end.
     # visits       = Visit.select("id, visited_at, location_id").where(:location_id => location_ids).order("visited_at ASC")
-    visits       = Visit.where("csv_id IS NOT NULL OR source = ?", "mobile").where(:location_id => location_ids).order("visited_at ASC")
+    visits       = Visit.where("csv_id IS NOT NULL OR source = ? OR source like ?", "mobile", "%ODK%").where(:location_id => location_ids).order("visited_at ASC")
     return [] if visits.blank?
 
     # Preload the inspection data so we don't encounter a COUNT(*) N+1 query.
     inspections_by_visit = {}
     # inspections = Inspection.order("position ASC").where(:visit_id => visits.pluck(:id)).select(:visit_id, :report_id, :identification_type)
-    inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL OR source = ?", "mobile").where(:visit_id => visits.pluck(:id))
+    inspections = Inspection.order("position ASC").where("csv_id IS NOT NULL OR source = ? OR source like ?", "mobile", "%ODK%").where(:visit_id => visits.pluck(:id))
     inspections.map do |ins|
       inspections_by_visit[ins.visit_id] ||= {
         Inspection::Types::POSITIVE  => Set.new,
