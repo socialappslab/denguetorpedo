@@ -193,7 +193,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def award_points_for_submitting(report)
+  def award_points_for_submitting(report=nil)
     points = self.total_points || 0
     self.update_column(:total_points, points + Points::REPORT_SUBMITTED)
     self.teams.each do |team|
