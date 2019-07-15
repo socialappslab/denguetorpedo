@@ -25,5 +25,6 @@
 
   - else
     .col-md-6.col-xs-6
-      - points = report.breeding_site.elimination_methods.pluck(:points).max
-      = link_to I18n.t("views.reports.index.eliminate_and_win_points", :points => points), edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success eliminate-report-button"
+      - if report.breeding_site.present?
+        - points = report.breeding_site.elimination_methods.pluck(:points).max
+        = link_to I18n.t("views.reports.index.eliminate_and_win_points", :points => points), edit_neighborhood_report_path(@neighborhood, report), :class => "btn btn-success eliminate-report-button"

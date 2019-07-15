@@ -45,8 +45,10 @@ class OrganizationsController < ApplicationController
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
-
+    @parameter = Parameter.where("key = ?", "organization.citymap.#{@city.id}")
+    @map_url = @parameter.length > 0 ? @parameter[0].value : ""
   end
+  
   def city_select
     if params[:id_city].to_i === 0
       render json: nil, status:200

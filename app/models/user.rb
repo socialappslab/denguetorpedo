@@ -126,6 +126,10 @@ class User < ActiveRecord::Base
   has_many :created_reports,    :class_name => "Report", :foreign_key => "reporter_id",   :dependent => :nullify
   has_many :eliminated_reports, :class_name => "Report", :foreign_key => "eliminator_id", :dependent => :nullify
   has_many :verified_reports,   :class_name => "Report", :foreign_key => "verifier_id",   :dependent => :nullify
+  
+  has_many :created_inspections,    :class_name => "Inspection", :foreign_key => "reporter_id",   :dependent => :nullify
+  has_many :eliminated_inspections, :class_name => "Inspection", :foreign_key => "eliminator_id", :dependent => :nullify
+  has_many :verified_inspections,   :class_name => "Inspection", :foreign_key => "verifier_id",   :dependent => :nullify
 
   has_many :posts, :dependent => :destroy
   has_many :comments, :through => :posts
@@ -193,7 +197,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def award_points_for_submitting(report)
+  def award_points_for_submitting(report=nil)
     points = self.total_points || 0
     self.update_column(:total_points, points + Points::REPORT_SUBMITTED)
     self.teams.each do |team|
