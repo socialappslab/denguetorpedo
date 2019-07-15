@@ -60,3 +60,7 @@ Visit https://www.denguechat.com/teams and click “Cree un equipo”.
 # How do you get a user to join a team?
 
 Ask them to login and find a team they like. Then click “Join team”.
+
+# How to incorporate changes in CSS or new Javascript libraries? 
+
+Run `rake assets:precompile`

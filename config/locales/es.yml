@@ -415,6 +415,7 @@ es:
       update:  "Actualizar"
       upload:  Cargue
       upload_csv: Cargue un nuevo CSV
+      odk_sync: Errores de sincronización ODK
       confirm: Confirmar
     coordinator:
       home: Coordinador
