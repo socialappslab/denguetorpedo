@@ -146,7 +146,7 @@
       var search_location = $("input[name=location]").val();
       var current = location.search;
       if (current == "") {
-        location.href = location.origin + location.pathname + "&search_location=" + search_location;
+        location.href = location.origin + location.pathname + "?search_location=" + search_location;
       } else {
         if (current.includes("search_location")) {
           var params = current.substr(1).split("&");
