@@ -93,20 +93,39 @@
                 = I18n.t("activerecord.models.report", :count => 1)
             %tbody
               - @visits_hash[visit.id].each do |visit_hash|
-                %tr
-                  - report = visit_hash[:report]
+                - report = visit_hash[:report]
+                - if !report.nil?
+                  %tr
+                    - report = visit_hash[:report]
+                    - inspections = visit_hash[:inspections]
+                    - initial_inspection = inspections[0]
+                    - elimination_inspection = inspections[1]
+
+                    %td{:style => "width: 30%;"}
+                      = report.breeding_site && report.breeding_site.description
+                      - if report.field_identifier?
+                        = report.field_identifier
+                    %td{:style => "width: 30%;"}
+                      = form_for initial_inspection, :url => api_v0_inspection_path(initial_inspection), :html => {:method => "PUT", "remote-submit" => true, :class => "form-inline"} do |f|
+                        = f.select :identification_type, Inspection.humanized_inspection_types.collect{ |ins_type| [ins_type[1], ins_type[0]]}, {:selected => initial_inspection.identification_type}, :class => "form-control input-sm"
+                        = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success btn-sm"
+
+                    %td{:style => "width: 30%;"}
+                      = link_to I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase, verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning input-sm", :style => "margin-top: 0px;"
+                - if report.nil?
                   - inspections = visit_hash[:inspections]
                   - initial_inspection = inspections[0]
                   - elimination_inspection = inspections[1]
+                  - inspections.each do |inspection|
+                    %tr
+                      %td{:style => "width: 30%;"}
+                        = inspection.breeding_site && inspection.breeding_site.description
+                        - if inspection.field_identifier?
+                          = inspection.field_identifier
+                      %td{:style => "width: 30%;"}
+                        = form_for initial_inspection, :url => api_v0_inspection_path(initial_inspection), :html => {:method => "PUT", "remote-submit" => true, :class => "form-inline"} do |f|
+                          = f.select :identification_type, Inspection.humanized_inspection_types.collect{ |ins_type| [ins_type[1], ins_type[0]]}, {:selected => initial_inspection.identification_type}, :class => "form-control input-sm"
+                          = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success btn-sm"
 
-                  %td{:style => "width: 30%;"}
-                    = report.breeding_site && report.breeding_site.description
-                    - if report.field_identifier?
-                      = report.field_identifier
-                  %td{:style => "width: 30%;"}
-                    = form_for initial_inspection, :url => api_v0_inspection_path(initial_inspection), :html => {:method => "PUT", "remote-submit" => true, :class => "form-inline"} do |f|
-                      = f.select :identification_type, Inspection.humanized_inspection_types.collect{ |ins_type| [ins_type[1], ins_type[0]]}, {:selected => initial_inspection.identification_type}, :class => "form-control input-sm"
-                      = f.submit I18n.t("views.buttons.save"), :class => "btn btn-success btn-sm"
-
-                  %td{:style => "width: 30%;"}
-                    = link_to I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase, verify_neighborhood_report_path(report.neighborhood, report, :redirect_path => request.path), :class => "btn btn-warning input-sm", :style => "margin-top: 0px;"
+                      %td{:style => "width: 30%;"}
+                        -#= link_to I18n.t("views.csv_reports.verify") + " " + I18n.t("activerecord.models.report", :count => 1).downcase, verify_neighborhood_report_path(visit.location.neighborhood, inspection, :redirect_path => request.path), :class => "btn btn-warning input-sm", :style => "margin-top: 0px;"
