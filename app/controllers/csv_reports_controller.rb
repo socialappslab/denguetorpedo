@@ -85,9 +85,9 @@ class CsvReportsController < ApplicationController
       @visits_hash[visit.id] ||= []
 
       visit.inspections.order("position ASC").each do |ins|
-        matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
+        matching_hash = @visits_hash[visit.id].find {|hash| if !hash[:report].nil? then hash[:report].id == ins.report_id else hash[:report].nil? end}
         @visits_hash[visit.id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
-        matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
+        matching_hash = @visits_hash[visit.id].find {|hash| if !hash[:report].nil? then hash[:report].id == ins.report_id else hash[:report].nil? end}
         matching_hash[:inspections] << ins unless matching_hash[:inspections].include?(ins)
       end
     end
