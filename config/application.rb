@@ -103,6 +103,6 @@ module Dengue
     # config.middleware.use "JwtAuth"
   end
   if Rails.env != "production"
-    config.middleware.use("Rack::GoogleAnalytics", :web_property_id => "UA-144181241-1")
+    config.middleware.use("Rack::GoogleAnalytics", :web_property_id => "XXXXX")
   end
 end
