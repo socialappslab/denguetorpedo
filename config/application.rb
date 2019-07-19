@@ -102,4 +102,7 @@ module Dengue
     # See: https://auth0.com/blog/ruby-authentication-secure-rack-apps-with-jwt/
     # config.middleware.use "JwtAuth"
   end
+  if Rails.env != "production"
+    config.middleware.use("Rack::GoogleAnalytics", :web_property_id => "UA-144181241-1")
+  end
 end

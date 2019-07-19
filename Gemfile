@@ -103,3 +103,7 @@ group :development, :staging, :production do
 end
 
 #------------------------------------------------------------------------------
+group :production do
+  gem 'rack-google_analytics', :require => "rack/google_analytics"
+end
+#------------------------------------------------------------------------------
