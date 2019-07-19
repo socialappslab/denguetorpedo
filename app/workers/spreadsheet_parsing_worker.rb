@@ -211,7 +211,7 @@ class SpreadsheetParsingWorker
       ins.get_previous_similar_inspection
 
       # Assign submit points to all reporters
-      if is.present? && ins.reporters.length > 0
+      if ins.present? && ins.reporters.length > 0
         ins.reporters.each do |reporter|
           reporter.award_points_for_submitting
         end
