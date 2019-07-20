@@ -3,12 +3,12 @@
 # encoding: utf-8
 
 class OrganizationsController < ApplicationController
-  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
-  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
-  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
-  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
-  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select]
+  before_filter :require_login, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   
   #----------------------------------------------------------------------------
   # GET /settings
@@ -55,6 +55,15 @@ class OrganizationsController < ApplicationController
     else
       @ciudades = City.find(params[:id_city]).neighborhoods
       render json: @ciudades.to_json, status:200
+    end
+  end
+
+  def city_select_map
+    if params[:id_city].to_i === 0
+      render json: nil, status:200
+    else
+      @mapurls = Parameter.where("key = ?", "organization.citymap.#{params[:id_city]}")
+      render json: @mapurls, status:200
     end
   end
 
