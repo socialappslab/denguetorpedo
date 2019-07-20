@@ -78,7 +78,7 @@ class OrganizationsController < ApplicationController
 
   def assignment
     @assignment = Assignment.find(params[:id])
-    render json: @assignment.to_json(include: :city_block, include: :users), status: 200
+    render json: @assignment.to_json(:city_block, include: :users), status: 200
   end
 
   def assignments_post

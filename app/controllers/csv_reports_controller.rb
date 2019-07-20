@@ -121,10 +121,26 @@ class CsvReportsController < ApplicationController
   end
 
   def sync_errors
+    @redis_keys_descriptions = {
+        "organization:ORGID:odk:sync:visit:processed" => "VISITAS: Identificadores de formulario ODK (de hojas de visita) procesados exitosamente",
+        "organization:ORGID:odk:sync:visit:failed:repeated" => "VISITAS: Identificadores ODK repetidos (ya procesados o duplicados e ignorados)",
+        "organization:ORGID:odk:sync:visit:failed:R:location" => "VISITAS: RECHAZOS: Identificadores de predios o casas que rechazaron una visita",
+        "organization:ORGID:odk:sync:visit:failed:R:date" => "VISITAS: RECHAZOS: Fechas de los rechazos",
+        "organization:ORGID:odk:sync:visit:failed:R" => "VISITAS: RECHAZOS: Identificadores de formulario ODK que contienen visitas con rechazo",
+        "organization:ORGID:odk:sync:visit:failed:C:location" => "VISITAS: CERRADAS: Identificadores de predios o casas que estaban cerrados en una visita",
+        "organization:ORGID:odk:sync:visit:failed:C:date" => "VISITAS: CERRADAS: Fechas de los visitas en las que el predio/casa estaba cerrado",
+        "organization:ORGID:odk:sync:visit:failed:C" => "VISITAS: CERRADAS: Identificadores de formulario ODK que contienen visitas cerradas",
+        "organization:ORGID:odk:sync:location:processed" => "UBICACIONES: Identificadores de formulario ODK procesadas exitosamente",
+        "organization:ORGID:odk:sync:location:missing:name" => "UBICACIONES: Ubicaciones que no se encontraon en la base de datos de DengueChat",
+        "organization:ORGID:odk:sync:location:failed:repeated" => "UBICACIONES: Identificadores ODK repetidos (ya procesados o duplicados e ignorados)",
+        "organization:ORGID:odk:sync:inspection:processed" => "INSPECCIONES: Identificadores de formulario ODK (de hojas de inspecciones) procesados exitosamente",
+        "organization:ORGID:odk:sync:inspection:failed:repeated" => "INSPECCIONES: Identificadores ODK repetidos (ya procesados o duplicados e ignorados)"
+    }
     @breadcrumbs << { name: I18n.t("views.buttons.odk_sync") }
     @keys = $redis_pool.with do |redis|
       redis.keys "organization:*"
     end
+    @keys.sort!.reverse!
     @smembers = {}
     @keys.each do |key|
       @smembers[key] = $redis_pool.with do |redis|
