@@ -60,13 +60,14 @@ class City < ActiveRecord::Base
             (
                 select 
                     cb.name as city_block_name, cb.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, city_blocks cb, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_block_id = cb.id
                     and cb.city_id = 9
                     and cb.neighborhood_id = n.id
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by cb.id, cb.name, cb.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -74,13 +75,14 @@ class City < ActiveRecord::Base
             (   
                 select 
                     left(l.address,5) as city_block_name, l.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_id = #{self.id}
                     and l.neighborhood_id = n.id
                     and l.city_block_id is null
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by l.address, l.id, l.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -106,13 +108,14 @@ class City < ActiveRecord::Base
             (
                 select 
                     cb.name as city_block_name, cb.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, city_blocks cb, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_block_id = cb.id
                     and cb.city_id = #{self.id}
                     and cb.neighborhood_id = n.id
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by cb.id, cb.name, cb.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -120,13 +123,14 @@ class City < ActiveRecord::Base
             (   
                 select 
                     left(l.address,5) as city_block_name, l.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_id = 9
                     and l.neighborhood_id = n.id
                     and l.city_block_id is null
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by l.address, l.id, l.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -152,13 +156,14 @@ class City < ActiveRecord::Base
             (
                 select 
                     cb.name as city_block_name, cb.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, city_blocks cb, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_block_id = cb.id
                     and cb.city_id = #{id_ciudad}
                     and cb.neighborhood_id = #{id_barrio}
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by cb.id, cb.name, cb.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -166,13 +171,14 @@ class City < ActiveRecord::Base
             (   
                 select 
                     left(l.address,5) as city_block_name, l.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_id = #{id_ciudad}
                     and l.neighborhood_id = #{id_barrio}
                     and l.city_block_id is null
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by l.address, l.id, l.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -198,13 +204,14 @@ class City < ActiveRecord::Base
             (
                 select 
                     cb.name as city_block_name, cb.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, city_blocks cb, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_block_id = cb.id
                     and cb.city_id = #{id_ciudad}
                     and cb.neighborhood_id = #{id_barrio}
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by cb.id, cb.name, cb.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -212,13 +219,14 @@ class City < ActiveRecord::Base
             (   
                 select 
                     left(l.address,5) as city_block_name, l.neighborhood_id as neighborhood_id, n.name as neighborhood_name, 
-                    count(*) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date  
+                    count(distinct v.visited_at) as visit_count, max(v.visited_at) as last_visit_date , min(v.visited_at)  as first_visit_date
                 from visits v, locations l, neighborhoods n
                 where
                     v.location_id = l.id
                     and l.city_id = #{id_ciudad}
                     and l.neighborhood_id = #{id_barrio}
                     and l.city_block_id is null
+                    and l.source in ('ODK','MAPEO',NULL)
                 group by l.address, l.id, l.neighborhood_id, n.name
                 order by count(*) desc
             )
@@ -228,6 +236,4 @@ class City < ActiveRecord::Base
     limit 5;
     ")
   end
-
-
 end
