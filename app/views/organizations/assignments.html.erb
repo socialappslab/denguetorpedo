@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="citymap">
             <% if !@map_url.blank? %>
                 <iframe src="<%= @map_url %>" width="100%" height="640"></iframe>
              <% else %> 
@@ -66,8 +66,8 @@
     </div>
     <div class="panel-group" role="tablist">
         <div class="panel panel-default">
-            <div class="panel-heading" role="tab" data-toggle="collapse" href="#organizacion">
-                <h2>Organizar recorridos y tareas</h2>
+            <div class="panel-heading" role="tab" data-toggle="collapse" href="#organizacion" style="cursor: pointer;">
+              <h2>Organizar recorridos y tareas <span class="caret"></span></h2>
             </div>
             <div id="organizacion" class="panel-collapse collapse" role="tabpanel">
                 <div class="panel-body">
@@ -300,6 +300,18 @@ function enableFields() {
                     }
                 }
                 
+            });
+
+            $.get("/organizations/citymap/"+$(this).val(), function(data) {
+                console.log("Got new map: "+data);
+                var map = $("#citymap");
+                map.html("");
+                if (data !=null && data[0] !=null) {
+                    var map_url=data[0].value
+                    map.append("<iframe src=\""+map_url+"\" width=\"100%\" height=\"640\"></iframe>");
+                } else {
+                    map.append("<h2>No existe mapa para la ciudad del usuario</h2>");
+                }
             });
         });
     });

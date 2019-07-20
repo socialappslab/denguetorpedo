@@ -139,6 +139,7 @@ Dengue::Application.routes.draw do
     get "assignments/:city_id/barrio/:id_barrio", to: "organizations#ultimos_recorridos_list", on: :collection
     get "assignments/:city_id/barriomenos/:id_barrio", to: "organizations#menos_recorridos_list", on: :collection
     get "assignments/cityselect/:id_city", to: "organizations#city_select", on: :collection
+    get "citymap/:id_city", to: "organizations#city_select_map", on: :collection
     post "assignments", to: "organizations#assignments_post", on: :collection, as: :assignments_post
     get "volunteers/:city_id", to: "organizations#volunteers", on: :collection, as: :volunteers_json
     
