@@ -21,7 +21,8 @@
     <% @keys.each do |key| %>
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" data-parent="#odk_keys" data-toggle="collapse" href="#<%= key.gsub(':','_') %>">
-            <p><strong><%= key %> </strong>(<%= Organization.find(key.split(":")[1]).name %>)</p>
+            <p><strong>(<%= Organization.find(key.split(":")[1]).name %>) <%= @redis_keys_descriptions[key.sub(/^organization:[0-9]+/,"organization:ORGID")] %></strong></p>
+            <p><%= key %></p>
         </div>
         <div id="<%= key.gsub(':','_') %>" class="panel panel-collapse collapse">
             <div class="panel-body max-heighted">
