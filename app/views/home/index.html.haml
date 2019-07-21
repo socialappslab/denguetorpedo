@@ -1,32 +1,96 @@
 /------------------------------------------------------------------------------
 = render :partial => "shared/flashes"
+#photo.carousel.slide{"data-ride" => "carousel"}
+  %ol.carousel-indicators
+    %li.active{"data-slide-to" => "0", "data-target" => "#photo"}
+    %li{"data-slide-to" => "1", "data-target" => "#photo"}
+    %li{"data-slide-to" => "2", "data-target" => "#photo"}
+  .carousel-inner
+    .item.active
+      .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_ni)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+      .carousel-caption
+        .row
+          .col-md-8.col-md-offset-2
+            %h1{:style => "text-transform: uppercase;"}
+              = I18n.t("views.home.header")
+        .row
+          .col-md-12.text-center
+            = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal" do
+              %i.fa.fa-play-circle
+              = I18n.t("views.home.video_description")
+            = link_to "Aprende más", about_path, :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
 
-.opacity-banner
-.landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
-  .row
-    .col-md-8.col-md-offset-2
-      %h1{:style => "text-transform: uppercase;"}
-        = I18n.t("views.home.header")
+        #video-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
+          .modal-dialog
+            .modal-content
+              .modal-header
+                %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+                  %span{"aria-hidden" => "true"} &times;
+                %h4.modal-title
+                  &nbsp;
+              .modal-body
+                %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
 
+        %h1 Managua
+        %p Nicaragua
+    .item
+      .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_py)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+      .carousel-caption
+        .row
+          .col-md-8.col-md-offset-2
+            %h1{:style => "text-transform: uppercase;"}
+              = I18n.t("views.home.header")
+        .row
+          .col-md-12.text-center
+            = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal" do
+              %i.fa.fa-play-circle
+              = I18n.t("views.home.video_description")
+            = link_to "Aprende más", about_path, :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
 
-  .row
-    .col-md-12.text-center
-      = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal" do
-        %i.fa.fa-play-circle
-        = I18n.t("views.home.video_description")
-      = link_to "Aprende más", about_path, :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
+        #video-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
+          .modal-dialog
+            .modal-content
+              .modal-header
+                %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+                  %span{"aria-hidden" => "true"} &times;
+                %h4.modal-title
+                  &nbsp;
+              .modal-body
+                %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue_py}", :width => "560"}
 
-  #video-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
-    .modal-dialog
-      .modal-content
-        .modal-header
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-            %span{"aria-hidden" => "true"} &times;
-          %h4.modal-title
-            &nbsp;
-        .modal-body
-          %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
+        %h1 Asunción
+        %p Paraguay
+    .item
+      .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_co)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+      .carousel-caption
+        .row
+          .col-md-8.col-md-offset-2
+            %h1{:style => "text-transform: uppercase;"}
+              = I18n.t("views.home.header")
+        .row
+          .col-md-12.text-center
+            = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal" do
+              %i.fa.fa-play-circle
+              = I18n.t("views.home.video_description")
+            = link_to "Aprende más", about_path, :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
 
+        #video-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
+          .modal-dialog
+            .modal-content
+              .modal-header
+                %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+                  %span{"aria-hidden" => "true"} &times;
+                %h4.modal-title
+                  &nbsp;
+              .modal-body
+                %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
+
+        %h1 Armenia
+        %p Colombia
+  %a.left.carousel-control{"data-slide" => "prev", :href => "#photo"}
+    %span.glyphicon.glyphicon-chevron-left
+  %a.right.carousel-control{"data-slide" => "next", :href => "#photo"}
+    %span.glyphicon.glyphicon-chevron-right
 
 
 .container.marketing

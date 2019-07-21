@@ -2,7 +2,7 @@
 class HomeController < ApplicationController
   before_filter :redirect_if_logged_in, :only => [:index]
 
-  #----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
   # GET /
 
   def denguechatcom
@@ -33,8 +33,10 @@ class HomeController < ApplicationController
     # Display the appropriate introduction video on homepage.
     if I18n.locale == :es
       @introductory_video_on_dengue = "//www.youtube.com/embed/hwod5NOxiNM?rel=0"
+      @introductory_video_on_dengue_py = "//www.youtube.com/embed/WLVJadIHqDA"
     else
       @introductory_video_on_dengue = "//www.youtube.com/embed/o6IY0NjdmZc?rel=0"
+      
     end
 
     if @current_user.present?
@@ -43,7 +45,9 @@ class HomeController < ApplicationController
       Analytics.track( :anonymous_id => SecureRandom.base64, :event => "Visited homepage") if Rails.env.production?
     end
 
-    @landing_page_photo = (1..6).to_a.map {|index| "landing/landing_#{index}.png"}.sample
+    @landing_page_photo_ni = (1..3).to_a.map {|index| "landing/landing_#{index}.png"}.sample
+    @landing_page_photo_py = (7..11).to_a.map {|index| "landing/landing_#{index}.png"}.sample
+    @landing_page_photo_co = (4..6).to_a.map {|index| "landing/landing_#{index}.png"}.sample
   end
 
   #----------------------------------------------------------------------------
