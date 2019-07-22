@@ -80,12 +80,12 @@
                       - next if user.blank?
                       %tr
                         %td{"style" => "vertical-align: middle;"}
-                          = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
+                          = image_tag(user.picture, :style => "height: 25px; width: 25px;", :class => "img-rounded")
                         %td{"style" => "vertical-align: middle;"}
                           .light-font
                             = user.username
                         %td{"style" => "vertical-align: middle;"}
-                          %p.largest-font.heavy-font.text-right.green
+                          %p.green
                             = user.total_points.to_i
 
           #casas.tab-pane
@@ -104,12 +104,12 @@
                       - next if user.blank?
                       %tr
                         %td{"style" => "vertical-align: middle;"}
-                          = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
+                          = image_tag(user.picture, :style => "height: 25px; width: 25px;", :class => "img-rounded")
                         %td{"style" => "vertical-align: middle;"}
                           .light-font
                             = link_to user.username, user_path(user), :user_id => user.id
                         %td{"style" => "vertical-align: middle;"}
-                          %p.largest-font.heavy-font.text-right.green
+                          %p.green
                             = ranking_hash[:score].to_i
       - if @city.id == 9
         .panel.panel-default
