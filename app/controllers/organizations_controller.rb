@@ -45,7 +45,9 @@ class OrganizationsController < ApplicationController
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
-
+    @ciudades = City.find(@city.id).neighborhoods
+    @barrios = City.find(@city.id).last_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
+    @barrios_menos = City.find(@city.id).less_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
   end
   def city_select
     if params[:id_city].to_i === 0
