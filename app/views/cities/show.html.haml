@@ -17,8 +17,10 @@
   %meta{:property => "og:title",       :content => "Ciudadanos de #{@city.name} en el combate contra el Dengue, Zika y la Chikungunya"}
   %meta{:property => "og:description", :content => "DengueChat involucra a las comunidades en la lucha contra el Dengue, Zika y la Chikungunya"}
   %meta{:property => "og:type",        :content => "article"}
-
+  
+  
 .container{"ng-controller" => "cityCtrl"}
+
   .row
     .col-md-3
       .well{:style => "padding-top: 0px; padding-left: 0px; padding-right: 0px;"}
@@ -52,7 +54,6 @@
             %i.fa.fa-spin.fa-refresh
           #green-locations-chart-minor
       
-
       #tabs
         %ul.nav.nav-tabs.nav-justified
           %li.active
@@ -110,16 +111,17 @@
                         %td{"style" => "vertical-align: middle;"}
                           %p.largest-font.heavy-font.text-right.green
                             = ranking_hash[:score].to_i
-
+      - if @city.id == 9
+        .panel.panel-default
+          <div class="fb-page" data-href="https://www.facebook.com/topadengue/" data-tabs="timeline" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/topadengue/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/topadengue/">Topa Dengue</a></blockquote></div>
+        .panel.panel-default
+          <a class="twitter-timeline" data-lang="es" href="https://twitter.com/TopaDengue?ref_src=twsrc%5Etfw" data-tweet-limit="3">Tweets de TopaDengue</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     .col-md-6.col-md-pull-3{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:city_id => @city.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
       - if @current_user
         %new-post-custom
-
       = render :partial => "shared/filter_posts"
       = render :partial => "shared/feed"
-
-    
 
 :javascript
   $(document).ready(function(){
