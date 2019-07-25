@@ -7,6 +7,14 @@
       = I18n.t("views.app")
     = render :partial => "shared/head"
 
+    = csrf_meta_tags
+    
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = render 'layouts/google_analytics'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    
+    = analytics_init if GoogleAnalytics.valid_tracker?
+
   /-----------------------------------------------------------------------------
 
   %body

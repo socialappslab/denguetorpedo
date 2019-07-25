@@ -25,6 +25,7 @@
 //= require bootstrap-datetimepicker
 //= require twitter/typeahead
 
+
 window.denguechat = {
   error: "error",
   success: "success",

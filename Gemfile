@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 # Analytics
-gem "analytics-ruby", '~> 2.0.8', :require => false
+gem "analytics-ruby", '~> 2.0.8', :require => 'segment/analytics'
 gem 'angularjs-rails', "~> 1.4.8"
 
 # File management and manipulation
@@ -53,6 +53,11 @@ gem "byebug"
 
 gem 'momentjs-rails'
 gem 'bootstrap3-datetimepicker-rails'
+#gem 'autoprefixer-rails', "~> 7.1.6"
+gem 'jquery-rails'
+gem 'jquery-turbolinks'
+
+gem 'google-analytics-rails', '1.1.1'
 
 #------------------------------------------------------------------------------
 
