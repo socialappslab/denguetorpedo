@@ -56,7 +56,7 @@ gem 'bootstrap3-datetimepicker-rails'
 
 gem 'jquery-rails'
 
-#gem 'google-analytics-rails', '1.1.1'
+gem 'google-analytics-rails', '1.1.1'
 
 #------------------------------------------------------------------------------
 
