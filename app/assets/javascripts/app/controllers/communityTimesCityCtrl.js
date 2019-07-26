@@ -1,10 +1,13 @@
-angular.module("denguechat.controllers").controller("communityTimeseriesCtrl", ["$scope", "$http", "$attrs", "TimeSeries", function ($scope, $http, $attrs, TimeSeries) {
+
+angular.module("denguechat.controllers").controller("communityTimeCityCtrl", ["$scope", "$http", "$attrs", "TimeSeries", function ($scope, $http, $attrs, TimeSeries) {
+  restrict: "E",
   $scope.chartLoading = false;
   $scope.noChartData  = false;
   $scope.state        = {showTable: false}
-  
+
   $scope.options      = {
-    neighborhoods: JSON.stringify([$attrs.neighborhoodId]),
+    
+    neighborhoods: [$attrs.neighborhoodId],
     unit: "monthly",
     timeframe: "6",
     positive: true,

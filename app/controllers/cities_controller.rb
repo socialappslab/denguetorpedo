@@ -43,6 +43,17 @@ class CitiesController < ApplicationController
     end
 
     @breadcrumbs << {:name => @city.name, :path => city_path(@city)}
+
+
+    @ids = Neighborhood.find_by_sql("select id from neighborhoods where city_id =" + @city.id.to_s)
+    @barriosid = Array.new
+    i=0
+    @ids.each do |n|
+      @barriosid.insert(i,n.id)
+      i=i+1
+    end
+    
+
   end
 
 
