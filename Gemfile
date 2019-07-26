@@ -53,11 +53,10 @@ gem "byebug"
 
 gem 'momentjs-rails'
 gem 'bootstrap3-datetimepicker-rails'
-#gem 'autoprefixer-rails', "~> 7.1.6"
-gem 'jquery-rails'
-gem 'jquery-turbolinks'
 
-gem 'google-analytics-rails', '1.1.1'
+gem 'jquery-rails'
+
+#gem 'google-analytics-rails', '1.1.1'
 
 #------------------------------------------------------------------------------
 
