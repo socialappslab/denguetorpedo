@@ -2,6 +2,7 @@ angular.module("denguechat.controllers").controller("communityTimeseriesCtrl", [
   $scope.chartLoading = false;
   $scope.noChartData  = false;
   $scope.state        = {showTable: false}
+  
   $scope.options      = {
     neighborhoods: JSON.stringify([$attrs.neighborhoodId]),
     unit: "monthly",

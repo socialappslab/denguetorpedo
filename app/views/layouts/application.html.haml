@@ -6,6 +6,8 @@
     %title
       = I18n.t("views.app")
     = render :partial => "shared/head"
+    
+    = analytics_init if GoogleAnalytics.valid_tracker?
 
   /-----------------------------------------------------------------------------
 

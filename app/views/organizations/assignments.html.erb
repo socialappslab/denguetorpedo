@@ -15,13 +15,13 @@
         <div class="col-md-4">
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
-                <%= select_tag "id_city", content_tag(:option,'Seleccione',:value=>"0".to_i)+options_from_collection_for_select(@all_cities, :id, :name) ,class: "form-control"%>    
+                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>    
            </div> 
             <div class="panel panel-default assignments">
                 <h2>Últimos recorridos</h2>
                     <div id= "barrios_select" class="form-group">
                         <label>Seleccione el barrio</label>
-                        <%= select_tag "id_barrio", content_tag(:option,'',:value=>"0-0"), class: "form-control"%>
+                        <%= select_tag "id_barrio", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control"%>
                     </div>
                     <table class="table">
                         <thead>
@@ -32,6 +32,13 @@
                             </tr>
                         </thead>
                         <tbody id="ultimos_recorrido">
+                            <% @barrios.each do |cb| %>
+                                <tr>
+                                    <td><%= cb['city_block_name'] %></td>
+                                    <td><%= cb['visit_count'] %></td>
+                                    <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
+                                </tr>
+                            <% end %>
                         </tbody>
                     </table>
             </div>
@@ -39,7 +46,7 @@
                 <h2>Manzanas menos recorridas</h2>
                 <div class="form-group">
                     <label>Seleccione el barrio</label>
-                    <%= select_tag "block_barrios_menos", content_tag(:option,'',:value=>"0-0"), class: "form-control" %>
+                    <%= select_tag "block_barrios_menos", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control" %>
                 </div>
                 <table class="table">
                     <thead>
@@ -50,6 +57,13 @@
                         </tr>
                     </thead>
                     <tbody id="barrios_menos">
+                        <% @barrios_menos.each do |cb| %>
+                            <tr>
+                                <td><%= cb['city_block_name'] %></td>
+                                <td><%= cb['visit_count'] %></td>
+                                <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
+                            </tr>
+                        <% end %>
                     </tbody>
                 </table>
             </div>
@@ -136,7 +150,6 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function() {
         $("#datetimepicker").datetimepicker({
@@ -154,17 +167,14 @@
         });
     });
 </script>
-
 <script>
 $(document).ready(function() {
-    
     var volunteers = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: '<%= volunteers_json_organizations_url(city_id: @city.id, format: :json) %>'
     });
     volunteers.initialize();
-
     var elt = $('#volunteers');
     elt.tagsinput({
         itemValue: 'id',
@@ -177,7 +187,6 @@ $(document).ready(function() {
     });
 })
 </script>
-
 <script>
 $(document).ready(function() {
     $(".edit-assignment").on("click", function() {
@@ -236,6 +245,9 @@ function enableFields() {
             var obtener_valor  = $(this).val().split("-");
             var id_barrio_nuevo = obtener_valor[0];
             var idciudad = obtener_valor[1];
+            if (idciudad == undefined){
+                idciudad = $("#id_city").val();
+            }
             if(idciudad == 0){
                 cuerpo.html("");
             }else{
@@ -261,6 +273,9 @@ function enableFields() {
             var obtener_valor  = $(this).val().split("-");
             var id_barrio_nuevo = obtener_valor[0];
             var idciudad = obtener_valor[1];
+            if (idciudad == undefined){
+                idciudad = $("#id_city").val();
+            }
             if(idciudad == 0){
                 cuerpo.html("");
             }else{
