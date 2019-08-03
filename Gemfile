@@ -58,8 +58,6 @@ gem 'jquery-rails'
 
 gem 'google-analytics-rails', '1.1.1'
 
-#------------------------------------------------------------------------------
-
 group :development do
   gem 'derailed_benchmarks', :git => "https://github.com/schneems/derailed_benchmarks.git", :require => false
   gem 'rack-mini-profiler', :require => false

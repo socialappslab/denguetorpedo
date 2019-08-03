@@ -11,6 +11,7 @@ Dengue::Application.configure do
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
+  config.web_console.whitelisted_ips = '172.17.0.1'
   config.cache_classes = false
   config.consider_all_requests_local       = true
 
@@ -43,7 +44,6 @@ Dengue::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = false
   config.log_level = :debug
-
 
   # config.assets.digest                     = true
   # config.static_cache_control              = "public, max-age=2592000"

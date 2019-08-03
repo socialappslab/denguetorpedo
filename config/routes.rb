@@ -139,6 +139,7 @@ Dengue::Application.routes.draw do
     get "assignments/:city_id/barrio/:id_barrio", to: "organizations#ultimos_recorridos_list", on: :collection
     get "assignments/:city_id/barriomenos/:id_barrio", to: "organizations#menos_recorridos_list", on: :collection
     get "assignments/cityselect/:id_city", to: "organizations#city_select", on: :collection
+    get "citymap/:id_city", to: "organizations#city_select_map", on: :collection
     post "assignments", to: "organizations#assignments_post", on: :collection, as: :assignments_post
     get "volunteers/:city_id", to: "organizations#volunteers", on: :collection, as: :volunteers_json
     
@@ -218,6 +219,9 @@ Dengue::Application.routes.draw do
     end
   end
 
+  get "odk_sync_errors", to: "csv_reports#sync_errors"
+  delete "odk_sync_errors", to: "csv_reports#delete_key", as: "delete_odk_key_member"
+
   #----------------------------------------------------------------------------
   # Neighborhoods
   resources :neighborhoods, :only => [:show] do
@@ -226,10 +230,10 @@ Dengue::Application.routes.draw do
       post "contact"
     end
 
-    resources :reports, :except => [:update, :destroy] do
+    resources :reports, path: "inspections", :except => [:update, :destroy] do
       member do
         get  "coordinator-edit", :action => :coordinator_edit, :as => :coordinator_edit
-        put  "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
+        patch  "coordinator-update", :action => :coordinator_update, :as => :coordinator_update
         put  "eliminate"
         put  "prepare"
         post "like"

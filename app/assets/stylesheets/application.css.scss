@@ -700,3 +700,16 @@ div {
     }
   }
 }
+
+.location-search {
+  display: flex;
+  input, button {
+    font-size: 1rem;
+    font-weight: normal;
+  }
+}
+
+.max-heighted {
+  max-height: 400px;
+  overflow-y: auto;
+}

@@ -12,7 +12,7 @@
   .col-md-3
     %p.form-label
       = I18n.t("attributes.neighborhood_id")
-    = f.select :neighborhood_id, options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.neighborhood_id), {}, :disabled => disable, :class => "form-control"
+    = select_tag "location[neighborhood_id]", options_for_select(Neighborhood.order("name ASC").map {|bs| [bs.name, bs.id]}, :selected => @report.location.neighborhood_id), {:disabled => disable, :class => "form-control"}
   .col-md-3
     %p.form-label
       = I18n.t("attributes.location_id")
@@ -36,7 +36,7 @@
   .col-md-6
     %p.form-label
       = I18n.t('activerecord.attributes.report.report')
-    = f.text_area :report, :cols => "1", :rows => "3", :class => "form-control", :disabled => disable_all
+    = f.text_area :description, :cols => "1", :rows => "3", :class => "form-control", :disabled => disable_all
 
 
 %hr.muted.wide

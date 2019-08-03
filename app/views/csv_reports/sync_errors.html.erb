@@ -1,0 +1,50 @@
+<div class="container">
+    <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= flash[:notice] %>
+    </div>
+    <% end %>
+    <% if flash[:error] %>    
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= flash[:error] %>
+    </div>
+    <% end %>
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="light-font"><%= I18n.t("views.buttons.odk_sync") %></h1>
+            <hr>
+
+<% unless @keys.blank? %>
+<div class="panel-group" id="odk_keys" role="tablist">
+    <% @keys.each do |key| %>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" data-parent="#odk_keys" data-toggle="collapse" href="#<%= key.gsub(':','_') %>">
+            <p><strong>(<%= Organization.find(key.split(":")[1]).name %>) <%= @redis_keys_descriptions[key.sub(/^organization:[0-9]+/,"organization:ORGID")] %></strong></p>
+            <p><%= key %></p>
+        </div>
+        <div id="<%= key.gsub(':','_') %>" class="panel panel-collapse collapse">
+            <div class="panel-body max-heighted">
+                <ul>
+                    <% @smembers[key].each do |member| %>
+                        <li>
+                            <%= member %>
+                            <%= link_to delete_odk_key_member_path(key: key, member: member), method: :delete, data: { confirm: "¿Está seguro de querer eliminar este miembro? Esta acción no se puede revertir" } do %>
+                                <i class="fa fa-trash"></i>
+                            <% end %>
+                        </li>
+                    <% end %>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <% end %>
+</div>
+<% else %>
+<p>No se encontraron claves.</p>
+<% end %>
+
+        </div>
+    </div>
+</div>

@@ -84,7 +84,8 @@ class SpreadsheetParsingWorker
         v = Visit.find_or_create_visit_for_location_id_and_date(location.id, current_visited_at)
         Rails.logger.info "Visit created/found #{v.visited_at} (#{v.id})"
         v.update_column(:health_report, row_content[:health_report])
-        v.update_column(:questions, row_content[:questions])
+        questions_content = row_content[:questions].nil? || "[]"
+        v.update_column(:questions, questions_content)
         v.update_column(:source, @csv.source)
         v.update_column(:csv_id, @csv.id)
       end
@@ -193,6 +194,27 @@ class SpreadsheetParsingWorker
       if eliminated_at.present?
         ins.eliminated_at = eliminated_at
         ins.save(:validate => false)
+      end
+
+      # Check if ODK
+      if ins.source == 'ODK Form'
+        require 'open-uri'
+        unless row_content[:br_site_pic].blank?
+          ins.update_attribute(:before_photo, open(row_content[:br_site_pic])) rescue false
+        end
+        unless row_content[:br_site_elim_pic].blank?
+          ins.update_attribute(:before_photo, open(row_content[:br_site_elim_pic])) rescue false
+        end
+      end
+
+      # Get previous similar inspection
+      ins.get_previous_similar_inspection
+
+      # Assign submit points to all reporters
+      if ins.present? && ins.reporters.length > 0
+        ins.reporters.each do |reporter|
+          reporter.award_points_for_submitting
+        end
       end
     end
 

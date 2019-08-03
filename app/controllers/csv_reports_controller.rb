@@ -5,7 +5,7 @@
 
 class CsvReportsController < ApplicationController
   before_filter :require_login
-  before_filter :update_breadcrumb
+  before_filter :update_breadcrumb, except: [:sync_errors]
   before_filter :redirect_if_no_csv, :only => [:show, :verify]
   before_action :calculate_header_variables
 
@@ -30,21 +30,27 @@ class CsvReportsController < ApplicationController
       @csvs = @current_user.csvs
     end
 
+    unless params[:search_location].blank?
+      @csvs = @csvs.joins(:location).where("locations.address LIKE ?", "%#{params[:search_location]}%")
+    end
+
     if params[:sort] == "date"
-      @csvs = @csvs.order("updated_at ASC") if params[:order]  == "asc"
-      @csvs = @csvs.order("updated_at DESC") if params[:order] == "desc"
+      @csvs = @csvs.reorder("updated_at ASC") if params[:order]  == "asc"
+      @csvs = @csvs.reorder("updated_at DESC") if params[:order] == "desc"
     end
 
     if params[:sort] == "user"
-      ids = User.order("username ASC").pluck(:id)  if params[:order] == "asc"
-      ids = User.order("username DESC").pluck(:id) if params[:order] == "desc"
-      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+      #ids = User.reorder("username ASC").pluck(:id)  if params[:order] == "asc"
+      #ids = User.reorder("username DESC").pluck(:id) if params[:order] == "desc"
+      #@csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.user_id) <=> ids.index(csv2.user_id)}
+      @csvs = @csvs.joins(:user).reorder("users.username #{params[:order]}")
     end
 
     if params[:sort] == "location"
-      ids = Location.order("address ASC").pluck(:id)  if params[:order] == "asc"
-      ids = Location.order("address DESC").pluck(:id) if params[:order] == "desc"
-      @csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+      #ids = Location.reorder("address ASC").pluck(:id)  if params[:order] == "asc"
+      #ids = Location.reorder("address DESC").pluck(:id) if params[:order] == "desc"
+      #@csvs = @csvs.sort {|csv1, csv2| ids.index(csv1.location_id) <=> ids.index(csv2.location_id)}
+      @csvs = @csvs.joins(:location).reorder("locations.address #{params[:order]}")
     end
 
     @pagination_count = @csvs.count
@@ -79,9 +85,9 @@ class CsvReportsController < ApplicationController
       @visits_hash[visit.id] ||= []
 
       visit.inspections.order("position ASC").each do |ins|
-        matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
+        matching_hash = @visits_hash[visit.id].find {|hash| if !hash[:report].nil? then hash[:report].id == ins.report_id else hash[:report].nil? end}
         @visits_hash[visit.id] << {:report => ins.report, :inspections => []} if matching_hash.blank?
-        matching_hash = @visits_hash[visit.id].find {|hash| hash[:report].id == ins.report_id}
+        matching_hash = @visits_hash[visit.id].find {|hash| if !hash[:report].nil? then hash[:report].id == ins.report_id else hash[:report].nil? end}
         matching_hash[:inspections] << ins unless matching_hash[:inspections].include?(ins)
       end
     end
@@ -111,6 +117,48 @@ class CsvReportsController < ApplicationController
       redirect_to csv_reports_path and return
     else
       render "show" and return
+    end
+  end
+
+  def sync_errors
+    @redis_keys_descriptions = {
+        "organization:ORGID:odk:sync:visit:processed" => "VISITAS: Identificadores de formulario ODK (de hojas de visita) procesados exitosamente",
+        "organization:ORGID:odk:sync:visit:failed:repeated" => "VISITAS: Identificadores ODK repetidos (ya procesados o duplicados e ignorados)",
+        "organization:ORGID:odk:sync:visit:failed:R:location" => "VISITAS: RECHAZOS: Identificadores de predios o casas que rechazaron una visita",
+        "organization:ORGID:odk:sync:visit:failed:R:date" => "VISITAS: RECHAZOS: Fechas de los rechazos",
+        "organization:ORGID:odk:sync:visit:failed:R" => "VISITAS: RECHAZOS: Identificadores de formulario ODK que contienen visitas con rechazo",
+        "organization:ORGID:odk:sync:visit:failed:C:location" => "VISITAS: CERRADAS: Identificadores de predios o casas que estaban cerrados en una visita",
+        "organization:ORGID:odk:sync:visit:failed:C:date" => "VISITAS: CERRADAS: Fechas de los visitas en las que el predio/casa estaba cerrado",
+        "organization:ORGID:odk:sync:visit:failed:C" => "VISITAS: CERRADAS: Identificadores de formulario ODK que contienen visitas cerradas",
+        "organization:ORGID:odk:sync:location:processed" => "UBICACIONES: Identificadores de formulario ODK procesadas exitosamente",
+        "organization:ORGID:odk:sync:location:missing:name" => "UBICACIONES: Ubicaciones que no se encontraon en la base de datos de DengueChat",
+        "organization:ORGID:odk:sync:location:failed:repeated" => "UBICACIONES: Identificadores ODK repetidos (ya procesados o duplicados e ignorados)",
+        "organization:ORGID:odk:sync:inspection:processed" => "INSPECCIONES: Identificadores de formulario ODK (de hojas de inspecciones) procesados exitosamente",
+        "organization:ORGID:odk:sync:inspection:failed:repeated" => "INSPECCIONES: Identificadores ODK repetidos (ya procesados o duplicados e ignorados)"
+    }
+    @breadcrumbs << { name: I18n.t("views.buttons.odk_sync") }
+    @keys = $redis_pool.with do |redis|
+      redis.keys "organization:*"
+    end
+    @keys.sort!.reverse!
+    @smembers = {}
+    @keys.each do |key|
+      @smembers[key] = $redis_pool.with do |redis|
+        redis.smembers key
+      end
+    end
+  end
+
+  def delete_key
+    if !params[:key].blank? && !params[:member].blank?
+      $redis_pool.with do |redis|
+        redis.srem(params[:key],params[:member])
+      end
+      flash[:notice] = "Clave eliminada."
+      redirect_to odk_sync_errors_path
+    else
+      flash[:error] = "No se puede eliminar la clave porque no existe."
+      redirect_to odk_sync_errors_path
     end
   end
 
