@@ -17,6 +17,10 @@ class CitiesController < ApplicationController
     @city          = City.find( params[:id] )
     @cities        = City.order("name ASC")
     @neighborhoods = Neighborhood.where(:city_id => @city.id)
+    @facebook_obtener = Parameter.where(:key => 'organization.data.facebook.url', :organization_id => @city.id)
+    @facebook = @facebook_obtener.first.value
+    @twitter_obtener = Parameter.where(:key => 'organization.data.twitter.url', :organization_id => @city.id)
+    @twitter = @twitter_obtener.first.value
 
     if @current_user.present?
       Analytics.track( :user_id => @current_user.id, :event => "Visited city page", :properties => {:city => @city.name}) if Rails.env.production?
