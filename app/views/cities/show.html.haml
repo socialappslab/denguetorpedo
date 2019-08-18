@@ -62,9 +62,13 @@
       
       #tabs
         %ul.nav.nav-tabs.nav-justified
-          %li.active
-            = link_to 'Ranking', '#ranking', data: { toggle: "tab" }
-            
+          %li.active 
+            %a{"data-toggle" => "tab", :href => "#ranking"}
+              Ranking
+              %icon.fa.fa-question-circle
+              
+              .icon-heading{"data-content" => "Ranking de los mejores puntos. Los puntos se obtienen reportando y eliminando criaderos y también participando en el foro de DengueChat.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+
           %li
             = link_to 'Casas Verdes', '#casas', data: { toggle: "tab" }
         .tab-content
