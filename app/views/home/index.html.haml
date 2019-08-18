@@ -1,4 +1,10 @@
 /------------------------------------------------------------------------------
+%head
+  :css
+    html {
+      scroll-behavior: smooth;
+    }
+
 = render :partial => "shared/flashes"
 #photo.carousel.slide{"data-ride" => "carousel"}
   %ol.carousel-indicators
@@ -19,9 +25,7 @@
               %i.fa.fa-play-circle
               = I18n.t("views.home.video_description")
             = link_to "Visita Managua", href="/cities/4", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
-
-        
-
+            = link_to "Aprender más",  href="#section_cities", :class => "btn btn-default btn-primary btn-lg", :style => "margin-left: 20px;"     
         %h1 Managua
         %p Nicaragua
     .item
@@ -37,7 +41,7 @@
               %i.fa.fa-play-circle
               = I18n.t("views.home.video_description")
             = link_to "Visita Asunción", href="/cities/9", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
-
+            = link_to "Aprender más",  href="#section_cities", :class => "btn btn-default btn-primary btn-lg", :style => "margin-left: 20px;"     
         %h1 Asunción
         %p Paraguay
     .item
@@ -53,9 +57,7 @@
               %i.fa.fa-play-circle
               = I18n.t("views.home.video_description")
             = link_to "Visita Armenia",  href="/cities/8", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
-
-        
-
+            = link_to "Aprender más",  href="#section_cities", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"     
         %h1 Armenia
         %p Colombia
   %a.left.carousel-control{"data-slide" => "prev", :href => "#photo"}
@@ -155,7 +157,7 @@
 
 
   %hr.featurette-divider
-    .row.featurette
+    #section_cities.row.featurette
       .col-md-12
         %h2.featurette-heading{:style => "margin-top: 0px;"}
           = I18n.t("views.home.cities_using.title")
