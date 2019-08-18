@@ -65,17 +65,19 @@
           %li.active 
             %a{"data-toggle" => "tab", :href => "#ranking"}
               Ranking
-              %icon.fa.fa-question-circle
-              
-              .icon-heading{"data-content" => "Ranking de los mejores puntos. Los puntos se obtienen reportando y eliminando criaderos y también participando en el foro de DengueChat.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+              %icon.fa.fa-question-circle{:title => "Ranking de los mejores puntos. Los puntos se obtienen reportando y eliminando criaderos y también participando en el foro de DengueChat."}
+
 
           %li
-            = link_to 'Casas Verdes', '#casas', data: { toggle: "tab" }
+            %a{"aria-expanded" => "true", "data-toggle" => "tab", :href => "#casas"}
+              Casas Verdes
+              %icon.fa.fa-question-circle{:title => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos."}
+
         .tab-content
           #ranking.tab-pane.active
             .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
             .panel.panel-default
-              .panel-heading{"data-content" => "Ranking de los mejores puntos. Los puntos se obtienen reportando y eliminando criaderos y también participando en el foro de DengueChat.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+              
                 
               - if @rankings_points.blank?
                 .panel-body
@@ -101,7 +103,7 @@
           #casas.tab-pane
             .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
             .panel.panel-default
-              .panel-heading{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+              
               - if @green_location_rankings.blank?
                 .panel-body
                   %p.lato-font.large-font.text-center
