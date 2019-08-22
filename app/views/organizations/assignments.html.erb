@@ -1,3 +1,76 @@
+
+
+<!-- Modal -->
+<div class="modal fade" id="asignar-popup" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">lg</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <!-- body-->
+
+                <%= form_tag assignments_post_organizations_url, method: :post, style: "padding: 2rem" do %>
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker">
+                        <input type="text" class="form-control" name="date" id="date" required>
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label> La manzana a recorrer</label>
+                    <br />
+                    <div id="block-title" class="btn btn-primary">AAAAA</div>
+                    <hr />
+                    <input id="block-data" type="hidden" name="block" /> 
+                    <!--<%= select_tag "block", options_from_collection_for_select(@city_blocks, :id, :name), class: "form-control" %>-->
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select name="status" id="status" class="form-control">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="realizado">Realizado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Actividad a realizar</label>
+                    <input type="text" class="form-control" id="task" name="task" required>
+                </div>
+                <div class="form-group">
+                    <label>Voluntarios</label>
+                    <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput" required>
+                </div>
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea class="form-control" id="notes" name="notes"></textarea>
+                </div>
+                <input type="hidden" name="assignment_id" id="assignment_id">
+                <button class="btn btn-default" type="reset" id="cancelar-asignar" style="display:none">Cancelar</button>
+                <button class="btn btn-success" id="editar-asignar" style="display:none">Editar asignación</button>
+                <button class="btn btn-success" id="guardar-asignar">Asignar</button>
+            <% end %>
+
+                <!-- body-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
 <div class="container" id="assignments-page">
     <% if flash[:notice] %>
     <div class="alert alert-success alert-dismissable">
@@ -12,7 +85,7 @@
     </div>
     <% end %>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
                 <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>    
@@ -42,113 +115,43 @@
                         </tbody>
                     </table>
             </div>
-            <div class="panel panel-default assignments">
-                <h2>Manzanas menos recorridas</h2>
-                <div class="form-group">
-                    <label>Seleccione el barrio</label>
-                    <%= select_tag "block_barrios_menos", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control" %>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Manzana</th>
-                            <th>Visitas</th>
-                            <th>Última visita</th>
-                        </tr>
-                    </thead>
-                    <tbody id="barrios_menos">
-                        <% @barrios_menos.each do |cb| %>
-                            <tr>
-                                <td><%= cb['city_block_name'] %></td>
-                                <td><%= cb['visit_count'] %></td>
-                                <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
-                            </tr>
-                        <% end %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="panel panel-default" id="citymap">
-            <% if !@map_url.blank? %>
-                <iframe src="<%= @map_url %>" width="100%" height="640"></iframe>
-             <% else %> 
-                <h2>No existe mapa para la ciudad del usuario</h2>
-            <% end %>
+                <div id="mapid"></div>
             </div>
         </div>
     </div>
-    <div class="panel-group" role="tablist">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" data-toggle="collapse" href="#organizacion" style="cursor: pointer;">
-              <h2>Organizar recorridos y tareas <span class="caret"></span></h2>
-            </div>
-            <div id="organizacion" class="panel-collapse collapse" role="tabpanel">
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="panel panel-default">
-                                <%= form_tag assignments_post_organizations_url, method: :post, style: "padding: 2rem" do %>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="datetimepicker">
-                                            <input type="text" class="form-control" name="date" id="date" required>
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Seleccione la manzana a recorrer</label>
-                                        <%= select_tag "block", options_from_collection_for_select(@city_blocks, :id, :name), class: "form-control" %>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Estado</label>
-                                        <select name="status" id="status" class="form-control">
-                                            <option value="pendiente">Pendiente</option>
-                                            <option value="realizado">Realizado</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Actividad a realizar</label>
-                                        <input type="text" class="form-control" id="task" name="task" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Voluntarios</label>
-                                        <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Observaciones</label>
-                                        <textarea class="form-control" id="notes" name="notes"></textarea>
-                                    </div>
-                                    <input type="hidden" name="assignment_id" id="assignment_id">
-                                    <button class="btn btn-default" type="reset" id="cancelar-asignar" style="display:none">Cancelar</button>
-                                    <button class="btn btn-success" id="editar-asignar" style="display:none">Editar asignación</button>
-                                    <button class="btn btn-success" id="guardar-asignar">Asignar</button>
-                                <% end %>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="panel panel-default assignments">
+   
                                 <h2>Recorridos de hoy</h2>
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Manzana</th>
-                                            <th>Fecha</th>
-                                            <th>Estado</th>
-                                            <th>&nbsp;</th>
+                                        <th>Estado</th>    
+                                        <th>Manzana</th>
+                                        <th>Fecha</th>
+                                            
+                                        <th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    <% for @item in @assignments %>
+                                        <tr>
+                                        <td><%= @item.status %></td>
+                                        <td><%= @item.city_block.name %></td>
+
+                                        <td><%= @item.created_at %></td>
+                                        <td><%= @item.users.count %>
+                                        <% for @user in @item.users %>
+                                        <%= @user.username %> 
+                                        <% end %>
+                                        </td>
+                                        </tr>
+                                    <% end %>
+
+
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                          
 </div>
 <script>
     $(document).ready(function() {
@@ -296,6 +299,7 @@ function enableFields() {
 
 <script>
     $(document).ready(function(){
+
         $('#id_city').change(function() {  
             var cuerpo_select1 = $("#id_barrio");
             var cuerpo_ultimos = $("#ultimos_recorrido");
@@ -319,15 +323,206 @@ function enableFields() {
 
             $.get("/organizations/citymap/"+$(this).val(), function(data) {
                 console.log("Got new map: "+data);
-                var map = $("#citymap");
-                map.html("");
+                // var map = $("#citymap");
+                // map.html("");
                 if (data !=null && data[0] !=null) {
-                    var map_url=data[0].value
-                    map.append("<iframe src=\""+map_url+"\" width=\"100%\" height=\"640\"></iframe>");
+                   // var map_url=data[0].value
+                   // map.append("<iframe src=\""+map_url+"\" width=\"100%\" height=\"640\"></iframe>");
                 } else {
-                    map.append("<h2>No existe mapa para la ciudad del usuario</h2>");
+                    // map.append("<h2>No existe mapa para la ciudad del usuario</h2>");
                 }
             });
         });
     });
 </script>
+
+
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin=""></script>
+
+
+    <script>
+
+function perc2color(a, b) {
+    if( a == 0  && b==0 ) return '#c2c2c2';
+    perc =  a/b;
+    perc  =  perc *100;
+	var r, g, b = 0;
+	if(perc < 50) {
+		r = 255;
+		g = Math.round(5.1 * perc);
+	}
+	else {
+		g = 255;
+		r = Math.round(510 - 5.10 * perc);
+	}
+	var h = r * 0x10000 + g * 0x100 + b * 0x1;
+	return '#' + ('000000' + h.toString(16)).slice(-6);
+}
+
+
+
+
+        // the map bind with the div, in a specific lat and long
+        //t: -25.320044882648016
+        //lng: -57.64547824859619
+        var mymap = L.map('mapid').setView([-25.320044882648016, -57.64547824859619], 18);
+
+
+        // this map use a OpenStreetMap tiles as the first layer 
+
+        L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png ', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+
+        }).addTo(mymap);
+
+
+
+
+
+let xhr = new XMLHttpRequest();
+xhr.open('GET', '/organizations/mapcityblock/9');
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.responseType = 'json';
+xhr.onload = function() {
+    if (xhr.status !== 200) return
+    //data = JSON.parse();
+    
+
+
+    for (let i = 0; i < xhr.response.length; i++) {
+        const element = xhr.response[i];
+            
+        if ( element.polygon != null) {
+            
+            L.geoJSON(JSON.parse(element.polygon),
+        {
+
+            style: function (feature) {
+    
+
+                return {
+                    fillColor: perc2color(parseFloat(element.inspection_quantity),parseFloat(element.max_inspection)),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',  //Outline color
+                    fillOpacity: 0.7
+                };
+            },
+
+            onEachFeature:function (feature, layer) {   
+                layer.addEventListener('click', function (event) {
+
+                    // If the clicked element doesn't have the right selector, bail
+                 
+
+                    // Don't follow the link
+         
+                    let request_city_block = new XMLHttpRequest();
+                request_city_block.open('GET', '/organizations/cityblockinfo/'+element.block.name);
+                request_city_block.setRequestHeader('Content-Type', 'application/json');
+                request_city_block.responseType = 'json';
+                request_city_block.onload = function() {
+                    if (request_city_block.status !== 200) return
+
+                        layer.bindPopup("<h3>ID: "+request_city_block.response.obj.name+"</h3> \
+                        <p> Cantidad de casas:"+request_city_block.response.count_locations+"</p> \
+                        <p> Cantidad de criaderos:"+request_city_block.response.count_inspection+"</p> \
+                        <p> Cantidad de visitas :"+request_city_block.response.count_visit+"</p> \
+                        <p> Ultima visita :"+request_city_block.response.last_visit_date+"</p> \
+                        <button class='btn btn-primary' onclick='abrir_asignar_popup("+request_city_block.response.obj.id+","+request_city_block.response.obj.name+")'>Asignar</button> ");
+                
+                };
+                request_city_block.send();
+
+                    // Log the clicked element in the console
+                    console.log(event.target);
+
+                    }, false);     
+
+                
+
+
+                
+              
+
+	        },
+
+        
+        }
+         ).addTo(mymap);
+        }
+        
+        
+    }
+
+
+   
+};
+xhr.send();
+
+function abrir_asignar_popup(id, name){
+    console.log(id);
+    console.log(name);
+    $("#block-title").html(name)
+    $("#block-data").val(id)
+    $('#asignar-popup').modal('show');
+}
+
+</script>
+
+
+<% content_for :head do %>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <style>
+    #mapid { height: 600px; }
+</style>
+
+    <% end %>
+
+
+
+
+
+    <!-- <div class="panel panel-default assignments">
+    <h2>Últimos recorridos</h2>
+        <div id= "barrios_select" class="form-group">
+            <label>Seleccione el barrio</label>
+            <%= select_tag "id_barrio", content_tag(:option,'',:value=>"0-0"), class: "form-control"%>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Manzana</th>
+                    <th>Visitas</th>
+                    <th>Última visita</th>
+                </tr>
+            </thead>
+            <tbody id="ultimos_recorrido">
+            </tbody>
+        </table>
+</div>
+<div class="panel panel-default assignments">
+    <h2>Manzanas menos recorridas</h2>
+    <div class="form-group">
+        <label>Seleccione el barrio</label>
+        <%= select_tag "block_barrios_menos", content_tag(:option,'',:value=>"0-0"), class: "form-control" %>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Manzana</th>
+                <th>Visitas</th>
+                <th>Última visita</th>
+            </tr>
+        </thead>
+        <tbody id="barrios_menos">
+        </tbody>
+    </table>
+</div>
+
+-->

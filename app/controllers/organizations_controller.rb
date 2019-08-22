@@ -7,7 +7,7 @@ class OrganizationsController < ApplicationController
   before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map, :cityblockinfo, :locationinfo, :mapcityblock]
   before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   
   #----------------------------------------------------------------------------
@@ -49,7 +49,10 @@ class OrganizationsController < ApplicationController
     @barrios = City.find(@city.id).last_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
     @barrios_menos = City.find(@city.id).less_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
     @parameter = Parameter.where("key = ?", "organization.citymap.#{@city.id}")
+
     @map_url = @parameter.length > 0 ? @parameter[0].value : ""
+
+    @assignments = Assignment.all
   end
   
   def city_select
@@ -65,7 +68,7 @@ class OrganizationsController < ApplicationController
     if params[:id_city].to_i === 0
       render json: nil, status:200
     else
-      @mapurls = Parameter.where("key = ?", "organization.citymap.#{params[:id_city]}")
+      @mapurls = City.where(id:params[:id_city]).take #Parameter.where("key = ?", "organization.citymap.#{params[:id_city]}")
       render json: @mapurls, status:200
     end
   end
@@ -149,6 +152,93 @@ class OrganizationsController < ApplicationController
     end
     @volunteers = @volunteers.uniq{ |v|v[:id]}.sort_by{|v|v[:id]}
     render json: @volunteers.to_json, status: 200
+  end
+
+  def cityblockinfo
+    cityblock =  CityBlock.where(name:params[:city_id]).take
+    locations = cityblock.locations
+    
+
+
+    c= 0;
+    d = 0;
+    record = {}
+    max_inspection = 0
+    last_visit = DateTime.new(1991, 07, 11, 20, 10, 0)
+    locations.each do |l|
+      visit =  Visit.where(location:l).order("visited_at DESC").first
+      if visit and visit.visited_at > last_visit
+        last_visit = visit.visited_at
+      end
+      c = c +Inspection.where(location:l).count()
+    end
+    locations.each do |l|
+      d = d + Visit.where(location:l).count()
+    end
+
+
+    #visit1 =  Visit.order("visited_at DESC").first
+    #if visit1.visited_at > last_visit
+    #  t=0
+    #else
+    #  t=1
+    #end
+
+    record[:obj] =  cityblock
+    record[:count_locations] = locations.count()
+    record[:count_inspection] = c
+    record[:count_visit] = d 
+    record[:last_visit_date] = last_visit
+    render json: record.to_json, status: 200
+  end
+
+  def locationinfo
+    locations = Location.where(city_id:9)
+    render json: locations.to_json, status:200
+  end
+
+
+  def mapcityblock 
+    cityblocks =  CityBlock.where(city_id:params[:city_id])
+    @cityblocks_set  = []
+
+    max_inspection = 0
+
+    # calculate  the max number of inspection in the set, for the max
+    cityblocks.each do |cb|
+  
+      c = 0
+      cb.locations.each do |l|
+        c = c + Inspection.where(location:l).count()
+      end
+
+      
+
+      if max_inspection < c 
+        max_inspection =  c 
+      end
+
+    end
+    
+
+
+    cityblocks.each do |cb|
+      block = {}
+      c = 0
+      
+
+      cb.locations.each do |l|
+        c = c + Inspection.where(location:l).count()
+      end
+
+      block[:block]= cb
+      block[:polygon] = cb.polygon
+      block[:inspection_quantity] = c 
+      block[:max_inspection] =  max_inspection
+      @cityblocks_set << block
+    end
+    
+    render json: @cityblocks_set.to_json, status:200
   end
 
   #----------------------------------------------------------------------------

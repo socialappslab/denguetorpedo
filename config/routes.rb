@@ -142,6 +142,9 @@ Dengue::Application.routes.draw do
     get "citymap/:id_city", to: "organizations#city_select_map", on: :collection
     post "assignments", to: "organizations#assignments_post", on: :collection, as: :assignments_post
     get "volunteers/:city_id", to: "organizations#volunteers", on: :collection, as: :volunteers_json
+    get "cityblockinfo/:city_id", to: "organizations#cityblockinfo", on: :collection
+    get "locationinfo/:city_id", to: "organizations#locationinfo", on: :collection
+    get "mapcityblock/:city_id", to: "organizations#mapcityblock", on: :collection
     
   end
 
