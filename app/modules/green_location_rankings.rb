@@ -23,7 +23,7 @@ module GreenLocationRankings
     end
 
     users.reject! { |user| user[:user] && user[:user].coordinator? }
-    return users[0..9]
+    return users[0..4]
   end
 
   def self.redis_key_for_city(city)

@@ -71,21 +71,16 @@
           %li
             %a{"aria-expanded" => "true", "data-toggle" => "tab", :href => "#casas"}
               Casas Verdes
-              %icon.fa.fa-question-circle{:style => "\n    width: 4px;\n    height: 4px;\n", :title => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos."}
-
-
+              %icon.fa.fa-question-circle{:style => "\n    width: 2px;\n    height: 2px;\n", :title => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos."}
         .tab-content
           #ranking.tab-pane.active
             .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
             .panel.panel-default
-              
-                
               - if @rankings_points.blank?
                 .panel-body
                   %p.lato-font.large-font.text-center
                     No hay puntos
               - else
-              
                 %table.table.green-houses
                   %tbody
                     - @rankings_points.each do |user|
@@ -103,8 +98,7 @@
 
           #casas.tab-pane
             .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
-            .panel.panel-default
-              
+            .panel.panel-default   
               - if @green_location_rankings.blank?
                 .panel-body
                   %p.lato-font.large-font.text-center
