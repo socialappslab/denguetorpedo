@@ -175,6 +175,7 @@ pt:
         users: Usuarios
         teams: Equipes
         assignments: Recorridos
+        territorio: Territorio
 
   #----------------------------------------------------------------------------
   # Login Form

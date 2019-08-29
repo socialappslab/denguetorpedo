@@ -37,6 +37,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
   end
 
+
   #----------------------------------------------------------------------------
   # GET /settings/assignments
 
@@ -52,6 +53,23 @@ class OrganizationsController < ApplicationController
     @map_url = @parameter.length > 0 ? @parameter[0].value : ""
   end
   
+  #----------------------------------------------------------------------------
+  # GET /settings/territorio
+
+  def territorio
+    @organization = current_user.selected_membership.organization
+    authorize @organization
+    @city = current_user.city
+    @city_blocks = @city.city_blocks.order(name: "asc")
+    @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
+    @ciudades = City.find(@city.id).neighborhoods
+    @barrios = City.find(@city.id).last_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
+    @barrios_menos = City.find(@city.id).less_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
+    @parameter = Parameter.where("key = ?", "organization.citymap.#{@city.id}")
+    @map_url = @parameter.length > 0 ? @parameter[0].value : ""
+
+  end
+
   def city_select
     if params[:id_city].to_i === 0
       render json: nil, status:200

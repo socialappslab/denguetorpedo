@@ -1,96 +1,10 @@
 <div class="container" id="assignments-page">
-    <% if flash[:notice] %>
-    <div class="alert alert-success alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <%= flash[:notice] %>
-    </div>
-    <% end %>
-    <% if flash[:error] %>    
-    <div class="alert alert-danger alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <%= flash[:error] %>
-    </div>
-    <% end %>
-    <div class="row">
-        <div class="col-md-4">
-            <div id= "select_city" class="form-group">
-                <label>Seleccione una ciudad</label>
-                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>    
-           </div> 
-            <div class="panel panel-default assignments">
-                <h2>Últimos recorridos</h2>
-                    <div id= "barrios_select" class="form-group">
-                        <label>Seleccione el barrio</label>
-                        <%= select_tag "id_barrio", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control"%>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Manzana</th>
-                                <th>Visitas</th>
-                                <th>Última visita</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ultimos_recorrido">
-                            <% @barrios.each do |cb| %>
-                                <tr>
-                                    <td><%= cb['city_block_name'] %></td>
-                                    <td><%= cb['visit_count'] %></td>
-                                    <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
-                                </tr>
-                            <% end %>
-                        </tbody>
-                    </table>
-            </div>
-            <div class="panel panel-default assignments">
-                <h2>Manzanas menos recorridas</h2>
-                <div class="form-group">
-                    <label>Seleccione el barrio</label>
-                    <%= select_tag "block_barrios_menos", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control" %>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Manzana</th>
-                            <th>Visitas</th>
-                            <th>Última visita</th>
-                        </tr>
-                    </thead>
-                    <tbody id="barrios_menos">
-                        <% @barrios_menos.each do |cb| %>
-                            <tr>
-                                <td><%= cb['city_block_name'] %></td>
-                                <td><%= cb['visit_count'] %></td>
-                                <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
-                            </tr>
-                        <% end %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="panel panel-default" id="citymap">
-            <% if @city.id == 9 %>
-                <div class='tableauPlaceholder' id='viz1566047899618' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='infest_larvaria&#47;InfestacinLarvaria' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1566047899618');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='1000px';vizElement.style.height='827px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
-            <% else %>
-                <% if !@map_url.blank? %>
-                    <iframe src="<%= @map_url %>" width="100%" height="640"></iframe>
-                 <% else %> 
-                    <h2>No existe mapa para la ciudad del usuario</h2>
-                <% end %>
-            <% end %>
-            </div>
-        </div>
-    </div>
-
-    
-
     <div class="panel-group" role="tablist">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" data-toggle="collapse" href="#organizacion" style="cursor: pointer;">
               <h2>Organizar recorridos y tareas <span class="caret"></span></h2>
             </div>
-            <div id="organizacion" class="panel-collapse collapse" role="tabpanel">
+            <div id="organizacion" class="panel-collapse collapse in" role="tabpanel">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-8">
