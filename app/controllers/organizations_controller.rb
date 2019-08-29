@@ -7,7 +7,7 @@ class OrganizationsController < ApplicationController
   before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map, :cityblockinfo, :locationinfo, :mapcityblock]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map, :cityblockinfo, :locationinfo, :mapcityblock, :cityblockassigns, :neighborhoodlocation]
   before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   
   #----------------------------------------------------------------------------
@@ -199,46 +199,67 @@ class OrganizationsController < ApplicationController
 
 
   def mapcityblock 
-    cityblocks =  CityBlock.where(city_id:params[:city_id])
-    @cityblocks_set  = []
 
-    max_inspection = 0
 
-    # calculate  the max number of inspection in the set, for the max
-    cityblocks.each do |cb|
+    @cityblocks_set =CityBlock.find_by_sql("select city_blocks.id,
+    city_blocks.polygon,
+    city_blocks.name,
+    count(city_block_id),
+    MAX(visited_at) as max_group,
+    (select MAX(visited_at) from visits inner join locations on( locations.id= visits.location_id)
+     where locations.neighborhood_id="+params[:neighborhood_id]+") as max	
   
-      c = 0
-      cb.locations.each do |l|
-        c = c + Inspection.where(location:l).count()
-      end
+  from visits 
+  
+  inner join 
+    locations on( locations.id= visits.location_id) 
+  inner join 
+    city_blocks on(city_blocks.id= locations.city_block_id)
+  where locations.neighborhood_id="+params[:neighborhood_id]+"
+  GROUP BY city_block_id,city_blocks.name,city_blocks.polygon,city_blocks.id;")
 
-      
 
-      if max_inspection < c 
-        max_inspection =  c 
-      end
-
-    end
+    #@cityblocks_set  = []
+    #max_inspection = 0
+    # calculate  the max number of inspection in the set, for the max
+    #cityblocks.each do |cb|  
+    #  c = 0
+    #  cb.locations.each do |l|
+    #    c = c + Inspection.where(location:l).count()
+    #  end   
+    #  if max_inspection < c 
+    #    max_inspection =  c 
+    #  end
+    #end
     
+    #cityblocks.each do |cb|
+      #block = {}
+      #c = 0    
 
+      #cb.locations.each do |l|
+      #  c = c + Inspection.where(location:l).count()
+      #end
 
-    cityblocks.each do |cb|
-      block = {}
-      c = 0
-      
-
-      cb.locations.each do |l|
-        c = c + Inspection.where(location:l).count()
-      end
-
-      block[:block]= cb
-      block[:polygon] = cb.polygon
-      block[:inspection_quantity] = c 
-      block[:max_inspection] =  max_inspection
-      @cityblocks_set << block
-    end
+      #block[:block]= cb
+      #block[:polygon] = cb.polygon
+      #block[:inspection_quantity] = c 
+      #block[:max_inspection] =  max_inspection
+      #@cityblocks_set << block
+    #end
     
     render json: @cityblocks_set.to_json, status:200
+  end
+
+
+
+  def neighborhoodlocation
+    neighborhood = Neighborhood.where(id:params[:neighborhood_id]).take
+    render json: neighborhood.to_json, status:200
+  end
+
+  def cityblockassigns 
+    assignments =  Assignment.where(city_block_id:params[:city_block_id])
+    render json: assignments.to_json, status:200
   end
 
   #----------------------------------------------------------------------------
