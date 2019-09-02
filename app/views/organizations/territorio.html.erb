@@ -11,27 +11,28 @@
             <%= flash[:error] %>
         </div>
     <% end %>
-
-    <div class='table-responsive' id='viz1566047899618' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='infest_larvaria&#47;InfestacinLarvaria' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /></object></div>                
-    <script type='text/javascript'>                    
-        var divElement = document.getElementById('viz1566047899618');
-        var vizElement = divElement.getElementsByTagName('object')[0];
-        vizElement.style.width='100%';
-        vizElement.style.height='100%';
-        var scriptElement = document.createElement('script');
-        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-        vizElement.parentNode.insertBefore(scriptElement, vizElement);
-    </script>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
+            <div class='tableauPlaceholder' id='viz1566047899618' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='infest_larvaria&#47;InfestacinLarvaria' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /></object>
+            </div>                
+            <script type='text/javascript'>                    
+                var divElement = document.getElementById('viz1566047899618');
+                var vizElement = divElement.getElementsByTagName('object')[0];
+                vizElement.style.width='100%';
+                vizElement.style.height='100%';
+                var scriptElement = document.createElement('script');
+                scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+                vizElement.parentNode.insertBefore(scriptElement, vizElement);
+            </script>
+        </div>
+    
+        <div class="col-md-12">
             <div id= "select_city" class="form-group">
-                    <label>Seleccione una ciudad</label>
-                    <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>    
+                <label>Seleccione una ciudad</label>
+                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>
             </div> 
         </div>
-    </div> 
-     <div class="col-md-4">
-            
+        <div class="col-md-6">
             <div class="panel panel-default territorio">
                 <h2>Últimos recorridos</h2>
                     <div id= "barrios_select" class="form-group">
@@ -58,8 +59,7 @@
                     </table>
             </div>
         </div>
-        <div class="col-md-4">
-
+        <div class="col-md-6">
             <div class="panel panel-default territorio">
                 <h2>Manzanas menos recorridas</h2>
                 <div class="form-group">
@@ -86,8 +86,8 @@
                 </table>
             </div>
         </div>
+    </div>
 </div>
-
 
 <script>
     $(document).ready(function(){
