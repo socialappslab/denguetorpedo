@@ -4,6 +4,7 @@
     html {
       scroll-behavior: smooth;
     }
+    
 
 = render :partial => "shared/flashes"
 #photo.carousel.slide{"data-ride" => "carousel"}
@@ -14,10 +15,11 @@
   .carousel-inner
     .item.active
       .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_ni)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
-      .carousel-caption
+      .carousel-caption 
         .row
-          .col-md-8.col-md-offset-2
-            %h1{:style => "text-transform: uppercase;"}
+          .col-md-8.col-md-offset-2 
+            %h1{:style => "text-transform: uppercase"}
+            
               = I18n.t("views.home.header")
         .row
           .col-md-12.text-center
