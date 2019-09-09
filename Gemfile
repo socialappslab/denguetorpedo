@@ -55,6 +55,7 @@ gem 'momentjs-rails'
 gem 'bootstrap3-datetimepicker-rails'
 
 gem 'jquery-rails'
+gem 'activerecord-postgis-adapter', "~> 3.1.5"
 
 #------------------------------------------------------------------------------
 
