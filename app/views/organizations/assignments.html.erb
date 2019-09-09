@@ -78,15 +78,32 @@
             </div>
             <div class="modal-body">
                 <!-- body-->
-                <table class="table">
+                <table class="assignment-container">
                     <thead>
                         <tr>
+                            <th>ID</th>
+                            <th>Estado</th>
+                            <th>Tarea</th>
+
+                            <th>Fecha </th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="assignment-container">
+                    <tbody class="">
+                    <!--<tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    </tr>-->
                     </tbody>
                 </table>           
 
@@ -146,6 +163,7 @@
     <% end %>
     <div class="row">
         <div class="col-md-12">
+
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
                 <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>    
@@ -154,34 +172,30 @@
                 <label>Seleccione el barrio</label>
                 <%= select_tag "id_barrio", content_tag(:option,'',:value=>"0-0"), class: "form-control"%>
             </div>
+            
+            <div class="row">
+            <div class="col-md-6">
+            <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> asd</div >
+
+            </div>
+            </div>
+
+            
+
             <div class="form-group">
+            <div class="btn-group" role="group">
                 <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,1)" > 
-                
-                <div class="row">
-                    <div  class="col-md-4">
-                    <i style="color:green;" class="fa fa-map-marker"></i><br/>
-                    Viejo</div>
-                    <div class="col-md-4"> <i style="color:yellow;" class="fa fa-map-marker"></i><br/>Medio</div>
-                    <div class="col-md-4"> <i style="color:red;" class="fa fa-map-marker"></i><br/>Reciente</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">Lapso de <strong>ultima visita</strong></div>
+        
+    
+             
+                  ultima visita
                
                 </div>
                 </button> 
                 <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,2)"> 
-                <div class="row">
-                <div class="col-md-4">
-                <i style="color:green;" class="fa fa-map-marker"></i><br/>
-                Menor</div>
-                <div class="col-md-4"> <i style="color:yellow;" class="fa fa-map-marker"></i><br/>Medio</div>
-                <div class="col-md-4"> <i style="color:red;" class="fa fa-map-marker"></i><br/>Mayor</div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">Cantidad de <strong>Visitas</strong></div>
-           
-            </div>
+               Visitas
                 </button>
+                </div>
                
             </div>
         
@@ -193,178 +207,16 @@
         </div>
     </div>
    
-                                <h2>Recorridos de hoy</h2>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                        <th>Estado</th>    
-                                        <th>Manzana</th>
-                                        <th>Fecha</th>
-                                            
-                                        <th>&nbsp;</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <% for @item in @assignments %>
-                                        <tr>
-                                        <td><%= @item.status %></td>
-                                        <td><%= @item.city_block.name %></td>
-
-                                        <td><%= @item.created_at %></td>
-                                        <td><%= @item.users.count %>
-                                        <% for @user in @item.users %>
-                                        <%= @user.username %> 
-                                        <% end %>
-                                        </td>
-                                        </tr>
-                                    <% end %>
-
-
-                                    </tbody>
-                                </table>
-                          
+                                
 </div>
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
     integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
     crossorigin=""></script>
 
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"> </script>
+
 <script>
-
-function load_neighborhood(neighborhood_id, type){
-    console.log(neighborhood_id)
-    console.log(type)
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/organizations/mapcityblock/'+neighborhood_id);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-        if (xhr.status !== 200) return
-        //data = JSON.parse();
-
-        var max_diff = 0;
-         for (let i = 0; i < xhr.response.length; i++) {
-            const element = xhr.response[i];
-            if(type ==1 ){
-                var date =new Date(element.max)
-                var date2 = new Date(element.max_group)
-                console.log(date);
-                console.log(date2);
-    
-                if(max_diff < ( date.getTime()-date2.getTime())) {
-                    max_diff = date.getTime()-date2.getTime();
-                }
-            }else{
-                if( type ==2 ){
-                    if( max_diff < element.count){
-                        max_diff = element.count 
-                    }
-                }
-
-            }
-           
-
-        }
-
-
-        for (let i = 0; i < xhr.response.length; i++) {
-            const element = xhr.response[i];
-                
-            if ( element.polygon != null) {
-                
-                L.geoJSON(JSON.parse(element.polygon),
-            {
-
-                style: function (feature) {
-
-                    if(type ==  1){
-                        var date =new Date(element.max)
-                        var date2 = new Date(element.max_group)
-                        fill = perc2color(date.getTime()-date2.getTime(),max_diff)
-                    }else{
-                        if(type ==2){
-                            fill = perc2color(element.count,max_diff)
-                        }
-                    }
-        
-                    
-                    return {
-                        fillColor: fill,
-                        weight: 2,
-                        opacity: 1,
-                        color: 'white',  //Outline color
-                        fillOpacity: 0.7
-                    };
-                },
-
-                onEachFeature:function (feature, layer) {   
-                    layer.addEventListener('click', function (event) {
-
-                        // If the clicked element doesn't have the right selector, bail
-                    
-
-                        // Don't follow the link
-            
-                        let request_city_block = new XMLHttpRequest();
-                    request_city_block.open('GET', '/organizations/cityblockinfo/'+element.name);
-                    request_city_block.setRequestHeader('Content-Type', 'application/json');
-                    request_city_block.responseType = 'json';
-                    request_city_block.onload = function() {
-                        if (request_city_block.status !== 200) return
-
-                            layer.bindPopup("<h3>ID: "+request_city_block.response.obj.name+"</h3> \
-                            <p> Cantidad de casas:"+request_city_block.response.count_locations+"</p> \
-                            <p> Cantidad de criaderos:"+request_city_block.response.count_inspection+"</p> \
-                            <p> Cantidad de visitas :"+request_city_block.response.count_visit+"</p> \
-                            <p> Ultima visita :"+request_city_block.response.last_visit_date+"</p> \
-                            <button class='btn btn-primary' onclick='abrir_asignar_popup("+request_city_block.response.obj.id+","+request_city_block.response.obj.name+")'>Asignar</button>\
-                            <button class='btn btn-primary' onclick='mostrar_asignaciones_popup("+request_city_block.response.obj.id+","+request_city_block.response.obj.name+")'>Ver asignaciones</button> ");
-                    
-                    };
-                    request_city_block.send();
-
-                        // Log the clicked element in the console
-                        console.log(event.target);
-
-                        }, false);    
-
-                },
-
-            }
-            ).addTo(mymap);
-            }
-            
-            
-        }
-
-
-    
-    };
-    xhr.send();
-}
-
-
-
-
-
-// the map bind with the div, in a specific lat and long
- 
-var mymap = L.map('mapid').setView([-25.320044882648016, -57.64547824859619], 18);
-
-
-// this map use a OpenStreetMap tiles as the first layer 
-
-L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png ', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-
-}).addTo(mymap);
-
-
-
-
-
-
-    $(document).ready(function() {
+    /*$(document).ready(function() {
         $("#datetimepicker").datetimepicker({
             useCurrent: true,
             icons: {
@@ -378,9 +230,35 @@ L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png ', {
                 clear: 'fa fa-trash'
             }
         });
-    });
+    });*/
 </script>
 <script>
+
+
+var idioma_espaniol = {
+    "sProcessing":     "Procesando...",
+    "sLengthMenu":     "Mostrar _MENU_ registros",
+    "sZeroRecords":    "No se encontraron resultados",
+    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+    "sInfoPostFix":    "",
+    "sSearch":         "Buscar:",
+    "sUrl":            "",
+    "sInfoThousands":  ",",
+    "sLoadingRecords": "Cargando...",
+    "oPaginate": {
+        "sFirst":    "Primero",
+        "sLast":     "Último",
+        "sNext":     "Siguiente",
+        "sPrevious": "Anterior"
+    },
+    "oAria": {
+        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+    }
+    }       
 
 $(document).ready(function() {
     var volunteers = new Bloodhound({
@@ -452,133 +330,15 @@ function enableFields() {
 }
 </script>
 
+
+
+
+
+
+<% content_for :scripts do %>
 <script>
-    $(document).ready(function(){
-        $('#id_barrio').change(function() {  
-            var cuerpo = $("#ultimos_recorrido");
-            var obtener_valor  = $(this).val().split("-");
-            var id_barrio_nuevo = obtener_valor[0];
-            var idciudad = obtener_valor[1];
 
-            if (idciudad == undefined){
-                idciudad = $("#id_city").val();
-            }
-            if(idciudad == 0){
-                cuerpo.html("");
-            }else{
-                //$.get("/organizations/assignments/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
-                //   cuerpo.html("");
-                //   for (var item of data) {
-                //       var fila = cuerpo.append("<tr id='"+item.id+"'/>");
-                //      fila.append("<td>"+item.city_block_name+"</td>");
-                //      fila.append("<td>"+item.visit_count+"</td>");
-                //      fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
-                //   }
-                //});
-
-                $.get("/organizations/neighborhoodlocation/"+id_barrio_nuevo, function(data) {
-                    load_neighborhood(id_barrio_nuevo)
-                 mymap.panTo(new L.LatLng(data.latitude, data.longitude));
-                });
-            }
-            
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function(){
-        $('#block_barrios_menos').change(function() {  
-            var cuerpo = $("#barrios_menos");
-            var obtener_valor  = $(this).val().split("-");
-            var id_barrio_nuevo = obtener_valor[0];
-            var idciudad = obtener_valor[1];
-            if (idciudad == undefined){
-                idciudad = $("#id_city").val();
-            }
-            if(idciudad == 0){
-                cuerpo.html("");
-            }else{
-                $.get("/organizations/assignments/"+idciudad+"/barriomenos/"+id_barrio_nuevo, function(data) {
-                    cuerpo.html("");
-                    for (var item of data) {
-                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
-                        fila.append("<td>"+item.city_block_name+"</td>");
-                        fila.append("<td>"+item.visit_count+"</td>");
-                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
-                    }
-                });
-            }
-        });
-    });
-</script>
- 
-
-<script>
-    $(document).ready(function(){
-
-        $('#id_city').change(function() {  
-            var cuerpo_select1 = $("#id_barrio");
-            var cuerpo_ultimos = $("#ultimos_recorrido");
-            //var cuerpo_menos = $("#barrios_menos");
-            //var cuerpo_select2 = $(block_barrios_menos);
-            $.get("/organizations/assignments/cityselect/"+$(this).val(), function(data) {
-                cuerpo_select1.html("");
-                //cuerpo_select2.html("");
-                cuerpo_ultimos.html("");
-                //cuerpo_menos.html("");
-                var fila1 = cuerpo_select1.append("<option value='0-0' Seleccione/>");
-                //var fila2 = cuerpo_select2.append("<option value='0-0' Seleccione/>");
-                if(data != null){
-                    for (var item of data) {
-                        fila1.append("<option value = "+item.id+" > "+item.name+"</option>");
-                        //fila2.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
-                    }
-                }
-                
-            });
-
-            $.get("/organizations/citymap/"+$(this).val(), function(data) {
-                console.log("Got new map: "+data);
-                // var map = $("#citymap");
-                // map.html("");
-                if (data !=null && data[0] !=null) {
-                   // var map_url=data[0].value
-                   // map.append("<iframe src=\""+map_url+"\" width=\"100%\" height=\"640\"></iframe>");
-                } else {
-                    // map.append("<h2>No existe mapa para la ciudad del usuario</h2>");
-                }
-            });
-        });
-    });
-</script>
-
-
-
-
-
-    <script>
-
-function perc2color(a, b) {
-    console.log(a)
-    console.log(b)
-    if( a == 0  && b==0 ) return '#c2c2c2';
-    perc =  a/b;
-    perc  =  perc *100;
-	var r, g, b = 0;
-	if(perc < 50) {
-		r = 255;
-		g = Math.round(5.1 * perc);
-	}
-	else {
-		g = 255;
-		r = Math.round(510 - 5.10 * perc);
-	}
-	var h = r * 0x10000 + g * 0x100 + b * 0x1;
-	return '#' + ('000000' + h.toString(16)).slice(-6);
-}
-
-
+var tabledata;
 
 
 function abrir_asignar_popup(id, name){
@@ -590,80 +350,306 @@ function abrir_asignar_popup(id, name){
 
 
 function mostrar_asignaciones_popup(id, name){
+    $('#list-popup').modal('show');
+
+
+    if (tabledata){
+        console.log("Tabledata is binded")
+    }else{
+        tabledata = $(".assignment-container").DataTable({
+            "ajax": {
+                "url": '/organizations/cityblockassigns/'+id,
+                "dataSrc": ""
+             },
+             "columns": [
+                { "data": "id" },
+                { "data": "task" },
+                { "data": "status" },
+                { "data": "notes" },
+                { "data":  null,
+                "render":function(data, type, row, meta) {
+                    var remedies = '';
+                    
+                    if(row.status =="pendiente"){
+                        remedies = " <div class='btn btn-warning'>"+row.status+"</div>";
+                    }else{
+                        if(row.status == "realizado"){
+                            remedies = " <div class='btn btn-success'>"+row.status+"</div>";
+                        }
+                    }
+
+                    
+                    
+                    return remedies;
+ 
+                }},
+
+                { "data":  null,
+                "render":function(data, type, row, meta) {
+                    var remedies = '';
+                    
+                    //loop through all the row details to build output string
+                    for (var item in row.users) {
+                        var r = row.users[item];
+                        remedies = remedies + " <span class='badge'>"+r.name+"</span>" + '</br>';
+                    }
+                    return remedies;
+ 
+                }},
+                
+            ],
+             "language" : idioma_espaniol
+        })
+    }
    
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/organizations/cityblockassigns/'+id);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-        if (xhr.status !== 200) return
 
-        if(xhr.response.length == 0){
-            $('#message-popup').modal('show');
-            return 
-        }
+   console.log(tabledata)
+    tabledata.ajax.url('/organizations/cityblockassigns/'+id).load()
+    
+
+    //$('#message-popup').modal('show');
+    //$('#list-popup').modal('show');
+   
+}
+
+$(document).ready(function() {
+    //load the city options 
+
+    var city =  $('#id_city')
+    var neighborhood = $('#id_barrio')
+
+    
+     
+
+
+
+    // the map bind with the div, in a specific lat and long
+    
+    var denguemap = L.map('mapid').setView([-25.320044882648016, -57.64547824859619], 18);
+    var blocklayer = null;
+
+    // this map use a OpenStreetMap tiles as the first layer 
+
+    L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png ', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+
+    }).addTo(denguemap);
+
+
+    function perc2color(a, b) {
         
-        var container = document.getElementById('assignment-container');
-        container.innerHTML = "";
-        console.log(container)
-        for (let i = 0; i < xhr.response.length; i++) {
-            const element = xhr.response[i];
-            container_tr =  document.createElement('tr')
-
-            container_td =  document.createElement('td')
-            container_td.appendChild(document.createTextNode(element.id)  )
-            container_tr.appendChild(container_td)
-
-            container_td =  document.createElement('td')
-            container_td.appendChild(document.createTextNode(element.task)  )
-            container_tr.appendChild(container_td)
-
-            container_td =  document.createElement('td')
-            container_td.appendChild(document.createTextNode(element.date)  )
-            container_tr.appendChild(container_td)
-
-            container_td =  document.createElement('td')
-            container_td.appendChild(document.createTextNode(element.status)  )
-            container_tr.appendChild(container_td)
-
-            container_td =  document.createElement('td')
-            container_td.appendChild(document.createTextNode(element.date)  )
-            container_tr.appendChild(container_td)
-
-            container_td =  document.createElement('td')
-            container_td.appendChild(document.createTextNode(element.notes)  )
-            container_tr.appendChild(container_td)
-
-  
-
-            container.appendChild(container_tr)
-
-
+        if( a == 0  && b==0 ) return '#c2c2c2';
+        perc =  a/b;
+        perc  =  perc *100;
+        var r, g, b = 0;
+        if(perc < 50) {
+            r = 255;
+            g = Math.round(5.1 * perc);
         }
-        $('#list-popup').modal('show');
+        else {
+            g = 255;
+            r = Math.round(510 - 5.10 * perc);
+        }
+        var h = r * 0x10000 + g * 0x100 + b * 0x1;
+        return '#' + ('000000' + h.toString(16)).slice(-6);
+    }
 
-        /*
-        "id": 5,
-        "task": "test actividad",
-        "city_block_id": 81,
-        "date": "2019-08-16T14:20:00.000-04:00",
-        "status": "pendiente",
-        "notes": "ninguna observacion",
-        "created_at": "2019-08-16T11:21:14.473-04:00",
-        "updated_at": "2019-08-16T11:21:14.473-04:00"
-      }*/
+
+    function load_neighborhood(data){
+        //clear all options of sneighbor
+        for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            neighborhood.append("<option value='"+element.id+"'>"+element.name+"</option>")
+            
+        }
+    }
+
+   
+
+    function load_map_popup(layer,element){
+
+        $.get('/organizations/cityblockinfo/'+element.name,function(data){
+
+            var visit_date = new Date(data.last_visit_date);
+
+            layer.bindPopup("<h2>ID: "+data.obj.name+"</h2> \
+                <div class='row'> \
+                    <div class='col-md-6'> \
+                        <div class=''> \
+                            <h3><i style='font-size:25pt; color:#ff4b72;' class='fa fa-map-marker fa-2'></i><strong> "+data.count_locations+" </strong></h3> \
+                            <span>Casas</span> \
+                        </div> \
+                    </div> \
+                    <div class='col-md-6'> \
+                        <div class=''> \
+                            <h3><i style='font-size:20pt; color:#71b358;' class='fa fa-signal fa-2'></i> <strong>"+data.count_inspection+"</strong> </h3> \
+                            <span>Criaderos</span> \
+                        </div> \
+                    </div> \
+                </div> \
+                <div class='row'> \
+                    <div class='col-md-12'> \
+                        <div class=''> \
+                            <h3><i style='font-size:20pt; color:#7ea6e6;' class='fa fa-users fa-2'></i> <strong>" +data.count_visit+ " </strong></h3> \
+                            <span>Visitas</span> \
+                        </div> \
+                    </div> \
+                </div> \
+                <div class='row'>  \
+                    <div class='col-md-12'> \
+                        <div class=''> \
+                           <h3> <i style='font-size:20pt; color:#91d0cb;' class='fa fa-table fa-2'></i> <strong> "+visit_date.toDateString()+"</strong> </h3> \
+                           <span> Ultima visita</span> \
+                        </div> \
+                    </div> \
+                </div> \
+                <button class='btn btn-primary' onclick='abrir_asignar_popup("+data.obj.id+","+data.obj.name+")'>Asignar</button>\
+                <button class='btn btn-primary' onclick='mostrar_asignaciones_popup("+data.obj.id+","+data.obj.name+")'>Ver asignaciones</button> ");
+        
+        })
       
+    }
+
+
+    function load_polygon(data){
+        var type=1
+        var max_diff = 0;
+        for (let i = 0; i < data.length; i++) {
+           const element = data[i];
+           if(type ==1 ){
+
+               var date =new Date(element.max)
+               var date2 = new Date(element.max_group)    
+               if(max_diff < ( date.getTime()-date2.getTime())) {
+                   max_diff = date.getTime()-date2.getTime();
+               }
+           }else{
+               if( type ==2 ){
+                   if( max_diff < element.count){
+                       max_diff = element.count 
+                   }
+               }
+           }        
+       }
+
+       if(blocklayer) { blocklayer.remove();  console.log(blocklayer)}
+
+       for (let i = 0; i < data.length; i++) {
+           const element = data[i];
+               
+           if ( element.polygon != null) {
+               
+                
+               blocklayer = L.geoJSON(JSON.parse(element.polygon),
+           {
+
+               style: function (feature) {
+
+                   if(type ==  1){
+                       var date =new Date(element.max)
+                       var date2 = new Date(element.max_group)
+                       fill = perc2color(date.getTime()-date2.getTime(),max_diff)
+                   }else{
+                       if(type ==2){
+                           fill = perc2color(element.count,max_diff)
+                       }
+                   }
+       
+                   
+                   return {
+                       fillColor: fill,
+                       weight: 2,
+                       opacity: 1,
+                       color: 'white',  //Outline color
+                       fillOpacity: 0.7
+                   };
+               },
+
+               onEachFeature:function (feature, layer) {   
+                   layer.addEventListener('click', function (event) {
+
+                       // If the clicked element doesn't have the right selector, bail
+                   
+
+                       // Don't follow the link
+           
+                     load_map_popup(layer,element)       
+
+                       // Log the clicked element in the console
+                       
+
+                       }, false);    
+
+               },
+
+           }
+           ).addTo(denguemap);
+           }
+    }
+}
+
+
+
+    function load_map(id){
+        $.get('/organizations/mapcityblock/'+id, load_polygon)
+    }
+
+
+
+
+    /**
+     * Default Load
+     */
+
+    city_id = city.children("option:selected").val();
+    console.log(city_id)
+    if(city_id != null){
+        
+        $.get('/organizations/assignments/cityselect/'+city_id,load_neighborhood);
+
 
     }
-    xhr.send();
-}
-</script>
+
+    city.change(function(data){
+        city_id = $(this).val();
+        
+        // load the select with the cities
 
 
+
+        // the first option of the data, if it has any options create another get
+
+        $.get('/organizations/assignments/cityselect/'+city_id, load_neighborhood )
+    })
+
+
+    neighborhood.change(function(){
+        neighborhood_id = $(this).val();
+        $.get('/organizations/neighborhoodlocation/'+neighborhood_id, function(data){
+            load_map(neighborhood_id)
+            denguemap.panTo(new L.LatLng(data.latitude, data.longitude));
+        })
+    });
+
+    //load the first neighborhood of the city_options loaded
+
+
+
+    // load the map of the first neighborhood with the first colored map
+
+
+   
+});
+ </script>
+ <% end %>
+    
 <% content_for :head do %>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
     integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
     crossorigin=""/>
+
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
     <style>
     #mapid { height: 600px; }
 </style>
@@ -673,42 +659,3 @@ function mostrar_asignaciones_popup(id, name){
 
 
 
-
-    <!-- <div class="panel panel-default assignments">
-    <h2>Últimos recorridos</h2>
-        <div id= "barrios_select" class="form-group">
-            <label>Seleccione el barrio</label>
-            <%= select_tag "id_barrio", content_tag(:option,'',:value=>"0-0"), class: "form-control"%>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Manzana</th>
-                    <th>Visitas</th>
-                    <th>Última visita</th>
-                </tr>
-            </thead>
-            <tbody id="ultimos_recorrido">
-            </tbody>
-        </table>
-</div>
-<div class="panel panel-default assignments">
-    <h2>Manzanas menos recorridas</h2>
-    <div class="form-group">
-        <label>Seleccione el barrio</label>
-        <%= select_tag "block_barrios_menos", content_tag(:option,'',:value=>"0-0"), class: "form-control" %>
-    </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Manzana</th>
-                <th>Visitas</th>
-                <th>Última visita</th>
-            </tr>
-        </thead>
-        <tbody id="barrios_menos">
-        </tbody>
-    </table>
-</div>
-
--->

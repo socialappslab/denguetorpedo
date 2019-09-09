@@ -259,7 +259,7 @@ class OrganizationsController < ApplicationController
 
   def cityblockassigns 
     assignments =  Assignment.where(city_block_id:params[:city_block_id])
-    render json: assignments.to_json, status:200
+    render json: assignments.to_json(:include=>:users), status:200
   end
 
   #----------------------------------------------------------------------------
