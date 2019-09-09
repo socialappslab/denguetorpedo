@@ -134,6 +134,7 @@ Dengue::Application.routes.draw do
     get :settings, :on => :collection
     get "users", :on => :collection
     get "teams", :on => :collection
+    get "cityblockassigns/:city_block_id", to: "organizations#cityblockassigns", on: :collection
     get "assignments", on: :collection
     get "assignment/:id", to: "organizations#assignment", on: :collection, as: :assignment
     get "assignments/:city_id/barrio/:id_barrio", to: "organizations#ultimos_recorridos_list", on: :collection
@@ -146,7 +147,11 @@ Dengue::Application.routes.draw do
     get "territorio/:city_id/barrio/:id_barrio", to: "organizations#ultimos_recorridos_list", on: :collection
     get "territorio/:city_id/barriomenos/:id_barrio", to: "organizations#menos_recorridos_list", on: :collection
     get "territorio/cityselect/:id_city", to: "organizations#city_select", on: :collection
-
+    get "cityblockinfo/:city_id", to: "organizations#cityblockinfo", on: :collection
+    get "locationinfo/:city_id", to: "organizations#locationinfo", on: :collection
+    get "mapcityblock/:neighborhood_id", to: "organizations#mapcityblock", on: :collection
+    get "neighborhoodlocation/:neighborhood_id", to: "organizations#neighborhoodlocation", on: :collection
+   
     
   end
 
