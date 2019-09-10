@@ -28,7 +28,7 @@ gem 'responders', '~> 2.0'
 gem "jbuilder"
 gem 'jwt'
 gem 'rubyXL'
-gem 'paperclip', '~> 4.2.0'
+gem 'paperclip', '~> 5.2.0'
 gem "pg"
 gem "pry"
 # Needed for a smooth upgrade from Rails 3.2 to Rails 4.0
