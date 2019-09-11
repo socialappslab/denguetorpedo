@@ -20,3 +20,5 @@ db/development.dump
 forms copy/
 
 *.xlsx
+
+spec/support/nicaragua_csv/Gráfico_de_positividad_La_Quinta.pptx
