@@ -5,8 +5,8 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">lg</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title">Asignar Recorridos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top:-15px">
                         <span aria-hidden="true">&times;</span>
                     </button>
             </div>
@@ -53,12 +53,6 @@
                 <button class="btn btn-success" id="editar-asignar" style="display:none">Editar asignación</button>
                 <button class="btn btn-success" id="guardar-asignar">Asignar</button>
             <% end %>
-
-                <!-- body-->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
@@ -70,8 +64,8 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">lg</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title">Asignaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top:-15px">
                         <span aria-hidden="true">&times;</span>
                     </button>
             </div>
@@ -81,28 +75,16 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Actividad</th>
+                            <!--<th>Tarea</th>-->
+                            <th>Observación</th>
                             <th>Estado</th>
-                            <th>Tarea</th>
-
-                            <th>Fecha </th>
-                            <th></th>
-                            <th></th>
+                            <th>Voluntarios</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody class="">
-                    <!--<tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    </tr>-->
                     </tbody>
                 </table>           
 
@@ -168,7 +150,7 @@
             
             <div class="row">
             <div class="col-md-6">
-            <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> asd</div >
+            <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> Menos</div >
 
             </div>
             </div>
@@ -357,7 +339,7 @@ function mostrar_asignaciones_popup(id, name){
              "columns": [
                 { "data": "id" },
                 { "data": "task" },
-                { "data": "status" },
+                //{ "data": "status" },
                 { "data": "notes" },
                 { "data":  null,
                 "render":function(data, type, row, meta) {
