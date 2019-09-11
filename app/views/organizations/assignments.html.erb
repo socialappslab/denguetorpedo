@@ -302,7 +302,33 @@ function enableFields() {
 }
 </script>
 
-
+<script>
+    $(document).ready(function(){
+        $('#id_barrio').change(function() {  
+            var cuerpo = $("#ultimos_recorrido");
+            var obtener_valor  = $(this).val().split("-");
+            var id_barrio_nuevo = obtener_valor[0];
+            var idciudad = obtener_valor[1];
+            if (idciudad == undefined){
+                idciudad = $("#id_city").val();
+            }
+            if(idciudad == 0){
+                cuerpo.html("");
+            }else{
+                $.get("/organizations/assignments/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
+                    cuerpo.html("");
+                    for (var item of data) {
+                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                        fila.append("<td>"+item.city_block_name+"</td>");
+                        fila.append("<td>"+item.visit_count+"</td>");
+                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+                    }
+                });
+            }
+            
+        });
+    });
+</script>
 
 
 

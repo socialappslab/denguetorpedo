@@ -72,10 +72,17 @@
             %a{"aria-expanded" => "true", "data-toggle" => "tab", :href => "#casas"}
               Casas Verdes
               %icon.fa.fa-question-circle{:style => "\n    width: 2px;\n    height: 2px;\n", :title => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos."}
+          %li.active
+            = link_to 'Ranking', '#ranking', data: { toggle: "tab" }
+            
+          %li
+            = link_to 'Casas Verdes', '#casas', data: { toggle: "tab" }
         .tab-content
           #ranking.tab-pane.active
             .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
             .panel.panel-default
+              .panel-heading{"data-content" => "Ranking de los mejores puntos. Los puntos se obtienen reportando y eliminando criaderos y también participando en el foro de DengueChat.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+                
               - if @rankings_points.blank?
                 .panel-body
                   %p.lato-font.large-font.text-center
@@ -128,6 +135,34 @@
           %a.twitter-timeline{"data-lang" => "es", "data-tweet-limit" => "3", :href => @twitter} Tweets de TopaDengue
           %script{:async => "", :charset => "utf-8", :src => "https://platform.twitter.com/widgets.js"}
 
+          #casas.tab-pane
+            .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
+            .panel.panel-default
+              .panel-heading{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
+              - if @green_location_rankings.blank?
+                .panel-body
+                  %p.lato-font.large-font.text-center
+                    No hay casas verdes
+              - else
+                %table.table.green-houses
+                  %tbody
+                    - @green_location_rankings.each do |ranking_hash|
+                      - user = ranking_hash[:user]
+                      - next if user.blank?
+                      %tr
+                        %td{"style" => "vertical-align: middle;"}
+                          = image_tag(user.picture, :style => "height: 25px; width: 25px;", :class => "img-rounded")
+                        %td{"style" => "vertical-align: middle;"}
+                          .light-font
+                            = link_to user.username, user_path(user), :user_id => user.id
+                        %td{"style" => "vertical-align: middle;"}
+                          %p.green
+                            = ranking_hash[:score].to_i
+      - if @city.id == 9
+        .panel.panel-default
+          <div class="fb-page" data-href="https://www.facebook.com/topadengue/" data-tabs="timeline" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/topadengue/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/topadengue/">Topa Dengue</a></blockquote></div>
+        .panel.panel-default
+          <a class="twitter-timeline" data-lang="es" href="https://twitter.com/TopaDengue?ref_src=twsrc%5Etfw" data-tweet-limit="3">Tweets de TopaDengue</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     .col-md-6.col-md-pull-3{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:city_id => @city.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
       - if @city.id == 9
