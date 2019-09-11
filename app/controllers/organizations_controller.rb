@@ -222,19 +222,17 @@ class OrganizationsController < ApplicationController
     @cityblocks_set =CityBlock.find_by_sql("select city_blocks.id,
     city_blocks.polygon,
     city_blocks.name,
-    count(city_block_id),
+    count(distinct visits.visited_at),
     MAX(visited_at) as max_group,
     (select MAX(visited_at) from visits inner join locations on( locations.id= visits.location_id)
      where locations.neighborhood_id="+params[:neighborhood_id]+") as max	
   
-  from visits 
+  from city_blocks 
   
-  inner join 
-    locations on( locations.id= visits.location_id) 
-  inner join 
-    city_blocks on(city_blocks.id= locations.city_block_id)
-  where locations.neighborhood_id="+params[:neighborhood_id]+"
-  and city_blocks.neighborhood_id="+params[:neighborhood_id]+"
+  left outer join 
+    locations on( locations.city_block_id= city_blocks.id) 
+  left outer join visits on(visits.location_id= locations.id)
+  where city_blocks.neighborhood_id="+params[:neighborhood_id]+"
   GROUP BY city_block_id,city_blocks.name,city_blocks.polygon,city_blocks.id;")
 
 
