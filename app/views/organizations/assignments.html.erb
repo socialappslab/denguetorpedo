@@ -150,9 +150,9 @@
             
             <div class="row">
             <div class="col-md-6">
-            <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> 
+            <!--<div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> 
                 <p>  &nbsp  </p>
-            </div >
+            </div >-->
 
 
             </div>
@@ -160,14 +160,14 @@
 
             <div class="form-group">
             <div class="btn-group" role="group">
-                <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,1)" >              
+                <!--<button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,1)" >              
                     Ultima Visita               
                 </div>
                 </button> 
                 <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,2)"> 
                     Cantidad de Visitas
                 </button>
-                </div>
+                </div>-->
                
             </div>
         
@@ -563,7 +563,9 @@ $(document).ready(function() {
 
 
     function load_map(id){
-        $.get('/organizations/mapcityblock/'+id, load_polygon)
+        console.log("id: "+id);
+        console.log("load_polygon"+load_polygon);
+        console.log($.get('/organizations/mapcityblock/'+id, load_polygon));
     }
 
 

@@ -234,6 +234,7 @@ class OrganizationsController < ApplicationController
   inner join 
     city_blocks on(city_blocks.id= locations.city_block_id)
   where locations.neighborhood_id="+params[:neighborhood_id]+"
+  and city_blocks.neighborhood_id="+params[:neighborhood_id]+"
   GROUP BY city_block_id,city_blocks.name,city_blocks.polygon,city_blocks.id;")
 
 
