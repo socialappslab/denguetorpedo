@@ -145,30 +145,27 @@
            </div> 
            <div id= "barrios_select" class="form-group">
                 <label>Seleccione el barrio</label>
-                <%= select_tag "id_barrio", content_tag(:option,'',:value=>"0-0"), class: "form-control"%>
+                <%= select_tag "id_barrio", content_tag(:option,"Seleccione",:value=>"0-0"), class: "form-control"%>
             </div>
             
             <div class="row">
             <div class="col-md-6">
-            <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> Menos</div >
+            <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> 
+                <p>  &nbsp  </p>
+            </div >
+
 
             </div>
             </div>
-
-            
 
             <div class="form-group">
             <div class="btn-group" role="group">
-                <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,1)" > 
-        
-    
-             
-                  ultima visita
-               
+                <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,1)" >              
+                    Ultima Visita               
                 </div>
                 </button> 
                 <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,2)"> 
-               Visitas
+                    Cantidad de Visitas
                 </button>
                 </div>
                
@@ -514,8 +511,7 @@ $(document).ready(function() {
            const element = data[i];
                
            if ( element.polygon != null) {
-               
-                
+      
                blocklayer = L.geoJSON(JSON.parse(element.polygon),
            {
 
@@ -524,9 +520,9 @@ $(document).ready(function() {
                    if(type ==  1){
                        var date =new Date(element.max)
                        var date2 = new Date(element.max_group)
-                       fill = perc2color(date.getTime()-date2.getTime(),max_diff)
+                       fill = perc2color(date.getTime()- date2.getTime(),max_diff)
                    }else{
-                       if(type ==2){
+                       if(type == 2){
                            fill = perc2color(element.count,max_diff)
                        }
                    }
