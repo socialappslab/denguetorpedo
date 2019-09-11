@@ -30,6 +30,10 @@ class OrganizationPolicy
     return resource.manager?
   end
 
+  def territorio?
+    return resource.manager?
+  end
+
   def assignments_post?
     return resource.manager?
   end

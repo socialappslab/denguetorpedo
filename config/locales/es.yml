@@ -189,6 +189,7 @@ es:
     my_profile: Mi Perfíl
     my_house: Mi Casa
     my_community: Mi Comunidad
+    my_territory: "Mi Territorio"
     reports: Criaderos
     my_city: Mi Ciudad
     analytics: Datos
@@ -199,6 +200,7 @@ es:
         users: Usuarios
         teams: Equipos
         assignments: Recorridos
+        territorio: Territorio
 
 
   #----------------------------------------------------------------------------
@@ -549,7 +551,7 @@ es:
       cellphone_description: "Use su celular para reporter criaderos de mosquito"
       chat_description: Chatee con otros miembros de la comunidad para reportar y controlar criaderos de mosquitos
       teams_description: Únase a equipos para combatir Dengue, Zika y Chikungunya y gane puntos
-      video_description: "Vea un video"
+      video_description: "Conoce a los voluntarios"
       activity_description_using: "Haga click en una ciudad para ver las actividades del DengueChat"
       activity_description_used: "Haga click en uno de los sitios de experimentación piloto para ver sus actividades pasadas"
 

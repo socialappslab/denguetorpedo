@@ -1,0 +1,174 @@
+<div class="container" id="territorio-page">
+    <% if flash[:notice] %>
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <%= flash[:notice] %>
+        </div>
+    <% end %>
+    <% if flash[:error] %>    
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <%= flash[:error] %>
+        </div>
+    <% end %>
+    <div class="row">
+        <div class="col-md-12">
+            <div class='tableauPlaceholder' id='viz1566047899618' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='infest_larvaria&#47;InfestacinLarvaria' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;in&#47;infest_larvaria&#47;InfestacinLarvaria&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /></object>
+            </div>                
+            <script type='text/javascript'>                    
+                var divElement = document.getElementById('viz1566047899618');
+                var vizElement = divElement.getElementsByTagName('object')[0];
+                vizElement.style.width='100%';
+                vizElement.style.height='100%';
+                var scriptElement = document.createElement('script');
+                scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+                vizElement.parentNode.insertBefore(scriptElement, vizElement);
+            </script>
+        </div>
+    
+        <div class="col-md-12">
+            <div id= "select_city" class="form-group">
+                <label>Seleccione una ciudad</label>
+                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control"%>
+            </div> 
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default territorio">
+                <h2>Últimos recorridos</h2>
+                    <div id= "barrios_select" class="form-group">
+                        <label>Seleccione el barrio</label>
+                        <%= select_tag "id_barrio", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control"%>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Manzana</th>
+                                <th>Visitas</th>
+                                <th>Última visita</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ultimos_recorrido">
+                            <% @barrios.each do |cb| %>
+                                <tr>
+                                    <td><%= cb['city_block_name'] %></td>
+                                    <td><%= cb['visit_count'] %></td>
+                                    <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
+                                </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default territorio">
+                <h2>Manzanas menos recorridas</h2>
+                <div class="form-group">
+                    <label>Seleccione el barrio</label>
+                    <%= select_tag "block_barrios_menos", options_from_collection_for_select(@ciudades, :id, :name), class: "form-control" %>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Manzana</th>
+                            <th>Visitas</th>
+                            <th>Última visita</th>
+                        </tr>
+                    </thead>
+                    <tbody id="barrios_menos">
+                        <% @barrios_menos.each do |cb| %>
+                            <tr>
+                                <td><%= cb['city_block_name'] %></td>
+                                <td><%= cb['visit_count'] %></td>
+                                <td><%= DateTime.parse(cb['last_visit_date']).strftime("%F") %></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#id_barrio').change(function() {  
+            var cuerpo = $("#ultimos_recorrido");
+            var obtener_valor  = $(this).val().split("-");
+            var id_barrio_nuevo = obtener_valor[0];
+            var idciudad = obtener_valor[1];
+            if (idciudad == undefined){
+                idciudad = $("#id_city").val();
+            }
+            if(idciudad == 0){
+                cuerpo.html("");
+            }else{
+                $.get("/organizations/territorio/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
+                    cuerpo.html("");
+                    for (var item of data) {
+                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                        fila.append("<td>"+item.city_block_name+"</td>");
+                        fila.append("<td>"+item.visit_count+"</td>");
+                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+                    }
+                });
+            }
+            
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#block_barrios_menos').change(function() {  
+            var cuerpo = $("#barrios_menos");
+            var obtener_valor  = $(this).val().split("-");
+            var id_barrio_nuevo = obtener_valor[0];
+            var idciudad = obtener_valor[1];
+            if (idciudad == undefined){
+                idciudad = $("#id_city").val();
+            }
+            if(idciudad == 0){
+                cuerpo.html("");
+            }else{
+                $.get("/organizations/territorio/"+idciudad+"/barriomenos/"+id_barrio_nuevo, function(data) {
+                    cuerpo.html("");
+                    for (var item of data) {
+                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                        fila.append("<td>"+item.city_block_name+"</td>");
+                        fila.append("<td>"+item.visit_count+"</td>");
+                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
+                    }
+                });
+            }
+        });
+    });
+</script>
+ 
+
+<script>
+    $(document).ready(function(){
+        $('#id_city').change(function() {  
+            var cuerpo_select1 = $("#id_barrio");
+            var cuerpo_ultimos = $("#ultimos_recorrido");
+            var cuerpo_menos = $("#barrios_menos");
+            var cuerpo_select2 = $(block_barrios_menos);
+            $.get("/organizations/territorio/cityselect/"+$(this).val(), function(data) {
+                cuerpo_select1.html("");
+                cuerpo_select2.html("");
+                cuerpo_ultimos.html("");
+                cuerpo_menos.html("");
+                var fila1 = cuerpo_select1.append("<option value='0-0' Seleccione/>");
+                var fila2 = cuerpo_select2.append("<option value='0-0' Seleccione/>");
+                if(data != null){
+                    for (var item of data) {
+                        fila1.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                        fila2.append("<option value = "+item.id+"-"+item.city_id+" > "+item.name+"</option>");
+                    }
+                }
+                
+            });
+
+            
+        });
+    });
+</script>

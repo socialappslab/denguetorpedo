@@ -159,6 +159,9 @@
             %li.user-navigation{:class => "#{assignments_organizations_path == request.path ? 'active' : ''}"}
               = link_to assignments_organizations_path do
                 = I18n.t("dashboard.organization.sections.assignments")
+            %li.user-navigation{:class => "#{territorio_organizations_path == request.path ? 'active' : ''}"}
+              = link_to territorio_organizations_path do
+                = I18n.t("dashboard.organization.sections.territorio")
 
   - if @current_user && @current_user.selected_membership.try(:admin?)
     - if request.params["controller"].include?("dashboard")
