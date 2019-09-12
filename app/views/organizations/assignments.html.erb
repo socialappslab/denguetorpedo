@@ -467,7 +467,7 @@ $(document).ready(function() {
     }
 
     function load_map_popup(layer,element){
-console.log(element);
+
         $.get('/organizations/cityblockinfo/'+element.name,function(data){
             if(element.max_group == null){
                 var fecha = "--";
