@@ -17,4 +17,5 @@ EXPOSE 5000
 COPY . ${PROJECT_HOME}/denguetorpedo
 WORKDIR ${PROJECT_HOME}/denguetorpedo
 RUN bundle install
+RUN rake assets:precompile
 CMD bash deploy.sh
