@@ -160,14 +160,18 @@
 
             <div class="form-group">
             <div class="btn-group" role="group">
-                <!--<button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,1)" >              
+
+
+                <button id="view1" class="btn btn-primary" onClick="switch_view(1)" >              
                     Ultima Visita               
                 </div>
                 </button> 
-                <button class="btn btn-primary" onClick="load_neighborhood(document.getElementById('id_barrio').value,2)"> 
+                <input type="hidden" id="view_type" value="1" >
+
+                <button id="view2" class="btn btn-primary" onClick="switch_view(2)"> 
                     Cantidad de Visitas
                 </button>
-                </div>-->
+                </div>
                
             </div>
         
@@ -339,6 +343,8 @@ function enableFields() {
 var tabledata;
 
 
+
+
 function abrir_asignar_popup(id, name){
 
     $("#block-title").html(name)
@@ -410,16 +416,18 @@ function mostrar_asignaciones_popup(id, name){
    
 }
 
+function switch_view(view){
+    $('#view_type').val(view)
+    
+}
+
 $(document).ready(function() {
     //load the city options 
 
     var city =  $('#id_city')
     var neighborhood = $('#id_barrio')
-
-    
-     
-
-
+    var view1 = $('#view1')
+    var view2 = $('#view2')
 
     // the map bind with the div, in a specific lat and long
     
@@ -441,7 +449,7 @@ $(document).ready(function() {
         perc =  a/b;
         perc  =  perc *100;
         var r, g, b = 0;
-        if(perc < 50) {
+        if(perc > 50) {
             r = 255;
             g = Math.round(5.1 * perc);
         }
@@ -462,8 +470,6 @@ $(document).ready(function() {
             
         }
     }
-
-   
 
     function load_map_popup(layer,element){
 
@@ -509,9 +515,27 @@ $(document).ready(function() {
       
     }
 
+    function load_and_pan_map(){
+        neighborhood_id = neighborhood.val();
+
+        console.log(neighborhood_id);
+        console.log($('#view_type').val())
+        $.get('/organizations/neighborhoodlocation/'+neighborhood_id, function(data){
+            load_map(neighborhood_id);
+        
+            denguemap.panTo(new L.LatLng(data.latitude, data.longitude));
+        })
+    }
+
+
+ 
+
+  
+
 
     function load_polygon(data){
-        var type=1
+        var type = parseInt($('#view_type').val());
+        var fill;
         var max_diff = 0;
         for (let i = 0; i < data.length; i++) {
            const element = data[i];
@@ -531,7 +555,12 @@ $(document).ready(function() {
            }        
        }
 
-       if(blocklayer) { blocklayer.remove();  console.log(blocklayer)}
+       denguemap.eachLayer(function (layer) {
+            if ( layer.myTag &&  layer.myTag === "myGeoJSON") {
+                denguemap.removeLayer(layer);
+            }
+        
+        });
 
        for (let i = 0; i < data.length; i++) {
            const element = data[i];
@@ -564,6 +593,7 @@ $(document).ready(function() {
                },
 
                onEachFeature:function (feature, layer) {   
+                layer.myTag = "myGeoJSON";
                    layer.addEventListener('click', function (event) {
 
                        // If the clicked element doesn't have the right selector, bail
@@ -589,9 +619,7 @@ $(document).ready(function() {
 
 
     function load_map(id){
-        console.log("id: "+id);
-        console.log("load_polygon"+load_polygon);
-        console.log($.get('/organizations/mapcityblock/'+id, load_polygon));
+        $.get('/organizations/mapcityblock/'+id, load_polygon);
     }
 
 
@@ -623,13 +651,10 @@ $(document).ready(function() {
     })
 
 
-    neighborhood.change(function(){
-        neighborhood_id = $(this).val();
-        $.get('/organizations/neighborhoodlocation/'+neighborhood_id, function(data){
-            load_map(neighborhood_id)
-            denguemap.panTo(new L.LatLng(data.latitude, data.longitude));
-        })
-    });
+    neighborhood.change(load_and_pan_map);
+
+    view1.click(  load_and_pan_map )
+    view2.click(  load_and_pan_map)
 
     //load the first neighborhood of the city_options loaded
 
