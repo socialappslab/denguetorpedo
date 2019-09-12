@@ -416,11 +416,6 @@ $(document).ready(function() {
     var city =  $('#id_city')
     var neighborhood = $('#id_barrio')
 
-    
-     
-
-
-
     // the map bind with the div, in a specific lat and long
     
     var denguemap = L.map('mapid').setView([-25.320044882648016, -57.64547824859619], 18);
@@ -441,7 +436,7 @@ $(document).ready(function() {
         perc =  a/b;
         perc  =  perc *100;
         var r, g, b = 0;
-        if(perc < 50) {
+        if(perc > 50) {
             r = 255;
             g = Math.round(5.1 * perc);
         }
@@ -462,8 +457,6 @@ $(document).ready(function() {
             
         }
     }
-
-   
 
     function load_map_popup(layer,element){
 
@@ -627,6 +620,7 @@ $(document).ready(function() {
         neighborhood_id = $(this).val();
         $.get('/organizations/neighborhoodlocation/'+neighborhood_id, function(data){
             load_map(neighborhood_id)
+
             denguemap.panTo(new L.LatLng(data.latitude, data.longitude));
         })
     });
