@@ -174,9 +174,12 @@ class OrganizationsController < ApplicationController
 
   def cityblockinfo
     cityblock =  CityBlock.where(name:params[:city_id]).take
+    barrio = cityblock.neighborhood_id.to_s
+    id=cityblock.id.to_s
     locations = cityblock.locations
-    
-
+    cantidadcasas = Location.find_by_sql("select * from 
+      locations 
+      where neighborhood_id = "+barrio+" and city_block_id = "+id+";")
 
     c= 0;
     d = 0;
@@ -195,7 +198,7 @@ class OrganizationsController < ApplicationController
     end
 
     record[:obj] =  cityblock
-    record[:count_locations] = locations.count()
+    record[:count_locations] = cantidadcasas.count()
     record[:count_inspection] = c
     record[:count_visit] = d
     record[:last_visit_date] = last_visit
