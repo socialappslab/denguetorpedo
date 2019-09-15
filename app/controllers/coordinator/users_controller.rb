@@ -52,6 +52,8 @@ class Coordinator::UsersController < Coordinator::BaseController
     authorize! :edit, User
 
     @user = User.new(params[:user])
+    @user.username.downcase
+
     if @user.save
       redirect_to coordinator_users_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash")} and return
     else
