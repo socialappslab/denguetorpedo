@@ -148,30 +148,26 @@
                 <%= select_tag "id_barrio", content_tag(:option,"Seleccione",:value=>"0-0"), class: "form-control"%>
             </div>
             
-            <div class="row">
-            <div class="col-md-6">
-            <!--<div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> 
-                <p>  &nbsp  </p>
-            </div >-->
-
-
-            </div>
-            </div>
+            <!--<div class="row">
+                    <div class="col-md-6">
+                        <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> 
+                        <p>  &nbsp  </p>
+                        </div >
+                    </div>
+                </div>-->
 
             <div class="form-group">
-            <div class="btn-group" role="group">
-
-
-                <button id="view1" class="btn btn-primary" onClick="switch_view(1)" >              
-                    Ultima Visita               
-                </div>
-                </button> 
+                <!--<div class="btn-group" role="group">
+                    <button id="view1" class="btn btn-primary" onClick="switch_view(1)" >    
+                        Ultima Visita               
+                        </div>
+                </button> -->
                 <input type="hidden" id="view_type" value="1" >
 
-                <button id="view2" class="btn btn-primary" onClick="switch_view(2)"> 
+                <!--<button id="view2" class="btn btn-primary" onClick="switch_view(2)"> 
                     Cantidad de Visitas
                 </button>
-                </div>
+                </div>-->
                
             </div>
         
@@ -407,7 +403,6 @@ function mostrar_asignaciones_popup(id, name){
     }
    
 
-   console.log(tabledata)
     tabledata.ajax.url('/organizations/cityblockassigns/'+id).load()
     
 
@@ -474,10 +469,15 @@ $(document).ready(function() {
     function load_map_popup(layer,element){
 
         $.get('/organizations/cityblockinfo/'+element.name,function(data){
+            if(element.max_group == null){
+                var fecha = "--";
+            }else{
+              var visit_date = new Date(element.max_group);  
+              var fecha = visit_date.toDateString();
+            }
+            
 
-            var visit_date = new Date(data.last_visit_date);
-
-            layer.bindPopup("<h2>ID: "+data.obj.name+"</h2> \
+            layer.bindPopup("<h2>ID: "+element.name+"</h2> \
                 <div class='row'> \
                     <div class='col-md-6'> \
                         <div class=''> \
@@ -495,7 +495,7 @@ $(document).ready(function() {
                 <div class='row'> \
                     <div class='col-md-12'> \
                         <div class=''> \
-                            <h3><i style='font-size:20pt; color:#7ea6e6;' class='fa fa-users fa-2'></i> <strong>" +data.count_visit+ " </strong></h3> \
+                            <h3><i style='font-size:20pt; color:#7ea6e6;' class='fa fa-users fa-2'></i> <strong>" +element.count+ " </strong></h3> \
                             <span>Visitas</span> \
                         </div> \
                     </div> \
@@ -503,7 +503,7 @@ $(document).ready(function() {
                 <div class='row'>  \
                     <div class='col-md-12'> \
                         <div class=''> \
-                           <h3> <i style='font-size:20pt; color:#91d0cb;' class='fa fa-table fa-2'></i> <strong> "+visit_date.toDateString()+"</strong> </h3> \
+                           <h3> <i style='font-size:20pt; color:#91d0cb;' class='fa fa-table fa-2'></i> <strong> "+fecha+"</strong> </h3> \
                            <span> Ultima visita</span> \
                         </div> \
                     </div> \
@@ -518,8 +518,6 @@ $(document).ready(function() {
     function load_and_pan_map(){
         neighborhood_id = neighborhood.val();
 
-        console.log(neighborhood_id);
-        console.log($('#view_type').val())
         $.get('/organizations/neighborhoodlocation/'+neighborhood_id, function(data){
             load_map(neighborhood_id);
         
@@ -641,7 +639,7 @@ $(document).ready(function() {
      */
 
     city_id = city.children("option:selected").val();
-    console.log(city_id)
+    
     if(city_id != null){
         
         $.get('/organizations/assignments/cityselect/'+city_id,load_neighborhood);

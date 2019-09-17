@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def total_points
-    [self.attributes[:total_points] || 0, 0].max
+    [self.attributes["total_points"] || 0, 0].max
   end
 
   # A user's points consist of two things:
