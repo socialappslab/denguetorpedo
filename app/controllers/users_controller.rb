@@ -76,6 +76,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.username.downcase
 
     if params[:organization_id].blank?
       flash[:alert] = "Debe seleccionar una organización"

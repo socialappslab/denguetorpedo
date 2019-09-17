@@ -7,8 +7,9 @@ class API::V0::SessionsController < API::V0::BaseController
   #----------------------------------------------------------------------------
   # POST /api/v0/sessions
   def create
-    user = User.find_by_username( params[:username] )
-    user = User.find_by_email( params[:username] ) if user.nil?
+    var usuario = params[:username].downcase
+    user = User.find_by_username( usuario )
+    user = User.find_by_email( usuario ) if user.nil?
 
     if user.present? && user.authenticate(params[:password])
       @user = user
@@ -34,6 +35,7 @@ class API::V0::SessionsController < API::V0::BaseController
   def registrations
     # At this point, the user does NOT exist. Let's create them here.
     @user          = User.new(params[:user])
+    @user.username.downcase
     if @user.save
       Membership.create(:user_id => @user.id, :organization_id => params[:user][:neighborhood_id], :role => Membership::Roles::RESIDENT, :active => true)
       render :json => {}, :status => :ok and return

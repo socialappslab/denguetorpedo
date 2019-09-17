@@ -546,12 +546,14 @@ $(document).ready(function() {
                }
            }else{
                if( type ==2 ){
+                   console.log(max_diff)
                    if( max_diff < element.count){
                        max_diff = element.count 
                    }
                }
            }        
        }
+       console.log(max_diff);
 
        denguemap.eachLayer(function (layer) {
             if ( layer.myTag &&  layer.myTag === "myGeoJSON") {
@@ -592,6 +594,15 @@ $(document).ready(function() {
 
                onEachFeature:function (feature, layer) {   
                 layer.myTag = "myGeoJSON";
+
+               
+
+
+                layer.bindTooltip(element.name,
+                    {permanent: true, direction:"center",className: 'block-tooltip'}, 
+                ).openTooltip()
+
+
                    layer.addEventListener('click', function (event) {
 
                        // If the clicked element doesn't have the right selector, bail
@@ -674,6 +685,20 @@ $(document).ready(function() {
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
     <style>
     #mapid { height: 600px; }
+    .block-tooltip{
+        font-size: 18px;
+        padding: 12px;
+        background-color: #ffffff00;
+        border : 0px solid #fff; 
+        border-radius: 71px;
+        line-height: 40px;
+        color: #000;
+        font-weight:bolder;
+        box-shadow: 0 0px 0px rgba(0,0,0,0.4);
+    }
+    
+    }
+ 
 </style>
 
     <% end %>
