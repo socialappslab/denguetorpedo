@@ -149,7 +149,33 @@
     - if @current_user
       .row
         .col-md-12
-          %new-post-custom
+          .new-post
+            %p.form-label{"style" => "margin-bottom: 20px;"}
+              Comparta sus ideas
+            %form#new_post.new_post.ng-pristine.ng-valid{"accept-charset" => "UTF-8", "ng-submit" => "createPost(post)", :enctype => "multipart/form-data", :method => "post"}
+              %div{:style => "margin:0;padding:0;display:inline"}
+                %input{:name => "utf8", :type => "hidden", :value => "✓"}/
+                %input{:name => "authenticity_token", :type => "hidden", :value => "/ZyCG6FuVXwh6xxgBP0KacLLPCwHZ9Oxwlvcv/2mEx8="}/
+
+              %textarea#post_content.form-control{:cols => "40", :name => "post[content]", "ng-model" => "post.content", :placeholder => "Para mencionar una persona, anteponer el nombre de usuario con @", :rows => "4", :required => true}
+              %input#post_photo.upload_photo{:name => "post[photo]", :type => "file", "file-upload" => true}/
+
+
+              .row{"style" => "margin-top: 25px;"}
+                .col-sm-9
+                  %i.text-left.fa.fa-camera.add-photo{"ng-click" => "triggerFileInput()"}
+                .col-sm-3
+                  .text-right
+                    %button.btn.btn-success.btn-lg.submit-button{:type => "submit", "ng-class" => "{disabled: submitButtonDisabled}" }
+                      %i.fa.fa-refresh.fa-spin
+                      Chat
+
+              .row
+                .pull-left
+                  %img.preview/
+                %canvas
+                %input#post_compressed_photo.compressed_photo{:name => "post[compressed_photo]", :type => "hidden"}/
+
 
     = render :partial => "shared/filter_posts"
 
