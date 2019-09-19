@@ -120,12 +120,13 @@
                         %td{"style" => "vertical-align: middle;"}
                           %p.green
                             = ranking_hash[:score].to_i
-      - if @city.id == 9
+      - if @facebook
         .panel.panel-default
           .fb-page{"data-adapt-container-width" => "true", "data-height" => "", "data-hide-cover" => "false", "data-href" => @facebook, "data-show-facepile" => "true", "data-small-header" => "false", "data-tabs" => "timeline", "data-width" => "500"}
           %blockquote.fb-xfbml-parse-ignore{:cite => @facebook}
             %a{:href => @facebook} Topa Dengue
 
+      - if @twitter
         .panel.panel-default
           %a.twitter-timeline{"data-lang" => "es", "data-tweet-limit" => "3", :href => @twitter} Tweets de TopaDengue
           %script{:async => "", :charset => "utf-8", :src => "https://platform.twitter.com/widgets.js"}
@@ -220,8 +221,7 @@
             %p.light-font.large-font
               = I18n.t("views.statistics.chart.disclaimer")
 
-     
-      
+      - if @current_user
         %new-post-custom
       = render :partial => "shared/filter_posts"
       = render :partial => "shared/feed"
