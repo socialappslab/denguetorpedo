@@ -177,9 +177,12 @@ class OrganizationsController < ApplicationController
     barrio = cityblock.neighborhood_id.to_s
     id=cityblock.id.to_s
     locations = cityblock.locations
-    cantidadcasas = Location.find_by_sql("select * from 
-      locations 
-      where neighborhood_id = "+barrio+" and city_block_id = "+id+";")
+    #cantidadcasas = Location.find_by_sql("select * from 
+    #  locations 
+    #  where neighborhood_id = "+barrio+" and city_block_id = "+id+";")
+
+    cantidadcasas = Location.find_by_sql("select MAX(contador) from (select count(fecha) as contador, fecha from (select to_char(created_at, 'yyyy-dd-mm') as fecha from locations where neighborhood_id = "+barrio+" and city_block_id = "+id+") as tabla group by fecha) as tabla2");
+
 
     c= 0;
     d = 0;
@@ -198,7 +201,7 @@ class OrganizationsController < ApplicationController
     end
 
     record[:obj] =  cityblock
-    record[:count_locations] = cantidadcasas.count()
+    record[:count_locations] = cantidadcasas[0].max
     record[:count_inspection] = c
     record[:count_visit] = d
     record[:last_visit_date] = last_visit
@@ -270,7 +273,8 @@ class OrganizationsController < ApplicationController
   end
 
   def cityblockassigns 
-    assignments =  Assignment.where(city_block_id:params[:city_block_id])
+    #assignments =  Assignment.where(city_block_id:params[:city_block_id])
+    assignments =  Assignment.find_by_sql("select id, task, notes, status, to_char(date, 'yyyy-dd-mm') as fecha from assignments where city_block_id = "+params[:city_block_id]);
     render json: assignments.to_json(:include=>:users), status:200
   end
 
