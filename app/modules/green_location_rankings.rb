@@ -22,8 +22,8 @@ module GreenLocationRankings
       users = redis.zrevrange(self.redis_key_for_city(city), 0, 20, :with_scores => true).map {|id, score| {:user => User.find_by_id(id), :score => score} }
     end
 
-    users.reject! { |user| user[:user] && user[:user].coordinator? }
-    return users[0..9]
+    #users.reject! { |user| user[:user] && user[:user].coordinator? }
+    return users[0..4]
   end
 
   def self.redis_key_for_city(city)

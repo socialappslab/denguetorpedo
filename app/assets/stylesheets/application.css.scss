@@ -339,7 +339,8 @@ div {
 //-----------------------------------------------------------------------------
 // Banner configuration
 .landing-page-banner {
-  height: 550px;
+  height: 100%;
+  caption-side: top;
 
   h1 {
     color: white;
@@ -347,6 +348,7 @@ div {
     font-size: 42px;
     margin-bottom: 20px;
     text-align: center;
+    
   }
 }
 
@@ -712,4 +714,26 @@ div {
 .max-heighted {
   max-height: 400px;
   overflow-y: auto;
+}
+
+// territorio
+#territorio-page {
+  .panel-default.territorio {
+    padding: 1rem;
+    border-color: black;
+    background-color: lightgray;
+  }
+  
+  table {
+    font-size: 1.3rem;
+    th {
+      font-weight: normal;
+      border-color: gray;
+      padding: 5px;
+    }
+    td {
+      border: none !important;
+      padding: 5px;
+    }
+  }
 }
