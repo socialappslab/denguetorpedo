@@ -7,7 +7,7 @@ class OrganizationsController < ApplicationController
   before_filter :identify_org, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   before_filter :identify_selected_membership, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   before_filter :update_breadcrumbs, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
-  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
+  after_filter :verify_authorized, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map, :cityblockinfo, :locationinfo, :mapcityblock, :cityblockassigns, :neighborhoodlocation]
   before_action :calculate_header_variables, except: [:city_blocks, :volunteers, :assignment, :ultimos_recorridos_list, :menos_recorridos_list, :city_select, :city_select_map]
   
   #----------------------------------------------------------------------------
@@ -37,6 +37,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
   end
 
+
   #----------------------------------------------------------------------------
   # GET /settings/assignments
 
@@ -45,10 +46,33 @@ class OrganizationsController < ApplicationController
     @city = current_user.city
     @city_blocks = @city.city_blocks.order(name: "asc")
     @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
+    @ciudades = City.find(@city.id).neighborhoods
+    @barrios = City.find(@city.id).last_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
+    @barrios_menos = City.find(@city.id).less_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
     @parameter = Parameter.where("key = ?", "organization.citymap.#{@city.id}")
+
     @map_url = @parameter.length > 0 ? @parameter[0].value : ""
+
+    @assignments = Assignment.all
   end
   
+  #----------------------------------------------------------------------------
+  # GET /settings/territorio
+
+  def territorio
+    @organization = current_user.selected_membership.organization
+    authorize @organization
+    @city = current_user.city
+    @city_blocks = @city.city_blocks.order(name: "asc")
+    @future_assignments = Assignment.where('date >= ?', DateTime.now.beginning_of_day).order(date: 'desc')
+    @ciudades = City.find(@city.id).neighborhoods
+    @barrios = City.find(@city.id).last_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
+    @barrios_menos = City.find(@city.id).less_visited_city_blocks_barrios(@ciudades.first.id, @city.id)
+    @parameter = Parameter.where("key = ?", "organization.citymap.#{@city.id}")
+    @map_url = @parameter.length > 0 ? @parameter[0].value : ""
+
+  end
+
   def city_select
     if params[:id_city].to_i === 0
       render json: nil, status:200
@@ -62,7 +86,7 @@ class OrganizationsController < ApplicationController
     if params[:id_city].to_i === 0
       render json: nil, status:200
     else
-      @mapurls = Parameter.where("key = ?", "organization.citymap.#{params[:id_city]}")
+      @mapurls = City.where(id:params[:id_city]).take #Parameter.where("key = ?", "organization.citymap.#{params[:id_city]}")
       render json: @mapurls, status:200
     end
   end
@@ -146,6 +170,107 @@ class OrganizationsController < ApplicationController
     end
     @volunteers = @volunteers.uniq{ |v|v[:id]}.sort_by{|v|v[:id]}
     render json: @volunteers.to_json, status: 200
+  end
+
+  def cityblockinfo
+    cityblock =  CityBlock.where(name:params[:city_id]).take
+    barrio = cityblock.neighborhood_id.to_s
+    id=cityblock.id.to_s
+    locations = cityblock.locations
+    cantidadcasas = Location.find_by_sql("select * from locations where neighborhood_id = "+barrio+" and city_block_id = "+id+" and source='MAPEO';")
+
+    c= 0;
+    d = 0;
+    record = {}
+    max_inspection = 0
+    last_visit = DateTime.new(1991, 07, 11, 20, 10, 0)
+    locations.each do |l|
+      visit =  Visit.where(location:l).order("visited_at DESC").first
+      if visit and visit.visited_at > last_visit
+        last_visit = visit.visited_at
+      end
+      c = c +Inspection.where(location:l).count()
+    end
+    locations.each do |l|
+      d = d + Visit.where(location:l).count()
+    end
+
+    record[:obj] =  cityblock
+    record[:count_locations] = cantidadcasas.count
+    record[:count_inspection] = c
+    record[:count_visit] = d
+    record[:last_visit_date] = last_visit
+    render json: record.to_json, status: 200
+  end
+
+  def locationinfo
+    locations = Location.where(city_id:9)
+    render json: locations.to_json, status:200
+  end
+
+
+  def mapcityblock 
+
+
+    @cityblocks_set =CityBlock.find_by_sql("select city_blocks.id,
+    city_blocks.polygon,
+    city_blocks.name,
+    count(distinct visits.visited_at),
+    MAX(visited_at) as max_group,
+    (select MAX(visited_at) from visits inner join locations on( locations.id= visits.location_id)
+     where locations.neighborhood_id="+params[:neighborhood_id]+") as max	
+  
+  from city_blocks 
+  
+  left outer join 
+    locations on( locations.city_block_id= city_blocks.id) 
+  left outer join visits on(visits.location_id= locations.id)
+  where city_blocks.neighborhood_id="+params[:neighborhood_id]+"
+  GROUP BY city_block_id,city_blocks.name,city_blocks.polygon,city_blocks.id;")
+
+
+    #@cityblocks_set  = []
+    #max_inspection = 0
+    # calculate  the max number of inspection in the set, for the max
+    #cityblocks.each do |cb|  
+    #  c = 0
+    #  cb.locations.each do |l|
+    #    c = c + Inspection.where(location:l).count()
+    #  end   
+    #  if max_inspection < c 
+    #    max_inspection =  c 
+    #  end
+    #end
+    
+    #cityblocks.each do |cb|
+      #block = {}
+      #c = 0    
+
+      #cb.locations.each do |l|
+      #  c = c + Inspection.where(location:l).count()
+      #end
+
+      #block[:block]= cb
+      #block[:polygon] = cb.polygon
+      #block[:inspection_quantity] = c 
+      #block[:max_inspection] =  max_inspection
+      #@cityblocks_set << block
+    #end
+    
+    render json: @cityblocks_set.to_json, status:200
+  end
+
+
+
+  def neighborhoodlocation
+    neighborhood = Neighborhood.where(id:params[:neighborhood_id]).take
+    render json: neighborhood.to_json, status:200
+  end
+
+  def cityblockassigns 
+    #assignments =  Assignment.where(city_block_id:params[:city_block_id])
+    assignments =  Assignment.find_by_sql("select id, task, notes, status, to_char(date, 'yyyy-dd-mm') as fecha from assignments where city_block_id = "+params[:city_block_id]);
+    render json: assignments.to_json(:include=>:users), status:200
   end
 
   #----------------------------------------------------------------------------

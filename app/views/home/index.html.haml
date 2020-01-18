@@ -1,33 +1,102 @@
 /------------------------------------------------------------------------------
+%head
+  :css
+    html {
+      scroll-behavior: smooth;
+    }
+    
+
 = render :partial => "shared/flashes"
+#photo.carousel.slide{"data-ride" => "carousel"}
+  %ol.carousel-indicators
+    %li.active{"data-slide-to" => "0", "data-target" => "#photo"}
+    %li{"data-slide-to" => "1", "data-target" => "#photo"}
+    %li{"data-slide-to" => "2", "data-target" => "#photo"}
+  .carousel-inner
+    .item.active
+      .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_ni)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+      .carousel-caption 
+        .row
+          .col-md-8.col-md-offset-2 
+            %h1{:style => "text-transform: uppercase"}
+              = I18n.t("views.home.header")
+        .row
+          .col-md-12.text-center
+            = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal-ma" do
+              %i.fa.fa-play-circle
+              = I18n.t("views.home.video_description")
+            = link_to "Visita Managua", href="/cities/4", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
+            = link_to "Aprender más",  href="#section_cities", :class => "btn btn-default btn-primary btn-lg", :style => "margin-left: 20px;"     
+        %h1 Managua
+        %p Nicaragua
+    .item
+      .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_py)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+      .carousel-caption
+        .row
+          .col-md-8.col-md-offset-2
+            %h1{:style => "text-transform: uppercase;"}
+              = I18n.t("views.home.header")
+        .row
+          .col-md-12.text-center
+            = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal-py" do
+              %i.fa.fa-play-circle
+              = I18n.t("views.home.video_description")
+            = link_to "Visita Asunción", href="/cities/9", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
+            = link_to "Aprender más",  href="#section_cities", :class => "btn btn-default btn-primary btn-lg", :style => "margin-left: 20px;"     
+        %h1 Asunción
+        %p Paraguay
+    .item
+      .landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo_co)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
+      .carousel-caption
+        .row
+          .col-md-8.col-md-offset-2
+            %h1{:style => "text-transform: uppercase;"}
+              = I18n.t("views.home.header")
+        .row
+          .col-md-12.text-center
+            = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal-ar" do
+              %i.fa.fa-play-circle
+              = I18n.t("views.home.video_description")
+            = link_to "Visita Armenia",  href="/cities/8", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
+            = link_to "Aprender más",  href="#section_cities", :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"     
+        %h1 Armenia
+        %p Colombia
+  %a.left.carousel-control{"data-slide" => "prev", :href => "#photo"}
+    
+  %a.right.carousel-control{"data-slide" => "next", :href => "#photo"}
 
-.opacity-banner
-.landing-page-banner{:style => "background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url('#{asset_path("#{asset_path(@landing_page_photo)}")}'); background-position: top; -webkit-background-size: cover; -moz-background-size:    cover; -o-background-size:      cover;background-size: cover;"}
-  .row
-    .col-md-8.col-md-offset-2
-      %h1{:style => "text-transform: uppercase;"}
-        = I18n.t("views.home.header")
+#video-modal-py.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+        %h4.modal-title
+          &nbsp;
+      .modal-body
+        %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue_py}", :width => "560"}
 
+#video-modal-ar.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+        %h4.modal-title
+          &nbsp;
+      .modal-body
+        %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
 
-  .row
-    .col-md-12.text-center
-      = link_to "#", :class => "btn btn-default btn-lg", "data-toggle" => "modal", "data-target" => "#video-modal" do
-        %i.fa.fa-play-circle
-        = I18n.t("views.home.video_description")
-      = link_to "Aprende más", about_path, :class => "btn btn-default btn-success btn-lg", :style => "margin-left: 20px;"
-
-  #video-modal.modal.fade{:role => "dialog", :tabindex => "-1"}
-    .modal-dialog
-      .modal-content
-        .modal-header
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-            %span{"aria-hidden" => "true"} &times;
-          %h4.modal-title
-            &nbsp;
-        .modal-body
-          %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
-
-
+#video-modal-ma.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} &times;
+        %h4.modal-title
+          &nbsp;
+      .modal-body
+        %iframe{:allowfullscreen => "", :frameborder => "0", :height => "315", :src => "#{@introductory_video_on_dengue}", :width => "560"}
 
 .container.marketing
   .row.featurette{:style => "margin-top: 80px;"}
@@ -89,7 +158,7 @@
 
 
   %hr.featurette-divider
-    .row.featurette
+    #section_cities.row.featurette
       .col-md-12
         %h2.featurette-heading{:style => "margin-top: 0px;"}
           = I18n.t("views.home.cities_using.title")
@@ -127,3 +196,4 @@
               = I18n.t("common_terms.register")
           .panel-body
             = render :partial => "users/register", :locals => {:button_text => I18n.t("common_terms.register")}
+

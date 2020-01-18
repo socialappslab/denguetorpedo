@@ -17,8 +17,16 @@
   %meta{:property => "og:title",       :content => "Ciudadanos de #{@city.name} en el combate contra el Dengue, Zika y la Chikungunya"}
   %meta{:property => "og:description", :content => "DengueChat involucra a las comunidades en la lucha contra el Dengue, Zika y la Chikungunya"}
   %meta{:property => "og:type",        :content => "article"}
+  
+/------------------------------------------------------------------------------
 
+- content_for :scripts do
+  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
+
+/------------------------------------------------------------------------------
+ 
 .container{"ng-controller" => "cityCtrl"}
+
   .row
     .col-md-3
       .well{:style => "padding-top: 0px; padding-left: 0px; padding-right: 0px;"}
@@ -42,32 +50,7 @@
           %hr.muted.slightly-wide
 
     .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
-      .panel.panel-default
-        .panel-heading{"data-content" => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos.", "data-toggle" => "popover", "data-placement" => "bottom", "data-trigger" => "hover"}
-          %h3.panel-title
-            Casas Verdes
-            .pull-right
-              %i.fa.fa-question-circle{"style" => "color: #8E8E93;"}
-        - if @green_location_rankings.blank?
-          .panel-body
-            %p.lato-font.large-font.text-center
-              No hay casas verdes
-        - else
-          %table.table.green-houses
-            %tbody
-              - @green_location_rankings.each do |ranking_hash|
-                - user = ranking_hash[:user]
-                - next if user.blank?
-                %tr
-                  %td{"style" => "vertical-align: middle;"}
-                    = image_tag(user.picture, :style => "height: 50px; width: 50px;", :class => "img-rounded")
-                  %td{"style" => "vertical-align: middle;"}
-                    .light-font
-                      = link_to user.username, user_path(user), :user_id => user.id
-                  %td{"style" => "vertical-align: middle;"}
-                    %p.largest-font.heavy-font.text-right.green
-                      = ranking_hash[:score].to_i
-
+      
       .panel.panel-default
         .panel-heading
           %h3.panel-title
@@ -76,11 +59,173 @@
           %h1.text-center{"ng-show" => "chartLoading == true"}
             %i.fa.fa-spin.fa-refresh
           #green-locations-chart-minor
+      
+      #tabs
+        %ul.nav.nav-tabs.nav-justified
+          %li.active 
+            %a{"data-toggle" => "tab", :href => "#ranking"}
+              Ranking
+              %icon.fa.fa-question-circle{:title => "Ranking de los mejores puntos. Los puntos se obtienen reportando y eliminando criaderos y también participando en el foro de DengueChat."}
 
+
+          %li
+            %a{"aria-expanded" => "true", "data-toggle" => "tab", :href => "#casas"}
+              Casas Verdes
+              %icon.fa.fa-question-circle{:style => "\n    width: 2px;\n    height: 2px;\n", :title => "Una Casa Verde es un hogar que en un periodo de por lo menos dos meses no tiene criaderos ni positivos ni potenciales, documentados en dos visitas consecutivas por una brigada DengueChat. Brigadistas responsables de mantener una Casa Verde ganan 200 puntos."}
+
+        .tab-content
+          #ranking.tab-pane.active
+            .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
+            .panel.panel-default
+                
+              - if @rankings_points.blank?
+                .panel-body
+                  %p.lato-font.large-font.text-center
+                    No hay puntos
+              - else
+                %table.table.green-houses
+                  %tbody
+                    - @rankings_points.each do |user|
+                      
+                      - next if user.blank?
+                      %tr
+                        %td{"style" => "vertical-align: middle;"}
+                          = image_tag(user.picture, :style => "height: 25px; width: 25px;", :class => "img-rounded")
+                        %td{"style" => "vertical-align: middle;"}
+                          .light-font
+                            = user.username
+                        %td{"style" => "vertical-align: middle;"}
+                          %p.green
+                            = user.total_points.to_i
+
+          #casas.tab-pane
+            .col-md-3.col-md-push-6{"ng-controller" => "greenLocationsChartCtrl", "city" => @city.to_json, "green_locations_path" => green_locations_api_v0_graph_path}
+            .panel.panel-default   
+              - if @green_location_rankings.blank?
+                .panel-body
+                  %p.lato-font.large-font.text-center
+                    No hay casas verdes
+              - else
+                %table.table.green-houses   
+                  %tbody
+                    - @green_location_rankings.each do |ranking_hash|
+                      - user = ranking_hash[:user]
+                      - next if user.blank?
+                      %tr
+                        %td{"style" => "vertical-align: middle;"}
+                          = image_tag(user.picture, :style => "height: 25px; width: 25px;", :class => "img-rounded")
+                        %td{"style" => "vertical-align: middle;"}
+                          .light-font
+                            = link_to user.username, user_path(user), :user_id => user.id
+                        %td{"style" => "vertical-align: middle;"}
+                          %p.green
+                            = ranking_hash[:score].to_i
+      - if @city.id == 9
+        .panel.panel-default
+          .fb-page{"data-adapt-container-width" => "true", "data-height" => "", "data-hide-cover" => "false", "data-href" => @facebook, "data-show-facepile" => "true", "data-small-header" => "false", "data-tabs" => "timeline", "data-width" => "500"}
+          %blockquote.fb-xfbml-parse-ignore{:cite => @facebook}
+            %a{:href => @facebook} Topa Dengue
+
+        .panel.panel-default
+          %a.twitter-timeline{"data-lang" => "es", "data-tweet-limit" => "3", :href => @twitter} Tweets de TopaDengue
+          %script{:async => "", :charset => "utf-8", :src => "https://platform.twitter.com/widgets.js"}
 
     .col-md-6.col-md-pull-3{"ng-controller" => "DCPostListCtrl", :posts_path => api_v0_posts_path(:city_id => @city.id), "usernames" => User.pluck(:username), "hashtags" => Hashtag.official_hashtags, "neighborhood_id" => (@current_user && @current_user.neighborhood_id) }
-      - if @current_user
-        %new-post-custom
+      - if @city.id == 9
+        
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              = I18n.t('views.statistics.chart.title')
+          .panel-body{"ng-controller" => "communityTimeCityCtrl", "neighborhood_id" => @barriosid.to_json}
+            .chart
+              .row
+                .col-xs-4
+                  .chart-filters{:style => "margin-top: 0px;"}
+                    .btn-group
+                      = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'daily'}" do
+                        = radio_button_tag "chart[percentages]", "daily", nil, "ng-model" => "options.unit"
+                        En un dia
+                      = label_tag nil, :class => "btn btn-default btn-xs", "ng-class" => "{'active': options.unit === 'monthly'}" do
+                        = radio_button_tag "chart[percentages]", "monthly", nil, "ng-model" => "options.unit"
+                        En un mes
 
+
+                  .chart-filters{:style => "margin-top: 0px;"}
+                    .checkbox
+                      %label
+                        %input{:type => "checkbox", "ng-model" => "options.positive"}
+                          = I18n.t("common_terms.positive")
+                    .checkbox
+                      %label
+                        %input{:type => "checkbox", "ng-model" => "options.potential"}
+                          = I18n.t("common_terms.potential")
+                    .checkbox
+                      %label
+                        %input{:type => "checkbox", "ng-model" => "options.negative"}
+                          = I18n.t("common_terms.negative")
+                .col-xs-8
+
+                  .legend{:style => "margin-left: 0px; margin-top: 0px;"}
+                    %span.chart-legend.red
+                    %span.chart-label.light-font
+                      = I18n.t('views.statistics.chart.percent_of_positive_sites')
+                    %br
+                    %span.chart-legend.yellow
+                    %span.chart-label.light-font
+                      = I18n.t('views.statistics.chart.percent_of_potential_sites')
+                    %br
+                    %span.chart-legend.green
+                    %span.chart-label.light-font
+                      = I18n.t('views.statistics.chart.percent_of_negative_sites')
+              %hr
+
+              #timeseries
+                %i.fa.fa-refresh.fa-spin{"ng-show" => "chartLoading"}
+                %h3.empty-chart-disclaimer{"ng-show" => "noChartData"}
+                  = I18n.t("common_terms.no_data")
+                #timeseries-chart{"ng-hide" => "chartLoading || noChartData"}
+
+              %hr
+
+              %a.btn.btn-default.btn-xs{"ng-click" => "state.showTable = !state.showTable"}
+                Mostrar tabla
+
+              %table.table.table-bordered.table-responsive{"ng-show" => "timeseries.length > 0 && state.showTable"}
+                %thead
+                  %th{:style => "width: 10%"}
+                    Data
+                  %th{"ng-repeat" => "series in timeseries"}
+                    {{series.date}}
+
+                %tbody
+                  %tr
+                    %td Lugares positivos
+                    %td{"ng-repeat" => "series in timeseries"}
+                      {{series.positive.percent}}% ({{series.positive.count}})
+                  %tr
+                    %td Lugares potenciales
+                    %td{"ng-repeat" => "series in timeseries"}
+                      {{series.potential.percent}}% ({{series.potential.count}})
+                  %tr
+                    %td Lugares sin criaderos
+                    %td{"ng-repeat" => "series in timeseries"}
+                      {{series.negative.percent}}% ({{series.negative.count}})
+                  %tr
+                    %td Total lugares
+                    %td{"ng-repeat" => "series in timeseries"}
+                      {{series.total.count}}
+
+          .panel-footer
+            %p.light-font.large-font
+              = I18n.t("views.statistics.chart.disclaimer")
+
+     
+      
+        %new-post-custom
       = render :partial => "shared/filter_posts"
       = render :partial => "shared/feed"
+
+
+
+

@@ -16,7 +16,6 @@
       {{post.timestamp}}
 
 
-
   .feed-item-content
     %div{"ng-bind-html" => "post.content | denguechatLinky:'_blank'", "show-more" => true}
     .post-photo{"ng-hide" => "{{post.photo == null}}"}
@@ -35,7 +34,8 @@
 
     %a.feed-button{"share-to-facebook" => true, "ng-click" => "", :post => "{{post}}"}
       %i.fa.fa-share
-      Compartir
+      Compartir Facebook
+
 
     - if @current_user.present?
       .pull-right{"ng-show" => "post.user.id == #{@current_user.id} || #{@current_user && @current_user.coordinator?}"}
@@ -49,3 +49,4 @@
   = render :partial => "comments/comment"
 
 %new-comment{"post" => "post", "ng-show" => "showNewComment"}
+

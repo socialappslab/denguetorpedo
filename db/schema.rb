@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190522152041) do
+ActiveRecord::Schema.define(version: 20190618032630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -225,7 +225,7 @@ ActiveRecord::Schema.define(version: 20190522152041) do
     t.integer  "visit_id"
     t.integer  "report_id"
     t.integer  "identification_type"
-    t.integer  "position",                  default: 0
+    t.integer  "position",                       default: 0
     t.integer  "csv_id"
     t.string   "source"
     t.datetime "last_synced_at"
@@ -254,6 +254,12 @@ ActiveRecord::Schema.define(version: 20190522152041) do
     t.string   "csv_uuid"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "verified_at"
+    t.integer  "likes_count",                    default: 0
+    t.integer  "verifier_id"
+    t.integer  "resolved_verifier_id"
+    t.datetime "completed_at"
+    t.integer  "previous_similar_inspection_id"
   end
 
   create_table "likes", force: :cascade do |t|
