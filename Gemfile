@@ -22,7 +22,7 @@ gem "devise-i18n"
 gem "figaro"
 gem "foreman"
 
-gem 'haml'
+gem 'haml', '5.1.2'
 gem "http_accept_language"
 gem 'responders', '~> 2.0'
 gem "jbuilder"
