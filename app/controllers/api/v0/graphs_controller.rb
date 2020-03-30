@@ -61,6 +61,11 @@ class API::V0::GraphsController < API::V0::BaseController
       location_ids.uniq!
     end
 
+    # set end_time to the date of the last inspection
+    if !end_time.blank?
+      end_time = Visit.where(location_id: location_ids).maximum(:visited_at)
+    end
+
     # unit is either daily or monthly
     @statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
     @statistics.each do |shash|
@@ -111,8 +116,10 @@ class API::V0::GraphsController < API::V0::BaseController
 
   def green_locations
     city = City.find(params[:city])
+    location_ids += city.map {|item| item.locations.pluck(:id)}.flatten.uniq
 
-    end_time   = Time.zone.now.end_of_week
+    #end_time   = Time.zone.now.end_of_week
+    end_time = Visit.where(location_id: location_ids).maximum(:visited_at)
     start_time = end_time - 6.months
     @series = GreenLocationSeries.time_series_for_city(city, start_time, end_time)
 
