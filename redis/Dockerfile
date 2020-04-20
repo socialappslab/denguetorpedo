@@ -1,4 +1,4 @@
-FROM bitnami/redis:latest
+FROM bitnami/redis:4
 MAINTAINER Cristhian Parra <cdparra@gmail.com>
 USER root
 RUN apt-get update
