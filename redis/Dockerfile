@@ -4,4 +4,3 @@ USER root
 RUN apt-get update
 RUN apt-get install -y sudo nano
 RUN sed -i '2s/^/source environment\n/' /opt/bitnami/scripts/redis/entrypoint.sh
-
