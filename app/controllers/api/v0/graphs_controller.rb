@@ -116,7 +116,7 @@ class API::V0::GraphsController < API::V0::BaseController
 
   def green_locations
     city = City.find(params[:city])
-    location_ids = city.locations.pluck(:id)}.flatten.uniq
+    location_ids = city.locations.pluck(:id)
 
     #end_time   = Time.zone.now.end_of_week
     end_time = Visit.where(location_id: location_ids).maximum(:visited_at)
