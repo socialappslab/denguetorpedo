@@ -64,10 +64,15 @@ class API::V0::GraphsController < API::V0::BaseController
     # set end_time to the date of the last inspection
     if !end_time.blank?
       end_time = Visit.where(location_id: location_ids).maximum(:visited_at)
+      Rails.logger.info("end_time: #{end_time}")
+      Rails.logger.info("start_time: #{start_time}")
+      start_time = end_time - 3.months
+      Rails.logger.info("new start_time: #{start_time}")
     end
 
     # unit is either daily or monthly
     @statistics = Visit.calculate_time_series_for_locations(location_ids, start_time, end_time, params[:unit])
+    Rails.logger.info(@statistics)
     @statistics.each do |shash|
       [:positive, :potential, :chemically_treated, :protected, :negative, :total].each do |status|
         locations = Location.where(:id => shash[status][:locations]).order("address ASC")
@@ -129,7 +134,6 @@ class API::V0::GraphsController < API::V0::BaseController
       end
 
       start_time += 1.week
-      Rails.logger.info("New start_time: #{start_time}")
     end
 
     @series.sort_by! {|s| s[:date]}
