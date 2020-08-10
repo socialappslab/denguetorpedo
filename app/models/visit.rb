@@ -410,6 +410,7 @@ class Visit < ActiveRecord::Base
   #----------------------------------------------------------------------------
 
   def self.filter_time_series_by_range(daily_stats, start_time, end_time, scale)
+    backup = daily_stats.dup
     if start_time.present?
       daily_stats.select! do |stat|
         year  = stat[:date].split("-")[0].to_i
@@ -434,6 +435,39 @@ class Visit < ActiveRecord::Base
           (year < end_time.year) || (year == end_time.year && month < end_time.month) || (year == end_time.year && month == end_time.month && day <= end_time.day)
         else
           (year < end_time.year) || (year == end_time.year && month <= end_time.month)
+        end
+      end
+    end
+
+    if daily_stats.length == 0
+      daily_stats = backup.dup
+      end_time_year  = daily_stats.last[:date].split("-")[0].to_i
+      end_time_month = daily_stats.last[:date].split("-")[1].to_i
+      end_time_day   = daily_stats.last[:date].split("-")[2].to_i
+      start_time_year  = daily_stats.first[:date].split("-")[0].to_i
+      start_time_month = daily_stats.first[:date].split("-")[1].to_i
+      start_time_day   = daily_stats.first[:date].split("-")[2].to_i
+      daily_stats.select! do |stat|
+        year  = stat[:date].split("-")[0].to_i
+        month = stat[:date].split("-")[1].to_i
+        day   = stat[:date].split("-")[2].to_i
+
+        if scale == "daily"
+          (year > start_time_year) || (year == start_time_year && month > start_time_month) || (year == start_time_year && month == start_time_month && day >= start_time_day)
+        else
+          (year > start_time_year) || (year == start_time_year && month >= start_time_month)
+        end
+      end
+
+      daily_stats.select! do |stat|
+        year  = stat[:date].split("-")[0].to_i
+        month = stat[:date].split("-")[1].to_i
+        day   = stat[:date].split("-")[2].to_i
+
+        if scale == "daily"
+          (year < end_time_year) || (year == end_time_year && month < end_time_month) || (year == end_time_year && month == end_time_month && day <= end_time_day)
+        else
+          (year < end_time_year) || (year == end_time_year && month <= end_time_month)
         end
       end
     end

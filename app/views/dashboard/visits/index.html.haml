@@ -1,5 +1,8 @@
 - content_for :scripts do
-  %script{"src" => "https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"}
+  %script{"src" => "https://www.google.com/jsapi"}
+  :javascript
+    google.load('visualization', '1.1', { 'packages': ['corechart'] });
+    google.setOnLoadCallback(function() { angular.bootstrap(document.body, ['denguechatApp']) });
   %script{:src => "//maps.googleapis.com/maps/api/js?key=AIzaSyBYz_KnHFhBa2zc21IJAyzkZ_CbyJjvfrI&libraries=visualization"}
 
   %script
