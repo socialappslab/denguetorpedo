@@ -140,34 +140,15 @@
 
             <div id= "select_city" class="form-group">
                 <label>Seleccione una ciudad</label>
-                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control" ,disabled: true%>    
+                <%= select_tag "id_city", options_from_collection_for_select(@all_cities, :id, :name, @city.id) ,class: "form-control" ,disabled: false%>    
            </div> 
            <div id= "barrios_select" class="form-group">
                 <label>Seleccione el barrio</label>
                 <%= select_tag "id_barrio", content_tag(:option,"Seleccione",:value=>"0-0"), class: "form-control"%>
             </div>
             
-            <!--<div class="row">
-                    <div class="col-md-6">
-                        <div class="scale" style="background-image: linear-gradient(to right, #ff1f1f, #f36b00, #d49e00, #a0c800, #38eb12);width:100%;width:100%"> 
-                        <p>  &nbsp  </p>
-                        </div >
-                    </div>
-                </div>-->
-
             <div class="form-group">
-                <!--<div class="btn-group" role="group">
-                    <button id="view1" class="btn btn-primary" onClick="switch_view(1)" >    
-                        Ultima Visita               
-                        </div>
-                </button> -->
-                <input type="hidden" id="view_type" value="1" >
-
-                <!--<button id="view2" class="btn btn-primary" onClick="switch_view(2)"> 
-                    Cantidad de Visitas
-                </button>
-                </div>-->
-               
+                <input type="hidden" id="view_type" value="1" >        
             </div>
         
        </div>
@@ -176,10 +157,9 @@
                 <div id="mapid"></div>
             </div>
         </div>
-    </div>
-   
-                                
+    </div>                          
 </div>
+
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
     integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
     crossorigin=""></script>
@@ -318,12 +298,10 @@ function enableFields() {
                 $.get("/organizations/assignments/"+idciudad+"/barrio/"+id_barrio_nuevo, function(data) {
                     cuerpo.html("");
                     for (var item of data) {
-
-                            var fila = cuerpo.append("<tr id='"+item.id+"'/>");
+                        var fila = cuerpo.append("<tr id='"+item.id+"'/>");
                         fila.append("<td>"+item.city_block_name+"</td>");
                         fila.append("<td>"+item.visit_count+"</td>");
-                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>");
-                        
+                        fila.append("<td>"+moment(item.last_visit_date).format("DD/MM/YYYY")+"</td>"); 
                         
                     }
                 });
@@ -333,16 +311,10 @@ function enableFields() {
     });
 </script>
 
-
-
-
 <% content_for :scripts do %>
 <script>
 
 var tabledata;
-
-
-
 
 function abrir_asignar_popup(id, name){
 
@@ -354,7 +326,6 @@ function abrir_asignar_popup(id, name){
 
 function mostrar_asignaciones_popup(id, name){
     $('#list-popup').modal('show');
-
 
     if (tabledata){
         console.log("Tabledata is binded")
@@ -380,9 +351,7 @@ function mostrar_asignaciones_popup(id, name){
                             remedies = " <div class='btn btn-success'>"+row.status+"</div>";
                         }
                     }
-
-                    
-                    
+                  
                     return remedies;
  
                 }},
@@ -405,12 +374,7 @@ function mostrar_asignaciones_popup(id, name){
         })
     }
    
-
     tabledata.ajax.url('/organizations/cityblockassigns/'+id).load()
-    
-
-    //$('#message-popup').modal('show');
-    //$('#list-popup').modal('show');
    
 }
 
@@ -461,6 +425,9 @@ $(document).ready(function() {
 
 
     function load_neighborhood(data){
+        var cuerpo = $("#id_barrio");
+        cuerpo.html("");
+        var neighborhood = cuerpo.append("<option value='0-0'> Seleccione </option>");
         //clear all options of sneighbor
         for (let i = 0; i < data.length; i++) {
             const element = data[i];
@@ -519,19 +486,11 @@ $(document).ready(function() {
 
     function load_and_pan_map(){
         neighborhood_id = neighborhood.val();
-
         $.get('/organizations/neighborhoodlocation/'+neighborhood_id, function(data){
-            load_map(neighborhood_id);
-        
+            load_map(neighborhood_id);      
             denguemap.panTo(new L.LatLng(data.latitude, data.longitude));
         })
     }
-
-
- 
-
-  
-
 
     function load_polygon(data){
         var type = parseInt($('#view_type').val());
@@ -583,8 +542,7 @@ $(document).ready(function() {
                            fill = perc2color(element.count,max_diff)
                        }
                    }
-       
-                   
+                         
                    return {
                        fillColor: fill,
                        weight: 2,
@@ -596,9 +554,6 @@ $(document).ready(function() {
 
                onEachFeature:function (feature, layer) {   
                 layer.myTag = "myGeoJSON";
-
-               
-
 
                 layer.bindTooltip(element.name,
                     {permanent: true, direction:"center",className: 'block-tooltip'}, 
@@ -633,9 +588,6 @@ $(document).ready(function() {
         $.get('/organizations/mapcityblock/'+id, load_polygon);
     }
 
-
-
-
     /**
      * Default Load
      */
@@ -643,21 +595,13 @@ $(document).ready(function() {
     city_id = city.children("option:selected").val();
     
     if(city_id != null){
-        
         $.get('/organizations/assignments/cityselect/'+city_id,load_neighborhood);
-
-
     }
 
     city.change(function(data){
         city_id = $(this).val();
-        
         // load the select with the cities
-
-
-
         // the first option of the data, if it has any options create another get
-
         $.get('/organizations/assignments/cityselect/'+city_id, load_neighborhood )
     })
 
@@ -699,11 +643,10 @@ $(document).ready(function() {
         box-shadow: 0 0px 0px rgba(0,0,0,0.4);
     }
     
-    }
  
 </style>
 
-    <% end %>
+<% end %>
 
 
 
