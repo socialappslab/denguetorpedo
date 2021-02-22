@@ -204,4 +204,40 @@ class API::V0::CsvReportsController < API::V0::BaseController
     end
   end
 
+    #----------------------------------------------------------------------------
+  # POST /api/v0/csv_reports/geolocation
+
+  def geolocation
+    # Let's iterate over each uploaded CSV, and
+    # 1. Parsing the file name,
+    # 2. Making sure that the location exists,
+    csvs = []
+    params[:multiple_csv].each do |csv|
+      address  = Spreadsheet.extract_address_from_filepath(csv.original_filename)
+      location = Location.where("lower(address) = ?", address.downcase).first
+      if location.blank?
+        raise API::V0::Error.new("¡Uy! No se pudo encontrar lugar para #{csv.original_filename}", 422) and return
+      end
+
+      csvs << {:csv => csv, :location => location}
+    end
+
+    csvs.each do |csv_hash|
+      csv      = csv_hash[:csv]
+      location = csv_hash[:location]
+
+      @csv_report = Spreadsheet.find_by_csv_file_name(csv.original_filename)
+      @csv_report = Spreadsheet.new if @csv_report.blank?
+
+      @csv_report.csv             = csv
+      @csv_report.user_id         = @current_user.id
+      @csv_report.location_id     = location.id
+      @csv_report.save(:validate => false)
+
+      SpreadsheetParsingWorker.perform_async(@csv_report.id)
+    end
+
+    render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
+  end
+
 end

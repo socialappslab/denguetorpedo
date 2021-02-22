@@ -474,6 +474,7 @@ es:
 
     csv_reports:
       batch_upload: Carga CSV lotes
+      geolocation_upload: Carga CSV Geolocalización
       parsing: Procesando
       verify: Verificar
       view: Ver
