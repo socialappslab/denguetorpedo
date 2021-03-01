@@ -419,6 +419,7 @@ es:
       upload_csv: Cargue un nuevo CSV
       odk_sync: Errores de sincronización ODK
       confirm: Confirmar
+      add_column: Agregar nueva columna
     coordinator:
       home: Coordinador
       register_user: Registrar nuevo usuario

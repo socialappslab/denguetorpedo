@@ -1,36 +1,48 @@
 <div class="container" id="assignments-page">
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Seleccione una organización</h2>
-      <div id= "barrios_select" class="form-group">
-        <%=select_tag :organization_id, options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control"%>
-      </div>
-      <h2 style="padding-top: 2rem; padding-bottom: 2rem">Agregue las URLs de Google Sheet</h2>
-      <div class="form-group">
-        <label>data.visits.url:</label>
-        <input type="text" class="form-control" id="dataVisits" name="dataVisits">
-        <label>data.locations.url:</label>
-        <input type="text" class="form-control" id="dataLocations" name="dataLocations">
-        <label>data.inspections.url:</label>
-        <input type="text" class="form-control" id="datainspections" name="datainspections">
-        <label>Usuario Admin</label>
-        <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput" required>
-      </div>
-      <div style="text-align: right">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-12">
+        <h2 style="padding-top: 2rem; padding-bottom: 2rem">Seleccione una organización</h2>
+        <div id= "organization-select" class="form-group">
+          <%=select_tag :organization_id, options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control"%>
+        </div>
+        <h2 style="padding-top: 2rem; padding-bottom: 2rem">Agregue las URLs de Google Sheet</h2>
+        <div class="form-group">
+          <label>data.visits.url:</label>
+          <input type="text" class="form-control" id="dataVisits" name="dataVisits">
+          <label>data.locations.url:</label>
+          <input type="text" class="form-control" id="dataLocations" name="dataLocations">
+          <label>data.inspections.url:</label>
+          <input type="text" class="form-control" id="datainspections" name="datainspections">
+          <label>Usuario Admin</label>
+          <input type="text" class="form-control" id="volunteers" name="volunteers" data-role="tagsinput" required>
+        </div>
+        <div style="text-align: right">
+            <%= button_tag :type => "submit", :class => "btn btn-success submit-button" do %>
+              <i class="fa fa-refresh fa-spin" style="display:none;"></i>
+              <%= I18n.t("views.buttons.save") %>
+            <% end %>
+        </div>
+        <hr style="border-color:#ff6600;border-bottom:none;">
+        <h2 style="padding-top: 2rem; padding-bottom: 2rem">¿Desea agregar nueva columna de datos?</h2>
+        <div class="form-group">
+          <label>Nombre de la columna:</label>
+          <input type="text" class="form-control" id="nameColumn" name="dataVisits">
+        </div>
+        <div class="form-group">
+          <label>Tipo:</label>
+          <select name="typeData" id="typeData" class="form-control">
+            <option value="volvo">Numérico</option>
+            <option value="saab">Boolean</option>
+            <option value="mercedes">Texto</option>
+          </select>
+        </div>
+        <div style="text-align: right">
           <%= button_tag :type => "submit", :class => "btn btn-success submit-button" do %>
             <i class="fa fa-refresh fa-spin" style="display:none;"></i>
-            <%= I18n.t("views.buttons.save") %>
+            <%= I18n.t("views.buttons.add_column") %>
           <% end %>
-      </div>
-      <hr style="border-color:#ff6600;border-bottom:none;">
-      <h2 style="padding-top: 2rem; padding-bottom: 2rem">¿Desea agregar nueva columna de datos?</h2>
-      <div class="form-group">
-        <label>Nombre de la columna:</label>
-        <input type="text" class="form-control" id="dataVisits" name="dataVisits">
-      </div>
-      <div class="form-group">
-        <label>Tipo:</label>
-
+        </div>
       </div>
     </div>
   </div>
@@ -41,7 +53,7 @@
         var volunteers = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: '<%#= volunteers_json_settings_url(city_id: @city.id, format: :json) %>'
+            prefetch: '<%= volunteers_json_organizations_url(city_id: @city.id, format: :json) %>'
         });
         volunteers.initialize();
         var elt = $('#volunteers');
