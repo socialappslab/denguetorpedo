@@ -82,6 +82,7 @@ class CsvReportsController < ApplicationController
   def geolocation
     @neighborhood = @current_user.neighborhood
     @breadcrumbs << {:name => I18n.t("views.csv_reports.geolocation_upload"), :path => geolocation_csv_reports_path}
+
   end
 
   #----------------------------------------------------------------------------

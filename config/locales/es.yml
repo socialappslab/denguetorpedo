@@ -143,12 +143,15 @@ es:
         blank: "es obligatorio"
       users:
         invalid_username: no válido. Solo caracteres alfanuméricos.
+      report:
+        coordenadas: El campo coordenadas no puede quedar vacío
     success:
       report:
         create: Criadero marcado exitosamente
         eliminate: Ustéd eliminó un criadero
         delete: Criadero eliminado exitosamente
         verify: El criadero fué verificado
+        create_geo: La geo-localización se guardo exitosamente
       comment:
         create: Comentario hecho con éxito
       post:

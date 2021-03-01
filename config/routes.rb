@@ -46,13 +46,12 @@ Dengue::Application.routes.draw do
       resources :csv_reports, :only => [:create, :update, :destroy] do
         collection do
           post "batch"
-
+          post "geolocation"
         end
 
         member do
           put "verify"
         end
-        post "geolocation", :on => :collection
       end
 
       #-------------------------------------------------------------------------
