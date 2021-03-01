@@ -185,6 +185,10 @@
               = link_to dashboard_locations_path do
                 %i.fa.fa-globe
                 = I18n.t("views.dashboard.navigation.locations")
+            %li.user-navigation{:class => "#{dashboard_settings_path == request.path ? 'active' : ''}"}
+              = link_to dashboard_settings_path do
+                %i.fa.fa-globe
+                = I18n.t("views.dashboard.navigation.settings")
             -# %li.user-navigation{:class => "#{heatmap_dashboard_graphs_path == request.path ? 'active' : ''}"}
             -#   = link_to heatmap_dashboard_graphs_path do
             -#     %i.fa.fa-map-marker

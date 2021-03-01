@@ -437,6 +437,7 @@ es:
       navigation:
         visits: Visitas
         locations: Casas
+        settings: Configuración
         heatmap: Mapa de actividad
         graphs: Gráficos
         sync: Sincronizar
