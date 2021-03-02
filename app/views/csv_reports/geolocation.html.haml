@@ -14,21 +14,14 @@
 
           = form_tag geolocation_api_v0_csv_reports_path, :method => "POST", :multipart => true, "ng-submit" => "geolocationUpload($event)", :style => "margin-top: 40px;" do
 
-            %hr.muted
-            .row
-              .col-md-12
-                %p.form-label
-                  = I18n.t("attributes.neighborhood_id")
-                = select_tag(:neighborhood_id, options_for_select(Neighborhood.all.map {|n| [n.name, n.id]}, :selected => @neighborhood.id), :include_blank => false, :class => "form-control" )
+            %p.form-label
+              Cargue un CSV
+            .form-group.form-inline
+              = file_field_tag :multiple_csv, :class => "form-control", :multiple => true, "show-csv-preview" => true, "csvPreviews" => "csv_previews"
 
-                %p.form-label
-                  Cargue un CSV
-                .form-group.form-inline
-                  = file_field_tag :multiple_csv, :class => "form-control", :multiple => true, "show-csv-preview" => true, "csvPreviews" => "csv_previews"
-
-                  = button_tag :type => "submit", :class => "btn btn-success submit-button" do
-                    %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
-                    = I18n.t("views.buttons.upload")
+              = button_tag :type => "submit", :class => "btn btn-success submit-button" do
+                %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
+                = I18n.t("views.buttons.upload")
 
                   
 

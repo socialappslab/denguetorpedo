@@ -145,6 +145,7 @@ es:
         invalid_username: no válido. Solo caracteres alfanuméricos.
       report:
         coordenadas: El campo coordenadas no puede quedar vacío
+        neighborhood: La comunidad agregada no existe, por favor verifique
     success:
       report:
         create: Criadero marcado exitosamente

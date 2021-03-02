@@ -64,15 +64,16 @@ class API::V0::CsvReportsController < API::V0::BaseController
 
   def geolocation
 
-    if params[:neighborhood_id].blank?
-      raise API::V0::Error.new(I18n.t("Seleccione la comunidad"), 422) and return
-    end
+    #if params[:neighborhood_id].blank?
+     # raise API::V0::Error.new(I18n.t("Seleccione la comunidad"), 422) and return
+    #end
     if params[:multiple_csv].blank?
       raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
     end
     # Find the neighborhood.
-    @neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
-    CityBlock.import(params[:multiple_csv], @neighborhood)
+    #@neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
+    #CityBlock.import(params[:multiple_csv], @neighborhood)
+    CityBlock.import(params[:multiple_csv])
 
     redirect_to geolocation_csv_reports_path, :notice => I18n.t("activerecord.success.report.create_geo")
 
