@@ -31,7 +31,6 @@ class CityBlock < ActiveRecord::Base
       index = index +1
 
       if guardar
-        p "guardar"
         #Elimina la ultima coma
         polygon =  (polygon_txt_ini +"" + polygon_txt+""+polygon_txt_end).sub "],]", "]]"
         #Crea el objeto con los campos requeridos en CityBlock
@@ -51,7 +50,6 @@ class CityBlock < ActiveRecord::Base
         city_block_params = CityBlock.where(:name  => row["data-locations-group_001"], :neighborhood_id => neighborhood_params[0]["id"], :city_id => neighborhood_params[0]["city_id"])
 
         if city_block_params.blank?
-          p "entre"
           city_blank = true
           #Si no existe entonces seguimos
           nro_manzana = row["data-locations-group_001"]
@@ -72,6 +70,7 @@ class CityBlock < ActiveRecord::Base
         end
       end
 
+      
       if index < table.length
         if table[index]["data-locations-number"] == "1" && city_blank
           guardar = true
@@ -82,9 +81,7 @@ class CityBlock < ActiveRecord::Base
 
     end
 
-    p guardar
     if guardar
-      p "guardar 2"
       #Elimina la ultima coma
       polygon =  (polygon_txt_ini +"" + polygon_txt+""+polygon_txt_end).sub "],]", "]]"
       #Crea el objeto con los campos requeridos en CityBlock
