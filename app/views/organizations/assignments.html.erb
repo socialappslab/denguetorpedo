@@ -406,6 +406,8 @@ $(document).ready(function() {
 
 
     function perc2color(a, b) {
+
+        return '#41ea0e'
         
         if( a == 0  && b==0 ) return '#c2c2c2';
         perc =  a/b;
@@ -553,33 +555,21 @@ $(document).ready(function() {
                },
 
                onEachFeature:function (feature, layer) {   
-                layer.myTag = "myGeoJSON";
+                    layer.myTag = "myGeoJSON";
 
-                layer.bindTooltip(element.name,
-                    {permanent: true, direction:"center",className: 'block-tooltip'}, 
-                ).openTooltip()
-
-
-                   layer.addEventListener('click', function (event) {
-
-                       // If the clicked element doesn't have the right selector, bail
-                   
-
-                       // Don't follow the link
-           
-                     load_map_popup(layer,element)       
-
-                       // Log the clicked element in the console
-                       
-
-                       }, false);    
-
+                    layer.bindTooltip(element.name,
+                        {permanent: true, direction:"center",className: 'block-tooltip'}, 
+                    ).openTooltip()
+                       layer.addEventListener('click', function (event) {
+                           // If the clicked element doesn't have the right selector, bail
+                           // Don't follow the link          
+                            load_map_popup(layer,element)       
+                           // Log the clicked element in the console
+                        }, false);    
                },
-
+            }).addTo(denguemap);
            }
-           ).addTo(denguemap);
-           }
-    }
+        }
 }
 
 

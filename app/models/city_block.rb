@@ -41,18 +41,19 @@ class CityBlock < ActiveRecord::Base
       end
 
       if row["data-locations-number"] == "1"
+        polygon_txt = ""
         city_blank = false
         #buscamos que la comunidad sea correcta
         neighborhood_params = Neighborhood.where(:name => row["data-locations-Comunidad"])
         if neighborhood_params.blank?
           raise API::V0::Error.new(I18n.t("activerecord.errors.report.neighborhood")+": "+row["data-locations-Comunidad"], 422) and return
         end
-        city_block_params = CityBlock.where(:name  => row["data-locations-group_001"], :neighborhood_id => neighborhood_params[0]["id"], :city_id => neighborhood_params[0]["city_id"])
-
+        city_block_params = CityBlock.where(:name  => row["data-locations-group"], :neighborhood_id => neighborhood_params[0]["id"], :city_id => neighborhood_params[0]["city_id"])
+        p city_block_params
         if city_block_params.blank?
           city_blank = true
           #Si no existe entonces seguimos
-          nro_manzana = row["data-locations-group_001"]
+          nro_manzana = row["data-locations-group"]
           #El campo coordenadas no puede quedar vacio
           if row ["data-locations-coordinates"].nil?
             raise API::V0::Error.new(I18n.t("activerecord.errors.report.coordenadas"), 422) and return
@@ -62,21 +63,24 @@ class CityBlock < ActiveRecord::Base
           end
         end
       else
-        if row["data-locations-coordinates"].nil?
+        if city_blank
+          if row["data-locations-coordinates"].nil?
             raise API::V0::Error.new(I18n.t("activerecord.errors.report.coordenadas"), 422) and return
-        else
-           text = row["data-locations-coordinates"].try(:split, ",") || ""
-           polygon_txt = polygon_txt + "["+text[1] + ","+ text[0] +"],"
+          else
+             text = row["data-locations-coordinates"].try(:split, ",") || ""
+             polygon_txt = polygon_txt + "["+text[1] + ","+ text[0] +"],"
+          end
         end
       end
 
-      
       if index < table.length
         if table[index]["data-locations-number"] == "1" && city_blank
           guardar = true
         end
       else index == table.length && !guardar
-        guardar = true
+        if city_blank
+          guardar = true
+        end
       end
 
     end
