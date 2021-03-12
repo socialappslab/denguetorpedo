@@ -14,9 +14,9 @@ class CityBlock < ActiveRecord::Base
   validates_presence_of :name, :neighborhood_id, :city_id
 
 	def self.import(file)
-    data = IO::read(file.path).scrub("")
+  
     table = CSV.parse(File.read(file.path), headers:true, :encoding=> 'UFT-8')
-    #table = CSV.parse(data, :col_sep => ",", headers:true)
+
     #Estructura del poligono
     polygon_txt_ini = "{\"type\": \"FeatureCollection\",\"features\": [{\"type\": \"Feature\",\"properties\": {},\"geometry\": {\"type\": \"Polygon\",\"coordinates\": [["
     polygon_txt_end = "]] }}]}"

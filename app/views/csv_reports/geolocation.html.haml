@@ -1,6 +1,6 @@
 = render :partial => "shared/flashes"
 /------------------------------------------------------------------------------
-.container{"ng-controller" => "csvGeolocationUploadCtrl"}
+.container
   .row
     .col-md-12
       .panel.panel-default
@@ -10,14 +10,13 @@
         .panel-body
           %p.light-font.large-font
             Suba un nuevo CSV para que DengueChat lo analice.
-            Nombre su CSV con el nombre o código del lugar.
 
-          = form_tag geolocation_api_v0_csv_reports_path, :method => "POST", :multipart => true, "ng-submit" => "geolocationUpload($event)", :style => "margin-top: 40px;" do
+          = form_tag geolocation_api_v0_csv_reports_path, :method => "POST", :multipart => true, :style => "margin-top: 40px;" do
 
             %p.form-label
               Cargue un CSV
             .form-group.form-inline
-              = file_field_tag :multiple_csv, :class => "form-control", :multiple => true, "show-csv-preview" => true, "csvPreviews" => "csv_previews"
+              = file_field_tag :multiple_csv, :class => "form-control"
 
               = button_tag :type => "submit", :class => "btn btn-success submit-button" do
                 %i.fa.fa-refresh.fa-spin{:style => "display:none;"}
