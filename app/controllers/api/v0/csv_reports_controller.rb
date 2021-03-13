@@ -98,8 +98,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
 
       csvs << {:csv => csv, :location => location}
     end
-    logger.info "csvs"
-    logger.info csvs
+
     csvs.each do |csv_hash|
       csv      = csv_hash[:csv]
       location = csv_hash[:location]
@@ -110,8 +109,6 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report.csv             = csv
       @csv_report.user_id         = @current_user.id
       @csv_report.location_id     = location.id
-      logger.info "save"
-      logger.info @csv_report
       @csv_report.save(:validate => false)
       
       SpreadsheetParsingWorker.perform_async(@csv_report.id)
