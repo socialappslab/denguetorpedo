@@ -50,7 +50,7 @@
   = render :partial => "comments/comment"
 
 .comentario{"ng-show" => "showComentar"}
-  .feed-item-comment
+  .feed-item-comment{:style=> "margin-right: 0px;"}
     .row
       .col-md-12
         %form.feed-item-comment-form.ng-pristine.ng-valid{"accept-charset" => "UTF-8", "ng-submit" => "createComment(post, comment)", :method => "post"}
