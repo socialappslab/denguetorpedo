@@ -46,6 +46,7 @@ Dengue::Application.routes.draw do
       resources :csv_reports, :only => [:create, :update, :destroy] do
         collection do
           post "batch"
+          post "geolocation"
         end
 
         member do
@@ -227,6 +228,7 @@ Dengue::Application.routes.draw do
     member do
       get "verify"
     end
+    get "geolocation", :on => :collection
   end
 
   get "odk_sync_errors", to: "csv_reports#sync_errors"
