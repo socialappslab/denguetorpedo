@@ -62,7 +62,7 @@ class API::V0::GraphsController < API::V0::BaseController
     end
 
     # set end_time to the date of the last inspection
-    if !end_time.blank?
+    if end_time.blank?
       end_time = Visit.where(location_id: location_ids).maximum(:visited_at)
       Rails.logger.info("end_time: #{end_time}")
       Rails.logger.info("start_time: #{start_time}")
