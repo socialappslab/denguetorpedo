@@ -66,7 +66,7 @@ class API::V0::GraphsController < API::V0::BaseController
       end_time = Visit.where(location_id: location_ids).maximum(:visited_at)
       Rails.logger.info("end_time: #{end_time}")
       Rails.logger.info("start_time: #{start_time}")
-      #start_time = end_time - 3.months
+      start_time = end_time - 6.months
       Rails.logger.info("new start_time: #{start_time}")
     end
 
