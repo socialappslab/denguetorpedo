@@ -76,6 +76,15 @@ class CsvReportsController < ApplicationController
     @breadcrumbs << {:name => I18n.t("views.csv_reports.batch_upload"), :path => batch_csv_reports_path}
   end
 
+    #----------------------------------------------------------------------------
+  # GET /csv_reports/geolocation
+
+  def geolocation
+    @neighborhood = @current_user.neighborhood
+    @breadcrumbs << {:name => I18n.t("views.csv_reports.geolocation_upload"), :path => geolocation_csv_reports_path}
+
+  end
+
   #----------------------------------------------------------------------------
   # GET /csv_reports/:id
 
