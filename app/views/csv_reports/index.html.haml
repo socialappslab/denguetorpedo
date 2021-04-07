@@ -16,6 +16,9 @@
         = link_to odk_sync_errors_path, class: "btn btn-warning" do
           %i.fa.fa-refresh
           = I18n.t("views.buttons.odk_sync")
+        = link_to geolocation_csv_reports_path, :class => "btn btn-success" do
+          %i.fa.fa-file
+          = I18n.t("views.csv_reports.geolocation_upload")
 
   - if @current_user.coordinator? || @current_user.delegator?
     .row

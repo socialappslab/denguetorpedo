@@ -6,6 +6,8 @@ class API::V0::CsvReportsController < API::V0::BaseController
   before_filter :identify_csv, :only => [:update, :verify]
   before_filter :set_locale
 
+  @logger = Rails.logger
+
   #----------------------------------------------------------------------------
   # POST /api/v0/csv_reports
 
@@ -57,6 +59,28 @@ class API::V0::CsvReportsController < API::V0::BaseController
     render :json => {:message => I18n.t("activerecord.success.report.create"), :redirect_path => csv_reports_path}, :status => 200 and return
   end
 
+      #----------------------------------------------------------------------------
+  # POST /api/v0/csv_reports/geolocation
+
+  def geolocation
+
+    #if params[:neighborhood_id].blank?
+     # raise API::V0::Error.new(I18n.t("Seleccione la comunidad"), 422) and return
+    #end
+    if params[:multiple_csv].blank?
+      raise API::V0::Error.new(I18n.t("views.csv_reports.flashes.unknown_format"), 422) and return
+    end
+    # Find the neighborhood.
+    #@neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
+    #CityBlock.import(params[:multiple_csv], @neighborhood)
+    CityBlock.import(params[:multiple_csv])
+
+    redirect_to geolocation_csv_reports_path, :notice => I18n.t("activerecord.success.report.create_geo")
+
+  end
+
+  
+
   #----------------------------------------------------------------------------
   # POST /api/v0/csv_reports/batch
 
@@ -86,7 +110,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv_report.user_id         = @current_user.id
       @csv_report.location_id     = location.id
       @csv_report.save(:validate => false)
-
+      
       SpreadsheetParsingWorker.perform_async(@csv_report.id)
     end
 
@@ -203,5 +227,6 @@ class API::V0::CsvReportsController < API::V0::BaseController
       @csv = @current_user.csvs.find_by_id(params[:id])
     end
   end
+
 
 end
