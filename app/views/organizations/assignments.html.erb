@@ -407,7 +407,7 @@ $(document).ready(function() {
 
     function perc2color(a, b) {
 
-        return '#41ea0e'
+        return '#33baff'
         
         if( a == 0  && b==0 ) return '#c2c2c2';
         perc =  a/b;
@@ -447,8 +447,10 @@ $(document).ready(function() {
               var visit_date = new Date(element.max_group);  
               var fecha = visit_date.toDateString();
             }
+            
+            if(data.obj.neighborhood_id == 52){
 
-            layer.bindPopup("<h2>ID: "+element.name+"</h2> \
+                layer.bindPopup("<h2>ID: "+element.name+"</h2> \
                 <div class='row'> \
                     <div class='col-md-6'> \
                         <div class=''> \
@@ -481,7 +483,27 @@ $(document).ready(function() {
                 </div> \
                 <button class='btn btn-primary' onclick='abrir_asignar_popup("+data.obj.id+","+data.obj.name+")'>Asignar</button>\
                 <button class='btn btn-primary' onclick='mostrar_asignaciones_popup("+data.obj.id+","+data.obj.name+")'>Ver asignaciones</button> ");
-        
+                
+            }else{
+
+                layer.bindPopup("<h2>ID: "+element.name+"</h2> \
+                <div class='row'> \
+                    <div class='col-md-6'> \
+                        <div class=''> \
+                            <h3><i style='font-size:25pt; color:#7ea6e6;' class='fa fa-users fa-2'></i><strong> "+element.count+" </strong></h3> \
+                            <span>Visitas</span> \
+                        </div> \
+                    </div> \
+                    <div class='col-md-6'> \
+                        <div class=''> \
+                            <h3><i style='font-size:20pt; color:#91d0cb;' class='fa fa-table fa-2'></i> <strong>"+fecha+"</strong> </h3> \
+                            <span>Ultima visita</span> \
+                        </div> \
+                    </div> \
+                </div> \
+                <button class='btn btn-primary' onclick='abrir_asignar_popup("+data.obj.id+","+data.obj.name+")'>Asignar</button>\
+                <button class='btn btn-primary' onclick='mostrar_asignaciones_popup("+data.obj.id+","+data.obj.name+")'>Ver asignaciones</button> ");
+            }
         })
       
     }
