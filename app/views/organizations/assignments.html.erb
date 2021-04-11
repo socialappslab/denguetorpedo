@@ -439,7 +439,6 @@ $(document).ready(function() {
     }
 
     function load_map_popup(layer,element){
-
         $.get('/organizations/cityblockinfo/'+element.name,function(data){
             if(element.max_group == null){
                 var fecha = "--";
@@ -447,9 +446,7 @@ $(document).ready(function() {
               var visit_date = new Date(element.max_group);  
               var fecha = visit_date.toDateString();
             }
-            
-            if(data.obj.neighborhood_id == 52){
-
+            if(data.obj.city_id == 9){
                 layer.bindPopup("<h2>ID: "+element.name+"</h2> \
                 <div class='row'> \
                     <div class='col-md-6'> \

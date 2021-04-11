@@ -14,6 +14,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
   # We assume the user will upload a particular CSV only once. This means that
   # a 'rolling update' to any CSV will be treated as different CSVs.
   def create
+    Rails.logger.info("========================================Cargue un nuevo CSV=======================================")
     # Ensure that the location has been identified on the map.
     lat  = params[:report_location_attributes_latitude]
     long = params[:report_location_attributes_longitude]
@@ -27,6 +28,7 @@ class API::V0::CsvReportsController < API::V0::BaseController
 
     # Find the neighborhood.
     @neighborhood = Neighborhood.find_by_id(params[:neighborhood_id])
+    cities_parmas = City.find_by_id(@neighborhood.city_id)
 
     # Create or find the location.
     address  = Spreadsheet.extract_address_from_filepath(params[:spreadsheet][:csv].original_filename)
@@ -36,6 +38,14 @@ class API::V0::CsvReportsController < API::V0::BaseController
     location.longitude = long
     location.neighborhood_id = @neighborhood.id
     location.city_id = @neighborhood.city_id
+    address_long = address.length
+    #Asociar el city_block si es Managua, utilizando el formato 142A01001, donde los tres ultimos nros son el nro de casas y los dos anteriores el nro de manzana
+    if cities_parmas.name == 'Managua' && address_long >= 8
+      cities_string = address[address_long-5]+address[address_long-4]
+      @city_block_params = CityBlock.where(:name => cities_string, :neighborhood_id =>@neighborhood.id, :city_id =>@neighborhood.city_id)
+      location.city_block_id = @city_block_params[0]["id"]
+    end
+
     location.save
 
     # Create a User Location corresponding to this user.
