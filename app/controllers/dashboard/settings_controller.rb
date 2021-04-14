@@ -1,17 +1,21 @@
 # -*- encoding : utf-8 -*-
 
 class Dashboard::SettingsController < Dashboard::BaseController
-  before_filter :identify_neighborhood, :only => [:index]
-
   #----------------------------------------------------------------------------
   # GET /dashboard/settings
 
   def index
     authorize :dashboard, :index?
-    @neighborhoods_select = Neighborhood.order("name ASC").map {|n| [n.name, n.id]}
     @city = current_user.city
   end
-
+  def create
+    @settings = Parameter.new(params[:settings])
+    if @settings.save
+      render json: @settings.to_json, status: 200
+    else
+      raise API::V0::Error.new(@settings.errors.full_messages[0], 422)
+    end
+  end
 end
 #----------------------------------------------------------------------------
 
