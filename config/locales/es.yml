@@ -143,12 +143,16 @@ es:
         blank: "es obligatorio"
       users:
         invalid_username: no válido. Solo caracteres alfanuméricos.
+      report:
+        coordenadas: El campo coordenadas no puede quedar vacío
+        neighborhood: La comunidad agregada no existe, por favor verifique
     success:
       report:
         create: Criadero marcado exitosamente
         eliminate: Ustéd eliminó un criadero
         delete: Criadero eliminado exitosamente
         verify: El criadero fué verificado
+        create_geo: La geo-localización se guardo exitosamente
       comment:
         create: Comentario hecho con éxito
       post:
@@ -476,6 +480,7 @@ es:
 
     csv_reports:
       batch_upload: Carga CSV lotes
+      geolocation_upload: Carga CSV Geolocalización
       parsing: Procesando
       verify: Verificar
       view: Ver

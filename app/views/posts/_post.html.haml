@@ -28,9 +28,10 @@
       {{post.likes_count}}
 
     - if @current_user.present?
-      %a.feed-button{"ng-click" => "showNewComment = !showNewComment"}
+      %a.feed-button{"ng-click" => "showComentar = !showComentar"}
         %i.fa.fa-comment-o
         Comentar
+
 
     %a.feed-button{"share-to-facebook" => true, "ng-click" => "", :post => "{{post}}"}
       %i.fa.fa-share
@@ -44,9 +45,21 @@
             = I18n.t("common_terms.delete")
           %i.fa.fa-spin.fa-refresh{"ng-show" => "deleteRequestSubmitted"}
 
-// Enumerate all comments.
-%div{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
+
+.row{"comment" => "comment", "ng-repeat" => "comment in post.comments"}
   = render :partial => "comments/comment"
 
-%new-comment{"post" => "post", "ng-show" => "showNewComment"}
+.comentario{"ng-show" => "showComentar"}
+  .feed-item-comment{:style=> "margin-right: 0px;"}
+    .row
+      .col-md-12
+        %form.feed-item-comment-form.ng-pristine.ng-valid{"accept-charset" => "UTF-8", "ng-submit" => "createComment(post, comment)", :method => "post"}
+          %div{:style => "margin:0;padding:0;display:inline"}
+            %input{:name => "utf8", :type => "hidden", :value => "✓"}/
+            %input{:name => "authenticity_token", :type => "hidden", :value => "1vnH4l6Pdoo2Pyph7qRD0rU5T2obW8S0WQ4koO+Jg5w="}/
+          %textarea#comment_content.form-control{:name => "comment[content]", "ng-model" => "comment.content"}
+          %button.btn.btn-success.btn-right.submit-button{:type => "submit"}
+            %i.fa.fa-refresh.fa-spin
+            Chat
+
 
