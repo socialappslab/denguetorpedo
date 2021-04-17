@@ -105,8 +105,11 @@ Dengue::Application.routes.draw do
     resources :reports,   :only => [:index]
     resources :visits,    :only => [:index]
     resources :sync,    :only => [:index]
-    resources :settings, :only => [:index]
-
+    resources :settings, :only => [:index] do
+      collection do
+        post "settings", to: "settings#create", as: :create
+      end
+    end
 
     resources :graphs,    :only => [:index] do
       collection do
