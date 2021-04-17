@@ -9,10 +9,19 @@ class Dashboard::SettingsController < Dashboard::BaseController
     @city = current_user.city
   end
   def create
-    Rails.logger.info("Hola2")
-    object = Parameter.new(:organization_id => 5, :key => 'organization.data.visits.url' , :value => params[:dataVisits])
-    @logger.info object
-    object.save
+    @logger.info "create"
+    Rails.logger.info(params[:organization_id])
+    dataVisits = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.data.visits.url' , :value => params[:dataVisits])
+    dataLocations = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.data.locations.url' , :value => params[:dataLocations])
+    datainspections = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.data.inspections.url' , :value => params[:datainspections])
+    volunteers = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.sync.default-user' , :value => params[:volunteers])
+    @logger.info dataVisits
+    dataVisits.save
+    dataLocations.save
+    datainspections.save
+    volunteers.save
+
+
 
 
 =begin
