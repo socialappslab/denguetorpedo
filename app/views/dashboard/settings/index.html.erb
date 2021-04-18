@@ -17,13 +17,13 @@
         <%=form_tag create_dashboard_settings_url, method: :post, style: "padding: 2rem" do %>
         <h2 style="padding-top: 2rem; padding-bottom: 2rem">Seleccione una organización</h2>
         <div id= "organization-select" class="form-group">
-          <%=select_tag :organization_id, options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control", :required => true%>
+          <%=select_tag "organizations_select", options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control", :required => true%>
         </div>
         <h2 style="padding-top: 2rem; padding-bottom: 2rem">Agregue las URLs de Google Sheet</h2>
 
         <div class="form-group">
           <label>data.visits.url:</label>
-          <input type="text" class="form-control" ng-model='settings.visits' id="dataVisits" name="dataVisits">
+          <input type="text" class="form-control" ng-model='settings.visits' id="dataVisits" name="dataVisits" value="">
           <label>data.locations.url:</label>
           <input type="text" class="form-control" ng-model='settings.locations' id="dataLocations" name="dataLocations">
           <label>data.inspections.url:</label>
@@ -84,3 +84,35 @@
         });
     })
 </script>
+<script>
+    $(document).ready(function(){
+        $('#organizations_select').change(function() {  
+            var obtener_valor  = $(this).val();
+            console.log(obtener_valor)
+            $.get("/dashboard/settings/organizationsselect/"+obtener_valor, function(data) {
+              if(data != null){
+                  var dataVisits = document.getElementById("dataVisits");
+                  var dataLocations = document.getElementById("dataLocations");
+                  var datainspections = document.getElementById("datainspections");
+                  var volunteers = document.getElementById("volunteers");
+                  for (var item of data) {
+                      console.log(item)
+                      switch(item.key){
+                        case "organization.data.visits.url":
+                          dataVisits.value =item.value
+                        case "organization.data.locations.url":
+                          dataLocations.value = item.value
+                        case "organization.data.inspections.url":
+                          datainspections.value = item.value
+                        case "organization.sync.default-user":
+                          //$("#volunteers")
+                          volunteers.value = "Josefina Coloma"
+                      }      
+                  }
+              }
+            })
+            
+        });
+    });
+</script>
+

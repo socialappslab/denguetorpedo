@@ -109,6 +109,7 @@ Dengue::Application.routes.draw do
       collection do
         post "create", as: :create
       end
+      get "organizationsselect/:id", to: "settings#organizations_select", on: :collection
     end
 
     resources :graphs,    :only => [:index] do
