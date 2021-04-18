@@ -1,11 +1,23 @@
 <div class="container" id="assignments-page">
+  <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+  <% if flash[:error] %>
+    <div class="alert alert-danger alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <%= flash[:error] %>
+    </div>
+  <% end %>
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="col-md-12">
         <%=form_tag create_dashboard_settings_url, method: :post, style: "padding: 2rem" do %>
         <h2 style="padding-top: 2rem; padding-bottom: 2rem">Seleccione una organización</h2>
         <div id= "organization-select" class="form-group">
-          <%=select_tag :organization_id, options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control"%>
+          <%=select_tag :organization_id, options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control", :required => true%>
         </div>
         <h2 style="padding-top: 2rem; padding-bottom: 2rem">Agregue las URLs de Google Sheet</h2>
 
@@ -17,7 +29,7 @@
           <label>data.inspections.url:</label>
           <input type="text" class="form-control" ng-model='settings.inspections' id="datainspections" name="datainspections">
           <label>Usuario Admin</label>
-          <input type="text" class="form-control" ng-model='settings.volunteers' id="volunteers" name="volunteers" data-role="tagsinput" required>
+          <input type="text" class="form-control" ng-model='settings.volunteers' id="volunteers" name="volunteers" data-role="tagsinput">
         </div>
         <div style="text-align: right">
             <%= button_tag :type => "submit", :class => "btn btn-success submit-button" do %>

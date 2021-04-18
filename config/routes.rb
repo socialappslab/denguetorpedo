@@ -107,7 +107,7 @@ Dengue::Application.routes.draw do
     resources :sync,    :only => [:index]
     resources :settings, :only => [:index] do
       collection do
-        post "settings", to: "settings#create", as: :create
+        post "create", as: :create
       end
     end
 

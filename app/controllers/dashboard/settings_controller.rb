@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class Dashboard::SettingsController < Dashboard::BaseController
+  after_action :verify_authorized, except: [:create]
   #----------------------------------------------------------------------------
   # GET /dashboard/settings
 
@@ -9,41 +10,36 @@ class Dashboard::SettingsController < Dashboard::BaseController
     @city = current_user.city
   end
   def create
-    @logger.info "create"
-    Rails.logger.info(params[:organization_id])
+    Rails.logger.info("PRUEBA 1-------------------||||")
+    if params[:organization_id].blank?
+      Rails.logger.info("PRUEBA 2-------------------||||")
+      flash[:alert] = "Debe seleccionar una organización"
+      redirect_to dashboard_settings_path and return
+
+    end
+    Rails.logger.info(params[:volunteers])
     dataVisits = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.data.visits.url' , :value => params[:dataVisits])
     dataLocations = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.data.locations.url' , :value => params[:dataLocations])
     datainspections = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.data.inspections.url' , :value => params[:datainspections])
-    volunteers = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.sync.default-user' , :value => params[:volunteers])
-    @logger.info dataVisits
+    @user_params = User.find_by_id(params[:volunteers])
+    Rails.logger.info(@user_params.username)
+    volunteers = Parameter.new(:organization_id => params[:organization_id], :key => 'organization.sync.default-user' , :value => @user_params.username)
+
     dataVisits.save
     dataLocations.save
     datainspections.save
     volunteers.save
 
-
-
-
 =begin
-    Rails.logger.info(params[:dataVisits])
-    Rails.logger.info(params[:dataLocations])
-
-    @parameter = Parameter.new
-
-    @parameter.organization_id =
-    @parameter.key =
-    @parameter.value= "cdew"
-
-    Rails.logger.info("Hola3")
-    if @parameter.save
-      render json: @parameter.to_json, status: 200
+    if dataVisits.save && dataLocations.save && datainspections.save && volunteers.save
+      redirect_to dashboard_settings_path, :flash => { :notice => I18n.t("views.coordinators.users.success_create_flash") } and return
     else
-      raise DASHBOARD::Error.new(@assignment.errors.full_messages[0], 422)
+      render "coordinator/users/new", flash: { alert: @user.errors.full_messages.join(', ') }
     end
 =end
 
-
   end
+
 end
 #----------------------------------------------------------------------------
 
