@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class Dashboard::SettingsController < Dashboard::BaseController
-  after_action :verify_authorized, except: [:create, :organizations_select]
+  after_action :verify_authorized, except: [:create, :organizations_select, :users_select]
   #----------------------------------------------------------------------------
   # GET /dashboard/settings
 
@@ -78,6 +78,12 @@ class Dashboard::SettingsController < Dashboard::BaseController
 
   def organizations_select
     @select = Parameter.where(:organization_id => params[:id])
+    render json: @select.to_json, status:200
+
+  end
+  def users_select
+    Rails.logger.info("users_select-------------------")
+    @select = User.select("id", "name").where(:username => params[:username])
     render json: @select.to_json, status:200
 
   end
