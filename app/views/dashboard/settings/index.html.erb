@@ -92,13 +92,13 @@
             document.getElementById("dataLocations").value = "";
             document.getElementById("datainspections").value = "";
             document.getElementById("volunteers").value = "";
+            $("#volunteers").tagsinput('removeAll')
             console.log(obtener_valor)
             $.get("/dashboard/settings/organizationsselect/"+obtener_valor, function(data) {
               if(data != null){
                   var dataVisits = document.getElementById("dataVisits");
                   var dataLocations = document.getElementById("dataLocations");
                   var datainspections = document.getElementById("datainspections");
-                  var volunteers = document.getElementById("volunteers");
                   for (var item of data) {
                       console.log(item)
                       if(item.key == "organization.data.visits.url") {
