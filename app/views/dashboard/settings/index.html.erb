@@ -29,7 +29,7 @@
           <label>data.inspections.url:</label>
           <input type="text" class="form-control" ng-model='settings.inspections' id="datainspections" name="datainspections">
           <label>Usuario Admin</label>
-          <input type="text" class="form-control" ng-model='settings.volunteers' id="volunteers" name="volunteers" >
+          <input type="text" class="form-control" ng-model='settings.volunteers' id="volunteers" name="volunteers" data-role="tagsinput">
         </div>
         <div style="text-align: right">
             <%= button_tag :type => "submit", :class => "btn btn-success submit-button" do %>
@@ -72,7 +72,6 @@
         });
         volunteers.initialize();
         var elt = $('#volunteers');
-
         elt.tagsinput({
             itemValue: 'id',
             itemText: 'name',
@@ -89,33 +88,36 @@
     $(document).ready(function(){
         $('#organizations_select').change(function() {  
             var obtener_valor  = $(this).val();
-            console.log(obtener_valor)
             document.getElementById("dataVisits").value = "";
             document.getElementById("dataLocations").value = "";
             document.getElementById("datainspections").value = "";
             document.getElementById("volunteers").value = "";
+            console.log(obtener_valor)
             $.get("/dashboard/settings/organizationsselect/"+obtener_valor, function(data) {
-                var dataVisits = document.getElementById("dataVisits");
-                var dataLocations = document.getElementById("dataLocations");
-                var datainspections = document.getElementById("datainspections");
-                var volunteers = document.getElementById("volunteers");
-                if (data != null) {
-                    for (var item of data) {
-                        console.log(item)
-                        switch (item.key) {
-                            case "organization.data.visits.url":
-                                dataVisits.value = item.value
-                            case "organization.data.locations.url":
-                                dataLocations.value = item.value
-                            case "organization.data.inspections.url":
-                                datainspections.value = item.value
-                            case "organization.sync.default-user":
-                                //$("#volunteers")
-                                volunteers.value = item.value
-                        }
-                    }
-                }
+              if(data != null){
+                  var dataVisits = document.getElementById("dataVisits");
+                  var dataLocations = document.getElementById("dataLocations");
+                  var datainspections = document.getElementById("datainspections");
+                  var volunteers = document.getElementById("volunteers");
+                  for (var item of data) {
+                      console.log(item)
+                      if(item.key == "organization.data.visits.url") {
+                        dataVisits.value =item.value
+                      }else if(item.key == "organization.data.locations.url") {
+                        dataLocations.value = item.value
+                      }else if(item.key == "organization.data.inspections.url") {
+                        datainspections.value = item.value
+                      }else if(item.key == "organization.sync.default-user") {
+                        $.get("/dashboard/settings/usersselect/"+item.value, function(data) {
+                            $("#volunteers").tagsinput("add",  {id:data[0].id, name:data[0].name});
+                        })
+                        
+                      }
+    
+                  }
+              }
             })
+            
         });
     });
 </script>
