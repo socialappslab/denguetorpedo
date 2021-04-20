@@ -109,7 +109,12 @@
                         datainspections.value = item.value
                       }else if(item.key == "organization.sync.default-user") {
                         $.get("/dashboard/settings/usersselect/"+item.value, function(data) {
+                          
+                          if(data[0].first_name != null && data[0].last_name){
+                            $("#volunteers").tagsinput("add",  {id:data[0].id, name:data[0].first_name + " "+data[0].last_name});
+                          }else{
                             $("#volunteers").tagsinput("add",  {id:data[0].id, name:data[0].name});
+                          }
                         })
                         
                       }
