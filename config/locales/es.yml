@@ -423,6 +423,7 @@ es:
       upload_csv: Cargue un nuevo CSV
       odk_sync: Errores de sincronización ODK
       confirm: Confirmar
+      add_column: Agregar nueva columna
     coordinator:
       home: Coordinador
       register_user: Registrar nuevo usuario
@@ -441,9 +442,12 @@ es:
       navigation:
         visits: Visitas
         locations: Casas
+        settings: Configuración
         heatmap: Mapa de actividad
         graphs: Gráficos
         sync: Sincronizar
+      success_create_flash:  "Se guardo exitosamente la configuración"
+      failed_create_flash:  "No se guardo la configuración"
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"
