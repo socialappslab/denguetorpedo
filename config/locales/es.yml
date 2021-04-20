@@ -446,6 +446,8 @@ es:
         heatmap: Mapa de actividad
         graphs: Gráficos
         sync: Sincronizar
+      success_create_flash:  "Se guardo exitosamente la configuración"
+      failed_create_flash:  "No se guardo la configuración"
     badges:
       eye_of_the_mosquito: "Vigilante de mosquitos"
       exterminator: "Exterminador de mosquitos"

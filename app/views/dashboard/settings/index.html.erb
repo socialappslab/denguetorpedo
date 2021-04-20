@@ -93,7 +93,7 @@
             document.getElementById("datainspections").value = "";
             document.getElementById("volunteers").value = "";
             $("#volunteers").tagsinput('removeAll')
-            console.log(obtener_valor)
+
             $.get("/dashboard/settings/organizationsselect/"+obtener_valor, function(data) {
               if(data != null){
                   var dataVisits = document.getElementById("dataVisits");
