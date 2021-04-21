@@ -1,0 +1,129 @@
+<div class="container" id="assignments-page">
+  <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+  <% if flash[:alert] %>
+    <div class="alert alert-danger alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-12">
+        <%=form_tag create_dashboard_settings_url, method: :post, style: "padding: 2rem" do %>
+        <h2 style="padding-top: 2rem; padding-bottom: 2rem">Seleccione una organización</h2>
+        <div id= "organization-select" class="form-group">
+          <%=select_tag "organizations_select", options_for_select(Organization.order("name ASC").all.map { |n| [n.name, n.id] }), :prompt => I18n.t("activerecord.models.organization.name"), :class => "form-control", :required => true%>
+        </div>
+        <h2 style="padding-top: 2rem; padding-bottom: 2rem">Agregue las URLs de Google Sheet</h2>
+
+        <div class="form-group">
+          <label>data.visits.url:</label>
+          <input type="text" class="form-control" ng-model='settings.visits' id="dataVisits" name="dataVisits" value="">
+          <label>data.locations.url:</label>
+          <input type="text" class="form-control" ng-model='settings.locations' id="dataLocations" name="dataLocations">
+          <label>data.inspections.url:</label>
+          <input type="text" class="form-control" ng-model='settings.inspections' id="datainspections" name="datainspections">
+          <label>Usuario Admin</label>
+          <input type="text" class="form-control" ng-model='settings.volunteers' id="volunteers" name="volunteers" data-role="tagsinput">
+        </div>
+        <div style="text-align: right">
+            <%= button_tag :type => "submit", :class => "btn btn-success submit-button" do %>
+              <i class="fa fa-refresh fa-spin" style="display:none;"></i>
+              <%= I18n.t("views.buttons.save") %>
+            <% end %>
+        </div>
+        <% end %>
+        <!--<hr style="border-color:#ff6600;border-bottom:none;">
+        <h2 style="padding-top: 2rem; padding-bottom: 2rem">¿Desea agregar nueva columna de datos?</h2>
+        <div class="form-group">
+          <label>Nombre de la columna:</label>
+          <input type="text" class="form-control" id="nameColumn" name="dataVisits">
+        </div>
+        <div class="form-group">
+          <label>Tipo:</label>
+          <select name="typeData" id="typeData" class="form-control">
+            <option value="volvo">Numérico</option>
+            <option value="saab">Boolean</option>
+            <option value="mercedes">Texto</option>
+          </select>
+        </div>
+        <div style="text-align: right">
+          <%#= button_tag :type => "submit", :class => "btn btn-success submit-button" do %>
+            <i class="fa fa-refresh fa-spin" style="display:none;"></i>
+            <%#= I18n.t("views.buttons.add_column") %>
+          <%# end %>
+        </div>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var volunteers = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: '<%= volunteers_json_organizations_url(city_id: @city.id, format: :json) %>'
+        });
+        volunteers.initialize();
+        var elt = $('#volunteers');
+        elt.tagsinput({
+            itemValue: 'id',
+            itemText: 'name',
+            typeaheadjs: {
+                name: 'volunteers',
+                displayKey: 'name',
+                minLength : 1,
+                source: volunteers.ttAdapter()
+            }
+        });
+    })
+</script>
+<script>
+    $(document).ready(function(){
+        $('#organizations_select').change(function() {  
+            var obtener_valor  = $(this).val();
+            document.getElementById("dataVisits").value = "";
+            document.getElementById("dataLocations").value = "";
+            document.getElementById("datainspections").value = "";
+            document.getElementById("volunteers").value = "";
+            $("#volunteers").tagsinput('removeAll')
+
+            $.get("/dashboard/settings/organizationsselect/"+obtener_valor, function(data) {
+              if(data != null){
+                  var dataVisits = document.getElementById("dataVisits");
+                  var dataLocations = document.getElementById("dataLocations");
+                  var datainspections = document.getElementById("datainspections");
+                  for (var item of data) {
+                      console.log(item)
+                      if(item.key == "organization.data.visits.url") {
+                        dataVisits.value =item.value
+                      }else if(item.key == "organization.data.locations.url") {
+                        dataLocations.value = item.value
+                      }else if(item.key == "organization.data.inspections.url") {
+                        datainspections.value = item.value
+                      }else if(item.key == "organization.sync.default-user") {
+                        $.get("/dashboard/settings/usersselect/"+item.value, function(data) {
+                          
+                          if(data[0].first_name != null && data[0].last_name){
+                            $("#volunteers").tagsinput("add",  {id:data[0].id, name:data[0].first_name + " "+data[0].last_name});
+                          }else{
+                            $("#volunteers").tagsinput("add",  {id:data[0].id, name:data[0].name});
+                          }
+                        })
+                        
+                      }
+    
+                  }
+              }
+            })
+            
+        });
+    });
+</script>
+
