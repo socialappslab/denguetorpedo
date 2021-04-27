@@ -45,8 +45,9 @@ Dengue::Application.configure do
   config.assets.digest                     = true
   config.static_cache_control              = "public, max-age=2592000"
   config.serve_static_files               = false
-  config.action_controller.perform_caching = true
+  config.action_controller.perform_caching = false
 
+=begin
   # Configure Rack::Cache to use Dalli Memcached client.
   client = Dalli::Client.new((ENV["MEMCACHIER_SERVERS"] || "").split(","),
                            :username => ENV["MEMCACHIER_USERNAME"],
@@ -59,6 +60,7 @@ Dengue::Application.configure do
     :metastore    => client,
     :entitystore  => client
   }
+=end
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
